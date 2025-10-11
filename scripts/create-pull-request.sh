@@ -17,7 +17,7 @@ command -v git >/dev/null 2>&1 || { echo "❌  git is required." >&2; exit 1; }
 command -v ruby >/dev/null 2>&1 || echo "⚠️ ruby not found; labels/titles won't be URL-encoded."
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "❌ Not a git repository." >&2; exit 1; }
 
-github_user=$(git config github.user)
+github_user=$(git config github.user || true)
 
 while true; do
   if [[ -z "$github_user" ]]; then
