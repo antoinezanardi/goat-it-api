@@ -71,13 +71,13 @@ git push -u origin "$current_branch"
 word_map=("feat:🚀 feature" "fix:🐛 bug" "chore:🧹 chore" "docs:📖 docs" "style:🎨 style" "refactor:🔩 refactor" "perf:⚡️ perf" "test:✅ test" "ci:🔁 ci")
 
 first_commit_message=$(git log --format=%B -n 1 "$base_branch".."$current_branch")
-first_word=$(echo "$first_commit_message" | cut -d'(' -f1)
+first_type=$(echo "$first_commit_message" | sed -E 's/^([a-zA-Z]+)(\([^)]*\))?:.*/\1/' | xargs)
 
 label=""
 for pair in "${word_map[@]}"; do
   key=${pair%%:*}
   value=${pair#*:}
-  if [ "$key" = "$first_word" ]; then
+  if [ "$key" = "$first_type" ]; then
     label=$value
     break
   fi
