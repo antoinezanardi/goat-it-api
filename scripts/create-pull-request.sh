@@ -43,11 +43,10 @@ else
 fi
 
 remote_url=$(git config --get remote.origin.url)
+remote_url=${remote_url%.git}
+remote_url=${remote_url%/}
 
-if [[ "$remote_url" =~ github\.com\/(.+)\/(.+)\.git$ ]]; then
-  username=${BASH_REMATCH[1]}
-  repository=${BASH_REMATCH[2]}
-elif [[ "$remote_url" =~ git@github\.com:(.+)\/(.+)\.git$ ]]; then
+if [[ "$remote_url" =~ github\.com[:/]+([^/]+)/([^/]+)$ ]]; then
   username=${BASH_REMATCH[1]}
   repository=${BASH_REMATCH[2]}
 else
