@@ -2,6 +2,7 @@
 # -----------------------------------------------------------------------------
 # post-install-prepare.sh
 #
+# Post-installation script to set up Husky for Git hooks, skipping installation if in CI or dev dependencies are missing.
 #
 # Usage:
 #   ./post-install-prepare.sh
