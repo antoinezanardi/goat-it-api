@@ -1,0 +1,4 @@
+{
+  "pattern": "^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)\/.+$",
+  "errorMsg": "Your branch name doesn't respect the established convention.\n➡\uFE0F Please respect the following format: (feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)/[FEATURE_NAME]\n\n\uD83E\uDD16 Interactive: Use the script `pnpm run script:create-branch`\n\uD83E\uDEF1\uD83C\uDFFB Manual: You can change the name of your branch with the command `git branch -m NEW_NAME`\n"
+}
