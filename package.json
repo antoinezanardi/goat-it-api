@@ -15,6 +15,9 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "script:create-branch": "scripts/create-git-branch.sh",
+    "script:create-pull-request": "scripts/create-pull-request.sh",
+    "script:create-release-changelog": "scripts/create-release-changelog.sh"
   }
 }
