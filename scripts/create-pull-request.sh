@@ -35,6 +35,19 @@ done
 base_branch=${1:-develop}
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 
+if ! git show-ref --verify --quiet "refs/heads/$base_branch"; then
+  echo "Base branch '$base_branch' not found locally. Attempting to fetch from origin..."
+  if ! git fetch origin "$base_branch"; then
+    echo "❌  Failed to fetch base branch '$base_branch' from origin."
+    exit 1
+  fi
+
+  if ! git show-ref --verify --quiet "refs/heads/$base_branch"; then
+    echo "❌  Base branch '$base_branch' does not exist locally after fetch."
+    exit 1
+  fi
+fi
+
 if [ "$(git rev-list --count "$base_branch".."$current_branch")" -gt 0 ]; then
   echo "Opening pull request for $current_branch against $base_branch..."
 else
@@ -87,11 +100,18 @@ open_pr_url="https://github.com/$username/$repository/compare/$base_branch...$cu
 encoded_label=$(ruby -e 'require "erb"; puts ERB::Util.url_encode(ARGV[0])' "$label")
 encoded_title=$(ruby -e 'require "erb"; puts ERB::Util.url_encode(ARGV[0])' "$first_commit_message")
 encoded_open_pr_url="$open_pr_url&labels=$encoded_label&title=$encoded_title"
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  open "$encoded_open_pr_url"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  xdg-open "$encoded_open_pr_url"
-else
-  echo "❌  Unsupported OS to automatically open the pull request creation page"
-  exit 1
+
+openers=(open xdg-open gnome-open sensible-browser start powershell.exe explorer.exe)
+opened=false
+for opener in "${openers[@]}"; do
+  if command -v "$opener" >/dev/null 2>&1; then
+    "$opener" "$encoded_open_pr_url" &
+    opened=true
+    break
+  fi
+
+done
+if ! $opened; then
+  echo "🔗  Open this URL to create the PR:"
+  echo "$encoded_open_pr_url"
 fi
