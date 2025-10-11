@@ -121,7 +121,7 @@ for opener in "${openers[@]}"; do
     if [ "$opener" = "powershell.exe" ]; then
       powershell.exe -NoProfile -Command "Start-Process '$encoded_open_pr_url'" &>/dev/null &
     else
-      "$opener" "$encoded_open_pr_url" &
+      "$opener" "$encoded_open_pr_url"
     fi
     opened=true
     break
