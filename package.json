@@ -1,0 +1,20 @@
+{
+  "name": "goat-it-api",
+  "version": "1.0.0",
+  "description": "API for Goat It game",
+  "homepage": "https://github.com/antoinezanardi/goat-it-api#readme",
+  "bugs": {
+    "url": "https://github.com/antoinezanardi/goat-it-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antoinezanardi/goat-it-api.git"
+  },
+  "license": "MIT",
+  "author": "Antoine ZANARDI",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  }
+}

@@ -22,3 +22,11 @@ lerna-debug.log*
 # temp directory
 .temp
 .tmp
+
+# IDE specific
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
