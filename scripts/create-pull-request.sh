@@ -42,13 +42,24 @@ if ! git show-ref --verify --quiet "refs/heads/$base_branch"; then
     exit 1
   fi
 
-  if ! git show-ref --verify --quiet "refs/heads/$base_branch"; then
-    echo "❌  Base branch '$base_branch' does not exist locally after fetch."
+  if git show-ref --verify --quiet "refs/remotes/origin/$base_branch"; then
+    echo "Remote-tracking branch 'origin/$base_branch' found. Creating/updating local branch..."
+    if ! git branch --track "$base_branch" "origin/$base_branch" 2>/dev/null; then
+      git checkout -B "$base_branch" "origin/$base_branch"
+    fi
+  else
+    echo "❌  Base branch '$base_branch' does not exist locally or as a remote-tracking branch after fetch."
     exit 1
   fi
 fi
 
-if [ "$(git rev-list --count "$base_branch".."$current_branch")" -gt 0 ]; then
+if git show-ref --verify --quiet "refs/heads/$base_branch"; then
+  base_ref="$base_branch"
+else
+  base_ref="origin/$base_branch"
+fi
+
+if [ "$(git rev-list --count "$base_ref".."$current_branch")" -gt 0 ]; then
   echo "Opening pull request for $current_branch against $base_branch..."
 else
   echo "❌  Current branch ($current_branch) has no commits yet. Please make at least one commit."
