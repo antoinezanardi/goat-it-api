@@ -37,18 +37,14 @@ current_branch=$(git rev-parse --abbrev-ref HEAD)
 
 if ! git show-ref --verify --quiet "refs/heads/$base_branch"; then
   echo "Base branch '$base_branch' not found locally. Attempting to fetch from origin..."
-  if ! git fetch origin "$base_branch"; then
-    echo "❌  Failed to fetch base branch '$base_branch' from origin."
-    exit 1
-  fi
-
-  if git show-ref --verify --quiet "refs/remotes/origin/$base_branch"; then
-    echo "Remote-tracking branch 'origin/$base_branch' found. Creating/updating local branch..."
-    if ! git branch --track "$base_branch" "origin/$base_branch" 2>/dev/null; then
-      git checkout -B "$base_branch" "origin/$base_branch"
+  if git ls-remote --exit-code --heads origin "$base_branch" >/dev/null 2>&1; then
+    # Create/update the local branch without switching HEAD
+    if ! git fetch origin "$base_branch:$base_branch"; then
+      echo "❌  Failed to create/update local '$base_branch' from origin." >&2
+      exit 1
     fi
   else
-    echo "❌  Base branch '$base_branch' does not exist locally or as a remote-tracking branch after fetch."
+    echo "❌  Base branch '$base_branch' not found on origin." >&2
     exit 1
   fi
 fi
@@ -66,7 +62,13 @@ else
   exit 1
 fi
 
-remote_url=$(git config --get remote.origin.url)
+remote_url=$(git remote get-url origin 2>/dev/null || true)
+
+if [[ -z "$remote_url" ]]; then
+  echo "❌  No 'origin' remote configured; run 'git remote add origin <url>'"
+  exit 1
+fi
+
 remote_url=${remote_url%.git}
 remote_url=${remote_url%/}
 
@@ -94,7 +96,7 @@ git push -u origin "$current_branch"
 
 word_map=("feat:🚀 feature" "fix:🐛 bug" "chore:🧹 chore" "docs:📖 docs" "style:🎨 style" "refactor:🔩 refactor" "perf:⚡️ perf" "test:✅ test" "ci:🔁 ci")
 
-first_commit_message=$(git log --format=%B -n 1 "$base_branch".."$current_branch")
+first_commit_message=$(git log --format=%B -n 1 "$base_ref".."$current_branch")
 first_type=$(echo "$first_commit_message" | sed -E 's/^([a-zA-Z]+)(\([^)]*\))?:.*/\1/' | xargs)
 
 label=""
@@ -116,12 +118,16 @@ openers=(open xdg-open gnome-open sensible-browser start powershell.exe explorer
 opened=false
 for opener in "${openers[@]}"; do
   if command -v "$opener" >/dev/null 2>&1; then
-    "$opener" "$encoded_open_pr_url" &
+    if [ "$opener" = "powershell.exe" ]; then
+      powershell.exe -NoProfile -Command "Start-Process '$encoded_open_pr_url'" &>/dev/null &
+    else
+      "$opener" "$encoded_open_pr_url" &
+    fi
     opened=true
     break
   fi
-
 done
+
 if ! $opened; then
   echo "🔗  Open this URL to create the PR:"
   echo "$encoded_open_pr_url"
