@@ -1,5 +1,4 @@
 # Nestjs specific
-/dist
 /node_modules
 /build
 /tmp
@@ -40,3 +39,9 @@ RELEASE.md
 
 # TypeScript cache
 *.tsbuildinfo
+
+
+# Build artifacts
+dist/
+.vitest/
+.swc/
