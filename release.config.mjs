@@ -115,11 +115,10 @@ export default {
           commitGroupsSort: (commitGroupA, commitGroupB) => {
             const commitGroupTitleA = commitGroupA.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
             const commitGroupTitleB = commitGroupB.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
+            const a = commitGroupsOrder[commitGroupTitleA] ?? Number.MAX_SAFE_INTEGER;
+            const b = commitGroupsOrder[commitGroupTitleB] ?? Number.MAX_SAFE_INTEGER;
 
-            if (commitGroupsOrder[commitGroupTitleA] === undefined || commitGroupsOrder[commitGroupTitleB] === undefined) {
-              return 0;
-            }
-            return commitGroupsOrder[commitGroupTitleA] - commitGroupsOrder[commitGroupTitleB];
+            return a - b;
           },
         },
       },
@@ -141,6 +140,7 @@ export default {
         assets: [
           "CHANGELOG.md",
           "package.json",
+          "pnpm-lock.yaml",
         ],
       },
     ],
