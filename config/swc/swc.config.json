@@ -1,0 +1,17 @@
+{
+  "$schema": "https://swc.rs/schema.json",
+  "jsc": {
+    "target": "es2021",
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true,
+      "tsx": false
+    },
+    "transform": {
+      "decoratorMetadata": true
+    },
+    "keepClassNames": true
+  },
+  "sourceMaps": true,
+  "exclude": [".*\\.spec\\.ts$"]
+}

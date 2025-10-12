@@ -1,5 +1,4 @@
 # Nestjs specific
-/dist
 /node_modules
 /build
 /tmp
@@ -37,3 +36,12 @@ Thumbs.db
 
 # Semantic release files
 RELEASE.md
+
+# TypeScript cache
+*.tsbuildinfo
+
+
+# Build artifacts
+dist/
+.vitest/
+.swc/
