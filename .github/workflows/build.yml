@@ -57,3 +57,15 @@ jobs:
 
       - name: Install project 📦
         uses: ./.github/actions/install-project
+
+  build:
+    name: Build App ✨
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Build application ✨
+        uses: ./.github/actions/build
