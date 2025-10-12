@@ -1,1 +1,1 @@
-npx --no-install validate-branch-name;
+npm run validate:branch-name;

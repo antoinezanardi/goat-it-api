@@ -16,7 +16,7 @@ if ! command -v gawk &>/dev/null; then
   exit 1
 fi
 
-npx semantic-release --dry-run --no-ci | gawk '/^## [0-9]+\.[0-9]+\.[0-9]+( \(https:\/\/github\.com\/)?/ {if (found) exit; found=1} found {print}' >RELEASE.md
+npx semantic-release --dry-run --no-ci --extends ./configs/semantic-release/release.config.mjs | gawk '/^## [0-9]+\.[0-9]+\.[0-9]+( \(https:\/\/github\.com\/)?/ {if (found) exit; found=1} found {print}' >RELEASE.md
 
 gawk '
   {
