@@ -1,0 +1,1 @@
+npx commitlint --config config/commitlint/.commitlintrc.json --edit "$1"

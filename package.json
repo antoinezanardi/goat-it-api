@@ -15,6 +15,22 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
-  }
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "script:create-branch": "scripts/create-git-branch.sh",
+    "script:create-pull-request": "scripts/create-pull-request.sh",
+    "script:create-release-changelog": "scripts/create-release-changelog.sh",
+    "prepare": "scripts/post-install-prepare.sh"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^20.0.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "commitlint": "^20.1.0",
+    "husky": "^9.1.7",
+    "is-ci": "^4.1.0",
+    "semantic-release": "^24.2.9",
+    "semantic-release-export-data": "^1.2.0",
+    "validate-branch-name": "^1.3.2"
+  },
+  "packageManager": "pnpm@10.18.2"
 }

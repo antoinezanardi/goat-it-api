@@ -30,3 +30,6 @@ lerna-debug.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+# Semantic release files
+RELEASE.md

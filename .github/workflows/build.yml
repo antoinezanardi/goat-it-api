@@ -1,0 +1,59 @@
+name: ⚙️ Build Workflow
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  code-ql:
+    name: CodeQL Scan ❇️
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository 📡
+        uses: actions/checkout@v5
+
+      - name: Perform CodeQL Analysis ❇️
+        uses: ./.github/actions/code-ql
+
+  lint-workflows:
+    name: Lint GitHub Workflows 🐙
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Lint GitHub Workflows 🐙
+        uses: raven-actions/actionlint@v2.0.1
+        with:
+          matcher: true
+          fail-on-error: true
+          shellcheck: true
+          pyflakes: true
+          cache: true
+          group-result: true
+
+  install:
+    name: Install ⚙️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
