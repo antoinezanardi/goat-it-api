@@ -14,3 +14,7 @@ runs:
     - name: Build application ✨
       shell: bash
       run: pnpm run build
+
+    - name: Verify build was successful ✅
+      shell: bash
+      run: test -f dist/main.js
