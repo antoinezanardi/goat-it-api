@@ -6,7 +6,7 @@
     "builder": {
       "type": "swc",
       "options": {
-        "swcrcPath": "config/swc/swc.config.json"
+        "swcrcPath": "configs/swc/swc.config.json"
       }
     },
     "typeCheck": true,
