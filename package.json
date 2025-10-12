@@ -14,7 +14,7 @@
   "license": "MIT",
   "author": "Antoine ZANARDI",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "prepare": "scripts/post-install-prepare.sh",
     "build": "nest build --config configs/nest/nest-cli.config.json",
