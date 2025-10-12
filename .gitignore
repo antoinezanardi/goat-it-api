@@ -37,3 +37,6 @@ Thumbs.db
 
 # Semantic release files
 RELEASE.md
+
+# TypeScript cache
+*.tsbuildinfo
