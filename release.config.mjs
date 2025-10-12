@@ -90,7 +90,7 @@ export default {
             },
             {
               type: "perf",
-              section: "⚡️ Performances",
+              section: "⚡️ Performance",
               hidden: false,
             },
             {
