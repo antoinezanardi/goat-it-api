@@ -13,6 +13,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# OS
+.DS_Store
+Thumbs.db
+
 # dotenv environment variable files
 .env
 .env.development

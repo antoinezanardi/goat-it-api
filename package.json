@@ -2,6 +2,7 @@
   "name": "goat-it-api",
   "version": "1.0.0",
   "description": "API for Goat It game",
+  "private": true,
   "homepage": "https://github.com/antoinezanardi/goat-it-api#readme",
   "bugs": {
     "url": "https://github.com/antoinezanardi/goat-it-api/issues"
@@ -15,6 +16,11 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "build": "nest build",
+    "start": "npm run start:prod",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
     "test": "echo \"Error: no test specified\" && exit 0",
     "script:create-branch": "scripts/create-git-branch.sh",
     "script:create-pull-request": "scripts/create-pull-request.sh",
@@ -23,14 +29,30 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
+    "@nestjs/cli": "^11.0.10",
+    "@nestjs/schematics": "^11.0.9",
+    "@nestjs/testing": "^11.1.6",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@types/node": "^24.7.2",
     "commitlint": "^20.1.0",
     "husky": "^9.1.7",
     "is-ci": "^4.1.0",
     "semantic-release": "^24.2.9",
     "semantic-release-export-data": "^1.2.0",
+    "source-map-support": "^0.5.21",
+    "ts-loader": "^9.5.4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3",
     "validate-branch-name": "^1.3.2"
   },
-  "packageManager": "pnpm@10.18.2"
+  "packageManager": "pnpm@10.18.2",
+  "dependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  }
 }
