@@ -17,7 +17,7 @@
   "main": "index.js",
   "scripts": {
     "build": "nest build",
-    "start": "npm run start:prod",
+    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
