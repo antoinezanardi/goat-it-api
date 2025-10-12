@@ -5,9 +5,6 @@
       "path": "./config/typescript/tsconfig.app.json"
     },
     {
-      "path": "./config/typescript/tsconfig.build.json"
-    },
-    {
       "path": "./config/typescript/tsconfig.spec.json"
     }
   ]
