@@ -1,0 +1,57 @@
+name: 🏷️ Release Creation Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  code-ql:
+    name: CodeQL Scan ❇️
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Perform CodeQL Analysis ❇️
+        uses: ./.github/actions/code-ql
+
+  install:
+    name: Install ⚙️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+  release:
+    name: Release 🏷️
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    env:
+      GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+      - name: Release 🏷️
+        id: release
+        run: npx semantic-release
+
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
