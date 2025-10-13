@@ -1,0 +1,19 @@
+name: Compute Safe Branch Name 🍃
+description: Computes a safe branch name and exports it as SAFE_BRANCH_NAME environment variable
+author: Antoine ZANARDI
+
+outputs:
+  safe-branch-name:
+    description: A safe branch name with slashes replaced by dashes
+    value: ${{ steps.compute-safe-branch-name.outputs.safe-branch-name }}
+
+runs:
+  using: composite
+  steps:
+    - name: Compute Safe Branch Name 🍃
+      id: compute-safe-branch-name
+      shell: bash
+      run: |
+        RAW="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+        SAFE_BRANCH_NAME="${RAW//\//-}"
+        echo "safe-branch-name=$SAFE_BRANCH_NAME" >> "$GITHUB_OUTPUT"
