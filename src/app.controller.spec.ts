@@ -2,8 +2,10 @@ import { AppController } from "./app.controller";
 
 describe("App Controller", () => {
   describe("getHello", () => {
+    const appController = new AppController();
+
     it("should return 'Hello World!' when called.", () => {
-      expect(new AppController()["getHello"]()).toBe("Hello World!");
+      expect(appController.getHello()).toBe("Hello World!");
     });
   });
 });
