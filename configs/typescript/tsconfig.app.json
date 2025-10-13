@@ -19,7 +19,15 @@
     "strict": true,
     "strictBindCallApply": true,
     "target": "ES2021",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@configs/*": ["configs/*"],
+      "@server/*": ["src/server/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"]
+    }
   },
   "include": [
     "../../src/**/*.ts",

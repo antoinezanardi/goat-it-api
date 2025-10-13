@@ -4,6 +4,8 @@ import { defineConfig } from "vitest/config";
 import { resolve } from "node:path";
 import SwcConfig from "../swc/swc.config.json";
 
+const rootDir = resolve(__dirname, "../..");
+
 export default defineConfig({
   test: {
     watch: false,
@@ -11,7 +13,7 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     restoreMocks: true,
-    root: resolve(__dirname, "../.."),
+    root: rootDir,
     include: ["src/**/*.spec.ts"],
     coverage: {
       provider: "v8",
@@ -39,8 +41,21 @@ export default defineConfig({
   },
   plugins: [
     swc.vite({
-      jsc: SwcConfig.jsc as JscConfig,
+      jsc: {
+        ...SwcConfig.jsc as JscConfig,
+        baseUrl: rootDir,
+      },
       module: { type: "es6" },
     }),
   ],
+  resolve: {
+    alias: {
+      "@src": resolve(rootDir, "src"),
+      "@app": resolve(rootDir, "src/app"),
+      "@server": resolve(rootDir, "src/server"),
+      "@modules": resolve(rootDir, "src/modules"),
+      "@shared": resolve(rootDir, "src/shared"),
+      "@configs": resolve(rootDir, "configs"),
+    }
+  }
 });

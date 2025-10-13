@@ -1,6 +1,6 @@
-import * as Server from "./server/server";
+import * as Server from "@server/server";
 
-vi.mock("./server/server", () => ({
+vi.mock("@server/server", () => ({
   bootstrap: vi.fn(),
 }));
 

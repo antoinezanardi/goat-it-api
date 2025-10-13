@@ -24,7 +24,7 @@
     "start:debug": "nest start --debug --watch --config configs/nest/nest-cli.config.json",
     "start:prod": "node dist/main",
     "test": "npm run test:unit",
-    "test:unit": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts",
+    "test:unit": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --typecheck.tsconfig configs/typescript/tsconfig.app.json",
     "test:unit:watch": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --watch",
     "test:unit:cov": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --coverage",
     "script:create-branch": "scripts/create-git-branch.sh",

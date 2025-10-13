@@ -1,4 +1,4 @@
-import { AppController } from "./app.controller";
+import { AppController } from "@src/app.controller";
 
 describe("App Controller", () => {
   describe("getHello", () => {

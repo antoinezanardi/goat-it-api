@@ -1,10 +1,10 @@
-import { bootstrap } from "./server";
+import { bootstrap } from "@server/server";
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import type { Mock } from "vitest";
 
 vi.mock("@nestjs/core");
-vi.mock("../app.module", () => ({
+vi.mock("@src/app.module", () => ({
   AppModule: { name: "MockedModule" },
 }));
 
