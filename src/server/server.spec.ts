@@ -4,7 +4,7 @@ import * as Fastify from "@nestjs/platform-fastify";
 import type { Mock } from "vitest";
 
 vi.mock("@nestjs/core");
-vi.mock("@src/app.module", () => ({
+vi.mock("@app/app.module", () => ({
   AppModule: { name: "MockedModule" },
 }));
 
