@@ -51,6 +51,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@src": resolve(rootDir, "src"),
+      "@app": resolve(rootDir, "src/app"),
       "@server": resolve(rootDir, "src/server"),
       "@modules": resolve(rootDir, "src/modules"),
       "@shared": resolve(rootDir, "src/shared"),
