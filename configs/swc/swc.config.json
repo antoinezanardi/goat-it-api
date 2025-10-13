@@ -5,9 +5,11 @@
     "parser": {
       "syntax": "typescript",
       "decorators": true,
-      "tsx": false
+      "tsx": false,
+      "dynamicImport": true
     },
     "transform": {
+      "legacyDecorator": true,
       "decoratorMetadata": true
     },
     "keepClassNames": true

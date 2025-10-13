@@ -3,9 +3,13 @@
   "compilerOptions": {
     "types": [
       "vitest/globals"
-    ]
+    ],
+    "rootDir": "../../"
   },
   "include": [
+    "../../src/**/*.ts",
+    "../../configs/**/*.ts",
+    "../../configs/**/*.json",
     "../../src/**/*.spec.ts"
   ],
   "exclude": [

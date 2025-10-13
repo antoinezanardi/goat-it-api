@@ -40,8 +40,10 @@ RELEASE.md
 # TypeScript cache
 *.tsbuildinfo
 
-
 # Build artifacts
 dist/
 .vitest/
 .swc/
+
+# Coverage and tests reports
+tests/unit/coverage
