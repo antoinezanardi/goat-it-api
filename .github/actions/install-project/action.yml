@@ -11,7 +11,7 @@ runs:
     - name: Setup NodeJS ✨
       uses: actions/setup-node@v5
       with:
-        node-version-file: .nvmrc
+        node-version-file: configs/node/.node-version
         cache: pnpm
 
     - name: Cache pnpm dependencies 🥡

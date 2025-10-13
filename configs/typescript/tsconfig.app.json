@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "../../",
+    "composite": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "module": "commonjs",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "outDir": "../../dist",
+    "removeComments": true,
+    "rootDir": "../../src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictBindCallApply": true,
+    "target": "ES2021",
+    "resolveJsonModule": true,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@configs/*": ["configs/*"],
+      "@server/*": ["src/server/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"]
+    }
+  },
+  "include": [
+    "../../src/**/*.ts",
+  ],
+  "exclude": [
+    "../../src/**/*.spec.ts",
+    "../../dist",
+    "../../node_modules"
+  ]
+}
