@@ -9,7 +9,7 @@ runs:
       uses: pnpm/action-setup@v4
 
     - name: Setup NodeJS ✨
-      uses: actions/setup-node@v5
+      uses: actions/setup-node@v6
       with:
         node-version-file: configs/node/.node-version
         cache: pnpm
