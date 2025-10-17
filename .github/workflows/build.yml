@@ -96,7 +96,7 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v5
 
-      - name: Mutant Tests 👽
+      - name: Mutation Tests 👽
         id: mutation-tests
         uses: ./.github/actions/mutation-tests
         with:
