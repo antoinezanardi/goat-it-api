@@ -1,0 +1,62 @@
+name: Mutation Tests 👽
+description: Run Stryker mutation tests and upload reports.
+author: Antoine ZANARDI
+
+inputs:
+  stryker-report-path:
+    description: Path to Stryker HTML report
+    required: true
+    default: tests/mutation/coverage
+  stryker-incremental-path:
+    description: Path to Stryker incremental report
+    required: true
+    default: tests/mutation/incremental
+  stryker-dashboard-api-key:
+    description: Stryker Dashboard API key for authentication
+    required: true
+
+outputs:
+  mutation-tests-dashboard-url:
+    description: URL to the Stryker Dashboard report
+    value: ${{ steps.stryker-dashboard-url.outputs.STRYKER_DASHBOARD_URL }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Mutation Tests 👽
+      id: mutation-tests
+      shell: bash
+      env:
+        STRYKER_DASHBOARD_API_KEY: ${{ inputs.stryker-dashboard-api-key }}
+        STRYKER_DASHBOARD_VERSION: ${{ github.head_ref || github.ref_name }}
+      run: |
+        set -o pipefail
+        pnpm run test:mutation:ci 2>&1 | tee stryker-output.log
+        cat stryker-output.log | "${{ github.workspace }}/scripts/transform-stryker-results-as-env-variables.sh" >> "$GITHUB_ENV"
+
+    - name: Set Stryker Dashboard URL output 📝
+      id: stryker-dashboard-url
+      if: always()
+      shell: bash
+      run: echo "STRYKER_DASHBOARD_URL=${{ env.STRYKER_DASHBOARD_URL }}" >> "$GITHUB_OUTPUT"
+
+    - name: Save stryker report as artifact 💎
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: stryker-html-report
+        path: ${{ inputs.stryker-report-path }}/index.html
+        if-no-files-found: ignore
+        retention-days: 2
+
+    - name: Save stryker incremental as artifact 💎
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: stryker-incremental-report
+        path: ${{ inputs.stryker-incremental-path }}
+        if-no-files-found: ignore
+        retention-days: 2
