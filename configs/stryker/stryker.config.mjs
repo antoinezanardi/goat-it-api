@@ -51,5 +51,7 @@ export default {
     break: 100,
   },
   dryRunTimeoutMinutes: 10,
-  disableTypeChecks: "src/**/*.{js,ts,jsx,tsx,html,vue}",
+  typescriptChecker: {
+    prioritizePerformanceOverAccuracy: true,
+  },
 }
