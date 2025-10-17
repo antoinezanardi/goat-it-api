@@ -26,7 +26,7 @@ runs:
     - name: Install project 📦
       uses: ./.github/actions/install-project
 
-    - name: Mutation tests 👽
+    - name: Mutation Tests 👽
       id: mutation-tests
       shell: bash
       env:
