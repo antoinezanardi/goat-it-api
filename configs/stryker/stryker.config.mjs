@@ -26,7 +26,7 @@ export default {
     "dist",
     "configs/",
     "!configs/vitest/vitest.config.ts",
-    "tests/stryker",
+    "tests/mutation",
     "tests/unit/coverage",
     "scripts/",
     ".editorconfig",
@@ -40,6 +40,7 @@ export default {
   ],
   vitest: {
     configFile: "configs/vitest/vitest.config.ts",
+    related: true,
   },
   reporters: ["clear-text", "progress", "html", "json"],
   htmlReporter: { fileName: "tests/mutation/coverage/index.html" },
