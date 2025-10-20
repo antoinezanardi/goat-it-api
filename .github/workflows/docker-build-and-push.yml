@@ -1,4 +1,4 @@
-name: Docker build and push (reusable)
+name: Docker Build and Push Workflow 🐳
 
 on:
   workflow_call:
@@ -42,6 +42,12 @@ jobs:
         platform: ${{ fromJson(inputs.platforms) }}
         tag: ${{ fromJson(inputs.tags) }}
     steps:
+      - name: Checkout repository 📡
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
       - name: Log in to Docker registry 🔐
         uses: docker/login-action@v3
         with:
@@ -118,13 +124,14 @@ jobs:
       - name: Create manifest list and push 📦
         shell: bash
         run: |
-          DIGESTS=""
+          DIGESTS=()
           for f in /tmp/digests/${{ matrix.tag }}/*-digest.txt; do
             PLATFORM=$(basename "$f" | sed 's/-digest.txt//')
             DIGEST=$(cat "$f")
-            DIGESTS+="${{ inputs.registry_image }}:${PLATFORM}@${DIGEST} "
+            DIGESTS+=("${{ inputs.registry_image }}:${PLATFORM}@${DIGEST}")
           done
-          docker buildx imagetools create --tag "${{ inputs.registry_image }}:${{ matrix.tag }}" $DIGESTS
+
+          docker buildx imagetools create --tag "${{ inputs.registry_image }}:${{ matrix.tag }}" "${DIGESTS[@]}"
 
       - name: Inspect manifest list 🕵️
         shell: bash
