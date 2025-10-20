@@ -42,6 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: upload-to-docker-hub
     steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+
       - name: Merge images into a manifest list 🗂️
         uses: ./.github/actions/merge-images-into-manifest-list
         with:
