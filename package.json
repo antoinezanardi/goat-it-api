@@ -33,7 +33,8 @@
     "script:create-branch": "scripts/create-git-branch.sh",
     "script:create-pull-request": "scripts/create-pull-request.sh",
     "script:create-release-changelog": "scripts/create-release-changelog.sh",
-    "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)"
+    "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)",
+    "docker:build": "docker build -t goat-it-api ."
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",

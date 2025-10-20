@@ -1,0 +1,76 @@
+name: Upload image with tag to Docker Hub 🐳
+description: Build and push a single image (one platform / one tag) to a registry. Intended to be called from a matrix where `platform` and `tag` are provided by the caller.
+author: Antoine ZANARDI
+
+inputs:
+  docker-hub-username:
+    description: 'Docker Hub username (used for login)'
+    required: true
+  docker-hub-password:
+    description: 'Docker Hub password or access token (used for login)'
+    required: true
+  registry-image:
+    description: 'Full image name including registry (e.g., username/repo)'
+    required: true
+  platform:
+    description: 'Target platform string (e.g., linux/amd64)'
+    required: true
+  tag:
+    description: 'Image tag to push (e.g., v1.2.3 or latest)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository 📡
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+
+    - name: Log in to Docker registry 🔐
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.docker-hub-username }}
+        password: ${{ inputs.docker-hub-password }}
+
+    - name: Set up QEMU 🏗️
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx 🏗️
+      uses: docker/setup-buildx-action@v3
+
+    - name: Docker meta 📦
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry-image }}
+        tags: ${{ inputs.registry-image }}:${{ inputs.tag }}
+
+    - name: Build and push Docker image 🐳
+      id: build
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ./Dockerfile
+        platforms: ${{ inputs.platform }}
+        outputs: type=image,name=${{ inputs.registry-image }},push-by-digest=true,push=true
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Set formatted platform directory in environment variable 🌿
+      shell: bash
+      run: echo "PLATFORM_DIR=$(echo \"${{ inputs.platform }}\" | sed 's/\//-/g')" >> "$GITHUB_ENV"
+
+    - name: Export digest 📦
+      shell: bash
+      run: |
+        mkdir -p /tmp/digests/${{ inputs.tag }}
+        echo "${{ steps.build.outputs.digest }}" > "/tmp/digests/${{ inputs.tag }}/${{ env.PLATFORM_DIR }}-digest.txt"
+
+    - name: Upload digest 📦
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-digest-${{ inputs.tag }}-${{ env.PLATFORM_DIR }}
+        path: /tmp/digests/${{ inputs.tag }}/${{ env.PLATFORM_DIR }}-digest.txt
+        retention-days: 1
+

@@ -1,10 +1,16 @@
-FROM node:24.10.0-alpine AS development
+FROM node:24.10.0-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
 
-RUN corepack enable && apk add --no-cache bash
+RUN corepack enable
+
+RUN mkdir -p "$PNPM_HOME" && chown node:node "$PNPM_HOME"
+
+FROM base AS development
+
+RUN apk add --no-cache bash=5.2.37-r0
 
 USER node
 
@@ -17,18 +23,15 @@ COPY --chown=node:node tsconfig*.json ./
 COPY --chown=node:node configs/typescript ./configs/typescript/
 COPY --chown=node:node scripts/post-install-prepare.sh ./scripts/post-install-prepare.sh
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 COPY --chown=node:node src/ src/
 
 CMD [ "pnpm", "run", "start:dev" ]
 
-FROM node:24.10.0-alpine AS build
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV CI="true"
+FROM base AS build
 
-RUN corepack enable && apk add --no-cache bash
+RUN apk add --no-cache bash=5.2.37-r0
 
 USER node
 
@@ -51,12 +54,7 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM node:24.10.0-alpine AS production
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV CI="true"
-
-RUN corepack enable
+FROM base AS production
 
 USER node
 

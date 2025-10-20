@@ -1,0 +1,58 @@
+name: Merge images into a manifest list 🗂️
+description: Merge per-platform image digests into a single manifest list tag. Expects artifacts uploaded by `upload-to-docker-hub` composite action.
+author: Antoine ZANARDI
+
+inputs:
+  docker-hub-username:
+    description: 'Docker Hub username (used for login)'
+    required: true
+  docker-hub-password:
+    description: 'Docker Hub password or access token (used for login)'
+    required: true
+  registry-image:
+    description: 'Full image name including registry (e.g., username/repo)'
+    required: true
+  tag:
+    description: 'Tag to create the manifest list for (e.g., v1.2.3 or latest)'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Download digests 📩
+      uses: actions/download-artifact@v4
+      with:
+        pattern: docker-digest-${{ inputs.tag }}-*
+        path: /tmp/digests/${{ inputs.tag }}
+        merge-multiple: true
+
+    - name: Set up Docker Buildx 🏗️
+      uses: docker/setup-buildx-action@v3
+
+    - name: Docker meta 📦
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry-image }}
+        tags: ${{ inputs.registry-image }}:${{ inputs.tag }}
+
+    - name: Log in to Docker registry 🔐
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.docker-hub-username }}
+        password: ${{ inputs.docker-hub-password }}
+
+    - name: Create manifest list and push 📦
+      shell: bash
+      run: |
+        DIGESTS=""
+        for f in /tmp/digests/${{ inputs.tag }}/*-digest.txt; do
+          PLATFORM=$(basename "$f" | sed 's/-digest.txt//')
+          DIGEST=$(cat "$f")
+          DIGESTS+="${{ inputs.registry-image }}:${PLATFORM}@${DIGEST} "
+        done
+        docker buildx imagetools create --tag "${{ inputs.registry-image }}:${{ inputs.tag }}" $DIGESTS
+
+    - name: Inspect manifest list 🕵️
+      shell: bash
+      run: docker buildx imagetools inspect ${{ inputs.registry-image }}:${{ inputs.tag }}
