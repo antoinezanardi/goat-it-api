@@ -1,0 +1,22 @@
+name: ⛵️ Deploy To Staging Workflow
+
+on:
+  push:
+    branches:
+      - "develop"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  upload-and-merge-images:
+    name: Build and publish Docker images 🐳
+    uses: ./.github/workflows/docker-build-and-push.yml
+    with:
+      registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
+      platforms: '["linux/amd64","linux/arm64"]'
+      tags: '["develop"]'
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
