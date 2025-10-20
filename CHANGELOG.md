@@ -1,5 +1,30 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.2.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.1.0...v1.2.0) (2025-10-20)
+
+### 🚀 Features
+
+* **docker:** add multi-stage Dockerfile for development and production ([#40](https://github.com/antoinezanardi/goat-it-api/issues/40)) ([d33782a](https://github.com/antoinezanardi/goat-it-api/commit/d33782a4f063c3606582adb2724bcfcac71e02a1))
+* **stryker:** add mutation testing configuration and scripts ([#36](https://github.com/antoinezanardi/goat-it-api/issues/36)) ([08ff38d](https://github.com/antoinezanardi/goat-it-api/commit/08ff38d3bf8c65c98c8bb501404b6c28b6f046af))
+
+### 🔁 CI
+
+* **docker:** configure staging environment for Docker image ([#44](https://github.com/antoinezanardi/goat-it-api/issues/44)) ([6f14ebc](https://github.com/antoinezanardi/goat-it-api/commit/6f14ebc3083ddb911b717c31b9cd59138b224864))
+
+### 🧹 Chore
+
+* **deps:** update actions/checkout action to v5 ([#42](https://github.com/antoinezanardi/goat-it-api/issues/42)) ([9350db2](https://github.com/antoinezanardi/goat-it-api/commit/9350db2484c93144ec50239d4e2e4d71bbf3a1ed))
+* **deps:** update actions/download-artifact action to v5 ([#43](https://github.com/antoinezanardi/goat-it-api/issues/43)) ([2eb485c](https://github.com/antoinezanardi/goat-it-api/commit/2eb485c1e4031567c0d3f7ca55133152f184040f))
+* **deps:** update actions/setup-node action to v6 ([#17](https://github.com/antoinezanardi/goat-it-api/issues/17)) ([9411428](https://github.com/antoinezanardi/goat-it-api/commit/9411428b1fbb098f8fadc02f7710b0c59ea4c682))
+* **deps:** update dependency @types/node to ^24.8.0 ([#34](https://github.com/antoinezanardi/goat-it-api/issues/34)) ([896ec08](https://github.com/antoinezanardi/goat-it-api/commit/896ec083fdbd0cfd4fda01eef2755f4aa444c259))
+* **deps:** update dependency @types/node to ^24.8.1 ([#35](https://github.com/antoinezanardi/goat-it-api/issues/35)) ([f3da93f](https://github.com/antoinezanardi/goat-it-api/commit/f3da93f3ace48a0ab87e9c106e8480d3e1d2313c))
+* **deps:** update dependency @types/node to ^24.9.0 ([#41](https://github.com/antoinezanardi/goat-it-api/issues/41)) ([47c1a66](https://github.com/antoinezanardi/goat-it-api/commit/47c1a665663c9ea5eec793175e7c676acdc40272))
+* **deps:** update dependency semantic-release to ^25.0.1 ([#38](https://github.com/antoinezanardi/goat-it-api/issues/38)) ([f7c4f84](https://github.com/antoinezanardi/goat-it-api/commit/f7c4f843d033ce33ba6d01bcde943ed6f2a32821))
+* **deps:** update dependency semantic-release to v25 ([#32](https://github.com/antoinezanardi/goat-it-api/issues/32)) ([d55d3e9](https://github.com/antoinezanardi/goat-it-api/commit/d55d3e9cd8c83324e7dff4fb211c8308628c66e1))
+* **deps:** update dependency unplugin-swc to ^1.5.8 ([#39](https://github.com/antoinezanardi/goat-it-api/issues/39)) ([1bfb533](https://github.com/antoinezanardi/goat-it-api/commit/1bfb533e387557c92adf6d5f917b741c29f82a6e))
+* **deps:** update node.js to >=24.10.0 ([#37](https://github.com/antoinezanardi/goat-it-api/issues/37)) ([a0bdb0b](https://github.com/antoinezanardi/goat-it-api/commit/a0bdb0bb167473decf4f8445cfedc4c543249986))
+* **deps:** update pnpm to v10.18.3 ([#18](https://github.com/antoinezanardi/goat-it-api/issues/18)) ([8179562](https://github.com/antoinezanardi/goat-it-api/commit/8179562d562ae451a431c10725cd1e5dc39d5a0c))
+
 ## [1.1.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.0.0...v1.1.0) (2025-10-13)
 
 ### 🚀 Features
