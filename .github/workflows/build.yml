@@ -22,6 +22,9 @@ jobs:
       tags: '["develop"]'
       environment_name: 'Docker Image Staging'
       environment_url: ${{ vars.DOCKER_HUB_STAGING_IMAGE_URL }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
   code-ql:
     name: CodeQL Scan ❇️
