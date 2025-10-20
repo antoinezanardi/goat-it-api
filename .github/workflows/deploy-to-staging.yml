@@ -10,43 +10,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  upload-to-docker-hub:
-    name: Upload image with develop tag to Docker Hub 🐳
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-    steps:
-      - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v4
-
-      - name: Upload to Docker Hub 🐳
-        uses: ./.github/actions/upload-to-docker-hub
-        with:
-          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          docker-hub-password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
-          platform: ${{ matrix.platform }}
-          tag: develop
-
-  merge-images-into-manifest-list:
-    name: Merge images into a manifest list 🗂️
-    runs-on: ubuntu-latest
-    needs: upload-to-docker-hub
-    environment:
-      name: Docker Image Staging
-      url: ${{ vars.DOCKER_HUB_STAGING_IMAGE_URL }}
-    steps:
-      - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v4
-
-      - name: Merge images into a manifest list 🗂️
-        uses: ./.github/actions/merge-images-into-manifest-list
-        with:
-          docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          docker-hub-password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
-          tag: develop
+  upload-and-merge-images:
+    name: Build and publish Docker images (reusable) 🐳
+    uses: ./.github/workflows/docker-build-and-push.yml
+    with:
+      registry_image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
+      platforms: '["linux/amd64","linux/arm64"]'
+      tags: '["develop"]'
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
