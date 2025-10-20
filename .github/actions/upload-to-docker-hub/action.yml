@@ -45,7 +45,7 @@ runs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ inputs.registry-image }}
-        tags: ${{ inputs.registry-image }}:${{ inputs.tag }}
+        tags: ${{ inputs.tag }}
 
     - name: Build and push Docker image 🐳
       id: build

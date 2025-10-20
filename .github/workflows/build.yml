@@ -41,6 +41,9 @@ jobs:
     name: Merge images into a manifest list 🗂️
     runs-on: ubuntu-latest
     needs: upload-to-docker-hub
+    environment:
+      name: Docker Image Staging
+      url: ${{ vars.DOCKER_HUB_STAGING_IMAGE_URL }}
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
