@@ -2,7 +2,7 @@ name: 🚀 Deploy To Production Workflow
 
 on:
   release:
-    types: [ created ]
+    types: [created]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -52,5 +52,5 @@ jobs:
         with:
           docker-hub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           docker-hub-password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          registry-image: ${{ env.REGISTRY_IMAGE }}
+          registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
           tag: ${{ matrix.tag }}

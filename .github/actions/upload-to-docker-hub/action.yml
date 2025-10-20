@@ -59,7 +59,7 @@ runs:
 
     - name: Set formatted platform directory in environment variable 🌿
       shell: bash
-      run: echo "PLATFORM_DIR=$(echo \"${{ inputs.platform }}\" | sed 's/\//-/g')" >> "$GITHUB_ENV"
+      run: echo "PLATFORM_DIR=$(echo ${{ inputs.platform }} | sed 's/\//-/g')" >> "$GITHUB_ENV"
 
     - name: Export digest 📦
       shell: bash
@@ -73,4 +73,3 @@ runs:
         name: docker-digest-${{ inputs.tag }}-${{ env.PLATFORM_DIR }}
         path: /tmp/digests/${{ inputs.tag }}/${{ env.PLATFORM_DIR }}-digest.txt
         retention-days: 1
-
