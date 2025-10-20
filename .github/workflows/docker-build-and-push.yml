@@ -106,7 +106,7 @@ jobs:
       url: ${{ inputs.environment-url }}
     steps:
       - name: Download digests 📩
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: docker-digest-${{ matrix.tag }}-*
           path: /tmp/digests/${{ matrix.tag }}
