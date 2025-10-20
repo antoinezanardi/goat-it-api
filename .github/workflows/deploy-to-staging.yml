@@ -11,10 +11,10 @@ concurrency:
 
 jobs:
   upload-and-merge-images:
-    name: Build and publish Docker images (reusable) 🐳
+    name: Build and publish Docker images 🐳
     uses: ./.github/workflows/docker-build-and-push.yml
     with:
-      registry_image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
+      registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
       platforms: '["linux/amd64","linux/arm64"]'
       tags: '["develop"]'
     secrets:

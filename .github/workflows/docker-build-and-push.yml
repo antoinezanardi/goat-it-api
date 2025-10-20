@@ -3,7 +3,7 @@ name: Docker Build and Push Workflow 🐳
 on:
   workflow_call:
     inputs:
-      registry_image:
+      registry-image:
         description: 'Full image name including registry (e.g., username/repo)'
         required: true
         type: string
@@ -15,11 +15,11 @@ on:
         description: 'JSON array of tags (e.g., ["v1.2.3","latest"])'
         required: true
         type: string
-      environment_name:
+      environment-name:
         description: 'Optional environment name to mark the deployment (e.g., "Docker Image Staging")'
         required: false
         type: string
-      environment_url:
+      environment-url:
         description: 'Optional environment url to show in the environment (e.g., staging image url)'
         required: false
         type: string
@@ -64,8 +64,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ inputs.registry_image }}
-          tags: ${{ inputs.registry_image }}:${{ matrix.tag }}
+          images: ${{ inputs.registry-image }}
+          tags: ${{ inputs.registry-image }}:${{ matrix.tag }}
 
       - name: Build and push Docker image 🐳
         id: build
@@ -74,12 +74,12 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=${{ inputs.registry_image }},push-by-digest=true,push=true
+          outputs: type=image,name=${{ inputs.registry-image }},push-by-digest=true,push=true
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Set formatted platform directory in environment variable 🌿
         shell: bash
-        run: echo "PLATFORM_DIR=$(echo \"${{ matrix.platform }}\" | sed 's/\//-/g')" >> "$GITHUB_ENV"
+        run: echo "PLATFORM_DIR=$(echo ${{ matrix.platform }} | sed 's/\//-/g')" >> "$GITHUB_ENV"
 
       - name: Export digest 📦
         shell: bash
@@ -102,8 +102,8 @@ jobs:
       matrix:
         tag: ${{ fromJson(inputs.tags) }}
     environment:
-      name: ${{ inputs.environment_name }}
-      url: ${{ inputs.environment_url }}
+      name: ${{ inputs.environment-name }}
+      url: ${{ inputs.environment-url }}
     steps:
       - name: Download digests 📩
         uses: actions/download-artifact@v4
@@ -128,11 +128,11 @@ jobs:
           for f in /tmp/digests/${{ matrix.tag }}/*-digest.txt; do
             PLATFORM=$(basename "$f" | sed 's/-digest.txt//')
             DIGEST=$(cat "$f")
-            DIGESTS+=("${{ inputs.registry_image }}:${PLATFORM}@${DIGEST}")
+            DIGESTS+=("${{ inputs.registry-image }}:${PLATFORM}@${DIGEST}")
           done
 
-          docker buildx imagetools create --tag "${{ inputs.registry_image }}:${{ matrix.tag }}" "${DIGESTS[@]}"
+          docker buildx imagetools create --tag "${{ inputs.registry-image }}:${{ matrix.tag }}" "${DIGESTS[@]}"
 
       - name: Inspect manifest list 🕵️
         shell: bash
-        run: docker buildx imagetools inspect ${{ inputs.registry_image }}:${{ matrix.tag }}
+        run: docker buildx imagetools inspect ${{ inputs.registry-image }}:${{ matrix.tag }}

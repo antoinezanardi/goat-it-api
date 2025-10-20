@@ -13,11 +13,11 @@ jobs:
     name: Build and publish Docker images 🐳
     uses: ./.github/workflows/docker-build-and-push.yml
     with:
-      registry_image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
+      registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
       platforms: '["linux/amd64","linux/arm64"]'
       tags: '["${{ github.event.release.tag_name }}","latest"]'
-      environment_name: 'Docker Image Production'
-      environment_url: ${{ vars.DOCKER_HUB_PRODUCTION_IMAGE_URL }}
+      environment-name: 'Docker Image Production'
+      environment-url: ${{ vars.DOCKER_HUB_PRODUCTION_IMAGE_URL }}
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}

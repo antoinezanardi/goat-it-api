@@ -14,14 +14,14 @@ env:
 
 jobs:
   upload-and-merge-docker-images:
-    name: Build and publish Docker images (reusable) 🐳
+    name: Build and publish Docker images 🐳
     uses: ./.github/workflows/docker-build-and-push.yml
     with:
-      registry_image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
+      registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
       platforms: '["linux/amd64","linux/arm64"]'
       tags: '["develop"]'
-      environment_name: 'Docker Image Staging'
-      environment_url: ${{ vars.DOCKER_HUB_STAGING_IMAGE_URL }}
+      environment-name: 'Docker Image Staging'
+      environment-url: ${{ vars.DOCKER_HUB_STAGING_IMAGE_URL }}
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
