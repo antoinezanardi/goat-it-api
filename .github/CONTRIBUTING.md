@@ -12,6 +12,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 - ✍️ [Commit messages & PR titles (Conventional Commits)](#-commit-messages--pr-titles-conventional-commits)
 - 🚦 [CI & merging](#-ci--merging)
 - 🔒 [Security](#-security)
+- 🐕 [Husky & git hooks](#-husky--git-hooks)
 - 🧰 [Additional tips](#-additional-tips)
 - 📞 [Contact / Questions](#-contact--questions)
 
@@ -20,9 +21,11 @@ Thank you for your interest in contributing — we appreciate your time and help
 ## 📌 High-level rules
 
 - The integration branch is `develop`. All contributions must be based on `develop` and opened as PRs targeting `develop`.
-- The `main` branch is reserved for production releases. Only the release process may create PRs from `develop` to `main`.
 - Every PR must pass the full CI pipeline before it can be merged (linting, type checks, unit tests, mutation tests, acceptance tests).
 - Branch names and commit messages must follow the defined conventions (see below).
+
+> [!IMPORTANT]
+> Please always target `develop` for PRs. `main` is protected and reserved for releases; PRs to `main` will be rejected.
 
 ---
 
@@ -40,7 +43,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 
 ## 🚀 Getting started (commands)
 
-> [!INFO]
+> [!NOTE]
 > This repo uses pnpm (see `package.json`).
 
 ### Clone and prepare
@@ -93,7 +96,7 @@ pnpm run typecheck
 
 - Unit tests
 
-> [!INFO]
+> [!NOTE]
 > Code coverage is set to a minimum threshold of 100%.
 
 ```bash
@@ -104,8 +107,11 @@ pnpm run test:unit:cov
 
 - Mutation tests (heavy — can be slow)
 
-> [!INFO]
-> Mutation score is set to a minimum threshold of 100%.
+> [!WARNING]
+> Mutation testing is expensive and can take a long time locally. If you cannot run mutation tests on your machine, rely on CI for final verification — but aim to run unit tests and type checks locally before pushing.
+
+> [!TIP]
+> Use `pnpm run test:mutation` for incremental runs during development and `pnpm run test:mutation:ci` in CI contexts.
 
 ```bash
 pnpm run test:mutation
@@ -130,6 +136,9 @@ pnpm run validate:branch-name
 - Always branch from the latest `develop`.
 - `main` is protected for production; do not open PRs against `main`.
 - Branch names must follow the validation config at `configs/validate-branch-name/.validate-branch-namerc.json`.
+
+> [!CAUTION]
+> Branch names that do not match the configured pattern will be rejected by CI and/or hooks. Validate locally with `pnpm run validate:branch-name` before pushing.
 
 ### Pattern (regex)
 
@@ -190,7 +199,7 @@ feat(auth): add JWT refresh endpoint
 ```text
 fix(payment): handle rounding error in total calculation
 
-Adjusted the aggregation to round at the end to avoid floating point drift.
+  Adjusted the aggregation to round at the end to avoid floating point drift.
 ```
 
 ### Breaking change example
@@ -204,6 +213,9 @@ This removes the v1 endpoints. Consumers must migrate to /v2.
 ### PR title rule
 
 - The PR title should be a valid Conventional Commit header (same format as the first line of a commit). When possible, use the same string as the main commit or the eventual squashed commit message. Maintainers may reword/squash on merge but will keep the final commit Conventional.
+
+> [!IMPORTANT]
+> Commit messages and PR titles are enforced by `commitlint`. Non-conforming messages will cause CI failures. Use interactive rebase to correct message history before pushing if needed.
 
 ### Validate commit messages locally (optional)
 
@@ -231,6 +243,51 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 ## 🔒 Security
 
 - Never commit secrets or credentials. Use environment variables and CI secret storage.
+
+> [!CAUTION]
+> Committing secrets (API keys, credentials, private keys) can expose systems and cause security incidents. If you accidentally commit a secret, rotate it immediately and notify maintainers.
+
+---
+
+## 🐕 Husky & git hooks
+
+This repository uses Husky hooks stored in the `.husky/` directory to enforce some checks before commits are accepted locally.
+
+> [!NOTE]
+> Husky is configured in the repo and the hook scripts live in `.husky/` — you can inspect them directly if needed.
+
+### Current hooks
+
+- `.husky/commit-msg` — runs commitlint to validate commit messages:
+
+  ```bash
+  npx commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"
+  ```
+
+  This ensures commit messages follow the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
+
+- `.husky/pre-commit` — validates branch names before allowing the commit to proceed:
+
+  ```bash
+  npm run validate:branch-name
+  ```
+
+  (You can run the same validation locally with `pnpm run validate:branch-name`.)
+
+### Bypassing hooks
+
+> [!CAUTION]
+> Bypassing hooks with `--no-verify` skips important checks. Only use `git commit --no-verify` or `git push --no-verify` if you have a very good reason and you understand the risks.
+
+If you must bypass hooks temporarily (for example, when the checks are causing problems during a quick experimental commit):
+
+```bash
+git commit --no-verify -m "chore: temporary commit"
+```
+
+> [!WARNING]
+> Try to fix issues locally instead of bypassing hooks. The hooks exist to keep the repo healthy and to match CI expectations.
+> CI will still run the checks on pushed commits, so bypassing hooks only affects local commits.
 
 ---
 
