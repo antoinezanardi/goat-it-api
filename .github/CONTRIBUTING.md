@@ -88,13 +88,13 @@ pnpm run script:create-branch
 
 Run these locally to speed up iteration — CI will run them again.
 
-- Type-check
+### Type-check
 
 ```bash
 pnpm run typecheck
 ```
 
-- Unit tests
+### Unit tests
 
 > [!NOTE]
 > Code coverage is set to a minimum threshold of 100%.
@@ -105,7 +105,7 @@ pnpm run test:unit
 pnpm run test:unit:cov
 ```
 
-- Mutation tests (heavy — can be slow)
+### Mutation tests (heavy — can be slow)
 
 > [!WARNING]
 > Mutation testing is expensive and can take a long time locally. If you cannot run mutation tests on your machine, rely on CI for final verification — but aim to run unit tests and type checks locally before pushing.
@@ -117,13 +117,13 @@ pnpm run test:unit:cov
 pnpm run test:mutation
 ```
 
-- Build
+### Build
 
 ```bash
 pnpm run build
 ```
 
-- Branch name validation (same validation as CI)
+### Branch name validation (same validation as CI)
 
 ```bash
 pnpm run validate:branch-name
