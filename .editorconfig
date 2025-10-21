@@ -18,3 +18,7 @@ insert_final_newline = true
 [*.json]
 insert_final_newline = true
 max_line_length = off
+
+[*.md]
+insert_final_newline = true
+max_line_length = off

@@ -130,8 +130,8 @@ pnpm run validate:branch-name
 
 ### Pattern (regex)
 
-```
-^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)\/.+$
+```regex
+^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)/.+$
 ```
 
 ### Examples
@@ -159,13 +159,13 @@ We use Conventional Commits. Commit messages and PR titles should follow the Con
 
 ### Header format
 
-```
+```text
 <type>(<scope>): <short summary>
 ```
 
 ### Optional body, optional breaking change & footer
 
-```
+```text
 <optional body>
 
 BREAKING CHANGE: <description>
