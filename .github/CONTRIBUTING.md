@@ -277,7 +277,7 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 ### Bypassing hooks
 
 > [!CAUTION]
-> Bypassing hooks with `--no-verify` skips important checks. Only use `git commit --no-verify` or `git push --no-verify` if you have a very good reason and you understand the risks.
+> Bypassing hooks with `--no-verify` skips important checks. Only use `git commit --no-verify` or `git push --no-verify` if you have a compelling reason or documented exception and you understand the risks.
 
 If you must bypass hooks temporarily (for example, when the checks are causing problems during a quick experimental commit):
 
@@ -286,7 +286,7 @@ git commit --no-verify -m "chore: temporary commit"
 ```
 
 > [!WARNING]
-> Try to fix issues locally instead of bypassing hooks. The hooks exist to keep the repo healthy and to match CI expectations.
+> Resolve issues locally instead of bypassing hooks. The hooks exist to keep the repo healthy and to match CI expectations.
 > CI will still run the checks on pushed commits, so bypassing hooks only affects local commits.
 
 ---
