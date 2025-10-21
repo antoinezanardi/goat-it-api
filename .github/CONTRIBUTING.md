@@ -40,6 +40,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 
 ## 🚀 Getting started (commands)
 
+> [!INFO]
 > This repo uses pnpm (see `package.json`).
 
 ### Clone and prepare
@@ -92,7 +93,8 @@ pnpm run typecheck
 
 - Unit tests
 
-Code coverage is set to a minimum threshold of 100%.
+> [!INFO]
+> Code coverage is set to a minimum threshold of 100%.
 
 ```bash
 pnpm run test:unit
@@ -102,7 +104,8 @@ pnpm run test:unit:cov
 
 - Mutation tests (heavy — can be slow)
 
-Mutation score is set to a minimum threshold of 100%.
+> [!INFO]
+> Mutation score is set to a minimum threshold of 100%.
 
 ```bash
 pnpm run test:mutation
@@ -149,6 +152,7 @@ pnpm run validate:branch-name
 pnpm run validate:branch-name
 ```
 
+> [!TIP]
 > The repo includes a helper script (`scripts/create-git-branch.sh`) if you prefer a guided flow.
 
 ---
@@ -218,8 +222,9 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 ## 🚦 CI & merging
 
 - All PRs must pass the CI checks before merge (lint, typecheck, unit tests, mutation tests, acceptance tests).
-- If CI fails, fix locally, push, and wait for re-run.
+- If CI fails, fix locally, push, and wait for re-run. Your PR won't be merged until CI is green.
 - Maintainers will merge into `develop` once reviews pass and CI is green. Release automation handles promotion to `main`.
+- Please avoid force-pushing to shared branches after reviews start, as it can disrupt the review process.
 
 ---
 
