@@ -6,7 +6,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 
 - 📌 [High-level rules](#-high-level-rules)
 - ✅ [Quick checklist](#-quick-checklist)
-- 🛠️ [Getting started (commands)](#-getting-started-commands)
+- 🚀 [Getting started (commands)](#-getting-started-commands)
 - 🔍 [Local checks to run before opening a PR](#-local-checks-to-run-before-opening-a-pr)
 - 🌿 [Branching rules](#-branching-rules)
 - ✍️ [Commit messages & PR titles (Conventional Commits)](#-commit-messages--pr-titles-conventional-commits)
@@ -38,7 +38,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 
 ---
 
-## 🛠️ Getting started (commands)
+## 🚀 Getting started (commands)
 
 > This repo uses pnpm (see `package.json`).
 
