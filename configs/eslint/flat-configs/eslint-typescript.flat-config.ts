@@ -3,7 +3,7 @@ import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";
 import type { Linter } from "eslint";
 
-import { NAMING_CONVENTION_DEFAULT_CONFIG } from "../eslint.constants.js";
+import { NAMING_CONVENTION_DEFAULT_CONFIG } from "../eslint.constants";
 
 const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   name: "typescript",
@@ -20,7 +20,7 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     },
   },
   rules: {
-    // ---- ESLint Rules which must be deactivated for typescript to work -----
+    // ---- ESLint Rules which must be deactivated for TypeScript to work -----
     "class-methods-use-this": "off",
     "default-param-last": "off",
     "dot-notation": "off",

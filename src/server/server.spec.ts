@@ -62,7 +62,7 @@ describe("Server", () => {
     it("should return the app when called.", async() => {
       const app = await bootstrap();
       const expectedApp = {
-        enableShutdownHooks: expect.any(Function) as () => void,
+        enableShutdownHooks: expect.any(Function) as () => INestApplication,
         listen: expect.any(Function) as () => void,
         getUrl: expect.any(Function) as () => void,
       };
