@@ -16,7 +16,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/brace-style": "error",
     "@stylistic/comma-dangle": ["error", "always-multiline"],
     "@stylistic/comma-spacing": [
-      "error", {
+      "error",
+      {
         before: false,
         after: true,
       },
@@ -29,7 +30,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/function-call-spacing": "error",
     "@stylistic/function-paren-newline": ["error", "multiline"],
     "@stylistic/generator-star-spacing": [
-      "error", {
+      "error",
+      {
         before: false,
         after: true,
       },
@@ -69,8 +71,10 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/linebreak-style": "error",
     "@stylistic/lines-around-comment": "off",
     "@stylistic/lines-between-class-members": ["error", "always"],
+    "@stylistic/exp-list-style": "error",
     "@stylistic/max-len": [
-      "error", {
+      "error",
+      {
         ...MAX_LENGTH_DEFAULT_CONFIG,
         ignoreComments: true,
       },
@@ -108,7 +112,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/no-whitespace-before-property": "error",
     "@stylistic/nonblock-statement-body-position": ["error", "below"],
     "@stylistic/object-curly-newline": [
-      "error", {
+      "error",
+      {
         multiline: true,
         consistent: true,
       },
@@ -119,19 +124,23 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/operator-linebreak": ["error", "after"],
     "@stylistic/padded-blocks": ["error", "never"],
     "@stylistic/padding-line-between-statements": [
-      "error", {
+      "error",
+      {
         blankLine: "always",
         prev: ["interface", "type", "class", "export"],
         next: "*",
-      }, {
+      },
+      {
         blankLine: "always",
         prev: "*",
         next: ["interface", "type", "class", "export", "function"],
-      }, {
+      },
+      {
         blankLine: "always",
         prev: "*",
         next: ["return"],
-      }, {
+      },
+      {
         blankLine: "never",
         prev: ["block-like"],
         next: ["return"],
@@ -144,7 +153,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/semi-spacing": "error",
     "@stylistic/semi-style": ["error", "last"],
     "@stylistic/space-before-blocks": [
-      "error", {
+      "error",
+      {
         functions: "always",
         keywords: "always",
         classes: "always",
@@ -154,7 +164,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/space-in-parens": ["error", "never"],
     "@stylistic/space-infix-ops": "error",
     "@stylistic/space-unary-ops": [
-      "error", {
+      "error",
+      {
         words: true,
         nonwords: false,
       },
@@ -164,7 +175,8 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/template-curly-spacing": "error",
     "@stylistic/template-tag-spacing": "error",
     "@stylistic/curly-newline": [
-      "error", {
+      "error",
+      {
         multiline: true,
         consistent: true,
       },

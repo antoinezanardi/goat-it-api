@@ -13,7 +13,8 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "import/no-namespace": "off",
     "import/no-internal-modules": "off",
     "import/max-dependencies": [
-      "error", {
+      "error",
+      {
         max: 40,
         ignoreTypeImports: true,
       },
@@ -56,6 +57,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/padding-around-describe-blocks": "error",
     "vitest/padding-around-expect-groups": "error",
     "vitest/padding-around-test-blocks": "error",
+    "vitest/prefer-called-exactly-once-with": "error",
     "vitest/prefer-called-once": "error",
     "vitest/prefer-called-times": "off",
     "vitest/prefer-called-with": "error",
@@ -68,6 +70,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/prefer-expect-resolves": "error",
     "vitest/prefer-hooks-in-order": "error",
     "vitest/prefer-hooks-on-top": "error",
+    "vitest/prefer-import-in-mock": "error",
     "vitest/prefer-importing-vitest-globals": "off",
     "vitest/prefer-lowercase-title": "off",
     "vitest/prefer-mock-promise-shorthand": "error",
@@ -84,7 +87,8 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/prefer-todo": "error",
     "vitest/prefer-vi-mocked": "error",
     "vitest/require-hook": [
-      "error", {
+      "error",
+      {
         allowedFunctionCalls: ["mockNuxtImport"],
       },
     ],
@@ -96,7 +100,8 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/valid-expect-in-promise": "error",
     "vitest/valid-expect": "error",
     "vitest/valid-title": [
-      "error", {
+      "error",
+      {
         ignoreTypeOfDescribeName: true,
         mustMatch: { it: "^should .+ when .+\\S\\.$|^\\$test$" },
       },

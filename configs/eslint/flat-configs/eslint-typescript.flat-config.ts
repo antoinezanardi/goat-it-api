@@ -60,7 +60,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/default-param-last": "error",
     "@typescript-eslint/dot-notation": [
-      "error", {
+      "error",
+      {
         allowPrivateClassPropertyAccess: true,
         allowProtectedClassPropertyAccess: true,
       },
@@ -100,7 +101,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/no-invalid-void-type": "error",
     "@typescript-eslint/no-loop-func": "error",
     "@typescript-eslint/no-magic-numbers": [
-      "error", {
+      "error",
+      {
         ignoreArrayIndexes: true,
         ignoreDefaultValues: true,
         ignoreEnums: true,
@@ -121,7 +123,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/no-redundant-type-constituents": "error",
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-restricted-imports": [
-      "error", {
+      "error",
+      {
         patterns: [
           {
             group: ["./"],
@@ -136,7 +139,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     ],
     "@typescript-eslint/no-restricted-types": "error",
     "@typescript-eslint/no-shadow": [
-      "error", {
+      "error",
+      {
         hoist: "never",
         ignoreFunctionTypeParameterNameValueShadow: true,
       },
@@ -173,7 +177,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/parameter-properties": ["error", { allow: ["private readonly"] }],
     "@typescript-eslint/prefer-as-const": "error",
     "@typescript-eslint/prefer-destructuring": [
-      "error", {
+      "error",
+      {
         array: false,
         object: true,
       },

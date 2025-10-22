@@ -15,7 +15,8 @@ export default {
   repositoryUrl: "git@github.com:antoinezanardi/goat-it-api.git",
   plugins: [
     [
-      "@semantic-release/commit-analyzer", {
+      "@semantic-release/commit-analyzer",
+      {
         preset: "conventionalcommits",
         releaseRules: [
           {

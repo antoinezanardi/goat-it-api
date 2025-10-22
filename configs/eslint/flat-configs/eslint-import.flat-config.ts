@@ -67,7 +67,8 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import/first": "error",
     "import/group-exports": "error",
     "import/max-dependencies": [
-      "error", {
+      "error",
+      {
         max: 25,
         ignoreTypeImports: true,
       },
@@ -82,7 +83,8 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import/no-unassigned-import": ["error", { allow: ["reflect-metadata"] }],
     "import/prefer-default-export": "off",
     "import/order": [
-      "error", {
+      "error",
+      {
         "warnOnUnassignedImports": true,
         "groups": ["builtin", "external", "internal", "parent", "sibling"],
         "pathGroups": [

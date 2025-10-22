@@ -146,7 +146,8 @@ const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
     "no-lonely-if": "error",
     "no-loop-func": "error",
     "no-magic-numbers": [
-      "error", {
+      "error",
+      {
         ignoreArrayIndexes: true,
         ignoreDefaultValues: true,
         ignore: [0, -1, 1],

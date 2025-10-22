@@ -5,7 +5,8 @@ const ESLINT_CONTROLLERS_FLAT_CONFIG: Linter.Config = {
   files: ["src/**/*.controller.ts"],
   rules: {
     "new-cap": [
-      "error", {
+      "error",
+      {
         capIsNewExceptions: [
           "Controller",
           "Get",
