@@ -1,7 +1,7 @@
 import Vitest from "@vitest/eslint-plugin";
 import type { Linter } from "eslint";
 
-const ESLINT_UNIT_TESTS_FLAT_CONFIG = {
+const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
   name: "tests",
   files: ["src/**/*.spec.ts"],
   plugins: { vitest: Vitest },
@@ -98,11 +98,11 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG = {
     "vitest/valid-title": [
       "error", {
         ignoreTypeOfDescribeName: true,
-        mustMatch: { it: new RegExp(/^should .+ when .+\S\.$|^\$test$/u, "u").source },
+        mustMatch: { it: "^should .+ when .+\\S\\.$|^\\$test$" },
       },
     ],
     "vitest/warn-todo": "error",
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_UNIT_TESTS_FLAT_CONFIG };

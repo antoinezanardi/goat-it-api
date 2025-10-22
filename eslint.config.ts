@@ -9,6 +9,7 @@ import { ESLINT_MODULES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint
 import { ESLINT_STYLISTIC_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-stylistic.flat-config";
 import { ESLINT_UNIT_TESTS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests.flat-config";
 import { ESLINT_TYPESCRIPT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-typescript.flat-config";
+import { ESLINT_TYPESCRIPT_DECLARATION_CONFIG } from "./configs/eslint/flat-configs/eslint.typescript-declaration-config";
 
 export default [
   {
@@ -23,4 +24,5 @@ export default [
   ESLINT_UNIT_TESTS_FLAT_CONFIG,
   ESLINT_MODULES_FLAT_CONFIG,
   ESLINT_CONTROLLERS_FLAT_CONFIG,
+  ESLINT_TYPESCRIPT_DECLARATION_CONFIG,
 ] satisfies Linter.Config[];

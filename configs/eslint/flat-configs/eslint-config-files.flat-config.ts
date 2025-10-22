@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-const ESLINT_CONFIG_FILES_FLAT_CONFIG = {
+const ESLINT_CONFIG_FILES_FLAT_CONFIG: Linter.Config = {
   name: "config-files",
   files: [
     "eslint.config.ts",
@@ -14,6 +14,6 @@ const ESLINT_CONFIG_FILES_FLAT_CONFIG = {
     "import/no-internal-modules": "off",
     "import/no-anonymous-default-export": "off",
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_CONFIG_FILES_FLAT_CONFIG };

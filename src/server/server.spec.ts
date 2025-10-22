@@ -53,7 +53,7 @@ describe("Server", () => {
     });
 
     it("should log the app url when called.", async() => {
-      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => vi.fn);
+      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
       await bootstrap();
 
       expect(consoleLogSpy).toHaveBeenCalledExactlyOnceWith("🐐 Goat It API is running on: http://mocked-host:9090");

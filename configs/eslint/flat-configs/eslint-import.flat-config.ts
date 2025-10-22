@@ -3,7 +3,7 @@ import type { Linter } from "eslint";
 
 import { ESLINT_IGNORES } from "../eslint.constants";
 
-const ESLINT_IMPORT_FLAT_CONFIG = {
+const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
   ...ImportPlugin.flatConfigs.recommended,
   name: "import",
   languageOptions: {
@@ -14,9 +14,15 @@ const ESLINT_IMPORT_FLAT_CONFIG = {
   },
   ignores: ESLINT_IGNORES,
   settings: {
-    "import/parsers": { espree: [".js", ".cjs", ".mjs", ".jsx"] },
+    "import/parsers": {
+      "espree": [".js", ".cjs", ".mjs", ".jsx"],
+      "@typescript-eslint/parser": [".ts", ".tsx", ".mts", ".cts"],
+    },
     "import/resolver": {
-      typescript: true,
+      typescript: {
+        project: ["./tsconfig.json"],
+        alwaysTryTypes: true,
+      },
       node: true,
     },
   },
@@ -87,11 +93,10 @@ const ESLINT_IMPORT_FLAT_CONFIG = {
           { pattern: "@shared/**", group: "parent", position: "after" },
           { pattern: "@configs/**", group: "parent", position: "after" },
         ],
-        "pathGroupsExcludedImportTypes": ["@/tests/"],
         "newlines-between": "always",
       },
     ],
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_IMPORT_FLAT_CONFIG };

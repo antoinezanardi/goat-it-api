@@ -1,10 +1,11 @@
+/* eslint-disable-next-line import/default */
 import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";
 import type { Linter } from "eslint";
 
 import { NAMING_CONVENTION_DEFAULT_CONFIG } from "../eslint.constants.js";
 
-const ESLINT_TYPESCRIPT_FLAT_CONFIG = {
+const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   name: "typescript",
   files: ["**/*.ts"],
   plugins: { "@typescript-eslint": TypeScriptPlugin },
@@ -16,7 +17,6 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG = {
       sourceType: "module",
       ecmaFeatures: { jsx: true },
       project: "./configs/typescript/tsconfig.eslint.json",
-      emitDecoratorMetadata: true,
     },
   },
   rules: {
@@ -208,6 +208,6 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG = {
     "@typescript-eslint/unified-signatures": "error",
     "@typescript-eslint/use-unknown-in-catch-callback-variable": "error",
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_TYPESCRIPT_FLAT_CONFIG };

@@ -3,7 +3,7 @@ import type { Linter } from "eslint";
 
 import { INDENT_SPACE_COUNT, MAX_LENGTH_DEFAULT_CONFIG } from "../eslint.constants.js";
 
-const ESLINT_STYLISTIC_FLAT_CONFIG = {
+const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
   name: "stylistic",
   plugins: { "@stylistic": StylisticPlugin },
   rules: {
@@ -176,6 +176,6 @@ const ESLINT_STYLISTIC_FLAT_CONFIG = {
     "@stylistic/wrap-regex": "error",
     "@stylistic/yield-star-spacing": "error",
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_STYLISTIC_FLAT_CONFIG };

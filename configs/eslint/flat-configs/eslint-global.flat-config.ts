@@ -3,7 +3,7 @@ import type { Linter } from "eslint";
 
 import { MAX_NESTED_CALLBACK, MAX_PARAMS, MAX_LINES_PER_FUNCTION_DEFAULT_CONFIG } from "../eslint.constants.js";
 
-const ESLINT_GLOBAL_FLAT_CONFIG = {
+const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
   name: "global",
   languageOptions: {
     globals: {
@@ -230,6 +230,6 @@ const ESLINT_GLOBAL_FLAT_CONFIG = {
     // - Layout & Formatting (https://eslint.org/docs/rules/#layout-formatting)
     "unicode-bom": "error",
   },
-} satisfies Linter.Config;
+} as const;
 
 export { ESLINT_GLOBAL_FLAT_CONFIG };

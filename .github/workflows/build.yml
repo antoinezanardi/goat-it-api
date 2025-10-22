@@ -70,6 +70,19 @@ jobs:
       - name: Build application ✨
         uses: ./.github/actions/build
 
+  lint-codebase:
+    name: Lint Codebase 🔍
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Lint Codebase 🔍
+        id: lint-codebase
+        uses: ./.github/actions/lint
+
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
