@@ -4,7 +4,7 @@ const commitGroupsOrder = {
   docs: 3,
   styles: 4,
   refactor: 5,
-  performances: 6,
+  performance: 6,
   tests: 7,
   ci: 8,
   chore: 9,
