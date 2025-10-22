@@ -55,8 +55,10 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
 ];
 
 const ESLINT_IGNORES = [
-  "dist/*",
+  "dist/**/*",
   "node_modules/**/*",
+  "tests/unit/coverage/**/*",
+  "tests/mutation/**/*",
 ];
 
 export {

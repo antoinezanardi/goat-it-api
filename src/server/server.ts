@@ -18,7 +18,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
 
   const appUrl = await app.getUrl();
 
-  // TODO: Replace with proper logger (Winston) Linked issue : https://github.com/antoinezanardi/goat-it-api/issues/21
+  // TODO [+winston]: Replace with proper logger (Winston) Linked issue : https://github.com/antoinezanardi/goat-it-api/issues/21
   // eslint-disable-next-line no-console
   console.log(`🐐 Goat It API is running on: ${appUrl}`);
 
