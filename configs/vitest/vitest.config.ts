@@ -36,7 +36,6 @@ export default defineConfig({
         "text-summary",
         "html",
       ],
-      all: true,
       thresholds: {
         100: true,
       },
