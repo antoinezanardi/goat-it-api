@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "types": [
+      "vitest/globals"
+    ],
+    "rootDir": "../../"
+  },
+  "include": [
+    "../../eslint.config.ts",
+    "../../src/",
+    "../../configs",
+  ],
+  "exclude": [
+    "../../node_modules",
+    "../../dist"
+  ]
+}

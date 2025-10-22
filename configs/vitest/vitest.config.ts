@@ -1,10 +1,15 @@
-import { JscConfig } from "@swc/core";
+import { resolve } from "path";
+
+import type { JscConfig } from "@swc/core";
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
-import { resolve } from "node:path";
+
 import SwcConfig from "../swc/swc.config.json";
 
 const rootDir = resolve(__dirname, "../..");
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 
 export default defineConfig({
   test: {
@@ -17,9 +22,7 @@ export default defineConfig({
     include: ["src/**/*.spec.ts"],
     coverage: {
       provider: "v8",
-      include: [
-        "src/**/*.ts",
-      ],
+      include: ["src/**/*.ts"],
       exclude: [
         "src/**/*.module.ts",
         "src/**/*.constants.ts",
@@ -42,7 +45,7 @@ export default defineConfig({
   plugins: [
     swc.vite({
       jsc: {
-        ...SwcConfig.jsc as JscConfig,
+        ...swcJsc,
         baseUrl: rootDir,
       },
       module: { type: "es6" },
@@ -56,6 +59,6 @@ export default defineConfig({
       "@modules": resolve(rootDir, "src/modules"),
       "@shared": resolve(rootDir, "src/shared"),
       "@configs": resolve(rootDir, "configs"),
-    }
-  }
+    },
+  },
 });
