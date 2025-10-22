@@ -113,12 +113,12 @@ export default {
         writerOpts: {
           groupBy: "type",
           commitGroupsSort: (commitGroupA, commitGroupB) => {
-            const commitGroupTitleA = commitGroupA.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
-            const commitGroupTitleB = commitGroupB.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
-            const a = commitGroupsOrder[commitGroupTitleA] ?? Number.MAX_SAFE_INTEGER;
-            const b = commitGroupsOrder[commitGroupTitleB] ?? Number.MAX_SAFE_INTEGER;
+            const commitGroupTitleA = commitGroupA.title.replaceAll(/[^a-zA-Z]/gu, "").toLowerCase();
+            const commitGroupTitleB = commitGroupB.title.replaceAll(/[^a-zA-Z]/gu, "").toLowerCase();
+            const commitGroupOrderA = commitGroupsOrder[commitGroupTitleA] ?? Number.MAX_SAFE_INTEGER;
+            const commitGroupOrderB = commitGroupsOrder[commitGroupTitleB] ?? Number.MAX_SAFE_INTEGER;
 
-            return a - b;
+            return commitGroupOrderA - commitGroupOrderB;
           },
         },
       },

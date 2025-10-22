@@ -1,7 +1,7 @@
 import * as Server from "@server/server";
 
 vi.mock("@server/server", () => ({
-  bootstrap: vi.fn(),
+  bootstrap: vi.fn<() => undefined>(),
 }));
 
 describe("Main", () => {
