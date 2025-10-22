@@ -9,7 +9,7 @@
 
 ## 📔 Notes for reviewers (optional)
 
-<!-- Anything specific reviewers should focus on ? -->
+<!-- Anything specific reviewers should focus on? -->
 
 <!----------------------------------------------------------------------
 Before creating the pull request, please make sure you do the following:
