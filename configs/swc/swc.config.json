@@ -23,6 +23,10 @@
     },
     "keepClassNames": true
   },
+  "module": {
+    "type": "commonjs",
+    "strict": true
+  },
   "sourceMaps": true,
   "exclude": [".*\\.spec\\.ts$"]
 }

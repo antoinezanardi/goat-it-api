@@ -13,12 +13,12 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   app.enableShutdownHooks();
 
   const host = process.env.HOST ?? "0.0.0.0";
-  const port = parseInt(process.env.PORT ?? "3000");
+  const port = Number.parseInt(process.env.PORT ?? "3000");
   await app.listen({ host, port });
 
   const appUrl = await app.getUrl();
 
-  // TODO: Replace with proper logger (Winston) Linked issue : https://github.com/antoinezanardi/goat-it-api/issues/21
+  // TODO [+winston]: Replace with proper logger (Winston) Linked issue : https://github.com/antoinezanardi/goat-it-api/issues/21
   // eslint-disable-next-line no-console
   console.log(`🐐 Goat It API is running on: ${appUrl}`);
 

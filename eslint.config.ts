@@ -7,6 +7,7 @@ import { ESLINT_GLOBAL_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-
 import { ESLINT_IMPORT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-import.flat-config";
 import { ESLINT_MODULES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-modules.flat-config";
 import { ESLINT_STYLISTIC_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-stylistic.flat-config";
+import { ESLINT_UNICORN_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unicorn.flat-config";
 import { ESLINT_UNIT_TESTS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests.flat-config";
 import { ESLINT_TYPESCRIPT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-typescript.flat-config";
 import { ESLINT_TYPESCRIPT_DECLARATION_CONFIG } from "./configs/eslint/flat-configs/eslint.typescript-declaration-config";
@@ -17,6 +18,7 @@ export default [
     ignores: ESLINT_IGNORES,
   },
   ESLINT_GLOBAL_FLAT_CONFIG,
+  ESLINT_UNICORN_FLAT_CONFIG,
   ESLINT_IMPORT_FLAT_CONFIG,
   ESLINT_TYPESCRIPT_FLAT_CONFIG,
   ESLINT_STYLISTIC_FLAT_CONFIG,

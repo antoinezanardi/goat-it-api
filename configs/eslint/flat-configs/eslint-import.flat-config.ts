@@ -45,7 +45,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import/unambiguous": "error",
     // - Static analysis (https://github.com/import-js/eslint-plugin-import#static-analysis)
     "import/default": "error",
-    "import/enforce-node-protocol-usage": ["error", "never"],
+    "import/enforce-node-protocol-usage": ["error", "always"],
     "import/named": "off",
     "import/namespace": "error",
     "import/no-absolute-path": "error",

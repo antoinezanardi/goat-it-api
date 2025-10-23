@@ -10,7 +10,7 @@ const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
   ignoreRegExpLiterals: true,
-  ignorePattern: "^import\\s.+\\sfrom\\s.+;$",
+  ignorePattern: String.raw`^import\s.+\sfrom\s.+;$`,
 };
 
 const MAX_LINES_PER_FUNCTION_DEFAULT_CONFIG = {
@@ -55,8 +55,10 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
 ];
 
 const ESLINT_IGNORES = [
-  "dist/*",
+  "dist/**/*",
   "node_modules/**/*",
+  "tests/unit/coverage/**/*",
+  "tests/mutation/**/*",
 ];
 
 export {

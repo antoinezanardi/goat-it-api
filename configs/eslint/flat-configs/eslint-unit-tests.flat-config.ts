@@ -22,7 +22,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/init-declarations": "off",
     "@typescript-eslint/no-magic-numbers": "off",
     "@typescript-eslint/prefer-destructuring": "off",
-    "vitest/consistent-test-filename": ["error", { pattern: "^(.+\\.spec)\\.ts$" }],
+    "vitest/consistent-test-filename": ["error", { pattern: String.raw`^(.+\.spec)\.ts$` }],
     "vitest/consistent-test-it": ["error", { fn: "it" }],
     "vitest/consistent-vitest-vi": "error",
     "vitest/expect-expect": "error",
@@ -103,7 +103,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
       "error",
       {
         ignoreTypeOfDescribeName: true,
-        mustMatch: { it: "^should .+ when .+\\S\\.$|^\\$test$" },
+        mustMatch: { it: String.raw`^should .+ when .+\S\.$|^\$test$` },
       },
     ],
     "vitest/warn-todo": "error",

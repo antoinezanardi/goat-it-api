@@ -17,7 +17,7 @@ describe("Server", () => {
   beforeEach(() => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
-      listen: vi.fn<() => Promise<undefined>>().mockResolvedValue(undefined),
+      listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
     });
   });
@@ -57,7 +57,7 @@ describe("Server", () => {
     });
 
     it("should log the app url when called.", async() => {
-      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => undefined);
+      const consoleLogSpy = vi.spyOn(console, "log");
       await bootstrap();
 
       expect(consoleLogSpy).toHaveBeenCalledExactlyOnceWith("🐐 Goat It API is running on: http://mocked-host:9090");
