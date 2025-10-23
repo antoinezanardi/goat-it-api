@@ -1,5 +1,15 @@
-npm run validate:branch-name
-npm run typecheck;
-npm run lint:staged:fix;
-git add -A .;
-npm run test:unit:staged
+#!/usr/bin/env sh
+
+set -e
+ROOT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo "$(pwd)")
+if command -v pnpm >/dev/null 2>&1 && [ -f "$ROOT_DIR/pnpm-lock.yaml" ]; then
+  PKG_CMD=pnpm
+else
+  PKG_CMD=npm
+fi
+
+$PKG_CMD run validate:branch-name
+$PKG_CMD run typecheck
+$PKG_CMD run lint:staged:fix
+git add -A .
+$PKG_CMD run test:unit:staged
