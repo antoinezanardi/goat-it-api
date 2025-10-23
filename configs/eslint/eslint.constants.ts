@@ -10,7 +10,7 @@ const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
   ignoreRegExpLiterals: true,
-  ignorePattern: "^import\\s.+\\sfrom\\s.+;$",
+  ignorePattern: String.raw`^import\s.+\sfrom\s.+;$`,
 };
 
 const MAX_LINES_PER_FUNCTION_DEFAULT_CONFIG = {

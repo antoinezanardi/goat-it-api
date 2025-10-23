@@ -1,12 +1,12 @@
-import Path from "path";
+import path from "node:path";
 
 import type { JscConfig } from "@swc/core";
-import SwcPlugin from "unplugin-swc";
+import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
 
 import SwcConfig from "../swc/swc.config.json";
 
-const rootDir = Path.resolve(__dirname, "../..");
+const rootDirectory = path.resolve(import.meta.dirname, "../..");
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
 const swcJsc = SwcConfig.jsc as unknown as JscConfig;
@@ -18,7 +18,7 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     restoreMocks: true,
-    root: rootDir,
+    root: rootDirectory,
     include: ["src/**/*.spec.ts"],
     coverage: {
       provider: "v8",
@@ -42,22 +42,22 @@ export default defineConfig({
     },
   },
   plugins: [
-    SwcPlugin.vite({
+    swc.vite({
       jsc: {
         ...swcJsc,
-        baseUrl: rootDir,
+        baseUrl: rootDirectory,
       },
       module: { type: "es6" },
     }),
   ],
   resolve: {
     alias: {
-      "@src": Path.resolve(rootDir, "src"),
-      "@app": Path.resolve(rootDir, "src/app"),
-      "@server": Path.resolve(rootDir, "src/server"),
-      "@modules": Path.resolve(rootDir, "src/modules"),
-      "@shared": Path.resolve(rootDir, "src/shared"),
-      "@configs": Path.resolve(rootDir, "configs"),
+      "@src": path.resolve(rootDirectory, "src"),
+      "@app": path.resolve(rootDirectory, "src/app"),
+      "@server": path.resolve(rootDirectory, "src/server"),
+      "@modules": path.resolve(rootDirectory, "src/modules"),
+      "@shared": path.resolve(rootDirectory, "src/shared"),
+      "@configs": path.resolve(rootDirectory, "configs"),
     },
   },
 });
