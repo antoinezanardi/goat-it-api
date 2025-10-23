@@ -269,12 +269,12 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 - `.husky/pre-commit` — validates branch names and runs linting/tests on staged files:
 
   ```bash
-  pnpm run validate:branch-name
-  pnpm run lint:staged:fix
-  pnpm run test:unit:staged
+  <package-manager> run validate:branch-name
+  <package-manager> run lint:staged:fix
+  <package-manager> run test:unit:staged
   ```
 
-  (You can run the same validation locally)
+  (You can run the same validation locally listed above. Use `<package-manager>` as `pnpm` or `npm` here.)
 
 ### Bypassing hooks
 
