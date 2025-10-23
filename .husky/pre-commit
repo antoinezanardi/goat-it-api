@@ -1,1 +1,5 @@
-npm run validate:branch-name;
+npm run validate:branch-name
+npm run typecheck;
+npm run lint:staged:fix;
+git add -A .;
+npm run test:unit:staged

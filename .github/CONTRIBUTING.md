@@ -1,6 +1,6 @@
 # 🫶 Contributing to Goat It API
 
-Thank you for your interest in contributing — we appreciate your time and help! This document explains how to prepare, test and submit changes so they integrate smoothly with the project workflow.
+Thank you for your interest in contributing — we appreciate your time and help! This document explains how to prepare, test, and submit changes so they integrate smoothly with the project workflow.
 
 ## Table of contents
 
@@ -176,7 +176,7 @@ We use Conventional Commits. Commit messages and PR titles should follow the Con
 <type>(<scope>): <short summary>
 ```
 
-### Optional body, optional breaking change & footer
+### Optional body, optional breaking change, and footer
 
 ```text
 <optional body>
@@ -212,7 +212,7 @@ This removes the v1 endpoints. Consumers must migrate to /v2.
 
 ### PR title rule
 
-- The PR title should be a valid Conventional Commit header (same format as the first line of a commit). When possible, use the same string as the main commit or the eventual squashed commit message. Maintainers may reword/squash on merge but will keep the final commit Conventional.
+- The PR title should be a valid Conventional Commit header (the same format as the first line of a commit). When possible, use the same string as the main commit or the eventual squashed commit message. Maintainers may reword/squash on merge but will keep the final commit Conventional.
 
 > [!IMPORTANT]
 > Commit messages and PR titles are enforced by `commitlint`. Non-conforming messages will cause CI failures. Use interactive rebase to correct message history before pushing if needed.
@@ -266,18 +266,20 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 
   This ensures commit messages follow the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
 
-- `.husky/pre-commit` — validates branch names before allowing the commit to proceed:
+- `.husky/pre-commit` — validates branch names and run linting/tests on staged files:
 
   ```bash
-  npm run validate:branch-name
+  pnpm run validate:branch-name
+  pnpm run lint:staged
+  pnpm run test:unit:staged
   ```
 
-  (You can run the same validation locally with `pnpm run validate:branch-name`.)
+  (You can run the same validation locally)
 
 ### Bypassing hooks
 
 > [!CAUTION]
-> Bypassing hooks with `--no-verify` skips important checks. Only use `git commit --no-verify` or `git push --no-verify` if you have a compelling reason or documented exception and you understand the risks.
+> Bypassing hooks with `--no-verify` skips important checks. Only use `git commit --no-verify` or `git push --no-verify` if you have a compelling reason or documented exception, and you understand the risks.
 
 If you must bypass hooks temporarily (for example, when the checks are causing problems during a quick experimental commit):
 
