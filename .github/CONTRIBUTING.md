@@ -266,11 +266,11 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 
   This ensures commit messages follow the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
 
-- `.husky/pre-commit` — validates branch names and run linting/tests on staged files:
+- `.husky/pre-commit` — validates branch names and runs linting/tests on staged files:
 
   ```bash
   pnpm run validate:branch-name
-  pnpm run lint:staged
+  pnpm run lint:staged:fix
   pnpm run test:unit:staged
   ```
 
