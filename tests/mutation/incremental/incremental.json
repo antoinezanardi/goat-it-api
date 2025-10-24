@@ -1,13 +1,86 @@
 {
   "files": {
-    "src/app/app.controller.ts": {
+    "src/app/providers/services/app.service.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "1",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/app/providers/services/app.service.ts(9,24): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/providers/services/app.service.ts(9,24): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "9"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 18
+            },
+            "start": {
+              "column": 36,
+              "line": 9
+            }
+          }
+        },
+        {
+          "id": "2",
+          "mutatorName": "ObjectLiteral",
+          "replacement": "{}",
+          "statusReason": "src/app/providers/services/app.service.ts(12,5): error TS2739: Type '{}' is missing the following properties from type 'APIMetadata': packageName, name, description, version\nsrc/app/providers/services/app.service.ts(12,5): error TS2739: Type '{}' is missing the following properties from type 'APIMetadata': packageName, name, description, version\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "9"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 17
+            },
+            "start": {
+              "column": 12,
+              "line": 12
+            }
+          }
+        },
+        {
+          "id": "3",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected { packageName: 'goat-it-api', …(3) } to strictly equal { packageName: 'goat-it-api', …(3) }",
+          "status": "Killed",
+          "static": false,
+          "testsCompleted": 1,
+          "killedBy": [
+            "9"
+          ],
+          "coveredBy": [
+            "9"
+          ],
+          "location": {
+            "end": {
+              "column": 26,
+              "line": 14
+            },
+            "start": {
+              "column": 13,
+              "line": 14
+            }
+          }
+        }
+      ],
+      "source": "import { Injectable } from \"@nestjs/common\";\n\nimport packageJson from \"@package-json\" with { type: \"json\" };\n\nimport type { APIMetadata } from \"@app/types/app.types\";\n\n@Injectable()\nexport class AppService {\n  public getApiMeta(): APIMetadata {\n    void this;\n\n    return {\n      packageName: packageJson.name,\n      name: \"Goat It API\",\n      description: packageJson.description,\n      version: packageJson.version,\n    };\n  }\n}"
+    },
+    "src/app/controllers/app.controller.ts": {
       "language": "typescript",
       "mutants": [
         {
           "id": "0",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/app/app.controller.ts(6,22): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/app.controller.ts(6,22): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "statusReason": "src/app/controllers/app.controller.ts(12,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(12,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
@@ -16,154 +89,71 @@
           "location": {
             "end": {
               "column": 4,
-              "line": 8
+              "line": 14
             },
             "start": {
-              "column": 29,
-              "line": 6
-            }
-          }
-        },
-        {
-          "id": "1",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected '' to be 'Hello World!' // Object.is equality",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "8"
-          ],
-          "coveredBy": [
-            "8"
-          ],
-          "location": {
-            "end": {
-              "column": 26,
-              "line": 7
-            },
-            "start": {
-              "column": 12,
-              "line": 7
+              "column": 40,
+              "line": 12
             }
           }
         }
       ],
-      "source": "import { Controller, Get } from '@nestjs/common';\n\n@Controller()\nexport class AppController {\n  @Get()\n  public getHello(): string {\n    return \"Hello World!\";\n  }\n}"
+      "source": "import { Controller, Get } from \"@nestjs/common\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { APIMetadata } from \"@app/types/app.types\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  public getApiMetadata(): APIMetadata {\n    return this.appService.getApiMeta();\n  }\n}"
     },
     "src/server/server.ts": {
       "language": "typescript",
       "mutants": [
         {
-          "id": "2",
+          "id": "4",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/server/server.ts(5,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/server.ts(5,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "statusReason": "src/server/server.ts(8,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/server.ts(8,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "0",
             "1",
             "2",
             "3",
             "4",
             "5",
-            "6"
+            "6",
+            "7"
           ],
           "location": {
             "end": {
               "column": 2,
-              "line": 21
+              "line": 27
             },
             "start": {
               "column": 61,
-              "line": 5
+              "line": 8
             }
           }
         },
         {
-          "id": "3",
+          "id": "7",
           "mutatorName": "LogicalOperator",
-          "replacement": "process.env.HOST && '0.0.0.0'",
-          "statusReason": "expected \"spy\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st spy call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": undefined,\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 3,
-          "killedBy": [
-            "2"
-          ],
-          "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6"
-          ],
-          "location": {
-            "end": {
-              "column": 45,
-              "line": 13
-            },
-            "start": {
-              "column": 16,
-              "line": 13
-            }
-          }
-        },
-        {
-          "id": "5",
-          "mutatorName": "LogicalOperator",
-          "replacement": "process.env.PORT && '3000'",
-          "statusReason": "src/server/server.ts(14,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\nsrc/server/server.ts(14,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\n",
+          "replacement": "process.env.PORT && \"3000\"",
+          "statusReason": "src/server/server.ts(17,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\nsrc/server/server.ts(17,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "0",
             "1",
             "2",
             "3",
             "4",
             "5",
-            "6"
+            "6",
+            "7"
           ],
           "location": {
             "end": {
-              "column": 51,
-              "line": 14
+              "column": 58,
+              "line": 17
             },
             "start": {
-              "column": 25,
-              "line": 14
-            }
-          }
-        },
-        {
-          "id": "4",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"spy\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st spy call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": \"\",\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 3,
-          "killedBy": [
-            "2"
-          ],
-          "coveredBy": [
-            "0",
-            "1",
-            "2"
-          ],
-          "location": {
-            "end": {
-              "column": 45,
-              "line": 13
-            },
-            "start": {
-              "column": 36,
-              "line": 13
+              "column": 32,
+              "line": 17
             }
           }
         },
@@ -171,62 +161,120 @@
           "id": "6",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
-          "statusReason": "expected \"spy\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st spy call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"host\": \"0.0.0.0\",\u001b[22m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[31m+     \"port\": NaN,\u001b[90m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": \"\",\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
           "status": "Killed",
           "static": false,
           "testsCompleted": 3,
           "killedBy": [
-            "2"
+            "3"
           ],
           "coveredBy": [
-            "0",
             "1",
-            "2"
+            "2",
+            "3"
           ],
           "location": {
             "end": {
-              "column": 51,
-              "line": 14
+              "column": 45,
+              "line": 16
             },
             "start": {
-              "column": 45,
-              "line": 14
+              "column": 36,
+              "line": 16
             }
           }
         },
         {
-          "id": "7",
-          "mutatorName": "ObjectLiteral",
-          "replacement": "{}",
-          "statusReason": "expected \"spy\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st spy call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   {\u001b[90m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[32m-   },\u001b[90m\n\u001b[31m+   {},\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "id": "5",
+          "mutatorName": "LogicalOperator",
+          "replacement": "process.env.HOST && \"0.0.0.0\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": undefined,\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
           "status": "Killed",
           "static": false,
           "testsCompleted": 3,
           "killedBy": [
-            "2"
+            "3"
           ],
           "coveredBy": [
-            "0",
             "1",
             "2",
             "3",
             "4",
             "5",
-            "6"
+            "6",
+            "7"
           ],
           "location": {
             "end": {
-              "column": 34,
-              "line": 15
+              "column": 45,
+              "line": 16
             },
             "start": {
-              "column": 20,
-              "line": 15
+              "column": 16,
+              "line": 16
             }
           }
         },
         {
           "id": "8",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"host\": \"0.0.0.0\",\u001b[22m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[31m+     \"port\": NaN,\u001b[90m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "static": false,
+          "testsCompleted": 3,
+          "killedBy": [
+            "3"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 58,
+              "line": 17
+            },
+            "start": {
+              "column": 52,
+              "line": 17
+            }
+          }
+        },
+        {
+          "id": "9",
+          "mutatorName": "ObjectLiteral",
+          "replacement": "{}",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   {\u001b[90m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[32m-   },\u001b[90m\n\u001b[31m+   {},\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "static": false,
+          "testsCompleted": 3,
+          "killedBy": [
+            "3"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
+          ],
+          "location": {
+            "end": {
+              "column": 34,
+              "line": 18
+            },
+            "start": {
+              "column": 20,
+              "line": 18
+            }
+          }
+        },
+        {
+          "id": "10",
           "mutatorName": "StringLiteral",
           "replacement": "``",
           "statusReason": "expected \"log\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st log call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"🐐 Goat It API is running on: http://mocked-host:9090\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -234,30 +282,30 @@
           "static": false,
           "testsCompleted": 6,
           "killedBy": [
-            "5"
+            "6"
           ],
           "coveredBy": [
-            "0",
             "1",
             "2",
             "3",
             "4",
             "5",
-            "6"
+            "6",
+            "7"
           ],
           "location": {
             "end": {
               "column": 56,
-              "line": 18
+              "line": 24
             },
             "start": {
               "column": 15,
-              "line": 18
+              "line": 24
             }
           }
         }
       ],
-      "source": "import { NestFactory } from \"@nestjs/core\";\nimport { FastifyAdapter, NestFastifyApplication } from \"@nestjs/platform-fastify\";\nimport { AppModule } from \"@app/app.module\";\n\nasync function bootstrap(): Promise<NestFastifyApplication> {\n  const app = await NestFactory.create<NestFastifyApplication>(\n    AppModule,\n    new FastifyAdapter(),\n  );\n\n  app.enableShutdownHooks();\n\n  const host = process.env.HOST ?? '0.0.0.0';\n  const port = parseInt(process.env.PORT ?? '3000', 10);\n  await app.listen({ host, port });\n\n  const appUrl = await app.getUrl();\n  console.log(`🐐 Goat It API is running on: ${appUrl}`);\n\n  return app;\n}\n\nexport { bootstrap };"
+      "source": "import { NestFactory } from \"@nestjs/core\";\nimport { FastifyAdapter } from \"@nestjs/platform-fastify\";\n\nimport { AppModule } from \"@app/app.module\";\n\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\n\nasync function bootstrap(): Promise<NestFastifyApplication> {\n  const app = await NestFactory.create<NestFastifyApplication>(\n    AppModule,\n    new FastifyAdapter(),\n  );\n\n  app.enableShutdownHooks();\n\n  const host = process.env.HOST ?? \"0.0.0.0\";\n  const port = Number.parseInt(process.env.PORT ?? \"3000\");\n  await app.listen({ host, port });\n\n  const appUrl = await app.getUrl();\n\n  // TODO [+winston]: Replace with proper logger (Winston) Linked issue : https://github.com/antoinezanardi/goat-it-api/issues/21\n  // eslint-disable-next-line no-console\n  console.log(`🐐 Goat It API is running on: ${appUrl}`);\n\n  return app;\n}\n\nexport { bootstrap };"
     }
   },
   "schemaVersion": "1.0",
@@ -267,59 +315,68 @@
     "break": 100
   },
   "testFiles": {
-    "src/server/server.spec.ts": {
-      "tests": [
-        {
-          "id": "0",
-          "name": "Server bootstrap should create from NestFactory when called."
-        },
-        {
-          "id": "1",
-          "name": "Server bootstrap should enable shutdown hooks when called."
-        },
-        {
-          "id": "2",
-          "name": "Server bootstrap should listen on the default host and port when none are provided."
-        },
-        {
-          "id": "3",
-          "name": "Server bootstrap should listen on the provided host and port when they are provided."
-        },
-        {
-          "id": "4",
-          "name": "Server bootstrap should get app url when called."
-        },
-        {
-          "id": "5",
-          "name": "Server bootstrap should log the app url when called."
-        },
-        {
-          "id": "6",
-          "name": "Server bootstrap should return the app when called."
-        }
-      ],
-      "source": "import { bootstrap } from \"@server/server\";\nimport * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\nimport type { Mock } from \"vitest\";\n\nvi.mock(\"@nestjs/core\");\nvi.mock(\"@app/app.module\", () => ({\n  AppModule: { name: \"MockedModule\" },\n}));\n\ndescribe(\"Server\", () => {\n  beforeEach(() => {\n    (NestCore.NestFactory.create as Mock).mockResolvedValue({\n      enableShutdownHooks: vi.fn(),\n      listen: vi.fn().mockResolvedValue(undefined),\n      getUrl: vi.fn().mockResolvedValue(\"http://mocked-host:9090\"),\n    });\n  });\n\n  describe(\"bootstrap\", () => {\n    it(\"should create from NestFactory when called.\", async () => {\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: \"MockedModule\" }, expect.any(Fastify.FastifyAdapter));\n    });\n\n    it(\"should enable shutdown hooks when called.\", async () => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async () => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async () => {\n      process.env.HOST = \"127.0.0.1\";\n      process.env.PORT = \"8080\";\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async () => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async () => {\n      const consoleLogSpy = vi.spyOn(console, \"log\").mockImplementation(() => {});\n      await bootstrap();\n\n      expect(consoleLogSpy).toHaveBeenCalledExactlyOnceWith(\"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should return the app when called.\", async () => {\n      const app = await bootstrap();\n\n      expect(app).toStrictEqual({\n        enableShutdownHooks: expect.any(Function),\n        listen: expect.any(Function),\n        getUrl: expect.any(Function),\n      });\n    });\n  });\n});"
-    },
     "src/main.spec.ts": {
       "tests": [
         {
-          "id": "7",
+          "id": "0",
           "name": "Main Root should call bootstrap when file is imported."
         }
       ],
-      "source": "import * as Server from \"@server/server\";\n\nvi.mock(\"@server/server\", () => ({\n  bootstrap: vi.fn(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+      "source": "import * as Server from \"@server/server\";\n\nvi.mock(import(\"@server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
-    "src/app/app.controller.spec.ts": {
+    "src/server/server.spec.ts": {
+      "tests": [
+        {
+          "id": "1",
+          "name": "Server bootstrap should create from NestFactory when called."
+        },
+        {
+          "id": "2",
+          "name": "Server bootstrap should enable shutdown hooks when called."
+        },
+        {
+          "id": "3",
+          "name": "Server bootstrap should listen on the default host and port when none are provided."
+        },
+        {
+          "id": "4",
+          "name": "Server bootstrap should listen on the provided host and port when they are provided."
+        },
+        {
+          "id": "5",
+          "name": "Server bootstrap should get app url when called."
+        },
+        {
+          "id": "6",
+          "name": "Server bootstrap should log the app url when called."
+        },
+        {
+          "id": "7",
+          "name": "Server bootstrap should return the app when called."
+        }
+      ],
+      "source": "import * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\n\nimport type { AppModule } from \"@app/app.module\";\n\nimport { bootstrap } from \"@server/server\";\n\nimport type { INestApplication } from \"@nestjs/common\";\n\nvi.mock(import(\"@nestjs/core\"));\nvi.mock(import(\"@app/app.module\"), () => ({\n  AppModule: {\n    name: \"MockedModule\",\n  } as typeof AppModule,\n}));\n\ndescribe(\"Server\", () => {\n  beforeEach(() => {\n    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({\n      enableShutdownHooks: vi.fn<() => INestApplication>(),\n      listen: vi.fn<() => Promise<undefined>>(),\n      getUrl: vi.fn<() => Promise<string>>().mockResolvedValue(\"http://mocked-host:9090\"),\n    });\n  });\n\n  describe(bootstrap, () => {\n    it(\"should create from NestFactory when called.\", async() => {\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: \"MockedModule\" }, expect.any(Fastify.FastifyAdapter));\n    });\n\n    it(\"should enable shutdown hooks when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async() => {\n      process.env.HOST = \"127.0.0.1\";\n      process.env.PORT = \"8080\";\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async() => {\n      const consoleLogSpy = vi.spyOn(console, \"log\");\n      await bootstrap();\n\n      expect(consoleLogSpy).toHaveBeenCalledExactlyOnceWith(\"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should return the app when called.\", async() => {\n      const app = await bootstrap();\n      const expectedApp = {\n        enableShutdownHooks: expect.any(Function) as () => INestApplication,\n        listen: expect.any(Function) as () => void,\n        getUrl: expect.any(Function) as () => void,\n      };\n\n      expect(app).toStrictEqual(expectedApp);\n    });\n  });\n});"
+    },
+    "src/app/controllers/app.controller.spec.ts": {
       "tests": [
         {
           "id": "8",
-          "name": "App Controller getHello should return 'Hello World!' when called."
+          "name": "App Controller getApiMetadata should call Api metadata service method when called."
         }
       ],
-      "source": "import { AppController } from \"@app/app.controller\";\n\ndescribe(\"App Controller\", () => {\n  describe(\"getHello\", () => {\n    const appController = new AppController();\n\n    it(\"should return 'Hello World!' when called.\", () => {\n      expect(appController.getHello()).toBe(\"Hello World!\");\n    });\n  });\n});"
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { APIMetadata } from \"@app/types/app.types\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n\n  const mocks = {\n    appService: {\n      getApiMeta: vi.fn<() => APIMetadata>(),\n    },\n  };\n\n  beforeEach(async() => {\n    mocks.appService = {\n      getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      }),\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.appService,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.appService.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+    },
+    "src/app/providers/services/app.service.spec.ts": {
+      "tests": [
+        {
+          "id": "9",
+          "name": "App Service getApiMeta should return Api metadata when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { APIMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<APIMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
     }
   },
-  "projectRoot": "/Users/mac-Z14AZANA/WebstormProjects/goat-it-api",
+  "projectRoot": "/Users/antoinezanardi/WebstormProjects/goat-it-api",
   "config": {
     "cleanTempDir": "always",
     "incremental": true,
@@ -350,7 +407,7 @@
       "dist",
       "configs/",
       "!configs/vitest/vitest.config.ts",
-      "tests/stryker",
+      "tests/mutation",
       "tests/unit/coverage",
       "scripts/",
       ".editorconfig",
@@ -384,7 +441,9 @@
       "break": 100
     },
     "dryRunTimeoutMinutes": 10,
-    "disableTypeChecks": "src/**/*.{js,ts,jsx,tsx,html,vue}",
+    "typescriptChecker": {
+      "prioritizePerformanceOverAccuracy": true
+    },
     "force": true,
     "configFile": "configs/stryker/stryker.config.mjs",
     "allowConsoleColors": true,
@@ -421,6 +480,7 @@
       "excludedMutations": []
     },
     "appendPlugins": [],
+    "disableTypeChecks": true,
     "symlinkNodeModules": true,
     "tempDirName": ".stryker-tmp",
     "testRunnerNodeArgs": [],
@@ -429,10 +489,7 @@
     "warnings": true,
     "disableBail": false,
     "allowEmpty": false,
-    "ignorers": [],
-    "typescriptChecker": {
-      "prioritizePerformanceOverAccuracy": true
-    }
+    "ignorers": []
   },
   "framework": {
     "name": "StrykerJS",

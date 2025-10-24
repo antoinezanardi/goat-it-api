@@ -1,0 +1,14 @@
+name: Lint 🔍
+description: Lint the codebase to ensure code quality and consistency.
+author: Antoine ZANARDI
+
+runs:
+  using: composite
+  steps:
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Check and lint code 🔍
+      id: lint
+      shell: bash
+      run: pnpm run lint

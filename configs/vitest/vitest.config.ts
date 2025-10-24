@@ -1,10 +1,16 @@
-import { JscConfig } from "@swc/core";
+import path from "node:path";
+
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
-import { resolve } from "node:path";
+
 import SwcConfig from "../swc/swc.config.json";
 
-const rootDir = resolve(__dirname, "../..");
+import type { JscConfig } from "@swc/core";
+
+const rootDirectory = path.resolve(import.meta.dirname, "../..");
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 
 export default defineConfig({
   test: {
@@ -13,13 +19,11 @@ export default defineConfig({
     clearMocks: true,
     mockReset: true,
     restoreMocks: true,
-    root: rootDir,
+    root: rootDirectory,
     include: ["src/**/*.spec.ts"],
     coverage: {
       provider: "v8",
-      include: [
-        "src/**/*.ts",
-      ],
+      include: ["src/**/*.ts"],
       exclude: [
         "src/**/*.module.ts",
         "src/**/*.constants.ts",
@@ -33,7 +37,6 @@ export default defineConfig({
         "text-summary",
         "html",
       ],
-      all: true,
       thresholds: {
         100: true,
       },
@@ -42,20 +45,21 @@ export default defineConfig({
   plugins: [
     swc.vite({
       jsc: {
-        ...SwcConfig.jsc as JscConfig,
-        baseUrl: rootDir,
+        ...swcJsc,
+        baseUrl: rootDirectory,
       },
       module: { type: "es6" },
     }),
   ],
   resolve: {
     alias: {
-      "@src": resolve(rootDir, "src"),
-      "@app": resolve(rootDir, "src/app"),
-      "@server": resolve(rootDir, "src/server"),
-      "@modules": resolve(rootDir, "src/modules"),
-      "@shared": resolve(rootDir, "src/shared"),
-      "@configs": resolve(rootDir, "configs"),
-    }
-  }
+      "@package-json": path.resolve(rootDirectory, "package.json"),
+      "@src": path.resolve(rootDirectory, "src"),
+      "@app": path.resolve(rootDirectory, "src/app"),
+      "@server": path.resolve(rootDirectory, "src/server"),
+      "@modules": path.resolve(rootDirectory, "src/modules"),
+      "@shared": path.resolve(rootDirectory, "src/shared"),
+      "@configs": path.resolve(rootDirectory, "configs"),
+    },
+  },
 });

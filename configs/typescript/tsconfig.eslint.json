@@ -7,11 +7,9 @@
     "rootDir": "../../"
   },
   "include": [
-    "../../package.json",
-    "../../src/**/*.ts",
-    "../../configs/**/*.ts",
-    "../../configs/**/*.json",
-    "../../src/**/*.spec.ts"
+    "../../eslint.config.ts",
+    "../../src/",
+    "../../configs",
   ],
   "exclude": [
     "../../node_modules",

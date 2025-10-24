@@ -10,6 +10,7 @@
     },
     "baseUrl": "./",
     "paths": {
+      "@package-json": ["package.json"],
       "@src/*": ["src/*"],
       "@app/*": ["src/app/*"],
       "@configs/*": ["configs/*"],
@@ -22,6 +23,10 @@
       "decoratorMetadata": true
     },
     "keepClassNames": true
+  },
+  "module": {
+    "type": "commonjs",
+    "strict": true
   },
   "sourceMaps": true,
   "exclude": [".*\\.spec\\.ts$"]

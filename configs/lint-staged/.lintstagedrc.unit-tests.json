@@ -1,0 +1,3 @@
+{
+  "*.{js,mjs,cjs,ts}": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts related --run"
+}
