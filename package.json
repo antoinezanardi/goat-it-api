@@ -3,18 +3,59 @@
   "version": "1.2.0",
   "description": "\uD83D\uDC10 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.",
   "private": true,
+  "keywords": [
+    "goat-it",
+    "nestjs",
+    "fastify",
+    "mongodb",
+    "api",
+    "typescript",
+    "backend"
+  ],
   "homepage": "https://github.com/antoinezanardi/goat-it-api#readme",
   "bugs": {
-    "url": "https://github.com/antoinezanardi/goat-it-api/issues"
+    "url": "https://github.com/antoinezanardi/goat-it-api/issues",
+    "email": "antoine.zanardi@epitech.eu"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antoinezanardi/goat-it-api.git"
+    "url": "git+https://github.com/antoinezanardi/goat-it-api.git",
+    "branch": "main"
   },
   "license": "MIT",
   "author": "Antoine ZANARDI",
+  "contributors": [
+    {
+      "name": "Antoine ZANARDI",
+      "email": "antoine.zanardi@epitech.eu",
+      "url": "https://antoinezanardi.fr"
+    }
+  ],
+  "maintainers": [
+    {
+      "name": "Antoine ZANARDI",
+      "email": "antoine.zanardi@epitech.eu",
+      "url": "https://antoinezanardi.fr"
+    }
+  ],
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/antoinezanardi"
+  },
   "type": "commonjs",
   "main": "dist/main.js",
+  "readme": "README.md",
+  "engines": {
+    "node": ">=24"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "scripts": {
     "prepare": "scripts/post-install-prepare.sh",
     "build": "nest build --config configs/nest/nest-cli.config.json",
@@ -90,8 +131,5 @@
     "@nestjs/platform-fastify": "^11.1.7",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
-  },
-  "engines": {
-    "node": ">=24.10.0"
   }
 }
