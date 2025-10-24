@@ -1,7 +1,8 @@
 import { Controller, Get } from "@nestjs/common";
 
-import { APIMetadata } from "@app/types/app.types";
 import { AppService } from "@app/providers/services/app.service";
+
+import type { APIMetadata } from "@app/types/app.types";
 
 @Controller()
 export class AppController {

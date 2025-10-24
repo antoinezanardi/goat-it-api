@@ -1,10 +1,11 @@
 import path from "node:path";
 
-import type { JscConfig } from "@swc/core";
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
 
 import SwcConfig from "../swc/swc.config.json";
+
+import type { JscConfig } from "@swc/core";
 
 const rootDirectory = path.resolve(import.meta.dirname, "../..");
 

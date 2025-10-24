@@ -1,7 +1,8 @@
 import StylisticPlugin from "@stylistic/eslint-plugin";
-import type { Linter } from "eslint";
 
 import { INDENT_SPACE_COUNT, MAX_LENGTH_DEFAULT_CONFIG } from "../eslint.constants.js";
+
+import type { Linter } from "eslint";
 
 const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
   name: "stylistic",

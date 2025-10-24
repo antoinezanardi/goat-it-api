@@ -1,8 +1,9 @@
 import { Test } from "@nestjs/testing";
 
-import type { APIMetadata } from "@app/types/app.types";
 import { AppController } from "@app/controllers/app.controller";
 import { AppService } from "@app/providers/services/app.service";
+
+import type { APIMetadata } from "@app/types/app.types";
 
 describe("App Controller", () => {
   let appController: AppController;
@@ -16,12 +17,13 @@ describe("App Controller", () => {
   beforeEach(async() => {
     mocks.appService = {
       getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue({
+        packageName: "goat-it-api",
         name: "Goat It API",
         description: "API for Goat It application.",
         version: "1.0.0",
       }),
     };
-    const moduleReference = await Test.createTestingModule({
+    const testingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
         {
@@ -31,16 +33,14 @@ describe("App Controller", () => {
       ],
     }).compile();
 
-    appController = moduleReference.get<AppController>(AppController);
+    appController = testingModule.get<AppController>(AppController);
   });
 
-  describe("getHello", () => {
-    it("should return 'Hello World!' when called.", () => {
-      expect(appController.getApiMetadata()).toStrictEqual<APIMetadata>({
-        name: "Goat It API",
-        description: "API for Goat It application.",
-        version: "1.0.0",
-      });
+  describe(AppController.prototype.getApiMetadata, () => {
+    it("should call Api metadata service method when called.", () => {
+      appController.getApiMetadata();
+
+      expect(mocks.appService.getApiMeta).toHaveBeenCalledExactlyOnceWith();
     });
   });
 });

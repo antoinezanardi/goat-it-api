@@ -1,7 +1,8 @@
 import ImportPlugin from "eslint-plugin-import";
-import type { Linter } from "eslint";
 
 import { ESLINT_IGNORES } from "../eslint.constants";
+
+import type { Linter } from "eslint";
 
 const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
   ...ImportPlugin.flatConfigs.recommended,
@@ -86,8 +87,9 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
       "error",
       {
         "warnOnUnassignedImports": true,
-        "groups": ["builtin", "external", "internal", "parent", "sibling"],
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "type"],
         "pathGroups": [
+          { pattern: "**/*.types", group: "type", position: "after" },
           { pattern: "@package-json", group: "parent" },
           { pattern: "@src/**", group: "parent" },
           { pattern: "@app/**", group: "parent", position: "after" },

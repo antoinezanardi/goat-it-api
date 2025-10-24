@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import packageJson from "@package-json" assert { type: "json" };
+import packageJson from "@package-json" with { type: "json" };
 
-import { APIMetadata } from "@app/types/app.types";
+import type { APIMetadata } from "@app/types/app.types";
 
 @Injectable()
 export class AppService {
@@ -10,6 +10,7 @@ export class AppService {
     void this;
 
     return {
+      packageName: packageJson.name,
       name: "Goat It API",
       description: packageJson.description,
       version: packageJson.version,

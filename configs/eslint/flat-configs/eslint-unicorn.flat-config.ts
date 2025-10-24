@@ -1,4 +1,5 @@
 import EslintUnicornPlugin from "eslint-plugin-unicorn";
+
 import type { Linter } from "eslint";
 
 const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
