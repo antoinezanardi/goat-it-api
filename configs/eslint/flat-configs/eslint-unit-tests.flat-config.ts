@@ -1,4 +1,5 @@
 import Vitest from "@vitest/eslint-plugin";
+
 import type { Linter } from "eslint";
 
 const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {

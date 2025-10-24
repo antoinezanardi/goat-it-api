@@ -1,7 +1,7 @@
 {
   "name": "goat-it-api",
   "version": "1.2.0",
-  "description": "API for Goat It game",
+  "description": "\uD83D\uDC10 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.",
   "private": true,
   "homepage": "https://github.com/antoinezanardi/goat-it-api#readme",
   "bugs": {
@@ -28,7 +28,7 @@
     "lint:staged:fix": "lint-staged -c configs/lint-staged/.lintstagedrc.eslint.json",
     "lint:inspect-config": "npx @eslint/config-inspector",
     "test": "npm run test:unit",
-    "test:unit": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --typecheck.tsconfig configs/typescript/tsconfig.app.json",
+    "test:unit": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts",
     "test:unit:watch": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --watch",
     "test:unit:cov": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --coverage",
     "test:unit:staged": "lint-staged -c configs/lint-staged/.lintstagedrc.unit-tests.json",

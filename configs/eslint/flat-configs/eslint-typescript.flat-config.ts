@@ -1,9 +1,10 @@
 /* eslint-disable-next-line import/default */
 import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";
-import type { Linter } from "eslint";
 
 import { NAMING_CONVENTION_DEFAULT_CONFIG } from "../eslint.constants";
+
+import type { Linter } from "eslint";
 
 const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   name: "typescript",
