@@ -6,6 +6,7 @@ import { ESLINT_CONTROLLERS_FLAT_CONFIG } from "./configs/eslint/flat-configs/es
 import { ESLINT_GLOBAL_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-global.flat-config";
 import { ESLINT_IMPORT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-import.flat-config";
 import { ESLINT_MODULES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-modules.flat-config";
+import { ESLINT_SERVICES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-services.flat-config";
 import { ESLINT_STYLISTIC_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-stylistic.flat-config";
 import { ESLINT_UNICORN_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unicorn.flat-config";
 import { ESLINT_UNIT_TESTS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests.flat-config";
@@ -26,5 +27,6 @@ export default [
   ESLINT_UNIT_TESTS_FLAT_CONFIG,
   ESLINT_MODULES_FLAT_CONFIG,
   ESLINT_CONTROLLERS_FLAT_CONFIG,
+  ESLINT_SERVICES_FLAT_CONFIG,
   ESLINT_TYPESCRIPT_DECLARATION_CONFIG,
 ] satisfies Linter.Config[];

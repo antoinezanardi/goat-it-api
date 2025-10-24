@@ -88,6 +88,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
         "warnOnUnassignedImports": true,
         "groups": ["builtin", "external", "internal", "parent", "sibling"],
         "pathGroups": [
+          { pattern: "@package-json", group: "parent" },
           { pattern: "@src/**", group: "parent" },
           { pattern: "@app/**", group: "parent", position: "after" },
           { pattern: "@server/**", group: "parent", position: "after" },

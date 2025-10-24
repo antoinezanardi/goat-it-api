@@ -52,6 +52,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      "@package-json": path.resolve(rootDirectory, "package.json"),
       "@src": path.resolve(rootDirectory, "src"),
       "@app": path.resolve(rootDirectory, "src/app"),
       "@server": path.resolve(rootDirectory, "src/server"),

@@ -10,6 +10,7 @@
     },
     "baseUrl": "./",
     "paths": {
+      "@package-json": ["package.json"],
       "@src/*": ["src/*"],
       "@app/*": ["src/app/*"],
       "@configs/*": ["configs/*"],
