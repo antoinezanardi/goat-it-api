@@ -47,6 +47,55 @@ Accessible via une WebApp, ce jeu met en scène un animateur qui pose des questi
 
 Le but est de répondre correctement pour accumuler des GOAT points et devenir le **GOAT de la partie**.
 
+### Branding
+
+#### Vision globale
+
+- Nom du projet : Goat It
+- Phrase d’accroche : « Le show de culture générale qui se vit en live — prêt à devenir le GOAT de la partie ? »
+- Objectif principal : Divertir
+- Qu'est-ce que Goat It a d'unique ? : Un jeu de quiz accessible en temps réel avec un animateur et des interactions directes.
+- Promesses aux joueurs : 
+    - Une expérience de quiz interactive et engageante.
+    - Un large éventail de questions couvrant divers thèmes et niveaux de difficulté.
+    - Un jeu accessible à tous, sans inscription ni création de compte.
+- Public visé en priorité : Personnes de 16 ans et plus, amateurs de quiz et de culture générale.
+- Contexte de jeu : Soirées en présentiel dans un environnement convivial et calme.
+- Device le plus utilisé : Mobile (smartphone).
+- Émotion principale éprouvée par les joueurs : Amusement et excitation.
+- Si Goat It était une personne, elle serait (2 adjectifs sociaux) : Sociable et curieuse.
+- Si Goat It était une personne, elle serait (2 adjectifs tonalité) : Drôle et surprenante.
+- Si Goat It était une personne, elle serait (2 adjectifs intellectuels) : Cultivée et perspicace.
+- Si Goat It était une personne, elle serait (2 adjectifs énergiques) : Dynamique et enthousiaste.
+- Si Goat It était une personne, elle serait (1 adjectifs attitudinal) : Indomptable.
+- Si Goat It était une personne, elle serait (2 adjectifs good vibes) : Optimiste et festif.
+- Trois références graphiques ou visuelles : 
+    - Style retrogaming avec des couleurs vives et contrastées.
+    - Balatro (jeu-video), 
+    - Flat design avec de simples illustrations épurées, en duo tones (?).
+- Styles graphiques à éviter : 
+    - Designs trop complexes ou chargés. (skeuomorphisme)
+    - Esthétique trop sérieuse ou formelle.
+    - Couleurs ternes ou monotones.
+
+#### Gameplay
+
+- Tâches du Maître du Jeu (Animateur) :
+    - Créer et configurer la partie.
+    - Poser les questions tout en animant le jeu avec des indices oraux.
+    - Valider les réponses des joueurs et célébrer les bonnes réponses.
+    - Gérer les scores et le classement en temps réel.
+- Actions principales des joueurs ?
+    - Rejoindre la partie en entrant un code unique.
+    - Écouter attentivement les questions posées par l’animateur et y répondre à l’oral.
+    - Suivre l'état du jeu via l'interface (question en cours, indices, timer, classement).
+- Expérience joueur primordiale : Facilité d'animation pour le maître du jeu et immersion totale pour les joueurs.
+- Trois éléments que les joueurs ont bien aimés dans le jeu : 
+    - Interaction en temps réel avec l’animateur.
+    - Diversité des questions et thèmes abordés.
+    - Classement en direct et compétition amicale entre joueurs.
+- Expérience idéale pour le Maître du Jeu : Une interface intuitive et réactive qui lui permet de se concentrer sur l’animation et l’interaction avec les joueurs sans se soucier des aspects techniques.
+
 ---
 
 ## 🌐 Plateforme et accessibilité
