@@ -1,7 +1,7 @@
 {
   "name": "goat-it-api",
-  "version": "1.2.0",
-  "description": "\uD83D\uDC10 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.",
+  "version": "1.3.0",
+  "description": "🐐 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.",
   "private": true,
   "keywords": [
     "goat-it",
