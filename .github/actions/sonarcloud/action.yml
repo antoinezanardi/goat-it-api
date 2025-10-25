@@ -1,0 +1,43 @@
+name: SonarCloud Analysis 🌥️
+description: Run SonarCloud analysis with pnpm and Node.js setup.
+author: Antoine ZANARDI
+
+inputs:
+  unit-tests-coverage-base-cache-key:
+    description: Base cache key for unit tests coverage reports
+    required: true
+    default: unit-tests-coverage
+  unit-tests-coverage-reports-path:
+    description: Path to unit tests coverage reports
+    required: true
+    default: tests/unit/coverage
+  sonarcloud-token:
+    description: SonarCloud token for authentication
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Compute safe branch name 🍃
+      id: safe-branch-name
+      uses: ./.github/actions/compute-safe-branch-name
+
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Restore tests coverage from cache 🥡
+      uses: actions/cache/restore@v4
+      id: cache-unit-tests-coverage
+      with:
+        path: ${{ inputs.unit-tests-coverage-reports-path }}
+        key: ${{ inputs.unit-tests-coverage-base-cache-key }}-${{ steps.safe-branch-name.outputs.safe-branch-name }}
+        restore-keys: |
+          ${{ inputs.unit-tests-coverage-base-cache-key }}-${{ steps.safe-branch-name.outputs.safe-branch-name }}
+          ${{ inputs.unit-tests-coverage-base-cache-key }}-
+          ${{ inputs.unit-tests-coverage-base-cache-key }}
+
+    - name: SonarCloud Scan 🌥️
+      uses: SonarSource/sonarqube-scan-action@v6.0.0
+      env:
+        SONAR_HOST_URL: https://sonarcloud.io
+        SONAR_TOKEN: ${{ inputs.sonarcloud-token }}
