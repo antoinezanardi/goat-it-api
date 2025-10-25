@@ -3,6 +3,8 @@ import { Test } from "@nestjs/testing";
 import { AppController } from "@app/controllers/app.controller";
 import { AppService } from "@app/providers/services/app.service";
 
+import { createFakeApiMetadata } from "@factories/app/app.factory";
+
 import type { APIMetadata } from "@app/types/app.types";
 
 describe("App Controller", () => {
@@ -16,12 +18,7 @@ describe("App Controller", () => {
 
   beforeEach(async() => {
     mocks.appService = {
-      getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue({
-        packageName: "goat-it-api",
-        name: "Goat It API",
-        description: "API for Goat It application.",
-        version: "1.0.0",
-      }),
+      getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue(createFakeApiMetadata()),
     };
     const testingModule = await Test.createTestingModule({
       controllers: [AppController],

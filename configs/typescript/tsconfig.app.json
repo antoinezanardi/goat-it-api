@@ -28,7 +28,9 @@
       "@configs/*": ["configs/*"],
       "@server/*": ["src/server/*"],
       "@modules/*": ["src/modules/*"],
-      "@shared/*": ["src/shared/*"]
+      "@shared/*": ["src/shared/*"],
+      "@unit-tests/*": ["tests/unit/*"],
+      "@factories/*": ["tests/unit/utils/factories/*"]
     }
   },
   "include": [

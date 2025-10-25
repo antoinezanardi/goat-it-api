@@ -9,6 +9,7 @@
   "include": [
     "../../eslint.config.ts",
     "../../src/",
+    "../../tests/unit/",
     "../../configs",
   ],
   "exclude": [

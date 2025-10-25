@@ -29,5 +29,8 @@
     "strict": true
   },
   "sourceMaps": true,
-  "exclude": [".*\\.spec\\.ts$"]
+  "exclude": [
+    ".*\\.spec\\.ts$",
+    ".*\\.factory\\.ts$"
+  ]
 }
