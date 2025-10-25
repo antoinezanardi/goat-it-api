@@ -7,16 +7,12 @@ import { DatabaseModule } from "@src/infrastructure/database/database.module";
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 import { AppController } from "@app/controllers/app.controller";
+import { AppConfigModule } from "@app/modules/config/config.module";
 
 import { QuestionModule } from "@question/question.module";
 
 @Module({
-  imports: [
-    LoggerModule.forRoot(getLoggerConfiguration()),
-    HealthModule,
-    DatabaseModule,
-    QuestionModule,
-  ],
+  imports: [AppConfigModule, LoggerModule.forRoot(getLoggerConfiguration()), HealthModule, DatabaseModule, QuestionModule],
   controllers: [AppController],
   providers: [AppService],
 })
