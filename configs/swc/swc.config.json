@@ -31,6 +31,7 @@
   "sourceMaps": true,
   "exclude": [
     ".*\\.spec\\.ts$",
-    ".*\\.factory\\.ts$"
+    ".*\\.factory\\.ts$",
+    ".*\\.mock\\.ts$"
   ]
 }
