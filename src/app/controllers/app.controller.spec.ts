@@ -3,29 +3,28 @@ import { Test } from "@nestjs/testing";
 import { AppController } from "@app/controllers/app.controller";
 import { AppService } from "@app/providers/services/app.service";
 
-import { createFakeApiMetadata } from "@factories/app/app.factory";
-
-import type { APIMetadata } from "@app/types/app.types";
+import { createMockedAppService } from "@mocks/app/services/app.service.mock";
 
 describe("App Controller", () => {
   let appController: AppController;
-
-  const mocks = {
-    appService: {
-      getApiMeta: vi.fn<() => APIMetadata>(),
-    },
+  let mocks: {
+    services: {
+      app: ReturnType<typeof createMockedAppService>;
+    };
   };
 
   beforeEach(async() => {
-    mocks.appService = {
-      getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue(createFakeApiMetadata()),
+    mocks = {
+      services: {
+        app: createMockedAppService(),
+      },
     };
     const testingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
         {
           provide: AppService,
-          useValue: mocks.appService,
+          useValue: mocks.services.app,
         },
       ],
     }).compile();
@@ -37,7 +36,7 @@ describe("App Controller", () => {
     it("should call Api metadata service method when called.", () => {
       appController.getApiMetadata();
 
-      expect(mocks.appService.getApiMeta).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();
     });
   });
 });

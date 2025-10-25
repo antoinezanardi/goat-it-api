@@ -30,7 +30,8 @@
       "@modules/*": ["src/modules/*"],
       "@shared/*": ["src/shared/*"],
       "@unit-tests/*": ["tests/unit/*"],
-      "@factories/*": ["tests/unit/utils/factories/*"]
+      "@factories/*": ["tests/unit/utils/factories/*"],
+      "@mocks/*": ["tests/unit/utils/mocks/*"]
     }
   },
   "include": [

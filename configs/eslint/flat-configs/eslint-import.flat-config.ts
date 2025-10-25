@@ -98,6 +98,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
           { pattern: "@shared/**", group: "parent", position: "after" },
           { pattern: "@configs/**", group: "parent", position: "after" },
           { pattern: "@unit-tests/**", group: "sibling", position: "after" },
+          { pattern: "@mocks/**", group: "sibling", position: "after" },
           { pattern: "@factories/**", group: "sibling", position: "after" },
         ],
         "newlines-between": "always",
