@@ -4,6 +4,7 @@ import * as Fastify from "@nestjs/platform-fastify";
 import type { AppModule } from "@app/app.module";
 
 import { bootstrap } from "@server/server";
+import * as corsUtils from "@server/cors";
 
 import type { INestApplication } from "@nestjs/common";
 
@@ -17,6 +18,7 @@ vi.mock(import("@app/app.module"), () => ({
 describe("Server", () => {
   beforeEach(() => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
+      enableCors: vi.fn<() => INestApplication>(),
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
@@ -28,6 +30,23 @@ describe("Server", () => {
       await bootstrap();
 
       expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter));
+    });
+
+    it("should enable cors when called.", async() => {
+      vi.spyOn(corsUtils, "buildCorsConfig").mockReturnValueOnce({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
+      const app = await bootstrap();
+
+      expect(app.enableCors).toHaveBeenCalledExactlyOnceWith({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
     });
 
     it("should enable shutdown hooks when called.", async() => {
@@ -67,6 +86,7 @@ describe("Server", () => {
     it("should return the app when called.", async() => {
       const app = await bootstrap();
       const expectedApp = {
+        enableCors: expect.any(Function) as () => INestApplication,
         enableShutdownHooks: expect.any(Function) as () => INestApplication,
         listen: expect.any(Function) as () => void,
         getUrl: expect.any(Function) as () => void,
