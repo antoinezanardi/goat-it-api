@@ -7,7 +7,7 @@ function createFakeApiMetadata(apiMetadata: Partial<APIMetadata> = {}): APIMetad
     version: faker.system.semver(),
     name: faker.company.name(),
     description: faker.lorem.sentence(),
-    packageName: faker.system.fileName(),
+    packageName: `${faker.lorem.word()}-${faker.lorem.word()}`,
     ...apiMetadata,
   };
 }
