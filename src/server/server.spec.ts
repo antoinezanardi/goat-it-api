@@ -6,6 +6,7 @@ import type { AppModule } from "@app/app.module";
 
 import { setupSwaggerModule } from "@server/helpers/swagger.helpers";
 import { bootstrap } from "@server/server";
+import * as corsUtils from "@server/cors";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
@@ -20,6 +21,7 @@ vi.mock(import("@server/helpers/swagger.helpers"));
 describe("Server", () => {
   beforeEach(() => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({
+      enableCors: vi.fn<() => INestApplication>(),
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
       get: vi.fn<() => object>().mockReturnValue({
@@ -39,6 +41,23 @@ describe("Server", () => {
       await bootstrap();
 
       expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter), expectedOptions);
+    });
+
+    it("should enable cors when called.", async() => {
+      vi.spyOn(corsUtils, "buildCorsConfig").mockReturnValueOnce({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
+      const app = await bootstrap();
+
+      expect(app.enableCors).toHaveBeenCalledExactlyOnceWith({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
     });
 
     it("should enable shutdown hooks when called.", async() => {
@@ -104,6 +123,7 @@ describe("Server", () => {
     it("should return the app when called.", async() => {
       const app = await bootstrap();
       const expectedApp = {
+        enableCors: expect.any(Function) as () => INestApplication,
         enableShutdownHooks: expect.any(Function) as () => INestApplication,
         useLogger: expect.any(Function) as () => void,
         get: expect.any(Function) as () => never,
