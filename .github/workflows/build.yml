@@ -114,3 +114,17 @@ jobs:
         uses: ./.github/actions/mutation-tests
         with:
           stryker-dashboard-api-key: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+
+  sonarcloud:
+    name: SonarCloud Analysis 🌥️
+    runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: SonarCloud Analysis 🌥️
+        uses: ./.github/actions/sonarcloud
+        with:
+          sonarcloud-token: ${{ secrets.SONARCLOUD_TOKEN }}

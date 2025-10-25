@@ -60,6 +60,9 @@ export default defineConfig({
       "@modules": path.resolve(rootDirectory, "src/modules"),
       "@shared": path.resolve(rootDirectory, "src/shared"),
       "@configs": path.resolve(rootDirectory, "configs"),
+      "@unit-tests": path.resolve(rootDirectory, "tests/unit"),
+      "@factories": path.resolve(rootDirectory, "tests/unit/utils/factories"),
+      "@mocks": path.resolve(rootDirectory, "tests/unit/utils/mocks"),
     },
   },
 });
