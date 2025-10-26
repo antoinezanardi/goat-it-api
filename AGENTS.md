@@ -69,7 +69,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 - Test runner: Vitest (with V8 coverage provider) with `100%` coverage thresholds enforced.
 - Mutation testing: Stryker with `100%` mutation score goal.
 - Linting: ESLint (flat-configs under `configs/eslint`)
-- Package manager: pnpm (see `package.json` for `packageManager` field to specify the version)
+- Package manager: `pnpm` (see `package.json` for `packageManager` field to specify the version)
 - Node engine: Node.js `>= 24` (see `package.json` `engines` field)
 
 ## High-level architecture
@@ -103,7 +103,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 - `src/app/controllers/app.controller.ts` — example controller.
 - `src/app/providers/services/app.service.ts` — example service that reads `package.json`.
 - `src/app/providers/services/app.service.spec.ts` — unit tests for `AppService`.
-- `tests/unit/` — generated test outputs and coverage artifacts (lcov, HTML reports and other coverage files); do not add source unit tests here.
+- `tests/unit/` — generated test outputs and coverage artifacts (`lcov`, `HTML` reports and other coverage files); do not add source unit tests here.
 - `tests/unit/utils/` — shared test utilities, factories and mocks used across multiple test suites (project-wide helpers).
 - `configs/eslint/*` — ESLint flat-configs and parser declarations used by `npm run lint`.
 
@@ -307,13 +307,13 @@ pnpm run test:unit:cov
 
 ## Notes and warnings
 
-- The project currently enforces 100% coverage in config. Ensure any changes maintain coverage.
+- The project currently enforces `100%` coverage in config. Ensure any changes maintain coverage.
 - Mutation testing is expensive; run it selectively (CI preferred). Usually, run mutation tests locally before merging significant changes.
-- There's a TODO in `src/server/server.ts` to replace console logging with a proper logger (Winston). If you modify logging behavior, ensure tests are updated accordingly.
+- There's a TODO in `src/server/server.ts` to replace `console` logging with a proper logger (`Winston`). If you modify logging behavior, ensure tests are updated accordingly.
 
 ## Contact and maintainers
 
-- Author / maintainer: Antoine ZANARDI (antoine.zanardi@epitech.eu)
+- Author/maintainer: Antoine ZANARDI (antoine.zanardi@epitech.eu)
 - GitHub issues: <https://github.com/antoinezanardi/goat-it-api/issues>
 
 ## Contributing
