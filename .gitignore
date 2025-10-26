@@ -48,6 +48,7 @@ dist/
 # Coverage and tests reports
 tests/unit/coverage
 tests/mutation/coverage
+tests/acceptance/reports
 
 # Stryker temp files
 .stryker-tmp

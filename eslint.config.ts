@@ -10,10 +10,11 @@ import { ESLINT_UNICORN_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint
 import { ESLINT_UNIT_TESTS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests.flat-config";
 import { ESLINT_TYPESCRIPT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-typescript.flat-config";
 import { ESLINT_TYPESCRIPT_DECLARATION_CONFIG } from "./configs/eslint/flat-configs/eslint.typescript-declaration-config";
+import { ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-cucumber-steps-and-hooks.flat-config";
 
 import type { Linter } from "eslint";
 
-export default [
+const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   {
     name: "global-ignores",
     ignores: ESLINT_IGNORES,
@@ -29,4 +30,7 @@ export default [
   ESLINT_CONTROLLERS_FLAT_CONFIG,
   ESLINT_SERVICES_FLAT_CONFIG,
   ESLINT_TYPESCRIPT_DECLARATION_CONFIG,
-] satisfies Linter.Config[];
+  ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG,
+];
+
+export default ESLINT_FLAT_CONFIGS;

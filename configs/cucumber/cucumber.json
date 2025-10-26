@@ -1,0 +1,24 @@
+{
+  "default": {
+    "paths": [
+      "tests/acceptance/features/**/*.feature"
+    ],
+    "requireModule": [
+      "tsx/cjs"
+    ],
+    "require": [
+      "tests/acceptance/support/hooks.ts",
+      "tests/acceptance/support/**/*.ts",
+      "tests/acceptance/features/**/*.ts"
+    ],
+    "publish": false,
+    "format": [
+      "summary",
+      "progress-bar",
+      "junit:tests/acceptance/reports/junit.xml",
+      "json:tests/acceptance/reports/report.json",
+      "message:tests/acceptance/reports/message.json"
+    ],
+    "parallel": 4
+  }
+}
