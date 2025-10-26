@@ -118,8 +118,13 @@ jobs:
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
     needs:
       - unit-tests
+    if: github.actor != 'renovate[bot]'
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v5
