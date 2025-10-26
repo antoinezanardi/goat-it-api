@@ -1,7 +1,7 @@
-import { When } from "@cucumber/cucumber";
+import { Given } from "@cucumber/cucumber";
 
-import type { CustomWorld } from "@acceptance-support/world/world.types";
+import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-When(/^I retrieve the application metadata$/u, async function(this: CustomWorld): Promise<void> {
-  this.response = await fetch("http://localhost:3000");
+Given(/^I retrieve the application metadata$/u, async function(this: GoatItWorld): Promise<void> {
+  await this.fetchAndStoreResponse("/");
 });

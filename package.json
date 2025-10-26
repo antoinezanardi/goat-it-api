@@ -116,6 +116,7 @@
     "is-ci": "^4.1.0",
     "jiti": "^2.6.1",
     "lint-staged": "^16.2.6",
+    "ofetch": "^1.4.1",
     "rimraf": "^6.0.1",
     "semantic-release": "^25.0.1",
     "semantic-release-export-data": "^1.2.0",
@@ -136,6 +137,7 @@
     "@nestjs/core": "^11.1.7",
     "@nestjs/platform-fastify": "^11.1.7",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.2",
+    "zod": "^4.1.12"
   }
 }
