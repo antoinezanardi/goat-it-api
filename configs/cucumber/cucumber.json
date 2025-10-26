@@ -7,7 +7,6 @@
       "tsx/cjs"
     ],
     "require": [
-      "tests/acceptance/support/hooks.ts",
       "tests/acceptance/support/**/*.ts",
       "tests/acceptance/features/**/*.ts"
     ],
@@ -19,6 +18,6 @@
       "json:tests/acceptance/reports/report.json",
       "message:tests/acceptance/reports/message.json"
     ],
-    "parallel": 4
+    "parallel": 1
   }
 }

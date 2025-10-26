@@ -1,19 +1,36 @@
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import { Test } from "@nestjs/testing";
+import { spawn, spawnSync } from "node:child_process";
 
-import { AppModule } from "@app/app.module";
+import type { SpawnOptions, SpawnOptionsWithoutStdio, ChildProcessWithoutNullStreams } from "node:child_process";
 
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import type { TestingModule } from "@nestjs/testing";
-
-async function initAppForAcceptanceTests(): Promise<{ app: NestFastifyApplication; module: TestingModule }> {
-  const module: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();
-  const app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
-
-  await app.init();
-  await app.getHttpAdapter().getInstance().ready();
-
-  return { app, module };
+function buildAppForAcceptanceTests(): void {
+  const spawnOptions: SpawnOptions = {
+    shell: true,
+    stdio: "inherit",
+  };
+  const buildProcess = spawnSync("pnpm run build", spawnOptions);
+  if (buildProcess.status !== 0) {
+    throw new Error("Failed to build the application for acceptance tests.");
+  }
 }
 
-export { initAppForAcceptanceTests };
+function serveAppForAcceptanceTests(): ChildProcessWithoutNullStreams {
+  const spawnOptions: SpawnOptionsWithoutStdio = {
+    shell: true,
+  };
+  const serverProcess = spawn("pnpm run start:prod", spawnOptions);
+
+  return serverProcess;
+}
+
+function killAppProcess(serverProcess: ChildProcessWithoutNullStreams | undefined): void {
+  if (serverProcess?.killed === false) {
+    serverProcess.kill("SIGTERM");
+    console.log("[acceptance-tests-api] Server process killed.");
+  }
+}
+
+export {
+  buildAppForAcceptanceTests,
+  serveAppForAcceptanceTests,
+  killAppProcess,
+};

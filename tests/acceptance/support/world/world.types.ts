@@ -1,15 +1,11 @@
 import { World } from "@cucumber/cucumber";
 
-import type { HttpExceptionBody } from "@nestjs/common";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import type { Response } from "light-my-request";
+import type { ChildProcessWithoutNullStreams } from "node:child_process";
 
 class CustomWorld extends World {
-  public app!: NestFastifyApplication;
-
   public response!: Response;
 
-  public responseException!: HttpExceptionBody;
+  public serverProcess?: ChildProcessWithoutNullStreams;
 }
 
 export { CustomWorld };

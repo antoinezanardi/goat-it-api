@@ -3,7 +3,7 @@ import type { Linter } from "eslint";
 const ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG: Linter.Config = {
   name: "cucumber-steps-and-hooks",
   files: [
-    "tests/acceptance/features/**/*.ts",
+    "tests/acceptance/features/step-definitions/**/*.ts",
     "tests/acceptance/support/hooks.ts",
   ],
   rules: {
@@ -12,7 +12,11 @@ const ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG: Linter.Config = {
       {
         capIsNewExceptions: [
           "Before",
+          "BeforeAll",
           "After",
+          "Given",
+          "When",
+          "Then",
         ],
       },
     ],
