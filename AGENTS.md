@@ -273,28 +273,31 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 
 ## What an agent must do before committing any change
 
-- Run `pnpm run lint` and address warnings/errors.
-- Run `pnpm run typecheck`.
-- Run `pnpm run test:unit:cov` and ensure all tests pass and coverage `100%` is maintained.
+- Address warnings/errors from `pnpm run lint`.
+- Execute `pnpm run typecheck`.
+- Ensure `pnpm run test:unit:cov` passes and coverage remains `100%`.
 - Update or add unit tests for changed/added behavior.
 - Ensure path aliases and imports remain valid.
 
 ## Minimal local setup for a developer/agent
 
-1. Install pnpm (if not present): <https://pnpm.io/installation>
-2. Commands:
+### Package manager and commands
+
+Install pnpm (if not present): <https://pnpm.io/installation>
+
+- Commands:
 
 ```bash
 pnpm install
 ```
 
-3. Development server:
+- Development server:
 
 ```bash
 pnpm run start:dev
 ```
 
-4. Tests and checks:
+- Tests and checks:
 
 ```bash
 pnpm run lint
@@ -315,7 +318,7 @@ pnpm run test:unit:cov
 
 ## Contributing
 
-Please read the project's `.`github/CONTRIBUTING.md` for the canonical contributor workflow, commit message rules, PR template and local check commands.
+Please read the project's `.github/CONTRIBUTING.md` for the canonical contributor workflow, commit message rules, PR template and local check commands.
 
 It contains the concrete step-by-step guidance contributors and automated agents should follow when proposing changes.
 
