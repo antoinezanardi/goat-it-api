@@ -1,5 +1,20 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.4.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.3.0...v1.4.0) (2025-10-25)
+
+### 🚀 Features
+
+* **faker:** add factories library ([#70](https://github.com/antoinezanardi/goat-it-api/issues/70)) ([b441508](https://github.com/antoinezanardi/goat-it-api/commit/b441508d520809807e82908595773a62e7e9af04)), closes [#64](https://github.com/antoinezanardi/goat-it-api/issues/64)
+* **sonarcloud:** add SonarCloud analysis workflow and configuration ([#73](https://github.com/antoinezanardi/goat-it-api/issues/73)) ([c6d1ce6](https://github.com/antoinezanardi/goat-it-api/commit/c6d1ce64776f65cae8abfd162a0bd54ef3bbc60c)), closes [#31](https://github.com/antoinezanardi/goat-it-api/issues/31)
+
+### ✅ Tests
+
+* **mocks:** add basic mocking configuration ([#72](https://github.com/antoinezanardi/goat-it-api/issues/72)) ([beb72e9](https://github.com/antoinezanardi/goat-it-api/commit/beb72e96fc614829ffa28ccd98bafa21d86f203a))
+
+### 🧹 Chore
+
+* **deps:** update github artifact actions (major) ([#68](https://github.com/antoinezanardi/goat-it-api/issues/68)) ([9610855](https://github.com/antoinezanardi/goat-it-api/commit/96108559d2f244709250c6dc8c41920bf32b5788))
+
 ## [1.3.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.2.0...v1.3.0) (2025-10-24)
 
 ### 🚀 Features
