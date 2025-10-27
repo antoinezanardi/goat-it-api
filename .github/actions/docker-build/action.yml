@@ -10,9 +10,6 @@ inputs:
 runs:
     using: composite
     steps:
-      - name: Install project 📦
-        uses: ./.github/actions/install-project
-
       - name: Set up QEMU 🏗️
         uses: docker/setup-qemu-action@v3
 

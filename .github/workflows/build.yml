@@ -59,10 +59,8 @@ jobs:
         uses: ./.github/actions/install-project
 
   docker-builds:
-    name: Docker Builds 🐳
+    name: Docker Build 🐳
     runs-on: ubuntu-latest
-    needs:
-      - install
     strategy:
       fail-fast: false
       matrix:
