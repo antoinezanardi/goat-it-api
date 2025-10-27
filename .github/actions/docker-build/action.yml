@@ -10,6 +10,18 @@ inputs:
 runs:
     using: composite
     steps:
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+      - name: Validate platform input 🚢
+        id: validate-platform
+        shell: bash
+        run: |
+          if [[ "${{ inputs.platform }}" != "linux/amd64" && "${{ inputs.platform }}" != "linux/arm64" ]]; then
+            echo "Error: Invalid platform '${{ inputs.platform }}'. Supported platforms are 'linux/amd64' and 'linux/arm64'."
+            exit 1
+          fi
+
       - name: Docker Build 🐳
         id: docker-build
         shell: bash
