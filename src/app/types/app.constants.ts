@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const APP_METADATA_SCHEMA = z.object({
   name: z.string(),
-  version: z.string(),
+  version: z.string().regex(/^\d+\.\d+\.\d+(?:-[\w.]+)?(?:\+[\w.]+)?$/u),
   description: z.string(),
   packageName: z.string(),
 });

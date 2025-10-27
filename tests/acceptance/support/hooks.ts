@@ -15,5 +15,7 @@ Before(async function(this: GoatItWorld) {
 });
 
 After(async function(this: GoatItWorld) {
-  await killAppProcess(this.appProcess);
+  if (this.appProcess) {
+    await killAppProcess(this.appProcess);
+  }
 });

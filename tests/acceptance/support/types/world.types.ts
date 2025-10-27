@@ -28,7 +28,7 @@ class GoatItWorld extends World {
 
   public expectLastResponseJson<T>(schema: { parse: (u: unknown) => T }): T {
     if (!this.lastFetchResponse) {
-      throw new Error("No response stored");
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
     }
     const { _data: data } = this.lastFetchResponse;
 

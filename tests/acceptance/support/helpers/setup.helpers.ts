@@ -20,7 +20,9 @@ async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       serverProcess.kill();
-      reject(new Error("Server failed to start within timeout"));
+      serverProcess.once("exit", () => {
+        reject(new Error("Server failed to start within timeout"));
+      });
     }, APP_READINESS_TIMEOUT_MS);
 
     serverProcess.stdout.on("data", (data: Buffer) => {
@@ -62,12 +64,10 @@ async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithou
   });
 }
 
-async function killAppProcess(serverProcess: ChildProcessWithoutNullStreams | undefined): Promise<void> {
-  if (serverProcess?.killed === false) {
-    serverProcess.kill("SIGTERM");
+async function killAppProcess(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
+  serverProcess.kill("SIGTERM");
 
-    await forceKillAppProcessAfterTimeout(serverProcess);
-  }
+  await forceKillAppProcessAfterTimeout(serverProcess);
 }
 
 export {
