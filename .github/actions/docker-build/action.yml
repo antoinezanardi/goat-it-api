@@ -28,4 +28,4 @@ runs:
       - name: Docker Build 🐳
         id: docker-build
         shell: bash
-        run: pnpm run docker:build:${{ inputs.platform }}
+        run: docker buildx build --platform ${{ inputs.platform }} -t goat-it-api .
