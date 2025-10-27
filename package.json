@@ -88,7 +88,7 @@
     "@faker-js/faker": "^10.1.0",
     "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
-    "@nestjs/testing": "^11.1.7",
+    "@nestjs/testing": "^11.1.8",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@stryker-mutator/core": "^9.2.0",
@@ -127,9 +127,9 @@
   },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {
-    "@nestjs/common": "^11.1.7",
-    "@nestjs/core": "^11.1.7",
-    "@nestjs/platform-fastify": "^11.1.7",
+    "@nestjs/common": "^11.1.8",
+    "@nestjs/core": "^11.1.8",
+    "@nestjs/platform-fastify": "^11.1.8",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   }
