@@ -6,6 +6,12 @@
     },
     {
       "path": "./configs/typescript/tsconfig.spec.json"
+    },
+    {
+      "path": "./configs/typescript/tsconfig.acceptance.json"
+    },
+    {
+      "path": "./configs/typescript/tsconfig.eslint.json"
     }
   ]
 }

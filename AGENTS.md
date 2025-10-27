@@ -223,6 +223,85 @@ From `package.json` (standard usage):
   - If running locally is infeasible, open an issue requesting a maintainer to run the incremental mutation update and attach the produced `incremental.json`.
 - Note: do not bypass quality gates — updated incremental files should be produced by an honest Stryker run and included in a PR that also includes the reason (what changed) in the PR body.
 
+## Acceptance tests
+
+This project includes a full acceptance (end-to-end) test ecosystem powered by Cucumber (Gherkin) and a small set of TypeScript helpers that build, start and exercise the real application binary.
+
+### High-level contract / quick commands
+
+Run the acceptance suite locally:
+
+```bash
+pnpm run test:acceptance
+```
+
+This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then generates an HTML report via `pnpm run test:cucumber:html-report`.
+
+### What the acceptance runner does
+
+- Before the Cucumber scenarios run, the acceptance helpers build the project (the hooks call `pnpm run build`).
+- For each scenario the test harness starts a real instance of the built app using `pnpm run start:prod` (spawned by the helpers). The helper waits for the startup message on stdout (the helper looks for the string `Goat It API is running on`) before proceeding.
+- After each scenario, the helper gracefully stops the app and force-kills it after a short grace period if it doesn't exit.
+
+### Key paths and files
+
+- Feature files under `tests/acceptance/features/`
+  - Holds `.feature` files written in Gherkin. The cucumber config (`configs/cucumber/cucumber.json`) includes `tests/acceptance/features/**/*.feature`.
+  - Organize features by domain, e.g., `tests/acceptance/features/app/metadata/app-metadata.feature`.
+- Step definition under `tests/acceptance/features/step-definitions/`
+  - Place step definition files next to their feature area. The project uses a readable naming convention: `*.given-steps.ts`, `*.when-steps.ts`, and `*.then-steps.ts` to separate step types.
+  - Step definitions use `@cucumber/cucumber` API imports (Given/When/Then, Before, After, etc.).
+- Support files under `tests/acceptance/support/`
+  - `hooks.ts` — registers world constructor and wires lifecycle hooks (`BeforeAll` builds, `Before` starts the server, `After` stops it).
+  - `helpers/` — implementation helpers used by the hooks and step definitions (for example `setup.helpers.ts` which builds and serves the app, and implements readiness/kill timeouts).
+  - `constants/` — shared constants such as app base URL and reports' path.
+  - `types/` and `world/` — the custom `GoatItWorld` is defined here and exposes convenience methods used by steps (for example `fetchAndStoreResponse`, `expectLastResponseJson`, and an `appProcess` handle).
+- HTML and other reports under `tests/acceptance/reports/`
+  - Cucumber produces `report.json`, `message.json` and `junit.xml` in this folder.
+  - The HTML report generator reads `report.json` and writes `index.html`. Screenshots (if stored) go to `tests/acceptance/reports/screenshots`.
+
+### Helpful implementation details agents must know
+
+- The lifecycle helpers call `pnpm run build` synchronously before running scenarios. If the build fails, the whole acceptance run fails early.
+- The server is started with `pnpm run start:prod` which runs the built `dist/main.js` — acceptance tests, therefore, exercise the exact production artifact produced by `pnpm run build`.
+- **Readiness**: helpers wait for the application stdout to include the message `Goat It API is running on` within `APP_READINESS_TIMEOUT_MS` (currently 10_000 ms). If the message isn't observed the process is killed and the scenario fails.
+- **Shutdown**: tests send `SIGTERM` and wait; after `APP_FORCE_KILL_TIMEOUT_MS` (5_000 ms) the helpers send `SIGKILL` if needed.
+
+### Writing features and step defs (conventions and examples)
+
+- **Features**:
+  - Use descriptive feature files and tags for grouping (see `@app @app-metadata` used in examples).
+  - Keep scenarios focused and idempotent so they can run in CI in sequence.
+  - Always use the `Given-When-Then` structure.
+  - Always use `the client` as the actor who performs HTTP calls.
+- **Step definitions**:
+  - Keep step-definitions thin and call into `GoatItWorld` helpers for HTTP calls and assertions. Example usage seen in the repo:
+    - Given steps call `await this.fetchAndStoreResponse("/")` to perform an HTTP call on root endpoint and save the response.
+    - Then steps call `this.expectLastResponseJson<T>(SCHEMA)` to validate the last response body against a schema and return typed data for further assertions.
+  - Prefer shared step libraries inside `tests/acceptance/features/step-definitions/shared/` for re-use.
+- **World helpers**:
+  - The `GoatItWorld` exposes state across steps (last fetch response, appProcess handle). Use it to share data between Given/When/Then steps if needed.
+
+### Reporting and CI notes
+
+- The cucumber runner outputs JSON and JUnit reports into `tests/acceptance/reports` (configured in `configs/cucumber/cucumber.json`).
+- After Cucumber finishes, the repo runs `tests/acceptance/plugins/html-reporter/cucumber-html-reporter.ts` to generate an HTML report from `report.json`.
+
+### Best practices for agents making changes that affect acceptance tests
+
+- When adding new endpoints used by acceptance tests, add unit tests first and ensure `pnpm run test:unit:cov` remains green before touching acceptance features.
+- Keep feature files and step definitions deterministic; avoid relying on external network calls in acceptance scenarios unless they are mocked/stubbed explicitly.
+- If you modify server startup logs, update the acceptance readiness matcher (currently looks for `Goat It API is running on`).
+- When adding new features, add corresponding acceptance scenarios to cover the end-to-end behavior.
+- Always write scenarios for every new public API endpoint or significant behavior change.
+- Scenario must also test negative/error cases where applicable (e.g., `404` for missing resources or `400` for invalid input with associated validation errors).
+
+### Quick troubleshooting
+
+- Inspect the `pnpm run build` output locally and fix compile errors when `pnpm run test:acceptance` fails due to a build failure.
+- When the server never becomes ready: check `tests/acceptance/support/helpers/setup.helpers.ts` for the readiness string and review the server startup logs in `src/server/server.ts`.
+- Ensure `tests/acceptance/reports/report.json` exists when the HTML report is empty or missing — cucumber writes it during the run and the HTML generator reads that file.
+
 ## Linting, commits and release automation
 
 - ESLint is configured using a custom flat configuration under `configs/eslint`. Use `pnpm run lint` or `pnpm run lint:fix` to check/fix issues.

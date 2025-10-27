@@ -115,6 +115,20 @@ jobs:
         with:
           stryker-dashboard-api-key: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
+  acceptance-tests:
+    name: Acceptance Tests 🥒
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - build
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Acceptance Tests 🥒
+        id: acceptance-tests
+        uses: ./.github/actions/acceptance-tests
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest
