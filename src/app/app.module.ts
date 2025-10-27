@@ -4,7 +4,8 @@ import { LoggerModule } from "nestjs-pino";
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 import { AppController } from "@app/controllers/app.controller";
-import { AppConfigModule } from "@app/modules/config/config.module";
+
+import { AppConfigModule } from "@modules/config/config.module";
 
 @Module({
   imports: [AppConfigModule, LoggerModule.forRoot(getLoggerConfiguration())],
