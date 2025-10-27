@@ -58,6 +58,22 @@ jobs:
       - name: Install project 📦
         uses: ./.github/actions/install-project
 
+  docker-builds:
+    name: Docker Build 🐳
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ["linux/amd64", "linux/arm64"]
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Docker Build 🐳
+        uses: ./.github/actions/docker-build
+        with:
+          platform: ${{ matrix.platform }}
+
   build:
     name: Build App ✨
     runs-on: ubuntu-latest
@@ -115,11 +131,30 @@ jobs:
         with:
           stryker-dashboard-api-key: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
+  acceptance-tests:
+    name: Acceptance Tests 🥒
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - build
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Acceptance Tests 🥒
+        id: acceptance-tests
+        uses: ./.github/actions/acceptance-tests
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
     needs:
       - unit-tests
+    if: github.actor != 'renovate[bot]'
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v5

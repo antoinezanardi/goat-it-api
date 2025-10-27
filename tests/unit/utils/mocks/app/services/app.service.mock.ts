@@ -1,16 +1,16 @@
-import { createFakeApiMetadata } from "@factories/app/app.factory";
+import { createFakeAppMetadata } from "@factories/app/app.factory";
 
 import type { Mock } from "vitest";
 
-import type { APIMetadata } from "@app/types/app.types";
+import type { AppMetadata } from "@app/types/app.types";
 
 type MockedAppService = {
-  getApiMeta: Mock<() => APIMetadata>;
+  getApiMeta: Mock<() => AppMetadata>;
 };
 
 function createMockedAppService(): MockedAppService {
   return {
-    getApiMeta: vi.fn<() => APIMetadata>().mockReturnValue(createFakeApiMetadata()),
+    getApiMeta: vi.fn<() => AppMetadata>().mockReturnValue(createFakeAppMetadata()),
   };
 }
 

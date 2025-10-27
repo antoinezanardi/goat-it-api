@@ -2,6 +2,12 @@
 language: "en-US"
 early_access: true
 enable_free_tier: true
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "AGENTS.md"
+      - ".github/CONTRIBUTING.md"
 reviews:
   profile: "assertive"
   request_changes_workflow: false

@@ -7,10 +7,13 @@
     "rootDir": "../../"
   },
   "include": [
+    "../../package.json",
     "../../eslint.config.ts",
     "../../src/",
     "../../tests/unit/",
-    "../../configs",
+    "../../tests/acceptance/",
+    "../../configs/",
+    "../../configs/**/*.json",
   ],
   "exclude": [
     "../../node_modules",

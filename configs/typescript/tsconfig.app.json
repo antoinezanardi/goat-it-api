@@ -31,7 +31,10 @@
       "@shared/*": ["src/shared/*"],
       "@unit-tests/*": ["tests/unit/*"],
       "@factories/*": ["tests/unit/utils/factories/*"],
-      "@mocks/*": ["tests/unit/utils/mocks/*"]
+      "@mocks/*": ["tests/unit/utils/mocks/*"],
+      "@acceptance-tests/*": ["tests/acceptance/*"],
+      "@acceptance-features/*": ["tests/acceptance/features/*"],
+      "@acceptance-support/*": ["tests/acceptance/support/*"]
     }
   },
   "include": [

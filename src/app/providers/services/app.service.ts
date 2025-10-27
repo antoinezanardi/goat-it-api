@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 
 import packageJson from "@package-json" with { type: "json" };
 
-import type { APIMetadata } from "@app/types/app.types";
+import type { AppMetadata } from "@app/types/app.types";
 
 @Injectable()
 export class AppService {
-  public getApiMeta(): APIMetadata {
+  public getApiMeta(): AppMetadata {
     void this;
 
     return {

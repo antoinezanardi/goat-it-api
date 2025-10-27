@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Acceptance Tests" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="test:acceptance" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+  <configuration default="false" name="Acceptance Tests" type="cucumber.js" factoryName="Cucumber.js">
+    <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
+    <option name="myNameFilter" value="" />
+    <option name="cucumberJsArguments" value="--config configs/cucumber/cucumber.json" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="NODE_ENV" value="test" />
+      <env name="TSX_TSCONFIG_PATH" value="configs/typescript/tsconfig.acceptance.json" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>
