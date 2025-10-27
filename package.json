@@ -82,7 +82,9 @@
     "script:create-pull-request": "scripts/create-pull-request.sh",
     "script:create-release-changelog": "scripts/create-release-changelog.sh",
     "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)",
-    "docker:build": "docker build -t goat-it-api ."
+    "docker:build": "docker build -t goat-it-api .",
+    "docker:build:linux/arm64": "docker build --platform linux/arm64 -t goat-it-api .",
+    "docker:build:linux/amd64": "docker build --platform linux/amd64 -t goat-it-api ."
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
@@ -99,7 +101,7 @@
     "@stryker-mutator/vitest-runner": "^9.2.0",
     "@stylistic/eslint-plugin": "^5.5.0",
     "@swc/cli": "^0.7.8",
-    "@swc/core": "1.13.20",
+    "@swc/core": "^1.13.21",
     "@types/node": "^24.9.1",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",

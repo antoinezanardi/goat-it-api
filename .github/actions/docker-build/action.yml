@@ -1,0 +1,16 @@
+name: Docker Build 🐳
+description: Build Dockerfile with specified platform.
+author: Antoine ZANARDI
+
+inputs:
+  platform:
+    description: Target platform for the Docker build (e.g., linux/amd64, linux/arm64)
+    required: true
+
+runs:
+    using: composite
+    steps:
+      - name: Docker Build 🐳
+        id: docker-build
+        shell: bash
+        run: pnpm run docker:build:${{ inputs.platform }}
