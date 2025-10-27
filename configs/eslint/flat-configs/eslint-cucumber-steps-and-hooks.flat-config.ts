@@ -14,6 +14,7 @@ const ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG: Linter.Config = {
           "Before",
           "BeforeAll",
           "After",
+          "AfterAll",
           "Given",
           "When",
           "Then",

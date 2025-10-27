@@ -23,8 +23,15 @@ runs:
       id: acceptance-tests
       continue-on-error: true
       shell: bash
-      run: | 
+      run: |
         pnpm run test:acceptance
+        ${{ github.workspace }}/scripts/transform-cucumber-report-as-env-variables.sh >> "$GITHUB_ENV"
+
+    - name: Set Cucumber Results As Outputs 📝
+      id: cucumber-results
+      continue-on-error: true
+      shell: bash
+      run: echo "acceptance-tests-count=${{ env.CUCUMBER_SCENARIOS_COUNT }}" >> "$GITHUB_OUTPUT"
 
     - name: Save acceptance tests reports as artifact 💎
       uses: actions/upload-artifact@v4
