@@ -82,9 +82,9 @@
     "script:create-pull-request": "scripts/create-pull-request.sh",
     "script:create-release-changelog": "scripts/create-release-changelog.sh",
     "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)",
-    "docker:build": "docker build -t goat-it-api .",
-    "docker:build:linux/arm64": "docker build --platform linux/arm64 -t goat-it-api .",
-    "docker:build:linux/amd64": "docker build --platform linux/amd64 -t goat-it-api ."
+    "docker:build": "docker buildx build -t goat-it-api .",
+    "docker:build:linux/arm64": "docker buildx build --platform linux/arm64 -t goat-it-api .",
+    "docker:build:linux/amd64": "docker buildx build --platform linux/amd64 -t goat-it-api ."
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
