@@ -58,6 +58,22 @@ jobs:
       - name: Install project 📦
         uses: ./.github/actions/install-project
 
+  docker-builds:
+    name: Docker Build 🐳
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ["linux/amd64", "linux/arm64"]
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Docker Build 🐳
+        uses: ./.github/actions/docker-build
+        with:
+          platform: ${{ matrix.platform }}
+
   build:
     name: Build App ✨
     runs-on: ubuntu-latest

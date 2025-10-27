@@ -202,6 +202,8 @@ From `package.json` (standard usage):
   - `pnpm run test:mutation:ci` — CI-oriented mutation run.
 - Docker:
   - `pnpm run docker:build` — build a Docker image using `Dockerfile`.
+  - `pnpm run docker:build:linux/amd64` — build a Linux AMD64 image.
+  - `pnpm run docker:build:linux/arm64` — build a Linux ARM64 image.
 
 ## Testing conventions
 
@@ -313,6 +315,7 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 ## Docker
 
 - A `Dockerfile` exists at the repo root. Use `pnpm run docker:build` to build an image named `goat-it-api` locally.
+- You can specify platform targets with `pnpm run docker:build:linux/amd64` or `pnpm run docker:build:linux/arm64`.
 
 ## Development workflow for an agent (checklist)
 

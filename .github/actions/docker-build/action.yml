@@ -1,0 +1,31 @@
+name: Docker Build 🐳
+description: Build Dockerfile with specified platform.
+author: Antoine ZANARDI
+
+inputs:
+  platform:
+    description: Target platform for the Docker build (e.g., linux/amd64, linux/arm64)
+    required: true
+
+runs:
+    using: composite
+    steps:
+      - name: Set up QEMU 🏗️
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx 🏗️
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate platform input 🚢
+        id: validate-platform
+        shell: bash
+        run: |
+          if [[ "${{ inputs.platform }}" != "linux/amd64" && "${{ inputs.platform }}" != "linux/arm64" ]]; then
+            echo "Error: Invalid platform '${{ inputs.platform }}'. Supported platforms are 'linux/amd64' and 'linux/arm64'."
+            exit 1
+          fi
+
+      - name: Docker Build 🐳
+        id: docker-build
+        shell: bash
+        run: docker buildx build --platform ${{ inputs.platform }} -t goat-it-api .
