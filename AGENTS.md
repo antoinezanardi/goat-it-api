@@ -273,7 +273,7 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
   - Use descriptive feature files and tags for grouping (see `@app @app-metadata` used in examples).
   - Keep scenarios focused and idempotent so they can run in CI in sequence.
   - Always use the `Given-When-Then` structure.
-  - Always use `the client` as the actor which performs HTTP calls.
+  - Always use `the client` as the actor who performs HTTP calls.
 - **Step definitions**:
   - Keep step-definitions thin and call into `GoatItWorld` helpers for HTTP calls and assertions. Example usage seen in the repo:
     - Given steps call `await this.fetchAndStoreResponse("/")` to perform an HTTP call on root endpoint and save the response.
@@ -298,9 +298,9 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 
 ### Quick troubleshooting
 
-- If `pnpm run test:acceptance` fails because the build step failed, inspect the `pnpm run build` output locally and fix compile errors.
-- If the server never becomes ready: check `tests/acceptance/support/helpers/setup.helpers.ts` for the readiness string and the server startup logs in `src/server/server.ts`.
-- If the HTML report is empty or missing: ensure `tests/acceptance/reports/report.json` exists — cucumber writes it during the run; the HTML generator reads that file.
+- Inspect the `pnpm run build` output locally and fix compile errors when `pnpm run test:acceptance` fails due to a build failure.
+- When the server never becomes ready: check `tests/acceptance/support/helpers/setup.helpers.ts` for the readiness string and review the server startup logs in `src/server/server.ts`.
+- Ensure `tests/acceptance/reports/report.json` exists when the HTML report is empty or missing — cucumber writes it during the run and the HTML generator reads that file.
 
 ## Linting, commits and release automation
 
