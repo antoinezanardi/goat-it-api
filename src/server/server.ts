@@ -3,6 +3,8 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 
 import { AppModule } from "@app/app.module";
 
+import { buildCorsConfig } from "@server/cors";
+
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 async function bootstrap(): Promise<NestFastifyApplication> {
@@ -10,6 +12,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     AppModule,
     new FastifyAdapter(),
   );
+
+  app.enableCors(buildCorsConfig());
 
   app.enableShutdownHooks();
 
