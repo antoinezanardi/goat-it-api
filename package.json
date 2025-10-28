@@ -63,7 +63,7 @@
     "start": "nest start --config configs/nest/nest-cli.config.json",
     "start:dev": "nest start --watch --config configs/nest/nest-cli.config.json",
     "start:debug": "nest start --debug --watch --config configs/nest/nest-cli.config.json",
-    "start:prod": "node dist/main",
+    "start:prod": "cross-env NODE_ENV=production node dist/main",
     "lint": "npx eslint --config eslint.config.ts .",
     "lint:fix": "npx eslint --config eslint.config.ts --fix .",
     "lint:staged:fix": "lint-staged -c configs/lint-staged/.lintstagedrc.eslint.json",
@@ -121,6 +121,7 @@
     "jiti": "^2.6.1",
     "lint-staged": "^16.2.6",
     "ofetch": "^1.5.0",
+    "pino-pretty": "^13.1.2",
     "rimraf": "^6.0.1",
     "semantic-release": "^25.0.1",
     "semantic-release-export-data": "^1.2.0",
@@ -140,6 +141,7 @@
     "@nestjs/common": "^11.1.8",
     "@nestjs/core": "^11.1.8",
     "@nestjs/platform-fastify": "^11.1.8",
+    "nestjs-pino": "^4.4.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   }
