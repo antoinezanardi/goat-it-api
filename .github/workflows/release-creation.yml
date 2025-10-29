@@ -61,6 +61,16 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - install
+    outputs:
+      vitest-tests-count: ${{ steps.unit-tests.outputs.vitest-tests-count }}
+      vitest-statements-count: ${{ steps.unit-tests.outputs.vitest-statements-count }}
+      vitest-branches-count: ${{ steps.unit-tests.outputs.vitest-branches-count }}
+      vitest-functions-count: ${{ steps.unit-tests.outputs.vitest-functions-count }}
+      vitest-lines-count: ${{ steps.unit-tests.outputs.vitest-lines-count }}
+      vitest-statements-percent: ${{ steps.unit-tests.outputs.vitest-statements-percent }}
+      vitest-branches-percent: ${{ steps.unit-tests.outputs.vitest-branches-percent }}
+      vitest-functions-percent: ${{ steps.unit-tests.outputs.vitest-functions-percent }}
+      vitest-lines-percent: ${{ steps.unit-tests.outputs.vitest-lines-percent }}
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v5
@@ -94,6 +104,8 @@ jobs:
     timeout-minutes: 10
     needs:
       - install
+    outputs:
+      acceptance-tests-count: ${{ steps.acceptance-tests.outputs.acceptance-tests-count }}
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v5
