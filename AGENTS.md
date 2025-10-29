@@ -349,7 +349,7 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 - Follow TypeScript strictness and use the NestJS idioms (decorators, providers, DI).
 - Use single responsibility for services and controllers; controllers should be thin.
 - Prefer small, focused unit tests with mocked dependencies.
-- Linting and formatting are enforced by ESLint and Oxlint using the project's flat-configs. Agents must refer to `configs/eslint` and `configs/onxlint` for the authoritative rule definitions (stylistic and code-quality rules) and ensure code adheres to those configurations before opening a PR.
+- Linting and formatting are enforced by ESLint and Oxlint using the project's flat-configs. Agents must refer to `configs/eslint` and `configs/oxlint` for the authoritative rule definitions (stylistic and code-quality rules) and ensure code adheres to those configurations before opening a PR.
 
 ## Examples of small tasks an agent may be asked to do
 
