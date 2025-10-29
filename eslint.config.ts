@@ -1,3 +1,5 @@
+import oxlint from "eslint-plugin-oxlint";
+
 import { ESLINT_IGNORES } from "./configs/eslint/eslint.constants";
 import { ESLINT_CONFIG_FILES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-config-files.flat-config";
 import { ESLINT_CONTROLLERS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-controllers.flat-config";
@@ -31,6 +33,8 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   ESLINT_SERVICES_FLAT_CONFIG,
   ESLINT_TYPESCRIPT_DECLARATION_CONFIG,
   ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  ...oxlint.buildFromOxlintConfigFile("./configs/oxlint/oxlint.config.jsonc") as Linter.Config[],
 ];
 
 export default ESLINT_FLAT_CONFIGS;

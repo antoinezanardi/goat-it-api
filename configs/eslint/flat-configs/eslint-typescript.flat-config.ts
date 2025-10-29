@@ -1,4 +1,3 @@
-/* eslint-disable-next-line import/default */
 import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";
 

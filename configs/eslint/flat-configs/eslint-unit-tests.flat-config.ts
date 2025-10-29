@@ -87,12 +87,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/prefer-to-have-length": "error",
     "vitest/prefer-todo": "error",
     "vitest/prefer-vi-mocked": "error",
-    "vitest/require-hook": [
-      "error",
-      {
-        allowedFunctionCalls: ["mockNuxtImport"],
-      },
-    ],
+    "vitest/require-hook": "error",
     "vitest/require-local-test-context-for-concurrent-snapshots": "error",
     "vitest/require-mock-type-parameters": "error",
     "vitest/require-to-throw-message": "error",

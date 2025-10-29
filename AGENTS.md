@@ -25,7 +25,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 ### Files agents can and cannot modify
 
 - Allowed without special approval: code under `src/`, tests and test helpers under `tests/`, non-sensitive tool configs under `configs/`, utility scripts under `scripts/`, and documentation files (`README.md`, `AGENTS.md`, docs).
-- Forbidden or require explicit human approval: Git history rewrites (force-pushes that rewrite history), updates to `package.json` that bump major versions or lockfile for automated dependency updates (unless an established policy exists), files containing secrets (e.g. `.env` files with credentials), CI credential files or secrets stored in `configs/ci` (or similar), deployment keys and any file explicitly marked "do not edit by automation".
+- Forbidden or require explicit human approval: Git history rewrites (force-pushes that rewrite history), updates to `package.json` that bump major versions or lockfile for automated dependency updates (unless an established policy exists), files containing secrets (e.g. `.env` files with credentials), CI credential files or secrets stored in `configs/ci` (or similar), deployment keys and any file explicitly marked "do not edit by automation."
 - Rule of thumb: if the change touches security, CI/deployment, git history, secrets or production configuration — stop, open a draft PR/issue describing the change and request human review.
 
 ### PR atomicity policy
@@ -39,7 +39,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 
 - Pre-merge: if `lint`, `typecheck`, or `test:unit:cov` fail locally, fix before pushing. If CI checks fail after push, mark the PR as blocked and open a corrective PR.
 - Post-merge regression: revert the PR to roll back, notify maintainers and provide a minimal post-mortem (what broke, why, how fixed).
-- Save work in progress: if an agent encounters blocking failures that require human context, create a clearly named WIP branch `wip/<ticket>-<short-desc>`, push it, and open an issue or draft PR requesting human assistance. Do not force a merge or bypass checks.
+- Save work in progress: if an agent encounters blocking failures that require human context, create a clearly named WIP branch `wip/<ticket>-<short-desc>`, push it, and open an issue or draft PR requesting human assistance. Do not force a merge or bypass the checks.
 
 ### Operational checklist before opening a PR
 
@@ -105,7 +105,8 @@ This consolidated section presents the authoritative rules an agent (automated o
 - `src/app/providers/services/app.service.spec.ts` — unit tests for `AppService`.
 - `tests/unit/` — generated test outputs and coverage artifacts (`lcov`, `HTML` reports and other coverage files); do not add source unit tests here.
 - `tests/unit/utils/` — shared test utilities, factories and mocks used across multiple test suites (project-wide helpers).
-- `configs/eslint/*` — ESLint flat-configs and parser declarations used by `npm run lint`.
+- `configs/eslint/*` — ESLint flat-configs and parser declarations used by `npm run lint:eslint`.
+- `configs/oxlint/*` — OXLint configurations used by `npm run lint:oxlint`.
 
 Note: Unit test source files (implementation tests) must be colocated with their corresponding source files under `src/` using the `*.spec.ts` pattern (for example `src/modules/users/users.service.spec.ts`).
 
@@ -147,7 +148,7 @@ Top-level folders (where to add things)
 
 ## Config and tooling files
 
-- `configs/` holds tool configurations (ESLint, swc, vitest, stryker, etc.). Add new tool configs in a dedicated subfolder under `configs/` and reference them from scripts where needed.
+- `configs/` holds tool configurations (ESLint, Oxlint, swc, vitest, stryker, etc.). Add new tool configs in a dedicated subfolder under `configs/` and reference them from scripts where needed.
 - `scripts/` holds helper shell scripts used by CI or developer workflows. Name scripts with descriptive verbs (e.g., `create-git-branch.sh`).
 
 ## General rules and small reminders
@@ -191,11 +192,13 @@ From `package.json` (standard usage):
   - `pnpm run build` — run `nest build` with `configs/nest/nest-cli.config.json` (swc builder).
   - `pnpm run typecheck` — run `tsc -b --clean && tsc -b --noEmit`.
 - Linting:
-  - `pnpm run lint` — run ESLint (project uses custom flat config).
-  - `pnpm run lint:fix` — fix lint issues where possible.
+  - `pnpm run lint` — run ESLint and Oxlint checks. Oxlint is run first, then ESLint.
+  - `pnpm run lint:fix` — fix lint issues with ESLint and Oxlint where possible.
+  - `pnpm run lint:eslint` — run only ESLint.
+  - `pnpm run lint:oxlint` — run only Oxlint.
 - Tests:
   - `pnpm run test` or `pnpm run test:unit` — run unit tests using Vitest.
-  - `pnpm run test:unit:cov` — run unit tests with coverage report. If coverage thresholds of `100%` are not met, the command fails.
+  - `pnpm run test:unit:cov` — run unit tests with a coverage report. If coverage thresholds of `100%` are not met, the command fails.
   - `pnpm run test:unit:watch` — watch mode for unit tests.
 - Mutation testing (expensive / CI):
   - `pnpm run test:mutation` — run Stryker (configurable via `configs/stryker`).
@@ -266,7 +269,7 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 
 - The lifecycle helpers call `pnpm run build` synchronously before running scenarios. If the build fails, the whole acceptance run fails early.
 - The server is started with `pnpm run start:prod` which runs the built `dist/main.js` — acceptance tests, therefore, exercise the exact production artifact produced by `pnpm run build`.
-- **Readiness**: helpers wait for the application stdout to include the message `Goat It API is running on` within `APP_READINESS_TIMEOUT_MS` (currently 10_000 ms). If the message isn't observed the process is killed and the scenario fails.
+- **Readiness**: helpers wait for the application stdout to include the message `Goat It API is running on` within `APP_READINESS_TIMEOUT_MS` (currently 10_000 ms). If the message isn't observed, the process is killed and the scenario fails.
 - **Shutdown**: tests send `SIGTERM` and wait; after `APP_FORCE_KILL_TIMEOUT_MS` (5_000 ms) the helpers send `SIGKILL` if needed.
 
 ### Writing features and step defs (conventions and examples)
@@ -306,7 +309,10 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 
 ## Linting, commits and release automation
 
-- ESLint is configured using a custom flat configuration under `configs/eslint`. Use `pnpm run lint` or `pnpm run lint:fix` to check/fix issues.
+- `pnpm run lint` runs both Oxlint and ESLint checks.
+- ESLint is configured using a custom flat configuration under `configs/eslint`. Use `pnpm run lint:eslint` or `pnpm run lint:eslint:fix` to check/fix issues.
+- Oxlint is configured under `configs/oxlint`. Use `pnpm run lint:oxlint` or `pnpm run lint:oxlint:fix` to check/fix issues.
+- When dealing with lint issues, run the appropriate `:fix` command to auto-fix where possible, according to the error (ESLint or Oxlint).
 - Linting & formatting: this project uses ESLint (with the stylistic plugin responsible for formatting/style rules) as the single source of truth for both linting and formatting. All lint and style rules are defined in the flat-config files under `configs/eslint` (see the `flat-configs/` subfolder). Agents must consult and follow these flat configs when adding or modifying code — do not apply separate formatters or rule sets that conflict with the project's ESLint configs.
 - Commit messages are validated by `commitlint` (config under `configs/commitlint`).
 - Husky and lint-staged are present in devDependencies: pre-commit hooks and staged lint/test flows are used in CI/hook scripts (see `configs/lint-staged` files).
@@ -343,7 +349,7 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 - Follow TypeScript strictness and use the NestJS idioms (decorators, providers, DI).
 - Use single responsibility for services and controllers; controllers should be thin.
 - Prefer small, focused unit tests with mocked dependencies.
-- Linting and formatting are enforced by ESLint using the project's flat-configs. Agents must refer to `configs/eslint` for the authoritative rule definitions (stylistic and code-quality rules) and ensure code adheres to those configurations before opening a PR.
+- Linting and formatting are enforced by ESLint and Oxlint using the project's flat-configs. Agents must refer to `configs/eslint` and `configs/oxlint` for the authoritative rule definitions (stylistic and code-quality rules) and ensure code adheres to those configurations before opening a PR.
 
 ## Examples of small tasks an agent may be asked to do
 
@@ -385,6 +391,8 @@ pnpm run start:dev
 pnpm run lint
 pnpm run typecheck
 pnpm run test:unit:cov
+pnpm run test:mutation
+pnpm run test:acceptance
 ```
 
 ## Notes and warnings
