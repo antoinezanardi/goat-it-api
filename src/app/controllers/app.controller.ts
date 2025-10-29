@@ -1,6 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 
-import type { AppService } from "@app/providers/services/app.service";
+// oxlint-disable-next-line consistent-type-imports
+import { AppService } from "@app/providers/services/app.service";
 
 import type { AppMetadata } from "@app/types/app.types";
 
