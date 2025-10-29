@@ -146,6 +146,31 @@ jobs:
         id: acceptance-tests
         uses: ./.github/actions/acceptance-tests
 
+  badges:
+    name: Generate Badges 💠
+    runs-on: ubuntu-latest
+    needs:
+      - unit-tests
+      - acceptance-tests
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v5
+
+      - name: Generate Badges 💠
+        uses: ./.github/actions/badges
+        with:
+          byob-token: ${{ secrets.BYOB_TOKEN }}
+          unit-tests-count: ${{ needs.unit-tests.outputs.vitest-tests-count }}
+          unit-tests-covered-statements: ${{ needs.unit-tests.outputs.vitest-statements-count }}
+          unit-tests-covered-branches: ${{ needs.unit-tests.outputs.vitest-branches-count }}
+          unit-tests-covered-functions: ${{ needs.unit-tests.outputs.vitest-functions-count }}
+          unit-tests-covered-lines: ${{ needs.unit-tests.outputs.vitest-lines-count }}
+          unit-tests-statements-percent: ${{ needs.unit-tests.outputs.vitest-statements-percent }}
+          unit-tests-branches-percent: ${{ needs.unit-tests.outputs.vitest-branches-percent }}
+          unit-tests-functions-percent: ${{ needs.unit-tests.outputs.vitest-functions-percent }}
+          unit-tests-lines-percent: ${{ needs.unit-tests.outputs.vitest-lines-percent }}
+          acceptance-tests-count: ${{ needs.acceptance-tests.outputs.acceptance-tests-count }}
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest

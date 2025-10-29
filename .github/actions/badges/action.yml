@@ -1,0 +1,109 @@
+name: Generate Badges 💠
+description: Generate coverage and scenarios badges based on test results.
+author: Antoine ZANARDI
+
+inputs:
+  byob-token:
+    description: GitHub token to create/update badges
+    required: true
+  unit-tests-count:
+    description: Number of unit tests executed
+    required: true
+  unit-tests-covered-statements:
+    description: Number of statements covered by unit tests
+    required: true
+  unit-tests-covered-branches:
+    description: Number of branches covered by unit tests
+    required: true
+  unit-tests-covered-functions:
+    description: Number of functions covered by unit tests
+    required: true
+  unit-tests-covered-lines:
+    description: Number of lines covered by unit tests
+    required: true
+  unit-tests-statements-percent:
+    description: Percentage of statements covered by unit tests
+    required: true
+  unit-tests-branches-percent:
+    description: Percentage of branches covered by unit tests
+    required: true
+  unit-tests-functions-percent:
+    description: Percentage of functions covered by unit tests
+    required: true
+  unit-tests-lines-percent:
+    description: Percentage of lines covered by unit tests
+    required: true
+  acceptance-tests-count:
+    description: Number of acceptance tests (scenarios) executed
+    required: true
+  unit-tests-badge-color:
+    description: Color of the unit tests badges (hex without #)
+    required: false
+    default: "109B08"
+  acceptance-tests-badge-color:
+    description: Color of the acceptance tests badges (hex without #)
+    required: false
+    default: "169652"
+
+runs:
+  using: composite
+  steps:
+    - name: Unit Tests – Count Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: unit-tests-count
+        label: Unit Tests
+        status: ${{ inputs.unit-tests-count }}
+        icon: https://cdn.simpleicons.org/vitest/white
+        color: ${{ inputs.unit-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
+
+    - name: Unit Tests – Covered Statements Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: unit-tests-covered-statements
+        label: Statements
+        status: ${{ inputs.unit-tests-covered-statements }} covered (${{ inputs.unit-tests-statements-percent }})
+        icon: https://cdn.simpleicons.org/codecov/white
+        color: ${{ inputs.unit-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
+
+    - name: Unit Tests – Covered Branches Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: unit-tests-covered-branches
+        label: Branches
+        status: ${{ inputs.unit-tests-covered-branches }} covered (${{ inputs.unit-tests-branches-percent }})
+        icon: https://cdn.simpleicons.org/codecov/white
+        color: ${{ inputs.unit-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
+
+    - name: Unit Tests – Covered Functions Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: unit-tests-covered-functions
+        label: Functions
+        status: ${{ inputs.unit-tests-covered-functions }} covered (${{ inputs.unit-tests-functions-percent }})
+        icon: https://cdn.simpleicons.org/codecov/white
+        color: ${{ inputs.unit-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
+
+    - name: Unit Tests – Covered Lines Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: unit-tests-covered-lines
+        label: Lines
+        status: ${{ inputs.unit-tests-covered-lines }} covered (${{ inputs.unit-tests-lines-percent }})
+        icon: https://cdn.simpleicons.org/codecov/white
+        color: ${{ inputs.unit-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
+
+    - name: Acceptance Tests – Scenarios Badge 💠
+      uses: RubbaBoy/BYOB@v1.3.0
+      with:
+        name: scenarios
+        label: Scenarios
+        status: ${{ inputs.acceptance-tests-count }}
+        icon: https://cdn.simpleicons.org/cucumber/white
+        color: ${{ inputs.acceptance-tests-badge-color }}
+        github_token: ${{ inputs.byob-token }}
