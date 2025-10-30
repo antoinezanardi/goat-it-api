@@ -9,7 +9,7 @@
 [![🚀 Deploy To Production Workflow](https://github.com/antoinezanardi/goat-it-api/actions/workflows/deploy-to-production.yml/badge.svg)](https://github.com/antoinezanardi/goat-it-api/actions/workflows/deploy-to-production.yml)
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/goat-it-api.svg)](https://GitHub.com/antoinezanardi/goat-it-api/releases/)
-[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
+[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/goat-it-api.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/goat-it-api.svg/blob/main/LICENSE)
 ![Dependencies](https://img.shields.io/badge/-dependencies-black?style=flat-square&logoColor=white&logo=pnpm&color=B76507)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/goat-it-api/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/goat-it-api?targetFile=package.json)
 
@@ -24,21 +24,23 @@
 ## 📖 Table of Contents
 
 <!-- TOC -->
+
 - [🐐 What is this API ?](#what-is-this-api)
 - [🔨 Installation](#installation)
 - [🚀 Build](#build)
 - [🐳 Docker](#docker)
 - [💯 Tests](#tests)
-  - [🧪 Unit tests](#-unit-tests)
-  - [🥒 Acceptance tests](#-acceptance-tests)
-  - [👽 Mutant testing](#-mutant-testing)
+  - [🧪 Unit tests](#unit-tests)
+  - [🥒 Acceptance tests](#acceptance-tests)
+  - [👽 Mutant testing](#mutant-testing)
 - [☑️ Code analysis and consistency](#code-analysis-and-consistency)
-  - [🔍 Code linting & formatting](#-code-linting--formatting)
-  - [🥇 Project quality scanner](#-project-quality-scanner)
-- [📈 Releases & Changelog](#-releases--changelog)
-- [✨ Misc commands](#-misc-commands)
-- [©️ License](#-license)
-- [❤️ Contributors](#-contributors)
+  - [🔍 Code linting & formatting](#code-linting--formatting)
+  - [🥇 Project quality scanner](#project-quality-scanner)
+- [📈 Releases & Changelog](#releases--changelog)
+- [✨ Misc commands](#misc-commands)
+- [©️ License](#license)
+- [❤️ Contributors](#contributors)
+
 <!-- TOC -->
 
 ## <a name="what-is-this-api">🐐 What is this API ?</a>
@@ -134,7 +136,7 @@ pnpm run test:unit:cov
 
 ### 🥒 Acceptance tests
 
-![Cucumber](https://img.shields.io/badge/-Cucumber-black?style=for-the-badge&logoColor=white&logo=cucumber&color=169652) 
+![Cucumber](https://img.shields.io/badge/-Cucumber-black?style=for-the-badge&logoColor=white&logo=cucumber&color=169652)
 
 [![Scenarios](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)
 
@@ -149,7 +151,7 @@ pnpm run test:acceptance
 
 ### 👽 Mutant testing
 
-![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stryker&color=7F1B10) 
+![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stryker&color=7F1B10)
 
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fantoinezanardi%2Fgoat-it-api%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/goat-it-api/main)
 
@@ -199,7 +201,7 @@ You can check the **[CodeQL analysis report here](https://github.com/antoinezana
 
 ![SonarCloud](https://img.shields.io/badge/-SonarCloud-black?style=for-the-badge&logoColor=white&logo=sonarcloud&color=F37A3A)
 
-SonarCloud summary is available **[here](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)**.
+SonarCloud summary is available **[detailed metrics](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)**.
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_goat-it-api&metric=coverage)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_goat-it-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)
@@ -225,16 +227,18 @@ Each change when a new release comes up is listed in the **[Changelog](CHANGELOG
 
 Also, you can keep up with changes by watching releases via the **Watch GitHub button** at the top of this page.
 
-#### 🏷️ <a href="https://github.com/antoinezanardi/goat-it-api/releases" target="_blank">All releases for this project are available here</a>.
+### 🏷️ <a href="https://github.com/antoinezanardi/goat-it-api/releases" target="_blank">All releases for this project are available here</a>.
 
 ## <a name="misc-commands">✨ Misc commands</a>
 
 ### 🔀 Create a git branch with a conventional name
+
 ```shell
 pnpm run script:create-branch
 ```
 
 ### ⤴️ Create pull request against the `develop` branch from current branch
+
 ```shell
 pnpm run script:create-pull-request
 ```
@@ -247,7 +251,9 @@ You can add them as **run configurations** in your IDE.
 
 ## <a name="license">©️ License</a>
 
-This project is licensed under the [MIT License](http://opensource.org/licenses/MIT).
+[![GitHub license](https://img.shields.io/github/license/antoinezanardi/goat-it-api.svg)](https://github.com/antoinezanardi/goat-it-api/blob/main/LICENSE)
+
+This project is licensed under the **[MIT License](./LICENSE)**.
 
 ## <a name="contributors">❤️ Contributors</a>
 
