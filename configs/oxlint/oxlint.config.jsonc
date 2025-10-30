@@ -1139,6 +1139,7 @@
         "jest/valid-describe-callback": "error",
         "vitest/valid-expect-in-promise": "error",
         "jest/valid-expect": "error",
+        "jest/valid-title": "off",
         "vitest/valid-title": [
           "error",
           {
