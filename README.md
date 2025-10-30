@@ -23,25 +23,16 @@
 
 ## 📖 Table of Contents
 
-<!-- TOC -->
-
 - [🐐 What is this API ?](#what-is-this-api)
 - [🔨 Installation](#installation)
 - [🚀 Build](#build)
 - [🐳 Docker](#docker)
 - [💯 Tests](#tests)
-  - [🧪 Unit tests](#unit-tests)
-  - [🥒 Acceptance tests](#acceptance-tests)
-  - [👽 Mutant testing](#mutant-testing)
 - [☑️ Code analysis and consistency](#code-analysis-and-consistency)
-  - [🔍 Code linting & formatting](#code-linting--formatting)
-  - [🥇 Project quality scanner](#project-quality-scanner)
-- [📈 Releases & Changelog](#releases--changelog)
+- [📈 Releases & Changelog](#versions)
 - [✨ Misc commands](#misc-commands)
 - [©️ License](#license)
 - [❤️ Contributors](#contributors)
-
-<!-- TOC -->
 
 ## <a name="what-is-this-api">🐐 What is this API ?</a>
 
