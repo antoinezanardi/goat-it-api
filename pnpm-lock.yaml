@@ -109,8 +109,8 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@4.4.4)(eslint@9.38.0(jiti@2.6.1))
       eslint-plugin-oxlint:
-        specifier: 1.23.0
-        version: 1.23.0
+        specifier: 1.25.0
+        version: 1.25.0
       eslint-plugin-unicorn:
         specifier: ^62.0.0
         version: 62.0.0(eslint@9.38.0(jiti@2.6.1))
@@ -2939,8 +2939,8 @@ packages:
       '@typescript-eslint/parser':
         optional: true
 
-  eslint-plugin-oxlint@1.23.0:
-    resolution: {integrity: sha512-YT/ObCQMluSHVEqDJPwrVLERkUUQnmcRYYQbB7h6t2P4243WE3Z1UmUcPy1Q6vSVP/U7vw5affptlGV2RizDuw==}
+  eslint-plugin-oxlint@1.25.0:
+    resolution: {integrity: sha512-grS4KdR9FAxoQC+wMkepeQHL4osMhoYfUI11Pot6Gitqr4wWi+JZrX0Shr8Bs9fjdWhEjtaZIV6cr4mbfytmyw==}
 
   eslint-plugin-unicorn@62.0.0:
     resolution: {integrity: sha512-HIlIkGLkvf29YEiS/ImuDZQbP12gWyx5i3C6XrRxMvVdqMroCI9qoVYCoIl17ChN+U89pn9sVwLxhIWj5nEc7g==}
@@ -8888,7 +8888,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-oxlint@1.23.0:
+  eslint-plugin-oxlint@1.25.0:
     dependencies:
       jsonc-parser: 3.3.1
 
