@@ -4,6 +4,7 @@ import { Logger } from "nestjs-pino";
 
 import type { AppModule } from "@app/app.module";
 
+import { setupSwaggerModule } from "@server/helpers/swagger.helpers";
 import { bootstrap } from "@server/server";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
@@ -14,6 +15,7 @@ vi.mock(import("@app/app.module"), () => ({
     name: "MockedModule",
   } as typeof AppModule,
 }));
+vi.mock(import("@server/helpers/swagger.helpers"));
 
 describe("Server", () => {
   beforeEach(() => {
@@ -25,6 +27,7 @@ describe("Server", () => {
       }),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
+      useStaticAssets: vi.fn<() => void>(),
     } as Partial<INestApplication>));
   });
 
@@ -48,6 +51,21 @@ describe("Server", () => {
       const app = await bootstrap();
 
       expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));
+    });
+
+    it("should setup swagger module when called.", async() => {
+      await bootstrap();
+
+      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+    });
+
+    it("should use static assets when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({
+        root: `${process.cwd()}/public`,
+        prefix: "/public/",
+      });
     });
 
     it("should listen on the default host and port when none are provided.", async() => {
@@ -74,7 +92,13 @@ describe("Server", () => {
     it("should log the app url when called.", async() => {
       const app = await bootstrap();
 
-      expect(app.get(Logger).log).toHaveBeenCalledExactlyOnceWith("🐐 Goat It API is running on: http://mocked-host:9090");
+      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, "🐐 Goat It API is running on: http://mocked-host:9090");
+    });
+
+    it("should log the swagger documentation path when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, "📚 Swagger documentation is available on: http://mocked-host:9090/docs");
     });
 
     it("should return the app when called.", async() => {
@@ -85,6 +109,7 @@ describe("Server", () => {
         get: expect.any(Function) as () => never,
         listen: expect.any(Function) as () => void,
         getUrl: expect.any(Function) as () => void,
+        useStaticAssets: expect.any(Function) as () => void,
       };
 
       expect(app).toStrictEqual(expectedApp);
