@@ -1,12 +1,15 @@
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { cleanupOpenApiDoc } from "nestjs-zod";
 
 import { createSwaggerDocument, getSwaggerConfig, setupSwaggerModule } from "@server/helpers/swagger.helpers";
 
-import type { OpenAPIObject } from "@nestjs/swagger";
+import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { Mock } from "vitest";
 
 vi.mock(import("@nestjs/swagger"));
+
+vi.mock(import("nestjs-zod"));
 
 vi.mock(import("@package-json"), async importOriginal => ({
   default: {
@@ -41,7 +44,7 @@ describe("Swagger Helper", () => {
     it("should set title when called.", () => {
       getSwaggerConfig();
 
-      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith("Goat It API");
+      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith("Goat It API Reference Documentation");
     });
 
     it("should set description when called.", () => {
@@ -70,15 +73,24 @@ describe("Swagger Helper", () => {
 
       expect(SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});
     });
+
+    it("should clean up open api doc when called.", () => {
+      const mockedApp = {} as NestFastifyApplication;
+      createSwaggerDocument(mockedApp);
+
+      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(undefined);
+    });
   });
 
   describe(setupSwaggerModule, () => {
     it("should setup Swagger module when called.", () => {
       const mockedApp = {} as NestFastifyApplication;
+      const expectedSwaggerOptions: SwaggerCustomOptions = {
+        customSiteTitle: "Goat It API Reference Documentation",
+      };
       setupSwaggerModule(mockedApp);
 
-      // oxlint-disable-next-line no-useless-undefined
-      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, undefined);
+      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, undefined, expectedSwaggerOptions);
     });
   });
 });
