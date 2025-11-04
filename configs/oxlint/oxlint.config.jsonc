@@ -1007,7 +1007,9 @@
           {
             "capIsNewExceptions": [
               "Controller",
-              "Get"
+              "Get",
+              "ApiOperation",
+              "ZodResponse"
             ]
           }
         ]
@@ -1055,6 +1057,9 @@
         "typescript/init-declarations": "off",
         "typescript/no-magic-numbers": "off",
         "typescript/prefer-destructuring": "off",
+        "unicorn/no-useless-undefined": ["error", {
+          "checkArguments": false
+        }],
         "vitest/consistent-test-filename": [
           "error",
           {

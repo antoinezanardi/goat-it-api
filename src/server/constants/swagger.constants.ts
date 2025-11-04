@@ -1,0 +1,8 @@
+const SWAGGER_DOCUMENTATION_PATH = "/docs";
+
+const SWAGGER_DOCUMENTATION_TITLE = "Goat It API Reference Documentation";
+
+export {
+  SWAGGER_DOCUMENTATION_TITLE,
+  SWAGGER_DOCUMENTATION_PATH,
+};

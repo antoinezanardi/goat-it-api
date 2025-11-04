@@ -26,6 +26,18 @@ class GoatItWorld extends World {
     this.lastFetchResponse = await this.fetchInstance.raw(endpoint);
   }
 
+  public expectLastResponseText(): string {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const { _data: data } = this.lastFetchResponse;
+
+    if (typeof data !== "string") {
+      throw new TypeError("The last response data is not of type string.");
+    }
+    return data;
+  }
+
   public expectLastResponseJson<T>(schema: { parse: (u: unknown) => T }): T {
     if (!this.lastFetchResponse) {
       throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
