@@ -76,9 +76,11 @@ describe("Swagger Helper", () => {
 
     it("should clean up open api doc when called.", () => {
       const mockedApp = {} as NestFastifyApplication;
+      const expectedDocument = {} as OpenAPIObject;
+      vi.mocked(SwaggerModule.createDocument).mockReturnValue(expectedDocument);
       createSwaggerDocument(mockedApp);
 
-      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(undefined);
+      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);
     });
   });
 
