@@ -1,6 +1,8 @@
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+
 onlyBuiltDependencies:
   - '@nestjs/core'
-  - '@scarf/scarf'
   - '@swc/core'
   - esbuild
   - unrs-resolver

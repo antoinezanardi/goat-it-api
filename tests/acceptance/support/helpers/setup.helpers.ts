@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 
-import { APP_BASE_URL, APP_FORCE_KILL_TIMEOUT_MS, APP_READINESS_TIMEOUT_MS } from "@acceptance-support/constants/app.constants";
+import { APP_FORCE_KILL_TIMEOUT_MS, APP_READINESS_TIMEOUT_MS } from "@acceptance-support/constants/app.constants";
 
 import type { ChildProcessWithoutNullStreams, SpawnOptionsWithoutStdio, SpawnOptions } from "node:child_process";
 
@@ -34,7 +34,6 @@ async function serveAppForAcceptanceTests(): Promise<ChildProcessWithoutNullStre
 
 async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
   return new Promise<void>(resolve => {
-    setTimeout(resolve, APP_READINESS_TIMEOUT_MS);
     const forceKillTimeout = setTimeout(() => {
       if (!serverProcess.killed) {
         serverProcess.kill("SIGKILL");
