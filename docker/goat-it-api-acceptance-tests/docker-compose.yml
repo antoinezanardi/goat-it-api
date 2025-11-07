@@ -1,0 +1,15 @@
+# Docker Compose configuration for MongoDB service used in acceptance tests
+
+services:
+  mongo:
+    container_name: "mongo-acceptance-tests"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_DATABASE: goat-it-api-acceptance-tests
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:
