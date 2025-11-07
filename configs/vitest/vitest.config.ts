@@ -41,6 +41,7 @@ export default defineConfig({
         100: true,
       },
     },
+    setupFiles: ["tests/unit/setup/mocks.setup.ts"],
   },
   plugins: [
     swc.vite({

@@ -1,3 +1,6 @@
+import oxlint from "eslint-plugin-oxlint";
+
+import { ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests-mocks.flat-config";
 import { ESLINT_IGNORES } from "./configs/eslint/eslint.constants";
 import { ESLINT_CONFIG_FILES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-config-files.flat-config";
 import { ESLINT_CONTROLLERS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-controllers.flat-config";
@@ -10,10 +13,11 @@ import { ESLINT_UNICORN_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint
 import { ESLINT_UNIT_TESTS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests.flat-config";
 import { ESLINT_TYPESCRIPT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-typescript.flat-config";
 import { ESLINT_TYPESCRIPT_DECLARATION_CONFIG } from "./configs/eslint/flat-configs/eslint.typescript-declaration-config";
+import { ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-cucumber-steps-and-hooks.flat-config";
 
 import type { Linter } from "eslint";
 
-export default [
+const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   {
     name: "global-ignores",
     ignores: ESLINT_IGNORES,
@@ -29,4 +33,10 @@ export default [
   ESLINT_CONTROLLERS_FLAT_CONFIG,
   ESLINT_SERVICES_FLAT_CONFIG,
   ESLINT_TYPESCRIPT_DECLARATION_CONFIG,
-] satisfies Linter.Config[];
+  ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG,
+  ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  ...oxlint.buildFromOxlintConfigFile("./configs/oxlint/oxlint.config.jsonc") as Linter.Config[],
+];
+
+export default ESLINT_FLAT_CONFIGS;

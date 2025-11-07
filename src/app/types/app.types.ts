@@ -1,8 +1,17 @@
-type APIMetadata = {
-  packageName: string;
-  name: string;
-  description: string;
-  version: string;
+import { createZodDto } from "nestjs-zod";
+
+import { APP_METADATA_SCHEMA } from "@app/types/app.constants";
+
+import type { z } from "zod";
+
+type AppMetadata = z.infer<typeof APP_METADATA_SCHEMA>;
+
+class AppGetMetadataResponseDto extends createZodDto(APP_METADATA_SCHEMA) {}
+
+export type {
+  AppMetadata,
 };
 
-export type { APIMetadata };
+export {
+  AppGetMetadataResponseDto,
+};

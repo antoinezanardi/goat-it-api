@@ -14,8 +14,8 @@ const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
       process: "readonly",
       navigator: "readonly",
       Buffer: "readonly",
-      __dirname: "readonly",
-      console: "readonly",
+      setTimeout: "readonly",
+      clearTimeout: "readonly",
     },
   },
   rules: {

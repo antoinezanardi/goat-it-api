@@ -1,0 +1,21 @@
+# Docker Compose configuration for MongoDB service used in acceptance tests
+
+services:
+  mongo:
+    container_name: "mongo-acceptance-tests"
+    image: mongo:8.2.1
+    environment:
+      MONGO_INITDB_DATABASE: goat-it-api-acceptance-tests
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+    healthcheck:
+      test: mongosh localhost:27017 --eval 'db.adminCommand("ping")' --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongodb_data_container:

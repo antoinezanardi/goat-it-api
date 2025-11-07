@@ -1,4 +1,4 @@
-FROM node:24.10.0-alpine AS base
+FROM node:24.11.0-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"

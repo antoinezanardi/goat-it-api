@@ -28,6 +28,7 @@ export default {
     "!configs/vitest/vitest.config.ts",
     "tests/mutation",
     "tests/unit/coverage",
+    "tests/acceptance",
     "scripts/",
     ".editorconfig",
     ".npmrc",

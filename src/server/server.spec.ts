@@ -1,11 +1,13 @@
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
+import { Logger } from "nestjs-pino";
 
 import type { AppModule } from "@app/app.module";
 
+import { setupSwaggerModule } from "@server/helpers/swagger.helpers";
 import { bootstrap } from "@server/server";
 
-import type { INestApplication } from "@nestjs/common";
+import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
 vi.mock(import("@nestjs/core"));
 vi.mock(import("@app/app.module"), () => ({
@@ -13,27 +15,57 @@ vi.mock(import("@app/app.module"), () => ({
     name: "MockedModule",
   } as typeof AppModule,
 }));
+vi.mock(import("@server/helpers/swagger.helpers"));
 
 describe("Server", () => {
   beforeEach(() => {
-    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
+    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
+      useLogger: vi.fn<() => void>(),
+      get: vi.fn<() => object>().mockReturnValue({
+        log: vi.fn<() => void>(),
+      }),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
-    });
+      useStaticAssets: vi.fn<() => void>(),
+    } as Partial<INestApplication>));
   });
 
   describe(bootstrap, () => {
     it("should create from NestFactory when called.", async() => {
+      const expectedOptions: NestApplicationOptions = {
+        bufferLogs: true,
+      };
       await bootstrap();
 
-      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter));
+      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter), expectedOptions);
     });
 
     it("should enable shutdown hooks when called.", async() => {
       const app = await bootstrap();
 
       expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();
+    });
+
+    it("should use logger when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));
+    });
+
+    it("should setup swagger module when called.", async() => {
+      await bootstrap();
+
+      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+    });
+
+    it("should use static assets when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({
+        root: `${process.cwd()}/public`,
+        prefix: "/public/",
+      });
     });
 
     it("should listen on the default host and port when none are provided.", async() => {
@@ -58,18 +90,26 @@ describe("Server", () => {
     });
 
     it("should log the app url when called.", async() => {
-      const consoleLogSpy = vi.spyOn(console, "log");
-      await bootstrap();
+      const app = await bootstrap();
 
-      expect(consoleLogSpy).toHaveBeenCalledExactlyOnceWith("🐐 Goat It API is running on: http://mocked-host:9090");
+      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, "🐐 Goat It API is running on: http://mocked-host:9090");
+    });
+
+    it("should log the swagger documentation path when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, "📚 Swagger documentation is available on: http://mocked-host:9090/docs");
     });
 
     it("should return the app when called.", async() => {
       const app = await bootstrap();
       const expectedApp = {
         enableShutdownHooks: expect.any(Function) as () => INestApplication,
+        useLogger: expect.any(Function) as () => void,
+        get: expect.any(Function) as () => never,
         listen: expect.any(Function) as () => void,
         getUrl: expect.any(Function) as () => void,
+        useStaticAssets: expect.any(Function) as () => void,
       };
 
       expect(app).toStrictEqual(expectedApp);

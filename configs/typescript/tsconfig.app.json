@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "../../",
     "composite": true,
     "declaration": true,
     "emitDecoratorMetadata": true,
@@ -22,16 +21,19 @@
     "target": "ES2021",
     "resolveJsonModule": true,
     "paths": {
-      "@package-json": ["package.json"],
-      "@src/*": ["src/*"],
-      "@app/*": ["src/app/*"],
-      "@configs/*": ["configs/*"],
-      "@server/*": ["src/server/*"],
-      "@modules/*": ["src/modules/*"],
-      "@shared/*": ["src/shared/*"],
-      "@unit-tests/*": ["tests/unit/*"],
-      "@factories/*": ["tests/unit/utils/factories/*"],
-      "@mocks/*": ["tests/unit/utils/mocks/*"]
+      "@package-json": ["../../package.json"],
+      "@src/*": ["../../src/*"],
+      "@app/*": ["../../src/app/*"],
+      "@configs/*": ["../../configs/*"],
+      "@server/*": ["../../src/server/*"],
+      "@modules/*": ["../../src/modules/*"],
+      "@shared/*": ["../../src/shared/*"],
+      "@unit-tests/*": ["../../tests/unit/*"],
+      "@factories/*": ["../../tests/unit/utils/factories/*"],
+      "@mocks/*": ["../../tests/unit/utils/mocks/*"],
+      "@acceptance-tests/*": ["../../tests/acceptance/*"],
+      "@acceptance-features/*": ["../../tests/acceptance/features/*"],
+      "@acceptance-support/*": ["../../tests/acceptance/support/*"]
     }
   },
   "include": [
