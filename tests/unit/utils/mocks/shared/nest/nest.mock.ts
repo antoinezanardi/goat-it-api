@@ -1,15 +1,16 @@
 const mockedLogger = vi.hoisted(() => ({
   log: vi.fn<() => void>(),
   warn: vi.fn<() => void>(),
-  info: vi.fn<() => void>(),
-  danger: vi.fn<() => void>(),
+  verbose: vi.fn<() => void>(),
+  debug: vi.fn<() => void>(),
+  error: vi.fn<() => void>(),
   fatal: vi.fn<() => void>(),
 }));
 
 function mockNestCommon(): void {
   vi.mock("@nestjs/common", async importActual => ({
     ...await importActual(),
-    Logger: vi.fn<() => object>(function logger() {
+    Logger: vi.fn<() => typeof mockedLogger>(function logger() {
       return mockedLogger;
     }),
   }));
