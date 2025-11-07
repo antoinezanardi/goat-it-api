@@ -59,7 +59,7 @@ const ESLINT_IGNORES = [
   "node_modules/**/*",
   "tests/unit/coverage/**/*",
   "tests/mutation/**/*",
-  "tests/acceptance/**/*",
+  "tests/acceptance/reports/**/*",
 ];
 
 export {
