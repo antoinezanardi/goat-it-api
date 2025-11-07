@@ -146,7 +146,10 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/prefer-ternary": "error",
     "unicorn/prefer-top-level-await": "error",
     "unicorn/prefer-type-error": "error",
-    "unicorn/prevent-abbreviations": "error",
+    "unicorn/prevent-abbreviations": [
+      "error",
+      { allowList: { docs: true } },
+    ],
     "unicorn/relative-url-style": "error",
     "unicorn/require-array-join-separator": "error",
     "unicorn/require-module-attributes": "error",

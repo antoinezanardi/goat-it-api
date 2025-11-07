@@ -399,7 +399,6 @@ pnpm run test:acceptance
 
 - The project currently enforces `100%` coverage in config. Ensure any changes maintain coverage.
 - Mutation testing is expensive; run it selectively (CI preferred). Usually, run mutation tests locally before merging significant changes.
-- There's a TODO in `src/server/server.ts` to replace `console` logging with a proper logger (`Winston`). If you modify logging behavior, ensure tests are updated accordingly.
 
 ## Contact and maintainers
 

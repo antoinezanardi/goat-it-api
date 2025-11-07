@@ -17,8 +17,8 @@ function buildAppForAcceptanceTests(): void {
 }
 
 async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams): Promise<ChildProcessWithoutNullStreams> {
-  // TODO: Implement a more robust readiness check (e.g., polling the health endpoint)
-  return new Promise((resolve) => {
+  // TODO [+@nestjs/terminus]: Implement a more robust readiness check (e.g., polling the health endpoint)
+  return new Promise(resolve => {
     setTimeout(resolve, APP_READINESS_TIMEOUT_MS, serverProcess);
   });
 }
@@ -34,16 +34,26 @@ async function serveAppForAcceptanceTests(): Promise<ChildProcessWithoutNullStre
 
 async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
   return new Promise<void>(resolve => {
+    let isSettled = false;
+
+    function settlePromise(): void {
+      if (isSettled) {
+        return;
+      }
+      isSettled = true;
+      resolve();
+    }
+
     const forceKillTimeout = setTimeout(() => {
       if (!serverProcess.killed) {
         serverProcess.kill("SIGKILL");
       }
-      resolve();
+      settlePromise();
     }, APP_FORCE_KILL_TIMEOUT_MS);
 
     serverProcess.on("exit", () => {
       clearTimeout(forceKillTimeout);
-      resolve();
+      settlePromise();
     });
   });
 }

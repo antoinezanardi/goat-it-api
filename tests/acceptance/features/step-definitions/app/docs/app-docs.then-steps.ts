@@ -1,7 +1,9 @@
-import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import { Then } from "@cucumber/cucumber";
-import { SWAGGER_DOCUMENTATION_TITLE } from "@server/constants/swagger.constants";
 import { expect } from "expect";
+
+import { SWAGGER_DOCUMENTATION_TITLE } from "@server/constants/swagger.constants";
+
+import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the application reference docs should be returned$/u, function(this: GoatItWorld): void {
   const swaggerHtml = this.expectLastResponseText();
