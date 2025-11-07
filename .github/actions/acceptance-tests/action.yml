@@ -50,3 +50,8 @@ runs:
       if: steps.acceptance-tests.outcome != 'success'
       shell: bash
       run: exit 1
+
+    - name: Stop Docker services 🛑
+      if: always()
+      shell: bash
+      run: pnpm run docker:acceptance-tests:stop
