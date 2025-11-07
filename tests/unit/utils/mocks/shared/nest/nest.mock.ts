@@ -1,10 +1,10 @@
 const mockedLogger = vi.hoisted(() => ({
-  log: vi.fn<() => void>(),
-  warn: vi.fn<() => void>(),
-  verbose: vi.fn<() => void>(),
-  debug: vi.fn<() => void>(),
-  error: vi.fn<() => void>(),
-  fatal: vi.fn<() => void>(),
+  log: vi.fn<(message: unknown, ...optionalParameters: unknown[]) => void>(),
+  warn: vi.fn<(message: unknown, ...optionalParameters: unknown[]) => void>(),
+  verbose: vi.fn<(message: unknown, ...optionalParameters: unknown[]) => void>(),
+  debug: vi.fn<(message: unknown, ...optionalParameters: unknown[]) => void>(),
+  error: vi.fn<(message: unknown, trace?: string, ...optionalParameters: unknown[]) => void>(),
+  fatal: vi.fn<(message: unknown, trace?: string, ...optionalParameters: unknown[]) => void>(),
 }));
 
 function mockNestCommon(): void {
