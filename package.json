@@ -90,7 +90,10 @@
     "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)",
     "docker:build": "docker buildx build -t goat-it-api .",
     "docker:build:linux/arm64": "docker buildx build --platform linux/arm64 -t goat-it-api .",
-    "docker:build:linux/amd64": "docker buildx build --platform linux/amd64 -t goat-it-api ."
+    "docker:build:linux/amd64": "docker buildx build --platform linux/amd64 -t goat-it-api .",
+    "docker:acceptance-tests:start": "docker compose -f docker/goat-it-api-acceptance-tests/docker-compose.yml up -d",
+    "docker:acceptance-tests:stop": "docker compose -f docker/goat-it-api-acceptance-tests/docker-compose.yml down",
+    "docker:acceptance-tests:reset": "npm run docker:acceptance-tests:stop && npm run docker:acceptance-tests:start"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
@@ -146,8 +149,10 @@
     "@fastify/static": "^8.3.0",
     "@nestjs/common": "^11.1.8",
     "@nestjs/core": "^11.1.8",
+    "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-fastify": "^11.1.8",
     "@nestjs/swagger": "^11.2.1",
+    "mongoose": "^8.19.3",
     "nestjs-pino": "^4.4.1",
     "nestjs-zod": "^5.0.1",
     "reflect-metadata": "^0.2.2",
