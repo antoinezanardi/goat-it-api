@@ -19,6 +19,11 @@ runs:
     - name: Install project 📦
       uses: ./.github/actions/install-project
 
+    - name: Start Docker services 🐳
+      id: start-docker-services
+      shell: bash
+      run: pnpm run docker:acceptance-tests:start
+
     - name: Acceptance tests ⚗️
       id: acceptance-tests
       continue-on-error: true

@@ -93,7 +93,7 @@
     "docker:build:linux/amd64": "docker buildx build --platform linux/amd64 -t goat-it-api .",
     "docker:acceptance-tests:start": "docker compose -f docker/goat-it-api-acceptance-tests/docker-compose.yml up -d",
     "docker:acceptance-tests:stop": "docker compose -f docker/goat-it-api-acceptance-tests/docker-compose.yml down",
-    "docker:acceptance-tests:reset": "npm run docker:test:stop && npm run docker:test:start"
+    "docker:acceptance-tests:reset": "npm run docker:acceptance-tests:stop && npm run docker:acceptance-tests:start"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
