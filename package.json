@@ -46,7 +46,7 @@
   "main": "dist/main.js",
   "readme": "README.md",
   "engines": {
-    "node": ">=24.11.0"
+    "node": ">=24.11.1"
   },
   "os": [
     "darwin",
@@ -111,7 +111,7 @@
     "@stylistic/eslint-plugin": "^5.5.0",
     "@swc/cli": "^0.7.9",
     "@swc/core": "^1.15.1",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.4",
     "@vitest/coverage-v8": "^4.0.8",
