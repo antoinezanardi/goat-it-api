@@ -8,6 +8,10 @@ jobs:
   require-develop-source:
     name: Require PR from develop branch ⛵
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+      issues: write
     steps:
       - name: Comment and fail if PR source branch is not 'develop' ❌
         if: ${{ github.event.pull_request.head.ref != 'develop' }}
@@ -26,7 +30,3 @@ jobs:
             })
 
             throw new Error(body)
-
-      - name: Allow PR from develop ✅
-        if: ${{ github.event.pull_request.head.ref == 'develop' }}
-        run: echo "PR source branch is 'develop' — checks passed. ⛵"
