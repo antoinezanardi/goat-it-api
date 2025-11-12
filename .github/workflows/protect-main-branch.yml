@@ -16,7 +16,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const headRef = context.payload.pull_request.head.ref
-            const body = `🚫 Pull requests to main must come from 'develop'. Please change the target branch to 'develop' if you want to merge this PR.`
+            const body = `🚫 Pull requests to main must come from 'develop', but this PR comes from '${headRef}'. Please retarget this PR to 'develop'.`
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,
