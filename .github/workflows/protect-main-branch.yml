@@ -6,10 +6,10 @@ on:
 
 jobs:
   require-develop-source:
-    name: ⛵ Require PR from develop branch
+    name: Require PR from develop branch ⛵
     runs-on: ubuntu-latest
     steps:
-      - name: ❌ Comment and fail if PR source branch is not 'develop'
+      - name: Comment and fail if PR source branch is not 'develop' ❌
         if: ${{ github.event.pull_request.head.ref != 'develop' }}
         uses: actions/github-script@v8
         with:
@@ -27,6 +27,6 @@ jobs:
 
             throw new Error(body)
 
-      - name: ✅ Allow PR from develop
+      - name: Allow PR from develop ✅
         if: ${{ github.event.pull_request.head.ref == 'develop' }}
         run: echo "PR source branch is 'develop' — checks passed. ⛵"
