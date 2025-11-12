@@ -1,0 +1,32 @@
+name: 🛡️ Protect main branch
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  require-develop-source:
+    name: ⛵ Require PR from develop branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: ❌ Comment and fail if PR source branch is not 'develop'
+        if: ${{ github.event.pull_request.head.ref != 'develop' }}
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const headRef = context.payload.pull_request.head.ref
+            const body = `🚫 Pull requests to main must come from 'develop'. Please change the target branch to 'develop' if you want to merge this PR.`
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body
+            })
+
+            throw new Error(body)
+
+      - name: ✅ Allow PR from develop
+        if: ${{ github.event.pull_request.head.ref == 'develop' }}
+        run: echo "PR source branch is 'develop' — checks passed. ⛵"
