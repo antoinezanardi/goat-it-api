@@ -12,21 +12,21 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "27"
+            "12"
           ],
           "location": {
             "end": {
               "column": 4,
-              "line": 25
+              "line": 28
             },
             "start": {
               "column": 54,
-              "line": 23
+              "line": 26
             }
           }
         }
       ],
-      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { AppGetMetadataResponseDto } from \"@app/types/app.types\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  @ApiOperation({\n    summary: \"Get application metadata\",\n    description: \"Get the metadata information of the application like name, version, and description.\",\n  })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    type: AppGetMetadataResponseDto,\n  })\n  public getApiMetadata(): AppGetMetadataResponseDto {\n    return this.appService.getApiMeta();\n  }\n}"
+      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { SwaggerTags } from \"@server/constants/swagger.enums\";\n\nimport { GetAppMetadataResponseDto } from \"@app/types/app.types\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  @ApiOperation({\n    tags: [SwaggerTags.APP],\n    summary: \"Get application metadata\",\n    description: \"Get the metadata information of the application like name, version, and description.\",\n  })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    type: GetAppMetadataResponseDto,\n  })\n  public getApiMetadata(): GetAppMetadataResponseDto {\n    return this.appService.getApiMeta();\n  }\n}"
     },
     "src/app/helpers/logger.helpers.ts": {
       "language": "typescript",
@@ -272,7 +272,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "24"
+            "27"
           ],
           "location": {
             "end": {
@@ -294,7 +294,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "24"
+            "27"
           ],
           "location": {
             "end": {
@@ -316,10 +316,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "24"
+            "27"
           ],
           "coveredBy": [
-            "24"
+            "27"
           ],
           "location": {
             "end": {
@@ -347,9 +347,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "1",
             "2",
-            "3",
-            "4"
+            "3"
           ],
           "location": {
             "end": {
@@ -371,12 +371,12 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "2"
+            "1"
           ],
           "coveredBy": [
+            "1",
             "2",
-            "3",
-            "4"
+            "3"
           ],
           "location": {
             "end": {
@@ -398,12 +398,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "3"
+            "2"
           ],
           "coveredBy": [
+            "1",
             "2",
-            "3",
-            "4"
+            "3"
           ],
           "location": {
             "end": {
@@ -425,12 +425,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "3"
+            "2"
           ],
           "coveredBy": [
+            "1",
             "2",
-            "3",
-            "4"
+            "3"
           ],
           "location": {
             "end": {
@@ -452,12 +452,12 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "4"
+            "3"
           ],
           "coveredBy": [
+            "1",
             "2",
-            "3",
-            "4"
+            "3"
           ],
           "location": {
             "end": {
@@ -479,10 +479,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "3",
             "4",
             "5",
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -504,13 +504,13 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "5"
+            "4"
           ],
           "coveredBy": [
+            "3",
             "4",
             "5",
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -532,10 +532,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "5"
+            "4"
           ],
           "coveredBy": [
-            "5"
+            "4"
           ],
           "location": {
             "end": {
@@ -557,10 +557,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "5"
+            "4"
           ],
           "coveredBy": [
-            "5"
+            "4"
           ],
           "location": {
             "end": {
@@ -582,13 +582,13 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "6"
+            "5"
           ],
           "coveredBy": [
+            "3",
             "4",
             "5",
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -610,10 +610,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "6"
+            "5"
           ],
           "coveredBy": [
-            "6"
+            "5"
           ],
           "location": {
             "end": {
@@ -635,10 +635,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "6"
+            "5"
           ],
           "coveredBy": [
-            "6"
+            "5"
           ],
           "location": {
             "end": {
@@ -666,9 +666,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "7",
             "8",
-            "9",
-            "10"
+            "9"
           ],
           "location": {
             "end": {
@@ -690,12 +690,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "9"
+            "8"
           ],
           "coveredBy": [
+            "7",
             "8",
-            "9",
-            "10"
+            "9"
           ],
           "location": {
             "end": {
@@ -717,9 +717,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "7",
             "8",
-            "9",
-            "10"
+            "9"
           ],
           "location": {
             "end": {
@@ -741,9 +741,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "7",
             "8",
-            "9",
-            "10"
+            "9"
           ],
           "location": {
             "end": {
@@ -765,8 +765,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "9",
-            "11"
+            "8",
+            "10"
           ],
           "location": {
             "end": {
@@ -788,8 +788,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "10",
-            "12"
+            "9",
+            "11"
           ],
           "location": {
             "end": {
@@ -811,11 +811,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "12"
+            "11"
           ],
           "coveredBy": [
-            "10",
-            "12"
+            "9",
+            "11"
           ],
           "location": {
             "end": {
@@ -1388,7 +1388,7 @@
           "id": "25",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "statusReason": "src/modules/health/controllers/health.controller.ts(34,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(34,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(34,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(34,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
@@ -1398,16 +1398,16 @@
           "location": {
             "end": {
               "column": 4,
-              "line": 36
+              "line": 38
             },
             "start": {
-              "column": 66,
-              "line": 32
+              "column": 69,
+              "line": 34
             }
           }
         }
       ],
-      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation, ApiResponse } from \"@nestjs/swagger\";\nimport { HealthCheck } from \"@nestjs/terminus\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\nimport { HEALTH_CHECK_RESULT_SCHEMA } from \"@modules/health/constants/health.constants\";\n\nimport { GetHealthCheckResultResponseDto } from \"@modules/health/types/health.types\";\n\n@Controller(\"health\")\nexport class HealthController {\n  public constructor(private readonly healthService: HealthService) {}\n\n  @Get()\n  @ApiOperation({\n    tags: [\"❤️ Health\"],\n    summary: \"Check application health\",\n    description: `Check the health status of the application by performing various checks on database and documentation endpoint.`,\n  })\n  @HealthCheck({ swaggerDocumentation: false })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    description: \"Application is healthy and ready to serve requests\",\n    type: GetHealthCheckResultResponseDto,\n  })\n  @ApiResponse({\n    status: HttpStatus.SERVICE_UNAVAILABLE,\n    description: \"Application is not ready yet\",\n  })\n  public async check(): Promise<GetHealthCheckResultResponseDto> {\n    const appHealth = await this.healthService.checkAppHealth();\n\n    return HEALTH_CHECK_RESULT_SCHEMA.parse(appHealth);\n  }\n}"
+      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation, ApiResponse } from \"@nestjs/swagger\";\nimport { HealthCheck } from \"@nestjs/terminus\";\nimport { ZodResponse } from \"nestjs-zod\";\n\nimport { SwaggerTags } from \"@server/constants/swagger.enums\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\nimport { HEALTH_CHECK_RESULT_SCHEMA } from \"@modules/health/constants/health.constants\";\n\nimport { GetAppHealthCheckResultResponseDto } from \"@modules/health/types/health.types\";\n\n@Controller(\"health\")\nexport class HealthController {\n  public constructor(private readonly healthService: HealthService) {}\n\n  @Get()\n  @ApiOperation({\n    tags: [SwaggerTags.APP],\n    summary: \"Check application health\",\n    description: `Check the health status of the application by performing various checks on database and documentation endpoint.`,\n  })\n  @HealthCheck({ swaggerDocumentation: false })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    description: \"Application is healthy and ready to serve requests\",\n    type: GetAppHealthCheckResultResponseDto,\n  })\n  @ApiResponse({\n    status: HttpStatus.SERVICE_UNAVAILABLE,\n    description: \"Application is not ready yet\",\n  })\n  public async check(): Promise<GetAppHealthCheckResultResponseDto> {\n    const appHealth = await this.healthService.checkAppHealth();\n\n    return HEALTH_CHECK_RESULT_SCHEMA.parse(appHealth);\n  }\n}"
     }
   },
   "schemaVersion": "1.0",
@@ -1417,43 +1417,34 @@
     "break": 100
   },
   "testFiles": {
-    "src/main.spec.ts": {
-      "tests": [
-        {
-          "id": "0",
-          "name": "Main Root should call bootstrap when file is imported."
-        }
-      ],
-      "source": "import * as Server from \"@server/server\";\n\nvi.mock(import(\"@server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
-    },
     "src/modules/database/providers/database.service.spec.ts": {
       "tests": [
         {
-          "id": "1",
+          "id": "0",
           "name": "Database Service Constructor should log database connection message when instantiated."
         },
         {
-          "id": "2",
+          "id": "1",
           "name": "Database Service createMongooseOptions should log database connecting message when called."
         },
         {
-          "id": "3",
+          "id": "2",
           "name": "Database Service createMongooseOptions should return mongoose options when called."
         },
         {
-          "id": "4",
+          "id": "3",
           "name": "Database Service createMongooseOptions should return the connection from onConnectionCreate option when called."
         },
         {
-          "id": "5",
+          "id": "4",
           "name": "Database Service onMongooseConnectionCreate should log database connected message when connection emits connected event."
         },
         {
-          "id": "6",
+          "id": "5",
           "name": "Database Service onMongooseConnectionCreate should log database disconnected message when connection emits disconnected event."
         },
         {
-          "id": "7",
+          "id": "6",
           "name": "Database Service onMongooseConnectionCreate should return the connection when called."
         }
       ],
@@ -1462,27 +1453,36 @@
     "src/modules/health/providers/services/health.service.spec.ts": {
       "tests": [
         {
-          "id": "8",
+          "id": "7",
           "name": "Health Service checkAppHealth should call health check service when called."
         },
         {
-          "id": "9",
+          "id": "8",
           "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
         },
         {
-          "id": "10",
+          "id": "9",
           "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
         },
         {
-          "id": "11",
+          "id": "10",
           "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
         },
         {
-          "id": "12",
+          "id": "11",
           "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
         }
       ],
       "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/modules/health/providers/services/terminus.service.mock\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
+    },
+    "src/app/controllers/app.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "12",
+          "name": "App Controller getApiMetadata should call Api metadata service method when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
     "src/server/server.spec.ts": {
       "tests": [
@@ -1533,14 +1533,14 @@
       ],
       "source": "import * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport type { AppModule } from \"@app/app.module\";\n\nimport { setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\nimport { bootstrap } from \"@server/server\";\n\nimport type { INestApplication, NestApplicationOptions } from \"@nestjs/common\";\n\nvi.mock(import(\"@nestjs/core\"));\nvi.mock(import(\"@app/app.module\"), () => ({\n  AppModule: {\n    name: \"MockedModule\",\n  } as typeof AppModule,\n}));\nvi.mock(import(\"@server/helpers/swagger.helpers\"));\n\ndescribe(\"Server\", () => {\n  beforeEach(() => {\n    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({\n      enableShutdownHooks: vi.fn<() => INestApplication>(),\n      useLogger: vi.fn<() => void>(),\n      get: vi.fn<() => object>().mockReturnValue({\n        log: vi.fn<() => void>(),\n      }),\n      listen: vi.fn<() => Promise<undefined>>(),\n      getUrl: vi.fn<() => Promise<string>>().mockResolvedValue(\"http://mocked-host:9090\"),\n      useStaticAssets: vi.fn<() => void>(),\n    } as Partial<INestApplication>));\n  });\n\n  describe(bootstrap, () => {\n    it(\"should create from NestFactory when called.\", async() => {\n      const expectedOptions: NestApplicationOptions = {\n        bufferLogs: true,\n      };\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: \"MockedModule\" }, expect.any(Fastify.FastifyAdapter), expectedOptions);\n    });\n\n    it(\"should enable shutdown hooks when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should use logger when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));\n    });\n\n    it(\"should setup swagger module when called.\", async() => {\n      await bootstrap();\n\n      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));\n    });\n\n    it(\"should use static assets when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({\n        root: `${process.cwd()}/public`,\n        prefix: \"/public/\",\n      });\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async() => {\n      process.env.HOST = \"127.0.0.1\";\n      process.env.PORT = \"8080\";\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, \"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should log the swagger documentation path when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, \"📚 Swagger documentation is available on: http://mocked-host:9090/docs\");\n    });\n\n    it(\"should return the app when called.\", async() => {\n      const app = await bootstrap();\n      const expectedApp = {\n        enableShutdownHooks: expect.any(Function) as () => INestApplication,\n        useLogger: expect.any(Function) as () => void,\n        get: expect.any(Function) as () => never,\n        listen: expect.any(Function) as () => void,\n        getUrl: expect.any(Function) as () => void,\n        useStaticAssets: expect.any(Function) as () => void,\n      };\n\n      expect(app).toStrictEqual(expectedApp);\n    });\n  });\n});"
     },
-    "src/app/providers/services/app.service.spec.ts": {
+    "src/main.spec.ts": {
       "tests": [
         {
           "id": "24",
-          "name": "App Service getApiMeta should return Api metadata when called."
+          "name": "Main Root should call bootstrap when file is imported."
         }
       ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
+      "source": "import * as Server from \"@server/server\";\n\nvi.mock(import(\"@server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
     "src/modules/health/controllers/health.controller.spec.ts": {
       "tests": [
@@ -1553,16 +1553,16 @@
           "name": "Health Controller check should return health check result without error and info fields when called."
         }
       ],
-      "source": "import { HealthCheckResult } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\nimport { HealthController } from \"@modules/health/controllers/health.controller\";\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/modules/health/providers/services/health.service.mock\";\n\nimport { createFakeHealthCheckResult, createFakeHealthIndicatorResult } from \"@factories/modules/health/health.factory\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should return health check result without error and info fields when called.\", async() => {\n      const expectedHealthCheckResult: HealthCheckResult = {\n        status: \"ok\",\n        details: createFakeHealthIndicatorResult(),\n      };\n      mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);\n      const actualHealthCheckResult = await healthController.check();\n\n      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);\n    });\n  });\n});"
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { HealthController } from \"@modules/health/controllers/health.controller\";\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/modules/health/providers/services/health.service.mock\";\n\nimport { createFakeHealthIndicatorResult } from \"@factories/modules/health/health.factory\";\n\nimport type { HealthCheckResult } from \"@nestjs/terminus\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should return health check result without error and info fields when called.\", async() => {\n      const expectedHealthCheckResult: HealthCheckResult = {\n        status: \"ok\",\n        details: createFakeHealthIndicatorResult(),\n      };\n      mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);\n      const actualHealthCheckResult = await healthController.check();\n\n      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);\n    });\n  });\n});"
     },
-    "src/app/controllers/app.controller.spec.ts": {
+    "src/app/providers/services/app.service.spec.ts": {
       "tests": [
         {
           "id": "27",
-          "name": "App Controller getApiMetadata should call Api metadata service method when called."
+          "name": "App Service getApiMeta should return Api metadata when called."
         }
       ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
     },
     "src/server/helpers/swagger.helpers.spec.ts": {
       "tests": [
