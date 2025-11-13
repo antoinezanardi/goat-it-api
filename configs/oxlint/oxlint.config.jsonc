@@ -1016,7 +1016,8 @@
               "Controller",
               "Get",
               "ApiOperation",
-              "ZodResponse"
+              "ZodResponse",
+              "HealthCheck"
             ]
           }
         ]

@@ -10,6 +10,7 @@ const ESLINT_CONTROLLERS_FLAT_CONFIG: Linter.Config = {
         capIsNewExceptions: [
           "Controller",
           "Get",
+          "HealthCheck",
         ],
       },
     ],

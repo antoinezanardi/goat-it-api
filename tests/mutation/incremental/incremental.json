@@ -1,33 +1,5 @@
 {
   "files": {
-    "src/app/controllers/app.controller.ts": {
-      "language": "typescript",
-      "mutants": [
-        {
-          "id": "0",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "killedBy": [],
-          "coveredBy": [
-            "29"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 25
-            },
-            "start": {
-              "column": 54,
-              "line": 23
-            }
-          }
-        }
-      ],
-      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { AppGetMetadataResponseDto } from \"@app/types/app.types\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  @ApiOperation({\n    summary: \"Get application metadata\",\n    description: \"Get the metadata information of the application like name, version, and description.\",\n  })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    type: AppGetMetadataResponseDto,\n  })\n  public getApiMetadata(): AppGetMetadataResponseDto {\n    return this.appService.getApiMeta();\n  }\n}"
-    },
     "src/app/helpers/logger.helpers.ts": {
       "language": "typescript",
       "mutants": [
@@ -40,8 +12,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -63,11 +35,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "34"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -89,11 +61,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "34"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -115,11 +87,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "1"
+            "35"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -141,11 +113,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "34"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -167,11 +139,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "34"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -193,11 +165,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "34"
           ],
           "coveredBy": [
-            "0",
-            "1"
+            "34",
+            "35"
           ],
           "location": {
             "end": {
@@ -219,7 +191,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "1"
+            "35"
           ],
           "location": {
             "end": {
@@ -241,10 +213,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "1"
+            "35"
           ],
           "coveredBy": [
-            "1"
+            "35"
           ],
           "location": {
             "end": {
@@ -272,7 +244,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "28"
+            "13"
           ],
           "location": {
             "end": {
@@ -294,7 +266,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "28"
+            "13"
           ],
           "location": {
             "end": {
@@ -316,10 +288,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "28"
+            "13"
           ],
           "coveredBy": [
-            "28"
+            "13"
           ],
           "location": {
             "end": {
@@ -335,11 +307,330 @@
       ],
       "source": "import { Injectable } from \"@nestjs/common\";\n\nimport packageJson from \"@package-json\" with { type: \"json\" };\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\n@Injectable()\nexport class AppService {\n  public getApiMeta(): AppMetadata {\n    void this;\n\n    return {\n      packageName: packageJson.name,\n      name: \"Goat It API\",\n      description: packageJson.description,\n      version: packageJson.version,\n    };\n  }\n}"
     },
+    "src/modules/database/providers/database.service.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "13",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 24
+            },
+            "start": {
+              "column": 57,
+              "line": 12
+            }
+          }
+        },
+        {
+          "id": "14",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '🍃 Connecting to the database...' ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"🍃 Connecting to the database...\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "1"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 55,
+              "line": 13
+            },
+            "start": {
+              "column": 21,
+              "line": 13
+            }
+          }
+        },
+        {
+          "id": "15",
+          "mutatorName": "ObjectLiteral",
+          "replacement": "{}",
+          "statusReason": "expected {} to strictly equal { …(7) }",
+          "status": "Killed",
+          "testsCompleted": 2,
+          "static": false,
+          "killedBy": [
+            "2"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 23
+            },
+            "start": {
+              "column": 12,
+              "line": 15
+            }
+          }
+        },
+        {
+          "id": "16",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected { uri: '', …(6) } to strictly equal { …(7) }",
+          "status": "Killed",
+          "testsCompleted": 2,
+          "static": false,
+          "killedBy": [
+            "2"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 39,
+              "line": 16
+            },
+            "start": {
+              "column": 12,
+              "line": 16
+            }
+          }
+        },
+        {
+          "id": "17",
+          "mutatorName": "ArrowFunction",
+          "replacement": "() => undefined",
+          "statusReason": "expected undefined to strictly equal EventEmitter{ _events: {}, …(2), …(2) }",
+          "status": "Killed",
+          "testsCompleted": 3,
+          "static": false,
+          "killedBy": [
+            "3"
+          ],
+          "coveredBy": [
+            "1",
+            "2",
+            "3"
+          ],
+          "location": {
+            "end": {
+              "column": 84,
+              "line": 22
+            },
+            "start": {
+              "column": 27,
+              "line": 22
+            }
+          }
+        },
+        {
+          "id": "18",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 36
+            },
+            "start": {
+              "column": 74,
+              "line": 26
+            }
+          }
+        },
+        {
+          "id": "19",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 2,
+          "static": false,
+          "killedBy": [
+            "4"
+          ],
+          "coveredBy": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 30,
+              "line": 27
+            },
+            "start": {
+              "column": 19,
+              "line": 27
+            }
+          }
+        },
+        {
+          "id": "20",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "4"
+          ],
+          "coveredBy": [
+            "4"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 29
+            },
+            "start": {
+              "column": 38,
+              "line": 27
+            }
+          }
+        },
+        {
+          "id": "21",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"🍀 Database connection established\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "4"
+          ],
+          "coveredBy": [
+            "4"
+          ],
+          "location": {
+            "end": {
+              "column": 59,
+              "line": 28
+            },
+            "start": {
+              "column": 23,
+              "line": 28
+            }
+          }
+        },
+        {
+          "id": "22",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 3,
+          "static": false,
+          "killedBy": [
+            "5"
+          ],
+          "coveredBy": [
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 33,
+              "line": 31
+            },
+            "start": {
+              "column": 19,
+              "line": 31
+            }
+          }
+        },
+        {
+          "id": "23",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "5"
+          ],
+          "coveredBy": [
+            "5"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 33
+            },
+            "start": {
+              "column": 41,
+              "line": 31
+            }
+          }
+        },
+        {
+          "id": "24",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"⚠️ Database connection lost\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "5"
+          ],
+          "coveredBy": [
+            "5"
+          ],
+          "location": {
+            "end": {
+              "column": 53,
+              "line": 32
+            },
+            "start": {
+              "column": 24,
+              "line": 32
+            }
+          }
+        }
+      ],
+      "source": "import { Logger, Injectable } from \"@nestjs/common\";\n\nimport { DATABASE_CONNECTION_TIMEOUT_MS, DATABASE_NAME, DATABASE_RETRY_ATTEMPTS, DATABASE_RETRY_DELAY_MS } from \"@modules/database/constants/database.constants\";\n\nimport type { MongooseModuleOptions, MongooseOptionsFactory } from \"@nestjs/mongoose\";\nimport type { Connection } from \"mongoose\";\n\n@Injectable()\nexport class DatabaseService implements MongooseOptionsFactory {\n  private readonly logger = new Logger(DatabaseService.name);\n\n  public createMongooseOptions(): MongooseModuleOptions {\n    this.logger.log(\"🍃 Connecting to the database...\");\n\n    return {\n      uri: \"mongodb://localhost:27017\",\n      serverSelectionTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      connectTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      retryDelay: DATABASE_RETRY_DELAY_MS,\n      retryAttempts: DATABASE_RETRY_ATTEMPTS,\n      dbName: DATABASE_NAME,\n      onConnectionCreate: connection => this.onMongooseConnectionCreate(connection),\n    };\n  }\n\n  private onMongooseConnectionCreate(connection: Connection): Connection {\n    connection.on(\"connected\", () => {\n      this.logger.log(\"🍀 Database connection established\");\n    });\n\n    connection.on(\"disconnected\", () => {\n      this.logger.warn(\"⚠️ Database connection lost\");\n    });\n\n    return connection;\n  }\n}"
+    },
     "src/server/helpers/swagger.helpers.ts": {
       "language": "typescript",
       "mutants": [
         {
-          "id": "25",
+          "id": "33",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "src/server/helpers/swagger.helpers.ts(11,30): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(11,30): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(11,30): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(11,30): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
@@ -347,13 +638,13 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20"
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33"
           ],
           "location": {
             "end": {
@@ -367,7 +658,7 @@
           }
         },
         {
-          "id": "26",
+          "id": "34",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "src/server/helpers/swagger.helpers.ts(19,62): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(19,62): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(19,62): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/helpers/swagger.helpers.ts(19,62): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
@@ -375,9 +666,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "18",
-            "19",
-            "20"
+            "31",
+            "32",
+            "33"
           ],
           "location": {
             "end": {
@@ -391,7 +682,7 @@
           }
         },
         {
-          "id": "27",
+          "id": "35",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '/docs', {}, undefined, { …(1) } ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
@@ -399,10 +690,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "20"
+            "33"
           ],
           "coveredBy": [
-            "20"
+            "33"
           ],
           "location": {
             "end": {
@@ -416,7 +707,7 @@
           }
         },
         {
-          "id": "28",
+          "id": "36",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '/docs', {}, undefined, { …(1) } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    \"/docs\",\u001b[22m\n\u001b[2m    {},\u001b[22m\n\u001b[2m    undefined,\u001b[22m\n\u001b[32m-   {\u001b[90m\n\u001b[32m-     \"customSiteTitle\": \"Goat It API Reference Documentation\",\u001b[90m\n\u001b[32m-   },\u001b[90m\n\u001b[31m+   {},\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -424,10 +715,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "20"
+            "33"
           ],
           "coveredBy": [
-            "20"
+            "33"
           ],
           "location": {
             "end": {
@@ -447,7 +738,7 @@
       "language": "typescript",
       "mutants": [
         {
-          "id": "29",
+          "id": "37",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "src/server/server.ts(12,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/server.ts(12,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/server.ts(12,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/server/server.ts(12,29): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
@@ -455,17 +746,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -479,7 +770,7 @@
           }
         },
         {
-          "id": "30",
+          "id": "38",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { name: 'MockedModule' }, …(2) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"name\": \"MockedModule\",\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[32m-   Any<FastifyAdapter>,\u001b[90m\n\u001b[32m-   {\u001b[90m\n\u001b[32m-     \"bufferLogs\": true,\u001b[90m\n\u001b[31m+   FastifyAdapter {\u001b[90m\n\u001b[31m+     \"instance\": {\u001b[90m\n\u001b[31m+       \"addConstraintStrategy\": [Function bound addConstraintStrategy],\u001b[90m\n\u001b[31m+       \"addContentTypeParser\": [Function addContentTypeParser],\u001b[90m\n\u001b[31m+       \"addHook\": [Function addHook],\u001b[90m\n\u001b[31m+       \"addHttpMethod\": [Function addHttpMethod],\u001b[90m\n\u001b[31m+       \"addSchema\": [Function addSchema],\u001b[90m\n\u001b[31m+       \"addresses\": [Function addresses],\u001b[90m\n\u001b[31m+       \"after\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"all\": [Function _all],\u001b[90m\n\u001b[31m+       \"close\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"decorate\": [Function decorateFastify],\u001b[90m\n\u001b[31m+       \"decorateReply\": [Function decorateReply],\u001b[90m\n\u001b[31m+       \"decorateRequest\": [Function decorateRequest],\u001b[90m\n\u001b[31m+       \"defaultTextParser\": [Function defaultPlainTextParser],\u001b[90m\n\u001b[31m+       \"delete\": [Function _delete],\u001b[90m\n\u001b[31m+       \"findRoute\": [Function _findRoute],\u001b[90m\n\u001b[31m+       \"get\": [Function _get],\u001b[90m\n\u001b[31m+       \"getDecorator\": [Function getInstanceDecorator],\u001b[90m\n\u001b[31m+       \"getDefaultJsonParser\": [Function getDefaultJsonParser],\u001b[90m\n\u001b[31m+       \"getSchema\": [Function bound getSchema],\u001b[90m\n\u001b[31m+       \"getSchemas\": [Function bound getSchemas],\u001b[90m\n\u001b[31m+       \"hasConstraintStrategy\": [Function bound hasConstraintStrategy],\u001b[90m\n\u001b[31m+       \"hasContentTypeParser\": [Function hasContentTypeParser],\u001b[90m\n\u001b[31m+       \"hasDecorator\": [Function checkExistence],\u001b[90m\n\u001b[31m+       \"hasPlugin\": [Function hasPlugin],\u001b[90m\n\u001b[31m+       \"hasReplyDecorator\": [Function checkReplyExistence],\u001b[90m\n\u001b[31m+       \"hasRequestDecorator\": [Function checkRequestExistence],\u001b[90m\n\u001b[31m+       \"hasRoute\": [Function _route],\u001b[90m\n\u001b[31m+       \"head\": [Function _head],\u001b[90m\n\u001b[31m+       \"initialConfig\": {\u001b[90m\n\u001b[31m+         \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+         \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+         \"caseSensitive\": true,\u001b[90m\n\u001b[31m+         \"connectionTimeout\": 0,\u001b[90m\n\u001b[31m+         \"disableRequestLogging\": false,\u001b[90m\n\u001b[31m+         \"exposeHeadRoutes\": true,\u001b[90m\n\u001b[31m+         \"http2SessionTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+         \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"onConstructorPoisoning\": \"error\",\u001b[90m\n\u001b[31m+         \"onProtoPoisoning\": \"error\",\u001b[90m\n\u001b[31m+         \"pluginTimeout\": 10000,\u001b[90m\n\u001b[31m+         \"requestIdHeader\": false,\u001b[90m\n\u001b[31m+         \"requestIdLogLabel\": \"reqId\",\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"routerOptions\": {\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"inject\": [Function inject],\u001b[90m\n\u001b[31m+       \"listen\": [Function listen],\u001b[90m\n\u001b[31m+       \"log\": {\u001b[90m\n\u001b[31m+         \"child\": [Function anonymous],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"onClose\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"options\": [Function _options],\u001b[90m\n\u001b[31m+       \"patch\": [Function _patch],\u001b[90m\n\u001b[31m+       \"post\": [Function _post],\u001b[90m\n\u001b[31m+       \"printPlugins\": [Function bound ],\u001b[90m\n\u001b[31m+       \"printRoutes\": [Function printRoutes],\u001b[90m\n\u001b[31m+       \"put\": [Function _put],\u001b[90m\n\u001b[31m+       \"ready\": [Function ready],\u001b[90m\n\u001b[31m+       \"register\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"removeAllContentTypeParsers\": [Function removeAllContentTypeParsers],\u001b[90m\n\u001b[31m+       \"removeContentTypeParser\": [Function removeContentTypeParser],\u001b[90m\n\u001b[31m+       \"route\": [Function _route],\u001b[90m\n\u001b[31m+       \"routing\": [Function preRouting],\u001b[90m\n\u001b[31m+       \"server\": Server {\u001b[90m\n\u001b[31m+         \"_connections\": 0,\u001b[90m\n\u001b[31m+         \"_events\": {\u001b[90m\n\u001b[31m+           \"clientError\": [Function bound defaultClientErrorHandler],\u001b[90m\n\u001b[31m+           \"connection\": [Function connectionListener],\u001b[90m\n\u001b[31m+           \"listening\": [Function setupConnectionsTracking],\u001b[90m\n\u001b[31m+           \"request\": [Function preRouting],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"_eventsCount\": 4,\u001b[90m\n\u001b[31m+         \"_handle\": null,\u001b[90m\n\u001b[31m+         \"_listeningId\": 1,\u001b[90m\n\u001b[31m+         \"_maxListeners\": undefined,\u001b[90m\n\u001b[31m+         \"_unref\": false,\u001b[90m\n\u001b[31m+         \"_usingWorkers\": false,\u001b[90m\n\u001b[31m+         \"_workers\": [],\u001b[90m\n\u001b[31m+         \"allowHalfOpen\": true,\u001b[90m\n\u001b[31m+         \"connectionsCheckingInterval\": 30000,\u001b[90m\n\u001b[31m+         \"headersTimeout\": 60000,\u001b[90m\n\u001b[31m+         \"highWaterMark\": 65536,\u001b[90m\n\u001b[31m+         \"httpAllowHalfOpen\": false,\u001b[90m\n\u001b[31m+         \"insecureHTTPParser\": undefined,\u001b[90m\n\u001b[31m+         \"joinDuplicateHeaders\": undefined,\u001b[90m\n\u001b[31m+         \"keepAlive\": false,\u001b[90m\n\u001b[31m+         \"keepAliveInitialDelay\": 0,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"keepAliveTimeoutBuffer\": 1000,\u001b[90m\n\u001b[31m+         \"maxHeaderSize\": undefined,\u001b[90m\n\u001b[31m+         \"maxHeadersCount\": null,\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"noDelay\": true,\u001b[90m\n\u001b[31m+         \"pauseOnConnect\": false,\u001b[90m\n\u001b[31m+         \"rejectNonStandardBodyWrites\": false,\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"requireHostHeader\": true,\u001b[90m\n\u001b[31m+         \"shouldUpgradeCallback\": [Function anonymous],\u001b[90m\n\u001b[31m+         \"timeout\": 0,\u001b[90m\n\u001b[31m+         Symbol(IncomingMessage): [Function IncomingMessage],\u001b[90m\n\u001b[31m+         Symbol(ServerResponse): [Function ServerResponse],\u001b[90m\n\u001b[31m+         Symbol(shapeMode): false,\u001b[90m\n\u001b[31m+         Symbol(kCapture): false,\u001b[90m\n\u001b[31m+         Symbol(async_id_symbol): -1,\u001b[90m\n\u001b[31m+         Symbol(kUniqueHeaders): null,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"setChildLoggerFactory\": [Function setChildLoggerFactory],\u001b[90m\n\u001b[31m+       \"setErrorHandler\": [Function setErrorHandler],\u001b[90m\n\u001b[31m+       \"setGenReqId\": [Function setGenReqId],\u001b[90m\n\u001b[31m+       \"setNotFoundHandler\": [Function setNotFoundHandler],\u001b[90m\n\u001b[31m+       \"setReplySerializer\": [Function setReplySerializer],\u001b[90m\n\u001b[31m+       \"setSchemaController\": [Function setSchemaController],\u001b[90m\n\u001b[31m+       \"setSchemaErrorFormatter\": [Function setSchemaErrorFormatter],\u001b[90m\n\u001b[31m+       \"setSerializerCompiler\": [Function setSerializerCompiler],\u001b[90m\n\u001b[31m+       \"setValidatorCompiler\": [Function setValidatorCompiler],\u001b[90m\n\u001b[31m+       \"trace\": [Function _trace],\u001b[90m\n\u001b[31m+       \"withTypeProvider\": [Function withTypeProvider],\u001b[90m\n\u001b[31m+       Symbol(fastify.state): {\u001b[90m\n\u001b[31m+         \"aborted\": false,\u001b[90m\n\u001b[31m+         \"booting\": false,\u001b[90m\n\u001b[31m+         \"closing\": false,\u001b[90m\n\u001b[31m+         \"listening\": false,\u001b[90m\n\u001b[31m+         \"ready\": false,\u001b[90m\n\u001b[31m+         \"readyResolver\": null,\u001b[90m\n\u001b[31m+         \"started\": false,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.keepAliveConnections): {\u001b[90m\n\u001b[31m+         \"add\": [Function add],\u001b[90m\n\u001b[31m+         \"delete\": [Function delete],\u001b[90m\n\u001b[31m+         \"has\": [Function has],\u001b[90m\n\u001b[31m+         Symbol(Symbol.iterator): [Function [Symbol.iterator]],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.acceptedHTTPMethods): {\u001b[90m\n\u001b[31m+         \"bodyless\": Set {\u001b[90m\n\u001b[31m+           \"GET\",\u001b[90m\n\u001b[31m+           \"HEAD\",\u001b[90m\n\u001b[31m+           \"TRACE\",\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"bodywith\": Set {\u001b[90m\n\u001b[31m+           \"DELETE\",\u001b[90m\n\u001b[31m+           \"OPTIONS\",\u001b[90m\n\u001b[31m+           \"PATCH\",\u001b[90m\n\u001b[31m+           \"PUT\",\u001b[90m\n\u001b[31m+           \"POST\",\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.options): {\u001b[90m\n\u001b[31m+         \"ajv\": {\u001b[90m\n\u001b[31m+           \"customOptions\": {},\u001b[90m\n\u001b[31m+           \"plugins\": [],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"allowErrorHandlerOverride\": true,\u001b[90m\n\u001b[31m+         \"clientErrorHandler\": [Function defaultClientErrorHandler],\u001b[90m\n\u001b[31m+         \"connectionTimeout\": 0,\u001b[90m\n\u001b[31m+         \"disableRequestLogging\": false,\u001b[90m\n\u001b[31m+         \"exposeHeadRoutes\": true,\u001b[90m\n\u001b[31m+         \"http2SessionTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"logger\": {\u001b[90m\n\u001b[31m+           \"child\": [Function anonymous],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"requestIdHeader\": false,\u001b[90m\n\u001b[31m+         \"requestIdLogLabel\": \"reqId\",\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"routerOptions\": {\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"buildPrettyMeta\": [Function defaultBuildPrettyMeta],\u001b[90m\n\u001b[31m+           \"caseSensitive\": undefined,\u001b[90m\n\u001b[31m+           \"constraints\": {\u001b[90m\n\u001b[31m+             \"version\": {\u001b[90m\n\u001b[31m+               \"deriveConstraint\": [Function deriveConstraint],\u001b[90m\n\u001b[31m+               \"isAsync\": false,\u001b[90m\n\u001b[31m+               \"isCustom\": true,\u001b[90m\n\u001b[31m+               \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+               \"name\": \"version\",\u001b[90m\n\u001b[31m+               \"storage\": [Function storage],\u001b[90m\n\u001b[31m+               \"validate\": [Function validate],\u001b[90m\n\u001b[31m+             },\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"defaultRoute\": [Function defaultRoute],\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"onBadUrl\": [Function onBadUrl],\u001b[90m\n\u001b[31m+           \"querystringParser\": undefined,\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.children): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.serverBindings): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.bodyLimit): 1048576,\u001b[90m\n\u001b[31m+       Symbol(fastify.routePrefix): \"\",\u001b[90m\n\u001b[31m+       Symbol(fastify.logLevel): \"\",\u001b[90m\n\u001b[31m+       Symbol(fastify.logSerializers): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.hooks): {\u001b[90m\n\u001b[31m+         \"onError\": [],\u001b[90m\n\u001b[31m+         \"onListen\": [],\u001b[90m\n\u001b[31m+         \"onReady\": [],\u001b[90m\n\u001b[31m+         \"onRegister\": [],\u001b[90m\n\u001b[31m+         \"onRequest\": [],\u001b[90m\n\u001b[31m+         \"onRequestAbort\": [],\u001b[90m\n\u001b[31m+         \"onResponse\": [],\u001b[90m\n\u001b[31m+         \"onRoute\": [],\u001b[90m\n\u001b[31m+         \"onSend\": [],\u001b[90m\n\u001b[31m+         \"onTimeout\": [],\u001b[90m\n\u001b[31m+         \"preClose\": [],\u001b[90m\n\u001b[31m+         \"preHandler\": [],\u001b[90m\n\u001b[31m+         \"preParsing\": [],\u001b[90m\n\u001b[31m+         \"preSerialization\": [],\u001b[90m\n\u001b[31m+         \"preValidation\": [],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.schemaController): SchemaController {\u001b[90m\n\u001b[31m+         \"addedSchemas\": false,\u001b[90m\n\u001b[31m+         \"compilersFactory\": {\u001b[90m\n\u001b[31m+           \"buildSerializer\": [Function buildSerializerFactory],\u001b[90m\n\u001b[31m+           \"buildValidator\": [Function buildCompilerFromPool],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"isCustomSerializerCompiler\": false,\u001b[90m\n\u001b[31m+         \"isCustomValidatorCompiler\": false,\u001b[90m\n\u001b[31m+         \"opts\": {\u001b[90m\n\u001b[31m+           \"bucket\": [Function buildSchemas],\u001b[90m\n\u001b[31m+           \"compilersFactory\": {\u001b[90m\n\u001b[31m+             \"buildSerializer\": [Function buildSerializerFactory],\u001b[90m\n\u001b[31m+             \"buildValidator\": [Function buildCompilerFromPool],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"isCustomSerializerCompiler\": false,\u001b[90m\n\u001b[31m+           \"isCustomValidatorCompiler\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"schemaBucket\": Schemas {\u001b[90m\n\u001b[31m+           \"store\": {},\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.schemaErrorFormatter): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.errorHandler): \"defaultErrorHandler()\",\u001b[90m\n\u001b[31m+       Symbol(fastify.errorHandlerAlreadySet): false,\u001b[90m\n\u001b[31m+       Symbol(fastify.childLoggerFactory): [Function defaultChildLoggerFactory],\u001b[90m\n\u001b[31m+       Symbol(fastify.replySerializerDefault): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.contentTypeParser): ContentTypeParser {\u001b[90m\n\u001b[31m+         \"cache\": FifoMap {\u001b[90m\n\u001b[31m+           \"first\": null,\u001b[90m\n\u001b[31m+           \"items\": Map {},\u001b[90m\n\u001b[31m+           \"last\": null,\u001b[90m\n\u001b[31m+           \"max\": 100,\u001b[90m\n\u001b[31m+           \"ttl\": 0,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"customParsers\": Map {\u001b[90m\n\u001b[31m+           \"application/json\" => Parser {\u001b[90m\n\u001b[31m+             \"asBuffer\": false,\u001b[90m\n\u001b[31m+             \"asString\": true,\u001b[90m\n\u001b[31m+             \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+             \"fn\": [Function defaultJsonParser],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"text/plain\" => Parser {\u001b[90m\n\u001b[31m+             \"asBuffer\": false,\u001b[90m\n\u001b[31m+             \"asString\": true,\u001b[90m\n\u001b[31m+             \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+             \"fn\": [Function defaultPlainTextParser],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"parserList\": [\u001b[90m\n\u001b[31m+           \"application/json\",\u001b[90m\n\u001b[31m+           \"text/plain\",\u001b[90m\n\u001b[31m+         ],\u001b[90m\n\u001b[31m+         \"parserRegExpList\": [],\u001b[90m\n\u001b[31m+         Symbol(fastify.defaultJSONParse): [Function defaultJsonParser],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.Reply): [Function _Reply],\u001b[90m\n\u001b[31m+       Symbol(fastify.Request): [Function _Request],\u001b[90m\n\u001b[31m+       Symbol(fastify.404): {\u001b[90m\n\u001b[31m+         \"arrange404\": [Function arrange404],\u001b[90m\n\u001b[31m+         \"router\": Router {\u001b[90m\n\u001b[31m+           \"_opts\": {\u001b[90m\n\u001b[31m+             \"defaultRoute\": [Function fourOhFourFallBack],\u001b[90m\n\u001b[31m+             \"onBadUrl\": [Function onBadUrl],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"buildPrettyMeta\": [Function defaultBuildPrettyMeta],\u001b[90m\n\u001b[31m+           \"caseSensitive\": true,\u001b[90m\n\u001b[31m+           \"constrainer\": Constrainer {\u001b[90m\n\u001b[31m+             \"asyncStrategiesInUse\": Set {},\u001b[90m\n\u001b[31m+             \"strategies\": {\u001b[90m\n\u001b[31m+               \"host\": {\u001b[90m\n\u001b[31m+                 \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+                 \"name\": \"host\",\u001b[90m\n\u001b[31m+                 \"storage\": [Function HostStorage],\u001b[90m\n\u001b[31m+                 \"validate\": [Function validate],\u001b[90m\n\u001b[31m+               },\u001b[90m\n\u001b[31m+               \"version\": {\u001b[90m\n\u001b[31m+                 \"mustMatchWhenDerived\": true,\u001b[90m\n\u001b[31m+                 \"name\": \"version\",\u001b[90m\n\u001b[31m+                 \"storage\": [Function SemVerStore],\u001b[90m\n\u001b[31m+                 \"validate\": [Function validate],\u001b[90m\n\u001b[2m                },\u001b[22m\n\u001b[31m+             },\u001b[90m\n\u001b[31m+             \"strategiesInUse\": Set {},\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"defaultRoute\": [Function bound fourOhFourFallBack],\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"onBadUrl\": [Function bound onBadUrl],\u001b[90m\n\u001b[31m+           \"querystringParser\": [Function anonymous],\u001b[90m\n\u001b[31m+           \"routes\": [],\u001b[90m\n\u001b[31m+           \"trees\": {},\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"setContext\": [Function setContext],\u001b[90m\n\u001b[31m+         \"setNotFoundHandler\": [Function setNotFoundHandler],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(registered-plugin): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.pluginNameChain): [\u001b[90m\n\u001b[31m+         \"fastify\",\u001b[90m\n\u001b[31m+       ],\u001b[90m\n\u001b[31m+       Symbol(fastify.avvioBoot): [Function anonymous],\u001b[90m\n\u001b[31m+       Symbol(fastify.genReqId): [Function defaultGenReqId],\u001b[90m\n\u001b[31m+       Symbol(avvio.Boot): true,\u001b[90m\n\u001b[31m+       Symbol(fastify.canSetNotFoundHandler): true,\u001b[90m\n\u001b[31m+       Symbol(fastify.404ContextKey): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.404LogLevelInstance): [Circular],\u001b[90m\n\u001b[31m+       Symbol(Symbol.asyncDispose): [Function dispose],\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+     \"logger\": Logger {\u001b[90m\n\u001b[31m+       \"context\": \"FastifyAdapter\",\u001b[90m\n\u001b[31m+       \"options\": {},\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+     \"pendingMiddlewares\": [],\u001b[90m\n\u001b[31m+     \"versionConstraint\": {\u001b[90m\n\u001b[31m+       \"deriveConstraint\": [Function deriveConstraint],\u001b[90m\n\u001b[31m+       \"isAsync\": false,\u001b[90m\n\u001b[31m+       \"isCustom\": true,\u001b[90m\n\u001b[31m+       \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+       \"name\": \"version\",\u001b[90m\n\u001b[31m+       \"storage\": [Function storage],\u001b[90m\n\u001b[31m+       \"validate\": [Function validate],\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+   },\u001b[90m\n\u001b[31m+   {},\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -487,20 +778,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "2"
+            "14"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -514,7 +805,7 @@
           }
         },
         {
-          "id": "31",
+          "id": "39",
           "mutatorName": "BooleanLiteral",
           "replacement": "false",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { name: 'MockedModule' }, …(2) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"name\": \"MockedModule\",\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[32m-   Any<FastifyAdapter>,\u001b[90m\n\u001b[31m+   FastifyAdapter {\u001b[90m\n\u001b[31m+     \"instance\": {\u001b[90m\n\u001b[31m+       \"addConstraintStrategy\": [Function bound addConstraintStrategy],\u001b[90m\n\u001b[31m+       \"addContentTypeParser\": [Function addContentTypeParser],\u001b[90m\n\u001b[31m+       \"addHook\": [Function addHook],\u001b[90m\n\u001b[31m+       \"addHttpMethod\": [Function addHttpMethod],\u001b[90m\n\u001b[31m+       \"addSchema\": [Function addSchema],\u001b[90m\n\u001b[31m+       \"addresses\": [Function addresses],\u001b[90m\n\u001b[31m+       \"after\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"all\": [Function _all],\u001b[90m\n\u001b[31m+       \"close\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"decorate\": [Function decorateFastify],\u001b[90m\n\u001b[31m+       \"decorateReply\": [Function decorateReply],\u001b[90m\n\u001b[31m+       \"decorateRequest\": [Function decorateRequest],\u001b[90m\n\u001b[31m+       \"defaultTextParser\": [Function defaultPlainTextParser],\u001b[90m\n\u001b[31m+       \"delete\": [Function _delete],\u001b[90m\n\u001b[31m+       \"findRoute\": [Function _findRoute],\u001b[90m\n\u001b[31m+       \"get\": [Function _get],\u001b[90m\n\u001b[31m+       \"getDecorator\": [Function getInstanceDecorator],\u001b[90m\n\u001b[31m+       \"getDefaultJsonParser\": [Function getDefaultJsonParser],\u001b[90m\n\u001b[31m+       \"getSchema\": [Function bound getSchema],\u001b[90m\n\u001b[31m+       \"getSchemas\": [Function bound getSchemas],\u001b[90m\n\u001b[31m+       \"hasConstraintStrategy\": [Function bound hasConstraintStrategy],\u001b[90m\n\u001b[31m+       \"hasContentTypeParser\": [Function hasContentTypeParser],\u001b[90m\n\u001b[31m+       \"hasDecorator\": [Function checkExistence],\u001b[90m\n\u001b[31m+       \"hasPlugin\": [Function hasPlugin],\u001b[90m\n\u001b[31m+       \"hasReplyDecorator\": [Function checkReplyExistence],\u001b[90m\n\u001b[31m+       \"hasRequestDecorator\": [Function checkRequestExistence],\u001b[90m\n\u001b[31m+       \"hasRoute\": [Function _route],\u001b[90m\n\u001b[31m+       \"head\": [Function _head],\u001b[90m\n\u001b[31m+       \"initialConfig\": {\u001b[90m\n\u001b[31m+         \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+         \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+         \"caseSensitive\": true,\u001b[90m\n\u001b[31m+         \"connectionTimeout\": 0,\u001b[90m\n\u001b[31m+         \"disableRequestLogging\": false,\u001b[90m\n\u001b[31m+         \"exposeHeadRoutes\": true,\u001b[90m\n\u001b[31m+         \"http2SessionTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+         \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"onConstructorPoisoning\": \"error\",\u001b[90m\n\u001b[31m+         \"onProtoPoisoning\": \"error\",\u001b[90m\n\u001b[31m+         \"pluginTimeout\": 10000,\u001b[90m\n\u001b[31m+         \"requestIdHeader\": false,\u001b[90m\n\u001b[31m+         \"requestIdLogLabel\": \"reqId\",\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"routerOptions\": {\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"inject\": [Function inject],\u001b[90m\n\u001b[31m+       \"listen\": [Function listen],\u001b[90m\n\u001b[31m+       \"log\": {\u001b[90m\n\u001b[31m+         \"child\": [Function anonymous],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"onClose\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"options\": [Function _options],\u001b[90m\n\u001b[31m+       \"patch\": [Function _patch],\u001b[90m\n\u001b[31m+       \"post\": [Function _post],\u001b[90m\n\u001b[31m+       \"printPlugins\": [Function bound ],\u001b[90m\n\u001b[31m+       \"printRoutes\": [Function printRoutes],\u001b[90m\n\u001b[31m+       \"put\": [Function _put],\u001b[90m\n\u001b[31m+       \"ready\": [Function ready],\u001b[90m\n\u001b[31m+       \"register\": [Function anonymous],\u001b[90m\n\u001b[31m+       \"removeAllContentTypeParsers\": [Function removeAllContentTypeParsers],\u001b[90m\n\u001b[31m+       \"removeContentTypeParser\": [Function removeContentTypeParser],\u001b[90m\n\u001b[31m+       \"route\": [Function _route],\u001b[90m\n\u001b[31m+       \"routing\": [Function preRouting],\u001b[90m\n\u001b[31m+       \"server\": Server {\u001b[90m\n\u001b[31m+         \"_connections\": 0,\u001b[90m\n\u001b[31m+         \"_events\": {\u001b[90m\n\u001b[31m+           \"clientError\": [Function bound defaultClientErrorHandler],\u001b[90m\n\u001b[31m+           \"connection\": [Function connectionListener],\u001b[90m\n\u001b[31m+           \"listening\": [Function setupConnectionsTracking],\u001b[90m\n\u001b[31m+           \"request\": [Function preRouting],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"_eventsCount\": 4,\u001b[90m\n\u001b[31m+         \"_handle\": null,\u001b[90m\n\u001b[31m+         \"_listeningId\": 1,\u001b[90m\n\u001b[31m+         \"_maxListeners\": undefined,\u001b[90m\n\u001b[31m+         \"_unref\": false,\u001b[90m\n\u001b[31m+         \"_usingWorkers\": false,\u001b[90m\n\u001b[31m+         \"_workers\": [],\u001b[90m\n\u001b[31m+         \"allowHalfOpen\": true,\u001b[90m\n\u001b[31m+         \"connectionsCheckingInterval\": 30000,\u001b[90m\n\u001b[31m+         \"headersTimeout\": 60000,\u001b[90m\n\u001b[31m+         \"highWaterMark\": 65536,\u001b[90m\n\u001b[31m+         \"httpAllowHalfOpen\": false,\u001b[90m\n\u001b[31m+         \"insecureHTTPParser\": undefined,\u001b[90m\n\u001b[31m+         \"joinDuplicateHeaders\": undefined,\u001b[90m\n\u001b[31m+         \"keepAlive\": false,\u001b[90m\n\u001b[31m+         \"keepAliveInitialDelay\": 0,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"keepAliveTimeoutBuffer\": 1000,\u001b[90m\n\u001b[31m+         \"maxHeaderSize\": undefined,\u001b[90m\n\u001b[31m+         \"maxHeadersCount\": null,\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"noDelay\": true,\u001b[90m\n\u001b[31m+         \"pauseOnConnect\": false,\u001b[90m\n\u001b[31m+         \"rejectNonStandardBodyWrites\": false,\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"requireHostHeader\": true,\u001b[90m\n\u001b[31m+         \"shouldUpgradeCallback\": [Function anonymous],\u001b[90m\n\u001b[31m+         \"timeout\": 0,\u001b[90m\n\u001b[31m+         Symbol(IncomingMessage): [Function IncomingMessage],\u001b[90m\n\u001b[31m+         Symbol(ServerResponse): [Function ServerResponse],\u001b[90m\n\u001b[31m+         Symbol(shapeMode): false,\u001b[90m\n\u001b[31m+         Symbol(kCapture): false,\u001b[90m\n\u001b[31m+         Symbol(async_id_symbol): -1,\u001b[90m\n\u001b[31m+         Symbol(kUniqueHeaders): null,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       \"setChildLoggerFactory\": [Function setChildLoggerFactory],\u001b[90m\n\u001b[31m+       \"setErrorHandler\": [Function setErrorHandler],\u001b[90m\n\u001b[31m+       \"setGenReqId\": [Function setGenReqId],\u001b[90m\n\u001b[31m+       \"setNotFoundHandler\": [Function setNotFoundHandler],\u001b[90m\n\u001b[31m+       \"setReplySerializer\": [Function setReplySerializer],\u001b[90m\n\u001b[31m+       \"setSchemaController\": [Function setSchemaController],\u001b[90m\n\u001b[31m+       \"setSchemaErrorFormatter\": [Function setSchemaErrorFormatter],\u001b[90m\n\u001b[31m+       \"setSerializerCompiler\": [Function setSerializerCompiler],\u001b[90m\n\u001b[31m+       \"setValidatorCompiler\": [Function setValidatorCompiler],\u001b[90m\n\u001b[31m+       \"trace\": [Function _trace],\u001b[90m\n\u001b[31m+       \"withTypeProvider\": [Function withTypeProvider],\u001b[90m\n\u001b[31m+       Symbol(fastify.state): {\u001b[90m\n\u001b[31m+         \"aborted\": false,\u001b[90m\n\u001b[31m+         \"booting\": false,\u001b[90m\n\u001b[31m+         \"closing\": false,\u001b[90m\n\u001b[31m+         \"listening\": false,\u001b[90m\n\u001b[31m+         \"ready\": false,\u001b[90m\n\u001b[31m+         \"readyResolver\": null,\u001b[90m\n\u001b[31m+         \"started\": false,\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.keepAliveConnections): {\u001b[90m\n\u001b[31m+         \"add\": [Function add],\u001b[90m\n\u001b[31m+         \"delete\": [Function delete],\u001b[90m\n\u001b[31m+         \"has\": [Function has],\u001b[90m\n\u001b[31m+         Symbol(Symbol.iterator): [Function [Symbol.iterator]],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.acceptedHTTPMethods): {\u001b[90m\n\u001b[31m+         \"bodyless\": Set {\u001b[90m\n\u001b[31m+           \"GET\",\u001b[90m\n\u001b[31m+           \"HEAD\",\u001b[90m\n\u001b[31m+           \"TRACE\",\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"bodywith\": Set {\u001b[90m\n\u001b[31m+           \"DELETE\",\u001b[90m\n\u001b[31m+           \"OPTIONS\",\u001b[90m\n\u001b[31m+           \"PATCH\",\u001b[90m\n\u001b[31m+           \"PUT\",\u001b[90m\n\u001b[31m+           \"POST\",\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.options): {\u001b[90m\n\u001b[31m+         \"ajv\": {\u001b[90m\n\u001b[31m+           \"customOptions\": {},\u001b[90m\n\u001b[31m+           \"plugins\": [],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"allowErrorHandlerOverride\": true,\u001b[90m\n\u001b[31m+         \"clientErrorHandler\": [Function defaultClientErrorHandler],\u001b[90m\n\u001b[31m+         \"connectionTimeout\": 0,\u001b[90m\n\u001b[31m+         \"disableRequestLogging\": false,\u001b[90m\n\u001b[31m+         \"exposeHeadRoutes\": true,\u001b[90m\n\u001b[31m+         \"http2SessionTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"keepAliveTimeout\": 72000,\u001b[90m\n\u001b[31m+         \"logger\": {\u001b[90m\n\u001b[31m+           \"child\": [Function anonymous],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"maxRequestsPerSocket\": 0,\u001b[90m\n\u001b[31m+         \"requestIdHeader\": false,\u001b[90m\n\u001b[31m+         \"requestIdLogLabel\": \"reqId\",\u001b[90m\n\u001b[31m+         \"requestTimeout\": 0,\u001b[90m\n\u001b[31m+         \"routerOptions\": {\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"buildPrettyMeta\": [Function defaultBuildPrettyMeta],\u001b[90m\n\u001b[31m+           \"caseSensitive\": undefined,\u001b[90m\n\u001b[31m+           \"constraints\": {\u001b[90m\n\u001b[31m+             \"version\": {\u001b[90m\n\u001b[31m+               \"deriveConstraint\": [Function deriveConstraint],\u001b[90m\n\u001b[31m+               \"isAsync\": false,\u001b[90m\n\u001b[31m+               \"isCustom\": true,\u001b[90m\n\u001b[31m+               \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+               \"name\": \"version\",\u001b[90m\n\u001b[31m+               \"storage\": [Function storage],\u001b[90m\n\u001b[31m+               \"validate\": [Function validate],\u001b[90m\n\u001b[31m+             },\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"defaultRoute\": [Function defaultRoute],\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"onBadUrl\": [Function onBadUrl],\u001b[90m\n\u001b[31m+           \"querystringParser\": undefined,\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.children): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.serverBindings): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.bodyLimit): 1048576,\u001b[90m\n\u001b[31m+       Symbol(fastify.routePrefix): \"\",\u001b[90m\n\u001b[31m+       Symbol(fastify.logLevel): \"\",\u001b[90m\n\u001b[31m+       Symbol(fastify.logSerializers): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.hooks): {\u001b[90m\n\u001b[31m+         \"onError\": [],\u001b[90m\n\u001b[31m+         \"onListen\": [],\u001b[90m\n\u001b[31m+         \"onReady\": [],\u001b[90m\n\u001b[31m+         \"onRegister\": [],\u001b[90m\n\u001b[31m+         \"onRequest\": [],\u001b[90m\n\u001b[31m+         \"onRequestAbort\": [],\u001b[90m\n\u001b[31m+         \"onResponse\": [],\u001b[90m\n\u001b[31m+         \"onRoute\": [],\u001b[90m\n\u001b[31m+         \"onSend\": [],\u001b[90m\n\u001b[31m+         \"onTimeout\": [],\u001b[90m\n\u001b[31m+         \"preClose\": [],\u001b[90m\n\u001b[31m+         \"preHandler\": [],\u001b[90m\n\u001b[31m+         \"preParsing\": [],\u001b[90m\n\u001b[31m+         \"preSerialization\": [],\u001b[90m\n\u001b[31m+         \"preValidation\": [],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.schemaController): SchemaController {\u001b[90m\n\u001b[31m+         \"addedSchemas\": false,\u001b[90m\n\u001b[31m+         \"compilersFactory\": {\u001b[90m\n\u001b[31m+           \"buildSerializer\": [Function buildSerializerFactory],\u001b[90m\n\u001b[31m+           \"buildValidator\": [Function buildCompilerFromPool],\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"isCustomSerializerCompiler\": false,\u001b[90m\n\u001b[31m+         \"isCustomValidatorCompiler\": false,\u001b[90m\n\u001b[31m+         \"opts\": {\u001b[90m\n\u001b[31m+           \"bucket\": [Function buildSchemas],\u001b[90m\n\u001b[31m+           \"compilersFactory\": {\u001b[90m\n\u001b[31m+             \"buildSerializer\": [Function buildSerializerFactory],\u001b[90m\n\u001b[31m+             \"buildValidator\": [Function buildCompilerFromPool],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"isCustomSerializerCompiler\": false,\u001b[90m\n\u001b[31m+           \"isCustomValidatorCompiler\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"schemaBucket\": Schemas {\u001b[90m\n\u001b[31m+           \"store\": {},\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.schemaErrorFormatter): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.errorHandler): \"defaultErrorHandler()\",\u001b[90m\n\u001b[31m+       Symbol(fastify.errorHandlerAlreadySet): false,\u001b[90m\n\u001b[31m+       Symbol(fastify.childLoggerFactory): [Function defaultChildLoggerFactory],\u001b[90m\n\u001b[31m+       Symbol(fastify.replySerializerDefault): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.contentTypeParser): ContentTypeParser {\u001b[90m\n\u001b[31m+         \"cache\": FifoMap {\u001b[90m\n\u001b[31m+           \"first\": null,\u001b[90m\n\u001b[31m+           \"items\": Map {},\u001b[90m\n\u001b[31m+           \"last\": null,\u001b[90m\n\u001b[31m+           \"max\": 100,\u001b[90m\n\u001b[31m+           \"ttl\": 0,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"customParsers\": Map {\u001b[90m\n\u001b[31m+           \"application/json\" => Parser {\u001b[90m\n\u001b[31m+             \"asBuffer\": false,\u001b[90m\n\u001b[31m+             \"asString\": true,\u001b[90m\n\u001b[31m+             \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+             \"fn\": [Function defaultJsonParser],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"text/plain\" => Parser {\u001b[90m\n\u001b[31m+             \"asBuffer\": false,\u001b[90m\n\u001b[31m+             \"asString\": true,\u001b[90m\n\u001b[31m+             \"bodyLimit\": 1048576,\u001b[90m\n\u001b[31m+             \"fn\": [Function defaultPlainTextParser],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"parserList\": [\u001b[90m\n\u001b[31m+           \"application/json\",\u001b[90m\n\u001b[31m+           \"text/plain\",\u001b[90m\n\u001b[31m+         ],\u001b[90m\n\u001b[31m+         \"parserRegExpList\": [],\u001b[90m\n\u001b[31m+         Symbol(fastify.defaultJSONParse): [Function defaultJsonParser],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(fastify.Reply): [Function _Reply],\u001b[90m\n\u001b[31m+       Symbol(fastify.Request): [Function _Request],\u001b[90m\n\u001b[31m+       Symbol(fastify.404): {\u001b[90m\n\u001b[31m+         \"arrange404\": [Function arrange404],\u001b[90m\n\u001b[31m+         \"router\": Router {\u001b[90m\n\u001b[31m+           \"_opts\": {\u001b[90m\n\u001b[31m+             \"defaultRoute\": [Function fourOhFourFallBack],\u001b[90m\n\u001b[31m+             \"onBadUrl\": [Function onBadUrl],\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"allowUnsafeRegex\": false,\u001b[90m\n\u001b[31m+           \"buildPrettyMeta\": [Function defaultBuildPrettyMeta],\u001b[90m\n\u001b[31m+           \"caseSensitive\": true,\u001b[90m\n\u001b[31m+           \"constrainer\": Constrainer {\u001b[90m\n\u001b[31m+             \"asyncStrategiesInUse\": Set {},\u001b[90m\n\u001b[31m+             \"strategies\": {\u001b[90m\n\u001b[31m+               \"host\": {\u001b[90m\n\u001b[31m+                 \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+                 \"name\": \"host\",\u001b[90m\n\u001b[31m+                 \"storage\": [Function HostStorage],\u001b[90m\n\u001b[31m+                 \"validate\": [Function validate],\u001b[90m\n\u001b[31m+               },\u001b[90m\n\u001b[31m+               \"version\": {\u001b[90m\n\u001b[31m+                 \"mustMatchWhenDerived\": true,\u001b[90m\n\u001b[31m+                 \"name\": \"version\",\u001b[90m\n\u001b[31m+                 \"storage\": [Function SemVerStore],\u001b[90m\n\u001b[31m+                 \"validate\": [Function validate],\u001b[90m\n\u001b[31m+               },\u001b[90m\n\u001b[31m+             },\u001b[90m\n\u001b[31m+             \"strategiesInUse\": Set {},\u001b[90m\n\u001b[31m+           },\u001b[90m\n\u001b[31m+           \"defaultRoute\": [Function bound fourOhFourFallBack],\u001b[90m\n\u001b[31m+           \"ignoreDuplicateSlashes\": false,\u001b[90m\n\u001b[31m+           \"ignoreTrailingSlash\": false,\u001b[90m\n\u001b[31m+           \"maxParamLength\": 100,\u001b[90m\n\u001b[31m+           \"onBadUrl\": [Function bound onBadUrl],\u001b[90m\n\u001b[31m+           \"querystringParser\": [Function anonymous],\u001b[90m\n\u001b[31m+           \"routes\": [],\u001b[90m\n\u001b[31m+           \"trees\": {},\u001b[90m\n\u001b[31m+           \"useSemicolonDelimiter\": false,\u001b[90m\n\u001b[31m+         },\u001b[90m\n\u001b[31m+         \"setContext\": [Function setContext],\u001b[90m\n\u001b[31m+         \"setNotFoundHandler\": [Function setNotFoundHandler],\u001b[90m\n\u001b[31m+       },\u001b[90m\n\u001b[31m+       Symbol(registered-plugin): [],\u001b[90m\n\u001b[31m+       Symbol(fastify.pluginNameChain): [\u001b[90m\n\u001b[31m+         \"fastify\",\u001b[90m\n\u001b[31m+       ],\u001b[90m\n\u001b[31m+       Symbol(fastify.avvioBoot): [Function anonymous],\u001b[90m\n\u001b[31m+       Symbol(fastify.genReqId): [Function defaultGenReqId],\u001b[90m\n\u001b[31m+       Symbol(avvio.Boot): true,\u001b[90m\n\u001b[31m+       Symbol(fastify.canSetNotFoundHandler): true,\u001b[90m\n\u001b[31m+       Symbol(fastify.404ContextKey): null,\u001b[90m\n\u001b[31m+       Symbol(fastify.404LogLevelInstance): [Circular],\u001b[90m\n\u001b[31m+       Symbol(Symbol.asyncDispose): [Function dispose],\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+     \"logger\": Logger {\u001b[90m\n\u001b[31m+       \"context\": \"FastifyAdapter\",\u001b[90m\n\u001b[31m+       \"options\": {},\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+     \"pendingMiddlewares\": [],\u001b[90m\n\u001b[31m+     \"versionConstraint\": {\u001b[90m\n\u001b[31m+       \"deriveConstraint\": [Function deriveConstraint],\u001b[90m\n\u001b[31m+       \"isAsync\": false,\u001b[90m\n\u001b[31m+       \"isCustom\": true,\u001b[90m\n\u001b[31m+       \"mustMatchWhenDerived\": false,\u001b[90m\n\u001b[31m+       \"name\": \"version\",\u001b[90m\n\u001b[31m+       \"storage\": [Function storage],\u001b[90m\n\u001b[31m+       \"validate\": [Function validate],\u001b[90m\n\u001b[31m+     },\u001b[90m\n\u001b[31m+   },\u001b[90m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"bufferLogs\": true,\u001b[90m\n\u001b[31m+     \"bufferLogs\": false,\u001b[90m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -522,20 +813,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "2"
+            "14"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -549,7 +840,7 @@
           }
         },
         {
-          "id": "32",
+          "id": "40",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
           "statusReason": "src/server/server.ts(25,23): error TS2345: Argument of type '{}' is not assignable to parameter of type 'FastifyStaticOptions'.\n  Property 'root' is missing in type '{}' but required in type 'FastifyStaticOptions'.\nsrc/server/server.ts(25,23): error TS2345: Argument of type '{}' is not assignable to parameter of type 'FastifyStaticOptions'.\n  Property 'root' is missing in type '{}' but required in type 'FastifyStaticOptions'.\nsrc/server/server.ts(25,23): error TS2345: Argument of type '{}' is not assignable to parameter of type 'FastifyStaticOptions'.\n  Property 'root' is missing in type '{}' but required in type 'FastifyStaticOptions'.\nsrc/server/server.ts(25,23): error TS2345: Argument of type '{}' is not assignable to parameter of type 'FastifyStaticOptions'.\n  Property 'root' is missing in type '{}' but required in type 'FastifyStaticOptions'.\n",
@@ -557,17 +848,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -581,7 +872,7 @@
           }
         },
         {
-          "id": "33",
+          "id": "41",
           "mutatorName": "StringLiteral",
           "replacement": "``",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { …(2) } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"prefix\": \"/public/\",\u001b[22m\n\u001b[32m-     \"root\": \"/Users/antoinezanardi/WebstormProjects/goat-it-api/.stryker-tmp/sandbox-iU3wnU/public\",\u001b[90m\n\u001b[31m+     \"root\": \"\",\u001b[90m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -589,20 +880,20 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "6"
+            "18"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -616,7 +907,7 @@
           }
         },
         {
-          "id": "34",
+          "id": "42",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { …(2) } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"prefix\": \"/public/\",\u001b[90m\n\u001b[31m+     \"prefix\": \"\",\u001b[90m\n\u001b[2m      \"root\": \"/Users/antoinezanardi/WebstormProjects/goat-it-api/.stryker-tmp/sandbox-iU3wnU/public\",\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -624,20 +915,20 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "6"
+            "18"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -651,7 +942,7 @@
           }
         },
         {
-          "id": "35",
+          "id": "43",
           "mutatorName": "LogicalOperator",
           "replacement": "process.env.HOST && \"0.0.0.0\"",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": undefined,\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -659,20 +950,20 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "7"
+            "19"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -686,7 +977,7 @@
           }
         },
         {
-          "id": "36",
+          "id": "44",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[31m+     \"host\": \"\",\u001b[90m\n\u001b[2m      \"port\": 3000,\u001b[22m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -694,15 +985,15 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "7"
+            "19"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19"
           ],
           "location": {
             "end": {
@@ -716,7 +1007,7 @@
           }
         },
         {
-          "id": "37",
+          "id": "45",
           "mutatorName": "LogicalOperator",
           "replacement": "process.env.PORT && \"3000\"",
           "statusReason": "src/server/server.ts(31,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\nsrc/server/server.ts(31,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\nsrc/server/server.ts(31,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\nsrc/server/server.ts(31,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.\n  Type 'undefined' is not assignable to type 'string'.\n",
@@ -724,17 +1015,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -748,7 +1039,7 @@
           }
         },
         {
-          "id": "38",
+          "id": "46",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    {\u001b[22m\n\u001b[2m      \"host\": \"0.0.0.0\",\u001b[22m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[31m+     \"port\": NaN,\u001b[90m\n\u001b[2m    },\u001b[22m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -756,15 +1047,15 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "7"
+            "19"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19"
           ],
           "location": {
             "end": {
@@ -778,7 +1069,7 @@
           }
         },
         {
-          "id": "39",
+          "id": "47",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
           "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ { host: '0.0.0.0', port: 3000 } ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   {\u001b[90m\n\u001b[32m-     \"host\": \"0.0.0.0\",\u001b[90m\n\u001b[32m-     \"port\": 3000,\u001b[90m\n\u001b[32m-   },\u001b[90m\n\u001b[31m+   {},\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
@@ -786,20 +1077,20 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "7"
+            "19"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -813,7 +1104,7 @@
           }
         },
         {
-          "id": "40",
+          "id": "48",
           "mutatorName": "StringLiteral",
           "replacement": "``",
           "statusReason": "expected 1st \"vi.fn()\" call to have been called with [ Array(1) ]",
@@ -821,20 +1112,20 @@
           "testsCompleted": 9,
           "static": false,
           "killedBy": [
-            "10"
+            "22"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -848,7 +1139,7 @@
           }
         },
         {
-          "id": "41",
+          "id": "49",
           "mutatorName": "StringLiteral",
           "replacement": "``",
           "statusReason": "expected 2nd \"vi.fn()\" call to have been called with [ Array(1) ]",
@@ -856,20 +1147,20 @@
           "testsCompleted": 10,
           "static": false,
           "killedBy": [
-            "11"
+            "23"
           ],
           "coveredBy": [
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12"
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24"
           ],
           "location": {
             "end": {
@@ -885,322 +1176,231 @@
       ],
       "source": "import { NestFactory } from \"@nestjs/core\";\nimport { FastifyAdapter } from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport { AppModule } from \"@app/app.module\";\n\nimport { SWAGGER_DOCUMENTATION_PATH } from \"@server/constants/swagger.constants\";\nimport { setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\n\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\n\nasync function bootstrap(): Promise<NestFastifyApplication> {\n  const app = await NestFactory.create<NestFastifyApplication>(\n    AppModule,\n    new FastifyAdapter(),\n    { bufferLogs: true },\n  );\n\n  const logger = app.get(Logger);\n\n  app.enableShutdownHooks();\n  app.useLogger(logger);\n\n  setupSwaggerModule(app);\n  app.useStaticAssets({\n    root: `${process.cwd()}/public`,\n    prefix: \"/public/\",\n  });\n\n  const host = process.env.HOST ?? \"0.0.0.0\";\n  const port = Number.parseInt(process.env.PORT ?? \"3000\");\n  await app.listen({ host, port });\n\n  const appUrl = await app.getUrl();\n\n  logger.log(`🐐 Goat It API is running on: ${appUrl}`);\n  logger.log(`📚 Swagger documentation is available on: ${appUrl}${SWAGGER_DOCUMENTATION_PATH}`);\n\n  return app;\n}\n\nexport { bootstrap };"
     },
-    "src/modules/database/providers/database.service.ts": {
+    "src/modules/health/providers/services/health.service.ts": {
       "language": "typescript",
       "mutants": [
         {
-          "id": "13",
+          "id": "26",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(12,35): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(14,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(14,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(14,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(14,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "22",
-            "23",
-            "24"
+            "7",
+            "8",
+            "9"
           ],
           "location": {
             "end": {
               "column": 4,
-              "line": 24
+              "line": 19
             },
             "start": {
-              "column": 57,
-              "line": 12
+              "column": 61,
+              "line": 14
             }
           }
         },
         {
-          "id": "15",
-          "mutatorName": "ObjectLiteral",
-          "replacement": "{}",
-          "statusReason": "expected {} to strictly equal { …(7) }",
+          "id": "28",
+          "mutatorName": "ArrowFunction",
+          "replacement": "() => undefined",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(16,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(16,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(16,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(16,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "7",
+            "8",
+            "9"
+          ],
+          "location": {
+            "end": {
+              "column": 48,
+              "line": 16
+            },
+            "start": {
+              "column": 7,
+              "line": 16
+            }
+          }
+        },
+        {
+          "id": "27",
+          "mutatorName": "ArrayDeclaration",
+          "replacement": "[]",
+          "statusReason": "mongooseHealthCheckFunction is not a function",
           "status": "Killed",
           "static": false,
           "testsCompleted": 2,
           "killedBy": [
-            "23"
+            "8"
           ],
           "coveredBy": [
-            "22",
-            "23",
-            "24"
+            "7",
+            "8",
+            "9"
           ],
           "location": {
             "end": {
               "column": 6,
-              "line": 23
+              "line": 18
             },
             "start": {
-              "column": 12,
+              "column": 42,
               "line": 15
             }
           }
         },
         {
-          "id": "14",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '🍃 Connecting to the database...' ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"🍃 Connecting to the database...\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "22"
-          ],
-          "coveredBy": [
-            "22",
-            "23",
-            "24"
-          ],
-          "location": {
-            "end": {
-              "column": 55,
-              "line": 13
-            },
-            "start": {
-              "column": 21,
-              "line": 13
-            }
-          }
-        },
-        {
-          "id": "16",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected { uri: '', …(6) } to strictly equal { …(7) }",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 2,
-          "killedBy": [
-            "23"
-          ],
-          "coveredBy": [
-            "22",
-            "23",
-            "24"
-          ],
-          "location": {
-            "end": {
-              "column": 39,
-              "line": 16
-            },
-            "start": {
-              "column": 12,
-              "line": 16
-            }
-          }
-        },
-        {
-          "id": "18",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/database/providers/database.service.ts(26,63): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "id": "29",
+          "mutatorName": "ArrowFunction",
+          "replacement": "() => undefined",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(17,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(17,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(17,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(17,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "24",
-            "25",
-            "26",
-            "27"
+            "7",
+            "8",
+            "9"
+          ],
+          "location": {
+            "end": {
+              "column": 40,
+              "line": 17
+            },
+            "start": {
+              "column": 7,
+              "line": 17
+            }
+          }
+        },
+        {
+          "id": "30",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(21,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(21,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(21,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(21,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "8",
+            "10"
           ],
           "location": {
             "end": {
               "column": 4,
-              "line": 36
+              "line": 23
             },
             "start": {
-              "column": 74,
-              "line": 26
+              "column": 103,
+              "line": 21
             }
           }
         },
         {
-          "id": "17",
-          "mutatorName": "ArrowFunction",
-          "replacement": "() => undefined",
-          "statusReason": "expected undefined to strictly equal EventEmitter{ _events: {}, …(2), …(2) }",
-          "status": "Killed",
+          "id": "31",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(25,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(25,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(25,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(25,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
           "static": false,
-          "testsCompleted": 3,
-          "killedBy": [
-            "24"
-          ],
           "coveredBy": [
-            "22",
-            "23",
-            "24"
+            "9",
+            "11"
           ],
           "location": {
             "end": {
-              "column": 84,
-              "line": 22
+              "column": 4,
+              "line": 27
             },
             "start": {
-              "column": 27,
-              "line": 22
+              "column": 100,
+              "line": 25
             }
           }
         },
         {
-          "id": "19",
+          "id": "32",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ 'goat-it-docs', …(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    \"goat-it-docs\",\u001b[22m\n\u001b[32m-   \"http://127.0.0.1:3000/docs\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
           "status": "Killed",
           "static": false,
           "testsCompleted": 2,
           "killedBy": [
-            "25"
+            "11"
           ],
           "coveredBy": [
-            "24",
-            "25",
-            "26",
-            "27"
+            "9",
+            "11"
           ],
           "location": {
             "end": {
-              "column": 30,
-              "line": 27
+              "column": 86,
+              "line": 26
             },
             "start": {
-              "column": 19,
-              "line": 27
-            }
-          }
-        },
-        {
-          "id": "20",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "25"
-          ],
-          "coveredBy": [
-            "25"
-          ],
-          "location": {
-            "end": {
-              "column": 6,
-              "line": 29
-            },
-            "start": {
-              "column": 38,
-              "line": 27
-            }
-          }
-        },
-        {
-          "id": "21",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ Array(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"🍀 Database connection established\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "25"
-          ],
-          "coveredBy": [
-            "25"
-          ],
-          "location": {
-            "end": {
-              "column": 59,
-              "line": 28
-            },
-            "start": {
-              "column": 23,
-              "line": 28
-            }
-          }
-        },
-        {
-          "id": "22",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 3,
-          "killedBy": [
-            "26"
-          ],
-          "coveredBy": [
-            "24",
-            "25",
-            "26",
-            "27"
-          ],
-          "location": {
-            "end": {
-              "column": 33,
-              "line": 31
-            },
-            "start": {
-              "column": 19,
-              "line": 31
-            }
-          }
-        },
-        {
-          "id": "23",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nNumber of calls: \u001b[1m0\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "26"
-          ],
-          "coveredBy": [
-            "26"
-          ],
-          "location": {
-            "end": {
-              "column": 6,
-              "line": 33
-            },
-            "start": {
-              "column": 41,
-              "line": 31
-            }
-          }
-        },
-        {
-          "id": "24",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ '⚠️ Database connection lost' ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[32m-   \"⚠️ Database connection lost\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 1,
-          "killedBy": [
-            "26"
-          ],
-          "coveredBy": [
-            "26"
-          ],
-          "location": {
-            "end": {
-              "column": 53,
-              "line": 32
-            },
-            "start": {
-              "column": 24,
-              "line": 32
+              "column": 58,
+              "line": 26
             }
           }
         }
       ],
-      "source": "import { Logger, Injectable } from \"@nestjs/common\";\n\nimport { DATABASE_CONNECTION_TIMEOUT_MS, DATABASE_NAME, DATABASE_RETRY_ATTEMPTS, DATABASE_RETRY_DELAY_MS } from \"@modules/database/constants/database.constants\";\n\nimport type { MongooseModuleOptions, MongooseOptionsFactory } from \"@nestjs/mongoose\";\nimport type { Connection } from \"mongoose\";\n\n@Injectable()\nexport class DatabaseService implements MongooseOptionsFactory {\n  private readonly logger = new Logger(DatabaseService.name);\n\n  public createMongooseOptions(): MongooseModuleOptions {\n    this.logger.log(\"🍃 Connecting to the database...\");\n\n    return {\n      uri: \"mongodb://localhost:27017\",\n      serverSelectionTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      connectTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      retryDelay: DATABASE_RETRY_DELAY_MS,\n      retryAttempts: DATABASE_RETRY_ATTEMPTS,\n      dbName: DATABASE_NAME,\n      onConnectionCreate: connection => this.onMongooseConnectionCreate(connection),\n    };\n  }\n\n  private onMongooseConnectionCreate(connection: Connection): Connection {\n    connection.on(\"connected\", () => {\n      this.logger.log(\"🍀 Database connection established\");\n    });\n\n    connection.on(\"disconnected\", () => {\n      this.logger.warn(\"⚠️ Database connection lost\");\n    });\n\n    return connection;\n  }\n}"
+      "source": "import { Injectable } from \"@nestjs/common\";\nimport { HealthCheckResult, HealthCheckService, HealthIndicatorResult, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\n\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\n\n@Injectable()\nexport class HealthService {\n  public constructor(\n    private readonly healthCheckService: HealthCheckService,\n    private readonly mongoose: MongooseHealthIndicator,\n    private readonly http: HttpHealthIndicator,\n  ) {}\n\n  public async checkAppHealth(): Promise<HealthCheckResult> {\n    return this.healthCheckService.check([\n      async() => this.checkMongooseConnection(),\n      async() => this.checkGoatItDocs(),\n    ]);\n  }\n\n  private async checkMongooseConnection(): Promise<HealthIndicatorResult<typeof MONGOOSE_HEALTH_KEY>> {\n    return this.mongoose.pingCheck(MONGOOSE_HEALTH_KEY);\n  }\n\n  private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {\n    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, \"http://127.0.0.1:3000/docs\");\n  }\n}"
+    },
+    "src/app/controllers/app.controller.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "0",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/app/controllers/app.controller.ts(23,28): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "26"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 25
+            },
+            "start": {
+              "column": 54,
+              "line": 23
+            }
+          }
+        }
+      ],
+      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { AppGetMetadataResponseDto } from \"@app/types/app.types\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  @ApiOperation({\n    summary: \"Get application metadata\",\n    description: \"Get the metadata information of the application like name, version, and description.\",\n  })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    type: AppGetMetadataResponseDto,\n  })\n  public getApiMetadata(): AppGetMetadataResponseDto {\n    return this.appService.getApiMeta();\n  }\n}"
+    },
+    "src/modules/health/controllers/health.controller.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "25",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/controllers/health.controller.ts(18,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(18,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(18,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(18,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "12"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 20
+            },
+            "start": {
+              "column": 52,
+              "line": 18
+            }
+          }
+        }
+      ],
+      "source": "import { Controller, Get } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { HealthCheck, HealthCheckResult } from \"@nestjs/terminus\";\n\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\n\n@Controller(\"health\")\nexport class HealthController {\n  public constructor(private readonly healthService: HealthService) {}\n\n  @Get()\n  @ApiOperation({\n    summary: \"Check application health\",\n    description: `Check the health status of the application by performing various checks on database and documentation endpoint.<br/>In response schema, \\`info\\`, \\`error\\` and \\`details\\` objects will have \\`${MONGOOSE_HEALTH_KEY}\\` and \\`${DOCS_ENDPOINT_HEALTH_KEY}\\` keys to indicate the health status of the respective services.`,\n  })\n  @HealthCheck()\n  public async check(): Promise<HealthCheckResult> {\n    return this.healthService.checkAppHealth();\n  }\n}"
     }
   },
   "schemaVersion": "1.0",
@@ -1210,63 +1410,126 @@
     "break": 100
   },
   "testFiles": {
-    "src/app/helpers/logger.helpers.spec.ts": {
+    "src/modules/database/providers/database.service.spec.ts": {
       "tests": [
         {
           "id": "0",
-          "name": "Logger Helpers getLoggerConfiguration should return logger production configuration when env is production."
+          "name": "Database Service Constructor should log database connection message when instantiated."
         },
         {
           "id": "1",
-          "name": "Logger Helpers getLoggerConfiguration should return logger development configuration when env is not production."
+          "name": "Database Service createMongooseOptions should log database connecting message when called."
+        },
+        {
+          "id": "2",
+          "name": "Database Service createMongooseOptions should return mongoose options when called."
+        },
+        {
+          "id": "3",
+          "name": "Database Service createMongooseOptions should return the connection from onConnectionCreate option when called."
+        },
+        {
+          "id": "4",
+          "name": "Database Service onMongooseConnectionCreate should log database connected message when connection emits connected event."
+        },
+        {
+          "id": "5",
+          "name": "Database Service onMongooseConnectionCreate should log database disconnected message when connection emits disconnected event."
+        },
+        {
+          "id": "6",
+          "name": "Database Service onMongooseConnectionCreate should return the connection when called."
         }
       ],
-      "source": "import { getLoggerConfiguration } from \"@app/helpers/logger.helpers\";\n\nimport type { Params as PinoParameters } from \"nestjs-pino/params\";\n\ndescribe(\"Logger Helpers\", () => {\n  describe(getLoggerConfiguration, () => {\n    afterEach(() => {\n      process.env.NODE_ENV = \"TEST\";\n    });\n\n    it(\"should return logger production configuration when env is production.\", () => {\n      process.env.NODE_ENV = \"production\";\n\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: undefined,\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n\n    it(\"should return logger development configuration when env is not production.\", () => {\n      process.env.NODE_ENV = \"development\";\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: { target: \"pino-pretty\" },\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n  });\n});"
+      "source": "import { EventEmitter } from \"node:events\";\n\nimport { Logger } from \"@nestjs/common\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { DatabaseService } from \"@modules/database/providers/database.service\";\n\nimport { getMockedLoggerInstance } from \"@mocks/shared/nest/nest.mock\";\n\nimport type { MongooseModuleOptions } from \"@nestjs/mongoose\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport type { Connection } from \"mongoose\";\n\ndescribe(\"Database Service\", () => {\n  let services: { database: DatabaseService };\n\n  beforeEach(async() => {\n    const module: TestingModule = await Test.createTestingModule({ providers: [DatabaseService] }).compile();\n\n    services = { database: module.get<DatabaseService>(DatabaseService) };\n  });\n\n  describe(\"Constructor\", () => {\n    it(\"should log database connection message when instantiated.\", () => {\n      expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);\n    });\n  });\n\n  describe(\"createMongooseOptions\", () => {\n    it(\"should log database connecting message when called.\", () => {\n      services.database.createMongooseOptions();\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍃 Connecting to the database...\");\n    });\n\n    it(\"should return mongoose options when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const expectedOptions: MongooseModuleOptions = {\n        uri: \"mongodb://localhost:27017\",\n        serverSelectionTimeoutMS: 5000,\n        connectTimeoutMS: 5000,\n        retryDelay: 3000,\n        retryAttempts: 5,\n        dbName: \"goat-it\",\n        onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,\n      };\n\n      expect(options).toStrictEqual<MongooseModuleOptions>(expectedOptions);\n    });\n\n    it(\"should return the connection from onConnectionCreate option when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const mockedConnection = new EventEmitter() as unknown as Connection;\n      const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);\n\n      expect(connection).toStrictEqual<Connection>(mockedConnection);\n    });\n  });\n\n  describe(\"onMongooseConnectionCreate\", () => {\n    it(\"should log database connected message when connection emits connected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"connected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍀 Database connection established\");\n    });\n\n    it(\"should log database disconnected message when connection emits disconnected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"disconnected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.warn).toHaveBeenCalledExactlyOnceWith(\"⚠️ Database connection lost\");\n    });\n\n    it(\"should return the connection when called.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      const connection = services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n\n      expect(connection).toStrictEqual<Connection>(fakeConnection);\n    });\n  });\n});"
+    },
+    "src/modules/health/providers/services/health.service.spec.ts": {
+      "tests": [
+        {
+          "id": "7",
+          "name": "Health Service checkAppHealth should call health check service when called."
+        },
+        {
+          "id": "8",
+          "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
+        },
+        {
+          "id": "9",
+          "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
+        },
+        {
+          "id": "10",
+          "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
+        },
+        {
+          "id": "11",
+          "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
+        }
+      ],
+      "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test, TestingModule } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/modules/health/providers/services/terminus.service.mock\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0] as () => Promise<void>;\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1] as () => Promise<void>;\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
+    },
+    "src/modules/health/controllers/health.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "12",
+          "name": "Health Controller check should check health from service when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { HealthController } from \"@modules/health/controllers/health.controller\";\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/modules/health/providers/services/health.service.mock\";\n\ndescribe(\"Health Controller\", () => {\n  let appController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await appController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+    },
+    "src/app/providers/services/app.service.spec.ts": {
+      "tests": [
+        {
+          "id": "13",
+          "name": "App Service getApiMeta should return Api metadata when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
     },
     "src/server/server.spec.ts": {
       "tests": [
         {
-          "id": "2",
+          "id": "14",
           "name": "Server bootstrap should create from NestFactory when called."
         },
         {
-          "id": "3",
+          "id": "15",
           "name": "Server bootstrap should enable shutdown hooks when called."
         },
         {
-          "id": "4",
+          "id": "16",
           "name": "Server bootstrap should use logger when called."
         },
         {
-          "id": "5",
+          "id": "17",
           "name": "Server bootstrap should setup swagger module when called."
         },
         {
-          "id": "6",
+          "id": "18",
           "name": "Server bootstrap should use static assets when called."
         },
         {
-          "id": "7",
+          "id": "19",
           "name": "Server bootstrap should listen on the default host and port when none are provided."
         },
         {
-          "id": "8",
+          "id": "20",
           "name": "Server bootstrap should listen on the provided host and port when they are provided."
         },
         {
-          "id": "9",
+          "id": "21",
           "name": "Server bootstrap should get app url when called."
         },
         {
-          "id": "10",
+          "id": "22",
           "name": "Server bootstrap should log the app url when called."
         },
         {
-          "id": "11",
+          "id": "23",
           "name": "Server bootstrap should log the swagger documentation path when called."
         },
         {
-          "id": "12",
+          "id": "24",
           "name": "Server bootstrap should return the app when called."
         }
       ],
@@ -1275,95 +1538,66 @@
     "src/main.spec.ts": {
       "tests": [
         {
-          "id": "13",
+          "id": "25",
           "name": "Main Root should call bootstrap when file is imported."
         }
       ],
       "source": "import * as Server from \"@server/server\";\n\nvi.mock(import(\"@server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
+    "src/app/controllers/app.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "26",
+          "name": "App Controller getApiMetadata should call Api metadata service method when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+    },
     "src/server/helpers/swagger.helpers.spec.ts": {
       "tests": [
         {
-          "id": "14",
+          "id": "27",
           "name": "Swagger Helper getSwaggerConfig should set title when called."
         },
         {
-          "id": "15",
+          "id": "28",
           "name": "Swagger Helper getSwaggerConfig should set description when called."
         },
         {
-          "id": "16",
+          "id": "29",
           "name": "Swagger Helper getSwaggerConfig should set version when called."
         },
         {
-          "id": "17",
+          "id": "30",
           "name": "Swagger Helper getSwaggerConfig should build document when called."
         },
         {
-          "id": "18",
+          "id": "31",
           "name": "Swagger Helper createSwaggerDocument should create swagger document when called."
         },
         {
-          "id": "19",
+          "id": "32",
           "name": "Swagger Helper createSwaggerDocument should clean up open api doc when called."
         },
         {
-          "id": "20",
+          "id": "33",
           "name": "Swagger Helper setupSwaggerModule should setup Swagger module when called."
         }
       ],
       "source": "import { SwaggerModule, DocumentBuilder } from \"@nestjs/swagger\";\nimport { cleanupOpenApiDoc } from \"nestjs-zod\";\n\nimport { createSwaggerDocument, getSwaggerConfig, setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\n\nimport type { OpenAPIObject, SwaggerCustomOptions } from \"@nestjs/swagger\";\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\nimport type { Mock } from \"vitest\";\n\nvi.mock(import(\"@nestjs/swagger\"));\n\nvi.mock(import(\"nestjs-zod\"));\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"Swagger Helper\", () => {\n  let mocks: {\n    DocumentBuilder: {\n      setTitle: Mock;\n      setDescription: Mock;\n      setVersion: Mock;\n      build: Mock;\n    };\n  };\n\n  beforeEach(() => {\n    mocks = {\n      DocumentBuilder: {\n        setTitle: vi.spyOn(DocumentBuilder.prototype, \"setTitle\").mockReturnThis(),\n        setDescription: vi.spyOn(DocumentBuilder.prototype, \"setDescription\").mockReturnThis(),\n        setVersion: vi.spyOn(DocumentBuilder.prototype, \"setVersion\").mockReturnThis(),\n        build: vi.spyOn(DocumentBuilder.prototype, \"build\").mockReturnValue({} as Omit<OpenAPIObject, \"paths\">),\n      },\n    };\n  });\n\n  describe(getSwaggerConfig, () => {\n    it(\"should set title when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith(\"Goat It API Reference Documentation\");\n    });\n\n    it(\"should set description when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(\"API for Goat It application.\");\n    });\n\n    it(\"should set version when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith(\"1.0.0\");\n    });\n\n    it(\"should build document when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.build).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n\n  describe(createSwaggerDocument, () => {\n    it(\"should create swagger document when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      createSwaggerDocument(mockedApp);\n\n      expect(SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});\n    });\n\n    it(\"should clean up open api doc when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedDocument = {} as OpenAPIObject;\n      vi.mocked(SwaggerModule.createDocument).mockReturnValue(expectedDocument);\n      createSwaggerDocument(mockedApp);\n\n      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);\n    });\n  });\n\n  describe(setupSwaggerModule, () => {\n    it(\"should setup Swagger module when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedSwaggerOptions: SwaggerCustomOptions = {\n        customSiteTitle: \"Goat It API Reference Documentation\",\n      };\n      setupSwaggerModule(mockedApp);\n\n      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith(\"/docs\", mockedApp, undefined, expectedSwaggerOptions);\n    });\n  });\n});"
     },
-    "src/modules/database/providers/database.service.spec.ts": {
+    "src/app/helpers/logger.helpers.spec.ts": {
       "tests": [
         {
-          "id": "21",
-          "name": "Database Service Constructor should log database connection message when instantiated."
+          "id": "34",
+          "name": "Logger Helpers getLoggerConfiguration should return logger production configuration when env is production."
         },
         {
-          "id": "22",
-          "name": "Database Service createMongooseOptions should log database connecting message when called."
-        },
-        {
-          "id": "23",
-          "name": "Database Service createMongooseOptions should return mongoose options when called."
-        },
-        {
-          "id": "24",
-          "name": "Database Service createMongooseOptions should return the connection from onConnectionCreate option when called."
-        },
-        {
-          "id": "25",
-          "name": "Database Service onMongooseConnectionCreate should log database connected message when connection emits connected event."
-        },
-        {
-          "id": "26",
-          "name": "Database Service onMongooseConnectionCreate should log database disconnected message when connection emits disconnected event."
-        },
-        {
-          "id": "27",
-          "name": "Database Service onMongooseConnectionCreate should return the connection when called."
+          "id": "35",
+          "name": "Logger Helpers getLoggerConfiguration should return logger development configuration when env is not production."
         }
       ],
-      "source": "import { EventEmitter } from \"node:events\";\n\nimport { Logger } from \"@nestjs/common\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { DatabaseService } from \"@modules/database/providers/database.service\";\n\nimport { getMockedLoggerInstance } from \"@mocks/shared/nest/nest.mock\";\n\nimport type { MongooseModuleOptions } from \"@nestjs/mongoose\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport type { Connection } from \"mongoose\";\n\ndescribe(\"Database Service\", () => {\n  let services: { database: DatabaseService };\n\n  beforeEach(async() => {\n    const module: TestingModule = await Test.createTestingModule({ providers: [DatabaseService] }).compile();\n\n    services = { database: module.get<DatabaseService>(DatabaseService) };\n  });\n\n  describe(\"Constructor\", () => {\n    it(\"should log database connection message when instantiated.\", () => {\n      expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);\n    });\n  });\n\n  describe(\"createMongooseOptions\", () => {\n    it(\"should log database connecting message when called.\", () => {\n      services.database.createMongooseOptions();\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍃 Connecting to the database...\");\n    });\n\n    it(\"should return mongoose options when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const expectedOptions: MongooseModuleOptions = {\n        uri: \"mongodb://localhost:27017\",\n        serverSelectionTimeoutMS: 5000,\n        connectTimeoutMS: 5000,\n        retryDelay: 3000,\n        retryAttempts: 5,\n        dbName: \"goat-it\",\n        onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,\n      };\n\n      expect(options).toStrictEqual<MongooseModuleOptions>(expectedOptions);\n    });\n\n    it(\"should return the connection from onConnectionCreate option when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const mockedConnection = new EventEmitter() as unknown as Connection;\n      const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);\n\n      expect(connection).toStrictEqual<Connection>(mockedConnection);\n    });\n  });\n\n  describe(\"onMongooseConnectionCreate\", () => {\n    it(\"should log database connected message when connection emits connected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"connected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍀 Database connection established\");\n    });\n\n    it(\"should log database disconnected message when connection emits disconnected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"disconnected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.warn).toHaveBeenCalledExactlyOnceWith(\"⚠️ Database connection lost\");\n    });\n\n    it(\"should return the connection when called.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      const connection = services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n\n      expect(connection).toStrictEqual<Connection>(fakeConnection);\n    });\n  });\n});"
-    },
-    "src/app/providers/services/app.service.spec.ts": {
-      "tests": [
-        {
-          "id": "28",
-          "name": "App Service getApiMeta should return Api metadata when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
-    },
-    "src/app/controllers/app.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "29",
-          "name": "App Controller getApiMetadata should call Api metadata service method when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+      "source": "import { getLoggerConfiguration } from \"@app/helpers/logger.helpers\";\n\nimport type { Params as PinoParameters } from \"nestjs-pino/params\";\n\ndescribe(\"Logger Helpers\", () => {\n  describe(getLoggerConfiguration, () => {\n    afterEach(() => {\n      process.env.NODE_ENV = \"TEST\";\n    });\n\n    it(\"should return logger production configuration when env is production.\", () => {\n      process.env.NODE_ENV = \"production\";\n\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: undefined,\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n\n    it(\"should return logger development configuration when env is not production.\", () => {\n      process.env.NODE_ENV = \"development\";\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: { target: \"pino-pretty\" },\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n  });\n});"
     }
   },
   "projectRoot": "/Users/mac-Z14AZANA/WebstormProjects/goat-it-api",
