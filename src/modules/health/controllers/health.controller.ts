@@ -1,12 +1,13 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiOperation } from "@nestjs/swagger";
+import { Controller, Get, HttpStatus } from "@nestjs/common";
+import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { HealthCheck } from "@nestjs/terminus";
+import { ZodResponse } from "nestjs-zod";
 
 // oxlint-disable-next-line consistent-type-imports
 import { HealthService } from "@modules/health/providers/services/health.service";
-import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@modules/health/constants/health.constants";
+import { HEALTH_CHECK_RESULT_SCHEMA } from "@modules/health/constants/health.constants";
 
-import type { HealthCheckResult } from "@nestjs/terminus";
+import { GetHealthCheckResultResponseDto } from "@modules/health/types/health.types";
 
 @Controller("health")
 export class HealthController {
@@ -14,11 +15,23 @@ export class HealthController {
 
   @Get()
   @ApiOperation({
+    tags: ["❤️ Health"],
     summary: "Check application health",
-    description: `Check the health status of the application by performing various checks on database and documentation endpoint.<br/>In response schema, \`info\`, \`error\` and \`details\` objects will have \`${MONGOOSE_HEALTH_KEY}\` and \`${DOCS_ENDPOINT_HEALTH_KEY}\` keys to indicate the health status of the respective services.`,
+    description: `Check the health status of the application by performing various checks on database and documentation endpoint.`,
   })
-  @HealthCheck()
-  public async check(): Promise<HealthCheckResult> {
-    return this.healthService.checkAppHealth();
+  @HealthCheck({ swaggerDocumentation: false })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    description: "Application is healthy and ready to serve requests",
+    type: GetHealthCheckResultResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: "Application is not ready yet",
+  })
+  public async check(): Promise<GetHealthCheckResultResponseDto> {
+    const appHealth = await this.healthService.checkAppHealth();
+
+    return HEALTH_CHECK_RESULT_SCHEMA.parse(appHealth);
   }
 }

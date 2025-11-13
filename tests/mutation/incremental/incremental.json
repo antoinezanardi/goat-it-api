@@ -12,7 +12,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "12"
+            "27"
           ],
           "location": {
             "end": {
@@ -40,8 +40,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -63,11 +63,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "34"
+            "35"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -89,11 +89,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "34"
+            "35"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -115,11 +115,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "35"
+            "36"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -141,11 +141,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "34"
+            "35"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -167,11 +167,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "34"
+            "35"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -193,11 +193,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "34"
+            "35"
           ],
           "coveredBy": [
-            "34",
-            "35"
+            "35",
+            "36"
           ],
           "location": {
             "end": {
@@ -219,7 +219,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "35"
+            "36"
           ],
           "location": {
             "end": {
@@ -241,10 +241,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "35"
+            "36"
           ],
           "coveredBy": [
-            "35"
+            "36"
           ],
           "location": {
             "end": {
@@ -272,7 +272,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "11"
+            "24"
           ],
           "location": {
             "end": {
@@ -294,7 +294,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "11"
+            "24"
           ],
           "location": {
             "end": {
@@ -316,10 +316,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "11"
+            "24"
           ],
           "coveredBy": [
-            "11"
+            "24"
           ],
           "location": {
             "end": {
@@ -347,9 +347,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "20",
-            "21",
-            "22"
+            "2",
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -371,12 +371,12 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "20"
+            "2"
           ],
           "coveredBy": [
-            "20",
-            "21",
-            "22"
+            "2",
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -398,12 +398,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "21"
+            "3"
           ],
           "coveredBy": [
-            "20",
-            "21",
-            "22"
+            "2",
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -425,12 +425,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "21"
+            "3"
           ],
           "coveredBy": [
-            "20",
-            "21",
-            "22"
+            "2",
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -452,12 +452,12 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "22"
+            "4"
           ],
           "coveredBy": [
-            "20",
-            "21",
-            "22"
+            "2",
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -479,10 +479,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "22",
-            "23",
-            "24",
-            "25"
+            "4",
+            "5",
+            "6",
+            "7"
           ],
           "location": {
             "end": {
@@ -504,13 +504,13 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "23"
+            "5"
           ],
           "coveredBy": [
-            "22",
-            "23",
-            "24",
-            "25"
+            "4",
+            "5",
+            "6",
+            "7"
           ],
           "location": {
             "end": {
@@ -532,10 +532,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "23"
+            "5"
           ],
           "coveredBy": [
-            "23"
+            "5"
           ],
           "location": {
             "end": {
@@ -557,10 +557,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "23"
+            "5"
           ],
           "coveredBy": [
-            "23"
+            "5"
           ],
           "location": {
             "end": {
@@ -582,13 +582,13 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "24"
+            "6"
           ],
           "coveredBy": [
-            "22",
-            "23",
-            "24",
-            "25"
+            "4",
+            "5",
+            "6",
+            "7"
           ],
           "location": {
             "end": {
@@ -610,10 +610,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "24"
+            "6"
           ],
           "coveredBy": [
-            "24"
+            "6"
           ],
           "location": {
             "end": {
@@ -635,10 +635,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "24"
+            "6"
           ],
           "coveredBy": [
-            "24"
+            "6"
           ],
           "location": {
             "end": {
@@ -654,6 +654,183 @@
       ],
       "source": "import { Logger, Injectable } from \"@nestjs/common\";\n\nimport { DATABASE_CONNECTION_TIMEOUT_MS, DATABASE_NAME, DATABASE_RETRY_ATTEMPTS, DATABASE_RETRY_DELAY_MS } from \"@modules/database/constants/database.constants\";\n\nimport type { MongooseModuleOptions, MongooseOptionsFactory } from \"@nestjs/mongoose\";\nimport type { Connection } from \"mongoose\";\n\n@Injectable()\nexport class DatabaseService implements MongooseOptionsFactory {\n  private readonly logger = new Logger(DatabaseService.name);\n\n  public createMongooseOptions(): MongooseModuleOptions {\n    this.logger.log(\"🍃 Connecting to the database...\");\n\n    return {\n      uri: \"mongodb://localhost:27017\",\n      serverSelectionTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      connectTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,\n      retryDelay: DATABASE_RETRY_DELAY_MS,\n      retryAttempts: DATABASE_RETRY_ATTEMPTS,\n      dbName: DATABASE_NAME,\n      onConnectionCreate: connection => this.onMongooseConnectionCreate(connection),\n    };\n  }\n\n  private onMongooseConnectionCreate(connection: Connection): Connection {\n    connection.on(\"connected\", () => {\n      this.logger.log(\"🍀 Database connection established\");\n    });\n\n    connection.on(\"disconnected\", () => {\n      this.logger.warn(\"⚠️ Database connection lost\");\n    });\n\n    return connection;\n  }\n}"
     },
+    "src/modules/health/providers/services/health.service.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "26",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "8",
+            "9",
+            "10"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 22
+            },
+            "start": {
+              "column": 61,
+              "line": 17
+            }
+          }
+        },
+        {
+          "id": "27",
+          "mutatorName": "ArrayDeclaration",
+          "replacement": "[]",
+          "statusReason": "mongooseHealthCheckFunction is not a function",
+          "status": "Killed",
+          "testsCompleted": 2,
+          "static": false,
+          "killedBy": [
+            "9"
+          ],
+          "coveredBy": [
+            "8",
+            "9",
+            "10"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 21
+            },
+            "start": {
+              "column": 42,
+              "line": 18
+            }
+          }
+        },
+        {
+          "id": "28",
+          "mutatorName": "ArrowFunction",
+          "replacement": "() => undefined",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "8",
+            "9",
+            "10"
+          ],
+          "location": {
+            "end": {
+              "column": 48,
+              "line": 19
+            },
+            "start": {
+              "column": 7,
+              "line": 19
+            }
+          }
+        },
+        {
+          "id": "29",
+          "mutatorName": "ArrowFunction",
+          "replacement": "() => undefined",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "8",
+            "9",
+            "10"
+          ],
+          "location": {
+            "end": {
+              "column": 40,
+              "line": 20
+            },
+            "start": {
+              "column": 7,
+              "line": 20
+            }
+          }
+        },
+        {
+          "id": "30",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "9",
+            "11"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 26
+            },
+            "start": {
+              "column": 103,
+              "line": 24
+            }
+          }
+        },
+        {
+          "id": "31",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "10",
+            "12"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 30
+            },
+            "start": {
+              "column": 100,
+              "line": 28
+            }
+          }
+        },
+        {
+          "id": "32",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ 'goat-it-docs', …(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    \"goat-it-docs\",\u001b[22m\n\u001b[32m-   \"http://127.0.0.1:3000/docs\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
+          "status": "Killed",
+          "testsCompleted": 2,
+          "static": false,
+          "killedBy": [
+            "12"
+          ],
+          "coveredBy": [
+            "10",
+            "12"
+          ],
+          "location": {
+            "end": {
+              "column": 86,
+              "line": 29
+            },
+            "start": {
+              "column": 58,
+              "line": 29
+            }
+          }
+        }
+      ],
+      "source": "import { Injectable } from \"@nestjs/common\";\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\n\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\n\nimport type { HealthCheckResult, HealthIndicatorResult } from \"@nestjs/terminus\";\n\n@Injectable()\nexport class HealthService {\n  public constructor(\n    private readonly healthCheckService: HealthCheckService,\n    private readonly mongoose: MongooseHealthIndicator,\n    private readonly http: HttpHealthIndicator,\n  ) {}\n\n  public async checkAppHealth(): Promise<HealthCheckResult> {\n    return this.healthCheckService.check([\n      async() => this.checkMongooseConnection(),\n      async() => this.checkGoatItDocs(),\n    ]);\n  }\n\n  private async checkMongooseConnection(): Promise<HealthIndicatorResult<typeof MONGOOSE_HEALTH_KEY>> {\n    return this.mongoose.pingCheck(MONGOOSE_HEALTH_KEY);\n  }\n\n  private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {\n    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, \"http://127.0.0.1:3000/docs\");\n  }\n}"
+    },
     "src/server/helpers/swagger.helpers.ts": {
       "language": "typescript",
       "mutants": [
@@ -666,13 +843,13 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "26",
-            "27",
             "28",
             "29",
             "30",
             "31",
-            "32"
+            "32",
+            "33",
+            "34"
           ],
           "location": {
             "end": {
@@ -694,9 +871,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "30",
-            "31",
-            "32"
+            "32",
+            "33",
+            "34"
           ],
           "location": {
             "end": {
@@ -718,10 +895,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "32"
+            "34"
           ],
           "coveredBy": [
-            "32"
+            "34"
           ],
           "location": {
             "end": {
@@ -743,10 +920,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "32"
+            "34"
           ],
           "coveredBy": [
-            "32"
+            "34"
           ],
           "location": {
             "end": {
@@ -774,17 +951,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -806,20 +983,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "13"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -841,20 +1018,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "0"
+            "13"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -876,17 +1053,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -908,20 +1085,20 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "4"
+            "17"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -943,20 +1120,20 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "4"
+            "17"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -978,20 +1155,20 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "5"
+            "18"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -1013,15 +1190,15 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "5"
+            "18"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
           ],
           "location": {
             "end": {
@@ -1043,17 +1220,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -1075,15 +1252,15 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "5"
+            "18"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18"
           ],
           "location": {
             "end": {
@@ -1105,20 +1282,20 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "5"
+            "18"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -1140,20 +1317,20 @@
           "testsCompleted": 9,
           "static": false,
           "killedBy": [
-            "8"
+            "21"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -1175,20 +1352,20 @@
           "testsCompleted": 10,
           "static": false,
           "killedBy": [
-            "9"
+            "22"
           ],
           "coveredBy": [
-            "0",
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10"
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23"
           ],
           "location": {
             "end": {
@@ -1204,178 +1381,6 @@
       ],
       "source": "import { NestFactory } from \"@nestjs/core\";\nimport { FastifyAdapter } from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport { AppModule } from \"@app/app.module\";\n\nimport { SWAGGER_DOCUMENTATION_PATH } from \"@server/constants/swagger.constants\";\nimport { setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\n\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\n\nasync function bootstrap(): Promise<NestFastifyApplication> {\n  const app = await NestFactory.create<NestFastifyApplication>(\n    AppModule,\n    new FastifyAdapter(),\n    { bufferLogs: true },\n  );\n\n  const logger = app.get(Logger);\n\n  app.enableShutdownHooks();\n  app.useLogger(logger);\n\n  setupSwaggerModule(app);\n  app.useStaticAssets({\n    root: `${process.cwd()}/public`,\n    prefix: \"/public/\",\n  });\n\n  const host = process.env.HOST ?? \"0.0.0.0\";\n  const port = Number.parseInt(process.env.PORT ?? \"3000\");\n  await app.listen({ host, port });\n\n  const appUrl = await app.getUrl();\n\n  logger.log(`🐐 Goat It API is running on: ${appUrl}`);\n  logger.log(`📚 Swagger documentation is available on: ${appUrl}${SWAGGER_DOCUMENTATION_PATH}`);\n\n  return app;\n}\n\nexport { bootstrap };"
     },
-    "src/modules/health/providers/services/health.service.ts": {
-      "language": "typescript",
-      "mutants": [
-        {
-          "id": "26",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(17,34): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "13",
-            "14",
-            "15"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 22
-            },
-            "start": {
-              "column": 61,
-              "line": 17
-            }
-          }
-        },
-        {
-          "id": "28",
-          "mutatorName": "ArrowFunction",
-          "replacement": "() => undefined",
-          "statusReason": "src/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(19,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "13",
-            "14",
-            "15"
-          ],
-          "location": {
-            "end": {
-              "column": 48,
-              "line": 19
-            },
-            "start": {
-              "column": 7,
-              "line": 19
-            }
-          }
-        },
-        {
-          "id": "27",
-          "mutatorName": "ArrayDeclaration",
-          "replacement": "[]",
-          "statusReason": "mongooseHealthCheckFunction is not a function",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 2,
-          "killedBy": [
-            "14"
-          ],
-          "coveredBy": [
-            "13",
-            "14",
-            "15"
-          ],
-          "location": {
-            "end": {
-              "column": 6,
-              "line": 21
-            },
-            "start": {
-              "column": 42,
-              "line": 18
-            }
-          }
-        },
-        {
-          "id": "30",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(24,44): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "14",
-            "16"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 26
-            },
-            "start": {
-              "column": 103,
-              "line": 24
-            }
-          }
-        },
-        {
-          "id": "29",
-          "mutatorName": "ArrowFunction",
-          "replacement": "() => undefined",
-          "statusReason": "src/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\nsrc/modules/health/providers/services/health.service.ts(20,13): error TS2322: Type 'undefined' is not assignable to type 'HealthIndicatorResult | PromiseLike<HealthIndicatorResult>'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "13",
-            "14",
-            "15"
-          ],
-          "location": {
-            "end": {
-              "column": 40,
-              "line": 20
-            },
-            "start": {
-              "column": 7,
-              "line": 20
-            }
-          }
-        },
-        {
-          "id": "31",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/providers/services/health.service.ts(28,36): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "15",
-            "17"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 30
-            },
-            "start": {
-              "column": 100,
-              "line": 28
-            }
-          }
-        },
-        {
-          "id": "32",
-          "mutatorName": "StringLiteral",
-          "replacement": "\"\"",
-          "statusReason": "expected \"vi.fn()\" to be called once with arguments: [ 'goat-it-docs', …(1) ]\u001b[90m\n\nReceived: \n\n\u001b[1m  1st vi.fn() call:\n\n\u001b[22m\u001b[2m  [\u001b[22m\n\u001b[2m    \"goat-it-docs\",\u001b[22m\n\u001b[32m-   \"http://127.0.0.1:3000/docs\",\u001b[90m\n\u001b[31m+   \"\",\u001b[90m\n\u001b[2m  ]\u001b[22m\n\u001b[39m\u001b[90m\n\nNumber of calls: \u001b[1m1\u001b[22m\n\u001b[39m",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 2,
-          "killedBy": [
-            "17"
-          ],
-          "coveredBy": [
-            "15",
-            "17"
-          ],
-          "location": {
-            "end": {
-              "column": 86,
-              "line": 29
-            },
-            "start": {
-              "column": 58,
-              "line": 29
-            }
-          }
-        }
-      ],
-      "source": "import { Injectable } from \"@nestjs/common\";\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\n\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\n\nimport type { HealthCheckResult, HealthIndicatorResult } from \"@nestjs/terminus\";\n\n@Injectable()\nexport class HealthService {\n  public constructor(\n    private readonly healthCheckService: HealthCheckService,\n    private readonly mongoose: MongooseHealthIndicator,\n    private readonly http: HttpHealthIndicator,\n  ) {}\n\n  public async checkAppHealth(): Promise<HealthCheckResult> {\n    return this.healthCheckService.check([\n      async() => this.checkMongooseConnection(),\n      async() => this.checkGoatItDocs(),\n    ]);\n  }\n\n  private async checkMongooseConnection(): Promise<HealthIndicatorResult<typeof MONGOOSE_HEALTH_KEY>> {\n    return this.mongoose.pingCheck(MONGOOSE_HEALTH_KEY);\n  }\n\n  private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {\n    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, \"http://127.0.0.1:3000/docs\");\n  }\n}"
-    },
     "src/modules/health/controllers/health.controller.ts": {
       "language": "typescript",
       "mutants": [
@@ -1383,25 +1388,26 @@
           "id": "25",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/health/controllers/health.controller.ts(21,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(21,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(21,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(21,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "statusReason": "src/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/modules/health/controllers/health.controller.ts(32,25): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "33"
+            "25",
+            "26"
           ],
           "location": {
             "end": {
               "column": 4,
-              "line": 23
+              "line": 36
             },
             "start": {
-              "column": 52,
-              "line": 21
+              "column": 66,
+              "line": 32
             }
           }
         }
       ],
-      "source": "import { Controller, Get } from \"@nestjs/common\";\nimport { ApiOperation } from \"@nestjs/swagger\";\nimport { HealthCheck } from \"@nestjs/terminus\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\n\nimport type { HealthCheckResult } from \"@nestjs/terminus\";\n\n@Controller(\"health\")\nexport class HealthController {\n  public constructor(private readonly healthService: HealthService) {}\n\n  @Get()\n  @ApiOperation({\n    summary: \"Check application health\",\n    description: `Check the health status of the application by performing various checks on database and documentation endpoint.<br/>In response schema, \\`info\\`, \\`error\\` and \\`details\\` objects will have \\`${MONGOOSE_HEALTH_KEY}\\` and \\`${DOCS_ENDPOINT_HEALTH_KEY}\\` keys to indicate the health status of the respective services.`,\n  })\n  @HealthCheck()\n  public async check(): Promise<HealthCheckResult> {\n    return this.healthService.checkAppHealth();\n  }\n}"
+      "source": "import { Controller, Get, HttpStatus } from \"@nestjs/common\";\nimport { ApiOperation, ApiResponse } from \"@nestjs/swagger\";\nimport { HealthCheck } from \"@nestjs/terminus\";\nimport { ZodResponse } from \"nestjs-zod\";\n\n// oxlint-disable-next-line consistent-type-imports\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\nimport { HEALTH_CHECK_RESULT_SCHEMA } from \"@modules/health/constants/health.constants\";\n\nimport { GetHealthCheckResultResponseDto } from \"@modules/health/types/health.types\";\n\n@Controller(\"health\")\nexport class HealthController {\n  public constructor(private readonly healthService: HealthService) {}\n\n  @Get()\n  @ApiOperation({\n    tags: [\"❤️ Health\"],\n    summary: \"Check application health\",\n    description: `Check the health status of the application by performing various checks on database and documentation endpoint.`,\n  })\n  @HealthCheck({ swaggerDocumentation: false })\n  @ZodResponse({\n    status: HttpStatus.OK,\n    description: \"Application is healthy and ready to serve requests\",\n    type: GetHealthCheckResultResponseDto,\n  })\n  @ApiResponse({\n    status: HttpStatus.SERVICE_UNAVAILABLE,\n    description: \"Application is not ready yet\",\n  })\n  public async check(): Promise<GetHealthCheckResultResponseDto> {\n    const appHealth = await this.healthService.checkAppHealth();\n\n    return HEALTH_CHECK_RESULT_SCHEMA.parse(appHealth);\n  }\n}"
     }
   },
   "schemaVersion": "1.0",
@@ -1411,102 +1417,10 @@
     "break": 100
   },
   "testFiles": {
-    "src/server/server.spec.ts": {
-      "tests": [
-        {
-          "id": "0",
-          "name": "Server bootstrap should create from NestFactory when called."
-        },
-        {
-          "id": "1",
-          "name": "Server bootstrap should enable shutdown hooks when called."
-        },
-        {
-          "id": "2",
-          "name": "Server bootstrap should use logger when called."
-        },
-        {
-          "id": "3",
-          "name": "Server bootstrap should setup swagger module when called."
-        },
-        {
-          "id": "4",
-          "name": "Server bootstrap should use static assets when called."
-        },
-        {
-          "id": "5",
-          "name": "Server bootstrap should listen on the default host and port when none are provided."
-        },
-        {
-          "id": "6",
-          "name": "Server bootstrap should listen on the provided host and port when they are provided."
-        },
-        {
-          "id": "7",
-          "name": "Server bootstrap should get app url when called."
-        },
-        {
-          "id": "8",
-          "name": "Server bootstrap should log the app url when called."
-        },
-        {
-          "id": "9",
-          "name": "Server bootstrap should log the swagger documentation path when called."
-        },
-        {
-          "id": "10",
-          "name": "Server bootstrap should return the app when called."
-        }
-      ],
-      "source": "import * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport type { AppModule } from \"@app/app.module\";\n\nimport { setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\nimport { bootstrap } from \"@server/server\";\n\nimport type { INestApplication, NestApplicationOptions } from \"@nestjs/common\";\n\nvi.mock(import(\"@nestjs/core\"));\nvi.mock(import(\"@app/app.module\"), () => ({\n  AppModule: {\n    name: \"MockedModule\",\n  } as typeof AppModule,\n}));\nvi.mock(import(\"@server/helpers/swagger.helpers\"));\n\ndescribe(\"Server\", () => {\n  beforeEach(() => {\n    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({\n      enableShutdownHooks: vi.fn<() => INestApplication>(),\n      useLogger: vi.fn<() => void>(),\n      get: vi.fn<() => object>().mockReturnValue({\n        log: vi.fn<() => void>(),\n      }),\n      listen: vi.fn<() => Promise<undefined>>(),\n      getUrl: vi.fn<() => Promise<string>>().mockResolvedValue(\"http://mocked-host:9090\"),\n      useStaticAssets: vi.fn<() => void>(),\n    } as Partial<INestApplication>));\n  });\n\n  describe(bootstrap, () => {\n    it(\"should create from NestFactory when called.\", async() => {\n      const expectedOptions: NestApplicationOptions = {\n        bufferLogs: true,\n      };\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: \"MockedModule\" }, expect.any(Fastify.FastifyAdapter), expectedOptions);\n    });\n\n    it(\"should enable shutdown hooks when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should use logger when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));\n    });\n\n    it(\"should setup swagger module when called.\", async() => {\n      await bootstrap();\n\n      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));\n    });\n\n    it(\"should use static assets when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({\n        root: `${process.cwd()}/public`,\n        prefix: \"/public/\",\n      });\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async() => {\n      process.env.HOST = \"127.0.0.1\";\n      process.env.PORT = \"8080\";\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, \"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should log the swagger documentation path when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, \"📚 Swagger documentation is available on: http://mocked-host:9090/docs\");\n    });\n\n    it(\"should return the app when called.\", async() => {\n      const app = await bootstrap();\n      const expectedApp = {\n        enableShutdownHooks: expect.any(Function) as () => INestApplication,\n        useLogger: expect.any(Function) as () => void,\n        get: expect.any(Function) as () => never,\n        listen: expect.any(Function) as () => void,\n        getUrl: expect.any(Function) as () => void,\n        useStaticAssets: expect.any(Function) as () => void,\n      };\n\n      expect(app).toStrictEqual(expectedApp);\n    });\n  });\n});"
-    },
-    "src/app/providers/services/app.service.spec.ts": {
-      "tests": [
-        {
-          "id": "11",
-          "name": "App Service getApiMeta should return Api metadata when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
-    },
-    "src/app/controllers/app.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "12",
-          "name": "App Controller getApiMetadata should call Api metadata service method when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
-    },
-    "src/modules/health/providers/services/health.service.spec.ts": {
-      "tests": [
-        {
-          "id": "13",
-          "name": "Health Service checkAppHealth should call health check service when called."
-        },
-        {
-          "id": "14",
-          "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
-        },
-        {
-          "id": "15",
-          "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
-        },
-        {
-          "id": "16",
-          "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
-        },
-        {
-          "id": "17",
-          "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
-        }
-      ],
-      "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/modules/health/providers/services/terminus.service.mock\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
-    },
     "src/main.spec.ts": {
       "tests": [
         {
-          "id": "18",
+          "id": "0",
           "name": "Main Root should call bootstrap when file is imported."
         }
       ],
@@ -1515,86 +1429,182 @@
     "src/modules/database/providers/database.service.spec.ts": {
       "tests": [
         {
-          "id": "19",
+          "id": "1",
           "name": "Database Service Constructor should log database connection message when instantiated."
         },
         {
-          "id": "20",
+          "id": "2",
           "name": "Database Service createMongooseOptions should log database connecting message when called."
         },
         {
-          "id": "21",
+          "id": "3",
           "name": "Database Service createMongooseOptions should return mongoose options when called."
         },
         {
-          "id": "22",
+          "id": "4",
           "name": "Database Service createMongooseOptions should return the connection from onConnectionCreate option when called."
         },
         {
-          "id": "23",
+          "id": "5",
           "name": "Database Service onMongooseConnectionCreate should log database connected message when connection emits connected event."
         },
         {
-          "id": "24",
+          "id": "6",
           "name": "Database Service onMongooseConnectionCreate should log database disconnected message when connection emits disconnected event."
         },
         {
-          "id": "25",
+          "id": "7",
           "name": "Database Service onMongooseConnectionCreate should return the connection when called."
         }
       ],
       "source": "import { EventEmitter } from \"node:events\";\n\nimport { Logger } from \"@nestjs/common\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { DatabaseService } from \"@modules/database/providers/database.service\";\n\nimport { getMockedLoggerInstance } from \"@mocks/shared/nest/nest.mock\";\n\nimport type { MongooseModuleOptions } from \"@nestjs/mongoose\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport type { Connection } from \"mongoose\";\n\ndescribe(\"Database Service\", () => {\n  let services: { database: DatabaseService };\n\n  beforeEach(async() => {\n    const module: TestingModule = await Test.createTestingModule({ providers: [DatabaseService] }).compile();\n\n    services = { database: module.get<DatabaseService>(DatabaseService) };\n  });\n\n  describe(\"Constructor\", () => {\n    it(\"should log database connection message when instantiated.\", () => {\n      expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);\n    });\n  });\n\n  describe(\"createMongooseOptions\", () => {\n    it(\"should log database connecting message when called.\", () => {\n      services.database.createMongooseOptions();\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍃 Connecting to the database...\");\n    });\n\n    it(\"should return mongoose options when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const expectedOptions: MongooseModuleOptions = {\n        uri: \"mongodb://localhost:27017\",\n        serverSelectionTimeoutMS: 5000,\n        connectTimeoutMS: 5000,\n        retryDelay: 3000,\n        retryAttempts: 5,\n        dbName: \"goat-it\",\n        onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,\n      };\n\n      expect(options).toStrictEqual<MongooseModuleOptions>(expectedOptions);\n    });\n\n    it(\"should return the connection from onConnectionCreate option when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const mockedConnection = new EventEmitter() as unknown as Connection;\n      const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);\n\n      expect(connection).toStrictEqual<Connection>(mockedConnection);\n    });\n  });\n\n  describe(\"onMongooseConnectionCreate\", () => {\n    it(\"should log database connected message when connection emits connected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"connected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍀 Database connection established\");\n    });\n\n    it(\"should log database disconnected message when connection emits disconnected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"disconnected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.warn).toHaveBeenCalledExactlyOnceWith(\"⚠️ Database connection lost\");\n    });\n\n    it(\"should return the connection when called.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      const connection = services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n\n      expect(connection).toStrictEqual<Connection>(fakeConnection);\n    });\n  });\n});"
     },
+    "src/modules/health/providers/services/health.service.spec.ts": {
+      "tests": [
+        {
+          "id": "8",
+          "name": "Health Service checkAppHealth should call health check service when called."
+        },
+        {
+          "id": "9",
+          "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
+        },
+        {
+          "id": "10",
+          "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
+        },
+        {
+          "id": "11",
+          "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
+        },
+        {
+          "id": "12",
+          "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
+        }
+      ],
+      "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/modules/health/providers/services/terminus.service.mock\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
+    },
+    "src/server/server.spec.ts": {
+      "tests": [
+        {
+          "id": "13",
+          "name": "Server bootstrap should create from NestFactory when called."
+        },
+        {
+          "id": "14",
+          "name": "Server bootstrap should enable shutdown hooks when called."
+        },
+        {
+          "id": "15",
+          "name": "Server bootstrap should use logger when called."
+        },
+        {
+          "id": "16",
+          "name": "Server bootstrap should setup swagger module when called."
+        },
+        {
+          "id": "17",
+          "name": "Server bootstrap should use static assets when called."
+        },
+        {
+          "id": "18",
+          "name": "Server bootstrap should listen on the default host and port when none are provided."
+        },
+        {
+          "id": "19",
+          "name": "Server bootstrap should listen on the provided host and port when they are provided."
+        },
+        {
+          "id": "20",
+          "name": "Server bootstrap should get app url when called."
+        },
+        {
+          "id": "21",
+          "name": "Server bootstrap should log the app url when called."
+        },
+        {
+          "id": "22",
+          "name": "Server bootstrap should log the swagger documentation path when called."
+        },
+        {
+          "id": "23",
+          "name": "Server bootstrap should return the app when called."
+        }
+      ],
+      "source": "import * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport type { AppModule } from \"@app/app.module\";\n\nimport { setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\nimport { bootstrap } from \"@server/server\";\n\nimport type { INestApplication, NestApplicationOptions } from \"@nestjs/common\";\n\nvi.mock(import(\"@nestjs/core\"));\nvi.mock(import(\"@app/app.module\"), () => ({\n  AppModule: {\n    name: \"MockedModule\",\n  } as typeof AppModule,\n}));\nvi.mock(import(\"@server/helpers/swagger.helpers\"));\n\ndescribe(\"Server\", () => {\n  beforeEach(() => {\n    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({\n      enableShutdownHooks: vi.fn<() => INestApplication>(),\n      useLogger: vi.fn<() => void>(),\n      get: vi.fn<() => object>().mockReturnValue({\n        log: vi.fn<() => void>(),\n      }),\n      listen: vi.fn<() => Promise<undefined>>(),\n      getUrl: vi.fn<() => Promise<string>>().mockResolvedValue(\"http://mocked-host:9090\"),\n      useStaticAssets: vi.fn<() => void>(),\n    } as Partial<INestApplication>));\n  });\n\n  describe(bootstrap, () => {\n    it(\"should create from NestFactory when called.\", async() => {\n      const expectedOptions: NestApplicationOptions = {\n        bufferLogs: true,\n      };\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: \"MockedModule\" }, expect.any(Fastify.FastifyAdapter), expectedOptions);\n    });\n\n    it(\"should enable shutdown hooks when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should use logger when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));\n    });\n\n    it(\"should setup swagger module when called.\", async() => {\n      await bootstrap();\n\n      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));\n    });\n\n    it(\"should use static assets when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({\n        root: `${process.cwd()}/public`,\n        prefix: \"/public/\",\n      });\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async() => {\n      process.env.HOST = \"127.0.0.1\";\n      process.env.PORT = \"8080\";\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, \"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should log the swagger documentation path when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, \"📚 Swagger documentation is available on: http://mocked-host:9090/docs\");\n    });\n\n    it(\"should return the app when called.\", async() => {\n      const app = await bootstrap();\n      const expectedApp = {\n        enableShutdownHooks: expect.any(Function) as () => INestApplication,\n        useLogger: expect.any(Function) as () => void,\n        get: expect.any(Function) as () => never,\n        listen: expect.any(Function) as () => void,\n        getUrl: expect.any(Function) as () => void,\n        useStaticAssets: expect.any(Function) as () => void,\n      };\n\n      expect(app).toStrictEqual(expectedApp);\n    });\n  });\n});"
+    },
+    "src/app/providers/services/app.service.spec.ts": {
+      "tests": [
+        {
+          "id": "24",
+          "name": "App Service getApiMeta should return Api metadata when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
+    },
+    "src/modules/health/controllers/health.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "25",
+          "name": "Health Controller check should check health from service when called."
+        },
+        {
+          "id": "26",
+          "name": "Health Controller check should return health check result without error and info fields when called."
+        }
+      ],
+      "source": "import { HealthCheckResult } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from \"@modules/health/constants/health.constants\";\nimport { HealthController } from \"@modules/health/controllers/health.controller\";\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/modules/health/providers/services/health.service.mock\";\n\nimport { createFakeHealthCheckResult, createFakeHealthIndicatorResult } from \"@factories/modules/health/health.factory\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should return health check result without error and info fields when called.\", async() => {\n      const expectedHealthCheckResult: HealthCheckResult = {\n        status: \"ok\",\n        details: createFakeHealthIndicatorResult(),\n      };\n      mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);\n      const actualHealthCheckResult = await healthController.check();\n\n      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);\n    });\n  });\n});"
+    },
+    "src/app/controllers/app.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "27",
+          "name": "App Controller getApiMetadata should call Api metadata service method when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+    },
     "src/server/helpers/swagger.helpers.spec.ts": {
       "tests": [
         {
-          "id": "26",
+          "id": "28",
           "name": "Swagger Helper getSwaggerConfig should set title when called."
         },
         {
-          "id": "27",
+          "id": "29",
           "name": "Swagger Helper getSwaggerConfig should set description when called."
         },
         {
-          "id": "28",
+          "id": "30",
           "name": "Swagger Helper getSwaggerConfig should set version when called."
         },
         {
-          "id": "29",
+          "id": "31",
           "name": "Swagger Helper getSwaggerConfig should build document when called."
         },
         {
-          "id": "30",
+          "id": "32",
           "name": "Swagger Helper createSwaggerDocument should create swagger document when called."
         },
         {
-          "id": "31",
+          "id": "33",
           "name": "Swagger Helper createSwaggerDocument should clean up open api doc when called."
         },
         {
-          "id": "32",
+          "id": "34",
           "name": "Swagger Helper setupSwaggerModule should setup Swagger module when called."
         }
       ],
       "source": "import { SwaggerModule, DocumentBuilder } from \"@nestjs/swagger\";\nimport { cleanupOpenApiDoc } from \"nestjs-zod\";\n\nimport { createSwaggerDocument, getSwaggerConfig, setupSwaggerModule } from \"@server/helpers/swagger.helpers\";\n\nimport type { OpenAPIObject, SwaggerCustomOptions } from \"@nestjs/swagger\";\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\nimport type { Mock } from \"vitest\";\n\nvi.mock(import(\"@nestjs/swagger\"));\n\nvi.mock(import(\"nestjs-zod\"));\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"Swagger Helper\", () => {\n  let mocks: {\n    DocumentBuilder: {\n      setTitle: Mock;\n      setDescription: Mock;\n      setVersion: Mock;\n      build: Mock;\n    };\n  };\n\n  beforeEach(() => {\n    mocks = {\n      DocumentBuilder: {\n        setTitle: vi.spyOn(DocumentBuilder.prototype, \"setTitle\").mockReturnThis(),\n        setDescription: vi.spyOn(DocumentBuilder.prototype, \"setDescription\").mockReturnThis(),\n        setVersion: vi.spyOn(DocumentBuilder.prototype, \"setVersion\").mockReturnThis(),\n        build: vi.spyOn(DocumentBuilder.prototype, \"build\").mockReturnValue({} as Omit<OpenAPIObject, \"paths\">),\n      },\n    };\n  });\n\n  describe(getSwaggerConfig, () => {\n    it(\"should set title when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith(\"Goat It API Reference Documentation\");\n    });\n\n    it(\"should set description when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(\"API for Goat It application.\");\n    });\n\n    it(\"should set version when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith(\"1.0.0\");\n    });\n\n    it(\"should build document when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.build).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n\n  describe(createSwaggerDocument, () => {\n    it(\"should create swagger document when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      createSwaggerDocument(mockedApp);\n\n      expect(SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});\n    });\n\n    it(\"should clean up open api doc when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedDocument = {} as OpenAPIObject;\n      vi.mocked(SwaggerModule.createDocument).mockReturnValue(expectedDocument);\n      createSwaggerDocument(mockedApp);\n\n      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);\n    });\n  });\n\n  describe(setupSwaggerModule, () => {\n    it(\"should setup Swagger module when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedSwaggerOptions: SwaggerCustomOptions = {\n        customSiteTitle: \"Goat It API Reference Documentation\",\n      };\n      setupSwaggerModule(mockedApp);\n\n      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith(\"/docs\", mockedApp, undefined, expectedSwaggerOptions);\n    });\n  });\n});"
     },
-    "src/modules/health/controllers/health.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "33",
-          "name": "Health Controller check should check health from service when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { HealthController } from \"@modules/health/controllers/health.controller\";\nimport { HealthService } from \"@modules/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/modules/health/providers/services/health.service.mock\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
-    },
     "src/app/helpers/logger.helpers.spec.ts": {
       "tests": [
         {
-          "id": "34",
+          "id": "35",
           "name": "Logger Helpers getLoggerConfiguration should return logger production configuration when env is production."
         },
         {
-          "id": "35",
+          "id": "36",
           "name": "Logger Helpers getLoggerConfiguration should return logger development configuration when env is not production."
         }
       ],
