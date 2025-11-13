@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
+// oxlint-disable-next-line consistent-type-imports
+import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
 
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@modules/health/constants/health.constants";
 
-import type { HealthCheckResult, HealthCheckService, HealthIndicatorResult, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
+import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
 
 @Injectable()
 export class HealthService {

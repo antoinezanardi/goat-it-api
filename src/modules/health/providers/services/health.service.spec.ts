@@ -55,7 +55,7 @@ describe("Health Service", () => {
 
     it("should call mongoose connection check for the first check when called.", async() => {
       await services.health.checkAppHealth();
-      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0] as () => Promise<void>;
+      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];
       await mongooseHealthCheckFunction();
 
       expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();
@@ -63,7 +63,7 @@ describe("Health Service", () => {
 
     it("should call goat-it-docs health check for the second check when called.", async() => {
       await services.health.checkAppHealth();
-      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1] as () => Promise<void>;
+      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];
       await docsHealthCheckFunction();
 
       expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();

@@ -6,7 +6,7 @@ import { HealthService } from "@modules/health/providers/services/health.service
 import { createMockedHealthService } from "@mocks/modules/health/providers/services/health.service.mock";
 
 describe("Health Controller", () => {
-  let appController: HealthController;
+  let healthController: HealthController;
   let mocks: {
     services: {
       health: ReturnType<typeof createMockedHealthService>;
@@ -29,12 +29,12 @@ describe("Health Controller", () => {
       ],
     }).compile();
 
-    appController = testingModule.get<HealthController>(HealthController);
+    healthController = testingModule.get<HealthController>(HealthController);
   });
 
   describe(HealthController.prototype.check, () => {
     it("should check health from service when called.", async() => {
-      await appController.check();
+      await healthController.check();
 
       expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();
     });

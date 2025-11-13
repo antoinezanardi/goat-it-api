@@ -2,7 +2,8 @@ import { Controller, Get } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { HealthCheck } from "@nestjs/terminus";
 
-import type { HealthService } from "@modules/health/providers/services/health.service";
+// oxlint-disable-next-line consistent-type-imports
+import { HealthService } from "@modules/health/providers/services/health.service";
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@modules/health/constants/health.constants";
 
 import type { HealthCheckResult } from "@nestjs/terminus";
