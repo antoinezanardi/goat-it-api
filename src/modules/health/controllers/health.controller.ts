@@ -5,7 +5,6 @@ import { ZodResponse } from "nestjs-zod";
 
 import { SwaggerTags } from "@server/constants/swagger.enums";
 
-// oxlint-disable-next-line consistent-type-imports
 import { HealthService } from "@modules/health/providers/services/health.service";
 import { HEALTH_CHECK_RESULT_SCHEMA } from "@modules/health/constants/health.constants";
 

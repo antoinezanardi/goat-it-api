@@ -2,7 +2,6 @@ import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-// oxlint-disable-next-line consistent-type-imports
 import { AppService } from "@app/providers/services/app.service";
 
 import { SwaggerTags } from "@server/constants/swagger.enums";
