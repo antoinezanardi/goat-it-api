@@ -5,11 +5,13 @@ import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 import { AppController } from "@app/controllers/app.controller";
 
+import { HealthModule } from "@modules/health/health.module";
 import { DatabaseModule } from "@modules/database/database.module";
 
 @Module({
   imports: [
     LoggerModule.forRoot(getLoggerConfiguration()),
+    HealthModule,
     DatabaseModule,
   ],
   controllers: [AppController],
