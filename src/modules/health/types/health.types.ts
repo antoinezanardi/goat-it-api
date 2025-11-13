@@ -6,8 +6,8 @@ import type { z } from "zod";
 
 type AppHealthCheckResult = z.infer<typeof HEALTH_CHECK_RESULT_SCHEMA>;
 
-class GetHealthCheckResultResponseDto extends createZodDto(HEALTH_CHECK_RESULT_SCHEMA) {}
+class GetAppHealthCheckResultResponseDto extends createZodDto(HEALTH_CHECK_RESULT_SCHEMA) {}
 
 export type { AppHealthCheckResult };
 
-export { GetHealthCheckResultResponseDto };
+export { GetAppHealthCheckResultResponseDto };

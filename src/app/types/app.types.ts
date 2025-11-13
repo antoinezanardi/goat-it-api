@@ -6,12 +6,12 @@ import type { z } from "zod";
 
 type AppMetadata = z.infer<typeof APP_METADATA_SCHEMA>;
 
-class AppGetMetadataResponseDto extends createZodDto(APP_METADATA_SCHEMA) {}
+class GetAppMetadataResponseDto extends createZodDto(APP_METADATA_SCHEMA) {}
 
 export type {
   AppMetadata,
 };
 
 export {
-  AppGetMetadataResponseDto,
+  GetAppMetadataResponseDto,
 };
