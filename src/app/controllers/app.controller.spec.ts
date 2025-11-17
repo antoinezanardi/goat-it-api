@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { AppController } from "@app/controllers/app.controller";
 import { AppService } from "@app/providers/services/app.service";
 
-import { createMockedAppService } from "@mocks/app/services/app.service.mock";
+import { createMockedAppService } from "@mocks/app/providers/services/app.service.mock";
 
 describe("App Controller", () => {
   let appController: AppController;

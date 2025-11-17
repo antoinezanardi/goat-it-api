@@ -726,7 +726,8 @@
           "type"
         ],
         "typescript/consistent-type-exports": "error",
-        "typescript/consistent-type-imports": "error",
+        // Disabled for now because of false positives because of decorators usage
+        "typescript/consistent-type-imports": "off",
         "typescript/default-param-last": "error",
         "typescript/dot-notation": [
           "error",
@@ -1016,7 +1017,9 @@
               "Controller",
               "Get",
               "ApiOperation",
-              "ZodResponse"
+              "ApiResponse",
+              "ZodResponse",
+              "HealthCheck"
             ]
           }
         ]
