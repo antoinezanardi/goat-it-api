@@ -108,7 +108,7 @@
     "@stryker-mutator/core": "^9.3.0",
     "@stryker-mutator/typescript-checker": "^9.3.0",
     "@stryker-mutator/vitest-runner": "^9.3.0",
-    "@stylistic/eslint-plugin": "^5.5.0",
+    "@stylistic/eslint-plugin": "^5.6.0",
     "@swc/cli": "^0.7.9",
     "@swc/core": "^1.15.2",
     "@types/node": "^24.10.1",
