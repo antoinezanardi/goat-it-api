@@ -2,11 +2,12 @@ import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import * as corsUtils from "@src/server/cors/cors";
+
 import type { AppModule } from "@app/app.module";
 
 import { setupSwaggerModule } from "@server/helpers/swagger.helpers";
 import { bootstrap } from "@server/server";
-import * as corsUtils from "@server/cors";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
@@ -31,6 +32,13 @@ describe("Server", () => {
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
       useStaticAssets: vi.fn<() => void>(),
     } as Partial<INestApplication>));
+
+    vi.spyOn(corsUtils, "buildCorsConfig").mockReturnValueOnce({
+      origin: "*",
+      credentials: false,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    });
   });
 
   describe(bootstrap, () => {
@@ -44,12 +52,6 @@ describe("Server", () => {
     });
 
     it("should enable cors when called.", async() => {
-      vi.spyOn(corsUtils, "buildCorsConfig").mockReturnValueOnce({
-        origin: "*",
-        credentials: false,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-      });
       const app = await bootstrap();
 
       expect(app.enableCors).toHaveBeenCalledExactlyOnceWith({

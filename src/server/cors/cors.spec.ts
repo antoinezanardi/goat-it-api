@@ -1,8 +1,7 @@
-import { buildCorsConfig } from "@server/cors";
+import { buildCorsConfig } from "@src/server/cors/cors";
 
 describe("buildCorsConfig()", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
     delete process.env.CORS_ORIGIN;
     delete process.env.CORS_CREDENTIALS;
   });

@@ -1,28 +1,32 @@
-# Configuration CORS dans Goat It API
+# CORS Configuration
 
-## Vue d'ensemble
+## Overview
 
-Dans cette API NestJS avec Fastify, les règles CORS (Cross-Origin Resource Sharing) sont gérées dans le fichier principal de démarrage du serveur.
+This NestJS/Fastify API manages CORS (Cross-Origin Resource Sharing) rules in the server bootstrap file.
 
 ## Configuration
 
-### Emplacement principal
-
-La configuration CORS se trouve dans `src/server/server.ts` dans la fonction `bootstrap()`.
+The CORS setup is located in `src/server/server.ts` within the `bootstrap()` function:
 
 ```typescript
-// Configuration CORS
 app.enableCors(buildCorsConfig());
 ```
 
-### Variables d'environnement
+### Environment Variables
 
-Les règles CORS peuvent être configurées via les variables d'environnement suivantes :
+Configure CORS using these environment variables:
 
-- `CORS_ORIGIN` : Origine(s) autorisée(s) (par défaut : `*`)
-- `CORS_CREDENTIALS` : Autoriser les credentials (par défaut : `false`)
+- **`CORS_ORIGIN`**: Allowed origin(s) (default: `*`)
+  - Single origin: `https://example.com`
+  - Multiple origins (comma-separated): `https://app.example.com,https://admin.example.com`
+  - Allow all origins (development only): `*`
+- **`CORS_CREDENTIALS`**: Enable credentials (default: `false`)
+  - Set to `true` to allow cookies and authentication headers
+  - Must be a string `"true"` or `"false"` in `.env` file
 
-### Configuration par défaut
+### Default Configuration
+
+The default configuration allows all origins without credentials. This is suitable for **development only** and should be updated before production deployment.
 
 ```typescript
 {
@@ -33,89 +37,72 @@ Les règles CORS peuvent être configurées via les variables d'environnement su
 }
 ```
 
-## Fichiers concernés
+### Configuration Examples
 
-1. **`src/server/server.ts`** : Configuration principale
-2. **`src/server/types/cors.types.ts`** : Types et configuration par défaut
-3. **`src/server/cors.spec.ts`** : Tests de la configuration CORS
-4. **`.env.example`** : Variables d'environnement d'exemple
-
-## Alternatives de configuration
-
-### 1. Configuration simple avec `app.enableCors()`
-
-```typescript
-app.enableCors({
-  origin: 'https://example.com',
-  credentials: true
-});
-```
-
-### 2. Configuration avancée avec fonction
-
-```typescript
-app.enableCors({
-  origin: (origin, callback) => {
-    // Logique personnalisée pour valider l'origine
-    callback(null, true);
-  },
-  credentials: true
-});
-```
-
-### 3. Configuration au niveau des routes
-
-Vous pouvez également configurer CORS pour des routes spécifiques dans les contrôleurs :
-
-```typescript
-import { Controller, Get } from '@nestjs/common';
-
-@Controller()
-export class AppController {
-  @Get()
-  @Cors({ origin: 'https://specific-domain.com' })
-  getSpecificRoute() {
-    return 'This route has specific CORS rules';
-  }
-}
-```
-
-### 4. Configuration globale dans le module principal
-
-Alternative : configurer CORS dans `app.module.ts` :
-
-```typescript
-import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-
-@Module({
-  // ... autres configurations
-})
-export class AppModule {
-  // Configuration CORS via un guard global si nécessaire
-}
-```
-
-## Bonnes pratiques
-
-1. **En production** : Ne jamais utiliser `origin: "*"` avec `credentials: true`
-2. **Sécurité** : Spécifier explicitement les domaines autorisés en production
-3. **Performance** : Éviter les fonctions complexes pour valider l'origine si possible
-4. **Tests** : Toujours tester les règles CORS dans vos tests d'intégration
-
-## Debugging CORS
-
-Pour debugger les problèmes CORS :
-
-1. Vérifier les en-têtes de réponse dans les outils de développement
-2. Utiliser des outils comme `curl` pour tester manuellement
-3. Activer les logs de débogage si nécessaire
+**Development (current default)**:
 
 ```bash
-# Test CORS avec curl
+CORS_ORIGIN=*
+CORS_CREDENTIALS=false
+```
+
+**Production with single frontend**:
+
+```bash
+CORS_ORIGIN=https://app.example.com
+CORS_CREDENTIALS=true
+```
+
+**Production with multiple frontends**:
+
+```bash
+CORS_ORIGIN=https://app.example.com,https://admin.example.com,https://mobile.example.com
+CORS_CREDENTIALS=true
+```
+
+**Staging environment**:
+
+```bash
+CORS_ORIGIN=https://staging.example.com
+CORS_CREDENTIALS=false
+```
+
+## Related Files
+
+1. **`src/server/server.ts`**: Main bootstrap configuration
+2. **`src/server/cors/cors.ts`**: CORS builder function
+3. **`src/server/cors/cors.constants.ts`**: Default CORS configuration constants
+4. **`src/server/cors/cors.types.ts`**: TypeScript type definitions
+5. **`src/server/cors/cors.spec.ts`**: CORS configuration tests
+6. **`.env.example`**: Environment variables examples
+
+## Best Practices
+
+1. **Development vs Production**: The default `origin: "*"` is intentionally permissive for early development. Replace it with specific domain(s) before deploying to production.
+2. **Security**: Never use `origin: "*"` with `credentials: true` - this combination is rejected by browsers.
+3. **Multiple Origins**: When specifying multiple origins, use comma-separated values without spaces.
+4. **Credentials**: Only enable `credentials: true` when your frontend needs to send cookies or authentication headers.
+5. **Testing**: Include CORS rules validation in your integration tests.
+
+## Debugging
+
+To debug CORS issues:
+
+1. Check response headers in browser DevTools
+2. Test manually with `curl`:
+
+```bash
 curl -H "Origin: https://example.com" \
      -H "Access-Control-Request-Method: POST" \
      -H "Access-Control-Request-Headers: X-Requested-With" \
      -X OPTIONS \
      http://localhost:3000/api/endpoint
+```
+
+Expected response headers should include:
+
+```http
+Access-Control-Allow-Origin: https://example.com
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
 ```

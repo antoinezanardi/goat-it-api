@@ -2,11 +2,12 @@ import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import { buildCorsConfig } from "@src/server/cors/cors";
+
 import { AppModule } from "@app/app.module";
 
 import { SWAGGER_DOCUMENTATION_PATH } from "@server/constants/swagger.constants";
 import { setupSwaggerModule } from "@server/helpers/swagger.helpers";
-import { buildCorsConfig } from "@server/cors";
 
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
