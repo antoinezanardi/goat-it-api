@@ -20,11 +20,13 @@
     "strictBindCallApply": true,
     "target": "ES2021",
     "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
     "paths": {
       "@package-json": ["../../package.json"],
       "@src/*": ["../../src/*"],
       "@app/*": ["../../src/app/*"],
       "@configs/*": ["../../configs/*"],
+      "@question/*": ["../../src/contexts/question/*"],
       "@shared/*": ["../../src/shared/*"],
       "@unit-tests/*": ["../../tests/unit/*"],
       "@factories/*": ["../../tests/unit/utils/factories/*"],

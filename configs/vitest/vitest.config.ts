@@ -26,7 +26,9 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       exclude: [
         "src/**/*.module.ts",
+        "src/**/mongoose/**/*.schema.ts",
         "src/**/*.constants.ts",
+        "src/**/*.types.ts",
       ],
       reportsDirectory: "tests/unit/coverage",
       reporter: [
@@ -59,6 +61,7 @@ export default defineConfig({
       "@app": path.resolve(rootDirectory, "src/app"),
       "@shared": path.resolve(rootDirectory, "src/shared"),
       "@configs": path.resolve(rootDirectory, "configs"),
+      "@question": path.resolve(rootDirectory, "src/contexts/question"),
       "@unit-tests": path.resolve(rootDirectory, "tests/unit"),
       "@factories": path.resolve(rootDirectory, "tests/unit/utils/factories"),
       "@mocks": path.resolve(rootDirectory, "tests/unit/utils/mocks"),

@@ -612,6 +612,11 @@
             "position": "after"
           },
           {
+            "pattern": "@question/**",
+            "group": "parent",
+            "position": "after"
+          },
+          {
             "pattern": "@unit-tests/**",
             "group": "sibling",
             "position": "after"
@@ -1026,6 +1031,23 @@
           {
             "capIsNewExceptions": [
               "Injectable"
+            ]
+          }
+        ]
+      }
+    },
+    // ---- Override for mongoose schemas -----
+    {
+      "files": [
+        "**/src/**/mongoose/**/*.schema.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Schema",
+              "Prop"
             ]
           }
         ]
