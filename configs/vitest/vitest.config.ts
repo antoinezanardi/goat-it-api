@@ -57,8 +57,6 @@ export default defineConfig({
       "@package-json": path.resolve(rootDirectory, "package.json"),
       "@src": path.resolve(rootDirectory, "src"),
       "@app": path.resolve(rootDirectory, "src/app"),
-      "@server": path.resolve(rootDirectory, "src/server"),
-      "@modules": path.resolve(rootDirectory, "src/modules"),
       "@shared": path.resolve(rootDirectory, "src/shared"),
       "@configs": path.resolve(rootDirectory, "configs"),
       "@unit-tests": path.resolve(rootDirectory, "tests/unit"),

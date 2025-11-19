@@ -93,8 +93,6 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
           { pattern: "@package-json", group: "parent", position: "before" },
           { pattern: "@src/**", group: "parent", position: "after" },
           { pattern: "@app/**", group: "parent", position: "after" },
-          { pattern: "@server/**", group: "parent", position: "after" },
-          { pattern: "@modules/**", group: "parent", position: "after" },
           { pattern: "@shared/**", group: "parent", position: "after" },
           { pattern: "@configs/**", group: "parent", position: "after" },
           { pattern: "@unit-tests/**", group: "sibling", position: "after" },
