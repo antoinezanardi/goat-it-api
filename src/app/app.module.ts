@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule } from "nestjs-pino";
 
+import { HealthModule } from "@src/infrastructure/api/health/health.module";
+import { DatabaseModule } from "@src/infrastructure/database/database.module";
+
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 import { AppController } from "@app/controllers/app.controller";
-
-import { HealthModule } from "@modules/health/health.module";
-import { DatabaseModule } from "@modules/database/database.module";
 
 @Module({
   imports: [

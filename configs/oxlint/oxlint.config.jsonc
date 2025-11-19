@@ -602,16 +602,6 @@
             "position": "after"
           },
           {
-            "pattern": "@server/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@modules/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
             "pattern": "@shared/**",
             "group": "parent",
             "position": "after"

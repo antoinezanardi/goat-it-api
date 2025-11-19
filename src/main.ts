@@ -1,3 +1,3 @@
-import { bootstrap } from "@server/server";
+import { bootstrap } from "@src/infrastructure/api/server/server";
 
 void bootstrap();

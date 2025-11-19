@@ -1,6 +1,6 @@
 import { Given } from "@cucumber/cucumber";
 
-import { SWAGGER_DOCUMENTATION_PATH } from "@server/constants/swagger.constants";
+import { SWAGGER_DOCUMENTATION_PATH } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
