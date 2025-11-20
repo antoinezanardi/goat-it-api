@@ -1,4 +1,4 @@
-type Lang = "en" | "fr";
+type Lang = "en" | "fr" | "es" | "de" | "it" | "pt";
 
 type LocalizedText = Record<Lang, string>;
 

@@ -18,19 +18,19 @@ class QuestionThemeMongooseSchema {
     required: true,
     type: Object,
   })
-  public label: LocalizedText;
+  public label!: LocalizedText;
 
   @Prop({
     required: true,
     type: Object,
   })
-  public aliases: LocalizedTexts;
+  public aliases!: LocalizedTexts;
 
   @Prop({
     required: true,
     type: Object,
   })
-  public description: LocalizedText;
+  public description!: LocalizedText;
 
   @Prop({
     required: false,
@@ -45,7 +45,7 @@ class QuestionThemeMongooseSchema {
     enum: QUESTION_THEME_STATUSES,
     default: DEFAULT_QUESTION_THEME_STATUS,
   })
-  public status: QuestionThemeStatus;
+  public status!: QuestionThemeStatus;
 }
 
 const QUESTION_THEME_MONGOOSE_SCHEMA = SchemaFactory.createForClass(QuestionThemeMongooseSchema);

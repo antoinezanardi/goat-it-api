@@ -20,7 +20,7 @@
     "strictBindCallApply": true,
     "target": "ES2021",
     "resolveJsonModule": true,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": true,
     "paths": {
       "@package-json": ["../../package.json"],
       "@src/*": ["../../src/*"],
