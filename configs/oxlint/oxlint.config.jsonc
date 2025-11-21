@@ -1114,6 +1114,7 @@
             "checkArguments": false
           }
         ],
+        "unicorn/no-null": "off",
         "vitest/consistent-test-filename": [
           "error",
           {

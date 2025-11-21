@@ -3,7 +3,6 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/domain/value-objects/question-theme/question-theme-status.constants";
-import { QuestionThemeNotFoundError } from "@question/domain/errors/question-theme/question-theme.errors";
 import { createQuestionThemeFromDocument } from "@question/infrastructure/persistence/mongoose/question-theme/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/infrastructure/persistence/mongoose/question-theme/schema/question-theme.mongoose.schema";
 
@@ -22,10 +21,10 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }
 
-  public async findById(id: string): Promise<QuestionTheme> {
+  public async findById(id: string): Promise<QuestionTheme | undefined> {
     const questionThemeDocument = await this.questionThemeModel.findById(id);
     if (!questionThemeDocument) {
-      throw new QuestionThemeNotFoundError(id);
+      return undefined;
     }
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
@@ -36,13 +35,13 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }
 
-  public async archive(id: string): Promise<QuestionTheme> {
+  public async archive(id: string): Promise<QuestionTheme | undefined> {
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
       status: ARCHIVED_QUESTION_THEME_STATUS,
     };
     const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
     if (!archivedQuestionThemeDocument) {
-      throw new QuestionThemeNotFoundError(id);
+      return undefined;
     }
     return createQuestionThemeFromDocument(archivedQuestionThemeDocument);
   }

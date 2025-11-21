@@ -23,7 +23,7 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
 }
 
 function createFakeQuestionThemeDocument(questionThemeDocument: Partial<QuestionThemeMongooseDocument> = {}): QuestionThemeMongooseDocument {
-  const documentId = faker.database.mongodbObjectId();
+  const documentId = questionThemeDocument._id?.toString() ?? faker.database.mongodbObjectId();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   return {
