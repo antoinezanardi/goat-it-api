@@ -155,7 +155,7 @@
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/terminus": "^11.0.0",
     "axios": "^1.13.2",
-    "mongoose": "^8.20.0",
+    "mongoose": "^8.20.1",
     "nestjs-pino": "^4.4.1",
     "nestjs-zod": "^5.0.1",
     "reflect-metadata": "^0.2.2",
