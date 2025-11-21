@@ -4,10 +4,10 @@ import { Types } from "mongoose";
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
 
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUSES } from "@question/domain/value-objects/question-theme/question-theme-status.constants";
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question/infrastructure/persistence/mongoose/question-theme/question-theme.mongoose.constants";
+import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question/infrastructure/persistence/mongoose/question-theme/constants/question-theme.mongoose.constants";
 
+import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 import { QuestionThemeStatus } from "@question/domain/value-objects/question-theme/question-theme-status.types";
-import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/lang.types";
 
 @Schema({
   ...DEFAULT_MONGOOSE_SCHEMA_OPTIONS,
@@ -46,6 +46,18 @@ class QuestionThemeMongooseSchema {
     default: DEFAULT_QUESTION_THEME_STATUS,
   })
   public status!: QuestionThemeStatus;
+
+  @Prop({
+    required: true,
+    type: Date,
+  })
+  public createdAt!: Date;
+
+  @Prop({
+    required: true,
+    type: Date,
+  })
+  public updatedAt!: Date;
 }
 
 const QUESTION_THEME_MONGOOSE_SCHEMA = SchemaFactory.createForClass(QuestionThemeMongooseSchema);

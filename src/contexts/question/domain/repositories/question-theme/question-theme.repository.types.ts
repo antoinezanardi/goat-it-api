@@ -3,8 +3,8 @@ import type { QuestionTheme } from "@question/domain/entities/question-theme/que
 type QuestionThemeRepository = {
   findById: (id: string) => Promise<QuestionTheme>;
   findAll: () => Promise<QuestionTheme[]>;
-  save: (questionTheme: QuestionTheme) => Promise<void>;
-  archive: (id: string) => Promise<void>;
+  save: (questionTheme: QuestionTheme) => Promise<QuestionTheme>;
+  archive: (id: string) => Promise<QuestionTheme>;
 };
 
 export type { QuestionThemeRepository };

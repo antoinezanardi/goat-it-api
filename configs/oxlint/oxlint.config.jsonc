@@ -366,7 +366,7 @@
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
     "unicorn/no-anonymous-default-export": "error",
-    "unicorn/no-array-callback-reference": "error",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "error",
     "unicorn/no-array-method-this-argument": "error",
     "unicorn/no-array-reduce": "off",
@@ -1036,6 +1036,18 @@
         ]
       }
     },
+    // ---- Override for domain errors -----
+    {
+      "files": [
+        "**/src/**/domain/**/*.errors.ts"
+      ],
+      "rules": {
+        "max-classes-per-file": [
+          "error",
+          5
+        ]
+      }
+    },
     // ---- Override for mongoose schemas -----
     {
       "files": [
@@ -1048,6 +1060,23 @@
             "capIsNewExceptions": [
               "Schema",
               "Prop"
+            ]
+          }
+        ]
+      }
+    },
+    // ---- Override for mongoose repositories -----
+    {
+      "files": [
+        "**/src/**/mongoose/**/*.repository.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable",
+              "InjectModel"
             ]
           }
         ]
@@ -1195,6 +1224,16 @@
         "import/no-default-export": "off",
         "import/no-internal-modules": "off",
         "import/no-anonymous-default-export": "off"
+      }
+    },
+    // ---- Override for factory (unit tests) files -----
+    {
+      "files": [
+        "**/tests/unit/utils/factories/**/*.factory.ts"
+      ],
+      "rules": {
+        "no-magic-numbers": "off",
+        "typescript/no-magic-numbers": "off"
       }
     },
     // ---- Override for declaration files -----
