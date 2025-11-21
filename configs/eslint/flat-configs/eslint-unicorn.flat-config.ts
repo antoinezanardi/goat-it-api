@@ -37,7 +37,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
     "unicorn/no-anonymous-default-export": "error",
-    "unicorn/no-array-callback-reference": "error",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "error",
     "unicorn/no-array-method-this-argument": "error",
     "unicorn/no-array-reduce": "off",

@@ -145,6 +145,7 @@
       {
         "exceptions": [
           "T",
+          "K",
           "i",
           "x",
           "y"
@@ -366,7 +367,7 @@
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
     "unicorn/no-anonymous-default-export": "error",
-    "unicorn/no-array-callback-reference": "error",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "error",
     "unicorn/no-array-method-this-argument": "error",
     "unicorn/no-array-reduce": "off",
@@ -608,6 +609,11 @@
           },
           {
             "pattern": "@configs/**",
+            "group": "parent",
+            "position": "after"
+          },
+          {
+            "pattern": "@question/**",
             "group": "parent",
             "position": "after"
           },
@@ -1031,6 +1037,52 @@
         ]
       }
     },
+    // ---- Override for domain errors -----
+    {
+      "files": [
+        "**/src/**/domain/**/*.errors.ts"
+      ],
+      "rules": {
+        "max-classes-per-file": [
+          "error",
+          5
+        ]
+      }
+    },
+    // ---- Override for mongoose schemas -----
+    {
+      "files": [
+        "**/src/**/mongoose/**/*.schema.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Schema",
+              "Prop"
+            ]
+          }
+        ]
+      }
+    },
+    // ---- Override for mongoose repositories -----
+    {
+      "files": [
+        "**/src/**/mongoose/**/*.repository.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable",
+              "InjectModel"
+            ]
+          }
+        ]
+      }
+    },
     // ---- Override for unit test files -----
     {
       "files": [
@@ -1063,6 +1115,7 @@
             "checkArguments": false
           }
         ],
+        "unicorn/no-null": "off",
         "vitest/consistent-test-filename": [
           "error",
           {
@@ -1173,6 +1226,16 @@
         "import/no-default-export": "off",
         "import/no-internal-modules": "off",
         "import/no-anonymous-default-export": "off"
+      }
+    },
+    // ---- Override for factory (unit tests) files -----
+    {
+      "files": [
+        "**/tests/unit/utils/factories/**/*.factory.ts"
+      ],
+      "rules": {
+        "no-magic-numbers": "off",
+        "typescript/no-magic-numbers": "off"
       }
     },
     // ---- Override for declaration files -----
