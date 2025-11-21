@@ -25,7 +25,7 @@ describe("Question Theme Errors", () => {
     it("should have message with theme id when created.", () => {
       const error = new QuestionThemeAlreadyArchivedError("themeId");
 
-      expect(error.message).toBe("Question theme with id themeId is already on status archived");
+      expect(error.message).toBe("Question theme with id themeId already has status 'archived'");
     });
   });
 });

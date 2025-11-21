@@ -8,10 +8,10 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@factories/sh
 import type { QuestionTheme } from "@question/domain/entities/question-theme/question-theme.types";
 import type { QuestionThemeMongooseDocument } from "@question/infrastructure/persistence/mongoose/question-theme/types/question-theme.mongoose.types";
 
-function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme>): QuestionTheme {
+function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
     id: faker.database.mongodbObjectId(),
-    parentId: faker.database.mongodbObjectId(),
+    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
@@ -29,7 +29,7 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
   return {
     _id: new Types.ObjectId(documentId),
     id: documentId,
-    parentId: new Types.ObjectId(faker.database.mongodbObjectId()),
+    parentId: faker.datatype.boolean() ? new Types.ObjectId(faker.database.mongodbObjectId()) : undefined,
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),

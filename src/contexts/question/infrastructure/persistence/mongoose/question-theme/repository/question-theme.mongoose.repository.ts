@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, UpdateQuery } from "mongoose";
 
+import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/domain/value-objects/question-theme/question-theme-status.constants";
 import { QuestionThemeNotFoundError } from "@question/domain/errors/question-theme/question-theme.errors";
 import { createQuestionThemeFromDocument } from "@question/infrastructure/persistence/mongoose/question-theme/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/infrastructure/persistence/mongoose/question-theme/schema/question-theme.mongoose.schema";
@@ -29,14 +30,17 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
-  public async save(questionTheme: QuestionTheme): Promise<QuestionTheme> {
+  public async create(questionTheme: QuestionTheme): Promise<QuestionTheme> {
     const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }
 
   public async archive(id: string): Promise<QuestionTheme> {
-    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, { status: "archived" }, { new: true });
+    const update: UpdateQuery<QuestionThemeMongooseDocument> = {
+      status: ARCHIVED_QUESTION_THEME_STATUS,
+    };
+    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
     if (!archivedQuestionThemeDocument) {
       throw new QuestionThemeNotFoundError(id);
     }

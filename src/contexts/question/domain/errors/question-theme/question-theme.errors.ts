@@ -7,7 +7,7 @@ class QuestionThemeNotFoundError extends Error {
 
 class QuestionThemeAlreadyArchivedError extends Error {
   public constructor(questionThemeId: string) {
-    super(`Question theme with id ${questionThemeId} is already on status archived`);
+    super(`Question theme with id ${questionThemeId} already has status 'archived'`);
     this.name = "QuestionThemeAlreadyArchivedError";
   }
 }

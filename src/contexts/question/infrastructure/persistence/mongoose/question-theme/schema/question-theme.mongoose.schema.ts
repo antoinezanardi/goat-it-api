@@ -35,7 +35,7 @@ class QuestionThemeMongooseSchema {
   @Prop({
     required: false,
     type: Types.ObjectId,
-    ref: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
+    ref: QuestionThemeMongooseSchema.name,
   })
   public parentId?: Types.ObjectId;
 
@@ -47,16 +47,8 @@ class QuestionThemeMongooseSchema {
   })
   public status!: QuestionThemeStatus;
 
-  @Prop({
-    required: true,
-    type: Date,
-  })
   public createdAt!: Date;
 
-  @Prop({
-    required: true,
-    type: Date,
-  })
   public updatedAt!: Date;
 }
 
