@@ -38,6 +38,14 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v6
 
+      - name: Create dummy package.json for ActionLint 📄
+        run: |
+          echo '{
+            "name": "dummy-package",
+            "version": "1.0.0",
+            "private": true
+          }' > package.json
+
       - name: Lint GitHub Workflows 🐙
         uses: raven-actions/actionlint@v2.0.1
         with:
