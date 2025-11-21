@@ -11,7 +11,9 @@ type QuestionThemeMongooseModelStub = {
   findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocument | null>;
 };
 
-function createMockedQuestionThemeMongooseModel(): Record<keyof QuestionThemeMongooseModelStub, Mock> {
+type MockedQuestionThemeMongooseModel = { [K in keyof QuestionThemeMongooseModelStub]: Mock<QuestionThemeMongooseModelStub[K]> };
+
+function createMockedQuestionThemeMongooseModel(): MockedQuestionThemeMongooseModel {
   return {
     find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockResolvedValue([
       createFakeQuestionThemeDocument(),
