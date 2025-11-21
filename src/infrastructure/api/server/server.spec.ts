@@ -2,10 +2,13 @@ import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
 import type { AppModule } from "@app/app.module";
+
+import { createFakeCorsConfig } from "@factories/infrastructure/api/server/cors/cors.factory";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
@@ -16,10 +19,12 @@ vi.mock(import("@app/app.module"), () => ({
   } as typeof AppModule,
 }));
 vi.mock(import("@src/infrastructure/api/server/swagger/helpers/swagger.helpers"));
+vi.mock(import("@src/infrastructure/api/server/cors/helpers/cors.helpers"));
 
 describe("Server", () => {
   beforeEach(() => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({
+      enableCors: vi.fn<() => INestApplication>(),
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
       get: vi.fn<() => object>().mockReturnValue({
@@ -39,6 +44,19 @@ describe("Server", () => {
       await bootstrap();
 
       expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter), expectedOptions);
+    });
+
+    it("should enable cors when called.", async() => {
+      const expectedCorsConfig = createFakeCorsConfig({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
+      vi.mocked(createCorsConfig).mockReturnValue(expectedCorsConfig);
+      const app = await bootstrap();
+
+      expect(app.enableCors).toHaveBeenCalledExactlyOnceWith(expectedCorsConfig);
     });
 
     it("should enable shutdown hooks when called.", async() => {
@@ -104,6 +122,7 @@ describe("Server", () => {
     it("should return the app when called.", async() => {
       const app = await bootstrap();
       const expectedApp = {
+        enableCors: expect.any(Function) as () => INestApplication,
         enableShutdownHooks: expect.any(Function) as () => INestApplication,
         useLogger: expect.any(Function) as () => void,
         get: expect.any(Function) as () => never,

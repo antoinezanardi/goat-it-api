@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { SWAGGER_DOCUMENTATION_PATH } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
@@ -18,6 +19,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
 
   const logger = app.get(Logger);
 
+  app.enableCors(createCorsConfig());
   app.enableShutdownHooks();
   app.useLogger(logger);
 
