@@ -4,23 +4,23 @@ import type { Mock } from "vitest";
 
 import type { QuestionThemeMongooseDocument } from "@question/infrastructure/persistence/mongoose/question-theme/types/question-theme.mongoose.types";
 
-type MockedQuestionThemeMongooseModel = {
-  find: Mock<() => Promise<QuestionThemeMongooseDocument[]>>;
-  findById: Mock<(id: string) => Promise<QuestionThemeMongooseDocument | null>>;
-  create: Mock<() => Promise<QuestionThemeMongooseDocument>>;
-  findByIdAndUpdate: Mock<(id: string) => Promise<QuestionThemeMongooseDocument | null>>;
+type QuestionThemeMongooseModelStub = {
+  find: () => Promise<QuestionThemeMongooseDocument[]>;
+  findById: (id: string) => Promise<QuestionThemeMongooseDocument | null>;
+  create: () => Promise<QuestionThemeMongooseDocument>;
+  findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocument | null>;
 };
 
-function createMockedQuestionThemeMongooseModel(): MockedQuestionThemeMongooseModel {
+function createMockedQuestionThemeMongooseModel(): Record<keyof QuestionThemeMongooseModelStub, Mock> {
   return {
-    find: vi.fn<() => Promise<QuestionThemeMongooseDocument[]>>().mockResolvedValue([
+    find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockResolvedValue([
       createFakeQuestionThemeDocument(),
       createFakeQuestionThemeDocument(),
       createFakeQuestionThemeDocument(),
     ]),
-    findById: vi.fn<(id: string) => Promise<QuestionThemeMongooseDocument | null>>().mockResolvedValue(createFakeQuestionThemeDocument()),
-    create: vi.fn<() => Promise<QuestionThemeMongooseDocument>>().mockResolvedValue(createFakeQuestionThemeDocument()),
-    findByIdAndUpdate: vi.fn<(id: string) => Promise<QuestionThemeMongooseDocument | null>>().mockResolvedValue(createFakeQuestionThemeDocument()),
+    findById: vi.fn<QuestionThemeMongooseModelStub["findById"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
+    create: vi.fn<QuestionThemeMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
+    findByIdAndUpdate: vi.fn<QuestionThemeMongooseModelStub["findByIdAndUpdate"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
   };
 }
 
