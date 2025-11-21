@@ -14,8 +14,7 @@
       "@src/*": ["src/*"],
       "@app/*": ["src/app/*"],
       "@configs/*": ["configs/*"],
-      "@server/*": ["src/server/*"],
-      "@modules/*": ["src/modules/*"],
+      "@question/*": ["src/contexts/question/*"],
       "@shared/*": ["src/shared/*"]
     },
     "transform": {

@@ -9,7 +9,7 @@ This NestJS/Fastify API manages CORS (Cross-Origin Resource Sharing) rules in th
 The CORS setup is located in `src/server/server.ts` within the `bootstrap()` function:
 
 ```typescript
-app.enableCors(buildCorsConfig());
+app.enableCors(createCorsConfig());
 ```
 
 ### Environment Variables

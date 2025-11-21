@@ -1,9 +1,9 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import { DOCS_ENDPOINT_HEALTH_KEY, HEALTH_CHECK_RESULT_SCHEMA, MONGOOSE_HEALTH_KEY } from "@modules/health/constants/health.constants";
+import { DOCS_ENDPOINT_HEALTH_KEY, HEALTH_CHECK_RESULT_SCHEMA, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
 
-import type { AppHealthCheckResult } from "@modules/health/types/health.types";
+import type { AppHealthCheckResult } from "@src/infrastructure/api/health/types/health.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the application good health should be returned$/u, function(this: GoatItWorld): void {
