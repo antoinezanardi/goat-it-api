@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { Types } from "mongoose";
 
-import { QUESTION_THEME_STATUSES } from "@question/domain/value-objects/question-theme/question-theme-status.constants";
+import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@factories/shared/locale/locale.factory";
 
-import type { QuestionTheme } from "@question/domain/entities/question-theme/question-theme.types";
-import type { QuestionThemeMongooseDocument } from "@question/infrastructure/persistence/mongoose/question-theme/types/question-theme.mongoose.types";
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
