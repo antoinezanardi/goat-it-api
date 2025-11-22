@@ -3,13 +3,15 @@ import { createFakeHealthCheckResult } from "@factories/infrastructure/api/healt
 import type { HealthCheckResult } from "@nestjs/terminus";
 import type { Mock } from "vitest";
 
-type MockedHealthService = {
-  checkAppHealth: Mock<() => Promise<HealthCheckResult>>;
+type HealthServiceStub = {
+  checkAppHealth: () => Promise<HealthCheckResult>;
 };
+
+type MockedHealthService = { [K in keyof HealthServiceStub]: Mock<HealthServiceStub[K]> };
 
 function createMockedHealthService(): MockedHealthService {
   return {
-    checkAppHealth: vi.fn<() => Promise<HealthCheckResult>>().mockResolvedValue(createFakeHealthCheckResult()),
+    checkAppHealth: vi.fn<HealthServiceStub["checkAppHealth"]>().mockResolvedValue(createFakeHealthCheckResult()),
   };
 }
 

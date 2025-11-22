@@ -3,23 +3,29 @@ import { createFakeHealthCheckResult, createFakeHealthIndicatorResult } from "@f
 import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
 import type { Mock } from "vitest";
 
-type MockedHealthIndicatorService = {
-  pingCheck: Mock<() => Promise<HealthIndicatorResult>>;
+type HealthCheckIndicatorServiceStub = {
+  pingCheck: () => Promise<HealthIndicatorResult>;
 };
 
-type MockedHealthCheckService = {
-  check: Mock<(checks: (() => Promise<HealthIndicatorResult>)[]) => Promise<HealthCheckResult>>;
+type MockedHealthIndicatorService = {
+  [K in keyof HealthCheckIndicatorServiceStub]: Mock<HealthCheckIndicatorServiceStub[K]>
 };
+
+type HealthCheckServiceStub = {
+  check: (checks: (() => Promise<HealthIndicatorResult>)[]) => Promise<HealthCheckResult>;
+};
+
+type MockedHealthCheckService = { [K in keyof HealthCheckServiceStub]: Mock<HealthCheckServiceStub[K]> };
 
 function createMockedTerminusHealthIndicatorService(): MockedHealthIndicatorService {
   return {
-    pingCheck: vi.fn<() => Promise<HealthIndicatorResult>>().mockResolvedValue(createFakeHealthIndicatorResult()),
+    pingCheck: vi.fn<HealthCheckIndicatorServiceStub["pingCheck"]>().mockResolvedValue(createFakeHealthIndicatorResult()),
   };
 }
 
 function createMockedTerminusHealthCheckService(): MockedHealthCheckService {
   return {
-    check: vi.fn<(checks: (() => Promise<HealthIndicatorResult>)[]) => Promise<HealthCheckResult>>().mockResolvedValue(createFakeHealthCheckResult()),
+    check: vi.fn<HealthCheckServiceStub["check"]>().mockResolvedValue(createFakeHealthCheckResult()),
   };
 }
 
