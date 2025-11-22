@@ -132,7 +132,7 @@
     "lint-staged": "^16.2.7",
     "ofetch": "^1.5.1",
     "oxlint": "^1.29.0",
-    "oxlint-tsgolint": "^0.8.0",
+    "oxlint-tsgolint": "^0.8.1",
     "pino-pretty": "^13.1.2",
     "rimraf": "^6.1.2",
     "semantic-release": "^25.0.2",
