@@ -1024,14 +1024,16 @@
     // ---- Override for services -----
     {
       "files": [
-        "**/src/**/*.service.ts"
+        "**/src/**/*.service.ts",
+        "**/src/**/use-cases/**/*.use-case.ts"
       ],
       "rules": {
         "new-cap": [
           "error",
           {
             "capIsNewExceptions": [
-              "Injectable"
+              "Injectable",
+              "Inject"
             ]
           }
         ]

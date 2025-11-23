@@ -1,0 +1,29 @@
+import { createFakeQuestionTheme } from "@factories/contexts/question/question-theme/question-theme.factory";
+
+import type { Mock } from "vitest";
+
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+type QuestionThemeRepositoryStub = {
+  findAll: () => Promise<QuestionTheme[]>;
+  findById: (id: string) => Promise<QuestionTheme | undefined>;
+  create: (data: Partial<QuestionTheme>) => Promise<QuestionTheme>;
+  archive: (id: string) => Promise<QuestionTheme | undefined>;
+};
+
+type MockedQuestionThemeRepository = { [K in keyof QuestionThemeRepositoryStub]: Mock<QuestionThemeRepositoryStub[K]> };
+
+function createMockedQuestionThemeRepository(): MockedQuestionThemeRepository {
+  return {
+    findAll: vi.fn<QuestionThemeRepositoryStub["findAll"]>().mockResolvedValue([
+      createFakeQuestionTheme(),
+      createFakeQuestionTheme(),
+      createFakeQuestionTheme(),
+    ]),
+    findById: vi.fn<QuestionThemeRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestionTheme()),
+    create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
+    archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
+  };
+}
+
+export { createMockedQuestionThemeRepository };

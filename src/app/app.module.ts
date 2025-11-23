@@ -8,11 +8,14 @@ import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 import { AppController } from "@app/controllers/app.controller";
 
+import { QuestionModule } from "@question/question.module";
+
 @Module({
   imports: [
     LoggerModule.forRoot(getLoggerConfiguration()),
     HealthModule,
     DatabaseModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

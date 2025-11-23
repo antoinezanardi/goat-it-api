@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { Types } from "mongoose";
 
-import { QUESTION_THEME_STATUSES } from "@question/domain/value-objects/question-theme/question-theme-status.constants";
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
+import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@factories/shared/locale/locale.factory";
 
-import type { QuestionTheme } from "@question/domain/entities/question-theme/question-theme.types";
-import type { QuestionThemeMongooseDocument } from "@question/infrastructure/persistence/mongoose/question-theme/types/question-theme.mongoose.types";
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
@@ -19,6 +20,20 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     ...questionTheme,
+  };
+}
+
+function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> = {}): QuestionThemeDto {
+  return {
+    id: faker.database.mongodbObjectId(),
+    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
+    status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
+    updatedAt: faker.date.anytime().toISOString(),
+    createdAt: faker.date.anytime().toISOString(),
+    ...questionThemeDto,
   };
 }
 
@@ -42,5 +57,6 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
 
 export {
   createFakeQuestionTheme,
+  createFakeQuestionThemeDto,
   createFakeQuestionThemeDocument,
 };
