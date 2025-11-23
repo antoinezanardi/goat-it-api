@@ -4,7 +4,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
 
-RUN npm install -g corepack@0.34.4
+RUN npm install -g corepack@0.34.4 --force
 
 RUN corepack enable
 
