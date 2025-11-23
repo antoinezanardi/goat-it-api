@@ -10,8 +10,8 @@ function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme): Questio
     description: questionTheme.description,
     parentId: questionTheme.parentId,
     status: questionTheme.status,
-    createdAt: questionTheme.createdAt.toString(),
-    updatedAt: questionTheme.updatedAt.toString(),
+    createdAt: questionTheme.createdAt.toISOString(),
+    updatedAt: questionTheme.updatedAt.toISOString(),
   };
 }
 

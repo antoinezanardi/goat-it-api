@@ -31,8 +31,8 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
-    createdAt: faker.date.anytime().toString(),
-    updatedAt: faker.date.anytime().toString(),
+    updatedAt: faker.date.anytime().toISOString(),
+    createdAt: faker.date.anytime().toISOString(),
     ...questionThemeDto,
   };
 }
