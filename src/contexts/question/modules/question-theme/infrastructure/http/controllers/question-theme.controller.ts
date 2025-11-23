@@ -1,6 +1,7 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
+import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 
@@ -14,8 +15,8 @@ export class QuestionThemeController {
     type: [QuestionThemeDto],
   })
   public async findAllQuestionThemes(): Promise<QuestionThemeDto[]> {
-    return [];
+    const questionThemes = await this.findAllQuestionThemesUseCase.list();
 
-    // return this.findAllQuestionThemesUseCase.list();
+    return questionThemes.map(createQuestionThemeDtoFromEntity);
   }
 }

@@ -5,13 +5,13 @@ import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain
 
 const QUESTION_THEME_DTO = z.object({
   id: z.uuid(),
-  label: z.string(),
-  aliases: z.string(),
-  description: z.string(),
-  parentId: z.uuid().nullable(),
+  label: z.record(z.string(), z.string()),
+  aliases: z.record(z.string(), z.string().array()),
+  description: z.record(z.string(), z.string()),
+  parentId: z.uuid().optional(),
   status: z.enum(QUESTION_THEME_STATUSES),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 class QuestionThemeDto extends createZodDto(QUESTION_THEME_DTO) {}

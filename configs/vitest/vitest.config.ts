@@ -29,6 +29,7 @@ export default defineConfig({
         "src/**/mongoose/**/*.schema.ts",
         "src/**/*.constants.ts",
         "src/**/*.types.ts",
+        "src/**/*.dto.ts",
       ],
       reportsDirectory: "tests/unit/coverage",
       reporter: [

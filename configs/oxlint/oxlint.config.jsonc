@@ -1032,7 +1032,8 @@
           "error",
           {
             "capIsNewExceptions": [
-              "Injectable"
+              "Injectable",
+              "Inject"
             ]
           }
         ]
