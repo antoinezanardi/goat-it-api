@@ -1,5 +1,4 @@
 /* oxlint-disable jest/no-conditional-in-test */
-
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
@@ -10,6 +9,9 @@ import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpe
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
 import type { AppModule } from "@app/app.module";
+
+import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
+import { createMockedAppConfigService } from "@mocks/app/providers/services/config.service.mock";
 
 import { createFakeCorsConfig } from "@factories/infrastructure/api/server/cors/cors.factory";
 
@@ -25,28 +27,20 @@ vi.mock(import("@src/infrastructure/api/server/swagger/helpers/swagger.helpers")
 vi.mock(import("@src/infrastructure/api/server/cors/helpers/cors.helpers"));
 
 describe("Server", () => {
-  let mockConfigService: {
-    getOrThrow: ReturnType<typeof vi.fn>;
-  };
-  let mockLogger: {
-    log: ReturnType<typeof vi.fn>;
+  let mocks: {
+    services: {
+      config: ReturnType<typeof createMockedAppConfigService>;
+    };
   };
 
   beforeEach(() => {
-    mockConfigService = {
-      getOrThrow: vi.fn<(key: string) => string | number>().mockImplementation((key: string) => {
-        if (key === "HOST") {
-          return "0.0.0.0";
-        }
-        if (key === "PORT") {
-          return 3000;
-        }
-        return "";
-      }),
-    };
-
-    mockLogger = {
-      log: vi.fn<() => void>(),
+    mocks = {
+      services: {
+        config: createMockedAppConfigService({
+          HOST: "0.0.0.0",
+          PORT: 3000,
+        }),
+      },
     };
 
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
@@ -54,10 +48,10 @@ describe("Server", () => {
       useLogger: vi.fn<() => void>(),
       get: vi.fn<(service: typeof ConfigService | typeof Logger) => object>().mockImplementation(service => {
         if (service === ConfigService) {
-          return mockConfigService;
+          return mocks.services.config;
         }
         if (service === Logger) {
-          return mockLogger;
+          return getMockedLoggerInstance();
         }
         return {};
       }),
@@ -103,6 +97,7 @@ describe("Server", () => {
 
     it("should use logger when called.", async() => {
       const app = await bootstrap();
+      const mockLogger = getMockedLoggerInstance();
 
       expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);
     });
@@ -129,14 +124,9 @@ describe("Server", () => {
     });
 
     it("should listen on the provided host and port when they are provided.", async() => {
-      mockConfigService.getOrThrow.mockImplementation((key: string) => {
-        if (key === "HOST") {
-          return "127.0.0.1";
-        }
-        if (key === "PORT") {
-          return 8080;
-        }
-        return "";
+      mocks.services.config = createMockedAppConfigService({
+        HOST: "127.0.0.1",
+        PORT: 8080,
       });
 
       const app = await bootstrap();

@@ -2,4 +2,4 @@ import type { ENV_SCHEMA } from "@src/infrastructure/api/config/constants/env.co
 
 import type { z } from "zod";
 
-export type Env = z.infer<typeof ENV_SCHEMA>;
+export type AppEnv = z.infer<typeof ENV_SCHEMA>;

@@ -1,8 +1,8 @@
 import { ENV_SCHEMA } from "@src/infrastructure/api/config/constants/env.constants";
 
-import type { Env } from "@src/infrastructure/api/config/types/env.types";
+import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
-function validate(config: Record<string, unknown>): Env {
+function validate(config: Record<string, unknown>): AppEnv {
   const parsed = ENV_SCHEMA.safeParse(config);
   if (!parsed.success) {
     throw new Error(`Invalid environment variables ${parsed.error.message}`);
