@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule } from "nestjs-pino";
-import { AppConfigModule } from "@modules/config/config.module";
 
+import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
 import { DatabaseModule } from "@src/infrastructure/database/database.module";
 

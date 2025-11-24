@@ -1,6 +1,6 @@
-import { validate } from "@modules/config/env.validation";
+import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
 
-import type { Env } from "@modules/config/env.types";
+import type { Env } from "@src/infrastructure/api/config/types/env.types";
 
 describe("Env Validation", () => {
   describe(validate, () => {
@@ -13,6 +13,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 4000,
         HOST: "192.168.1.1",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -24,6 +26,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 3000,
         HOST: "192.168.1.1",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -35,6 +39,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 5000,
         HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -44,6 +50,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 3000,
         HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -56,6 +64,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 8080,
         HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -68,6 +78,8 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 9000,
         HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
     });
 
@@ -108,7 +120,41 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<Env>({
         PORT: 3000,
         HOST: "http://localhost",
+        CORS_ORIGIN: "*",
+        CORS_CREDENTIALS: false,
       });
+    });
+  });
+
+  describe(getEnvFilePath, () => {
+    const originalEnv = process.env.NODE_ENV;
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalEnv;
+    });
+
+    it("should return '.env' when NODE_ENV is not set.", () => {
+      delete process.env.NODE_ENV;
+
+      expect(getEnvFilePath()).toBe("env/.env");
+    });
+
+    it("should return '.env.development' when NODE_ENV is 'development'.", () => {
+      process.env.NODE_ENV = "development";
+
+      expect(getEnvFilePath()).toBe("env/.env.development");
+    });
+
+    it("should return '.env.test' when NODE_ENV is 'test'.", () => {
+      process.env.NODE_ENV = "test";
+
+      expect(getEnvFilePath()).toBe("env/.env.test");
+    });
+
+    it("should return '.env' when NODE_ENV is 'production'.", () => {
+      process.env.NODE_ENV = "production";
+
+      expect(getEnvFilePath()).toBe("env/.env");
     });
   });
 });
