@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { LoggerModule } from "nestjs-pino";
 
+import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
 import { DatabaseModule } from "@src/infrastructure/database/database.module";
 
@@ -11,12 +12,7 @@ import { AppController } from "@app/controllers/app.controller";
 import { QuestionModule } from "@question/question.module";
 
 @Module({
-  imports: [
-    LoggerModule.forRoot(getLoggerConfiguration()),
-    HealthModule,
-    DatabaseModule,
-    QuestionModule,
-  ],
+  imports: [AppConfigModule, LoggerModule.forRoot(getLoggerConfiguration()), HealthModule, DatabaseModule, QuestionModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,6 +1,9 @@
+/* oxlint-disable jest/no-conditional-in-test */
+
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
+import { ConfigService } from "@nestjs/config";
 
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
@@ -22,18 +25,47 @@ vi.mock(import("@src/infrastructure/api/server/swagger/helpers/swagger.helpers")
 vi.mock(import("@src/infrastructure/api/server/cors/helpers/cors.helpers"));
 
 describe("Server", () => {
+  let mockConfigService: {
+    getOrThrow: ReturnType<typeof vi.fn>;
+  };
+  let mockLogger: {
+    log: ReturnType<typeof vi.fn>;
+  };
+
   beforeEach(() => {
-    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue(({
-      enableCors: vi.fn<() => INestApplication>(),
+    mockConfigService = {
+      getOrThrow: vi.fn<(key: string) => string | number>().mockImplementation((key: string) => {
+        if (key === "HOST") {
+          return "0.0.0.0";
+        }
+        if (key === "PORT") {
+          return 3000;
+        }
+        return "";
+      }),
+    };
+
+    mockLogger = {
+      log: vi.fn<() => void>(),
+    };
+
+    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
-      get: vi.fn<() => object>().mockReturnValue({
-        log: vi.fn<() => void>(),
+      get: vi.fn<(service: typeof ConfigService | typeof Logger) => object>().mockImplementation(service => {
+        if (service === ConfigService) {
+          return mockConfigService;
+        }
+        if (service === Logger) {
+          return mockLogger;
+        }
+        return {};
       }),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
       useStaticAssets: vi.fn<() => void>(),
-    } as Partial<INestApplication>));
+      enableCors: vi.fn<() => INestApplication>(),
+    } as Partial<INestApplication>);
   });
 
   describe(bootstrap, () => {
@@ -43,7 +75,11 @@ describe("Server", () => {
       };
       await bootstrap();
 
-      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith({ name: "MockedModule" }, expect.any(Fastify.FastifyAdapter), expectedOptions);
+      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith(
+        { name: "MockedModule" },
+        expect.any(Fastify.FastifyAdapter),
+        expectedOptions,
+      );
     });
 
     it("should enable cors when called.", async() => {
@@ -68,7 +104,7 @@ describe("Server", () => {
     it("should use logger when called.", async() => {
       const app = await bootstrap();
 
-      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(app.get(Logger));
+      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);
     });
 
     it("should setup swagger module when called.", async() => {
@@ -93,8 +129,15 @@ describe("Server", () => {
     });
 
     it("should listen on the provided host and port when they are provided.", async() => {
-      process.env.HOST = "127.0.0.1";
-      process.env.PORT = "8080";
+      mockConfigService.getOrThrow.mockImplementation((key: string) => {
+        if (key === "HOST") {
+          return "127.0.0.1";
+        }
+        if (key === "PORT") {
+          return 8080;
+        }
+        return "";
+      });
 
       const app = await bootstrap();
 
