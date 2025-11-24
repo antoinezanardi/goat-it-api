@@ -7,9 +7,11 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 import { HEALTH_CHECK_RESULT_SCHEMA } from "@src/infrastructure/api/health/constants/health.constants";
 
+import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
+
 import { GetAppHealthCheckResultResponseDto } from "@src/infrastructure/api/health/types/health.types";
 
-@Controller("health")
+@Controller(ControllerPrefixes.HEALTH)
 export class HealthController {
   public constructor(private readonly healthService: HealthService) {}
 
