@@ -1,14 +1,14 @@
+import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
+
 import { createFakeQuestionThemeDocument } from "@factories/contexts/question/question-theme/question-theme.factory";
 
 import type { Mock } from "vitest";
 
-import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-
 type QuestionThemeMongooseModelStub = {
-  find: () => Promise<QuestionThemeMongooseDocument[]>;
-  findById: (id: string) => Promise<QuestionThemeMongooseDocument | null>;
-  create: () => Promise<QuestionThemeMongooseDocument>;
-  findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocument | null>;
+  find: () => Promise<QuestionThemeMongooseDocumentStub[]>;
+  findById: (id: string) => Promise<QuestionThemeMongooseDocumentStub | null>;
+  create: () => Promise<QuestionThemeMongooseDocumentStub>;
+  findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocumentStub | null>;
 };
 
 type MockedQuestionThemeMongooseModel = { [K in keyof QuestionThemeMongooseModelStub]: Mock<QuestionThemeMongooseModelStub[K]> };
