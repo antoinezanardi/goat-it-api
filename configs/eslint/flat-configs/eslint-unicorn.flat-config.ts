@@ -20,10 +20,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/empty-brace-spaces": "error",
     "unicorn/error-message": "error",
     "unicorn/escape-case": "error",
-    "unicorn/expiring-todo-comments": [
-      "error",
-      { allowWarningComments: false },
-    ],
+    "unicorn/expiring-todo-comments": ["error", { allowWarningComments: false }],
     "unicorn/explicit-length-check": "error",
     "unicorn/filename-case": [
       "error",
@@ -37,7 +34,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
     "unicorn/no-anonymous-default-export": "error",
-    "unicorn/no-array-callback-reference": "error",
+    "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "error",
     "unicorn/no-array-method-this-argument": "error",
     "unicorn/no-array-reduce": "off",
@@ -146,10 +143,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/prefer-ternary": "error",
     "unicorn/prefer-top-level-await": "error",
     "unicorn/prefer-type-error": "error",
-    "unicorn/prevent-abbreviations": [
-      "error",
-      { allowList: { docs: true } },
-    ],
+    "unicorn/prevent-abbreviations": ["error", { allowList: { env: true, Env: true, docs: true } }],
     "unicorn/relative-url-style": "error",
     "unicorn/require-array-join-separator": "error",
     "unicorn/require-module-attributes": "error",

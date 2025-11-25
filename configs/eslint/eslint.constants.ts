@@ -20,7 +20,30 @@ const MAX_LINES_PER_FUNCTION_DEFAULT_CONFIG = {
   skipBlankLines: true,
 };
 
-const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "do", "did", "must"];
+const BOOLEAN_PREFIXES = [
+  "is",
+  "was",
+  "are",
+  "were",
+  "should",
+  "has",
+  "can",
+  "does",
+  "do",
+  "did",
+  "must",
+  "IS",
+  "WAS",
+  "ARE",
+  "WERE",
+  "SHOULD",
+  "HAS",
+  "CAN",
+  "DOES",
+  "DO",
+  "DID",
+  "MUST",
+];
 
 const NAMING_CONVENTION_DEFAULT_CONFIG = [
   {

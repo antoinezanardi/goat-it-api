@@ -2,9 +2,9 @@ import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-import { AppService } from "@app/providers/services/app.service";
+import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
-import { SwaggerTags } from "@server/constants/swagger.enums";
+import { AppService } from "@app/providers/services/app.service";
 
 import { GetAppMetadataResponseDto } from "@app/types/app.types";
 
