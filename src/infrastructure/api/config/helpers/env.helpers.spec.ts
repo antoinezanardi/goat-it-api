@@ -1,6 +1,8 @@
 import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
 
-import type { Env } from "@src/infrastructure/api/config/types/env.types";
+import { createFakeAppEnv } from "@factories/infrastructure/api/config/env.factory";
+
+import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
 describe("Env Validation", () => {
   describe(validate, () => {
@@ -9,50 +11,50 @@ describe("Env Validation", () => {
         PORT: "4000",
         HOST: "192.168.1.1",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 4000,
         HOST: "192.168.1.1",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should return parsed env with default PORT when PORT is not provided.", () => {
       const config = {
         HOST: "192.168.1.1",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 3000,
         HOST: "192.168.1.1",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should return parsed env with default HOST when HOST is not provided.", () => {
       const config = {
         PORT: "5000",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 5000,
         HOST: "0.0.0.0",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should return parsed env with all defaults when config is empty.", () => {
       const config = {};
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 3000,
         HOST: "0.0.0.0",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should coerce PORT from string to number when PORT is a valid numeric string.", () => {
@@ -60,13 +62,13 @@ describe("Env Validation", () => {
         PORT: "8080",
         HOST: "0.0.0.0",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 8080,
         HOST: "0.0.0.0",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should coerce PORT from number to number when PORT is already a number.", () => {
@@ -74,13 +76,13 @@ describe("Env Validation", () => {
         PORT: 9000,
         HOST: "0.0.0.0",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 9000,
         HOST: "0.0.0.0",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should throw error when PORT is not a valid number.", () => {
@@ -116,13 +118,13 @@ describe("Env Validation", () => {
         HOST: "http://localhost",
         EXTRA_FIELD: "should be ignored",
       };
-
-      expect(validate(config)).toStrictEqual<Env>({
+      const expectedConfig = createFakeAppEnv({
         PORT: 3000,
         HOST: "http://localhost",
         CORS_ORIGIN: "*",
-        CORS_CREDENTIALS: false,
       });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
   });
 
