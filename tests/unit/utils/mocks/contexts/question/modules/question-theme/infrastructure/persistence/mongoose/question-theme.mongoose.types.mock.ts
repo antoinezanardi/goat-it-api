@@ -1,4 +1,4 @@
-import type { MongooseDocumentStub } from "@mocks/infrastructure/database/database.mock";
+import type { MongooseDocumentStub } from "@mocks/infrastructure/database/database.types.mock";
 
 import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
