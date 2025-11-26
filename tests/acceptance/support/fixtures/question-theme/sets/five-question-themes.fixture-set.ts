@@ -1,5 +1,5 @@
-import { createFakeQuestionThemeDocument } from "@factories/contexts/question/question-theme/question-theme.factory";
-import { createFakeLocalizedText, createFakeLocalizedTexts } from "@factories/shared/locale/locale.factory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 const FIVE_QUESTION_THEMES_FIXTURE_SET = [
   createFakeQuestionThemeDocument({

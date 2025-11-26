@@ -1,4 +1,4 @@
-import { createFakeAppEnv } from "@factories/infrastructure/api/config/env.factory";
+import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
 import type { Mock } from "vitest";
 

@@ -30,7 +30,7 @@
   "sourceMaps": true,
   "exclude": [
     ".*\\.spec\\.ts$",
-    ".*\\.factory\\.ts$",
+    ".*\\.faketory\\.ts$",
     ".*\\.mock\\.ts$"
   ]
 }

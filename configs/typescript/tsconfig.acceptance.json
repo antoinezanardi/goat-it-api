@@ -6,7 +6,7 @@
   "include": [
     "../../package.json",
     "../../src/**/*.ts",
-    "../../tests/shared/utils/factories/**/*.ts",
+    "../../tests/shared/utils/faketories/**/*.ts",
     "../../tests/**/*.types.mock.ts",
     "../../tests/acceptance/**/*.ts"
   ],

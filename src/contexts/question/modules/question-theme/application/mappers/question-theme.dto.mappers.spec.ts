@@ -1,7 +1,7 @@
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 describe("Question Theme Dto Mappers", () => {
   describe(createQuestionThemeDtoFromEntity, () => {

@@ -13,7 +13,7 @@ import type { AppModule } from "@app/app.module";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 import { createMockedAppConfigService } from "@mocks/app/providers/services/config.service.mock";
 
-import { createFakeCorsConfig } from "@factories/infrastructure/api/server/cors/cors.factory";
+import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 

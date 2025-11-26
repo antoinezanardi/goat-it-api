@@ -1,6 +1,6 @@
 import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
-import { createFakeQuestionThemeDocument } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
