@@ -1,4 +1,4 @@
-import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-questions-themes.fixture-set";
+import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
