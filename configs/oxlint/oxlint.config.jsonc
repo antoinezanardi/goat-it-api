@@ -1233,7 +1233,7 @@
     // ---- Override for factory (unit tests) files -----
     {
       "files": [
-        "**/tests/unit/utils/factories/**/*.factory.ts"
+        "**/tests/shared/utils/factories/**/*.factory.ts"
       ],
       "rules": {
         "no-magic-numbers": "off",
