@@ -1,6 +1,5 @@
 import { After, AfterAll, Before, BeforeAll, setWorldConstructor } from "@cucumber/cucumber";
 
-import { createDefaultQuestionThemes } from "@acceptance-support/fixtures/question-theme/question-theme.fixtures";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 import { buildAppForAcceptanceTests, killAppProcess, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
 
@@ -16,7 +15,6 @@ BeforeAll(async function() {
 Before(async function(this: GoatItWorld) {
   await resetTestDatabase();
   this.appProcess = await serveAppForAcceptanceTests();
-  await createDefaultQuestionThemes(this);
 });
 
 After(async function(this: GoatItWorld) {

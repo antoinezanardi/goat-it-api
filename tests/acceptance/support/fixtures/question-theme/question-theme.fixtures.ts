@@ -1,11 +1,12 @@
-import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
+import { FIXTURE_SETS } from "@acceptance-support/fixtures/constants/fixture.constants";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-async function createDefaultQuestionThemes(world: GoatItWorld): Promise<void> {
-  await world.models.questionThemes.insertMany(FIVE_QUESTION_THEMES_FIXTURE_SET);
+async function insertQuestionThemeFixtureSet(world: GoatItWorld, setName: keyof typeof FIXTURE_SETS["question-theme"]): Promise<void> {
+  const fixtureSet = FIXTURE_SETS["question-theme"][setName];
+  await world.models.questionThemes.insertMany(fixtureSet);
 }
 
 export {
-  createDefaultQuestionThemes,
+  insertQuestionThemeFixtureSet,
 };
