@@ -5,7 +5,7 @@ import { HealthService } from "@src/infrastructure/api/health/providers/services
 
 import { createMockedHealthService } from "@mocks/infrastructure/api/health/providers/services/health.service.mock";
 
-import { createFakeHealthIndicatorResult } from "@factories/infrastructure/api/health/health.factory";
+import { createFakeHealthIndicatorResult } from "@faketories/infrastructure/api/health/health.faketory";
 
 import type { HealthCheckResult } from "@nestjs/terminus";
 

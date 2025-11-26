@@ -29,7 +29,7 @@
       "@question/*": ["../../src/contexts/question/*"],
       "@shared/*": ["../../src/shared/*"],
       "@unit-tests/*": ["../../tests/unit/*"],
-      "@factories/*": ["../../tests/shared/utils/factories/*"],
+      "@faketories/*": ["../../tests/shared/utils/faketories/*"],
       "@mocks/*": ["../../tests/unit/utils/mocks/*"],
       "@acceptance-tests/*": ["../../tests/acceptance/*"],
       "@acceptance-features/*": ["../../tests/acceptance/features/*"],

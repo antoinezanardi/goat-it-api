@@ -1,6 +1,6 @@
 import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
 
-import { createFakeAppEnv } from "@factories/infrastructure/api/config/env.factory";
+import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 

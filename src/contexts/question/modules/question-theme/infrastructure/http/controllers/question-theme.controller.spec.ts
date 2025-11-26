@@ -6,7 +6,7 @@ import { createQuestionThemeDtoFromEntity } from "@question/modules/question-the
 
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
 
-import { createFakeQuestionTheme } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 

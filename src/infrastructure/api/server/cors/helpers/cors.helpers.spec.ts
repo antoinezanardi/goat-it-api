@@ -1,6 +1,6 @@
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 
-import { createFakeCorsConfig } from "@factories/infrastructure/api/server/cors/cors.factory";
+import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
 import type { CorsConfig } from "@src/infrastructure/api/server/cors/types/cors.types";
 

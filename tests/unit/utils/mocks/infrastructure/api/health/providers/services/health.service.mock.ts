@@ -1,4 +1,4 @@
-import { createFakeHealthCheckResult } from "@factories/infrastructure/api/health/health.factory";
+import { createFakeHealthCheckResult } from "@faketories/infrastructure/api/health/health.faketory";
 
 import type { HealthCheckResult } from "@nestjs/terminus";
 import type { Mock } from "vitest";
