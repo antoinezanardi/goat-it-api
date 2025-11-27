@@ -78,7 +78,7 @@ async function serveAppForAcceptanceTests(): Promise<ChildProcessWithoutNullStre
   const spawnOptions: SpawnOptionsWithoutStdio = {
     shell: true,
   };
-  const serverProcess = spawn("pnpm run start:prod", spawnOptions);
+  const serverProcess = spawn("pnpm run start:prod:test", spawnOptions);
 
   return waitForAppToBeReady(serverProcess);
 }

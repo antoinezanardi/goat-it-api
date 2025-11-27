@@ -2,17 +2,18 @@
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
-import { ConfigService } from "@nestjs/config";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
 import type { AppModule } from "@app/app.module";
 
+import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
-import { createMockedAppConfigService } from "@mocks/app/providers/services/config.service.mock";
 
+import { createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
@@ -37,8 +38,10 @@ describe("Server", () => {
     mocks = {
       services: {
         config: createMockedAppConfigService({
-          HOST: "0.0.0.0",
-          PORT: 3000,
+          serverConfig: createFakeServerConfigFromEnv({
+            host: "0.0.0.0",
+            port: 3000,
+          }),
         }),
       },
     };
@@ -46,8 +49,8 @@ describe("Server", () => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
-      get: vi.fn<(service: typeof ConfigService | typeof Logger) => object>().mockImplementation(service => {
-        if (service === ConfigService) {
+      get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(service => {
+        if (service === AppConfigService) {
           return mocks.services.config;
         }
         if (service === Logger) {
@@ -124,9 +127,9 @@ describe("Server", () => {
     });
 
     it("should listen on the provided host and port when they are provided.", async() => {
-      mocks.services.config = createMockedAppConfigService({
-        HOST: "127.0.0.1",
-        PORT: 8080,
+      mocks.services.config.serverConfig = createFakeServerConfigFromEnv({
+        host: "127.0.0.1",
+        port: 8080,
       });
 
       const app = await bootstrap();

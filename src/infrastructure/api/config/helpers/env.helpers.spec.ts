@@ -7,121 +7,146 @@ import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 describe("Env Validation", () => {
   describe(validate, () => {
     it("should return parsed env when config is valid with all fields.", () => {
-      const config = {
-        PORT: "4000",
-        HOST: "192.168.1.1",
+      const config: Record<keyof AppEnv, unknown> = {
+        SERVER_HOST: "192.168.1.1",
+        SERVER_PORT: "4000",
+        CORS_ORIGIN: "*",
+        MONGODB_HOST: "127.0.0.1",
+        MONGODB_PORT: "27018",
+        MONGODB_DATABASE: "goat-it-test",
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 4000,
-        HOST: "192.168.1.1",
+        SERVER_HOST: "192.168.1.1",
+        SERVER_PORT: 4000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "127.0.0.1",
+        MONGODB_PORT: 27_018,
+        MONGODB_DATABASE: "goat-it-test",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should return parsed env with default PORT when PORT is not provided.", () => {
-      const config = {
-        HOST: "192.168.1.1",
+    it("should return parsed env with default SERVER_PORT when SERVER_PORT is not provided.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: "192.168.1.1",
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 3000,
-        HOST: "192.168.1.1",
+        SERVER_HOST: "192.168.1.1",
+        SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should return parsed env with default HOST when HOST is not provided.", () => {
-      const config = {
-        PORT: "5000",
+    it("should return parsed env with default SERVER_HOST when SERVER_HOST is not provided.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_PORT: "5000",
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 5000,
-        HOST: "0.0.0.0",
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: 5000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
     it("should return parsed env with all defaults when config is empty.", () => {
-      const config = {};
+      const config: Partial<Record<keyof AppEnv, unknown>> = {};
       const expectedConfig = createFakeAppEnv({
-        PORT: 3000,
-        HOST: "0.0.0.0",
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should coerce PORT from string to number when PORT is a valid numeric string.", () => {
-      const config = {
-        PORT: "8080",
-        HOST: "0.0.0.0",
+    it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: "8080",
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 8080,
-        HOST: "0.0.0.0",
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: 8080,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should coerce PORT from number to number when PORT is already a number.", () => {
-      const config = {
-        PORT: 9000,
-        HOST: "0.0.0.0",
+    it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: 9000,
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 9000,
-        HOST: "0.0.0.0",
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: 9000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should throw error when PORT is not a valid number.", () => {
-      const config = {
-        PORT: "invalid",
-        HOST: "0.0.0.0",
+    it("should throw error when SERVER_PORT is not a valid number.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: "0.0.0.0",
+        SERVER_PORT: "invalid",
       };
 
       expect(() => validate(config)).toThrow("Invalid environment variables");
     });
 
-    it("should throw error when HOST is not a string.", () => {
-      const config = {
-        PORT: "3000",
-        HOST: 12_345,
+    it("should throw error when SERVER_HOST is not a string.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: 12_345,
+        SERVER_PORT: "3000",
       };
 
       expect(() => validate(config)).toThrow("Invalid environment variables");
     });
 
-    it("should throw error when config contains invalid types for both PORT and HOST.", () => {
-      const config = {
-        PORT: "not-a-number",
-        HOST: true,
+    it("should throw error when config contains invalid types for both SERVER_PORT and SERVER_HOST.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        SERVER_HOST: true,
+        SERVER_PORT: "not-a-number",
       };
 
       expect(() => validate(config)).toThrow("Invalid environment variables");
     });
 
     it("should return parsed env when config contains additional properties.", () => {
-      const config = {
-        PORT: "3000",
-        HOST: "http://localhost",
+      const config: Partial<Record<keyof AppEnv, unknown>> & { EXTRA_FIELD: string } = {
+        SERVER_HOST: "http://localhost",
+        SERVER_PORT: "3000",
         EXTRA_FIELD: "should be ignored",
       };
       const expectedConfig = createFakeAppEnv({
-        PORT: 3000,
-        HOST: "http://localhost",
+        SERVER_HOST: "http://localhost",
+        SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
+        MONGODB_HOST: "localhost",
+        MONGODB_PORT: 27_017,
+        MONGODB_DATABASE: "goat-it",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);

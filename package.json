@@ -64,6 +64,7 @@
     "start:dev": "nest start --watch --config configs/nest/nest-cli.config.json",
     "start:debug": "nest start --debug --watch --config configs/nest/nest-cli.config.json",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
+    "start:prod:test": "cross-env NODE_ENV=test node dist/main",
     "lint": "pnpm run lint:oxlint && pnpm run lint:eslint",
     "lint:fix": "pnpm run lint:oxlint:fix && pnpm run lint:eslint:fix",
     "lint:staged:fix": "pnpm run lint:oxlint:staged:fix && pnpm run lint:eslint:staged:fix",
