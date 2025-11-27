@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 @Module({
   imports: [
@@ -11,6 +12,8 @@ import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers
       envFilePath: getEnvFilePath(),
     }),
   ],
+  providers: [AppConfigService],
+  exports: [AppConfigService],
 })
 
 export class AppConfigModule {}
