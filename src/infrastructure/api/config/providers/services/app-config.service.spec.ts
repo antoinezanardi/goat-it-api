@@ -54,6 +54,14 @@ describe("App Config Service", () => {
 
       expect(services.appConfig.serverConfig).toStrictEqual<ServerConfigFromEnv>(expectedServerConfig);
     });
+
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("SERVER_HOST is not defined");
+      });
+
+      expect(() => services.appConfig.serverConfig).toThrow("SERVER_HOST is not defined");
+    });
   });
 
   describe("corsConfig", () => {
@@ -63,6 +71,14 @@ describe("App Config Service", () => {
       });
 
       expect(services.appConfig.corsConfig).toStrictEqual<CorsConfigFromEnv>(expectedCorsConfig);
+    });
+
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("CORS_ORIGIN is not defined");
+      });
+
+      expect(() => services.appConfig.corsConfig).toThrow("CORS_ORIGIN is not defined");
     });
   });
 
@@ -75,6 +91,14 @@ describe("App Config Service", () => {
       });
 
       expect(services.appConfig.mongoDbConfig).toStrictEqual<MongoDatabaseConfigFromEnv>(mongoDatabaseConfig);
+    });
+
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("MONGODB_HOST is not defined");
+      });
+
+      expect(() => services.appConfig.mongoDbConfig).toThrow("MONGODB_HOST is not defined");
     });
   });
 });

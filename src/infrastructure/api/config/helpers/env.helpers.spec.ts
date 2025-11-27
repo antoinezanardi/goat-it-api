@@ -27,7 +27,7 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should return parsed env with default PORT when PORT is not provided.", () => {
+    it("should return parsed env with default SERVER_PORT when SERVER_PORT is not provided.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: "192.168.1.1",
       };
@@ -35,7 +35,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "192.168.1.1",
         SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
@@ -43,7 +43,7 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should return parsed env with default HOST when HOST is not provided.", () => {
+    it("should return parsed env with default SERVER_HOST when SERVER_HOST is not provided.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_PORT: "5000",
       };
@@ -51,7 +51,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: 5000,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
@@ -65,7 +65,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
@@ -73,7 +73,7 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should coerce PORT from string to number when PORT is a valid numeric string.", () => {
+    it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: "8080",
@@ -82,7 +82,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: 8080,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
@@ -90,7 +90,7 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should coerce PORT from number to number when PORT is already a number.", () => {
+    it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: 9000,
@@ -99,7 +99,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: 9000,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
@@ -107,7 +107,7 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should throw error when PORT is not a valid number.", () => {
+    it("should throw error when SERVER_PORT is not a valid number.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: "0.0.0.0",
         SERVER_PORT: "invalid",
@@ -116,7 +116,7 @@ describe("Env Validation", () => {
       expect(() => validate(config)).toThrow("Invalid environment variables");
     });
 
-    it("should throw error when HOST is not a string.", () => {
+    it("should throw error when SERVER_HOST is not a string.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: 12_345,
         SERVER_PORT: "3000",
@@ -125,7 +125,7 @@ describe("Env Validation", () => {
       expect(() => validate(config)).toThrow("Invalid environment variables");
     });
 
-    it("should throw error when config contains invalid types for both PORT and HOST.", () => {
+    it("should throw error when config contains invalid types for both SERVER_PORT and SERVER_HOST.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         SERVER_HOST: true,
         SERVER_PORT: "not-a-number",
@@ -144,7 +144,7 @@ describe("Env Validation", () => {
         SERVER_HOST: "http://localhost",
         SERVER_PORT: 3000,
         CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
+        MONGODB_HOST: "localhost",
         MONGODB_PORT: 27_017,
         MONGODB_DATABASE: "goat-it",
       });
