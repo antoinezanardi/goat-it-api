@@ -42,6 +42,16 @@ describe("Env Validation", () => {
         isValid: false,
       },
       {
+        test: "should return false for URL with unsupported protocol 'httpp://example.com'.",
+        value: "httpp://example.com",
+        isValid: false,
+      },
+      {
+        test: "should return false for URL with unsupported protocol 'hhttp://example.com'.",
+        value: "hhttp://example.com",
+        isValid: false,
+      },
+      {
         test: "should return false for empty string ''.",
         value: "",
         isValid: false,

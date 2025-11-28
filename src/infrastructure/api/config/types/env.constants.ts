@@ -12,7 +12,7 @@ const DEFAULT_ENV_MONGODB_HOST = "0.0.0.0";
 
 const DEFAULT_ENV_MONGODB_PORT = 27_017;
 
-const MONGODB_DATABASE_REGEX = /^[\w\\-]+[^-]$/u;
+const MONGODB_DATABASE_REGEX = /^[\w-]+(?<!-)$/u;
 
 const DEFAULT_ENV_MONGODB_DATABASE = "goat-it";
 
