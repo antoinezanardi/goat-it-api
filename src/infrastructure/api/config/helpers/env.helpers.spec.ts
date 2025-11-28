@@ -52,6 +52,16 @@ describe("Env Validation", () => {
         isValid: false,
       },
       {
+        test: "should return false for IP-based URL 'http://127.0.0.1:3000'.",
+        value: "http://127.0.0.1:3000",
+        isValid: false,
+      },
+      {
+        test: "should return false for localhost URL 'http://localhost:8080'.",
+        value: "http://localhost:8080",
+        isValid: false,
+      },
+      {
         test: "should return false for empty string ''.",
         value: "",
         isValid: false,
