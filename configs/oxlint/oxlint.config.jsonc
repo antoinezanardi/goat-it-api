@@ -994,7 +994,8 @@
           "error",
           {
             "capIsNewExceptions": [
-              "Module"
+              "Module",
+              "Global"
             ]
           }
         ]

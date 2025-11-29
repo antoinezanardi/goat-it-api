@@ -4,8 +4,9 @@ async function connectToTestDatabase(): Promise<void> {
   if (connection.readyState === ConnectionStates.connected) {
     return;
   }
-  await connectToMongoDatabase("mongodb://localhost:27017", {
-    dbName: "goat-it-test",
+  const mongoUri = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
+  await connectToMongoDatabase(mongoUri, {
+    dbName: process.env.MONGODB_DATABASE,
   });
 }
 
