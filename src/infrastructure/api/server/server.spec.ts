@@ -13,7 +13,7 @@ import type { AppModule } from "@app/app.module";
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
-import { createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+import { createFakeCorsConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
@@ -41,6 +41,9 @@ describe("Server", () => {
           serverConfig: createFakeServerConfigFromEnv({
             host: "0.0.0.0",
             port: 3000,
+          }),
+          corsConfig: createFakeCorsConfigFromEnv({
+            origin: "*",
           }),
         }),
       },
@@ -77,6 +80,15 @@ describe("Server", () => {
         expect.any(Fastify.FastifyAdapter),
         expectedOptions,
       );
+    });
+
+    it("should create cors config from configuration when called.", async() => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+        origin: "*",
+      });
+      await bootstrap();
+
+      expect(createCorsConfig).toHaveBeenCalledExactlyOnceWith(corsConfigFromEnv);
     });
 
     it("should enable cors when called.", async() => {

@@ -15,8 +15,11 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { bufferLogs: true });
 
   const logger = app.get(Logger);
+  const appConfigService = app.get<AppConfigService>(AppConfigService);
 
-  app.enableCors(createCorsConfig());
+  const corsConfig = createCorsConfig(appConfigService.corsConfig);
+  app.enableCors(corsConfig);
+
   app.enableShutdownHooks();
   app.useLogger(logger);
 
@@ -25,9 +28,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     root: `${process.cwd()}/public`,
     prefix: "/public/",
   });
-  const configService = app.get<AppConfigService>(AppConfigService);
 
-  await app.listen(configService.serverConfig);
+  await app.listen(appConfigService.serverConfig);
 
   const appUrl = await app.getUrl();
 
