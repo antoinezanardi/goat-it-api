@@ -24,7 +24,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Music",
     }),
     aliases: createFakeLocalizedTexts({
-      fr: ["Chanson", "Musiques"],
+      fr: ["Chanson", "Son"],
       en: ["Songs", "Tunes"],
     }),
     description: createFakeLocalizedText({
@@ -47,7 +47,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       fr: "Thème concernant les sports, compétitions et athlètes.",
       en: "Theme about sports, competitions and athletes.",
     }),
-    status: "active",
+    status: "archived",
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
