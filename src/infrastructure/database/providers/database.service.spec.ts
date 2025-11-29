@@ -3,9 +3,13 @@ import { EventEmitter } from "node:events";
 import { Logger } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { DatabaseService } from "@src/infrastructure/database/providers/database.service";
 
+import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
+
+import { createFakeMongoDatabaseConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
 import type { MongooseModuleOptions } from "@nestjs/mongoose";
 import type { TestingModule } from "@nestjs/testing";
@@ -13,9 +17,33 @@ import type { Connection } from "mongoose";
 
 describe("Database Service", () => {
   let services: { database: DatabaseService };
+  let mocks: {
+    services: {
+      appConfig: ReturnType<typeof createMockedAppConfigService>;
+    };
+  };
 
   beforeEach(async() => {
-    const module: TestingModule = await Test.createTestingModule({ providers: [DatabaseService] }).compile();
+    mocks = {
+      services: {
+        appConfig: createMockedAppConfigService({
+          mongoDbConfig: createFakeMongoDatabaseConfigFromEnv({
+            host: "127.0.0.1",
+            port: 27_018,
+            database: "goat-it-test",
+          }),
+        }),
+      },
+    };
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        DatabaseService,
+        {
+          provide: AppConfigService,
+          useValue: mocks.services.appConfig,
+        },
+      ],
+    }).compile();
 
     services = { database: module.get<DatabaseService>(DatabaseService) };
   });
@@ -37,12 +65,12 @@ describe("Database Service", () => {
     it("should return mongoose options when called.", () => {
       const options = services.database.createMongooseOptions();
       const expectedOptions: MongooseModuleOptions = {
-        uri: "mongodb://localhost:27017",
+        uri: "mongodb://127.0.0.1:27018",
         serverSelectionTimeoutMS: 5000,
         connectTimeoutMS: 5000,
         retryDelay: 3000,
         retryAttempts: 5,
-        dbName: "goat-it",
+        dbName: "goat-it-test",
         onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,
       };
 

@@ -98,7 +98,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
           { pattern: "@question/**", group: "parent", position: "after" },
           { pattern: "@unit-tests/**", group: "sibling", position: "after" },
           { pattern: "@mocks/**", group: "sibling", position: "after" },
-          { pattern: "@factories/**", group: "sibling", position: "after" },
+          { pattern: "@faketories/**", group: "sibling", position: "after" },
           { pattern: "@acceptance-tests/**", group: "sibling", position: "after" },
           { pattern: "@acceptance-features/**", group: "sibling", position: "after" },
           { pattern: "@acceptance-support/**", group: "sibling", position: "after" },

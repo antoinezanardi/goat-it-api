@@ -628,7 +628,7 @@
             "position": "after"
           },
           {
-            "pattern": "@factories/**",
+            "pattern": "@faketories/**",
             "group": "sibling",
             "position": "after"
           },
@@ -994,7 +994,8 @@
           "error",
           {
             "capIsNewExceptions": [
-              "Module"
+              "Module",
+              "Global"
             ]
           }
         ]
@@ -1230,10 +1231,10 @@
         "import/no-anonymous-default-export": "off"
       }
     },
-    // ---- Override for factory (unit tests) files -----
+    // ---- Override for faketory (unit tests) files -----
     {
       "files": [
-        "**/tests/unit/utils/factories/**/*.factory.ts"
+        "**/tests/shared/utils/faketories/**/*.faketory.ts"
       ],
       "rules": {
         "no-magic-numbers": "off",

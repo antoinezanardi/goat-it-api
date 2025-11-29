@@ -1,4 +1,4 @@
-import { createFakeQuestionTheme } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 

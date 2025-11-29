@@ -1,4 +1,4 @@
-import { createFakeAppMetadata } from "@factories/app/app.factory";
+import { createFakeAppMetadata } from "@faketories/app/app.faketory";
 
 import type { Mock } from "vitest";
 

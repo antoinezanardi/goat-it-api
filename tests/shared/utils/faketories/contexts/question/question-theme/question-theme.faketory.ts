@@ -6,7 +6,7 @@ import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain
 
 import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
-import { createFakeLocalizedText, createFakeLocalizedTexts } from "@factories/shared/locale/locale.factory";
+import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
