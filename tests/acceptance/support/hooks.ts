@@ -1,8 +1,6 @@
 import { AfterAll, Before, BeforeAll, setWorldConstructor } from "@cucumber/cucumber";
-import { config as loadEnvConfig } from "dotenv";
 
-import { APP_ENV_TEST_PATH } from "@acceptance-support/constants/app.constants";
-import { buildAppForAcceptanceTests, killAppProcess, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
+import { buildAppForAcceptanceTests, killAppProcess, loadEnvTestConfig, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
 import type { AcceptanceHooksProcesses } from "@acceptance-support/types/hooks.types";
@@ -13,7 +11,7 @@ setWorldConstructor(GoatItWorld);
 const processes: AcceptanceHooksProcesses = {};
 
 BeforeAll(async function() {
-  loadEnvConfig({ path: APP_ENV_TEST_PATH });
+  loadEnvTestConfig();
   buildAppForAcceptanceTests();
   await connectToTestDatabase();
 

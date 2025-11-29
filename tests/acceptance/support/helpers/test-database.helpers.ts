@@ -7,11 +7,15 @@ function validateEnvRequirements(): void {
     "MONGODB_DATABASE",
   ];
 
-  const missingEnvVariables = requiredEnvVariables.filter(name => process.env[name] === undefined);
+  const missingEnvVariables = requiredEnvVariables.filter(name => {
+    const value = process.env[name];
+
+    return value === undefined || value.trim() === "";
+  });
 
   if (missingEnvVariables.length > 0) {
     throw new Error(`Missing required environment variable(s) for database tests: ${missingEnvVariables.join(", ")}. ` +
-      "Please set these in your test environment (e.g., env/.env.test) before running acceptance tests.");
+      "Please set these in your test environment (`env/.env.test`) before running acceptance tests.");
   }
 }
 
