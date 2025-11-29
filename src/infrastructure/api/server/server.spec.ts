@@ -82,6 +82,15 @@ describe("Server", () => {
       );
     });
 
+    it("should create cors config from configuration when called.", async() => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+        origin: "*",
+      });
+      await bootstrap();
+
+      expect(createCorsConfig).toHaveBeenCalledExactlyOnceWith(corsConfigFromEnv);
+    });
+
     it("should enable cors when called.", async() => {
       const expectedCorsConfig = createFakeCorsConfig({
         origin: "*",

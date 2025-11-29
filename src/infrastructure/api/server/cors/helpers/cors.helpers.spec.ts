@@ -6,11 +6,6 @@ import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors
 import type { CorsConfig } from "@src/infrastructure/api/server/cors/types/cors.types";
 
 describe(createCorsConfig, () => {
-  beforeEach(() => {
-    delete process.env.CORS_ORIGIN;
-    delete process.env.CORS_CREDENTIALS;
-  });
-
   it("should return default CORS config when called.", () => {
     const corsConfigFromEnv = createFakeCorsConfigFromEnv({
       origin: "*",
@@ -26,7 +21,7 @@ describe(createCorsConfig, () => {
     expect(corsConfig).toStrictEqual<CorsConfig>(expectedCorsConfig);
   });
 
-  it("should use CORS_ORIGIN environment variable when set.", () => {
+  it("should use origin from configuration when provided.", () => {
     const corsConfigFromEnv = createFakeCorsConfigFromEnv({
       origin: "https://example.com",
     });
