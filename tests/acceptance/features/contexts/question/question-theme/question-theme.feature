@@ -4,7 +4,7 @@ Feature: Question Theme
 
   Scenario: User retrieves all question themes
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    And the client retrieves all questions themes
+    When the client retrieves all question themes
     Then the request should have succeeded with status code 200
     And the response should contain 5 question themes
     And the response should contain the following question themes:
@@ -14,3 +14,8 @@ Feature: Question Theme
       | Sport    | Football, Jeux         | Thème concernant les sports, compétitions et athlètes.         | archived |
       | Histoire | Passé, Chronologie     | Thème sur les événements historiques, personnages et périodes. | active   |
       | Science  | Technologie, Recherche | Thème couvrant les sciences, découvertes et innovations.       | active   |
+
+  Scenario: User retrieves no question themes when none exist
+    When the client retrieves all question themes
+    Then the request should have succeeded with status code 200
+    And the response should contain 0 question themes

@@ -9,7 +9,7 @@ import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-Then(/^the response should contain (?<questionThemesCount>\d) question themes$/u, function(this: GoatItWorld, countAsString: string): void {
+Then(/^the response should contain (?<questionThemesCount>\d+) question themes$/u, function(this: GoatItWorld, countAsString: string): void {
   const questionThemes = this.expectLastResponseJson<QuestionThemeDto[]>(z.array(QUESTION_THEME_DTO));
   const questionThemesCount = Number.parseInt(countAsString);
 
