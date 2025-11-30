@@ -61,7 +61,7 @@ describe("App Config Service", () => {
         throw new Error("SERVER_HOST is not defined");
       });
 
-      expect(() => services.appConfig.serverConfig).toThrow("SERVER_HOST is not defined");
+      expect(() => services.appConfig.serverConfig).toThrowError("SERVER_HOST is not defined");
     });
   });
 
@@ -79,7 +79,7 @@ describe("App Config Service", () => {
         throw new Error("CORS_ORIGIN is not defined");
       });
 
-      expect(() => services.appConfig.corsConfig).toThrow("CORS_ORIGIN is not defined");
+      expect(() => services.appConfig.corsConfig).toThrowError("CORS_ORIGIN is not defined");
     });
   });
 
@@ -99,7 +99,7 @@ describe("App Config Service", () => {
         throw new Error("MONGODB_HOST is not defined");
       });
 
-      expect(() => services.appConfig.mongoDbConfig).toThrow("MONGODB_HOST is not defined");
+      expect(() => services.appConfig.mongoDbConfig).toThrowError("MONGODB_HOST is not defined");
     });
   });
 
