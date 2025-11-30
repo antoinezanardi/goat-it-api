@@ -1,3 +1,5 @@
+import { InternalServerErrorException } from "@nestjs/common";
+
 import { getLocalizationOptionsFromContext, Localization } from "@shared/infrastructure/http/decorators/localization.decorator";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
@@ -23,6 +25,19 @@ describe("Localization Decorator", () => {
       const result = getLocalizationOptionsFromContext({}, fakeExecutionContext as unknown as ExecutionContext);
 
       expect(result).toBe(expectedLocalizationOptions);
+    });
+
+    it("should throw an InternalServerErrorException when localization options are missing in the request.", () => {
+      const fakeExecutionContext = {
+        switchToHttp: (): unknown => ({
+          getRequest: (): unknown => ({
+            raw: {},
+          }),
+        }),
+      };
+      const expectedError = new InternalServerErrorException("Missing localizationOptions on request. Ensure LocalizationMiddleware is applied to this route.");
+
+      expect(() => getLocalizationOptionsFromContext({}, fakeExecutionContext as unknown as ExecutionContext)).toThrow(expectedError);
     });
   });
 

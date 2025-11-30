@@ -9,7 +9,7 @@ type AugmentedFastifyRequest = FastifyRequest & {
 };
 
 type FastifyRequestRawLocalizationOptions = {
-  localizationOptions: LocalizationOptions;
+  localizationOptions?: LocalizationOptions;
 };
 
 export type {

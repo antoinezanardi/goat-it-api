@@ -1,4 +1,4 @@
-import { createParamDecorator } from "@nestjs/common";
+import { createParamDecorator, InternalServerErrorException } from "@nestjs/common";
 
 import type { ExecutionContext } from "@nestjs/common";
 
@@ -7,8 +7,12 @@ import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/
 
 function getLocalizationOptionsFromContext(_: unknown, context: ExecutionContext): LocalizationOptions {
   const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();
+  const { localizationOptions } = request.raw;
 
-  return request.raw.localizationOptions;
+  if (!localizationOptions) {
+    throw new InternalServerErrorException("Missing localizationOptions on request. Ensure LocalizationMiddleware is applied to this route.");
+  }
+  return localizationOptions;
 }
 
 /**
