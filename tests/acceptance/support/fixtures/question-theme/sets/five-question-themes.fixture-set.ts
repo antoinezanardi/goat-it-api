@@ -82,6 +82,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     status: "active",
     parentId: undefined,
   }),
-] as const;
+] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 
 export { FIVE_QUESTION_THEMES_FIXTURE_SET };

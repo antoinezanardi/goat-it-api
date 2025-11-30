@@ -36,9 +36,9 @@ class GoatItWorld extends World {
 
   public async fetchAndStoreResponse(endpoint: string, fetchOptions?: FetchOptions): Promise<void> {
     try {
+      this.lastFetchResponse = undefined;
       await this.fetchInstance(endpoint, fetchOptions);
     } catch(error) {
-      // network-level errors don't trigger onResponse
       if (!this.lastFetchResponse) {
         throw error;
       }

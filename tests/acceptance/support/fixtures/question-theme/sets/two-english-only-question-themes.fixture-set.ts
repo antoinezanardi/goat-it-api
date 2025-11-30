@@ -58,6 +58,6 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
     status: "active",
     parentId: undefined,
   }),
-] as const;
+] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 
 export { TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET };

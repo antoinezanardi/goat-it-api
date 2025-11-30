@@ -9,6 +9,14 @@ import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
+/**
+ * Middleware for extracting the locale from the 'Accept-Language' HTTP header and attaching it to the request.
+ *
+ * - Only the first locale in the 'Accept-Language' header is considered.
+ * - If no locale is provided, the configured fallback locale is used.
+ * - If an invalid locale is received, a BadRequestException is thrown.
+ * - The extracted locale and fallback locale are attached to the request's localizationOptions.
+ */
 @Injectable()
 export class LocalizationMiddleware implements NestMiddleware {
   public constructor(@Inject(AppConfigService) private readonly appConfigService: AppConfigService) {}
@@ -46,9 +54,8 @@ export class LocalizationMiddleware implements NestMiddleware {
       return undefined;
     }
     const { fallbackLocale } = this.appConfigService.localizationConfig;
-    const sliceStart = 0;
-    const sliceEnd = 2;
-    const firstLocale = headerLocale.trim().slice(sliceStart, sliceEnd).toLowerCase();
+    const localeLength = 2;
+    const firstLocale = headerLocale.trim().slice(0, localeLength).toLowerCase();
     if (firstLocale === "*") {
       return fallbackLocale;
     }

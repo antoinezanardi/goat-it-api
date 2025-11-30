@@ -11,6 +11,18 @@ function getLocalizationOptionsFromContext(_: unknown, context: ExecutionContext
   return request.raw.localizationOptions;
 }
 
+/**
+ * Parameter decorator that extracts localization options from the request.
+ * Must be used on routes where LocalizationMiddleware is applied.
+ *
+ * @example
+ * ```typescript
+ * @Get()
+ * async findAll(@Localization() localization: LocalizationOptions) {
+ *   // ...
+ * }
+ * ```
+ */
 function Localization(): ParameterDecorator {
   const createLocalizationDecoratorFactory = createParamDecorator<unknown, LocalizationOptions>(getLocalizationOptionsFromContext);
 

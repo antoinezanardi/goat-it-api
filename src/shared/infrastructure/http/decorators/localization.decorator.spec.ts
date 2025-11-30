@@ -32,13 +32,5 @@ describe("Localization Decorator", () => {
 
       expectTypeOf(decorator).toBeFunction();
     });
-
-    it("should call getLocalizationOptionsFromContext with the execution context when used as a parameter decorator.", () => {
-      const decorator = Localization();
-      const toto = {};
-      decorator(toto, "mdr", 1);
-
-      expect(toto).toBeDefined();
-    });
   });
 });

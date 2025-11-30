@@ -86,7 +86,15 @@ const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
     "arrow-body-style": ["error", "as-needed"],
     "block-scoped-var": "error",
     "camelcase": ["error", { allow: ["npm_package_version"] }],
-    "capitalized-comments": ["error", "never", { ignorePattern: "TODO|Stryker" }],
+    "capitalized-comments": [
+      "error",
+      "always",
+      {
+        ignorePattern: "oxlint|eslint",
+        ignoreInlineComments: true,
+        ignoreConsecutiveComments: true,
+      },
+    ],
     "class-methods-use-this": "error",
     "complexity": "error",
     "consistent-return": "off",
