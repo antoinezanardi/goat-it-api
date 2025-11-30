@@ -28,9 +28,9 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
   return {
     id: faker.database.mongodbObjectId(),
     parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
-    label: createFakeLocalizedText(),
-    aliases: createFakeLocalizedTexts(),
-    description: createFakeLocalizedText(),
+    label: faker.word.sample(),
+    aliases: [faker.word.sample(), faker.word.sample(), faker.word.sample()],
+    description: faker.word.sample(),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),

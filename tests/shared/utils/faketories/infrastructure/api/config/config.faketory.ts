@@ -1,6 +1,6 @@
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
-import type { CorsConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 function createFakeServerConfigFromEnv(serverConfig: Partial<ServerConfigFromEnv> = {}): ServerConfigFromEnv {
   const fakeAppEnv = createFakeAppEnv();
@@ -32,8 +32,18 @@ function createFakeMongoDatabaseConfigFromEnv(mongoDatabaseConfig: Partial<Mongo
   };
 }
 
+function createFakeLocalizationConfigFromEnv(localizationConfig: Partial<LocalizationConfigFromEnv> = {}): LocalizationConfigFromEnv {
+  const fakeAppEnv = createFakeAppEnv();
+
+  return {
+    fallbackLocale: fakeAppEnv.FALLBACK_LOCALE,
+    ...localizationConfig,
+  };
+}
+
 export {
   createFakeServerConfigFromEnv,
   createFakeCorsConfigFromEnv,
   createFakeMongoDatabaseConfigFromEnv,
+  createFakeLocalizationConfigFromEnv,
 };

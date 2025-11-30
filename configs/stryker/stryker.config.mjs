@@ -12,6 +12,7 @@ export default {
     "!**/*.dto.ts",
     "!**/*.schema.ts",
     "!**/*.constants.ts",
+    "!**/*.module.ts",
   ],
   plugins: [
     "@stryker-mutator/vitest-runner",

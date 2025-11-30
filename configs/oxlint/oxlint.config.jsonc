@@ -20,6 +20,7 @@
     "describe": "readonly",
     "it": "readonly",
     "expect": "readonly",
+    "expectTypeOf": "readonly",
     "beforeAll": "readonly",
     "afterAll": "readonly",
     "beforeEach": "readonly",
@@ -148,7 +149,8 @@
           "K",
           "i",
           "x",
-          "y"
+          "y",
+          "_"
         ]
       }
     ],
@@ -722,7 +724,7 @@
           "type"
         ],
         "typescript/consistent-type-exports": "error",
-        // Disabled for now because of false positives because of decorators usage
+        // Disabled for now because of false positives because of decorators' usage
         "typescript/consistent-type-imports": "off",
         "typescript/default-param-last": "error",
         "typescript/dot-notation": [
@@ -990,6 +992,7 @@
         "**/src/**/*.module.ts"
       ],
       "rules": {
+        "class-methods-use-this": "off",
         "new-cap": [
           "error",
           {
@@ -1016,7 +1019,8 @@
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
-              "HealthCheck"
+              "HealthCheck",
+              "Localization"
             ]
           }
         ]
@@ -1049,6 +1053,30 @@
         "max-classes-per-file": [
           "error",
           5
+        ]
+      }
+    },
+    // ---- Override for middlewares -----
+    {
+      "files": [
+        "**/src/**/*.middleware.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable",
+              "Inject"
+            ]
+          }
+        ],
+        "no-param-reassign": [
+          "error",
+          {
+            "ignorePropertyModificationsFor": ["requestRaw"],
+            "props": true
+          }
         ]
       }
     },
@@ -1098,6 +1126,7 @@
       "rules": {
         "max-lines-per-function": "off",
         "no-magic-numbers": "off",
+        "new-cap": "off",
         "import/no-namespace": "off",
         "import/no-internal-modules": "off",
         "import/max-dependencies": [

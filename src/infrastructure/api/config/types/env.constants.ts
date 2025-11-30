@@ -1,3 +1,5 @@
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+
 const DEFAULT_ENV_SERVER_HOST = "0.0.0.0";
 
 const MIN_PORT_NUMBER = 1;
@@ -16,6 +18,8 @@ const MONGODB_DATABASE_REGEX = /^[\w-]+(?<!-)$/u;
 
 const DEFAULT_ENV_MONGODB_DATABASE = "goat-it";
 
+const DEFAULT_ENV_FALLBACK_LOCALE: Locale = "en";
+
 export {
   DEFAULT_ENV_SERVER_HOST,
   DEFAULT_ENV_SERVER_PORT,
@@ -26,4 +30,5 @@ export {
   DEFAULT_ENV_MONGODB_PORT,
   MONGODB_DATABASE_REGEX,
   DEFAULT_ENV_MONGODB_DATABASE,
+  DEFAULT_ENV_FALLBACK_LOCALE,
 };
