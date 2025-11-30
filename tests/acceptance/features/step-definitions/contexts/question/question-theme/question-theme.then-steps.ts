@@ -24,9 +24,9 @@ Then(/^the response should contain the following question themes:$/u, function(t
     const questionTheme = questionThemes[index];
     const expectedQuestionThemeAliases = expectedQuestionTheme.aliases.split(",").map(alias => alias.trim());
 
-    expect(questionTheme.label.fr).toBe(expectedQuestionTheme.label);
-    expect(questionTheme.aliases.fr).toStrictEqual(expectedQuestionThemeAliases);
-    expect(questionTheme.description.fr).toBe(expectedQuestionTheme.description);
+    expect(questionTheme.label).toBe(expectedQuestionTheme.label);
+    expect(questionTheme.aliases).toStrictEqual(expectedQuestionThemeAliases);
+    expect(questionTheme.description).toBe(expectedQuestionTheme.description);
     expect(questionTheme.status).toBe(expectedQuestionTheme.status);
   }
 });

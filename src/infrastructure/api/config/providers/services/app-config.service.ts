@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { CorsConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 @Injectable()
 export class AppConfigService {
@@ -25,6 +25,12 @@ export class AppConfigService {
       host: this.configService.getOrThrow<MongoDatabaseConfigFromEnv["host"]>("MONGODB_HOST"),
       port: this.configService.getOrThrow<MongoDatabaseConfigFromEnv["port"]>("MONGODB_PORT"),
       database: this.configService.getOrThrow<MongoDatabaseConfigFromEnv["database"]>("MONGODB_DATABASE"),
+    };
+  }
+
+  public get localizationConfig(): LocalizationConfigFromEnv {
+    return {
+      fallbackLocale: this.configService.getOrThrow<LocalizationConfigFromEnv["fallbackLocale"]>("FALLBACK_LOCALE"),
     };
   }
 }

@@ -5,11 +5,11 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 
 import { createMockedNestConfigService } from "@mocks/infrastructure/api/config/providers/services/nest-config.service.mock";
 
-import { createFakeCorsConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
 import type { TestingModule } from "@nestjs/testing";
 
-import type { CorsConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 describe("App Config Service", () => {
   let services: { appConfig: AppConfigService };
@@ -29,6 +29,7 @@ describe("App Config Service", () => {
           MONGODB_HOST: "localhost",
           MONGODB_PORT: 27_018,
           MONGODB_DATABASE: "goat-it-test",
+          FALLBACK_LOCALE: "en",
         }),
       },
     };
@@ -99,6 +100,24 @@ describe("App Config Service", () => {
       });
 
       expect(() => services.appConfig.mongoDbConfig).toThrow("MONGODB_HOST is not defined");
+    });
+  });
+
+  describe("localizationConfig", () => {
+    it("should return localization config from env when called.", () => {
+      const localizationConfig = createFakeLocalizationConfigFromEnv({
+        fallbackLocale: "en",
+      });
+
+      expect(services.appConfig.localizationConfig).toStrictEqual<LocalizationConfigFromEnv>(localizationConfig);
+    });
+
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("FALLBACK_LOCALE is not defined");
+      });
+
+      expect(() => services.appConfig.localizationConfig).toThrow("FALLBACK_LOCALE is not defined");
     });
   });
 });

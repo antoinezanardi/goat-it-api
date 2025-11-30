@@ -1,6 +1,16 @@
 import { faker } from "@faker-js/faker";
 
-import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
+import type { LocalizationOptions, LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
+
+function createFakeLocalizationOptions(localizationOptions: Partial<LocalizationOptions> = {}): LocalizationOptions {
+  return {
+    locale: faker.helpers.arrayElement(LOCALES),
+    fallbackLocale: faker.helpers.arrayElement(LOCALES),
+    ...localizationOptions,
+  };
+}
 
 function createFakeLocalizedText(localizedText: Partial<LocalizedText> = {}): LocalizedText {
   return {
@@ -27,6 +37,7 @@ function createFakeLocalizedTexts(localizedTexts: Partial<LocalizedTexts> = {}):
 }
 
 export {
+  createFakeLocalizationOptions,
   createFakeLocalizedText,
   createFakeLocalizedTexts,
 };

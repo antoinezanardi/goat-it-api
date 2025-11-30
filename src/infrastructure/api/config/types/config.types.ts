@@ -1,3 +1,5 @@
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+
 type ServerConfigFromEnv = {
   host: string;
   port: number;
@@ -13,4 +15,13 @@ type MongoDatabaseConfigFromEnv = {
   database: string;
 };
 
-export type { ServerConfigFromEnv, CorsConfigFromEnv, MongoDatabaseConfigFromEnv };
+type LocalizationConfigFromEnv = {
+  fallbackLocale: Locale;
+};
+
+export type {
+  ServerConfigFromEnv,
+  CorsConfigFromEnv,
+  MongoDatabaseConfigFromEnv,
+  LocalizationConfigFromEnv,
+};
