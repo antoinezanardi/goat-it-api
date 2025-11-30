@@ -2,9 +2,9 @@
 
 Feature: Question Theme
 
-  Scenario: User retrieves all question themes
+  Scenario: User retrieves all question themes in french locale
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the client retrieves all question themes
+    When the client retrieves all question themes in locale "fr"
     Then the request should have succeeded with status code 200
     And the response should contain 5 question themes
     And the response should contain the following question themes:

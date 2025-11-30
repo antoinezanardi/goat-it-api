@@ -9,7 +9,7 @@ import { APP_BASE_URL } from "@acceptance-support/constants/app.constants";
 import type { Model } from "mongoose";
 import type { IWorldOptions } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
-import type { FetchResponse, $Fetch } from "ofetch";
+import type { FetchResponse, $Fetch, FetchOptions } from "ofetch";
 
 class GoatItWorld extends World {
   public lastFetchResponse?: FetchResponse<unknown>;
@@ -31,8 +31,8 @@ class GoatItWorld extends World {
     this.constructTestDatabaseModels();
   }
 
-  public async fetchAndStoreResponse(endpoint: string): Promise<void> {
-    this.lastFetchResponse = await this.fetchInstance.raw(endpoint);
+  public async fetchAndStoreResponse(endpoint: string, fetchOptions?: FetchOptions): Promise<void> {
+    this.lastFetchResponse = await this.fetchInstance.raw(endpoint, fetchOptions);
   }
 
   public expectLastResponseText(): string {

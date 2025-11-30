@@ -4,11 +4,13 @@ import type { LocalizationOptions } from "@shared/domain/value-objects/locale/lo
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 function Localization(): ParameterDecorator {
-  return createParamDecorator<unknown, LocalizationOptions>((_, context): LocalizationOptions => {
+  const createLocalizationDecoratorFactory = createParamDecorator<unknown, LocalizationOptions>((_, context): LocalizationOptions => {
     const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();
 
     return request.raw.localizationOptions;
-  })();
+  });
+
+  return createLocalizationDecoratorFactory();
 }
 
 export { Localization };
