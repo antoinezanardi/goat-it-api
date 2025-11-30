@@ -20,6 +20,7 @@
     "describe": "readonly",
     "it": "readonly",
     "expect": "readonly",
+    "expectTypeOf": "readonly",
     "beforeAll": "readonly",
     "afterAll": "readonly",
     "beforeEach": "readonly",
@@ -1073,7 +1074,7 @@
         "no-param-reassign": [
           "error",
           {
-            "ignorePropertyModificationsFor": ["request"],
+            "ignorePropertyModificationsFor": ["requestRaw"],
             "props": true
           }
         ]
@@ -1125,6 +1126,7 @@
       "rules": {
         "max-lines-per-function": "off",
         "no-magic-numbers": "off",
+        "new-cap": "off",
         "import/no-namespace": "off",
         "import/no-internal-modules": "off",
         "import/max-dependencies": [

@@ -10,7 +10,7 @@ const ESLINT_DECORATORS_FLAT_CONFIG: Linter.Config = {
       "error",
       {
         selector: "function",
-        format: ["PascalCase"],
+        format: ["PascalCase", "camelCase"],
         leadingUnderscore: "allow",
       },
       ...NAMING_CONVENTION_DEFAULT_CONFIG,

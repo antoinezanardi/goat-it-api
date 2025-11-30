@@ -44,6 +44,16 @@ Feature: List Question Themes
       | Histoire | Passé, Chronologie     | Thème sur les événements historiques, personnages et périodes. | active   |
       | Science  | Technologie, Recherche | Thème couvrant les sciences, découvertes et innovations.       | active   |
 
+  Scenario: Listing all question themes in French locale with fallback to default because of missing translation
+    Given the database is populated with question themes fixture set with name "two-english-only-question-themes"
+    When the client retrieves all question themes in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 2 question themes
+    And the response should contain the following question themes:
+      | label  | aliases       | description                                  | status |
+      | Cinema | Movies, Films | Theme about cinema and movies.               | active |
+      | Music  | Songs, Tunes  | Theme about music, artists and music genres. | active |
+
   Scenario: Listing all question themes when none exist
     When the client retrieves all question themes
     Then the request should have succeeded with status code 200

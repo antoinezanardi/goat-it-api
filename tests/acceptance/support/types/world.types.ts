@@ -37,8 +37,11 @@ class GoatItWorld extends World {
   public async fetchAndStoreResponse(endpoint: string, fetchOptions?: FetchOptions): Promise<void> {
     try {
       await this.fetchInstance(endpoint, fetchOptions);
-    } catch {
-      // the response is already stored in onResponse, so we can ignore errors here
+    } catch(error) {
+      // network-level errors don't trigger onResponse
+      if (!this.lastFetchResponse) {
+        throw error;
+      }
     }
   }
 
