@@ -117,7 +117,7 @@ describe("App Config Service", () => {
         throw new Error("FALLBACK_LOCALE is not defined");
       });
 
-      expect(() => services.appConfig.localizationConfig).toThrow("FALLBACK_LOCALE is not defined");
+      expect(() => services.appConfig.localizationConfig).toThrowError("FALLBACK_LOCALE is not defined");
     });
   });
 });
