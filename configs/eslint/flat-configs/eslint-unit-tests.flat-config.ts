@@ -23,6 +23,15 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/init-declarations": "off",
     "@typescript-eslint/no-magic-numbers": "off",
     "@typescript-eslint/prefer-destructuring": "off",
+    "vitest/consistent-each-for": [
+      "error",
+      {
+        describe: "each",
+        it: "each",
+        suite: "each",
+        test: "each",
+      },
+    ],
     "vitest/consistent-test-filename": ["error", { pattern: String.raw`^(.+\.spec)\.ts$` }],
     "vitest/consistent-test-it": ["error", { fn: "it" }],
     "vitest/consistent-vitest-vi": "error",
@@ -89,6 +98,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/prefer-vi-mocked": "error",
     "vitest/require-awaited-expect-poll": "error",
     "vitest/require-hook": "error",
+    "vitest/require-import-vi-mock": "error",
     "vitest/require-local-test-context-for-concurrent-snapshots": "error",
     "vitest/require-mock-type-parameters": "error",
     "vitest/require-to-throw-message": "error",

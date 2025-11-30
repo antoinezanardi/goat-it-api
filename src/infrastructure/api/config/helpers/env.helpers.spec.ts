@@ -370,7 +370,7 @@ describe("Env Validation", () => {
         errorMessage: "Invalid environment variables",
       },
     ])("$test", ({ config, errorMessage }) => {
-      expect(() => validate(config)).toThrow(errorMessage);
+      expect(() => validate(config)).toThrowError(errorMessage);
     });
   });
 

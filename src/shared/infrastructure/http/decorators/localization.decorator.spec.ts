@@ -37,7 +37,7 @@ describe("Localization Decorator", () => {
       };
       const expectedError = new InternalServerErrorException("Missing localizationOptions on request. Ensure LocalizationMiddleware is applied to this route.");
 
-      expect(() => getLocalizationOptionsFromContext({}, fakeExecutionContext as unknown as ExecutionContext)).toThrow(expectedError);
+      expect(() => getLocalizationOptionsFromContext({}, fakeExecutionContext as unknown as ExecutionContext)).toThrowError(expectedError);
     });
   });
 

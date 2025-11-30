@@ -136,7 +136,7 @@ describe("Localization Middleware", () => {
       const next = vi.fn<() => void>();
       const expectedError = new BadRequestException(`Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered)`);
 
-      expect(() => localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next)).toThrow(expectedError);
+      expect(() => localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next)).toThrowError(expectedError);
     });
   });
 
