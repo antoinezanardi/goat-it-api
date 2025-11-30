@@ -6,6 +6,7 @@ import { createQuestionThemeDtoFromEntity } from "@question/modules/question-the
 
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
 
+import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
@@ -47,20 +48,35 @@ describe("Question Theme Controller", () => {
 
   describe(QuestionThemeController.prototype.findAllQuestionThemes, () => {
     it("should list all question themes when called.", async() => {
-      await controllers.questionTheme.findAllQuestionThemes();
+      const localization = createFakeLocalizationOptions();
+      await controllers.questionTheme.findAllQuestionThemes(localization);
 
       expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should map every question theme to dto when called.", async() => {
+      const localization = createFakeLocalizationOptions();
       const questionThemes = [
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      await controllers.questionTheme.findAllQuestionThemes();
+      await controllers.questionTheme.findAllQuestionThemes(localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);
+    });
+
+    it("should call the mapper with the correct parameters when called.", async() => {
+      const localization = createFakeLocalizationOptions();
+      const questionThemes = [
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+      ];
+      mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);
+      await controllers.questionTheme.findAllQuestionThemes(localization);
+
+      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);
     });
   });
 });

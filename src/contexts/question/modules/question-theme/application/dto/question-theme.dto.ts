@@ -7,12 +7,12 @@ const QUESTION_THEME_DTO = z.object({
   id: z.string()
     .regex(/^[\da-f]{24}$/iu)
     .describe("Question Theme's unique identifier."),
-  label: z.record(z.string(), z.string())
-    .describe("Question Theme's label in different languages."),
-  aliases: z.record(z.string(), z.string().array())
-    .describe("Question Theme's aliases in different languages. Help to find the theme with different keywords."),
-  description: z.record(z.string(), z.string())
-    .describe("Question Theme's description in different languages."),
+  label: z.string()
+    .describe("Question Theme's translated label."),
+  aliases: z.string().array()
+    .describe("Question Theme's translated aliases. Help to find the theme with different keywords."),
+  description: z.string()
+    .describe("Question Theme's translated description."),
   parentId: z.string()
     .regex(/^[\da-f]{24}$/iu)
     .optional()

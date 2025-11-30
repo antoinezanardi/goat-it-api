@@ -148,7 +148,8 @@
           "K",
           "i",
           "x",
-          "y"
+          "y",
+          "_"
         ]
       }
     ],
@@ -1016,7 +1017,8 @@
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
-              "HealthCheck"
+              "HealthCheck",
+              "Localization"
             ]
           }
         ]
@@ -1049,6 +1051,30 @@
         "max-classes-per-file": [
           "error",
           5
+        ]
+      }
+    },
+    // ---- Override for middlewares errors -----
+    {
+      "files": [
+        "**/src/**/*.middleware.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable",
+              "Inject"
+            ]
+          }
+        ],
+        "no-param-reassign": [
+          "error",
+          {
+            "ignorePropertyModificationsFor": ["request"],
+            "props": true
+          }
         ]
       }
     },
