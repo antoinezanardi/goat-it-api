@@ -139,7 +139,7 @@
     "rimraf": "^6.1.2",
     "semantic-release": "^25.0.2",
     "semantic-release-export-data": "^1.2.0",
-    "tsx": "^4.20.6",
+    "tsx": "^4.21.0",
     "type-fest": "^5.2.0",
     "typescript": "^5.9.3",
     "unplugin-swc": "^1.5.9",
