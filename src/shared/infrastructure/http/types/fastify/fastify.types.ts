@@ -6,11 +6,14 @@ type AugmentedFastifyRequest = FastifyRequest & {
   raw: AugmentedFastifyRequestRaw;
 };
 
-type AugmentedFastifyRequestRaw = FastifyRequest["raw"] & {
+type AugmentedFastifyRequestRaw = FastifyRequest & FastifyRequestRawLocalizationOptions;
+
+type FastifyRequestRawLocalizationOptions = {
   localizationOptions: LocalizationOptions;
 };
 
 export type {
   AugmentedFastifyRequest,
   AugmentedFastifyRequestRaw,
+  FastifyRequestRawLocalizationOptions,
 };

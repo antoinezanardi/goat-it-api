@@ -13,19 +13,19 @@ import { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fa
 export class LocalizationMiddleware implements NestMiddleware {
   public constructor(@Inject(AppConfigService) private readonly appConfigService: AppConfigService) {}
 
-  private static useFallbackLocale(request: AugmentedFastifyRequestRaw, fallbackLocale: Locale, next: () => void): void {
-    request.localizationOptions = {
+  private static useFallbackLocale(requestRaw: AugmentedFastifyRequestRaw, fallbackLocale: Locale, next: () => void): void {
+    requestRaw.localizationOptions = {
       locale: fallbackLocale,
       fallbackLocale,
     };
     next();
   }
 
-  public use(request: AugmentedFastifyRequestRaw, _: FastifyReply["raw"], next: () => void): void {
-    const headerLocale = this.getFirstLocaleFromHeader(request.headers["accept-language"]);
+  public use(requestRaw: AugmentedFastifyRequestRaw, _: FastifyReply["raw"], next: () => void): void {
+    const headerLocale = this.getFirstLocaleFromHeader(requestRaw.headers["accept-language"]);
     const { fallbackLocale } = this.appConfigService.localizationConfig;
     if (headerLocale === undefined) {
-      LocalizationMiddleware.useFallbackLocale(request, fallbackLocale, next);
+      LocalizationMiddleware.useFallbackLocale(requestRaw, fallbackLocale, next);
 
       return;
     }
@@ -34,7 +34,7 @@ export class LocalizationMiddleware implements NestMiddleware {
       throw new BadRequestException(`Invalid locale '${headerLocale}' in 'Accept-Language' header, supported locales are: ${LOCALES.join(", ")} (only the first locale is considered)`);
     }
 
-    request.localizationOptions = {
+    requestRaw.localizationOptions = {
       locale: parsedLocale.data,
       fallbackLocale,
     };

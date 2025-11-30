@@ -1055,7 +1055,7 @@
         ]
       }
     },
-    // ---- Override for middlewares errors -----
+    // ---- Override for middlewares -----
     {
       "files": [
         "**/src/**/*.middleware.ts"

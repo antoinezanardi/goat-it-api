@@ -48,3 +48,7 @@ Feature: List Question Themes
     When the client retrieves all question themes
     Then the request should have succeeded with status code 200
     And the response should contain 0 question themes
+
+  Scenario: Listing all question themes with invalid locale
+    When the client retrieves all question themes in locale "invalid-locale"
+    Then the request should have failed with status code 400

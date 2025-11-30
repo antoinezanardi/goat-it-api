@@ -27,12 +27,19 @@ class GoatItWorld extends World {
 
     this.fetchInstance = ofetch.create({
       baseURL: APP_BASE_URL,
+      onResponse: ({ response }) => {
+        this.lastFetchResponse = response;
+      },
     });
     this.constructTestDatabaseModels();
   }
 
   public async fetchAndStoreResponse(endpoint: string, fetchOptions?: FetchOptions): Promise<void> {
-    this.lastFetchResponse = await this.fetchInstance.raw(endpoint, fetchOptions);
+    try {
+      await this.fetchInstance(endpoint, fetchOptions);
+    } catch {
+      // the response is already stored in onResponse, so we can ignore errors here
+    }
   }
 
   public expectLastResponseText(): string {
