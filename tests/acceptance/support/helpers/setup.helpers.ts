@@ -9,7 +9,10 @@ import { APP_BASE_URL, APP_ENV_TEST_PATH, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_
 import type { ChildProcessWithoutNullStreams, SpawnOptions, SpawnOptionsWithoutStdio } from "node:child_process";
 
 function loadEnvTestConfig(): void {
-  const envLoadResult = loadEnvConfig({ path: APP_ENV_TEST_PATH });
+  const envLoadResult = loadEnvConfig({
+    path: APP_ENV_TEST_PATH,
+    quiet: true,
+  });
   if (envLoadResult.error) {
     throw new Error(`Failed to load environment variables from ${APP_ENV_TEST_PATH}: ${envLoadResult.error.message}`);
   }
