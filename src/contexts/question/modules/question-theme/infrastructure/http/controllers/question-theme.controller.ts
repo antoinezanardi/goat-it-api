@@ -1,7 +1,7 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
-import { Localization } from "@shared/infrastructure/http/decorators/localization.decorator";
+import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
