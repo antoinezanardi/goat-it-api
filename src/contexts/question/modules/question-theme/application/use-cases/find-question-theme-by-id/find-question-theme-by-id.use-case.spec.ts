@@ -6,6 +6,10 @@ import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-them
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
 describe("Find Question Theme By Id Use Case", () => {
   let findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase;
   let mocks: {
@@ -45,6 +49,14 @@ describe("Find Question Theme By Id Use Case", () => {
       const expectedError = new QuestionThemeNotFoundError("123");
 
       await expect(async() => findQuestionThemeByIdUseCase.getById("123")).rejects.toThrowError(expectedError);
+    });
+
+    it("should return the question theme when found.", async() => {
+      const questionThemeDocument = createFakeQuestionTheme();
+      mocks.repositories.questionTheme.findById.mockResolvedValue(questionThemeDocument);
+      const actualQuestionTheme = await findQuestionThemeByIdUseCase.getById("123");
+
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeDocument);
     });
   });
 });

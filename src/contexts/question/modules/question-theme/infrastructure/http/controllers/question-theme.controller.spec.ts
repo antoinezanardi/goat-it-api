@@ -1,9 +1,11 @@
 import { Test } from "@nestjs/testing";
 
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 
+import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
@@ -14,10 +16,11 @@ import type { Mock } from "vitest";
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme.dto.mappers"));
 
 describe("Question Theme Controller", () => {
-  let controllers: { questionTheme: QuestionThemeController };
+  let questionThemeController: QuestionThemeController;
   let mocks: {
     useCases: {
       findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
+      findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
     };
     mappers: {
       createQuestionThemeDtoFromEntity: Mock;
@@ -28,6 +31,7 @@ describe("Question Theme Controller", () => {
     mocks = {
       useCases: {
         findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
+        findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
       },
       mappers: {
         createQuestionThemeDtoFromEntity: vi.mocked(createQuestionThemeDtoFromEntity),
@@ -40,16 +44,20 @@ describe("Question Theme Controller", () => {
           provide: FindAllQuestionThemesUseCase,
           useValue: mocks.useCases.findAllQuestionThemes,
         },
+        {
+          provide: FindQuestionThemeByIdUseCase,
+          useValue: mocks.useCases.findQuestionThemeById,
+        },
       ],
     }).compile();
 
-    controllers = { questionTheme: testingModule.get<QuestionThemeController>(QuestionThemeController) };
+    questionThemeController = testingModule.get<QuestionThemeController>(QuestionThemeController);
   });
 
   describe(QuestionThemeController.prototype.findAllQuestionThemes, () => {
     it("should list all question themes when called.", async() => {
       const localization = createFakeLocalizationOptions();
-      await controllers.questionTheme.findAllQuestionThemes(localization);
+      await questionThemeController.findAllQuestionThemes(localization);
 
       expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
     });
@@ -61,7 +69,7 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      await controllers.questionTheme.findAllQuestionThemes(localization);
+      await questionThemeController.findAllQuestionThemes(localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);
     });
@@ -74,9 +82,29 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
       ];
       mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);
-      await controllers.questionTheme.findAllQuestionThemes(localization);
+      await questionThemeController.findAllQuestionThemes(localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);
+    });
+  });
+
+  describe(QuestionThemeController.prototype.findQuestionThemeById, () => {
+    it("should get question theme by id when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const localization = createFakeLocalizationOptions();
+      await questionThemeController.findQuestionThemeById(questionThemeId, localization);
+
+      expect(mocks.useCases.findQuestionThemeById.getById).toHaveBeenCalledExactlyOnceWith(questionThemeId);
+    });
+
+    it("should map the question theme to dto when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const localization = createFakeLocalizationOptions();
+      const questionTheme = createFakeQuestionTheme();
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);
+      await questionThemeController.findQuestionThemeById(questionThemeId, localization);
+
+      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(questionTheme, localization);
     });
   });
 });
