@@ -19,8 +19,13 @@ describe("Mongo Id Pipe", () => {
     }>([
       {
         test: "should throw BadRequestException when value is undefined.",
-        errorMessage: "Mongo ID must be provided in the request URL",
+        errorMessage: "Mongo ID must be provided",
         value: undefined,
+      },
+      {
+        test: "should throw BadRequestException when value is null.",
+        errorMessage: "Mongo ID must be provided",
+        value: null,
       },
       {
         test: "should throw BadRequestException when value is not a string.",
@@ -28,9 +33,19 @@ describe("Mongo Id Pipe", () => {
         value: 123,
       },
       {
-        test: "should throw BadRequestException when value is an invalid mongo id.",
+        test: "should throw BadRequestException when value is an invalid mongo id (invalid hex characters).",
         errorMessage: "Invalid Mongo ID: invalid-mongo-id",
         value: "invalid-mongo-id",
+      },
+      {
+        test: "should throw BadRequestException when value is an invalid mongo id (wrong length).",
+        errorMessage: "Invalid Mongo ID: 12345",
+        value: "12345",
+      },
+      {
+        test: "should throw BadRequestException when value is toptoptoptop",
+        errorMessage: "Invalid Mongo ID: toptoptoptop",
+        value: "toptoptoptop",
       },
     ])("$test", ({ errorMessage, value }) => {
       const pipe = new MongoIdPipe();

@@ -3,9 +3,9 @@ import { Types } from "mongoose";
 
 @Injectable()
 export class MongoIdPipe implements PipeTransform<unknown, string> {
-  public transform(value?: unknown): string {
-    if (value === undefined) {
-      throw new BadRequestException("Mongo ID must be provided in the request URL");
+  public transform(value: unknown): string {
+    if (value === undefined || value === null) {
+      throw new BadRequestException("Mongo ID must be provided");
     }
     if (typeof value !== "string") {
       throw new BadRequestException(`Mongo ID must be a string, but received: ${typeof value}`);
