@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from "@nestjs/common";
 
-import { getLocalizationOptionsFromContext, Localization } from "@shared/infrastructure/http/decorators/localization.decorator";
+import { getLocalizationOptionsFromContext, Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 

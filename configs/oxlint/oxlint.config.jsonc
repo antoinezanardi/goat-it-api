@@ -1080,6 +1080,23 @@
         ]
       }
     },
+    // ---- Override for pipes -----
+    {
+      "files": [
+        "**/src/**/*.pipe.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off",
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable"
+            ]
+          }
+        ]
+      }
+    },
     // ---- Override for mongoose schemas -----
     {
       "files": [
