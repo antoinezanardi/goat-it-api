@@ -1,8 +1,10 @@
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("5cd8edcc5fdf4cf6aaf79c9e"),
     label: createFakeLocalizedText({
       en: "Cinema",
       fr: undefined,
@@ -31,6 +33,7 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("3ff6c1e3ae2fe3fdd9ced1e8"),
     label: createFakeLocalizedText({
       en: "Music",
       fr: undefined,

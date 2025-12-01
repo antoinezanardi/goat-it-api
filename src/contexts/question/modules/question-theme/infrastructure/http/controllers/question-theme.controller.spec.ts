@@ -1,5 +1,6 @@
 import { Test } from "@nestjs/testing";
 
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller";
@@ -9,7 +10,7 @@ import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/questi
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
@@ -105,6 +106,19 @@ describe("Question Theme Controller", () => {
       await questionThemeController.findQuestionThemeById(questionThemeId, localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(questionTheme, localization);
+    });
+
+    it("should return the mapped dto from the mapper when found.", async() => {
+      const questionThemeId = "question-theme-id";
+      const localization = createFakeLocalizationOptions();
+      const questionTheme = createFakeQuestionTheme();
+      const expectedDto = createFakeQuestionThemeDto();
+
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);
+      mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
+      const result = await questionThemeController.findQuestionThemeById(questionThemeId, localization);
+
+      expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
     });
   });
 });

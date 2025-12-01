@@ -12,7 +12,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "65"
+            "98"
           ],
           "location": {
             "end": {
@@ -40,8 +40,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -63,11 +63,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "121"
+            "129"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -89,11 +89,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "121"
+            "129"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -115,11 +115,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "122"
+            "130"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -141,11 +141,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "121"
+            "129"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -167,11 +167,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "121"
+            "129"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -193,11 +193,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "121"
+            "129"
           ],
           "coveredBy": [
-            "121",
-            "122"
+            "129",
+            "130"
           ],
           "location": {
             "end": {
@@ -219,7 +219,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "122"
+            "130"
           ],
           "location": {
             "end": {
@@ -241,10 +241,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "122"
+            "130"
           ],
           "coveredBy": [
-            "122"
+            "130"
           ],
           "location": {
             "end": {
@@ -272,7 +272,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "99"
+            "97"
           ],
           "location": {
             "end": {
@@ -294,7 +294,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "99"
+            "97"
           ],
           "location": {
             "end": {
@@ -316,10 +316,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "99"
+            "97"
           ],
           "coveredBy": [
-            "99"
+            "97"
           ],
           "location": {
             "end": {
@@ -347,7 +347,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95"
+            "107"
           ],
           "location": {
             "end": {
@@ -369,7 +369,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95"
+            "107"
           ],
           "location": {
             "end": {
@@ -397,7 +397,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "98"
+            "94"
           ],
           "location": {
             "end": {
@@ -413,9 +413,157 @@
       ],
       "source": "import { Inject, Injectable } from \"@nestjs/common\";\n\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\nimport { QuestionThemeRepository } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.types\";\n\n@Injectable()\nexport class FindAllQuestionThemesUseCase {\n  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)\n  private readonly questionThemeRepository: QuestionThemeRepository) {}\n\n  public async list(): Promise<QuestionTheme[]> {\n    return this.questionThemeRepository.findAll();\n  }\n}"
     },
+    "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "16",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "31",
+            "32",
+            "33"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 20
+            },
+            "start": {
+              "column": 60,
+              "line": 14
+            }
+          }
+        },
+        {
+          "id": "17",
+          "mutatorName": "BooleanLiteral",
+          "replacement": "questionTheme",
+          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "31",
+            "32",
+            "33"
+          ],
+          "location": {
+            "end": {
+              "column": 23,
+              "line": 16
+            },
+            "start": {
+              "column": 9,
+              "line": 16
+            }
+          }
+        },
+        {
+          "id": "18",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "31",
+            "32",
+            "33"
+          ],
+          "location": {
+            "end": {
+              "column": 23,
+              "line": 16
+            },
+            "start": {
+              "column": 9,
+              "line": 16
+            }
+          }
+        },
+        {
+          "id": "19",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "false",
+          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "31",
+            "32",
+            "33"
+          ],
+          "location": {
+            "end": {
+              "column": 23,
+              "line": 16
+            },
+            "start": {
+              "column": 9,
+              "line": 16
+            }
+          }
+        },
+        {
+          "id": "20",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "32"
+          ],
+          "location": {
+            "end": {
+              "column": 6,
+              "line": 18
+            },
+            "start": {
+              "column": 25,
+              "line": 16
+            }
+          }
+        }
+      ],
+      "source": "import { Inject, Injectable } from \"@nestjs/common\";\n\nimport { QuestionThemeNotFoundError } from \"@question/modules/question-theme/domain/errors/question-theme.errors\";\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\nimport { QuestionThemeRepository } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.types\";\n\n@Injectable()\nexport class FindQuestionThemeByIdUseCase {\n  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)\n  private readonly questionThemeRepository: QuestionThemeRepository) {}\n\n  public async getById(id: string): Promise<QuestionTheme> {\n    const questionTheme = await this.questionThemeRepository.findById(id);\n    if (!questionTheme) {\n      throw new QuestionThemeNotFoundError(id);\n    }\n    return questionTheme;\n  }\n}"
+    },
     "src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts": {
       "language": "typescript",
       "mutants": [
+        {
+          "id": "21",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "32",
+            "125",
+            "126"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 5
+            },
+            "start": {
+              "column": 47,
+              "line": 2
+            }
+          }
+        },
         {
           "id": "22",
           "mutatorName": "StringLiteral",
@@ -425,12 +573,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "127"
+            "126"
           ],
           "coveredBy": [
-            "46",
-            "126",
-            "127"
+            "32",
+            "125",
+            "126"
           ],
           "location": {
             "end": {
@@ -452,12 +600,12 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "126"
+            "125"
           ],
           "coveredBy": [
-            "46",
-            "126",
-            "127"
+            "32",
+            "125",
+            "126"
           ],
           "location": {
             "end": {
@@ -479,8 +627,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "128",
-            "129"
+            "127",
+            "128"
           ],
           "location": {
             "end": {
@@ -502,11 +650,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "129"
+            "128"
           ],
           "coveredBy": [
-            "128",
-            "129"
+            "127",
+            "128"
           ],
           "location": {
             "end": {
@@ -528,11 +676,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "128"
+            "127"
           ],
           "coveredBy": [
-            "128",
-            "129"
+            "127",
+            "128"
           ],
           "location": {
             "end": {
@@ -542,29 +690,6 @@
             "start": {
               "column": 17,
               "line": 11
-            }
-          }
-        },
-        {
-          "id": "21",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\nsrc/contexts/question/modules/question-theme/domain/errors/question-theme.errors.ts(2,3): error TS2377: Constructors for derived classes must contain a 'super' call.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "46",
-            "126",
-            "127"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 5
-            },
-            "start": {
-              "column": 47,
-              "line": 2
             }
           }
         }
@@ -583,7 +708,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "120"
+            "119"
           ],
           "location": {
             "end": {
@@ -605,7 +730,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "120"
+            "119"
           ],
           "location": {
             "end": {
@@ -627,7 +752,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "120"
+            "119"
           ],
           "location": {
             "end": {
@@ -1026,17 +1151,17 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
             "66",
             "67",
             "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "74",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1058,20 +1183,20 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "69"
+            "63"
           ],
           "coveredBy": [
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
             "66",
             "67",
             "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "74",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1093,20 +1218,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "66"
+            "60"
           ],
           "coveredBy": [
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
             "66",
             "67",
             "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "74",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1128,20 +1253,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "66"
+            "60"
           ],
           "coveredBy": [
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
             "66",
             "67",
             "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "74",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1163,20 +1288,20 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "66"
+            "60"
           ],
           "coveredBy": [
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
             "66",
             "67",
             "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "74",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1198,11 +1323,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "66"
+            "60"
           ],
           "coveredBy": [
-            "66",
-            "74"
+            "60",
+            "68"
           ],
           "location": {
             "end": {
@@ -1224,11 +1349,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "66"
+            "60"
           ],
           "coveredBy": [
-            "66",
-            "74"
+            "60",
+            "68"
           ],
           "location": {
             "end": {
@@ -1250,18 +1375,18 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "70"
+            "64"
           ],
           "coveredBy": [
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
             "67",
-            "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1283,18 +1408,18 @@
           "testsCompleted": 7,
           "static": false,
           "killedBy": [
-            "70"
+            "64"
           ],
           "coveredBy": [
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
             "67",
-            "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1316,18 +1441,18 @@
           "testsCompleted": 6,
           "static": false,
           "killedBy": [
-            "70"
+            "64"
           ],
           "coveredBy": [
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
             "67",
-            "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1349,18 +1474,18 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "67"
+            "61"
           ],
           "coveredBy": [
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
             "67",
-            "68",
-            "69",
-            "70",
-            "71",
-            "72",
             "73",
-            "79",
-            "86"
+            "80"
           ],
           "location": {
             "end": {
@@ -1382,6 +1507,12 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
             "74",
             "75",
             "76",
@@ -1392,13 +1523,7 @@
             "81",
             "82",
             "83",
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "84"
           ],
           "location": {
             "end": {
@@ -1420,6 +1545,12 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
             "74",
             "75",
             "76",
@@ -1430,13 +1561,7 @@
             "81",
             "82",
             "83",
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "84"
           ],
           "location": {
             "end": {
@@ -1458,6 +1583,12 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
             "74",
             "75",
             "76",
@@ -1468,13 +1599,7 @@
             "81",
             "82",
             "83",
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "84"
           ],
           "location": {
             "end": {
@@ -1496,6 +1621,12 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
             "74",
             "75",
             "76",
@@ -1506,13 +1637,7 @@
             "81",
             "82",
             "83",
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "84"
           ],
           "location": {
             "end": {
@@ -1534,13 +1659,13 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "78",
+            "79",
+            "80",
+            "81",
+            "82",
+            "83",
+            "84"
           ],
           "location": {
             "end": {
@@ -1562,16 +1687,16 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "84"
+            "78"
           ],
           "coveredBy": [
-            "84",
-            "85",
-            "86",
-            "87",
-            "88",
-            "89",
-            "90"
+            "78",
+            "79",
+            "80",
+            "81",
+            "82",
+            "83",
+            "84"
           ],
           "location": {
             "end": {
@@ -1593,10 +1718,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1618,10 +1743,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1643,10 +1768,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "91"
+            "85"
           ],
           "coveredBy": [
-            "91"
+            "85"
           ],
           "location": {
             "end": {
@@ -1668,13 +1793,13 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "92"
+            "86"
           ],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1696,13 +1821,13 @@
           "testsCompleted": 4,
           "static": false,
           "killedBy": [
-            "94"
+            "88"
           ],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1724,13 +1849,13 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "92"
+            "86"
           ],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1752,13 +1877,13 @@
           "testsCompleted": 4,
           "static": false,
           "killedBy": [
-            "94"
+            "88"
           ],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1780,10 +1905,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "94"
+            "88"
           ],
           "coveredBy": [
-            "94"
+            "88"
           ],
           "location": {
             "end": {
@@ -1805,11 +1930,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "92"
+            "86"
           ],
           "coveredBy": [
-            "92",
-            "93"
+            "86",
+            "87"
           ],
           "location": {
             "end": {
@@ -1831,11 +1956,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "91"
+            "85"
           ],
           "coveredBy": [
-            "91",
-            "94"
+            "85",
+            "88"
           ],
           "location": {
             "end": {
@@ -1857,13 +1982,13 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "91"
+            "85"
           ],
           "coveredBy": [
-            "91",
-            "92",
-            "93",
-            "94"
+            "85",
+            "86",
+            "87",
+            "88"
           ],
           "location": {
             "end": {
@@ -1891,8 +2016,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "26",
-            "27"
+            "52",
+            "53"
           ],
           "location": {
             "end": {
@@ -1914,8 +2039,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "26",
-            "27"
+            "52",
+            "53"
           ],
           "location": {
             "end": {
@@ -1937,11 +2062,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "26"
+            "52"
           ],
           "coveredBy": [
-            "26",
-            "27"
+            "52",
+            "53"
           ],
           "location": {
             "end": {
@@ -1963,10 +2088,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "26"
+            "52"
           ],
           "coveredBy": [
-            "26"
+            "52"
           ],
           "location": {
             "end": {
@@ -1988,8 +2113,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "28",
-            "29"
+            "54",
+            "55"
           ],
           "location": {
             "end": {
@@ -2011,8 +2136,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "28",
-            "29"
+            "54",
+            "55"
           ],
           "location": {
             "end": {
@@ -2034,11 +2159,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "28"
+            "54"
           ],
           "coveredBy": [
-            "28",
-            "29"
+            "54",
+            "55"
           ],
           "location": {
             "end": {
@@ -2060,8 +2185,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "30",
-            "31"
+            "56",
+            "57"
           ],
           "location": {
             "end": {
@@ -2083,8 +2208,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "30",
-            "31"
+            "56",
+            "57"
           ],
           "location": {
             "end": {
@@ -2106,11 +2231,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "30"
+            "56"
           ],
           "coveredBy": [
-            "30",
-            "31"
+            "56",
+            "57"
           ],
           "location": {
             "end": {
@@ -2132,10 +2257,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "30"
+            "56"
           ],
           "coveredBy": [
-            "30"
+            "56"
           ],
           "location": {
             "end": {
@@ -2157,10 +2282,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "30"
+            "56"
           ],
           "coveredBy": [
-            "30"
+            "56"
           ],
           "location": {
             "end": {
@@ -2182,8 +2307,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "32",
-            "33"
+            "58",
+            "59"
           ],
           "location": {
             "end": {
@@ -2205,8 +2330,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "32",
-            "33"
+            "58",
+            "59"
           ],
           "location": {
             "end": {
@@ -2228,11 +2353,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "32"
+            "58"
           ],
           "coveredBy": [
-            "32",
-            "33"
+            "58",
+            "59"
           ],
           "location": {
             "end": {
@@ -2260,8 +2385,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "96",
-            "97"
+            "95",
+            "96"
           ],
           "location": {
             "end": {
@@ -2289,9 +2414,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "60",
-            "61",
-            "62"
+            "89",
+            "90",
+            "91"
           ],
           "location": {
             "end": {
@@ -2313,12 +2438,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "61"
+            "90"
           ],
           "coveredBy": [
-            "60",
-            "61",
-            "62"
+            "89",
+            "90",
+            "91"
           ],
           "location": {
             "end": {
@@ -2340,9 +2465,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "60",
-            "61",
-            "62"
+            "89",
+            "90",
+            "91"
           ],
           "location": {
             "end": {
@@ -2364,9 +2489,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "60",
-            "61",
-            "62"
+            "89",
+            "90",
+            "91"
           ],
           "location": {
             "end": {
@@ -2388,8 +2513,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "61",
-            "63"
+            "90",
+            "92"
           ],
           "location": {
             "end": {
@@ -2411,8 +2536,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "62",
-            "64"
+            "91",
+            "93"
           ],
           "location": {
             "end": {
@@ -2434,11 +2559,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "64"
+            "93"
           ],
           "coveredBy": [
-            "62",
-            "64"
+            "91",
+            "93"
           ],
           "location": {
             "end": {
@@ -2466,10 +2591,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "107",
             "108",
             "109",
-            "110"
+            "110",
+            "111"
           ],
           "location": {
             "end": {
@@ -2491,13 +2616,13 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "107"
+            "108"
           ],
           "coveredBy": [
-            "107",
             "108",
             "109",
-            "110"
+            "110",
+            "111"
           ],
           "location": {
             "end": {
@@ -2525,6 +2650,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2536,8 +2662,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2559,9 +2684,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "13"
+            "12"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2573,8 +2699,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2596,9 +2721,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "13"
+            "12"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2610,8 +2736,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2633,6 +2758,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2644,8 +2770,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2667,9 +2792,10 @@
           "testsCompleted": 7,
           "static": false,
           "killedBy": [
-            "19"
+            "18"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2681,8 +2807,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2704,9 +2829,10 @@
           "testsCompleted": 7,
           "static": false,
           "killedBy": [
-            "19"
+            "18"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2718,8 +2844,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2741,9 +2866,10 @@
           "testsCompleted": 11,
           "static": false,
           "killedBy": [
-            "23"
+            "22"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2755,8 +2881,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2778,9 +2903,10 @@
           "testsCompleted": 12,
           "static": false,
           "killedBy": [
-            "24"
+            "23"
           ],
           "coveredBy": [
+            "12",
             "13",
             "14",
             "15",
@@ -2792,8 +2918,7 @@
             "21",
             "22",
             "23",
-            "24",
-            "25"
+            "24"
           ],
           "location": {
             "end": {
@@ -2929,9 +3054,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "54",
-            "55",
-            "56"
+            "46",
+            "47",
+            "48"
           ],
           "location": {
             "end": {
@@ -2953,12 +3078,12 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "54"
+            "46"
           ],
           "coveredBy": [
-            "54",
-            "55",
-            "56"
+            "46",
+            "47",
+            "48"
           ],
           "location": {
             "end": {
@@ -2980,12 +3105,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "55"
+            "47"
           ],
           "coveredBy": [
-            "54",
-            "55",
-            "56"
+            "46",
+            "47",
+            "48"
           ],
           "location": {
             "end": {
@@ -3007,12 +3132,12 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "55"
+            "47"
           ],
           "coveredBy": [
-            "54",
-            "55",
-            "56"
+            "46",
+            "47",
+            "48"
           ],
           "location": {
             "end": {
@@ -3034,12 +3159,12 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "56"
+            "48"
           ],
           "coveredBy": [
-            "54",
-            "55",
-            "56"
+            "46",
+            "47",
+            "48"
           ],
           "location": {
             "end": {
@@ -3061,10 +3186,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "56",
-            "57",
-            "58",
-            "59"
+            "48",
+            "49",
+            "50",
+            "51"
           ],
           "location": {
             "end": {
@@ -3086,13 +3211,13 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "57"
+            "49"
           ],
           "coveredBy": [
-            "56",
-            "57",
-            "58",
-            "59"
+            "48",
+            "49",
+            "50",
+            "51"
           ],
           "location": {
             "end": {
@@ -3114,10 +3239,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "57"
+            "49"
           ],
           "coveredBy": [
-            "57"
+            "49"
           ],
           "location": {
             "end": {
@@ -3139,10 +3264,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "57"
+            "49"
           ],
           "coveredBy": [
-            "57"
+            "49"
           ],
           "location": {
             "end": {
@@ -3164,13 +3289,13 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "58"
+            "50"
           ],
           "coveredBy": [
-            "56",
-            "57",
-            "58",
-            "59"
+            "48",
+            "49",
+            "50",
+            "51"
           ],
           "location": {
             "end": {
@@ -3192,10 +3317,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "58"
+            "50"
           ],
           "coveredBy": [
-            "58"
+            "50"
           ],
           "location": {
             "end": {
@@ -3217,10 +3342,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "58"
+            "50"
           ],
           "coveredBy": [
-            "58"
+            "50"
           ],
           "location": {
             "end": {
@@ -3248,9 +3373,9 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "111",
-            "114",
-            "117"
+            "112",
+            "115",
+            "118"
           ],
           "location": {
             "end": {
@@ -3272,12 +3397,12 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "111"
+            "112"
           ],
           "coveredBy": [
-            "111",
-            "114",
-            "117"
+            "112",
+            "115",
+            "118"
           ],
           "location": {
             "end": {
@@ -3299,13 +3424,13 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95",
-            "112",
+            "107",
             "113",
             "114",
             "115",
             "116",
-            "117"
+            "117",
+            "118"
           ],
           "location": {
             "end": {
@@ -3327,16 +3452,16 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "112"
+            "113"
           ],
           "coveredBy": [
-            "95",
-            "112",
+            "107",
             "113",
             "114",
             "115",
             "116",
-            "117"
+            "117",
+            "118"
           ],
           "location": {
             "end": {
@@ -3358,10 +3483,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95",
-            "112",
+            "107",
             "113",
-            "114"
+            "114",
+            "115"
           ],
           "location": {
             "end": {
@@ -3383,10 +3508,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95",
-            "112",
+            "107",
             "113",
-            "114"
+            "114",
+            "115"
           ],
           "location": {
             "end": {
@@ -3408,10 +3533,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95",
-            "115",
+            "107",
             "116",
-            "117"
+            "117",
+            "118"
           ],
           "location": {
             "end": {
@@ -3433,10 +3558,10 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "95",
-            "115",
+            "107",
             "116",
-            "117"
+            "117",
+            "118"
           ],
           "location": {
             "end": {
@@ -3458,10 +3583,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "117"
+            "118"
           ],
           "coveredBy": [
-            "117"
+            "118"
           ],
           "location": {
             "end": {
@@ -3489,8 +3614,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "123",
-            "124"
+            "122",
+            "123"
           ],
           "location": {
             "end": {
@@ -3512,8 +3637,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "123",
-            "124"
+            "122",
+            "123"
           ],
           "location": {
             "end": {
@@ -3535,8 +3660,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "123",
-            "124"
+            "122",
+            "123"
           ],
           "location": {
             "end": {
@@ -3558,8 +3683,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "123",
-            "124"
+            "122",
+            "123"
           ],
           "location": {
             "end": {
@@ -3581,7 +3706,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "124"
+            "123"
           ],
           "location": {
             "end": {
@@ -3603,10 +3728,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "124"
+            "123"
           ],
           "coveredBy": [
-            "124"
+            "123"
           ],
           "location": {
             "end": {
@@ -3628,7 +3753,7 @@
           "static": true,
           "killedBy": [],
           "coveredBy": [
-            "125"
+            "124"
           ],
           "location": {
             "end": {
@@ -4424,8 +4549,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4447,8 +4572,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4470,11 +4595,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4496,11 +4621,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4522,11 +4647,11 @@
           "testsCompleted": 2,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4548,11 +4673,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "118"
+            "120"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4574,11 +4699,11 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4600,11 +4725,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "118"
+            "120"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4626,10 +4751,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4651,10 +4776,10 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4676,8 +4801,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4699,8 +4824,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4722,8 +4847,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4745,8 +4870,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4768,7 +4893,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4790,10 +4915,10 @@
           "testsCompleted": 3,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4815,11 +4940,11 @@
           "testsCompleted": 1,
           "static": false,
           "killedBy": [
-            "118"
+            "120"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4841,8 +4966,8 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4864,11 +4989,11 @@
           "testsCompleted": 5,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "118",
-            "119"
+            "120",
+            "121"
           ],
           "location": {
             "end": {
@@ -4890,10 +5015,10 @@
           "testsCompleted": 4,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4915,10 +5040,10 @@
           "testsCompleted": 4,
           "static": false,
           "killedBy": [
-            "119"
+            "121"
           ],
           "coveredBy": [
-            "119"
+            "121"
           ],
           "location": {
             "end": {
@@ -4934,125 +5059,6 @@
       ],
       "source": "import { BadRequestException, Injectable, PipeTransform } from \"@nestjs/common\";\nimport { Types } from \"mongoose\";\n\n@Injectable()\nexport class MongoIdPipe implements PipeTransform<unknown, string> {\n  public transform(value: unknown): string {\n    if (value === undefined || value === null) {\n      throw new BadRequestException(\"Mongo ID must be provided\");\n    }\n    if (typeof value !== \"string\") {\n      throw new BadRequestException(`Mongo ID must be a string, but received: ${typeof value}`);\n    }\n    if (!Types.ObjectId.isValid(value)) {\n      throw new BadRequestException(`Invalid Mongo ID: ${value}`);\n    }\n    return value;\n  }\n}"
     },
-    "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts": {
-      "language": "typescript",
-      "mutants": [
-        {
-          "id": "16",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(14,37): error TS2355: A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "45",
-            "46",
-            "47"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 20
-            },
-            "start": {
-              "column": 60,
-              "line": 14
-            }
-          }
-        },
-        {
-          "id": "17",
-          "mutatorName": "BooleanLiteral",
-          "replacement": "questionTheme",
-          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "45",
-            "46",
-            "47"
-          ],
-          "location": {
-            "end": {
-              "column": 23,
-              "line": 16
-            },
-            "start": {
-              "column": 9,
-              "line": 16
-            }
-          }
-        },
-        {
-          "id": "18",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "45",
-            "46",
-            "47"
-          ],
-          "location": {
-            "end": {
-              "column": 23,
-              "line": 16
-            },
-            "start": {
-              "column": 9,
-              "line": 16
-            }
-          }
-        },
-        {
-          "id": "19",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "false",
-          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(19,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "45",
-            "46",
-            "47"
-          ],
-          "location": {
-            "end": {
-              "column": 23,
-              "line": 16
-            },
-            "start": {
-              "column": 9,
-              "line": 16
-            }
-          }
-        },
-        {
-          "id": "20",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\nsrc/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.ts(17,5): error TS2322: Type 'QuestionTheme | undefined' is not assignable to type 'QuestionTheme'.\n  Type 'undefined' is not assignable to type 'QuestionTheme'.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "46"
-          ],
-          "location": {
-            "end": {
-              "column": 6,
-              "line": 18
-            },
-            "start": {
-              "column": 25,
-              "line": 16
-            }
-          }
-        }
-      ],
-      "source": "import { Inject, Injectable } from \"@nestjs/common\";\n\nimport { QuestionThemeNotFoundError } from \"@question/modules/question-theme/domain/errors/question-theme.errors\";\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\nimport { QuestionThemeRepository } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.types\";\n\n@Injectable()\nexport class FindQuestionThemeByIdUseCase {\n  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)\n  private readonly questionThemeRepository: QuestionThemeRepository) {}\n\n  public async getById(id: string): Promise<QuestionTheme> {\n    const questionTheme = await this.questionThemeRepository.findById(id);\n    if (!questionTheme) {\n      throw new QuestionThemeNotFoundError(id);\n    }\n    return questionTheme;\n  }\n}"
-    },
     "src/contexts/question/modules/question-theme/infrastructure/http/controllers/question-theme.controller.ts": {
       "language": "typescript",
       "mutants": [
@@ -5064,9 +5070,9 @@
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "48",
-            "49",
-            "50"
+            "25",
+            "26",
+            "27"
           ],
           "location": {
             "end": {
@@ -5087,9 +5093,9 @@
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "48",
-            "49",
-            "50"
+            "25",
+            "26",
+            "27"
           ],
           "location": {
             "end": {
@@ -5110,8 +5116,9 @@
           "status": "CompileError",
           "static": false,
           "coveredBy": [
-            "51",
-            "52"
+            "28",
+            "29",
+            "30"
           ],
           "location": {
             "end": {
@@ -5188,108 +5195,108 @@
       ],
       "source": "import { getModelToken } from \"@nestjs/mongoose\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { createQuestionThemeFromDocument } from \"@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers\";\nimport { QuestionThemeMongooseRepository } from \"@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository\";\nimport { QuestionThemeMongooseSchema } from \"@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema\";\n\nimport { createMockedQuestionThemeMongooseModel } from \"@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock\";\n\nimport { createFakeQuestionTheme, createFakeQuestionThemeDocument } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { Mock } from \"vitest\";\nimport type { TestingModule } from \"@nestjs/testing\";\n\nimport type { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\n\nvi.mock(import(\"@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers\"));\n\ndescribe(\"Question Theme Mongoose Repository\", () => {\n  let repositories: { questionTheme: QuestionThemeMongooseRepository };\n  let mocks: {\n    models: {\n      questionTheme: ReturnType<typeof createMockedQuestionThemeMongooseModel>;\n    };\n    mappers: {\n      questionTheme: {\n        createQuestionThemeFromDocument: Mock;\n      };\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      models: {\n        questionTheme: createMockedQuestionThemeMongooseModel(),\n      },\n      mappers: {\n        questionTheme: {\n          createQuestionThemeFromDocument: vi.mocked(createQuestionThemeFromDocument),\n        },\n      },\n    };\n\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: getModelToken(QuestionThemeMongooseSchema.name),\n          useValue: mocks.models.questionTheme,\n        },\n        QuestionThemeMongooseRepository,\n      ],\n    }).compile();\n\n    repositories = { questionTheme: module.get<QuestionThemeMongooseRepository>(QuestionThemeMongooseRepository) };\n  });\n\n  describe(\"findAll\", () => {\n    it(\"should find all documents from model when called.\", async() => {\n      await repositories.questionTheme.findAll();\n\n      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should map and return question themes when called.\", async() => {\n      const questionThemes = await repositories.questionTheme.findAll();\n\n      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(questionThemes.length);\n    });\n\n    it(\"should return mapped question themes from model when called.\", async() => {\n      const expectedQuestionThemes = [\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n      ];\n      vi.mocked(createQuestionThemeFromDocument)\n        .mockReturnValueOnce(expectedQuestionThemes[0])\n        .mockReturnValueOnce(expectedQuestionThemes[1])\n        .mockReturnValueOnce(expectedQuestionThemes[2]);\n      const actualQuestionThemes = await repositories.questionTheme.findAll();\n\n      expect(actualQuestionThemes).toStrictEqual<QuestionTheme[]>(expectedQuestionThemes);\n    });\n  });\n\n  describe(\"findById\", () => {\n    it(\"should find document by id from model when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      await repositories.questionTheme.findById(questionThemeId);\n\n      expect(mocks.models.questionTheme.findById).toHaveBeenCalledExactlyOnceWith(questionThemeId);\n    });\n\n    it(\"should map and return question theme when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const foundQuestionThemeDocument = createFakeQuestionThemeDocument();\n      mocks.models.questionTheme.findById.mockResolvedValue(foundQuestionThemeDocument);\n      await repositories.questionTheme.findById(questionThemeId);\n\n      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(foundQuestionThemeDocument);\n    });\n\n    it(\"should return undefined when document with given id is not found.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      mocks.models.questionTheme.findById.mockResolvedValue(null);\n      const actualQuestionTheme = await repositories.questionTheme.findById(questionThemeId);\n\n      expect(actualQuestionTheme).toBeUndefined();\n    });\n  });\n\n  describe(\"create\", () => {\n    it(\"should create document in model when called.\", async() => {\n      const questionThemeToCreate = createFakeQuestionTheme();\n      await repositories.questionTheme.create(questionThemeToCreate);\n\n      expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeToCreate);\n    });\n\n    it(\"should map and return created question theme when called.\", async() => {\n      const questionThemeToCreate = createFakeQuestionTheme();\n      const createdQuestionThemeDocument = createFakeQuestionThemeDocument();\n      mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);\n      await repositories.questionTheme.create(questionThemeToCreate);\n\n      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(createdQuestionThemeDocument);\n    });\n\n    it(\"should return created question theme when called.\", async() => {\n      const questionThemeToCreate = createFakeQuestionTheme();\n      const createdQuestionThemeDocument = createFakeQuestionThemeDocument();\n      mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);\n      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(questionThemeToCreate);\n      const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);\n\n      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeToCreate);\n    });\n  });\n\n  describe(\"archive\", () => {\n    it(\"should update document status to archived in model when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      await repositories.questionTheme.archive(questionThemeId);\n\n      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionThemeId, { status: \"archived\" }, { new: true });\n    });\n\n    it(\"should return update and map question theme when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const updatedQuestionThemeDocument = createFakeQuestionThemeDocument();\n      const updatedQuestionTheme = createFakeQuestionTheme();\n      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(updatedQuestionThemeDocument);\n      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(updatedQuestionTheme);\n      const actualQuestionTheme = await repositories.questionTheme.archive(questionThemeId);\n\n      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(updatedQuestionTheme);\n    });\n\n    it(\"should return undefined when document to archive is not found.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(null);\n      const actualQuestionTheme = await repositories.questionTheme.archive(questionThemeId);\n\n      expect(actualQuestionTheme).toBeUndefined();\n    });\n  });\n});"
     },
-    "src/main.spec.ts": {
-      "tests": [
-        {
-          "id": "12",
-          "name": "Main Root should call bootstrap when file is imported."
-        }
-      ],
-      "source": "import * as Server from \"@src/infrastructure/api/server/server\";\n\nvi.mock(import(\"@src/infrastructure/api/server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
-    },
     "src/infrastructure/api/server/server.spec.ts": {
       "tests": [
         {
-          "id": "13",
+          "id": "12",
           "name": "Server bootstrap should create from NestFactory when called."
         },
         {
-          "id": "14",
+          "id": "13",
           "name": "Server bootstrap should create cors config from configuration when called."
         },
         {
-          "id": "15",
+          "id": "14",
           "name": "Server bootstrap should enable cors when called."
         },
         {
-          "id": "16",
+          "id": "15",
           "name": "Server bootstrap should enable shutdown hooks when called."
         },
         {
-          "id": "17",
+          "id": "16",
           "name": "Server bootstrap should use logger when called."
         },
         {
-          "id": "18",
+          "id": "17",
           "name": "Server bootstrap should setup swagger module when called."
         },
         {
-          "id": "19",
+          "id": "18",
           "name": "Server bootstrap should use static assets when called."
         },
         {
-          "id": "20",
+          "id": "19",
           "name": "Server bootstrap should listen on the default host and port when none are provided."
         },
         {
-          "id": "21",
+          "id": "20",
           "name": "Server bootstrap should listen on the provided host and port when they are provided."
         },
         {
-          "id": "22",
+          "id": "21",
           "name": "Server bootstrap should get app url when called."
         },
         {
-          "id": "23",
+          "id": "22",
           "name": "Server bootstrap should log the app url when called."
         },
         {
-          "id": "24",
+          "id": "23",
           "name": "Server bootstrap should log the swagger documentation path when called."
         },
         {
-          "id": "25",
+          "id": "24",
           "name": "Server bootstrap should return the app when called."
         }
       ],
       "source": "/* oxlint-disable jest/no-conditional-in-test */\nimport * as NestCore from \"@nestjs/core\";\nimport * as Fastify from \"@nestjs/platform-fastify\";\nimport { Logger } from \"nestjs-pino\";\n\nimport { AppConfigService } from \"@src/infrastructure/api/config/providers/services/app-config.service\";\nimport { createCorsConfig } from \"@src/infrastructure/api/server/cors/helpers/cors.helpers\";\nimport { setupSwaggerModule } from \"@src/infrastructure/api/server/swagger/helpers/swagger.helpers\";\nimport { bootstrap } from \"@src/infrastructure/api/server/server\";\n\nimport type { AppModule } from \"@app/app.module\";\n\nimport { createMockedAppConfigService } from \"@mocks/infrastructure/api/config/providers/services/app-config.service.mock\";\nimport { getMockedLoggerInstance } from \"@mocks/shared/nest/nest.mock\";\n\nimport { createFakeCorsConfigFromEnv, createFakeServerConfigFromEnv } from \"@faketories/infrastructure/api/config/config.faketory\";\nimport { createFakeCorsConfig } from \"@faketories/infrastructure/api/server/cors/cors.faketory\";\n\nimport type { INestApplication, NestApplicationOptions } from \"@nestjs/common\";\n\nvi.mock(import(\"@nestjs/core\"));\nvi.mock(import(\"@app/app.module\"), () => ({\n  AppModule: {\n    name: \"MockedModule\",\n  } as typeof AppModule,\n}));\nvi.mock(import(\"@src/infrastructure/api/server/swagger/helpers/swagger.helpers\"));\nvi.mock(import(\"@src/infrastructure/api/server/cors/helpers/cors.helpers\"));\n\ndescribe(\"Server\", () => {\n  let mocks: {\n    services: {\n      config: ReturnType<typeof createMockedAppConfigService>;\n    };\n  };\n\n  beforeEach(() => {\n    mocks = {\n      services: {\n        config: createMockedAppConfigService({\n          serverConfig: createFakeServerConfigFromEnv({\n            host: \"0.0.0.0\",\n            port: 3000,\n          }),\n          corsConfig: createFakeCorsConfigFromEnv({\n            origin: \"*\",\n          }),\n        }),\n      },\n    };\n\n    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({\n      enableShutdownHooks: vi.fn<() => INestApplication>(),\n      useLogger: vi.fn<() => void>(),\n      get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(service => {\n        if (service === AppConfigService) {\n          return mocks.services.config;\n        }\n        if (service === Logger) {\n          return getMockedLoggerInstance();\n        }\n        return {};\n      }),\n      listen: vi.fn<() => Promise<undefined>>(),\n      getUrl: vi.fn<() => Promise<string>>().mockResolvedValue(\"http://mocked-host:9090\"),\n      useStaticAssets: vi.fn<() => void>(),\n      enableCors: vi.fn<() => INestApplication>(),\n    } as Partial<INestApplication>);\n  });\n\n  describe(bootstrap, () => {\n    it(\"should create from NestFactory when called.\", async() => {\n      const expectedOptions: NestApplicationOptions = {\n        bufferLogs: true,\n      };\n      await bootstrap();\n\n      expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith(\n        { name: \"MockedModule\" },\n        expect.any(Fastify.FastifyAdapter),\n        expectedOptions,\n      );\n    });\n\n    it(\"should create cors config from configuration when called.\", async() => {\n      const corsConfigFromEnv = createFakeCorsConfigFromEnv({\n        origin: \"*\",\n      });\n      await bootstrap();\n\n      expect(createCorsConfig).toHaveBeenCalledExactlyOnceWith(corsConfigFromEnv);\n    });\n\n    it(\"should enable cors when called.\", async() => {\n      const expectedCorsConfig = createFakeCorsConfig({\n        origin: \"*\",\n        credentials: false,\n        methods: [\"GET\", \"POST\", \"PUT\", \"DELETE\", \"PATCH\", \"OPTIONS\"],\n        allowedHeaders: [\"Content-Type\", \"Authorization\"],\n      });\n      vi.mocked(createCorsConfig).mockReturnValue(expectedCorsConfig);\n      const app = await bootstrap();\n\n      expect(app.enableCors).toHaveBeenCalledExactlyOnceWith(expectedCorsConfig);\n    });\n\n    it(\"should enable shutdown hooks when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should use logger when called.\", async() => {\n      const app = await bootstrap();\n      const mockLogger = getMockedLoggerInstance();\n\n      expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);\n    });\n\n    it(\"should setup swagger module when called.\", async() => {\n      await bootstrap();\n\n      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));\n    });\n\n    it(\"should use static assets when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({\n        root: `${process.cwd()}/public`,\n        prefix: \"/public/\",\n      });\n    });\n\n    it(\"should listen on the default host and port when none are provided.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"0.0.0.0\", port: 3000 });\n    });\n\n    it(\"should listen on the provided host and port when they are provided.\", async() => {\n      mocks.services.config.serverConfig = createFakeServerConfigFromEnv({\n        host: \"127.0.0.1\",\n        port: 8080,\n      });\n\n      const app = await bootstrap();\n\n      expect(app.listen).toHaveBeenCalledExactlyOnceWith({ host: \"127.0.0.1\", port: 8080 });\n    });\n\n    it(\"should get app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should log the app url when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, \"🐐 Goat It API is running on: http://mocked-host:9090\");\n    });\n\n    it(\"should log the swagger documentation path when called.\", async() => {\n      const app = await bootstrap();\n\n      expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, \"📚 Swagger documentation is available on: http://mocked-host:9090/docs\");\n    });\n\n    it(\"should return the app when called.\", async() => {\n      const app = await bootstrap();\n      const expectedApp = {\n        enableCors: expect.any(Function) as () => INestApplication,\n        enableShutdownHooks: expect.any(Function) as () => INestApplication,\n        useLogger: expect.any(Function) as () => void,\n        get: expect.any(Function) as () => never,\n        listen: expect.any(Function) as () => void,\n        getUrl: expect.any(Function) as () => void,\n        useStaticAssets: expect.any(Function) as () => void,\n      };\n\n      expect(app).toStrictEqual(expectedApp);\n    });\n  });\n});"
     },
-    "src/infrastructure/api/config/providers/services/app-config.service.spec.ts": {
+    "src/contexts/question/modules/question-theme/infrastructure/http/controllers/question-theme.controller.spec.ts": {
       "tests": [
         {
+          "id": "25",
+          "name": "Question Theme Controller findAllQuestionThemes should list all question themes when called."
+        },
+        {
           "id": "26",
-          "name": "App Config Service serverConfig should return server config from env when called."
+          "name": "Question Theme Controller findAllQuestionThemes should map every question theme to dto when called."
         },
         {
           "id": "27",
-          "name": "App Config Service serverConfig should throw error when one of the required env vars is not defined."
+          "name": "Question Theme Controller findAllQuestionThemes should call the mapper with the correct parameters when called."
         },
         {
           "id": "28",
-          "name": "App Config Service corsConfig should return cors config from env when called."
+          "name": "Question Theme Controller findQuestionThemeById should get question theme by id when called."
         },
         {
           "id": "29",
-          "name": "App Config Service corsConfig should throw error when one of the required env vars is not defined."
+          "name": "Question Theme Controller findQuestionThemeById should map the question theme to dto when called."
         },
         {
           "id": "30",
-          "name": "App Config Service mongoDatabaseConfig should return mongo database config from env when called."
-        },
+          "name": "Question Theme Controller findQuestionThemeById should return the mapped dto from the mapper when found."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport type { QuestionThemeDto } from \"@question/modules/question-theme/application/dto/question-theme.dto\";\nimport { FindAllQuestionThemesUseCase } from \"@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case\";\nimport { FindQuestionThemeByIdUseCase } from \"@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case\";\nimport { QuestionThemeController } from \"@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller\";\nimport { createQuestionThemeDtoFromEntity } from \"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\";\n\nimport { createMockedFindQuestionThemeByIdUseCase } from \"@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock\";\nimport { createMockedFindAllQuestionThemesUseCase } from \"@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock\";\n\nimport { createFakeLocalizationOptions } from \"@faketories/shared/locale/locale.faketory\";\nimport { createFakeQuestionTheme, createFakeQuestionThemeDto } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { Mock } from \"vitest\";\n\nvi.mock(import(\"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\"));\n\ndescribe(\"Question Theme Controller\", () => {\n  let questionThemeController: QuestionThemeController;\n  let mocks: {\n    useCases: {\n      findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;\n      findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;\n    };\n    mappers: {\n      createQuestionThemeDtoFromEntity: Mock;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      useCases: {\n        findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),\n        findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),\n      },\n      mappers: {\n        createQuestionThemeDtoFromEntity: vi.mocked(createQuestionThemeDtoFromEntity),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [QuestionThemeController],\n      providers: [\n        {\n          provide: FindAllQuestionThemesUseCase,\n          useValue: mocks.useCases.findAllQuestionThemes,\n        },\n        {\n          provide: FindQuestionThemeByIdUseCase,\n          useValue: mocks.useCases.findQuestionThemeById,\n        },\n      ],\n    }).compile();\n\n    questionThemeController = testingModule.get<QuestionThemeController>(QuestionThemeController);\n  });\n\n  describe(QuestionThemeController.prototype.findAllQuestionThemes, () => {\n    it(\"should list all question themes when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      await questionThemeController.findAllQuestionThemes(localization);\n\n      expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should map every question theme to dto when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      const questionThemes = [\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n      ];\n      await questionThemeController.findAllQuestionThemes(localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);\n    });\n\n    it(\"should call the mapper with the correct parameters when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      const questionThemes = [\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n      ];\n      mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);\n      await questionThemeController.findAllQuestionThemes(localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);\n    });\n  });\n\n  describe(QuestionThemeController.prototype.findQuestionThemeById, () => {\n    it(\"should get question theme by id when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const localization = createFakeLocalizationOptions();\n      await questionThemeController.findQuestionThemeById(questionThemeId, localization);\n\n      expect(mocks.useCases.findQuestionThemeById.getById).toHaveBeenCalledExactlyOnceWith(questionThemeId);\n    });\n\n    it(\"should map the question theme to dto when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const localization = createFakeLocalizationOptions();\n      const questionTheme = createFakeQuestionTheme();\n      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);\n      await questionThemeController.findQuestionThemeById(questionThemeId, localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(questionTheme, localization);\n    });\n\n    it(\"should return the mapped dto from the mapper when found.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const localization = createFakeLocalizationOptions();\n      const questionTheme = createFakeQuestionTheme();\n      const expectedDto = createFakeQuestionThemeDto();\n\n      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);\n      mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto as any);\n      const result = await questionThemeController.findQuestionThemeById(questionThemeId, localization);\n\n      expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);\n    });\n  });\n});"
+    },
+    "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.spec.ts": {
+      "tests": [
         {
           "id": "31",
-          "name": "App Config Service mongoDatabaseConfig should throw error when one of the required env vars is not defined."
+          "name": "Find Question Theme By Id Use Case getById should get question theme by id from repository when called."
         },
         {
           "id": "32",
-          "name": "App Config Service localizationConfig should return localization config from env when called."
+          "name": "Find Question Theme By Id Use Case getById should throw an error when question theme is not found."
         },
         {
           "id": "33",
-          "name": "App Config Service localizationConfig should throw error when one of the required env vars is not defined."
+          "name": "Find Question Theme By Id Use Case getById should return the question theme when found."
         }
       ],
-      "source": "import { ConfigService } from \"@nestjs/config\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { AppConfigService } from \"@src/infrastructure/api/config/providers/services/app-config.service\";\n\nimport { createMockedNestConfigService } from \"@mocks/infrastructure/api/config/providers/services/nest-config.service.mock\";\n\nimport { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from \"@faketories/infrastructure/api/config/config.faketory\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\nimport type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from \"@src/infrastructure/api/config/types/config.types\";\n\ndescribe(\"App Config Service\", () => {\n  let services: { appConfig: AppConfigService };\n  let mocks: {\n    services: {\n      nestConfig: ReturnType<typeof createMockedNestConfigService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        nestConfig: createMockedNestConfigService({\n          SERVER_HOST: \"127.0.0.1\",\n          SERVER_PORT: 8080,\n          CORS_ORIGIN: \"everywhere\",\n          MONGODB_HOST: \"localhost\",\n          MONGODB_PORT: 27_018,\n          MONGODB_DATABASE: \"goat-it-test\",\n          FALLBACK_LOCALE: \"en\",\n        }),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        AppConfigService,\n        {\n          provide: ConfigService,\n          useValue: mocks.services.nestConfig,\n        },\n      ],\n    }).compile();\n\n    services = { appConfig: module.get<AppConfigService>(AppConfigService) };\n  });\n\n  describe(\"serverConfig\", () => {\n    it(\"should return server config from env when called.\", () => {\n      const expectedServerConfig = createFakeServerConfigFromEnv({\n        host: \"127.0.0.1\",\n        port: 8080,\n      });\n\n      expect(services.appConfig.serverConfig).toStrictEqual<ServerConfigFromEnv>(expectedServerConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"SERVER_HOST is not defined\");\n      });\n\n      expect(() => services.appConfig.serverConfig).toThrowError(\"SERVER_HOST is not defined\");\n    });\n  });\n\n  describe(\"corsConfig\", () => {\n    it(\"should return cors config from env when called.\", () => {\n      const expectedCorsConfig = createFakeCorsConfigFromEnv({\n        origin: \"everywhere\",\n      });\n\n      expect(services.appConfig.corsConfig).toStrictEqual<CorsConfigFromEnv>(expectedCorsConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"CORS_ORIGIN is not defined\");\n      });\n\n      expect(() => services.appConfig.corsConfig).toThrowError(\"CORS_ORIGIN is not defined\");\n    });\n  });\n\n  describe(\"mongoDatabaseConfig\", () => {\n    it(\"should return mongo database config from env when called.\", () => {\n      const mongoDatabaseConfig = createFakeMongoDatabaseConfigFromEnv({\n        host: \"localhost\",\n        port: 27_018,\n        database: \"goat-it-test\",\n      });\n\n      expect(services.appConfig.mongoDbConfig).toStrictEqual<MongoDatabaseConfigFromEnv>(mongoDatabaseConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"MONGODB_HOST is not defined\");\n      });\n\n      expect(() => services.appConfig.mongoDbConfig).toThrowError(\"MONGODB_HOST is not defined\");\n    });\n  });\n\n  describe(\"localizationConfig\", () => {\n    it(\"should return localization config from env when called.\", () => {\n      const localizationConfig = createFakeLocalizationConfigFromEnv({\n        fallbackLocale: \"en\",\n      });\n\n      expect(services.appConfig.localizationConfig).toStrictEqual<LocalizationConfigFromEnv>(localizationConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"FALLBACK_LOCALE is not defined\");\n      });\n\n      expect(() => services.appConfig.localizationConfig).toThrowError(\"FALLBACK_LOCALE is not defined\");\n    });\n  });\n});"
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { FindQuestionThemeByIdUseCase } from \"@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case\";\nimport { QuestionThemeNotFoundError } from \"@question/modules/question-theme/domain/errors/question-theme.errors\";\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { createMockedQuestionThemeRepository } from \"@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock\";\n\nimport { createFakeQuestionTheme } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\n\ndescribe(\"Find Question Theme By Id Use Case\", () => {\n  let findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase;\n  let mocks: {\n    repositories: {\n      questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      repositories: {\n        questionTheme: createMockedQuestionThemeRepository(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      providers: [\n        FindQuestionThemeByIdUseCase,\n        {\n          provide: QUESTION_THEME_REPOSITORY_TOKEN,\n          useValue: mocks.repositories.questionTheme,\n        },\n      ],\n    }).compile();\n\n    findQuestionThemeByIdUseCase = testingModule.get<FindQuestionThemeByIdUseCase>(FindQuestionThemeByIdUseCase);\n  });\n\n  describe(FindQuestionThemeByIdUseCase.prototype.getById, () => {\n    it(\"should get question theme by id from repository when called.\", async() => {\n      await findQuestionThemeByIdUseCase.getById(\"123\");\n\n      expect(mocks.repositories.questionTheme.findById).toHaveBeenCalledExactlyOnceWith(\"123\");\n    });\n\n    it(\"should throw an error when question theme is not found.\", async() => {\n      mocks.repositories.questionTheme.findById.mockResolvedValue(undefined);\n      const expectedError = new QuestionThemeNotFoundError(\"123\");\n\n      await expect(async() => findQuestionThemeByIdUseCase.getById(\"123\")).rejects.toThrowError(expectedError);\n    });\n\n    it(\"should return the question theme when found.\", async() => {\n      const questionThemeDocument = createFakeQuestionTheme();\n      mocks.repositories.questionTheme.findById.mockResolvedValue(questionThemeDocument);\n      const actualQuestionTheme = await findQuestionThemeByIdUseCase.getById(\"123\");\n\n      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeDocument);\n    });\n  });\n});"
     },
     "src/shared/infrastructure/http/middlewares/localization/localization.middleware.spec.ts": {
       "tests": [
@@ -5340,275 +5347,270 @@
       ],
       "source": "import { BadRequestException } from \"@nestjs/common\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { AppConfigService } from \"@src/infrastructure/api/config/providers/services/app-config.service\";\n\nimport { LocalizationMiddleware } from \"@shared/infrastructure/http/middlewares/localization/localization.middleware\";\n\nimport { createMockedAppConfigService } from \"@mocks/infrastructure/api/config/providers/services/app-config.service.mock\";\n\nimport { createFakeLocalizationOptions } from \"@faketories/shared/locale/locale.faketory\";\nimport { createFakeLocalizationConfigFromEnv } from \"@faketories/infrastructure/api/config/config.faketory\";\n\nimport type { AugmentedFastifyRequestRaw } from \"@shared/infrastructure/http/types/fastify/fastify.types\";\nimport type { Locale } from \"@shared/domain/value-objects/locale/locale.types\";\n\ndescribe(\"Localization Middleware\", () => {\n  let localizationMiddleware: LocalizationMiddleware;\n  let mocks: {\n    services: {\n      appConfig: ReturnType<typeof createMockedAppConfigService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        appConfig: createMockedAppConfigService({\n          localizationConfig: createFakeLocalizationConfigFromEnv({\n            fallbackLocale: \"en\",\n          }),\n        }),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      providers: [\n        LocalizationMiddleware,\n        {\n          provide: AppConfigService,\n          useValue: mocks.services.appConfig,\n        },\n      ],\n    }).compile();\n\n    localizationMiddleware = testingModule.get<LocalizationMiddleware>(LocalizationMiddleware);\n  });\n\n  describe(\"useFallbackLocale\", () => {\n    it(\"should set localization options with fallback locale when called.\", () => {\n      const fallbackLocale: Locale = \"en\";\n      const request = {\n        localizationOptions: {},\n      };\n      const next = vi.fn<() => void>();\n      const expectedRequest = {\n        localizationOptions: createFakeLocalizationOptions({\n          locale: fallbackLocale,\n          fallbackLocale,\n        }),\n      };\n      const localizationMiddlewareStub = LocalizationMiddleware as unknown as { useFallbackLocale: (...parameters: unknown[]) => void };\n      localizationMiddlewareStub.useFallbackLocale(request, fallbackLocale, next);\n\n      expect(request).toStrictEqual(expectedRequest);\n    });\n\n    it(\"should call next function when called.\", () => {\n      const fallbackLocale: Locale = \"en\";\n      const request = {\n        localizationOptions: {},\n      };\n      const next = vi.fn<() => void>();\n      const localizationMiddlewareStub = LocalizationMiddleware as unknown as { useFallbackLocale: (...parameters: unknown[]) => void };\n      localizationMiddlewareStub.useFallbackLocale(request, fallbackLocale, next);\n\n      expect(next).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n\n  describe(\"use\", () => {\n    it(\"should set localization options with fallback locale when header locale is undefined.\", () => {\n      const requestRaw = {\n        headers: {},\n      };\n      const next = vi.fn<() => void>();\n      const expectedRequestRaw = {\n        headers: {},\n        localizationOptions: createFakeLocalizationOptions({\n          locale: \"en\",\n          fallbackLocale: \"en\",\n        }),\n      };\n      localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);\n\n      expect(requestRaw).toStrictEqual(expectedRequestRaw);\n    });\n\n    it(\"should set localization options with parsed locale when header locale is valid.\", () => {\n      const requestRaw = {\n        headers: {\n          \"accept-language\": \"fr, en;q=0.8\",\n        },\n      };\n      const next = vi.fn<() => void>();\n      const expectedRequestRaw = {\n        headers: {\n          \"accept-language\": \"fr, en;q=0.8\",\n        },\n        localizationOptions: createFakeLocalizationOptions({\n          locale: \"fr\",\n          fallbackLocale: \"en\",\n        }),\n      };\n      localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);\n\n      expect(requestRaw).toStrictEqual(expectedRequestRaw);\n    });\n\n    it(\"should call next function when header locale is valid.\", () => {\n      const requestRaw = {\n        headers: {\n          \"accept-language\": \"de, en;q=0.8\",\n        },\n      };\n      const next = vi.fn<() => void>();\n      localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);\n\n      expect(next).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should throw BadRequestException when header locale is invalid.\", () => {\n      const requestRaw = {\n        headers: {\n          \"accept-language\": \"invalid-locale, en;q=0.8\",\n        },\n      };\n      const next = vi.fn<() => void>();\n      const expectedError = new BadRequestException(`Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered)`);\n\n      expect(() => localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next)).toThrowError(expectedError);\n    });\n  });\n\n  describe(\"getFirstLocaleFromHeader\", () => {\n    it.each<{\n      test: string;\n      headerLocale: string | undefined;\n      expectedLocale: string | undefined;\n    }>([\n      {\n        test: \"should return undefined when header locale is undefined.\",\n        headerLocale: undefined,\n        expectedLocale: undefined,\n      },\n      {\n        test: \"should return fallback locale when header locale is '*'.\",\n        headerLocale: \"*\",\n        expectedLocale: \"en\",\n      },\n      {\n        test: \"should return the first locale from the header when multiple locales are provided.\",\n        headerLocale: \"fr, en;q=0.8, de;q=0.6\",\n        expectedLocale: \"fr\",\n      },\n      {\n        test: \"should return the first locale from the header when a single locale is provided.\",\n        headerLocale: \"es\",\n        expectedLocale: \"es\",\n      },\n      {\n        test: \"should return the first locale in lowercase.\",\n        headerLocale: \"IT, EN;q=0.8\",\n        expectedLocale: \"it\",\n      },\n      {\n        test: \"should return the first locale trimmed of whitespace.\",\n        headerLocale: \"  pt  , en;q=0.8\",\n        expectedLocale: \"pt\",\n      },\n    ])(\"$test\", ({ headerLocale, expectedLocale }) => {\n      const result = localizationMiddleware[\"getFirstLocaleFromHeader\"](headerLocale);\n\n      expect(result).toBe(expectedLocale);\n    });\n  });\n});"
     },
-    "src/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case.spec.ts": {
-      "tests": [
-        {
-          "id": "45",
-          "name": "Find Question Theme By Id Use Case getById should get question theme by id from repository when called."
-        },
-        {
-          "id": "46",
-          "name": "Find Question Theme By Id Use Case getById should throw an error when question theme is not found."
-        },
-        {
-          "id": "47",
-          "name": "Find Question Theme By Id Use Case getById should return the question theme when found."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { FindQuestionThemeByIdUseCase } from \"@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case\";\nimport { QuestionThemeNotFoundError } from \"@question/modules/question-theme/domain/errors/question-theme.errors\";\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { createMockedQuestionThemeRepository } from \"@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock\";\n\nimport { createFakeQuestionTheme } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\n\ndescribe(\"Find Question Theme By Id Use Case\", () => {\n  let findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase;\n  let mocks: {\n    repositories: {\n      questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      repositories: {\n        questionTheme: createMockedQuestionThemeRepository(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      providers: [\n        FindQuestionThemeByIdUseCase,\n        {\n          provide: QUESTION_THEME_REPOSITORY_TOKEN,\n          useValue: mocks.repositories.questionTheme,\n        },\n      ],\n    }).compile();\n\n    findQuestionThemeByIdUseCase = testingModule.get<FindQuestionThemeByIdUseCase>(FindQuestionThemeByIdUseCase);\n  });\n\n  describe(FindQuestionThemeByIdUseCase.prototype.getById, () => {\n    it(\"should get question theme by id from repository when called.\", async() => {\n      await findQuestionThemeByIdUseCase.getById(\"123\");\n\n      expect(mocks.repositories.questionTheme.findById).toHaveBeenCalledExactlyOnceWith(\"123\");\n    });\n\n    it(\"should throw an error when question theme is not found.\", async() => {\n      mocks.repositories.questionTheme.findById.mockResolvedValue(undefined);\n      const expectedError = new QuestionThemeNotFoundError(\"123\");\n\n      await expect(async() => findQuestionThemeByIdUseCase.getById(\"123\")).rejects.toThrowError(expectedError);\n    });\n\n    it(\"should return the question theme when found.\", async() => {\n      const questionThemeDocument = createFakeQuestionTheme();\n      mocks.repositories.questionTheme.findById.mockResolvedValue(questionThemeDocument);\n      const actualQuestionTheme = await findQuestionThemeByIdUseCase.getById(\"123\");\n\n      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeDocument);\n    });\n  });\n});"
-    },
-    "src/contexts/question/modules/question-theme/infrastructure/http/controllers/question-theme.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "48",
-          "name": "Question Theme Controller findAllQuestionThemes should list all question themes when called."
-        },
-        {
-          "id": "49",
-          "name": "Question Theme Controller findAllQuestionThemes should map every question theme to dto when called."
-        },
-        {
-          "id": "50",
-          "name": "Question Theme Controller findAllQuestionThemes should call the mapper with the correct parameters when called."
-        },
-        {
-          "id": "51",
-          "name": "Question Theme Controller findQuestionThemeById should get question theme by id when called."
-        },
-        {
-          "id": "52",
-          "name": "Question Theme Controller findQuestionThemeById should map the question theme to dto when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { FindAllQuestionThemesUseCase } from \"@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case\";\nimport { FindQuestionThemeByIdUseCase } from \"@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case\";\nimport { QuestionThemeController } from \"@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller\";\nimport { createQuestionThemeDtoFromEntity } from \"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\";\n\nimport { createMockedFindQuestionThemeByIdUseCase } from \"@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock\";\nimport { createMockedFindAllQuestionThemesUseCase } from \"@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock\";\n\nimport { createFakeLocalizationOptions } from \"@faketories/shared/locale/locale.faketory\";\nimport { createFakeQuestionTheme } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { Mock } from \"vitest\";\n\nvi.mock(import(\"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\"));\n\ndescribe(\"Question Theme Controller\", () => {\n  let controllers: { questionTheme: QuestionThemeController };\n  let mocks: {\n    useCases: {\n      findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;\n      findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;\n    };\n    mappers: {\n      createQuestionThemeDtoFromEntity: Mock;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      useCases: {\n        findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),\n        findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),\n      },\n      mappers: {\n        createQuestionThemeDtoFromEntity: vi.mocked(createQuestionThemeDtoFromEntity),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [QuestionThemeController],\n      providers: [\n        {\n          provide: FindAllQuestionThemesUseCase,\n          useValue: mocks.useCases.findAllQuestionThemes,\n        },\n        {\n          provide: FindQuestionThemeByIdUseCase,\n          useValue: mocks.useCases.findQuestionThemeById,\n        },\n      ],\n    }).compile();\n\n    controllers = { questionTheme: testingModule.get<QuestionThemeController>(QuestionThemeController) };\n  });\n\n  describe(QuestionThemeController.prototype.findAllQuestionThemes, () => {\n    it(\"should list all question themes when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      await controllers.questionTheme.findAllQuestionThemes(localization);\n\n      expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should map every question theme to dto when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      const questionThemes = [\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n      ];\n      await controllers.questionTheme.findAllQuestionThemes(localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);\n    });\n\n    it(\"should call the mapper with the correct parameters when called.\", async() => {\n      const localization = createFakeLocalizationOptions();\n      const questionThemes = [\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n        createFakeQuestionTheme(),\n      ];\n      mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);\n      await controllers.questionTheme.findAllQuestionThemes(localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);\n    });\n  });\n\n  describe(QuestionThemeController.prototype.findQuestionThemeById, () => {\n    it(\"should get question theme by id when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const localization = createFakeLocalizationOptions();\n      await controllers.questionTheme.findQuestionThemeById(questionThemeId, localization);\n\n      expect(mocks.useCases.findQuestionThemeById.getById).toHaveBeenCalledExactlyOnceWith(questionThemeId);\n    });\n\n    it(\"should map the question theme to dto when called.\", async() => {\n      const questionThemeId = \"question-theme-id\";\n      const localization = createFakeLocalizationOptions();\n      const questionTheme = createFakeQuestionTheme();\n      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);\n      await controllers.questionTheme.findQuestionThemeById(questionThemeId, localization);\n\n      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(questionTheme, localization);\n    });\n  });\n});"
-    },
     "src/infrastructure/database/providers/database.service.spec.ts": {
       "tests": [
         {
-          "id": "53",
+          "id": "45",
           "name": "Database Service Constructor should log database connection message when instantiated."
         },
         {
-          "id": "54",
+          "id": "46",
           "name": "Database Service createMongooseOptions should log database connecting message when called."
         },
         {
-          "id": "55",
+          "id": "47",
           "name": "Database Service createMongooseOptions should return mongoose options when called."
         },
         {
-          "id": "56",
+          "id": "48",
           "name": "Database Service createMongooseOptions should return the connection from onConnectionCreate option when called."
         },
         {
-          "id": "57",
+          "id": "49",
           "name": "Database Service onMongooseConnectionCreate should log database connected message when connection emits connected event."
         },
         {
-          "id": "58",
+          "id": "50",
           "name": "Database Service onMongooseConnectionCreate should log database disconnected message when connection emits disconnected event."
         },
         {
-          "id": "59",
+          "id": "51",
           "name": "Database Service onMongooseConnectionCreate should return the connection when called."
         }
       ],
       "source": "import { EventEmitter } from \"node:events\";\n\nimport { Logger } from \"@nestjs/common\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { AppConfigService } from \"@src/infrastructure/api/config/providers/services/app-config.service\";\nimport { DatabaseService } from \"@src/infrastructure/database/providers/database.service\";\n\nimport { createMockedAppConfigService } from \"@mocks/infrastructure/api/config/providers/services/app-config.service.mock\";\nimport { getMockedLoggerInstance } from \"@mocks/shared/nest/nest.mock\";\n\nimport { createFakeMongoDatabaseConfigFromEnv } from \"@faketories/infrastructure/api/config/config.faketory\";\n\nimport type { MongooseModuleOptions } from \"@nestjs/mongoose\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport type { Connection } from \"mongoose\";\n\ndescribe(\"Database Service\", () => {\n  let services: { database: DatabaseService };\n  let mocks: {\n    services: {\n      appConfig: ReturnType<typeof createMockedAppConfigService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        appConfig: createMockedAppConfigService({\n          mongoDbConfig: createFakeMongoDatabaseConfigFromEnv({\n            host: \"127.0.0.1\",\n            port: 27_018,\n            database: \"goat-it-test\",\n          }),\n        }),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        DatabaseService,\n        {\n          provide: AppConfigService,\n          useValue: mocks.services.appConfig,\n        },\n      ],\n    }).compile();\n\n    services = { database: module.get<DatabaseService>(DatabaseService) };\n  });\n\n  describe(\"Constructor\", () => {\n    it(\"should log database connection message when instantiated.\", () => {\n      expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);\n    });\n  });\n\n  describe(\"createMongooseOptions\", () => {\n    it(\"should log database connecting message when called.\", () => {\n      services.database.createMongooseOptions();\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍃 Connecting to the database...\");\n    });\n\n    it(\"should return mongoose options when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const expectedOptions: MongooseModuleOptions = {\n        uri: \"mongodb://127.0.0.1:27018\",\n        serverSelectionTimeoutMS: 5000,\n        connectTimeoutMS: 5000,\n        retryDelay: 3000,\n        retryAttempts: 5,\n        dbName: \"goat-it-test\",\n        onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,\n      };\n\n      expect(options).toStrictEqual<MongooseModuleOptions>(expectedOptions);\n    });\n\n    it(\"should return the connection from onConnectionCreate option when called.\", () => {\n      const options = services.database.createMongooseOptions();\n      const mockedConnection = new EventEmitter() as unknown as Connection;\n      const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);\n\n      expect(connection).toStrictEqual<Connection>(mockedConnection);\n    });\n  });\n\n  describe(\"onMongooseConnectionCreate\", () => {\n    it(\"should log database connected message when connection emits connected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"connected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.log).toHaveBeenCalledExactlyOnceWith(\"🍀 Database connection established\");\n    });\n\n    it(\"should log database disconnected message when connection emits disconnected event.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n      fakeConnection.emit(\"disconnected\");\n      const mockedLoggerInstance = getMockedLoggerInstance();\n\n      expect(mockedLoggerInstance.warn).toHaveBeenCalledExactlyOnceWith(\"⚠️ Database connection lost\");\n    });\n\n    it(\"should return the connection when called.\", () => {\n      const fakeConnection = new EventEmitter() as unknown as Connection;\n      const connection = services.database[\"onMongooseConnectionCreate\"](fakeConnection);\n\n      expect(connection).toStrictEqual<Connection>(fakeConnection);\n    });\n  });\n});"
     },
-    "src/infrastructure/api/health/providers/services/health.service.spec.ts": {
+    "src/infrastructure/api/config/providers/services/app-config.service.spec.ts": {
       "tests": [
         {
-          "id": "60",
-          "name": "Health Service checkAppHealth should call health check service when called."
+          "id": "52",
+          "name": "App Config Service serverConfig should return server config from env when called."
         },
         {
-          "id": "61",
-          "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
+          "id": "53",
+          "name": "App Config Service serverConfig should throw error when one of the required env vars is not defined."
         },
         {
-          "id": "62",
-          "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
+          "id": "54",
+          "name": "App Config Service corsConfig should return cors config from env when called."
         },
         {
-          "id": "63",
-          "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
+          "id": "55",
+          "name": "App Config Service corsConfig should throw error when one of the required env vars is not defined."
         },
         {
-          "id": "64",
-          "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
+          "id": "56",
+          "name": "App Config Service mongoDatabaseConfig should return mongo database config from env when called."
+        },
+        {
+          "id": "57",
+          "name": "App Config Service mongoDatabaseConfig should throw error when one of the required env vars is not defined."
+        },
+        {
+          "id": "58",
+          "name": "App Config Service localizationConfig should return localization config from env when called."
+        },
+        {
+          "id": "59",
+          "name": "App Config Service localizationConfig should throw error when one of the required env vars is not defined."
         }
       ],
-      "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@src/infrastructure/api/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/infrastructure/api/health/providers/services/terminus.service.mock\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
-    },
-    "src/app/controllers/app.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "65",
-          "name": "App Controller getApiMetadata should call Api metadata service method when called."
-        }
-      ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+      "source": "import { ConfigService } from \"@nestjs/config\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { AppConfigService } from \"@src/infrastructure/api/config/providers/services/app-config.service\";\n\nimport { createMockedNestConfigService } from \"@mocks/infrastructure/api/config/providers/services/nest-config.service.mock\";\n\nimport { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from \"@faketories/infrastructure/api/config/config.faketory\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\nimport type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from \"@src/infrastructure/api/config/types/config.types\";\n\ndescribe(\"App Config Service\", () => {\n  let services: { appConfig: AppConfigService };\n  let mocks: {\n    services: {\n      nestConfig: ReturnType<typeof createMockedNestConfigService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        nestConfig: createMockedNestConfigService({\n          SERVER_HOST: \"127.0.0.1\",\n          SERVER_PORT: 8080,\n          CORS_ORIGIN: \"everywhere\",\n          MONGODB_HOST: \"localhost\",\n          MONGODB_PORT: 27_018,\n          MONGODB_DATABASE: \"goat-it-test\",\n          FALLBACK_LOCALE: \"en\",\n        }),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        AppConfigService,\n        {\n          provide: ConfigService,\n          useValue: mocks.services.nestConfig,\n        },\n      ],\n    }).compile();\n\n    services = { appConfig: module.get<AppConfigService>(AppConfigService) };\n  });\n\n  describe(\"serverConfig\", () => {\n    it(\"should return server config from env when called.\", () => {\n      const expectedServerConfig = createFakeServerConfigFromEnv({\n        host: \"127.0.0.1\",\n        port: 8080,\n      });\n\n      expect(services.appConfig.serverConfig).toStrictEqual<ServerConfigFromEnv>(expectedServerConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"SERVER_HOST is not defined\");\n      });\n\n      expect(() => services.appConfig.serverConfig).toThrowError(\"SERVER_HOST is not defined\");\n    });\n  });\n\n  describe(\"corsConfig\", () => {\n    it(\"should return cors config from env when called.\", () => {\n      const expectedCorsConfig = createFakeCorsConfigFromEnv({\n        origin: \"everywhere\",\n      });\n\n      expect(services.appConfig.corsConfig).toStrictEqual<CorsConfigFromEnv>(expectedCorsConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"CORS_ORIGIN is not defined\");\n      });\n\n      expect(() => services.appConfig.corsConfig).toThrowError(\"CORS_ORIGIN is not defined\");\n    });\n  });\n\n  describe(\"mongoDatabaseConfig\", () => {\n    it(\"should return mongo database config from env when called.\", () => {\n      const mongoDatabaseConfig = createFakeMongoDatabaseConfigFromEnv({\n        host: \"localhost\",\n        port: 27_018,\n        database: \"goat-it-test\",\n      });\n\n      expect(services.appConfig.mongoDbConfig).toStrictEqual<MongoDatabaseConfigFromEnv>(mongoDatabaseConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"MONGODB_HOST is not defined\");\n      });\n\n      expect(() => services.appConfig.mongoDbConfig).toThrowError(\"MONGODB_HOST is not defined\");\n    });\n  });\n\n  describe(\"localizationConfig\", () => {\n    it(\"should return localization config from env when called.\", () => {\n      const localizationConfig = createFakeLocalizationConfigFromEnv({\n        fallbackLocale: \"en\",\n      });\n\n      expect(services.appConfig.localizationConfig).toStrictEqual<LocalizationConfigFromEnv>(localizationConfig);\n    });\n\n    it(\"should throw error when one of the required env vars is not defined.\", () => {\n      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {\n        throw new Error(\"FALLBACK_LOCALE is not defined\");\n      });\n\n      expect(() => services.appConfig.localizationConfig).toThrowError(\"FALLBACK_LOCALE is not defined\");\n    });\n  });\n});"
     },
     "src/infrastructure/api/config/helpers/env.helpers.spec.ts": {
       "tests": [
         {
-          "id": "66",
+          "id": "60",
           "name": "Env Validation validateCorsOrigin 'should return true for wildcard \\'*\\'.'"
         },
         {
-          "id": "67",
+          "id": "61",
           "name": "Env Validation validateCorsOrigin 'should return true for valid domain \\…'"
         },
         {
-          "id": "68",
+          "id": "62",
           "name": "Env Validation validateCorsOrigin 'should return true for valid domain w…'"
         },
         {
-          "id": "69",
+          "id": "63",
           "name": "Env Validation validateCorsOrigin 'should return false for invalid URL \\…'"
         },
         {
-          "id": "70",
+          "id": "64",
           "name": "Env Validation validateCorsOrigin 'should return false for URL with unsu…'"
         },
         {
-          "id": "71",
+          "id": "65",
           "name": "Env Validation validateCorsOrigin 'should return false for IP-based URL …'"
         },
         {
-          "id": "72",
+          "id": "66",
           "name": "Env Validation validateCorsOrigin 'should return false for localhost URL…'"
         },
         {
-          "id": "73",
+          "id": "67",
           "name": "Env Validation validateCorsOrigin 'should return false for empty string …'"
         },
         {
-          "id": "74",
+          "id": "68",
           "name": "Env Validation validate should return parsed env when config is valid with all fields."
         },
         {
-          "id": "75",
+          "id": "69",
           "name": "Env Validation validate should return parsed env with all defaults when config is empty."
         },
         {
-          "id": "76",
+          "id": "70",
           "name": "Env Validation validate should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string."
         },
         {
-          "id": "77",
+          "id": "71",
           "name": "Env Validation validate should coerce SERVER_PORT from number to number when SERVER_PORT is already a number."
         },
         {
-          "id": "78",
+          "id": "72",
           "name": "Env Validation validate should accept a non-default valid IPv4 for when MONGODB_HOST is an override."
         },
         {
-          "id": "79",
+          "id": "73",
           "name": "Env Validation validate should accept a valid URL for CORS_ORIGIN when it is an override."
         },
         {
-          "id": "80",
+          "id": "74",
           "name": "Env Validation validate should accept a valid MONGODB_PORT when it is an override."
         },
         {
-          "id": "81",
+          "id": "75",
           "name": "Env Validation validate should accept a valid MONGODB_DATABASE name when it is an override."
         },
         {
-          "id": "82",
+          "id": "76",
           "name": "Env Validation validate should accept a valid FALLBACK_LOCALE when it is an override."
         },
         {
-          "id": "83",
+          "id": "77",
           "name": "Env Validation validate should return parsed env when config contains additional properties."
         },
         {
-          "id": "84",
+          "id": "78",
           "name": "Env Validation validate 'should throw error when SERVER_HOST i…'"
         },
         {
-          "id": "85",
+          "id": "79",
           "name": "Env Validation validate 'should throw error when SERVER_PORT i…'"
         },
         {
-          "id": "86",
+          "id": "80",
           "name": "Env Validation validate 'should throw error when CORS_ORIGIN i…'"
         },
         {
-          "id": "87",
+          "id": "81",
           "name": "Env Validation validate 'should throw error when MONGODB_HOST …'"
         },
         {
-          "id": "88",
+          "id": "82",
           "name": "Env Validation validate 'should throw error when MONGODB_PORT …'"
         },
         {
-          "id": "89",
+          "id": "83",
           "name": "Env Validation validate 'should throw error when MONGODB_DATAB…'"
         },
         {
-          "id": "90",
+          "id": "84",
           "name": "Env Validation validate 'should throw error when FALLBACK_LOCA…'"
         },
         {
-          "id": "91",
+          "id": "85",
           "name": "Env Validation getEnvFilePath should return '.env' when NODE_ENV is not set."
         },
         {
-          "id": "92",
+          "id": "86",
           "name": "Env Validation getEnvFilePath should return '.env.development' when NODE_ENV is 'development'."
         },
         {
-          "id": "93",
+          "id": "87",
           "name": "Env Validation getEnvFilePath should return '.env.test' when NODE_ENV is 'test'."
         },
         {
-          "id": "94",
+          "id": "88",
           "name": "Env Validation getEnvFilePath should return '.env' when NODE_ENV is 'production'."
         }
       ],
       "source": "import { getEnvFilePath, validate, validateCorsOrigin } from \"@src/infrastructure/api/config/helpers/env.helpers\";\n\nimport { createFakeAppEnv } from \"@faketories/infrastructure/api/config/env.faketory\";\n\nimport type { AppEnv } from \"@src/infrastructure/api/config/types/env.types\";\n\ndescribe(\"Env Validation\", () => {\n  const defaultEnv = Object.freeze(createFakeAppEnv({\n    SERVER_HOST: \"0.0.0.0\",\n    SERVER_PORT: 3000,\n    CORS_ORIGIN: \"*\",\n    MONGODB_HOST: \"0.0.0.0\",\n    MONGODB_PORT: 27_017,\n    MONGODB_DATABASE: \"goat-it\",\n    FALLBACK_LOCALE: \"en\",\n  }));\n\n  describe(validateCorsOrigin, () => {\n    it.each<{\n      test: string;\n      value: string;\n      isValid: boolean;\n    }>([\n      {\n        test: \"should return true for wildcard '*'.\",\n        value: \"*\",\n        isValid: true,\n      },\n      {\n        test: \"should return true for valid domain 'http://example.com'.\",\n        value: \"http://example.com\",\n        isValid: true,\n      },\n      {\n        test: \"should return true for valid domain with path 'https://example.com/path'.\",\n        value: \"https://example.com/path\",\n        isValid: true,\n      },\n      {\n        test: \"should return true for valid domain with port 'http://example.com:8080'.\",\n        value: \"http://example.com:8080\",\n        isValid: true,\n      },\n      {\n        test: \"should return false for invalid URL 'invalid_url'.\",\n        value: \"invalid_url\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for URL with unsupported protocol 'ftp://example.com'.\",\n        value: \"ftp://example.com\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for URL with unsupported protocol 'httpp://example.com'.\",\n        value: \"httpp://example.com\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for URL with unsupported protocol 'hhttp://example.com'.\",\n        value: \"hhttp://example.com\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for IP-based URL 'http://127.0.0.1:3000'.\",\n        value: \"http://127.0.0.1:3000\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for localhost URL 'http://localhost:8080'.\",\n        value: \"http://localhost:8080\",\n        isValid: false,\n      },\n      {\n        test: \"should return false for empty string ''.\",\n        value: \"\",\n        isValid: false,\n      },\n    ])(\"$test\", ({ value, isValid }) => {\n      expect(validateCorsOrigin(value)).toBe(isValid);\n    });\n  });\n\n  describe(validate, () => {\n    it(\"should return parsed env when config is valid with all fields.\", () => {\n      const config: Record<keyof AppEnv, unknown> = {\n        SERVER_HOST: \"192.168.1.1\",\n        SERVER_PORT: \"4000\",\n        CORS_ORIGIN: \"*\",\n        MONGODB_HOST: \"0.0.0.0\",\n        MONGODB_PORT: \"27018\",\n        MONGODB_DATABASE: \"goat-it-test\",\n        FALLBACK_LOCALE: \"fr\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        SERVER_HOST: \"192.168.1.1\",\n        SERVER_PORT: 4000,\n        CORS_ORIGIN: \"*\",\n        MONGODB_HOST: \"0.0.0.0\",\n        MONGODB_PORT: 27_018,\n        MONGODB_DATABASE: \"goat-it-test\",\n        FALLBACK_LOCALE: \"fr\",\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should return parsed env with all defaults when config is empty.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {};\n\n      expect(validate(config)).toStrictEqual<AppEnv>(defaultEnv);\n    });\n\n    it(\"should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        SERVER_PORT: \"8080\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        SERVER_PORT: 8080,\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        SERVER_PORT: 9000,\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        SERVER_PORT: 9000,\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should accept a non-default valid IPv4 for when MONGODB_HOST is an override.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        MONGODB_HOST: \"192.168.0.10\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        MONGODB_HOST: \"192.168.0.10\",\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should accept a valid URL for CORS_ORIGIN when it is an override.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        CORS_ORIGIN: \"https://example.com\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        CORS_ORIGIN: \"https://example.com\",\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should accept a valid MONGODB_PORT when it is an override.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        MONGODB_PORT: \"28017\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        MONGODB_PORT: 28_017,\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should accept a valid MONGODB_DATABASE name when it is an override.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        MONGODB_DATABASE: \"my-database-1\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        MONGODB_DATABASE: \"my-database-1\",\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should accept a valid FALLBACK_LOCALE when it is an override.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> = {\n        FALLBACK_LOCALE: \"es\",\n      };\n      const expectedConfig = createFakeAppEnv({\n        ...defaultEnv,\n        FALLBACK_LOCALE: \"es\",\n      });\n\n      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);\n    });\n\n    it(\"should return parsed env when config contains additional properties.\", () => {\n      const config: Partial<Record<keyof AppEnv, unknown>> & { EXTRA_FIELD: string } = {\n        EXTRA_FIELD: \"should be ignored\",\n      };\n\n      expect(validate(config)).toStrictEqual<AppEnv>(defaultEnv);\n    });\n\n    it.each<{\n      test: string;\n      config: Partial<Record<keyof AppEnv, unknown>>;\n      errorMessage: string;\n    }>([\n      {\n        test: \"should throw error when SERVER_HOST is an invalid hostname.\",\n        config: {\n          SERVER_HOST: \"invalid_host_name!\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_HOST is not a valid IP address.\",\n        config: {\n          SERVER_HOST: \"aa.aaa?aaa\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_HOST is an empty string.\",\n        config: {\n          SERVER_HOST: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_PORT is negative.\",\n        config: {\n          SERVER_PORT: \"-1\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_PORT is below minimum.\",\n        config: {\n          SERVER_PORT: \"0\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_PORT is above maximum.\",\n        config: {\n          SERVER_PORT: \"70000\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_PORT is a non-numeric string.\",\n        config: {\n          SERVER_PORT: \"not_a_number\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when SERVER_PORT is an empty string.\",\n        config: {\n          SERVER_PORT: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when CORS_ORIGIN is not a valid URL and not '*'.\",\n        config: {\n          CORS_ORIGIN: \"invalid_url\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when CORS_ORIGIN is an empty string.\",\n        config: {\n          CORS_ORIGIN: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_HOST is not a valid IPv4 address.\",\n        config: {\n          MONGODB_HOST: \"invalid_ip_address\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_HOST is localhost.\",\n        config: {\n          MONGODB_HOST: \"localhost\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_HOST is an empty string.\",\n        config: {\n          MONGODB_HOST: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_PORT is negative.\",\n        config: {\n          MONGODB_PORT: \"-1\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_PORT is below minimum.\",\n        config: {\n          MONGODB_PORT: \"0\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_PORT is above maximum.\",\n        config: {\n          MONGODB_PORT: \"70000\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_PORT is a non-numeric string.\",\n        config: {\n          MONGODB_PORT: \"not_a_number\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_PORT is an empty string.\",\n        config: {\n          MONGODB_PORT: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_DATABASE contains invalid characters.\",\n        config: {\n          MONGODB_DATABASE: \"invalid database name!\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_DATABASE ends with a hyphen.\",\n        config: {\n          MONGODB_DATABASE: \"invalid-database-\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when MONGODB_DATABASE is an empty string.\",\n        config: {\n          MONGODB_DATABASE: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when FALLBACK_LOCALE is not in the supported locales.\",\n        config: {\n          FALLBACK_LOCALE: \"unknown\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n      {\n        test: \"should throw error when FALLBACK_LOCALE is an empty string.\",\n        config: {\n          FALLBACK_LOCALE: \"\",\n        },\n        errorMessage: \"Invalid environment variables\",\n      },\n    ])(\"$test\", ({ config, errorMessage }) => {\n      expect(() => validate(config)).toThrowError(errorMessage);\n    });\n  });\n\n  describe(getEnvFilePath, () => {\n    const originalEnv = process.env.NODE_ENV;\n\n    afterEach(() => {\n      process.env.NODE_ENV = originalEnv;\n    });\n\n    it(\"should return '.env' when NODE_ENV is not set.\", () => {\n      delete process.env.NODE_ENV;\n\n      expect(getEnvFilePath()).toBe(\"env/.env\");\n    });\n\n    it(\"should return '.env.development' when NODE_ENV is 'development'.\", () => {\n      process.env.NODE_ENV = \"development\";\n\n      expect(getEnvFilePath()).toBe(\"env/.env.development\");\n    });\n\n    it(\"should return '.env.test' when NODE_ENV is 'test'.\", () => {\n      process.env.NODE_ENV = \"test\";\n\n      expect(getEnvFilePath()).toBe(\"env/.env.test\");\n    });\n\n    it(\"should return '.env' when NODE_ENV is 'production'.\", () => {\n      process.env.NODE_ENV = \"production\";\n\n      expect(getEnvFilePath()).toBe(\"env/.env\");\n    });\n  });\n});"
     },
-    "src/contexts/question/modules/question-theme/application/mappers/question-theme.dto.mappers.spec.ts": {
+    "src/infrastructure/api/health/providers/services/health.service.spec.ts": {
       "tests": [
         {
-          "id": "95",
-          "name": "Question Theme Dto Mappers createQuestionThemeDtoFromEntity should map a QuestionTheme entity to a QuestionThemeDto when called."
-        }
-      ],
-      "source": "import type { QuestionThemeDto } from \"@question/modules/question-theme/application/dto/question-theme.dto\";\nimport { createQuestionThemeDtoFromEntity } from \"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\";\n\nimport { createFakeLocalizationOptions } from \"@faketories/shared/locale/locale.faketory\";\nimport { createFakeQuestionTheme, createFakeQuestionThemeDto } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\ndescribe(\"Question Theme Dto Mappers\", () => {\n  describe(createQuestionThemeDtoFromEntity, () => {\n    it(\"should map a QuestionTheme entity to a QuestionThemeDto when called.\", () => {\n      const questionTheme = createFakeQuestionTheme();\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"en\",\n      });\n      const questionThemeDto = createQuestionThemeDtoFromEntity(questionTheme, localizationOptions);\n      const expectedQuestionThemeDto = createFakeQuestionThemeDto({\n        id: questionTheme.id,\n        label: questionTheme.label.en,\n        aliases: questionTheme.aliases.en,\n        description: questionTheme.description.en,\n        parentId: questionTheme.parentId,\n        status: questionTheme.status,\n        createdAt: questionTheme.createdAt.toISOString(),\n        updatedAt: questionTheme.updatedAt.toISOString(),\n      });\n\n      expect(questionThemeDto).toStrictEqual<QuestionThemeDto>(expectedQuestionThemeDto);\n    });\n  });\n});"
-    },
-    "src/infrastructure/api/health/controllers/health.controller.spec.ts": {
-      "tests": [
-        {
-          "id": "96",
-          "name": "Health Controller check should check health from service when called."
+          "id": "89",
+          "name": "Health Service checkAppHealth should call health check service when called."
         },
         {
-          "id": "97",
-          "name": "Health Controller check should return health check result without error and info fields when called."
+          "id": "90",
+          "name": "Health Service checkAppHealth should call mongoose connection check for the first check when called."
+        },
+        {
+          "id": "91",
+          "name": "Health Service checkAppHealth should call goat-it-docs health check for the second check when called."
+        },
+        {
+          "id": "92",
+          "name": "Health Service checkMongooseConnection should call ping check from mongoose health indicator when called."
+        },
+        {
+          "id": "93",
+          "name": "Health Service checkGoatItDocs should call ping check from http health indicator when called."
         }
       ],
-      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { HealthController } from \"@src/infrastructure/api/health/controllers/health.controller\";\nimport { HealthService } from \"@src/infrastructure/api/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/infrastructure/api/health/providers/services/health.service.mock\";\n\nimport { createFakeHealthIndicatorResult } from \"@faketories/infrastructure/api/health/health.faketory\";\n\nimport type { HealthCheckResult } from \"@nestjs/terminus\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should return health check result without error and info fields when called.\", async() => {\n      const expectedHealthCheckResult: HealthCheckResult = {\n        status: \"ok\",\n        details: createFakeHealthIndicatorResult(),\n      };\n      mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);\n      const actualHealthCheckResult = await healthController.check();\n\n      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);\n    });\n  });\n});"
+      "source": "import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from \"@nestjs/terminus\";\nimport { Test } from \"@nestjs/testing\";\n\nimport { HealthService } from \"@src/infrastructure/api/health/providers/services/health.service\";\n\nimport { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from \"@mocks/infrastructure/api/health/providers/services/terminus.service.mock\";\n\nimport type { TestingModule } from \"@nestjs/testing\";\n\ndescribe(\"Health Service\", () => {\n  let services: { health: HealthService };\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedTerminusHealthCheckService>;\n      mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedTerminusHealthCheckService(),\n        mongooseHealth: createMockedTerminusHealthIndicatorService(),\n        docsHealth: createMockedTerminusHealthIndicatorService(),\n      },\n    };\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: HealthCheckService,\n          useValue: mocks.services.health,\n        },\n        {\n          provide: MongooseHealthIndicator,\n          useValue: mocks.services.mongooseHealth,\n        },\n        {\n          provide: HttpHealthIndicator,\n          useValue: mocks.services.docsHealth,\n        },\n        HealthService,\n      ],\n    }).compile();\n\n    services = { health: module.get<HealthService>(HealthService) };\n  });\n\n  describe(HealthService.prototype.checkAppHealth, () => {\n    it(\"should call health check service when called.\", async() => {\n      await services.health.checkAppHealth();\n\n      expect(mocks.services.health.check).toHaveBeenCalledExactlyOnceWith(expect.any(Array));\n    });\n\n    it(\"should call mongoose connection check for the first check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const mongooseHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][0];\n      await mongooseHealthCheckFunction();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n\n    it(\"should call goat-it-docs health check for the second check when called.\", async() => {\n      await services.health.checkAppHealth();\n      const docsHealthCheckFunction = mocks.services.health.check.mock.calls[0][0][1];\n      await docsHealthCheckFunction();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();\n    });\n  });\n\n  describe(\"checkMongooseConnection\", () => {\n    it(\"should call ping check from mongoose health indicator when called.\", async() => {\n      await services.health[\"checkMongooseConnection\"]();\n\n      expect(mocks.services.mongooseHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"mongoose\");\n    });\n  });\n\n  describe(\"checkGoatItDocs\", () => {\n    it(\"should call ping check from http health indicator when called.\", async() => {\n      await services.health[\"checkGoatItDocs\"]();\n\n      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(\"goat-it-docs\", \"http://127.0.0.1:3000/docs\");\n    });\n  });\n});"
     },
     "src/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case.spec.ts": {
       "tests": [
         {
-          "id": "98",
+          "id": "94",
           "name": "Find All Question Themes Use Case list should list all question themes from repository when called."
         }
       ],
       "source": "import { Test } from \"@nestjs/testing\";\n\nimport { FindAllQuestionThemesUseCase } from \"@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case\";\nimport { QUESTION_THEME_REPOSITORY_TOKEN } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.constants\";\n\nimport { createMockedQuestionThemeRepository } from \"@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock\";\n\nimport type { QuestionThemeRepository } from \"@question/modules/question-theme/domain/repositories/question-theme.repository.types\";\n\ndescribe(\"Find All Question Themes Use Case\", () => {\n  let findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase;\n  let mocks: {\n    repositories: {\n      questionTheme: QuestionThemeRepository;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      repositories: {\n        questionTheme: createMockedQuestionThemeRepository(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      providers: [\n        FindAllQuestionThemesUseCase,\n        {\n          provide: QUESTION_THEME_REPOSITORY_TOKEN,\n          useValue: mocks.repositories.questionTheme,\n        },\n      ],\n    }).compile();\n\n    findAllQuestionThemesUseCase = testingModule.get<FindAllQuestionThemesUseCase>(FindAllQuestionThemesUseCase);\n  });\n\n  describe(FindAllQuestionThemesUseCase.prototype.list, () => {\n    it(\"should list all question themes from repository when called.\", async() => {\n      await findAllQuestionThemesUseCase.list();\n\n      expect(mocks.repositories.questionTheme.findAll).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
+    "src/infrastructure/api/health/controllers/health.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "95",
+          "name": "Health Controller check should check health from service when called."
+        },
+        {
+          "id": "96",
+          "name": "Health Controller check should return health check result without error and info fields when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { HealthController } from \"@src/infrastructure/api/health/controllers/health.controller\";\nimport { HealthService } from \"@src/infrastructure/api/health/providers/services/health.service\";\n\nimport { createMockedHealthService } from \"@mocks/infrastructure/api/health/providers/services/health.service.mock\";\n\nimport { createFakeHealthIndicatorResult } from \"@faketories/infrastructure/api/health/health.faketory\";\n\nimport type { HealthCheckResult } from \"@nestjs/terminus\";\n\ndescribe(\"Health Controller\", () => {\n  let healthController: HealthController;\n  let mocks: {\n    services: {\n      health: ReturnType<typeof createMockedHealthService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        health: createMockedHealthService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [HealthController],\n      providers: [\n        {\n          provide: HealthService,\n          useValue: mocks.services.health,\n        },\n      ],\n    }).compile();\n\n    healthController = testingModule.get<HealthController>(HealthController);\n  });\n\n  describe(HealthController.prototype.check, () => {\n    it(\"should check health from service when called.\", async() => {\n      await healthController.check();\n\n      expect(mocks.services.health.checkAppHealth).toHaveBeenCalledExactlyOnceWith();\n    });\n\n    it(\"should return health check result without error and info fields when called.\", async() => {\n      const expectedHealthCheckResult: HealthCheckResult = {\n        status: \"ok\",\n        details: createFakeHealthIndicatorResult(),\n      };\n      mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);\n      const actualHealthCheckResult = await healthController.check();\n\n      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);\n    });\n  });\n});"
+    },
     "src/app/providers/services/app.service.spec.ts": {
       "tests": [
         {
-          "id": "99",
+          "id": "97",
           "name": "App Service getApiMeta should return Api metadata when called."
         }
       ],
       "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport type { AppMetadata } from \"@app/types/app.types\";\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    name: \"goat-it-api\",\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"App Service\", () => {\n  let services: { app: AppService };\n\n  beforeEach(async() => {\n    const testingModule = await Test.createTestingModule({ providers: [AppService] }).compile();\n\n    services = { app: testingModule.get<AppService>(AppService) };\n  });\n\n  describe(\"getApiMeta\", () => {\n    it(\"should return Api metadata when called.\", () => {\n      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({\n        packageName: \"goat-it-api\",\n        name: \"Goat It API\",\n        description: \"API for Goat It application.\",\n        version: \"1.0.0\",\n      });\n    });\n  });\n});"
+    },
+    "src/app/controllers/app.controller.spec.ts": {
+      "tests": [
+        {
+          "id": "98",
+          "name": "App Controller getApiMetadata should call Api metadata service method when called."
+        }
+      ],
+      "source": "import { Test } from \"@nestjs/testing\";\n\nimport { AppController } from \"@app/controllers/app.controller\";\nimport { AppService } from \"@app/providers/services/app.service\";\n\nimport { createMockedAppService } from \"@mocks/app/providers/services/app.service.mock\";\n\ndescribe(\"App Controller\", () => {\n  let appController: AppController;\n  let mocks: {\n    services: {\n      app: ReturnType<typeof createMockedAppService>;\n    };\n  };\n\n  beforeEach(async() => {\n    mocks = {\n      services: {\n        app: createMockedAppService(),\n      },\n    };\n    const testingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [\n        {\n          provide: AppService,\n          useValue: mocks.services.app,\n        },\n      ],\n    }).compile();\n\n    appController = testingModule.get<AppController>(AppController);\n  });\n\n  describe(AppController.prototype.getApiMetadata, () => {\n    it(\"should call Api metadata service method when called.\", () => {\n      appController.getApiMetadata();\n\n      expect(mocks.services.app.getApiMeta).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
+    },
+    "src/main.spec.ts": {
+      "tests": [
+        {
+          "id": "99",
+          "name": "Main Root should call bootstrap when file is imported."
+        }
+      ],
+      "source": "import * as Server from \"@src/infrastructure/api/server/server\";\n\nvi.mock(import(\"@src/infrastructure/api/server/server\"), () => ({\n  bootstrap: vi.fn<() => ReturnType<typeof Server.bootstrap>>(),\n}));\n\ndescribe(\"Main\", () => {\n  describe(\"Root\", () => {\n    it(\"should call bootstrap when file is imported.\", async() => {\n      await import(\"./main\");\n\n      expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n});"
     },
     "src/infrastructure/api/server/swagger/helpers/swagger.helpers.spec.ts": {
       "tests": [
@@ -5643,22 +5645,31 @@
       ],
       "source": "import { SwaggerModule, DocumentBuilder } from \"@nestjs/swagger\";\nimport { cleanupOpenApiDoc } from \"nestjs-zod\";\n\nimport { createSwaggerDocument, getSwaggerConfig, setupSwaggerModule } from \"@src/infrastructure/api/server/swagger/helpers/swagger.helpers\";\n\nimport type { OpenAPIObject, SwaggerCustomOptions } from \"@nestjs/swagger\";\nimport type { NestFastifyApplication } from \"@nestjs/platform-fastify\";\nimport type { Mock } from \"vitest\";\n\nvi.mock(import(\"@nestjs/swagger\"));\n\nvi.mock(import(\"nestjs-zod\"));\n\nvi.mock(import(\"@package-json\"), async importOriginal => ({\n  default: {\n    ...await importOriginal(),\n    description: \"API for Goat It application.\",\n    version: \"1.0.0\",\n  },\n}));\n\ndescribe(\"Swagger Helper\", () => {\n  let mocks: {\n    DocumentBuilder: {\n      setTitle: Mock;\n      setDescription: Mock;\n      setVersion: Mock;\n      build: Mock;\n    };\n  };\n\n  beforeEach(() => {\n    mocks = {\n      DocumentBuilder: {\n        setTitle: vi.spyOn(DocumentBuilder.prototype, \"setTitle\").mockReturnThis(),\n        setDescription: vi.spyOn(DocumentBuilder.prototype, \"setDescription\").mockReturnThis(),\n        setVersion: vi.spyOn(DocumentBuilder.prototype, \"setVersion\").mockReturnThis(),\n        build: vi.spyOn(DocumentBuilder.prototype, \"build\").mockReturnValue({} as Omit<OpenAPIObject, \"paths\">),\n      },\n    };\n  });\n\n  describe(getSwaggerConfig, () => {\n    it(\"should set title when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith(\"Goat It API Reference Documentation\");\n    });\n\n    it(\"should set description when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(\"API for Goat It application.\");\n    });\n\n    it(\"should set version when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith(\"1.0.0\");\n    });\n\n    it(\"should build document when called.\", () => {\n      getSwaggerConfig();\n\n      expect(mocks.DocumentBuilder.build).toHaveBeenCalledExactlyOnceWith();\n    });\n  });\n\n  describe(createSwaggerDocument, () => {\n    it(\"should create swagger document when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      createSwaggerDocument(mockedApp);\n\n      expect(SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});\n    });\n\n    it(\"should clean up open api doc when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedDocument = {} as OpenAPIObject;\n      vi.mocked(SwaggerModule.createDocument).mockReturnValue(expectedDocument);\n      createSwaggerDocument(mockedApp);\n\n      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);\n    });\n  });\n\n  describe(setupSwaggerModule, () => {\n    it(\"should setup Swagger module when called.\", () => {\n      const mockedApp = {} as NestFastifyApplication;\n      const expectedSwaggerOptions: SwaggerCustomOptions = {\n        customSiteTitle: \"Goat It API Reference Documentation\",\n      };\n      setupSwaggerModule(mockedApp);\n\n      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith(\"/docs\", mockedApp, undefined, expectedSwaggerOptions);\n    });\n  });\n});"
     },
-    "src/infrastructure/api/server/cors/helpers/cors.helpers.spec.ts": {
+    "src/contexts/question/modules/question-theme/application/mappers/question-theme.dto.mappers.spec.ts": {
       "tests": [
         {
           "id": "107",
+          "name": "Question Theme Dto Mappers createQuestionThemeDtoFromEntity should map a QuestionTheme entity to a QuestionThemeDto when called."
+        }
+      ],
+      "source": "import type { QuestionThemeDto } from \"@question/modules/question-theme/application/dto/question-theme.dto\";\nimport { createQuestionThemeDtoFromEntity } from \"@question/modules/question-theme/application/mappers/question-theme.dto.mappers\";\n\nimport { createFakeLocalizationOptions } from \"@faketories/shared/locale/locale.faketory\";\nimport { createFakeQuestionTheme, createFakeQuestionThemeDto } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\ndescribe(\"Question Theme Dto Mappers\", () => {\n  describe(createQuestionThemeDtoFromEntity, () => {\n    it(\"should map a QuestionTheme entity to a QuestionThemeDto when called.\", () => {\n      const questionTheme = createFakeQuestionTheme();\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"en\",\n      });\n      const questionThemeDto = createQuestionThemeDtoFromEntity(questionTheme, localizationOptions);\n      const expectedQuestionThemeDto = createFakeQuestionThemeDto({\n        id: questionTheme.id,\n        label: questionTheme.label.en,\n        aliases: questionTheme.aliases.en,\n        description: questionTheme.description.en,\n        parentId: questionTheme.parentId,\n        status: questionTheme.status,\n        createdAt: questionTheme.createdAt.toISOString(),\n        updatedAt: questionTheme.updatedAt.toISOString(),\n      });\n\n      expect(questionThemeDto).toStrictEqual<QuestionThemeDto>(expectedQuestionThemeDto);\n    });\n  });\n});"
+    },
+    "src/infrastructure/api/server/cors/helpers/cors.helpers.spec.ts": {
+      "tests": [
+        {
+          "id": "108",
           "name": "createCorsConfig should return default CORS config when called."
         },
         {
-          "id": "108",
+          "id": "109",
           "name": "createCorsConfig should use origin from configuration when provided."
         },
         {
-          "id": "109",
+          "id": "110",
           "name": "createCorsConfig should set credentials to false when called."
         },
         {
-          "id": "110",
+          "id": "111",
           "name": "createCorsConfig should set allowed methods and headers to default values when called."
         }
       ],
@@ -5667,83 +5678,70 @@
     "src/shared/application/mappers/localization/localization.mappers.spec.ts": {
       "tests": [
         {
-          "id": "111",
+          "id": "112",
           "name": "Localization Mappers getUnknownLocaleWarningMessage should return the correct warning message for unknown locales when called."
         },
         {
-          "id": "112",
+          "id": "113",
           "name": "Localization Mappers createTranslationFromLocalizedText should return the translated text for the desired locale when available."
         },
         {
-          "id": "113",
+          "id": "114",
           "name": "Localization Mappers createTranslationFromLocalizedText should return the translated text for the fallback locale when the desired locale is not available."
         },
         {
-          "id": "114",
+          "id": "115",
           "name": "Localization Mappers createTranslationFromLocalizedText should return a warning message when neither the desired nor the fallback locale is available."
         },
         {
-          "id": "115",
+          "id": "116",
           "name": "Localization Mappers createTranslationsFromLocalizedTexts should return the translated texts for the desired locale when available."
         },
         {
-          "id": "116",
+          "id": "117",
           "name": "Localization Mappers createTranslationsFromLocalizedTexts should return the translated texts for the fallback locale when the desired locale is not available."
         },
         {
-          "id": "117",
+          "id": "118",
           "name": "Localization Mappers createTranslationsFromLocalizedTexts should return a warning message array when neither the desired nor the fallback locale is available."
         }
       ],
       "source": "import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts, getUnknownLocaleWarningMessage } from \"@shared/application/mappers/localization/localization.mappers\";\n\nimport { createFakeLocalizationOptions, createFakeLocalizedText, createFakeLocalizedTexts } from \"@faketories/shared/locale/locale.faketory\";\n\ndescribe(\"Localization Mappers\", () => {\n  describe(getUnknownLocaleWarningMessage, () => {\n    it(\"should return the correct warning message for unknown locales when called.\", () => {\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const expectedMessage = `⚠️ No Translation found for desired locale (${localizationOptions.locale}) and fallback locale (${localizationOptions.fallbackLocale})`;\n      const result = getUnknownLocaleWarningMessage(localizationOptions);\n\n      expect(result).toBe(expectedMessage);\n    });\n  });\n\n  describe(createTranslationFromLocalizedText, () => {\n    it(\"should return the translated text for the desired locale when available.\", () => {\n      const localizedText = createFakeLocalizedText({\n        en: \"Hello\",\n        fr: \"Bonjour\",\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationFromLocalizedText(localizedText, localizationOptions);\n\n      expect(result).toBe(\"Bonjour\");\n    });\n\n    it(\"should return the translated text for the fallback locale when the desired locale is not available.\", () => {\n      const localizedText = createFakeLocalizedText({\n        en: \"Hello\",\n        fr: undefined,\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationFromLocalizedText(localizedText, localizationOptions);\n\n      expect(result).toBe(\"Hello\");\n    });\n\n    it(\"should return a warning message when neither the desired nor the fallback locale is available.\", () => {\n      const localizedText = createFakeLocalizedText({\n        en: undefined,\n        fr: undefined,\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationFromLocalizedText(localizedText, localizationOptions);\n\n      expect(result).toBe(\"⚠️ No Translation found for desired locale (fr) and fallback locale (en)\");\n    });\n  });\n\n  describe(createTranslationsFromLocalizedTexts, () => {\n    it(\"should return the translated texts for the desired locale when available.\", () => {\n      const localizedTexts = createFakeLocalizedTexts({\n        en: [\"Hello\", \"World\"],\n        fr: [\"Bonjour\", \"Monde\"],\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);\n\n      expect(result).toStrictEqual<string[]>([\"Bonjour\", \"Monde\"]);\n    });\n\n    it(\"should return the translated texts for the fallback locale when the desired locale is not available.\", () => {\n      const localizedTexts = createFakeLocalizedTexts({\n        en: [\"Hello\", \"World\"],\n        fr: undefined,\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);\n\n      expect(result).toStrictEqual<string[]>([\"Hello\", \"World\"]);\n    });\n\n    it(\"should return a warning message array when neither the desired nor the fallback locale is available.\", () => {\n      const localizedTexts = createFakeLocalizedTexts({\n        en: undefined,\n        fr: undefined,\n      });\n      const localizationOptions = createFakeLocalizationOptions({\n        locale: \"fr\",\n        fallbackLocale: \"en\",\n      });\n\n      const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);\n\n      expect(result).toStrictEqual<string[]>([\"⚠️ No Translation found for desired locale (fr) and fallback locale (en)\"]);\n    });\n  });\n});"
     },
-    "src/shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe.spec.ts": {
-      "tests": [
-        {
-          "id": "118",
-          "name": "Mongo Id Pipe transform should return value when value is a valid mongo id."
-        },
-        {
-          "id": "119",
-          "name": "Mongo Id Pipe transform 'should throw BadRequestException when…'"
-        }
-      ],
-      "source": "import { BadRequestException } from \"@nestjs/common\";\n\nimport { MongoIdPipe } from \"@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe\";\n\ndescribe(\"Mongo Id Pipe\", () => {\n  describe(MongoIdPipe.prototype.transform, () => {\n    it(\"should return value when value is a valid mongo id.\", () => {\n      const pipe = new MongoIdPipe();\n      const validMongoId = \"507f1f77bcf86cd799439011\";\n      const result = pipe.transform(validMongoId);\n\n      expect(result).toBe(validMongoId);\n    });\n\n    it.each<{\n      test: string;\n      errorMessage: string;\n      value: unknown;\n    }>([\n      {\n        test: \"should throw BadRequestException when value is undefined.\",\n        errorMessage: \"Mongo ID must be provided\",\n        value: undefined,\n      },\n      {\n        test: \"should throw BadRequestException when value is null.\",\n        errorMessage: \"Mongo ID must be provided\",\n        value: null,\n      },\n      {\n        test: \"should throw BadRequestException when value is not a string.\",\n        errorMessage: \"Mongo ID must be a string, but received: number\",\n        value: 123,\n      },\n      {\n        test: \"should throw BadRequestException when value is an invalid mongo id (invalid hex characters).\",\n        errorMessage: \"Invalid Mongo ID: invalid-mongo-id\",\n        value: \"invalid-mongo-id\",\n      },\n      {\n        test: \"should throw BadRequestException when value is an invalid mongo id (wrong length).\",\n        errorMessage: \"Invalid Mongo ID: 12345\",\n        value: \"12345\",\n      },\n      {\n        test: \"should throw BadRequestException when value is toptoptoptop\",\n        errorMessage: \"Invalid Mongo ID: toptoptoptop\",\n        value: \"toptoptoptop\",\n      },\n    ])(\"$test\", ({ errorMessage, value }) => {\n      const pipe = new MongoIdPipe();\n      const error = new BadRequestException(errorMessage);\n\n      expect(() => pipe.transform(value)).toThrowError(error);\n    });\n  });\n});"
-    },
     "src/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers.spec.ts": {
       "tests": [
         {
-          "id": "120",
+          "id": "119",
           "name": "Question Theme Mongoose Mappers createQuestionThemeFromDocument should map mongoose document to domain entity when called."
         }
       ],
       "source": "import { createQuestionThemeFromDocument } from \"@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers\";\n\nimport { createFakeQuestionTheme, createFakeQuestionThemeDocument } from \"@faketories/contexts/question/question-theme/question-theme.faketory\";\n\nimport type { QuestionTheme } from \"@question/modules/question-theme/domain/entities/question-theme.types\";\nimport type { QuestionThemeMongooseDocument } from \"@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types\";\n\ndescribe(\"Question Theme Mongoose Mappers\", () => {\n  describe(createQuestionThemeFromDocument, () => {\n    it(\"should map mongoose document to domain entity when called.\", () => {\n      const questionThemeDocument = createFakeQuestionThemeDocument();\n      const expectedQuestionTheme = createFakeQuestionTheme({\n        id: questionThemeDocument._id.toString(),\n        label: questionThemeDocument.label,\n        parentId: questionThemeDocument.parentId?.toString(),\n        description: questionThemeDocument.description,\n        aliases: questionThemeDocument.aliases,\n        status: questionThemeDocument.status,\n        createdAt: questionThemeDocument.createdAt,\n        updatedAt: questionThemeDocument.updatedAt,\n      });\n      const result = createQuestionThemeFromDocument(questionThemeDocument as unknown as QuestionThemeMongooseDocument);\n\n      expect(result).toStrictEqual<QuestionTheme>(expectedQuestionTheme);\n    });\n  });\n});"
     },
-    "src/app/helpers/logger.helpers.spec.ts": {
+    "src/shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe.spec.ts": {
       "tests": [
         {
-          "id": "121",
-          "name": "Logger Helpers getLoggerConfiguration should return logger production configuration when env is production."
+          "id": "120",
+          "name": "Mongo Id Pipe transform should return value when value is a valid mongo id."
         },
         {
-          "id": "122",
-          "name": "Logger Helpers getLoggerConfiguration should return logger development configuration when env is not production."
+          "id": "121",
+          "name": "Mongo Id Pipe transform 'should throw BadRequestException when…'"
         }
       ],
-      "source": "import { getLoggerConfiguration } from \"@app/helpers/logger.helpers\";\n\nimport type { Params as PinoParameters } from \"nestjs-pino/params\";\n\ndescribe(\"Logger Helpers\", () => {\n  describe(getLoggerConfiguration, () => {\n    afterEach(() => {\n      process.env.NODE_ENV = \"TEST\";\n    });\n\n    it(\"should return logger production configuration when env is production.\", () => {\n      process.env.NODE_ENV = \"production\";\n\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: undefined,\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n\n    it(\"should return logger development configuration when env is not production.\", () => {\n      process.env.NODE_ENV = \"development\";\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: { target: \"pino-pretty\" },\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n  });\n});"
+      "source": "import { BadRequestException } from \"@nestjs/common\";\n\nimport { MongoIdPipe } from \"@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe\";\n\ndescribe(\"Mongo Id Pipe\", () => {\n  describe(MongoIdPipe.prototype.transform, () => {\n    it(\"should return value when value is a valid mongo id.\", () => {\n      const pipe = new MongoIdPipe();\n      const validMongoId = \"507f1f77bcf86cd799439011\";\n      const result = pipe.transform(validMongoId);\n\n      expect(result).toBe(validMongoId);\n    });\n\n    it.each<{\n      test: string;\n      errorMessage: string;\n      value: unknown;\n    }>([\n      {\n        test: \"should throw BadRequestException when value is undefined.\",\n        errorMessage: \"Mongo ID must be provided\",\n        value: undefined,\n      },\n      {\n        test: \"should throw BadRequestException when value is null.\",\n        errorMessage: \"Mongo ID must be provided\",\n        value: null,\n      },\n      {\n        test: \"should throw BadRequestException when value is not a string.\",\n        errorMessage: \"Mongo ID must be a string, but received: number\",\n        value: 123,\n      },\n      {\n        test: \"should throw BadRequestException when value is an invalid mongo id (invalid hex characters).\",\n        errorMessage: \"Invalid Mongo ID: invalid-mongo-id\",\n        value: \"invalid-mongo-id\",\n      },\n      {\n        test: \"should throw BadRequestException when value is an invalid mongo id (wrong length).\",\n        errorMessage: \"Invalid Mongo ID: 12345\",\n        value: \"12345\",\n      },\n      {\n        test: \"should throw BadRequestException when value is toptoptoptop\",\n        errorMessage: \"Invalid Mongo ID: toptoptoptop\",\n        value: \"toptoptoptop\",\n      },\n    ])(\"$test\", ({ errorMessage, value }) => {\n      const pipe = new MongoIdPipe();\n      const error = new BadRequestException(errorMessage);\n\n      expect(() => pipe.transform(value)).toThrowError(error);\n    });\n  });\n});"
     },
     "src/shared/infrastructure/http/decorators/localization/localization.decorator.spec.ts": {
       "tests": [
         {
-          "id": "123",
+          "id": "122",
           "name": "Localization Decorator getLocalizationOptionsFromContext should return localization options from execution context when called."
         },
         {
-          "id": "124",
+          "id": "123",
           "name": "Localization Decorator getLocalizationOptionsFromContext should throw an InternalServerErrorException when localization options are missing in the request."
         },
         {
-          "id": "125",
+          "id": "124",
           "name": "Localization Decorator Localization should return a parameter decorator when called."
         }
       ],
@@ -5752,23 +5750,36 @@
     "src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.spec.ts": {
       "tests": [
         {
-          "id": "126",
+          "id": "125",
           "name": "Question Theme Errors QuestionThemeNotFoundError should have name QuestionThemeNotFoundError when created."
         },
         {
-          "id": "127",
+          "id": "126",
           "name": "Question Theme Errors QuestionThemeNotFoundError should have message with theme id when created."
         },
         {
-          "id": "128",
+          "id": "127",
           "name": "Question Theme Errors QuestionThemeAlreadyArchivedError should have name QuestionThemeAlreadyArchivedError when created."
         },
         {
-          "id": "129",
+          "id": "128",
           "name": "Question Theme Errors QuestionThemeAlreadyArchivedError should have message with theme id when created."
         }
       ],
       "source": "import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from \"@question/modules/question-theme/domain/errors/question-theme.errors\";\n\ndescribe(\"Question Theme Errors\", () => {\n  describe(QuestionThemeNotFoundError, () => {\n    it(\"should have name QuestionThemeNotFoundError when created.\", () => {\n      const error = new QuestionThemeNotFoundError(\"themeId\");\n\n      expect(error.name).toBe(\"QuestionThemeNotFoundError\");\n    });\n\n    it(\"should have message with theme id when created.\", () => {\n      const error = new QuestionThemeNotFoundError(\"themeId\");\n\n      expect(error.message).toBe(\"Question theme with id themeId not found\");\n    });\n  });\n\n  describe(QuestionThemeAlreadyArchivedError, () => {\n    it(\"should have name QuestionThemeAlreadyArchivedError when created.\", () => {\n      const error = new QuestionThemeAlreadyArchivedError(\"themeId\");\n\n      expect(error.name).toBe(\"QuestionThemeAlreadyArchivedError\");\n    });\n\n    it(\"should have message with theme id when created.\", () => {\n      const error = new QuestionThemeAlreadyArchivedError(\"themeId\");\n\n      expect(error.message).toBe(\"Question theme with id themeId already has status 'archived'\");\n    });\n  });\n});"
+    },
+    "src/app/helpers/logger.helpers.spec.ts": {
+      "tests": [
+        {
+          "id": "129",
+          "name": "Logger Helpers getLoggerConfiguration should return logger production configuration when env is production."
+        },
+        {
+          "id": "130",
+          "name": "Logger Helpers getLoggerConfiguration should return logger development configuration when env is not production."
+        }
+      ],
+      "source": "import { getLoggerConfiguration } from \"@app/helpers/logger.helpers\";\n\nimport type { Params as PinoParameters } from \"nestjs-pino/params\";\n\ndescribe(\"Logger Helpers\", () => {\n  describe(getLoggerConfiguration, () => {\n    afterEach(() => {\n      process.env.NODE_ENV = \"TEST\";\n    });\n\n    it(\"should return logger production configuration when env is production.\", () => {\n      process.env.NODE_ENV = \"production\";\n\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: undefined,\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n\n    it(\"should return logger development configuration when env is not production.\", () => {\n      process.env.NODE_ENV = \"development\";\n      const config = getLoggerConfiguration();\n      const expectedConfig: PinoParameters = {\n        pinoHttp: {\n          transport: { target: \"pino-pretty\" },\n        },\n      };\n\n      expect(config).toStrictEqual<PinoParameters>(expectedConfig);\n    });\n  });\n});"
     }
   },
   "projectRoot": "/Users/mac-Z14AZANA/WebstormProjects/goat-it-api",
