@@ -99,7 +99,7 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^20.0.0",
-    "@cucumber/cucumber": "^12.2.0",
+    "@cucumber/cucumber": "^12.3.0",
     "@eslint/config-inspector": "^1.4.2",
     "@faker-js/faker": "^10.1.0",
     "@nestjs/cli": "^11.0.14",
