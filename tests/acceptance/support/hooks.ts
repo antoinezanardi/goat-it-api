@@ -12,7 +12,11 @@ const processes: AcceptanceHooksProcesses = {};
 
 BeforeAll(async function() {
   loadEnvTestConfig();
-  buildAppForAcceptanceTests();
+  if (process.env.SKIP_BUILD === "true") {
+    console.info("⏭️ Skipping application build for acceptance tests as per SKIP_BUILD env variable.");
+  } else {
+    buildAppForAcceptanceTests();
+  }
   await connectToTestDatabase();
 
   processes.app = await serveAppForAcceptanceTests();

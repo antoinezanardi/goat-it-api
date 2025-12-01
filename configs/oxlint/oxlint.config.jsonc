@@ -31,7 +31,8 @@
     "navigator": "readonly",
     "Buffer": "readonly",
     "setTimeout": "readonly",
-    "clearTimeout": "readonly"
+    "clearTimeout": "readonly",
+    "console": "readonly"
   },
   "rules": {
     // ---- ESLint Rules -----
@@ -1303,6 +1304,12 @@
         "**/tests/acceptance/support/hooks.ts"
       ],
       "rules": {
+        "no-console": [
+          "error",
+          {
+            "allow": ["info"]
+          }
+        ],
         "new-cap": [
           "error",
           {
