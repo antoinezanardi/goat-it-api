@@ -1,6 +1,6 @@
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";

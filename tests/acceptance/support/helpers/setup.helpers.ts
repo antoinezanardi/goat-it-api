@@ -2,9 +2,21 @@ import { spawn, spawnSync } from "node:child_process";
 import { request as fetch } from "node:http";
 import { URL } from "node:url";
 
-import { APP_BASE_URL, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
+import { config as loadEnvConfig } from "dotenv";
+
+import { APP_BASE_URL, APP_ENV_TEST_PATH, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
 
 import type { ChildProcessWithoutNullStreams, SpawnOptions, SpawnOptionsWithoutStdio } from "node:child_process";
+
+function loadEnvTestConfig(): void {
+  const envLoadResult = loadEnvConfig({
+    path: APP_ENV_TEST_PATH,
+    quiet: true,
+  });
+  if (envLoadResult.error) {
+    throw new Error(`Failed to load environment variables from ${APP_ENV_TEST_PATH}: ${envLoadResult.error.message}`);
+  }
+}
 
 function buildAppForAcceptanceTests(): void {
   const spawnOptions: SpawnOptions = {
@@ -78,7 +90,7 @@ async function serveAppForAcceptanceTests(): Promise<ChildProcessWithoutNullStre
   const spawnOptions: SpawnOptionsWithoutStdio = {
     shell: true,
   };
-  const serverProcess = spawn("pnpm run start:prod", spawnOptions);
+  const serverProcess = spawn("pnpm run start:prod:test", spawnOptions);
 
   return waitForAppToBeReady(serverProcess);
 }
@@ -116,6 +128,7 @@ async function killAppProcess(serverProcess: ChildProcessWithoutNullStreams): Pr
 }
 
 export {
+  loadEnvTestConfig,
   buildAppForAcceptanceTests,
   serveAppForAcceptanceTests,
   killAppProcess,

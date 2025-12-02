@@ -1,8 +1,8 @@
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
-import { ConfigService } from "@nestjs/config";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { SWAGGER_DOCUMENTATION_PATH } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
@@ -15,8 +15,11 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { bufferLogs: true });
 
   const logger = app.get(Logger);
+  const appConfigService = app.get<AppConfigService>(AppConfigService);
 
-  app.enableCors(createCorsConfig());
+  const corsConfig = createCorsConfig(appConfigService.corsConfig);
+  app.enableCors(corsConfig);
+
   app.enableShutdownHooks();
   app.useLogger(logger);
 
@@ -25,11 +28,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     root: `${process.cwd()}/public`,
     prefix: "/public/",
   });
-  const configService = app.get<ConfigService>(ConfigService);
 
-  const host = configService.getOrThrow<string>("HOST");
-  const port = configService.getOrThrow<number>("PORT");
-  await app.listen({ host, port });
+  await app.listen(appConfigService.serverConfig);
 
   const appUrl = await app.getUrl();
 

@@ -7,7 +7,7 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@factories/contexts/question/question-theme/question-theme.factory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";

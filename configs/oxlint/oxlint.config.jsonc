@@ -20,6 +20,7 @@
     "describe": "readonly",
     "it": "readonly",
     "expect": "readonly",
+    "expectTypeOf": "readonly",
     "beforeAll": "readonly",
     "afterAll": "readonly",
     "beforeEach": "readonly",
@@ -30,7 +31,8 @@
     "navigator": "readonly",
     "Buffer": "readonly",
     "setTimeout": "readonly",
-    "clearTimeout": "readonly"
+    "clearTimeout": "readonly",
+    "console": "readonly"
   },
   "rules": {
     // ---- ESLint Rules -----
@@ -148,7 +150,8 @@
           "K",
           "i",
           "x",
-          "y"
+          "y",
+          "_"
         ]
       }
     ],
@@ -628,7 +631,7 @@
             "position": "after"
           },
           {
-            "pattern": "@factories/**",
+            "pattern": "@faketories/**",
             "group": "sibling",
             "position": "after"
           },
@@ -722,7 +725,7 @@
           "type"
         ],
         "typescript/consistent-type-exports": "error",
-        // Disabled for now because of false positives because of decorators usage
+        // Disabled for now because of false positives because of decorators' usage
         "typescript/consistent-type-imports": "off",
         "typescript/default-param-last": "error",
         "typescript/dot-notation": [
@@ -990,11 +993,13 @@
         "**/src/**/*.module.ts"
       ],
       "rules": {
+        "class-methods-use-this": "off",
         "new-cap": [
           "error",
           {
             "capIsNewExceptions": [
-              "Module"
+              "Module",
+              "Global"
             ]
           }
         ]
@@ -1015,7 +1020,9 @@
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
-              "HealthCheck"
+              "HealthCheck",
+              "Localization",
+              "Param"
             ]
           }
         ]
@@ -1048,6 +1055,47 @@
         "max-classes-per-file": [
           "error",
           5
+        ]
+      }
+    },
+    // ---- Override for middlewares -----
+    {
+      "files": [
+        "**/src/**/*.middleware.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable",
+              "Inject"
+            ]
+          }
+        ],
+        "no-param-reassign": [
+          "error",
+          {
+            "ignorePropertyModificationsFor": ["requestRaw"],
+            "props": true
+          }
+        ]
+      }
+    },
+    // ---- Override for pipes -----
+    {
+      "files": [
+        "**/src/**/*.pipe.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off",
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable"
+            ]
+          }
         ]
       }
     },
@@ -1097,6 +1145,7 @@
       "rules": {
         "max-lines-per-function": "off",
         "no-magic-numbers": "off",
+        "new-cap": "off",
         "import/no-namespace": "off",
         "import/no-internal-modules": "off",
         "import/max-dependencies": [
@@ -1140,7 +1189,7 @@
           }
         ],
         "jest/max-nested-describe": "error",
-        "jest/no-alias-methods": "error",
+        "jest/no-alias-methods": "off",
         "jest/no-commented-out-tests": "error",
         "jest/no-conditional-expect": "error",
         "jest/no-conditional-in-test": "error",
@@ -1230,10 +1279,10 @@
         "import/no-anonymous-default-export": "off"
       }
     },
-    // ---- Override for factory (unit tests) files -----
+    // ---- Override for faketory (unit tests) files -----
     {
       "files": [
-        "**/tests/unit/utils/factories/**/*.factory.ts"
+        "**/tests/shared/utils/faketories/**/*.faketory.ts"
       ],
       "rules": {
         "no-magic-numbers": "off",
@@ -1256,6 +1305,12 @@
         "**/tests/acceptance/support/hooks.ts"
       ],
       "rules": {
+        "no-console": [
+          "error",
+          {
+            "allow": ["info"]
+          }
+        ],
         "new-cap": [
           "error",
           {

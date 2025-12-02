@@ -64,7 +64,7 @@ export default defineConfig({
       "@configs": path.resolve(rootDirectory, "configs"),
       "@question": path.resolve(rootDirectory, "src/contexts/question"),
       "@unit-tests": path.resolve(rootDirectory, "tests/unit"),
-      "@factories": path.resolve(rootDirectory, "tests/unit/utils/factories"),
+      "@faketories": path.resolve(rootDirectory, "tests/shared/utils/faketories"),
       "@mocks": path.resolve(rootDirectory, "tests/unit/utils/mocks"),
     },
   },

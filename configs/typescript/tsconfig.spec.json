@@ -12,6 +12,7 @@
     "../../configs/**/*.ts",
     "../../configs/**/*.json",
     "../../src/**/*.spec.ts",
+    "../../tests/shared/utils/faketories/**/*.ts",
     "../../tests/unit/**/*.ts"
   ],
   "exclude": [
