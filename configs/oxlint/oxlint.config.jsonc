@@ -1021,7 +1021,8 @@
               "ApiResponse",
               "ZodResponse",
               "HealthCheck",
-              "Localization"
+              "Localization",
+              "Param"
             ]
           }
         ]

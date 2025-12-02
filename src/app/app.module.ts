@@ -22,6 +22,6 @@ export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(LocalizationMiddleware)
-      .forRoutes("question-themes");
+      .forRoutes("*");
   }
 }

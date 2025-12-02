@@ -30,3 +30,14 @@ Then(/^the response should contain the following question themes:$/u, function(t
     expect(questionTheme.status).toBe(expectedQuestionTheme.status);
   }
 });
+
+Then(/^the response should contain the following question theme:$/u, function(this: GoatItWorld, questionThemeDataTable: DataTable): void {
+  const questionTheme = this.expectLastResponseJson<QuestionThemeDto>(QUESTION_THEME_DTO);
+  const dataTableRow = questionThemeDataTable.hashes()[0];
+  const expectedQuestionThemeAliases = dataTableRow.aliases.split(",").map(alias => alias.trim());
+
+  expect(questionTheme.label).toBe(dataTableRow.label);
+  expect(questionTheme.aliases).toStrictEqual(expectedQuestionThemeAliases);
+  expect(questionTheme.description).toBe(dataTableRow.description);
+  expect(questionTheme.status).toBe(dataTableRow.status);
+});

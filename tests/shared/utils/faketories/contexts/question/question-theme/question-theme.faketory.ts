@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
-import { Types } from "mongoose";
 
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
 import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
@@ -42,9 +42,9 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
   const documentId = questionThemeDocument._id?.toString() ?? faker.database.mongodbObjectId();
 
   return {
-    _id: new Types.ObjectId(documentId),
+    _id: createFakeObjectId(documentId),
     id: documentId,
-    parentId: faker.datatype.boolean() ? new Types.ObjectId(faker.database.mongodbObjectId()) : undefined,
+    parentId: faker.datatype.boolean() ? createFakeObjectId(faker.database.mongodbObjectId()) : undefined,
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),

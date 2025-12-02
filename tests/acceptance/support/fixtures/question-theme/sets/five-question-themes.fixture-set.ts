@@ -1,8 +1,10 @@
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 const FIVE_QUESTION_THEMES_FIXTURE_SET = [
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("8ef21e4eb04eb0fa5a469d87"),
     label: createFakeLocalizedText({
       fr: "Cinéma",
       en: "Cinema",
@@ -19,6 +21,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("ddb03d94cae8df38d28e5adc"),
     label: createFakeLocalizedText({
       fr: "Musique",
       en: "Music",
@@ -35,6 +38,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("dbb0664ad4797c6cc79d5aee"),
     label: createFakeLocalizedText({
       fr: "Sport",
       en: "Sports",
@@ -51,6 +55,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
     label: createFakeLocalizedText({
       fr: "Histoire",
       en: "History",
@@ -67,6 +72,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
+    _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
     label: createFakeLocalizedText({
       fr: "Science",
       en: "Science",
