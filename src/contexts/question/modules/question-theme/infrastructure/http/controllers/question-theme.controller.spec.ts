@@ -1,8 +1,10 @@
+import { NotFoundException } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 
@@ -119,6 +121,18 @@ describe("Question Theme Controller", () => {
       const result = await questionThemeController.findQuestionThemeById(questionThemeId, localization);
 
       expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
+    });
+
+    it("should throw NotFoundException when question theme is not found.", async() => {
+      const questionThemeId = "question-theme-id";
+      const localization = createFakeLocalizationOptions();
+      const throwError = new QuestionThemeNotFoundError(questionThemeId);
+      const expectedError = new NotFoundException({
+        error: throwError.message,
+      });
+      mocks.useCases.findQuestionThemeById.getById.mockRejectedValue(throwError);
+
+      await expect(async() => questionThemeController.findQuestionThemeById(questionThemeId, localization)).rejects.toThrowError(expectedError);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, NotFoundException, Param } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
@@ -39,8 +39,14 @@ export class QuestionThemeController {
     @Param("id", MongoIdPipe) id: string,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto> {
-    const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
+    try {
+      const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
-    return createQuestionThemeDtoFromEntity(questionTheme, localization);
+      return createQuestionThemeDtoFromEntity(questionTheme, localization);
+    } catch {
+      throw new NotFoundException({
+        error: `Question theme with id ${id} not found`,
+      });
+    }
   }
 }
