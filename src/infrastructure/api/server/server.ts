@@ -9,6 +9,8 @@ import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpe
 
 import { AppModule } from "@app/app.module";
 
+import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception-filter/global-exception-filter";
+
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 async function bootstrap(): Promise<NestFastifyApplication> {
@@ -22,6 +24,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
 
   app.enableShutdownHooks();
   app.useLogger(logger);
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   setupSwaggerModule(app);
   app.useStaticAssets({

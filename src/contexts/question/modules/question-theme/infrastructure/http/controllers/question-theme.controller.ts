@@ -39,14 +39,8 @@ export class QuestionThemeController {
     @Param("id", MongoIdPipe) id: string,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto> {
-    try {
-      const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
+    const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
-      return createQuestionThemeDtoFromEntity(questionTheme, localization);
-    } catch {
-      throw new NotFoundException({
-        error: `Question theme with id ${id} not found`,
-      });
-    }
+    return createQuestionThemeDtoFromEntity(questionTheme, localization);
   }
 }
