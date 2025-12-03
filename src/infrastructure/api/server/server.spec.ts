@@ -52,6 +52,7 @@ describe("Server", () => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
+      useGlobalFilters: vi.fn<() => INestApplication>(),
       get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(service => {
         if (service === AppConfigService) {
           return mocks.services.config;
@@ -117,6 +118,12 @@ describe("Server", () => {
       expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);
     });
 
+    it("should use global exception filter when called.", async() => {
+      const app = await bootstrap();
+
+      expect(app.useGlobalFilters).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+    });
+
     it("should setup swagger module when called.", async() => {
       await bootstrap();
 
@@ -172,6 +179,7 @@ describe("Server", () => {
       const expectedApp = {
         enableCors: expect.any(Function) as () => INestApplication,
         enableShutdownHooks: expect.any(Function) as () => INestApplication,
+        useGlobalFilters: expect.any(Function) as () => INestApplication,
         useLogger: expect.any(Function) as () => void,
         get: expect.any(Function) as () => never,
         listen: expect.any(Function) as () => void,

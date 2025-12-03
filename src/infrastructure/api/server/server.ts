@@ -9,7 +9,7 @@ import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpe
 
 import { AppModule } from "@app/app.module";
 
-import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception-filter/global-exception-filter";
+import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 

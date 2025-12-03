@@ -1099,6 +1099,23 @@
         ]
       }
     },
+    // ---- Override for filters -----
+    {
+      "files": [
+        "**/src/**/*.filter.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off",
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Catch"
+            ]
+          }
+        ]
+      }
+    },
     // ---- Override for mongoose schemas -----
     {
       "files": [
