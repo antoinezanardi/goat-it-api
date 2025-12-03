@@ -61,4 +61,6 @@ Feature: List Question Themes
 
   Scenario: Listing all question themes with invalid locale
     When the client retrieves all question themes in locale "invalid-locale"
-    Then the request should have failed with status code 400
+    Then the request should have failed with status code 400 and contain the following error:
+      | error       | statusCode | message                                                                                                                              |
+      | Bad Request | 400        | Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered) |
