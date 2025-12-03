@@ -21,6 +21,9 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
     throw new Error(`The expected status code ${expectedStatus} is a success status code.`);
   }
   const errorRows = errorDataTable.hashes() as Record<"error" | "message" | "statusCode", string>[];
+  if (errorRows.length === 0) {
+    throw new Error("Error DataTable must contain at least one data row.");
+  }
   const expectedError = {
     error: errorRows[0].error,
     message: errorRows[0].message,
