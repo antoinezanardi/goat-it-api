@@ -10,6 +10,8 @@ import { bootstrap } from "@src/infrastructure/api/server/server";
 
 import type { AppModule } from "@app/app.module";
 
+import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
+
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
@@ -121,7 +123,7 @@ describe("Server", () => {
     it("should use global exception filter when called.", async() => {
       const app = await bootstrap();
 
-      expect(app.useGlobalFilters).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+      expect(app.useGlobalFilters).toHaveBeenCalledExactlyOnceWith(expect.any(GlobalExceptionFilter));
     });
 
     it("should setup swagger module when called.", async() => {
