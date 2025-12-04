@@ -13,10 +13,6 @@ const QUESTION_THEME_DTO = z.object({
     .describe("Question Theme's translated aliases. Help to find the theme with different keywords."),
   description: z.string()
     .describe("Question Theme's translated description."),
-  parentId: z.string()
-    .regex(/^[\da-f]{24}$/iu)
-    .optional()
-    .describe("Question Theme's parent unique identifier, if any. If not present, the theme is a root theme. Else, it's a sub-theme."),
   status: z.enum(QUESTION_THEME_STATUSES)
     .describe("Question Theme's status."),
   createdAt: z.iso.datetime()

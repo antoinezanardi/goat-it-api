@@ -6,7 +6,6 @@ type QuestionTheme = {
   label: LocalizedText;
   aliases: LocalizedTexts;
   description: LocalizedText;
-  parentId?: string;
   status: QuestionThemeStatus;
   createdAt: Date;
   updatedAt: Date;

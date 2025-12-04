@@ -30,7 +30,6 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
       de: undefined,
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("3ff6c1e3ae2fe3fdd9ced1e8"),
@@ -59,7 +58,6 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
       de: undefined,
     }),
     status: "active",
-    parentId: undefined,
   }),
 ] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 

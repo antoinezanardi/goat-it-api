@@ -11,7 +11,6 @@ function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme, localiza
     label: createTranslationFromLocalizedText(questionTheme.label, localizationOptions),
     aliases: createTranslationsFromLocalizedTexts(questionTheme.aliases, localizationOptions),
     description: createTranslationFromLocalizedText(questionTheme.description, localizationOptions),
-    parentId: questionTheme.parentId,
     status: questionTheme.status,
     createdAt: questionTheme.createdAt.toISOString(),
     updatedAt: questionTheme.updatedAt.toISOString(),

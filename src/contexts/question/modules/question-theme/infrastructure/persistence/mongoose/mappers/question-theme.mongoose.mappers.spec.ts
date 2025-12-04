@@ -12,7 +12,6 @@ describe("Question Theme Mongoose Mappers", () => {
       const expectedQuestionTheme = createFakeQuestionTheme({
         id: questionThemeDocument._id.toString(),
         label: questionThemeDocument.label,
-        parentId: questionThemeDocument.parentId?.toString(),
         description: questionThemeDocument.description,
         aliases: questionThemeDocument.aliases,
         status: questionThemeDocument.status,

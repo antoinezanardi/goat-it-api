@@ -18,7 +18,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about cinema and movies.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("ddb03d94cae8df38d28e5adc"),
@@ -35,7 +34,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about music, artists and music genres.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("dbb0664ad4797c6cc79d5aee"),
@@ -52,7 +50,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about sports, competitions and athletes.",
     }),
     status: "archived",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
@@ -69,7 +66,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about historical events, figures and periods.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
@@ -86,7 +82,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme covering sciences, discoveries and innovations.",
     }),
     status: "active",
-    parentId: undefined,
   }),
 ] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 
