@@ -17,7 +17,6 @@ describe("Question Theme Dto Mappers", () => {
         label: questionTheme.label.en,
         aliases: questionTheme.aliases.en,
         description: questionTheme.description.en,
-        parentId: questionTheme.parentId,
         status: questionTheme.status,
         createdAt: questionTheme.createdAt.toISOString(),
         updatedAt: questionTheme.updatedAt.toISOString(),

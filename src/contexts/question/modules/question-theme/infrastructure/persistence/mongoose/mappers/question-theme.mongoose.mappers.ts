@@ -7,7 +7,6 @@ function createQuestionThemeFromDocument(questionThemeDocument: QuestionThemeMon
     label: questionThemeDocument.label,
     aliases: questionThemeDocument.aliases,
     description: questionThemeDocument.description,
-    parentId: questionThemeDocument.parentId?.toString(),
     status: questionThemeDocument.status,
     createdAt: questionThemeDocument.createdAt,
     updatedAt: questionThemeDocument.updatedAt,
