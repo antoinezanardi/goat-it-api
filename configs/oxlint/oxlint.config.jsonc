@@ -1017,6 +1017,8 @@
             "capIsNewExceptions": [
               "Controller",
               "Get",
+              "Post",
+              "Delete",
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
