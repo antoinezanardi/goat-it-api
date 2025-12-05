@@ -5,6 +5,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("5cd8edcc5fdf4cf6aaf79c9e"),
+    slug: "cinema",
     label: createFakeLocalizedText({
       en: "Cinema",
       fr: undefined,
@@ -33,6 +34,7 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET = [
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("3ff6c1e3ae2fe3fdd9ced1e8"),
+    slug: "music",
     label: createFakeLocalizedText({
       en: "Music",
       fr: undefined,

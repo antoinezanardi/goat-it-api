@@ -7,6 +7,8 @@ const QUESTION_THEME_DTO = z.object({
   id: z.string()
     .regex(/^[\da-f]{24}$/iu)
     .describe("Question Theme's unique identifier."),
+  slug: z.string()
+    .describe("Question Theme's unique slug in kebab-case."),
   label: z.string()
     .describe("Question Theme's translated label."),
   aliases: z.string().array()

@@ -14,6 +14,7 @@ describe("Question Theme Dto Mappers", () => {
       const questionThemeDto = createQuestionThemeDtoFromEntity(questionTheme, localizationOptions);
       const expectedQuestionThemeDto = createFakeQuestionThemeDto({
         id: questionTheme.id,
+        slug: questionTheme.slug,
         label: questionTheme.label.en,
         aliases: questionTheme.aliases.en,
         description: questionTheme.description.en,

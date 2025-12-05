@@ -18,12 +18,13 @@ Then(/^the response should contain (?<questionThemesCount>\d+) question themes$/
 
 Then(/^the response should contain the following question themes:$/u, function(this: GoatItWorld, questionThemesDataTable: DataTable): void {
   const questionThemes = this.expectLastResponseJson<QuestionThemeDto[]>(z.array(QUESTION_THEME_DTO));
-  const dataTableRows = questionThemesDataTable.hashes() as Record<"label" | "aliases" | "description" | "status", string>[];
+  const dataTableRows = questionThemesDataTable.hashes() as Record<keyof QuestionThemeDto, string>[];
 
   for (const [index, expectedQuestionTheme] of dataTableRows.entries()) {
     const questionTheme = questionThemes[index];
     const expectedQuestionThemeAliases = expectedQuestionTheme.aliases.split(",").map(alias => alias.trim());
 
+    expect(questionTheme.slug).toBe(expectedQuestionTheme.slug);
     expect(questionTheme.label).toBe(expectedQuestionTheme.label);
     expect(questionTheme.aliases).toStrictEqual(expectedQuestionThemeAliases);
     expect(questionTheme.description).toBe(expectedQuestionTheme.description);
@@ -33,9 +34,10 @@ Then(/^the response should contain the following question themes:$/u, function(t
 
 Then(/^the response should contain the following question theme:$/u, function(this: GoatItWorld, questionThemeDataTable: DataTable): void {
   const questionTheme = this.expectLastResponseJson<QuestionThemeDto>(QUESTION_THEME_DTO);
-  const dataTableRow = questionThemeDataTable.hashes()[0];
+  const dataTableRow = questionThemeDataTable.hashes()[0] as Record<keyof QuestionThemeDto, string>;
   const expectedQuestionThemeAliases = dataTableRow.aliases.split(",").map(alias => alias.trim());
 
+  expect(questionTheme.slug).toBe(dataTableRow.slug);
   expect(questionTheme.label).toBe(dataTableRow.label);
   expect(questionTheme.aliases).toStrictEqual(expectedQuestionThemeAliases);
   expect(questionTheme.description).toBe(dataTableRow.description);

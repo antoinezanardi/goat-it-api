@@ -15,6 +15,14 @@ import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/loca
 class QuestionThemeMongooseSchema {
   @Prop({
     required: true,
+    type: String,
+    unique: true,
+    index: true,
+  })
+  public slug!: string;
+
+  @Prop({
+    required: true,
     type: Object,
   })
   public label!: LocalizedText;

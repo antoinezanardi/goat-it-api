@@ -3,6 +3,7 @@ import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects
 
 type QuestionTheme = {
   id: string;
+  slug: string;
   label: LocalizedText;
   aliases: LocalizedTexts;
   description: LocalizedText;
