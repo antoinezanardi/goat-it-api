@@ -81,7 +81,7 @@ describe("Archive Question Theme Use Case", () => {
       await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrowError(expectedError);
     });
 
-    it("should not throw any error when question theme to archive is found and active.", async() => {
+    it("should throw an error when question theme to archive is already archived.", async() => {
       const questionThemeId = "question-theme-id-1";
       const foundQuestionTheme = createFakeQuestionTheme({
         id: questionThemeId,
@@ -91,6 +91,17 @@ describe("Archive Question Theme Use Case", () => {
       const expectedError = new QuestionThemeAlreadyArchivedError(questionThemeId);
 
       await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrowError(expectedError);
+    });
+
+    it("should not throw any error when question theme to archive is found and active.", async() => {
+      const questionThemeId = "question-theme-id-1";
+      const foundQuestionTheme = createFakeQuestionTheme({
+        id: questionThemeId,
+        status: "active",
+      });
+      mocks.repositories.questionTheme.findById.mockResolvedValueOnce(foundQuestionTheme);
+
+      await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).resolves.toBeUndefined();
     });
   });
 });
