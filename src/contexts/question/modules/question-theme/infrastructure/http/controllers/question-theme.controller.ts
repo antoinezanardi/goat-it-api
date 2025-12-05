@@ -1,10 +1,11 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
@@ -17,6 +18,7 @@ export class QuestionThemeController {
   public constructor(
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+    private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
   @Get()
@@ -42,5 +44,19 @@ export class QuestionThemeController {
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
     return createQuestionThemeDtoFromEntity(questionTheme, localization);
+  }
+
+  @Post("/:id/archive")
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeDto,
+  })
+  public async archiveQuestionTheme(
+    @Param("id", MongoIdPipe) id: string,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto> {
+    const archivedQuestionTheme = await this.archiveQuestionThemeUseCase.archive(id);
+
+    return createQuestionThemeDtoFromEntity(archivedQuestionTheme, localization);
   }
 }

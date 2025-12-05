@@ -1,14 +1,15 @@
 import { ServerResponse } from "node:http";
 
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { FastifyReply } from "fastify";
 
-import { QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
     [QuestionThemeNotFoundError.name]: error => new NotFoundException(error.message),
+    [QuestionThemeAlreadyArchivedError.name]: error => new BadRequestException(error.message),
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);
