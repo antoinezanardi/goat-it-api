@@ -8,7 +8,8 @@ import type { Linter } from "eslint";
 const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   name: "typescript",
   files: ["**/*.ts"],
-  plugins: { "@typescript-eslint": TypeScriptPlugin },
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  plugins: { "@typescript-eslint": TypeScriptPlugin as unknown as Linter },
   languageOptions: {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     parser: TypescriptParser as Linter.Parser,

@@ -59,7 +59,7 @@
   "scripts": {
     "prepare": "scripts/post-install-prepare.sh",
     "build": "nest build --config configs/nest/nest-cli.config.json",
-    "typecheck": "tsc -b --clean && tsc -b --noEmit",
+    "typecheck": "tsgo -b --clean && tsgo -b --noEmit",
     "start": "nest start --config configs/nest/nest-cli.config.json",
     "start:dev": "nest start --watch --config configs/nest/nest-cli.config.json",
     "start:debug": "nest start --debug --watch --config configs/nest/nest-cli.config.json",
@@ -98,7 +98,7 @@
     "docker:acceptance-tests:reset": "npm run docker:acceptance-tests:stop && npm run docker:acceptance-tests:start"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/config-conventional": "^20.2.0",
     "@cucumber/cucumber": "^12.3.0",
     "@eslint/config-inspector": "^1.4.2",
     "@faker-js/faker": "^10.1.0",
@@ -116,9 +116,10 @@
     "@types/node": "^24.10.1",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1",
+    "@typescript/native-preview": "7.0.0-dev.20251205.1",
     "@vitest/coverage-v8": "^4.0.15",
     "@vitest/eslint-plugin": "^1.5.1",
-    "commitlint": "^20.1.0",
+    "commitlint": "^20.2.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "cross-env": "^10.1.0",
     "cucumber-html-reporter": "^7.2.0",
