@@ -1,0 +1,31 @@
+name: 🧹 Clean PR Description Workflow
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - edited
+
+permissions:
+  pull-requests: write
+  contents: read
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  clean-pr-description:
+    name: Clean PR Description 🧹
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v6
+
+      - name: Clean PR description from numbered diffhunk links 🧹
+        run: |
+          chmod +x scripts/clean-pr-description.sh
+          scripts/clean-pr-description.sh ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
