@@ -5,6 +5,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 const FIVE_QUESTION_THEMES_FIXTURE_SET = [
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("8ef21e4eb04eb0fa5a469d87"),
+    slug: "cinema",
     label: createFakeLocalizedText({
       fr: "Cinéma",
       en: "Cinema",
@@ -18,10 +19,10 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about cinema and movies.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("ddb03d94cae8df38d28e5adc"),
+    slug: "music",
     label: createFakeLocalizedText({
       fr: "Musique",
       en: "Music",
@@ -35,10 +36,10 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about music, artists and music genres.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("dbb0664ad4797c6cc79d5aee"),
+    slug: "sports",
     label: createFakeLocalizedText({
       fr: "Sport",
       en: "Sports",
@@ -52,10 +53,10 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about sports, competitions and athletes.",
     }),
     status: "archived",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
+    slug: "history",
     label: createFakeLocalizedText({
       fr: "Histoire",
       en: "History",
@@ -69,10 +70,10 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme about historical events, figures and periods.",
     }),
     status: "active",
-    parentId: undefined,
   }),
   createFakeQuestionThemeDocument({
     _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
+    slug: "science",
     label: createFakeLocalizedText({
       fr: "Science",
       en: "Science",
@@ -86,7 +87,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
       en: "Theme covering sciences, discoveries and innovations.",
     }),
     status: "active",
-    parentId: undefined,
   }),
 ] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 

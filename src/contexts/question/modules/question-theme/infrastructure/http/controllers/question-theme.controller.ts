@@ -1,14 +1,15 @@
-import { Controller, Get, HttpStatus, NotFoundException, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
-import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
-import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
+import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
+import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
-import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
+import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
+import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -17,6 +18,7 @@ export class QuestionThemeController {
   public constructor(
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+    private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
   @Get()
@@ -39,14 +41,22 @@ export class QuestionThemeController {
     @Param("id", MongoIdPipe) id: string,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto> {
-    try {
-      const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
+    const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
-      return createQuestionThemeDtoFromEntity(questionTheme, localization);
-    } catch {
-      throw new NotFoundException({
-        error: `Question theme with id ${id} not found`,
-      });
-    }
+    return createQuestionThemeDtoFromEntity(questionTheme, localization);
+  }
+
+  @Post("/:id/archive")
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeDto,
+  })
+  public async archiveQuestionTheme(
+    @Param("id", MongoIdPipe) id: string,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto> {
+    const archivedQuestionTheme = await this.archiveQuestionThemeUseCase.archive(id);
+
+    return createQuestionThemeDtoFromEntity(archivedQuestionTheme, localization);
   }
 }

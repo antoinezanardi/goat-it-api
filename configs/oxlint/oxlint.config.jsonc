@@ -1017,6 +1017,8 @@
             "capIsNewExceptions": [
               "Controller",
               "Get",
+              "Post",
+              "Delete",
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
@@ -1094,6 +1096,23 @@
           {
             "capIsNewExceptions": [
               "Injectable"
+            ]
+          }
+        ]
+      }
+    },
+    // ---- Override for filters -----
+    {
+      "files": [
+        "**/src/**/*.filter.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off",
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Catch"
             ]
           }
         ]
