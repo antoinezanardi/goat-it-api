@@ -89,6 +89,7 @@
     "script:create-branch": "scripts/create-git-branch.sh",
     "script:create-pull-request": "scripts/create-pull-request.sh",
     "script:create-release-changelog": "scripts/create-release-changelog.sh",
+    "script:clean-pr-description": "scripts/clean-pr-description.sh",
     "validate:branch-name": "(cd configs/validate-branch-name && validate-branch-name)",
     "docker:build": "docker buildx build -t goat-it-api .",
     "docker:build:linux/arm64": "docker buildx build --platform linux/arm64 -t goat-it-api .",
