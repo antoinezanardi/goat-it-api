@@ -52,7 +52,7 @@ echo "🔍  Fetching PR #$PR_NUMBER description..."
 # Get current PR description
 CURRENT_DESCRIPTION=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq '.body')
 
-if [[ -z "$CURRENT_DESCRIPTION" ]]; then
+if [[ -z "$CURRENT_DESCRIPTION" || "$CURRENT_DESCRIPTION" == "null" ]]; then
   echo "⚠️  PR #$PR_NUMBER has no description. Nothing to clean."
   exit 0
 fi
@@ -62,8 +62,8 @@ fi
 # The pattern is: \[\[[0-9]+\]\]\(diffhunk://[^)]+\)
 CLEANED_DESCRIPTION=$(echo "$CURRENT_DESCRIPTION" | sed -E 's/\[\[[0-9]+\]\]\(diffhunk:\/\/[^)]+\)//g')
 
-# Remove extra blank lines that may have been left behind
-CLEANED_DESCRIPTION=$(echo "$CLEANED_DESCRIPTION" | sed -E '/^[[:space:]]*$/{ N; s/^\n$//; }')
+# Remove trailing spaces that may have been left behind after link removal
+CLEANED_DESCRIPTION=$(echo "$CLEANED_DESCRIPTION" | sed -E 's/[[:space:]]+$//')
 
 # Check if the description was modified
 if [[ "$CURRENT_DESCRIPTION" == "$CLEANED_DESCRIPTION" ]]; then
