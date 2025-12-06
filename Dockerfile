@@ -12,7 +12,7 @@ RUN mkdir -p "$PNPM_HOME" && chown node:node "$PNPM_HOME"
 
 FROM base AS development
 
-RUN apk add --no-cache bash=5.2.37-r0
+RUN apk add --no-cache bash
 
 USER node
 
@@ -33,7 +33,7 @@ CMD [ "pnpm", "run", "start:dev" ]
 
 FROM base AS build
 
-RUN apk add --no-cache bash=5.2.37-r0
+RUN apk add --no-cache bash
 
 USER node
 

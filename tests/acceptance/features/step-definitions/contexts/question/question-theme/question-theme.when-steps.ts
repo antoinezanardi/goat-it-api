@@ -14,3 +14,10 @@ When(/^the client retrieves the question theme with id "(?<id>[^"]+)"(?: in loca
   const fetchOptions = createFetchOptions(locale);
   await this.fetchAndStoreResponse(`/question-themes/${id}`, fetchOptions);
 });
+
+When(/^the client archives the question theme with id "(?<id>[^"]+)"(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, id: string, locale?: Locale) {
+  const fetchOptions = createFetchOptions(locale, {
+    method: "POST",
+  });
+  await this.fetchAndStoreResponse(`/question-themes/${id}/archive`, fetchOptions);
+});

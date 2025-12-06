@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+
 const APP_METADATA_SCHEMA = z.object({
   name: z.string()
     .min(1)
@@ -11,8 +13,7 @@ const APP_METADATA_SCHEMA = z.object({
   description: z.string()
     .min(1)
     .describe("Application's description from package.json"),
-  packageName: z.string()
-    .min(1)
+  packageName: zSlug()
     .describe("Application's package name from package.json"),
 });
 

@@ -4,10 +4,10 @@ import type { QuestionThemeMongooseDocument } from "@question/modules/question-t
 function createQuestionThemeFromDocument(questionThemeDocument: QuestionThemeMongooseDocument): QuestionTheme {
   return {
     id: questionThemeDocument._id.toString(),
+    slug: questionThemeDocument.slug,
     label: questionThemeDocument.label,
     aliases: questionThemeDocument.aliases,
     description: questionThemeDocument.description,
-    parentId: questionThemeDocument.parentId?.toString(),
     status: questionThemeDocument.status,
     createdAt: questionThemeDocument.createdAt,
     updatedAt: questionThemeDocument.updatedAt,

@@ -8,10 +8,10 @@ import type { LocalizationOptions } from "@shared/domain/value-objects/locale/lo
 function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme, localizationOptions: LocalizationOptions): QuestionThemeDto {
   return {
     id: questionTheme.id,
+    slug: questionTheme.slug,
     label: createTranslationFromLocalizedText(questionTheme.label, localizationOptions),
     aliases: createTranslationsFromLocalizedTexts(questionTheme.aliases, localizationOptions),
     description: createTranslationFromLocalizedText(questionTheme.description, localizationOptions),
-    parentId: questionTheme.parentId,
     status: questionTheme.status,
     createdAt: questionTheme.createdAt.toISOString(),
     updatedAt: questionTheme.updatedAt.toISOString(),

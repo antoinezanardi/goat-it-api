@@ -13,7 +13,7 @@ import type { QuestionTheme } from "@question/modules/question-theme/domain/enti
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
     id: faker.database.mongodbObjectId(),
-    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
+    slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
@@ -27,7 +27,7 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
 function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> = {}): QuestionThemeDto {
   return {
     id: faker.database.mongodbObjectId(),
-    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
+    slug: faker.lorem.slug(),
     label: faker.word.sample(),
     aliases: [faker.word.sample(), faker.word.sample(), faker.word.sample()],
     description: faker.word.sample(),
@@ -44,7 +44,7 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
   return {
     _id: createFakeObjectId(documentId),
     id: documentId,
-    parentId: faker.datatype.boolean() ? createFakeObjectId(faker.database.mongodbObjectId()) : undefined,
+    slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
