@@ -24,8 +24,6 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Clean PR description from numbered diffhunk links 🧹
-        run: |
-          chmod +x scripts/clean-pr-description.sh
-          scripts/clean-pr-description.sh ${{ github.event.pull_request.number }}
+        run: scripts/clean-pr-description.sh ${{ github.event.pull_request.number }}
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}

@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 set -euo pipefail
+IFS=$'\n\t'
 
 # Check required commands
 command -v gh >/dev/null 2>&1 || { echo "❌  gh (GitHub CLI) is required." >&2; exit 1; }
@@ -76,7 +77,7 @@ echo "🧹  Cleaning PR #$PR_NUMBER description..."
 TEMP_FILE=$(mktemp)
 trap 'rm -f "$TEMP_FILE"' EXIT
 
-echo "$CLEANED_DESCRIPTION" > "$TEMP_FILE"
+printf '%s\n' "$CLEANED_DESCRIPTION" > "$TEMP_FILE"
 
 gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file "$TEMP_FILE"
 
