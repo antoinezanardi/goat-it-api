@@ -60,10 +60,8 @@ fi
 # Remove numbered diffhunk links using sed
 # Pattern matches: [[1]](diffhunk://...), [[2]](diffhunk://...), etc.
 # The pattern is: \[\[[0-9]+\]\]\(diffhunk://[^)]+\)
-CLEANED_DESCRIPTION=$(echo "$CURRENT_DESCRIPTION" | sed -E 's/\[\[[0-9]+\]\]\(diffhunk:\/\/[^)]+\)//g')
-
-# Remove trailing spaces that may have been left behind after link removal
-CLEANED_DESCRIPTION=$(echo "$CLEANED_DESCRIPTION" | sed -E 's/[[:space:]]+$//')
+# Then use awk to remove trailing spaces from each line and collapse multiple spaces
+CLEANED_DESCRIPTION=$(echo "$CURRENT_DESCRIPTION" | sed -E 's/\[\[[0-9]+\]\]\(diffhunk:\/\/[^)]+\)//g' | awk '{gsub(/  +/, " "); sub(/[[:space:]]+$/, ""); print}')
 
 # Check if the description was modified
 if [[ "$CURRENT_DESCRIPTION" == "$CLEANED_DESCRIPTION" ]]; then
