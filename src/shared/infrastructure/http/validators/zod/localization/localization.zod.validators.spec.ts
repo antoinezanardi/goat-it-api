@@ -228,6 +228,19 @@ describe("Localization Zod Validators", () => {
         value: {},
         expected: true,
       },
+      {
+        test: "should return false when localized texts object is not an object.",
+        value: "Not an object",
+        expected: false,
+      },
+      {
+        test: "should return false when localized texts object has an unknown locale entry.",
+        value: {
+          en: ["Hello", "Hi"],
+          jp: ["こんにちは"],
+        },
+        expected: false,
+      },
     ])("$test", ({ value, expected }) => {
       const schema = zLocalizedTexts();
       const result = schema.safeParse(value);
