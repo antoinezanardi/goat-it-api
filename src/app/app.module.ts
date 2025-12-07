@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { APP_PIPE } from "@nestjs/core";
 import { LoggerModule } from "nestjs-pino";
+import { ZodValidationPipe } from "nestjs-zod";
 
 import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
@@ -14,9 +16,21 @@ import { LocalizationMiddleware } from "@shared/infrastructure/http/middlewares/
 import { QuestionModule } from "@question/question.module";
 
 @Module({
-  imports: [AppConfigModule, LoggerModule.forRoot(getLoggerConfiguration()), HealthModule, DatabaseModule, QuestionModule],
+  imports: [
+    AppConfigModule,
+    LoggerModule.forRoot(getLoggerConfiguration()),
+    HealthModule,
+    DatabaseModule,
+    QuestionModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_PIPE,
+      useClass: ZodValidationPipe,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {

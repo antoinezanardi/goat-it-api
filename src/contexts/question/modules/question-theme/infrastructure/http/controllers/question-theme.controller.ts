@@ -1,10 +1,11 @@
-import { Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ZodResponse } from "nestjs-zod";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme.dto";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
@@ -44,6 +45,18 @@ export class QuestionThemeController {
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
     return createQuestionThemeDtoFromEntity(questionTheme, localization);
+  }
+
+  @Post()
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeDto,
+  })
+  public async createQuestionTheme(
+    @Body() createQuestionThemeDto: CreateQuestionThemeDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto> {
+    console.log(createQuestionThemeDto);
   }
 
   @Post("/:id/archive")

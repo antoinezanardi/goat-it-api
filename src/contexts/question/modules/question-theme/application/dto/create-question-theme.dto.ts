@@ -15,9 +15,9 @@ const CREATE_QUESTION_THEME_DTO = z.object({
     .describe("Question Theme's translated description."),
 });
 
-class CreateQuestionThemeDTO extends createZodDto(CREATE_QUESTION_THEME_DTO) {}
+class CreateQuestionThemeDto extends createZodDto(CREATE_QUESTION_THEME_DTO) {}
 
 export {
   CREATE_QUESTION_THEME_DTO,
-  CreateQuestionThemeDTO,
+  CreateQuestionThemeDto,
 };
