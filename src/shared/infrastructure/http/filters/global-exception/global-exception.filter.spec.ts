@@ -1,12 +1,16 @@
 import { ServerResponse } from "node:http";
 
+import { ZodValidationException } from "nestjs-zod";
 import { BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
+
+import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
 
 import type { HttpException } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
@@ -72,6 +76,76 @@ describe("Global Exception Filter", () => {
     });
   });
 
+  describe("sendZodValidationException", () => {
+    it("should send BadRequestException status when called.", () => {
+      const zodValidationException = new ZodValidationException(new ZodError([
+        {
+          message: "Validation error message",
+          code: "invalid_type",
+          expected: "string",
+          path: ["field1", "field2"],
+        },
+      ]));
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as {
+        sendNestHttpException: (...parameters: unknown[]) => void;
+        sendZodValidationException: (...parameters: unknown[]) => void;
+      };
+      const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
+      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      const expectedException = new BadRequestException({
+        statusCode: 400,
+        message: "Invalid request payload",
+        error: "Bad Request",
+        validationDetails: [
+          createFakeApiResponseExceptionValidationDetailsDto({
+            message: "Validation error message",
+            code: "invalid_type",
+            expected: "string",
+            path: ["field1", "field2"],
+          }),
+        ],
+      });
+
+      expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedException, mocks.filters.globalException.fastifyReply);
+    });
+
+    it("should send empty validationDetails when called with ZodValidationException with no issues.", () => {
+      const zodValidationException = new ZodValidationException(new ZodError([]));
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as {
+        sendNestHttpException: (...parameters: unknown[]) => void;
+        sendZodValidationException: (...parameters: unknown[]) => void;
+      };
+      const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
+      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      const expectedException = new BadRequestException({
+        statusCode: 400,
+        message: "Invalid request payload",
+        error: "Bad Request",
+        validationDetails: [],
+      });
+
+      expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedException, mocks.filters.globalException.fastifyReply);
+    });
+
+    it("should send empty validationDetails when called with ZodValidationException with non-ZodError.", () => {
+      const zodValidationException = new ZodValidationException(new Error("Some other error"));
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as {
+        sendNestHttpException: (...parameters: unknown[]) => void;
+        sendZodValidationException: (...parameters: unknown[]) => void;
+      };
+      const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
+      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      const expectedException = new BadRequestException({
+        statusCode: 400,
+        message: "Invalid request payload",
+        error: "Bad Request",
+        validationDetails: [],
+      });
+
+      expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedException, mocks.filters.globalException.fastifyReply);
+    });
+  });
+
   describe(GlobalExceptionFilter.prototype.catch, () => {
     let localMocks: {
       filters: {
@@ -100,6 +174,30 @@ describe("Global Exception Filter", () => {
       exception: unknown;
       expectedSentException: HttpException;
     }>([
+      {
+        test: "should send zod validation exception mapped to bad request when called with ZodValidationException.",
+        exception: new ZodValidationException(new ZodError([
+          {
+            message: "Invalid type",
+            code: "invalid_type",
+            expected: "string",
+            path: ["field1", "field2"],
+          },
+        ])),
+        expectedSentException: new BadRequestException({
+          statusCode: 400,
+          message: "Invalid request payload",
+          error: "Bad Request",
+          validationDetails: [
+            createFakeApiResponseExceptionValidationDetailsDto({
+              message: "Invalid type",
+              code: "invalid_type",
+              expected: "string",
+              path: ["field1", "field2"],
+            }),
+          ],
+        }),
+      },
       {
         test: "should send directly nest http exception when called with HttpException.",
         exception: new ForbiddenException("Access denied"),

@@ -1024,7 +1024,9 @@
               "ZodResponse",
               "HealthCheck",
               "Localization",
-              "Param"
+              "Param",
+              "Body",
+              "Query"
             ]
           }
         ]

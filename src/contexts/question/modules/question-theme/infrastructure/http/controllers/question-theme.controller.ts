@@ -56,7 +56,7 @@ export class QuestionThemeController {
     @Body() createQuestionThemeDto: CreateQuestionThemeDto,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto> {
-    console.log(createQuestionThemeDto);
+    
   }
 
   @Post("/:id/archive")

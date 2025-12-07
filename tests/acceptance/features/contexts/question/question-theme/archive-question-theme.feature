@@ -40,20 +40,20 @@ Feature: Archive Question Theme
   Scenario: Trying to archive a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client archives the question theme with id "invalid-id"
-    Then the request should have failed with status code 400 and contain the following error:
+    Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                      |
       | Bad Request | 400        | Invalid Mongo ID: invalid-id |
 
   Scenario: Trying to archive a non-existing question theme
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client archives the question theme with id "3ece5c485ddc36118b9fbd5c"
-    Then the request should have failed with status code 404 and contain the following error:
+    Then the request should have failed with status code 404 and the response should contain the following error:
       | error     | statusCode | message                                                   |
       | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found |
 
   Scenario: Trying to archive an already archived question theme
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client archives the question theme with id "dbb0664ad4797c6cc79d5aee"
-    Then the request should have failed with status code 400 and contain the following error:
+    Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                                                                       |
       | Bad Request | 400        | Question theme with id dbb0664ad4797c6cc79d5aee already has status 'archived' |

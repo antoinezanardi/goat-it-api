@@ -3,6 +3,7 @@ import { ServerResponse } from "node:http";
 import { ZodValidationException } from "nestjs-zod";
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { FastifyReply } from "fastify";
+import { ZodError } from "zod";
 
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
@@ -26,12 +27,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   private static sendZodValidationException(exception: ZodValidationException, response: FastifyReply | ServerResponse): void {
-    const zodError = exception.getZodError() as Error;
+    const zodError = exception.getZodError();
+    const validationDetails = zodError instanceof ZodError ? zodError.issues : [];
     const badRequestException = new BadRequestException({
-      message: "Validation failed for provided DTO",
-      error: "Bad Request",
       statusCode: HttpStatus.BAD_REQUEST,
-      validationDetails: JSON.parse(zodError.message),
+      message: "Invalid request payload",
+      error: "Bad Request",
+      validationDetails,
     });
 
     GlobalExceptionFilter.sendNestHttpException(badRequestException, response);
