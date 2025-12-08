@@ -23,6 +23,14 @@ When(/^the client creates a new question theme with an empty payload$/u, async f
   await this.fetchAndStoreResponse("/question-themes", fetchOptions);
 });
 
+When(/^the client creates a new question theme with the request payload(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale?: Locale) {
+  const fetchOptions = createFetchOptions(locale, {
+    method: "POST",
+    body: JSON.stringify(this.payload),
+  });
+  await this.fetchAndStoreResponse("/question-themes", fetchOptions);
+});
+
 When(/^the client archives the question theme with id "(?<id>[^"]+)"(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, id: string, locale?: Locale) {
   const fetchOptions = createFetchOptions(locale, {
     method: "POST",

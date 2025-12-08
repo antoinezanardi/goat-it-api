@@ -20,6 +20,8 @@ class GoatItWorld extends World {
     questionThemes: Model<QuestionThemeMongooseSchema>;
   };
 
+  public payload: Record<string, unknown> = {};
+
   private readonly fetchInstance: $Fetch;
 
   public constructor(options: IWorldOptions) {
@@ -27,6 +29,10 @@ class GoatItWorld extends World {
 
     this.fetchInstance = ofetch.create({
       baseURL: APP_BASE_URL,
+      onRequest: () => {
+        this.payload = {};
+        this.lastFetchResponse = undefined;
+      },
       onResponse: ({ response }) => {
         this.lastFetchResponse = response;
       },
@@ -36,7 +42,6 @@ class GoatItWorld extends World {
 
   public async fetchAndStoreResponse(endpoint: string, fetchOptions?: FetchOptions): Promise<void> {
     try {
-      this.lastFetchResponse = undefined;
       await this.fetchInstance(endpoint, fetchOptions);
     } catch(error) {
       if (!this.lastFetchResponse) {

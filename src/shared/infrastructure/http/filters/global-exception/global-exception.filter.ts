@@ -1,17 +1,18 @@
 import { ServerResponse } from "node:http";
 
 import { ZodValidationException } from "nestjs-zod";
-import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { ArgumentsHost, BadRequestException, Catch, ConflictException, ExceptionFilter, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
 
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
     [QuestionThemeNotFoundError.name]: error => new NotFoundException(error.message),
     [QuestionThemeAlreadyArchivedError.name]: error => new BadRequestException(error.message),
+    [QuestionThemeSlugAlreadyExistsError.name]: error => new ConflictException(error.message),
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);

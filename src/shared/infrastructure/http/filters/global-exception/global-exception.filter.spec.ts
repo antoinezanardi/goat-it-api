@@ -1,12 +1,12 @@
 import { ServerResponse } from "node:http";
 
 import { ZodValidationException } from "nestjs-zod";
-import { BadRequestException, ForbiddenException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
@@ -212,6 +212,11 @@ describe("Global Exception Filter", () => {
         test: "should map domain error to http exception and send it when called with QuestionThemeAlreadyArchivedError.",
         exception: new QuestionThemeAlreadyArchivedError("question-theme-id"),
         expectedSentException: new BadRequestException("Question theme with id question-theme-id already has status 'archived'"),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with QuestionThemeSlugAlreadyExistsError.",
+        exception: new QuestionThemeSlugAlreadyExistsError("question-theme-slug"),
+        expectedSentException: new ConflictException("Question theme with slug question-theme-slug already exists"),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",
