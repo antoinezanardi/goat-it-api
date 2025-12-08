@@ -2,10 +2,10 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question/question-
 
 import type { Mock } from "vitest";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 type CreateQuestionThemeUseCaseStub = {
-  create: (id: string) => Promise<QuestionTheme>;
+  create: (questionThemeDraft: QuestionThemeDraft) => Promise<QuestionTheme>;
 };
 
 type MockedCreateQuestionThemeUseCase = { [K in keyof CreateQuestionThemeUseCaseStub]: Mock<CreateQuestionThemeUseCaseStub[K]> };

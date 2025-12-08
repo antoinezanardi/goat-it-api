@@ -52,7 +52,7 @@ export class QuestionThemeController {
 
   @Post()
   @ZodResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: QuestionThemeDto,
   })
   public async createQuestionTheme(

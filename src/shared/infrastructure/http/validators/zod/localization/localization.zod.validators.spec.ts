@@ -1,8 +1,25 @@
-import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts } from "@shared/infrastructure/http/validators/zod/localization/localization.zod.validators";
+import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries } from "@shared/infrastructure/http/validators/zod/localization/localization.zod.validators";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 describe("Localization Zod Validators", () => {
+  describe(createZLocaleEntries, () => {
+    it("should create locale entries correctly when called.", () => {
+      const entryFactory = (localLabel: string): string => `Label in ${localLabel}`;
+      const expectedEntries: Record<Locale, string> = {
+        en: entryFactory("english"),
+        fr: entryFactory("french"),
+        de: entryFactory("german"),
+        es: entryFactory("spanish"),
+        it: entryFactory("italian"),
+        pt: entryFactory("portuguese"),
+      };
+      const entries = createZLocaleEntries(entryFactory);
+
+      expect(entries).toStrictEqual(expectedEntries);
+    });
+  });
+
   describe(zLocalizedTextEntry, () => {
     it.each<{
       test: string;
@@ -48,10 +65,10 @@ describe("Localization Zod Validators", () => {
     });
 
     it("should have correct description for the locale when called.", () => {
-      const locale: Locale = "en";
+      const locale = "french";
       const schema = zLocalizedTextEntry(locale);
 
-      expect(schema.description).toBe(`Text in "${locale}" locale.`);
+      expect(schema.description).toBe(`Text in french.`);
     });
   });
 
@@ -100,10 +117,10 @@ describe("Localization Zod Validators", () => {
     });
 
     it("should have correct description for the locale when called.", () => {
-      const locale: Locale = "en";
+      const locale = "english";
       const schema = zLocalizedTextsEntry(locale);
 
-      expect(schema.description).toBe(`Texts in "${locale}" locale.`);
+      expect(schema.description).toBe(`Texts in english.`);
     });
   });
 

@@ -170,6 +170,19 @@ describe("Question Theme Controller", () => {
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(createdQuestionTheme, localization);
     });
+
+    it("should return the mapped dto from the mapper when created.", async() => {
+      const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
+      const localization = createFakeLocalizationOptions();
+      const createdQuestionTheme = createFakeQuestionTheme();
+      const expectedDto = createFakeQuestionThemeDto();
+
+      mocks.useCases.createQuestionTheme.create.mockResolvedValueOnce(createdQuestionTheme);
+      mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
+      const result = await questionThemeController.createQuestionTheme(createQuestionThemeDto, localization);
+
+      expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
+    });
   });
 
   describe(QuestionThemeController.prototype.archiveQuestionTheme, () => {

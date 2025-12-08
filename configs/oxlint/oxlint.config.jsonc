@@ -136,7 +136,7 @@
       "error",
       "declaration",
       {
-        "allowArrowFunctions": "true"
+        "allowArrowFunctions": true
       }
     ],
     "grouped-accessor-pairs": "error",
@@ -174,10 +174,7 @@
       "error",
       5
     ],
-    "max-params": [
-      "error",
-      "8"
-    ],
+    "max-params": "off",
     "max-statements": "off",
     "new-cap": "error",
     "no-alert": "error",
@@ -739,7 +736,12 @@
         "typescript/explicit-member-accessibility": "error",
         "typescript/explicit-module-boundary-types": "error",
         "typescript/init-declarations": "error",
-        "typescript/max-params": "error",
+        "typescript/max-params": [
+          "error",
+          {
+            "max": 8
+          }
+        ],
         "typescript/member-ordering": "error",
         "typescript/method-signature-style": "error",
         "typescript/naming-convention": [
@@ -1188,6 +1190,7 @@
           }
         ],
         "unicorn/no-null": "off",
+        "unicorn/consistent-function-scoping": "off",
         "vitest/consistent-test-filename": [
           "error",
           {

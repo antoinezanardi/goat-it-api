@@ -72,7 +72,12 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/explicit-member-accessibility": "error",
     "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/init-declarations": "error",
-    "@typescript-eslint/max-params": "error",
+    "@typescript-eslint/max-params": [
+      "error",
+      {
+        max: 8,
+      },
+    ],
     "@typescript-eslint/member-ordering": "error",
     "@typescript-eslint/method-signature-style": "error",
     "@typescript-eslint/naming-convention": [
