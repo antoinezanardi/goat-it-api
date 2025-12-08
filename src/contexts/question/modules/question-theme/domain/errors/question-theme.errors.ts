@@ -12,7 +12,15 @@ class QuestionThemeAlreadyArchivedError extends Error {
   }
 }
 
+class QuestionThemeSlugAlreadyExistsError extends Error {
+  public constructor(slug: string) {
+    super(`Question theme with slug ${slug} already exists`);
+    this.name = "QuestionThemeSlugAlreadyExistsError";
+  }
+}
+
 export {
   QuestionThemeNotFoundError,
   QuestionThemeAlreadyArchivedError,
+  QuestionThemeSlugAlreadyExistsError,
 };

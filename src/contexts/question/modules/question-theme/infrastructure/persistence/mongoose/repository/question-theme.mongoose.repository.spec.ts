@@ -54,7 +54,7 @@ describe("Question Theme Mongoose Repository", () => {
     repositories = { questionTheme: module.get<QuestionThemeMongooseRepository>(QuestionThemeMongooseRepository) };
   });
 
-  describe("findAll", () => {
+  describe(QuestionThemeMongooseRepository.prototype.findAll, () => {
     it("should find all documents from model when called.", async() => {
       await repositories.questionTheme.findAll();
 
@@ -83,7 +83,7 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
-  describe("findById", () => {
+  describe(QuestionThemeMongooseRepository.prototype.findById, () => {
     it("should find document by id from model when called.", async() => {
       const questionThemeId = "question-theme-id";
       await repositories.questionTheme.findById(questionThemeId);
@@ -109,7 +109,33 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
-  describe("create", () => {
+  describe(QuestionThemeMongooseRepository.prototype.findBySlug, () => {
+    it("should find document by slug from model when called.", async() => {
+      const questionThemeSlug = "question-theme-slug";
+      await repositories.questionTheme.findBySlug(questionThemeSlug);
+
+      expect(mocks.models.questionTheme.findOne).toHaveBeenCalledExactlyOnceWith({ slug: questionThemeSlug });
+    });
+
+    it("should map and return question theme when called.", async() => {
+      const questionThemeSlug = "question-theme-slug";
+      const foundQuestionThemeDocument = createFakeQuestionThemeDocument();
+      mocks.models.questionTheme.findOne.mockResolvedValue(foundQuestionThemeDocument);
+      await repositories.questionTheme.findBySlug(questionThemeSlug);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(foundQuestionThemeDocument);
+    });
+
+    it("should return undefined when document with given slug is not found.", async() => {
+      const questionThemeSlug = "question-theme-slug";
+      mocks.models.questionTheme.findOne.mockResolvedValue(null);
+      const actualQuestionTheme = await repositories.questionTheme.findBySlug(questionThemeSlug);
+
+      expect(actualQuestionTheme).toBeUndefined();
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.create, () => {
     it("should create document in model when called.", async() => {
       const questionThemeToCreate = createFakeQuestionThemeDraft();
       await repositories.questionTheme.create(questionThemeToCreate);
@@ -138,7 +164,7 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
-  describe("archive", () => {
+  describe(QuestionThemeMongooseRepository.prototype.archive, () => {
     it("should update document status to archived in model when called.", async() => {
       const questionThemeId = "question-theme-id";
       await repositories.questionTheme.archive(questionThemeId);

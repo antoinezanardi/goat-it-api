@@ -3,6 +3,7 @@ import type { QuestionTheme, QuestionThemeDraft } from "@question/modules/questi
 type QuestionThemeRepository = {
   findAll: () => Promise<QuestionTheme[]>;
   findById: (id: string) => Promise<QuestionTheme | undefined>;
+  findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (questionTheme: QuestionThemeDraft) => Promise<QuestionTheme>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
