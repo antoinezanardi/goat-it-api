@@ -44,21 +44,34 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
 });
 
 Then(/^the failed request's response should contain the following validation details:$/u, function(this: GoatItWorld, validationDetailsDataTable: DataTable): void {
-  const { validationDetails } = this.expectLastResponseJson<ApiResponseExceptionDto>(API_RESPONSE_EXCEPTION_DTO);
-  if (!validationDetails) {
+  const { validationDetails: actualValidationDetails } = this.expectLastResponseJson<ApiResponseExceptionDto>(API_RESPONSE_EXCEPTION_DTO);
+  if (!actualValidationDetails) {
     throw new Error("The response does not contain any validation details.");
   }
   const dataTableRows = validationDetailsDataTable.hashes() as Record<keyof ApiResponseExceptionValidationDetailsDto, string>[];
 
-  expect(validationDetails).toHaveLength(dataTableRows.length);
+  expect(actualValidationDetails).toHaveLength(dataTableRows.length);
 
-  for (const [index, expectedValidationDetail] of dataTableRows.entries()) {
-    const validationDetail = validationDetails[index];
+  for (const [index, validationDetailsEntry] of dataTableRows.entries()) {
+    const actualValidationDetailsEntry = actualValidationDetails[index];
+    const expectedValidationDetails: ApiResponseExceptionValidationDetailsDto = {
+      code: validationDetailsEntry.code,
+      message: validationDetailsEntry.message,
+      path: validationDetailsEntry.path.split(",").map(segment => segment.trim()),
+    };
+    if (validationDetailsEntry.expected) {
+      expectedValidationDetails.expected = validationDetailsEntry.expected;
+    }
+    if (validationDetailsEntry.origin) {
+      expectedValidationDetails.origin = validationDetailsEntry.origin;
+    }
+    if (validationDetailsEntry.format) {
+      expectedValidationDetails.format = validationDetailsEntry.format;
+    }
+    if (validationDetailsEntry.pattern) {
+      expectedValidationDetails.pattern = validationDetailsEntry.pattern;
+    }
 
-    expect(validationDetail.code).toBe(expectedValidationDetail.code);
-    expect(validationDetail.message).toBe(expectedValidationDetail.message);
-    expect(validationDetail.expected).toBe(expectedValidationDetail.expected);
-    const expectedPathSegments = expectedValidationDetail.path.split(",").map(segment => segment.trim());
-    expect(validationDetail.path).toStrictEqual(expectedPathSegments);
+    expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetails);
   }
 });

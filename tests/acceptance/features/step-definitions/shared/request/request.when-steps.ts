@@ -1,4 +1,5 @@
 import { When } from "@cucumber/cucumber";
+import { construct, crush } from "radashi";
 
 import type { DataTable } from "@cucumber/cucumber";
 
@@ -14,9 +15,11 @@ When(/^the request payload is overridden with the following values:$/u, function
 
     return accumulator;
   }, {});
-
-  this.payload = Object.freeze({
-    ...this.payload,
+  const crushedPayload = crush(this.payload);
+  const overriddenPayload = construct({
+    ...crushedPayload,
     ...override,
   });
+
+  this.payload = Object.freeze(overriddenPayload) as Record<string, unknown>;
 });

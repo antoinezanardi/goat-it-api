@@ -41,6 +41,32 @@ Feature: Create Question Theme
       | invalid_type | Invalid input: expected object, received undefined | object   | aliases     |
       | invalid_type | Invalid input: expected object, received undefined | object   | description |
 
+  Scenario: Trying to create a question theme with an empty slug
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path | value |
+      | slug |       |
+    And the client creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message                  | format | path | origin | pattern                       |
+      | invalid_format | Invalid kebab-case value | regex  | slug | string | /^[\\da-z]+(?:-[\\da-z]+)*$/u |
+
+  Scenario: Trying to create a question theme with an invalid kebab-case slug
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path | value       |
+      | slug | InvalidSlug |
+    And the client creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message                  | format | path | origin | pattern                       |
+      | invalid_format | Invalid kebab-case value | regex  | slug | string | /^[\\da-z]+(?:-[\\da-z]+)*$/u |
+
   Scenario: Trying to create a question theme with an already existing slug
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the client creates a new question theme with the request payload
