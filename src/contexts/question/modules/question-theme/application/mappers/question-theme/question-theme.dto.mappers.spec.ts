@@ -1,5 +1,5 @@
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
-import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme.dto.mappers";
+import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";

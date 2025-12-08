@@ -6,9 +6,9 @@ import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects
 type QuestionTheme = {
   id: string;
   slug: string;
-  label: LocalizedText;
-  aliases: LocalizedTexts;
-  description: LocalizedText;
+  label: Partial<LocalizedText>;
+  aliases: Partial<LocalizedTexts>;
+  description: Partial<LocalizedText>;
   status: QuestionThemeStatus;
   createdAt: Date;
   updatedAt: Date;

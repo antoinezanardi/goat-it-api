@@ -7,7 +7,7 @@ import { createQuestionThemeFromDocument } from "@question/modules/question-them
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
 import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
-import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
 @Injectable()
@@ -29,7 +29,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
-  public async create(questionTheme: QuestionTheme): Promise<QuestionTheme> {
+  public async create(questionTheme: QuestionThemeDraft): Promise<QuestionTheme> {
     const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);

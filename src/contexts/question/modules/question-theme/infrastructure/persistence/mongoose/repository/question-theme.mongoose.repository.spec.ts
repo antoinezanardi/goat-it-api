@@ -7,7 +7,7 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDocument, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -111,14 +111,14 @@ describe("Question Theme Mongoose Repository", () => {
 
   describe("create", () => {
     it("should create document in model when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionTheme();
+      const questionThemeToCreate = createFakeQuestionThemeDraft();
       await repositories.questionTheme.create(questionThemeToCreate);
 
       expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeToCreate);
     });
 
     it("should map and return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionTheme();
+      const questionThemeToCreate = createFakeQuestionThemeDraft();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
       await repositories.questionTheme.create(questionThemeToCreate);
@@ -127,13 +127,14 @@ describe("Question Theme Mongoose Repository", () => {
     });
 
     it("should return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionTheme();
+      const questionThemeToCreate = createFakeQuestionThemeDraft();
+      const createdQuestionTheme = createFakeQuestionTheme();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
-      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(questionThemeToCreate);
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(createdQuestionTheme);
       const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);
 
-      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeToCreate);
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
     });
   });
 
