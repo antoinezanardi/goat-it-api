@@ -241,6 +241,7 @@
     "no-param-reassign": [
       "error",
       {
+        "ignorePropertyModificationsFor": ["accumulator"],
         "props": true
       }
     ],
