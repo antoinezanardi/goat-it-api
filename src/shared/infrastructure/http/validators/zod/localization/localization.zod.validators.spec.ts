@@ -1,0 +1,274 @@
+import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries } from "@shared/infrastructure/http/validators/zod/localization/localization.zod.validators";
+
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+
+describe("Localization Zod Validators", () => {
+  describe(createZLocaleEntries, () => {
+    it("should create locale entries correctly when called.", () => {
+      const entryFactory = (localLabel: string): string => `Label in ${localLabel}`;
+      const expectedEntries: Record<Locale, string> = {
+        en: entryFactory("english"),
+        fr: entryFactory("french"),
+        de: entryFactory("german"),
+        es: entryFactory("spanish"),
+        it: entryFactory("italian"),
+        pt: entryFactory("portuguese"),
+      };
+      const entries = createZLocaleEntries(entryFactory);
+
+      expect(entries).toStrictEqual(expectedEntries);
+    });
+  });
+
+  describe(zLocalizedTextEntry, () => {
+    it.each<{
+      test: string;
+      locale: Locale;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when localized text entry is valid for \"en\" locale.",
+        locale: "en",
+        value: "Hello",
+        expected: true,
+      },
+      {
+        test: "should return true when localized text entry is valid for \"fr\" locale.",
+        locale: "fr",
+        value: "Bonjour",
+        expected: true,
+      },
+      {
+        test: "should return false when localized text entry is an empty string for \"en\" locale.",
+        locale: "en",
+        value: "",
+        expected: false,
+      },
+      {
+        test: "should return true when localized text entry is undefined for \"fr\" locale.",
+        locale: "fr",
+        value: undefined,
+        expected: true,
+      },
+      {
+        test: "should return false when localized text entry is a number for \"en\" locale.",
+        locale: "en",
+        value: 123,
+        expected: false,
+      },
+    ])("$test", ({ locale, value, expected }) => {
+      const schema = zLocalizedTextEntry(locale);
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have correct description for the locale when called.", () => {
+      const locale = "french";
+      const schema = zLocalizedTextEntry(locale);
+
+      expect(schema.description).toBe(`Text in french.`);
+    });
+  });
+
+  describe(zLocalizedTextsEntry, () => {
+    it.each<{
+      test: string;
+      locale: Locale;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when localized texts entry is valid for \"en\" locale.",
+        locale: "en",
+        value: ["Hello", "Hi"],
+        expected: true,
+      },
+      {
+        test: "should return true when localized texts entry is valid for \"fr\" locale.",
+        locale: "fr",
+        value: ["Bonjour", "Salut"],
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts entry has an empty string for \"en\" locale.",
+        locale: "en",
+        value: ["Hello", ""],
+        expected: false,
+      },
+      {
+        test: "should return true when localized texts entry is undefined for \"fr\" locale.",
+        locale: "fr",
+        value: undefined,
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts entry has a number for \"en\" locale.",
+        locale: "en",
+        value: [123],
+        expected: false,
+      },
+    ])("$test", ({ locale, value, expected }) => {
+      const schema = zLocalizedTextsEntry(locale);
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have correct description for the locale when called.", () => {
+      const locale = "english";
+      const schema = zLocalizedTextsEntry(locale);
+
+      expect(schema.description).toBe(`Texts in english.`);
+    });
+  });
+
+  describe(zLocalizedText, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when localized text object is valid.",
+        value: {
+          en: "Hello",
+          fr: "Bonjour",
+        },
+        expected: true,
+      },
+      {
+        test: "should return false when localized text object has an invalid entry (empty string).",
+        value: {
+          en: "",
+          fr: "Bonjour",
+        },
+        expected: false,
+      },
+      {
+        test: "should return true when localized text object has an undefined entry.",
+        value: {
+          en: "Hello",
+          fr: undefined,
+        },
+        expected: true,
+      },
+      {
+        test: "should return false when localized text object has an invalid entry (number).",
+        value: {
+          en: "Hello",
+          fr: 123,
+        },
+        expected: false,
+      },
+      {
+        test: "should return true when localized text object is empty.",
+        value: {},
+        expected: true,
+      },
+      {
+        test: "should return false when localized text object is not an object.",
+        value: "Not an object",
+        expected: false,
+      },
+      {
+        test: "should return false when localized text object has an unknown locale entry.",
+        value: {
+          en: "Hello",
+          jp: "こんにちは",
+        },
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const schema = zLocalizedText();
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have correct description when called.", () => {
+      const schema = zLocalizedText();
+
+      expect(schema.description).toBe("Localized text object with translations for multiple languages.");
+    });
+  });
+
+  describe(zLocalizedTexts, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when localized texts object is valid.",
+        value: {
+          en: ["Hello", "Hi"],
+          fr: ["Bonjour", "Salut"],
+        },
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts object has an invalid entry (empty string).",
+        value: {
+          en: ["Hello", ""],
+          fr: ["Bonjour", "Salut"],
+        },
+        expected: false,
+      },
+      {
+        test: "should return true when localized texts object has an undefined entry.",
+        value: {
+          en: ["Hello", "Hi"],
+          fr: undefined,
+        },
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts object has an invalid entry (number).",
+        value: {
+          en: ["Hello", "Hi"],
+          fr: [123],
+        },
+        expected: false,
+      },
+      {
+        test: "should return false when localized texts object has an empty array.",
+        value: {
+          en: [],
+          fr: ["Bonjour"],
+        },
+        expected: false,
+      },
+      {
+        test: "should return true when localized texts object is empty.",
+        value: {},
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts object is not an object.",
+        value: "Not an object",
+        expected: false,
+      },
+      {
+        test: "should return false when localized texts object has an unknown locale entry.",
+        value: {
+          en: ["Hello", "Hi"],
+          jp: ["こんにちは"],
+        },
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const schema = zLocalizedTexts();
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have correct description when called.", () => {
+      const schema = zLocalizedTexts();
+
+      expect(schema.description).toBe("Localized texts object with translations for multiple languages.");
+    });
+  });
+});

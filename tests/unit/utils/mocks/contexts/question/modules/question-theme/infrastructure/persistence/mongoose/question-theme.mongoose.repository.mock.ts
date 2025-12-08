@@ -7,6 +7,7 @@ import type { QuestionTheme } from "@question/modules/question-theme/domain/enti
 type QuestionThemeRepositoryStub = {
   findAll: () => Promise<QuestionTheme[]>;
   findById: (id: string) => Promise<QuestionTheme | undefined>;
+  findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (data: Partial<QuestionTheme>) => Promise<QuestionTheme>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
@@ -21,6 +22,7 @@ function createMockedQuestionThemeRepository(): MockedQuestionThemeRepository {
       createFakeQuestionTheme(),
     ]),
     findById: vi.fn<QuestionThemeRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestionTheme()),
+    findBySlug: vi.fn<QuestionThemeRepositoryStub["findBySlug"]>().mockResolvedValue(createFakeQuestionTheme()),
     create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
     archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
   };

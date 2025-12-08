@@ -1,7 +1,9 @@
 import { ServerResponse } from "node:http";
 
-import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { ZodValidationException } from "nestjs-zod";
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { FastifyReply } from "fastify";
+import { ZodError } from "zod";
 
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
@@ -24,8 +26,27 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(exception.getStatus()).send(exception.getResponse());
   }
 
+  private static sendZodValidationException(exception: ZodValidationException, response: FastifyReply | ServerResponse): void {
+    const zodError = exception.getZodError();
+    const validationDetails = zodError instanceof ZodError ? zodError.issues : [];
+    const badRequestException = new BadRequestException({
+      statusCode: HttpStatus.BAD_REQUEST,
+      message: "Invalid request payload",
+      error: "Bad Request",
+      validationDetails,
+    });
+
+    GlobalExceptionFilter.sendNestHttpException(badRequestException, response);
+  }
+
   public catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply | ServerResponse>();
+
+    if (exception instanceof ZodValidationException) {
+      GlobalExceptionFilter.sendZodValidationException(exception, response);
+
+      return;
+    }
 
     if (exception instanceof HttpException) {
       GlobalExceptionFilter.sendNestHttpException(exception, response);

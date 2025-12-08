@@ -40,13 +40,13 @@ Feature: Find Question Theme by ID
   Scenario: Trying to find a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client retrieves the question theme with id "invalid-id"
-    Then the request should have failed with status code 400 and contain the following error:
+    Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                      |
       | Bad Request | 400        | Invalid Mongo ID: invalid-id |
 
   Scenario: Trying to find a non-existing question theme
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client retrieves the question theme with id "3ece5c485ddc36118b9fbd5c"
-    Then the request should have failed with status code 404 and contain the following error:
+    Then the request should have failed with status code 404 and the response should contain the following error:
       | error     | statusCode | message                                                   |
       | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found |

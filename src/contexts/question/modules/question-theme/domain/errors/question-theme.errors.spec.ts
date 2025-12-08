@@ -1,4 +1,4 @@
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 describe("Question Theme Errors", () => {
   describe(QuestionThemeNotFoundError, () => {
@@ -26,6 +26,20 @@ describe("Question Theme Errors", () => {
       const error = new QuestionThemeAlreadyArchivedError("themeId");
 
       expect(error.message).toBe("Question theme with id themeId already has status 'archived'");
+    });
+  });
+
+  describe(QuestionThemeSlugAlreadyExistsError, () => {
+    it("should have name QuestionThemeSlugAlreadyExistsError when created.", () => {
+      const error = new QuestionThemeSlugAlreadyExistsError("themeSlug");
+
+      expect(error.name).toBe("QuestionThemeSlugAlreadyExistsError");
+    });
+
+    it("should have message with theme slug when created.", () => {
+      const error = new QuestionThemeSlugAlreadyExistsError("themeSlug");
+
+      expect(error.message).toBe("Question theme with slug themeSlug already exists");
     });
   });
 });
