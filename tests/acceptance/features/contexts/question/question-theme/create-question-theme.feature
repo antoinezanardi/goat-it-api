@@ -44,8 +44,8 @@ Feature: Create Question Theme
   Scenario: Trying to create a question theme with an empty slug
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
-      | path | value |
-      | slug |       |
+      | path | type   | value |
+      | slug | string |       |
     And the client creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
@@ -57,8 +57,8 @@ Feature: Create Question Theme
   Scenario: Trying to create a question theme with an invalid kebab-case slug
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
-      | path | value       |
-      | slug | InvalidSlug |
+      | path | type   | value       |
+      | slug | string | InvalidSlug |
     And the client creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
