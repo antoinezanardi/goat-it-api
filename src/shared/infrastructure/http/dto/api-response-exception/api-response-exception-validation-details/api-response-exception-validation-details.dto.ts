@@ -20,6 +20,15 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
   pattern: z.string()
     .optional()
     .describe("Expected regex pattern when applicable."),
+  minimum: z.number()
+    .optional()
+    .describe("Expected minimum value when applicable."),
+  inclusive: z.boolean()
+    .optional()
+    .describe("Whether the minimum value is inclusive when applicable."),
+  keys: z.array(z.string())
+    .optional()
+    .describe("List unrecognized keys when applicable."),
 });
 
 class ApiResponseExceptionValidationDetailsDto extends createZodDto(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO) {}
