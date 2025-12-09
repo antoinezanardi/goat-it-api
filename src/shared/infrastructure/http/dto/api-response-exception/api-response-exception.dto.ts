@@ -10,7 +10,8 @@ const API_RESPONSE_EXCEPTION_DTO = z.strictObject({
     .describe("Error message."),
   error: z.string()
     .describe("Short description of the HTTP error."),
-  validationDetails: z.optional(z.array(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO))
+  validationDetails: z.array(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO)
+    .optional()
     .describe("List of validation errors, when requested DTO validation fails."),
 });
 
