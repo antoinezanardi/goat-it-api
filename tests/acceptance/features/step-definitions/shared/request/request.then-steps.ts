@@ -1,5 +1,6 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
+import { shake } from "radashi";
 
 import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto";
 import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
@@ -57,21 +58,17 @@ Then(/^the failed request's response should contain the following validation det
     const expectedValidationDetails: ApiResponseExceptionValidationDetailsDto = {
       code: validationDetailsEntry.code,
       message: validationDetailsEntry.message,
-      path: validationDetailsEntry.path.split(",").map(segment => segment.trim()).filter(Boolean),
+      path: validationDetailsEntry.path.split(".").map(segment => segment.trim()).filter(Boolean),
+      expected: validationDetailsEntry.expected,
+      origin: validationDetailsEntry.origin,
+      format: validationDetailsEntry.format,
+      pattern: validationDetailsEntry.pattern,
+      minimum: validationDetailsEntry.minimum ? Number.parseInt(validationDetailsEntry.minimum) : undefined,
+      inclusive: validationDetailsEntry.inclusive ? validationDetailsEntry.inclusive === "true" : undefined,
+      keys: validationDetailsEntry.keys ? validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean) : undefined,
     };
-    if (validationDetailsEntry.expected) {
-      expectedValidationDetails.expected = validationDetailsEntry.expected;
-    }
-    if (validationDetailsEntry.origin) {
-      expectedValidationDetails.origin = validationDetailsEntry.origin;
-    }
-    if (validationDetailsEntry.format) {
-      expectedValidationDetails.format = validationDetailsEntry.format;
-    }
-    if (validationDetailsEntry.pattern) {
-      expectedValidationDetails.pattern = validationDetailsEntry.pattern;
-    }
+    const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
 
-    expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetails);
+    expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetailsWithoutUndefinedFields);
   }
 });

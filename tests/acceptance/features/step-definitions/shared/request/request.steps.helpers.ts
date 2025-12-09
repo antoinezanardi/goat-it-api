@@ -14,13 +14,31 @@ function tryParseOverriddenPayloadFloatValue(payloadValue: string): number {
   return parsedFloat;
 }
 
+function tryParseOverriddenPayloadBooleanValue(payloadValue: string): boolean {
+  if (payloadValue === "true") {
+    return true;
+  }
+  if (payloadValue === "false") {
+    return false;
+  }
+  throw new TypeError(`Failed to parse overridden payload value as boolean: ${payloadValue}. Expected "true" or "false".`);
+}
+
+function tryParseOverriddenPayloadArrayValue(payloadValue: string): unknown[] {
+  const parsedValue = JSON.parse(payloadValue) as unknown;
+  if (!Array.isArray(parsedValue)) {
+    throw new TypeError(`Failed to parse overridden payload value as array: ${payloadValue}. Expected an array.`);
+  }
+  return parsedValue;
+}
+
 function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unknown {
   const parseValueMethods: Partial<Record<string, () => unknown>> = {
     string: (): string => payloadValue,
     integer: (): number => tryParseOverriddenPayloadIntegerValue(payloadValue),
     float: (): number => tryParseOverriddenPayloadFloatValue(payloadValue),
-    boolean: (): boolean => payloadValue === "true",
-    array: (): unknown => JSON.parse(payloadValue),
+    boolean: (): boolean => tryParseOverriddenPayloadBooleanValue(payloadValue),
+    array: (): unknown => tryParseOverriddenPayloadArrayValue(payloadValue),
   };
 
   const parseValueMethod = parseValueMethods[type];
@@ -28,7 +46,7 @@ function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unk
     return parseValueMethod();
   }
 
-  throw new Error(`Unsupported payload override type: ${type}. Please use integer or string.`);
+  throw new Error(`Unsupported payload override type: ${type}. Please use one of the supported types: ${Object.keys(parseValueMethods).join(", ")}`);
 }
 
 export { tryParseOverriddenPayloadValue };
