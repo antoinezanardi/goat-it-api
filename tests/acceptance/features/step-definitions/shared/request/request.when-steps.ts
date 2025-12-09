@@ -16,10 +16,11 @@ When(/^the request payload is overridden with the following values:$/u, function
     return accumulator;
   }, {});
   const crushedPayload = crush(this.payload);
-  const overriddenPayload = construct({
-    ...crushedPayload,
-    ...override,
-  });
 
-  this.payload = Object.freeze(overriddenPayload) as Record<string, unknown>;
+  this.payload = {
+    ...construct({
+      ...crushedPayload,
+      ...override,
+    }),
+  };
 });

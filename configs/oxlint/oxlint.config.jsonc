@@ -241,6 +241,7 @@
     "no-param-reassign": [
       "error",
       {
+        // Allow property modifications on accumulator parameters in reduce() calls
         "ignorePropertyModificationsFor": ["accumulator"],
         "props": true
       }

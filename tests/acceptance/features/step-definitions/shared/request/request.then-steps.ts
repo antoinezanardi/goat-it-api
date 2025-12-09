@@ -57,7 +57,7 @@ Then(/^the failed request's response should contain the following validation det
     const expectedValidationDetails: ApiResponseExceptionValidationDetailsDto = {
       code: validationDetailsEntry.code,
       message: validationDetailsEntry.message,
-      path: validationDetailsEntry.path.split(",").map(segment => segment.trim()),
+      path: validationDetailsEntry.path.split(",").map(segment => segment.trim()).filter(Boolean),
     };
     if (validationDetailsEntry.expected) {
       expectedValidationDetails.expected = validationDetailsEntry.expected;

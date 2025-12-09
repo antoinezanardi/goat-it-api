@@ -10,13 +10,16 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
     .describe("Path to the invalid property."),
   expected: z.string()
     .optional()
-    .describe("Expected value or condition."),
+    .describe("Expected type of the invalid property value when applicable."),
   origin: z.string()
-    .optional(),
+    .optional()
+    .describe("Origin type of the invalid property value when applicable."),
   format: z.string()
-    .optional(),
+    .optional()
+    .describe("Expected high-level value format (e.g. 'uuid', 'email') when applicable."),
   pattern: z.string()
-    .optional(),
+    .optional()
+    .describe("Expected regex pattern when applicable."),
 });
 
 class ApiResponseExceptionValidationDetailsDto extends createZodDto(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO) {}
