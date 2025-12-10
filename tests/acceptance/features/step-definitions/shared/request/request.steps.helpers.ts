@@ -32,9 +32,17 @@ function tryParseOverriddenPayloadArrayValue(payloadValue: string): unknown[] {
   return parsedValue;
 }
 
+function tryParseOverriddenPayloadStringValue(payloadValue: string): string {
+  if (payloadValue.startsWith("\"") && payloadValue.endsWith("\"") ||
+    payloadValue.startsWith("'") && payloadValue.endsWith("'")) {
+    return payloadValue.slice(1, -1);
+  }
+  return payloadValue;
+}
+
 function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unknown {
   const parseValueMethods: Partial<Record<string, () => unknown>> = {
-    string: (): string => payloadValue,
+    string: (): string => tryParseOverriddenPayloadStringValue(payloadValue),
     integer: (): number => tryParseOverriddenPayloadIntegerValue(payloadValue),
     float: (): number => tryParseOverriddenPayloadFloatValue(payloadValue),
     boolean: (): boolean => tryParseOverriddenPayloadBooleanValue(payloadValue),

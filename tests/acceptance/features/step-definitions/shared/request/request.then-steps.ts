@@ -64,6 +64,7 @@ Then(/^the failed request's response should contain the following validation det
       format: validationDetailsEntry.format || undefined,
       pattern: validationDetailsEntry.pattern || undefined,
       minimum: validationDetailsEntry.minimum ? Number.parseInt(validationDetailsEntry.minimum) : undefined,
+      maximum: validationDetailsEntry.maximum ? Number.parseInt(validationDetailsEntry.maximum) : undefined,
       inclusive: validationDetailsEntry.inclusive ? validationDetailsEntry.inclusive === "true" : undefined,
       keys: validationDetailsEntry.keys ? validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean) : undefined,
     };

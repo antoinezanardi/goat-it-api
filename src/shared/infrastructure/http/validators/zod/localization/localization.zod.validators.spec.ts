@@ -88,6 +88,15 @@ describe("Localization Zod Validators", () => {
 
       expect(schema.description).toBe(`Text in french.`);
     });
+
+    it("should trim the localized text entry when parsing.", () => {
+      const locale = "en";
+      const schema = zLocalizedTextEntry(locale);
+      const value = "  Hello World  ";
+      const result = schema.parse(value);
+
+      expect(result).toBe("Hello World");
+    });
   });
 
   describe(zLocalizedTextsEntry, () => {
@@ -311,6 +320,20 @@ describe("Localization Zod Validators", () => {
       const schema = zLocalizedTexts();
 
       expect(schema.description).toBe("Localized texts object with translations for multiple languages.");
+    });
+
+    it("should trim each localized text entry when parsing.", () => {
+      const schema = zLocalizedTexts();
+      const value = {
+        en: ["  Hello World  ", "  Hi There  "],
+        fr: ["  Bonjour le monde  ", "  Salut là-bas  "],
+      };
+      const result = schema.parse(value);
+
+      expect(result).toStrictEqual({
+        en: ["Hello World", "Hi There"],
+        fr: ["Bonjour le monde", "Salut là-bas"],
+      });
     });
   });
 });
