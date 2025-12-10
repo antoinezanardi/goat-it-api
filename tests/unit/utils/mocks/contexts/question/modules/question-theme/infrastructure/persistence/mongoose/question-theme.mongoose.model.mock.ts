@@ -6,6 +6,7 @@ import type { Mock } from "vitest";
 
 type QuestionThemeMongooseModelStub = {
   find: () => Promise<QuestionThemeMongooseDocumentStub[]>;
+  findOne: () => Promise<QuestionThemeMongooseDocumentStub | null>;
   findById: (id: string) => Promise<QuestionThemeMongooseDocumentStub | null>;
   create: () => Promise<QuestionThemeMongooseDocumentStub>;
   findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocumentStub | null>;
@@ -20,6 +21,7 @@ function createMockedQuestionThemeMongooseModel(): MockedQuestionThemeMongooseMo
       createFakeQuestionThemeDocument(),
       createFakeQuestionThemeDocument(),
     ]),
+    findOne: vi.fn<QuestionThemeMongooseModelStub["findOne"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     findById: vi.fn<QuestionThemeMongooseModelStub["findById"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     create: vi.fn<QuestionThemeMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     findByIdAndUpdate: vi.fn<QuestionThemeMongooseModelStub["findByIdAndUpdate"]>().mockResolvedValue(createFakeQuestionThemeDocument()),

@@ -5,11 +5,10 @@ export default {
   checkers: ["typescript"],
   tsconfigFile: "tsconfig.json",
   testRunner: "vitest",
-  ignoreStatic: true,
+  ignoreStatic: false,
   mutate: [
     "src/**/*.ts",
     "!**/*.spec.ts",
-    "!**/*.dto.ts",
     "!**/*.schema.ts",
     "!**/*.constants.ts",
     "!**/*.module.ts",
@@ -55,5 +54,8 @@ export default {
   dryRunTimeoutMinutes: 10,
   typescriptChecker: {
     prioritizePerformanceOverAccuracy: true,
+  },
+  warnings: {
+    slow: false,
   },
 };

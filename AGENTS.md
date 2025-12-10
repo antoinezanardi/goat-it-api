@@ -46,7 +46,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 - Identify the minimal set of files to change.
 - Create a descriptive branch (`<type>/<scope>-<short-desc>`).
 - Add or update tests (unit and integration where necessary).
-- Run locally: `pnpm run lint`, `pnpm run typecheck`, `pnpm run test:unit:cov`.
+- Run locally: `pnpm run lint`, `pnpm run typecheck`, `pnpm run test:unit:cov`, `pnpm run test:acceptance`.
 - In the PR body: explain the goal, changes, impact and rollback plan.
 - Mark the PR as requiring human review if the change is medium/high risk.
 
@@ -61,161 +61,785 @@ This consolidated section presents the authoritative rules an agent (automated o
 
 ## Project summary
 
-- Name: goat-it-api
+- Name: `goat-it-api`
 - Version: see `package.json`, it is managed by `semantic-release`.
 - Primary language: TypeScript (ES2021 targeting CommonJS as NestJS requires it).
 - Framework: NestJS (with Fastify adapter)
-- Build tool / transpiler: swc (via NestJS builder and `unplugin-swc` for tests)
+- Build tool / transpiler: `swc` (via NestJS builder and `unplugin-swc` for tests)
+- Type checking: `tsgo` (native TypeScript preview from `@typescript/native-preview`, use `pnpm run typecheck`)
 - Test runner: Vitest (with V8 coverage provider) with `100%` coverage thresholds enforced.
 - Mutation testing: Stryker with `100%` mutation score goal.
-- Linting: ESLint (flat-configs under `configs/eslint`)
+- Acceptance tests: Cucumber with Gherkin feature files.
+- Linting: ESLint (flat-configs under `configs/eslint`) and Oxlint (under `configs/oxlint`)
 - Package manager: `pnpm` (see `package.json` for `packageManager` field to specify the version)
-- Node engine: Node.js `>= 24` (see `package.json` `engines` field)
+- Node engine: Node.js `>= 25.2.1` (see `package.json` `engines` field)
+- Database: MongoDB with Mongoose ODM
+- Validation: Zod schemas with `nestjs-zod` integration for DTO validation and OpenAPI schema generation
 
 ## High-level architecture
 
-- Entry point: `src/main.ts` — imports and calls the bootstrap function from `src/server/server.ts`.
-- Server setup: `src/server/server.ts` — builds a Nest application using `AppModule`, uses `FastifyAdapter`, enables shutdown hooks, binds to `HOST` and `PORT` (defaults: `0.0.0.0:3000`), and logs the listen URL.
-- Application module: `src/app/app.module.ts` — central wiring for controllers and providers.
-- Example controller: `src/app/controllers/app.controller.ts` — exposes a single GET `/` endpoint returning API metadata.
-- Example service: `src/app/providers/services/app.service.ts` — reads `package.json` (via the `@package-json` alias) and returns metadata.
+This project follows a **Hexagonal Architecture** (Ports and Adapters) combined with **Domain-Driven Design (DDD)** principles, organized by bounded contexts.
+
+### Core architectural layers
+
+1. **Domain Layer** (`domain/`): Contains business entities, value objects, repository interfaces (ports), and domain-specific errors. This layer has no external dependencies.
+2. **Application Layer** (`application/`): Contains use cases, DTOs, and mappers. Orchestrates domain logic and defines the application's behavior.
+3. **Infrastructure Layer** (`infrastructure/`): Contains concrete implementations of ports (adapters) — HTTP controllers, database repositories, external services. This layer implements interfaces defined in the domain.
+
+### Entry points
+
+- **Entry point**: `src/main.ts` — imports and calls the bootstrap function from `src/server/server.ts`.
+- **Server setup**: `src/infrastructure/api/server/server.ts` — builds a Nest application using `AppModule`, uses `FastifyAdapter`, enables shutdown hooks, binds to env variables, and logs the listen URL.
+- **Application module**: `src/app/app.module.ts` — central wiring for infrastructure modules (`config`, `database`, `health`, `logging`) and bounded context modules.
+
+### Bounded contexts' structure
+
+The project organizes domain logic into bounded contexts under `src/contexts/`:
+
+```
+src/contexts/<context-name>/
+├── <context-name>.module.ts          # Context root module
+└── modules/
+    └── <feature-name>/
+        ├── <feature-name>.module.ts  # Feature module (wires all layers)
+        ├── domain/
+        │   ├── entities/             # Domain entities and their types
+        │   ├── value-objects/        # Domain value objects
+        │   ├── repositories/         # Repository interface (port) + token
+        │   └── errors/               # Domain-specific errors
+        ├── application/
+        │   ├── use-cases/            # Business logic operations
+        │   ├── dto/                  # Zod-based DTOs for API
+        │   └── mappers/              # Entity-to-DTO mappers
+        └── infrastructure/
+            ├── http/
+            │   └── controllers/      # NestJS HTTP controllers
+            └── persistence/
+                └── mongoose/
+                    ├── schema/       # Mongoose schema definitions
+                    ├── repository/   # Repository implementation (adapter)
+                    ├── mappers/      # Document-to-entity mappers
+                    ├── types/        # Mongoose-specific types
+                    └── constants/    # Collection names, etc.
+```
 
 ## Key design decisions
 
-- NestJS is chosen for structure and dependency injection.
-- Fastify is chosen for performance (via `@nestjs/platform-fastify`).
-- swc used as the build/transpile tool (fast compilation) and configured in `configs/swc/swc.config.json`.
-- Path aliases are used to simplify imports (`@app`, `@server`, `@package-json`, etc.). These are defined in the SWC config and used by the test runner via alias config.
+- **NestJS** is chosen for structure and dependency injection.
+- **Fastify** is chosen for performance (via `@nestjs/platform-fastify`).
+- **swc** used as the build/transpile tool (fast compilation) and configured in `configs/swc/swc.config.json`.
+- **tsgo** (native TypeScript from `@typescript/native-preview`) is used for type checking via `pnpm run typecheck`.
+- **Hexagonal Architecture** with DDD is used to separate concerns and enable testability. Domain logic is isolated from infrastructure concerns.
+- **Zod** with `nestjs-zod` provides runtime validation and automatic OpenAPI schema generation for DTOs.
+- **Mongoose** is used as MongoDB ODM with custom schemas and repository implementations.
+- **Path aliases** are used to simplify imports (`@app`, `@shared`, `@question`, `@faketories`, `@mocks`, etc.). These are defined in the SWC config, TypeScript configs, and Vitest config.
+- **Repository pattern** with dependency injection tokens separates domain interfaces from infrastructure implementations.
 
 ## Important files and locations
 
 (Only the most relevant files for development and automated edits are listed here.)
 
+### Configuration files
+
 - `package.json` — scripts, dependencies, devDependencies, engines, and package metadata.
-- `tsconfig.json` — TypeScript project configuration (root-level config for IDEs and tsc operations). It references multiple `tsconfig.*.json` files for specific purposes under `configs/typescript`.
+- `tsconfig.json` — TypeScript project configuration (root-level config for IDEs). It references multiple `tsconfig.*.json` files for specific purposes under `configs/typescript`.
 - `configs/swc/swc.config.json` — SWC configuration for building the application (paths, decorators, module type).
 - `configs/nest/nest-cli.config.json` — Nest CLI configuration (sourceRoot, SWC builder, type checking behavior).
 - `configs/vitest/vitest.config.ts` — Vitest configuration including path aliases and SWC plugin for tests.
 - `configs/stryker/stryker.config.mjs` — Mutation testing configuration for Stryker.
+- `configs/eslint/*` — ESLint flat-configs and parser declarations used by `pnpm run lint:eslint`.
+- `configs/oxlint/*` — Oxlint configurations used by `pnpm run lint:oxlint`.
+
+### Startup files
+
+The main entry points for application startup:
+
 - `src/main.ts` — simple bootstrap caller.
 - `src/server/server.ts` — Nest/Fastify bootstrap logic.
-- `src/app/app.module.ts` — Nest module.
-- `src/app/controllers/app.controller.ts` — example controller.
-- `src/app/providers/services/app.service.ts` — example service that reads `package.json`.
-- `src/app/providers/services/app.service.spec.ts` — unit tests for `AppService`.
-- `tests/unit/` — generated test outputs and coverage artifacts (`lcov`, `HTML` reports and other coverage files); do not add source unit tests here.
-- `tests/unit/utils/` — shared test utilities, factories and mocks used across multiple test suites (project-wide helpers).
-- `configs/eslint/*` — ESLint flat-configs and parser declarations used by `npm run lint:eslint`.
-- `configs/oxlint/*` — OXLint configurations used by `npm run lint:oxlint`.
+- `src/app/app.module.ts` — Nest root module that imports infrastructure and context modules.
+- `src/app/controllers/app.controller.ts` — root controller exposing API metadata.
+- `src/app/providers/services/app.service.ts` — service that reads `package.json` for metadata.
 
-Note: Unit test source files (implementation tests) must be colocated with their corresponding source files under `src/` using the `*.spec.ts` pattern (for example `src/modules/users/users.service.spec.ts`).
+### Infrastructure modules
+
+Modules providing infrastructure capabilities and not specific to any bounded context:
+
+- `src/infrastructure/api/server/` — Server bootstrap and Fastify adapter setup.
+- `src/infrastructure/api/config/` — Application configuration module using `@nestjs/config`.
+- `src/infrastructure/api/health/` — Health check endpoints using `@nestjs/terminus`.
+- `src/infrastructure/database/` — MongoDB/Mongoose database configuration and connection.
+
+### Bounded contexts
+
+Specific domain contexts are located under `src/contexts/`. For example:
+
+- `src/contexts/question/` — Question bounded context containing question-theme feature module.
+
+### Shared code
+
+When functionality is shared across multiple contexts, it is placed under `src/shared/` organized by architectural layers:
+
+- `src/shared/domain/` — Shared domain value objects (e.g., locale).
+- `src/shared/application/` — Shared application utilities (e.g., mappers).
+- `src/shared/infrastructure/` — Shared infrastructure code:
+  - `src/shared/infrastructure/http/` — HTTP-related utilities (controllers, decorators, pipes, middlewares).
+  - `src/shared/infrastructure/persistence/` — Persistence-related utilities (Mongoose constants).
+
+### Test utilities
+
+- `tests/unit/setup/` — Vitest setup files for mocks.
+- `tests/unit/utils/mocks/` — Mock implementations for unit tests (organized by module structure).
+- `tests/shared/utils/faketories/` — Factory functions for creating test data (shared between unit and acceptance tests).
+
+Note: Unit test source files (implementation tests) must be colocated with their corresponding source files under `src/` using the `*.spec.ts` pattern (for example `src/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case.spec.ts`).
+
+## Path aliases
+
+The project uses path aliases for cleaner imports. These are configured in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.*.json`, and `configs/vitest/vitest.config.ts`.
+
+### Available aliases
+
+| Alias                    | Path                              | Description                                         |
+|--------------------------|-----------------------------------|-----------------------------------------------------|
+| `@package-json`          | `package.json`                    | Direct import of package.json                       |
+| `@src/*`                 | `src/*`                           | Root source directory                               |
+| `@app/*`                 | `src/app/*`                       | Application module (controllers, services, helpers) |
+| `@shared/*`              | `src/shared/*`                    | Shared code (domain, application, infrastructure)   |
+| `@question/*`            | `src/contexts/question/*`         | Question bounded context                            |
+| `@configs/*`             | `configs/*`                       | Configuration files                                 |
+| `@unit-tests/*`          | `tests/unit/*`                    | Unit test utilities                                 |
+| `@faketories/*`          | `tests/shared/utils/faketories/*` | Test data factories                                 |
+| `@mocks/*`               | `tests/unit/utils/mocks/*`        | Mock implementations                                |
+| `@acceptance-tests/*`    | `tests/acceptance/*`              | Acceptance test root                                |
+| `@acceptance-features/*` | `tests/acceptance/features/*`     | Acceptance feature files                            |
+| `@acceptance-support/*`  | `tests/acceptance/support/*`      | Acceptance test support utilities                   |
+
+### Usage example
+
+```typescript
+// Instead of relative imports like:
+import { QuestionTheme } from "../../../domain/entities/question-theme.types";
+
+// Use path aliases:
+import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+```
+
+When adding a new bounded context, add corresponding path aliases in:
+1. `configs/swc/swc.config.json` (for runtime)
+2. `configs/typescript/tsconfig.app.json` (for IDE/type checking)
+3. `configs/vitest/vitest.config.ts` (for tests)
 
 ## Project Directory Structure
 
-This project follows a predictable, feature-oriented layout. When adding files or folders, prefer the locations and naming patterns below so that code, tests and tooling remain consistent.
+This project follows a **Hexagonal Architecture** with **DDD** layout. When adding files or folders, prefer the locations and naming patterns below so that code, tests and tooling remain consistent.
 
-Top-level folders (where to add things)
+### Top-level folders
 
 - `src/` — application source. Add new runtime code here.
   - `src/server/` — server bootstrap and adapter-related code (`server.ts`, server-specific setup).
-  - `src/app/` — application wiring and small shared app-level controllers/providers (used for examples and global pieces).
-  - `src/modules/` — long-lived feature modules. For a new feature create `src/modules/<feature-name>/` and put the module, controllers, services and types there.
-  - `src/shared/` — reusable utilities, helpers, interfaces and cross-cutting concerns.
+  - `src/app/` — application module (root module, controllers, services, helpers, types).
+  - `src/contexts/` — bounded contexts containing domain features.
+  - `src/shared/` — shared code organized by architectural layers:
+    - `src/shared/domain/` — shared domain value objects.
+    - `src/shared/application/` — shared application utilities (mappers).
+    - `src/shared/infrastructure/` — shared infrastructure code (HTTP utilities, persistence helpers).
+  - `src/infrastructure/` — infrastructure modules:
+    - `src/infrastructure/api/` — API-related infrastructure (config, health, server).
+    - `src/infrastructure/database/` — database configuration and connection.
+- `tests/` — test code organized by type:
+  - `tests/unit/` — unit test setup, utilities, mocks, and coverage output.
+  - `tests/shared/` — test utilities shared between unit and acceptance tests (faketories).
+  - `tests/acceptance/` — Cucumber acceptance tests.
+  - `tests/mutation/` — Stryker mutation testing output.
+- `configs/` — tool configurations (ESLint, Oxlint, SWC, Vitest, Stryker, TypeScript, etc.).
+- `scripts/` — helper shell scripts for CI/developer workflows.
 
 ## Naming conventions (filenames and types)
 
-- Use the NestJS style filename pattern: `<name>.<type>.ts` where `<type>` is one of `module`, `controller`, `service`, `dto`, `types`, `pipe`, `guard`, `interceptor`, etc. Examples:
-  - `users.controller.ts`
-  - `users.service.ts`
-  - `users.module.ts`
-  - `create-user.dto.ts`
-  - `users.types.ts`
-- DTOs: name DTO files after the action or entity (`create-user.dto.ts`, `update-user.dto.ts`). Keep DTOs colocated with the controller/service that consumes them.
-- Types/enums/constants: use `<feature>.types.ts`, `<feature>.enum.ts`, `<feature>.constants.ts` as appropriate.
-- Tests: keep unit tests next to the source file using the `.spec.ts` suffix (`users.service.spec.ts`). Never put unit tests in `tests/unit` for source files.
-- Mocks & Factories: use `tests/unit/utils/mocks/` and `tests/unit/utils/factories/` and name files `<feature>.mock.ts` and `<feature>.factory.ts`.
+### File naming patterns
 
-## Where to put a new module / endpoint (concrete recipe)
+Use the NestJS-style filename pattern: `<name>.<type>.ts` where `<type>` indicates the file's purpose:
 
-1. Create a directory: `src/modules/<feature-name>/` (use `kebab-case` for folder names). A feature can be a subfolder if needed (e.g., `src/modules/users/auth/`).
-2. Add files using the `<feature>.<type>.ts` pattern, for example:
-   - `src/modules/tasks/tasks.module.ts`
-   - `src/modules/tasks/tasks.controller.ts`
-   - `src/modules/tasks/tasks.service.ts`
-   - `src/modules/tasks/dto/create-task.dto.ts`
-   - `src/modules/tasks/tasks.types.ts`
-3. Add unit tests next to source files (`tasks.service.spec.ts`) and update `src/app/app.module.ts` to import the new module if it needs to be registered globally.
+| Type          | Description                                 | Example                                     |
+|---------------|---------------------------------------------|---------------------------------------------|
+| `module`      | NestJS module                               | `question-theme.module.ts`                  |
+| `controller`  | HTTP controller                             | `question-theme.controller.ts`              |
+| `service`     | Business service                            | `app.service.ts`                            |
+| `use-case`    | Application use case                        | `find-all-question-themes.use-case.ts`      |
+| `dto`         | Data Transfer Object (Zod-based)            | `question-theme.dto.ts`                     |
+| `types`       | TypeScript type definitions                 | `question-theme.types.ts`                   |
+| `constants`   | Constant values                             | `question-theme.repository.constants.ts`    |
+| `errors`      | Custom error classes                        | `question-theme.errors.ts`                  |
+| `mappers`     | Data transformation functions               | `question-theme.dto.mappers.ts`             |
+| `pipe`        | NestJS pipe                                 | `mongo-id.pipe.ts`                          |
+| `guard`       | NestJS guard                                | `auth.guard.ts`                             |
+| `interceptor` | NestJS interceptor                          | `logging.interceptor.ts`                    |
+| `middleware`  | NestJS middleware                           | `localization.middleware.ts`                |
+| `decorator`   | Custom decorator                            | `localization.decorator.ts`                 |
+| `schema`      | Mongoose schema (use `.mongoose.schema.ts`) | `question-theme.mongoose.schema.ts`         |
+| `repository`  | Repository implementation                   | `question-theme.mongoose.repository.ts`     |
+| `spec`        | Unit test file                              | `question-theme.controller.spec.ts`         |
+| `mock`        | Mock implementation for tests               | `find-all-question-themes.use-case.mock.ts` |
+| `faketory`    | Test data factory                           | `question-theme.faketory.ts`                |
+| `helpers`     | Helper functions                            | `setup.helpers.ts`                          |
+| `enums`       | Enum definitions                            | `controllers.enums.ts`                      |
+
+### Domain-Driven Design naming
+
+- **Entities**: Place in `domain/entities/` with types defined in `<entity>.types.ts`.
+- **Value Objects**: Place in `domain/value-objects/` with constants in `<vo>.constants.ts`.
+- **Repository interfaces**: Place in `domain/repositories/` with:
+  - Interface types in `<entity>.repository.types.ts`
+  - Injection token in `<entity>.repository.constants.ts`
+- **Domain errors**: Place in `domain/errors/` as `<entity>.errors.ts`.
+- **Use cases**: Place each use case in its own folder under `application/use-cases/<use-case-name>/`.
+
+### Tests
+
+- **Unit tests**: Keep next to the source file using `.spec.ts` suffix. Never put unit tests in `tests/unit/` for source files.
+- **Mocks**: Place in `tests/unit/utils/mocks/` mirroring the source structure. Name files `<what>.mock.ts`.
+- **Faketories**: Place in `tests/shared/utils/faketories/` mirroring the source structure. Name files `<what>.faketory.ts`.
+
+### Folder naming
+
+- Use `kebab-case` for all folder names.
+- Use singular nouns for entity folders (e.g., `question-theme/` not `question-themes/`).
+- Group related files in descriptive subfolders (e.g., `use-cases/find-all-question-themes/`).
+
+## Where to put a new bounded context / feature (concrete recipe)
+
+### Adding a new bounded context
+
+1. Create directory: `src/contexts/<context-name>/` (use `kebab-case`).
+2. Create root module: `src/contexts/<context-name>/<context-name>.module.ts`.
+3. Add path alias in configs (swc, typescript, vitest) — e.g., `@<context-name>/*`.
+4. Import the context module in `src/app/app.module.ts`.
+
+### Adding a new feature module within a context
+
+1. Create feature directory: `src/contexts/<context>/modules/<feature>/`.
+2. Create the following structure:
+
+```
+src/contexts/<context>/modules/<feature>/
+├── <feature>.module.ts                    # Feature module (wiring)
+├── domain/
+│   ├── entities/
+│   │   └── <feature>.types.ts             # Entity type definition
+│   ├── value-objects/                     # (if needed)
+│   │   ├── <vo>.constants.ts              # Value object constants
+│   │   └── <vo>.types.ts                  # Value object types
+│   ├── repositories/
+│   │   ├── <feature>.repository.types.ts  # Repository interface
+│   │   └── <feature>.repository.constants.ts  # Injection token
+│   └── errors/
+│       ├── <feature>.errors.ts            # Domain error classes
+│       └── <feature>.errors.spec.ts       # Error tests
+├── application/
+│   ├── use-cases/
+│   │   └── <action>-<feature>/
+│   │       ├── <action>-<feature>.use-case.ts
+│   │       └── <action>-<feature>.use-case.spec.ts
+│   ├── dto/
+│   │   └── <feature>.dto.ts               # Zod-based DTO
+│   └── mappers/
+│       ├── <feature>.dto.mappers.ts
+│       └── <feature>.dto.mappers.spec.ts
+└── infrastructure/
+    ├── http/
+    │   └── controllers/
+    │       ├── <feature>.controller.ts
+    │       └── <feature>.controller.spec.ts
+    └── persistence/
+        └── mongoose/
+            ├── schema/
+            │   └── <feature>.mongoose.schema.ts
+            ├── repository/
+            │   ├── <feature>.mongoose.repository.ts
+            │   └── <feature>.mongoose.repository.spec.ts
+            ├── mappers/
+            │   ├── <feature>.mongoose.mappers.ts
+            │   └── <feature>.mongoose.mappers.spec.ts
+            ├── types/
+            │   └── <feature>.mongoose.types.ts
+            └── constants/
+                └── <feature>.mongoose.constants.ts
+```
+
+3. Wire the module:
+   - Register Mongoose schema in module imports.
+   - Register controller.
+   - Register use cases and repository provider with injection token.
+
+4. Add test utilities:
+   - Faketory: `tests/shared/utils/faketories/contexts/<context>/<feature>/<feature>.faketory.ts`
+   - Mocks: `tests/unit/utils/mocks/contexts/<context>/modules/<feature>/`
+
+5. Import the feature module in the context's root module.
 
 ## Config and tooling files
 
-- `configs/` holds tool configurations (ESLint, Oxlint, swc, vitest, stryker, etc.). Add new tool configs in a dedicated subfolder under `configs/` and reference them from scripts where needed.
-- `scripts/` holds helper shell scripts used by CI or developer workflows. Name scripts with descriptive verbs (e.g., `create-git-branch.sh`).
+- `configs/` holds tool configurations. Each tool has its own subfolder:
+  - `configs/commitlint/` — Commitlint configuration for commit message validation.
+  - `configs/cucumber/` — Cucumber configuration for acceptance tests.
+  - `configs/eslint/` — ESLint flat-configs (stylistic and code-quality rules).
+  - `configs/lint-staged/` — Lint-staged configurations for pre-commit hooks.
+  - `configs/nest/` — NestJS CLI configuration.
+  - `configs/node/` — Node.js configuration.
+  - `configs/oxlint/` — Oxlint configuration.
+  - `configs/semantic-release/` — Semantic-release configuration for automated releases.
+  - `configs/stryker/` — Stryker mutation testing configuration.
+  - `configs/swc/` — SWC compiler configuration (paths, decorators).
+  - `configs/typescript/` — TypeScript configurations for different purposes (app, spec, acceptance, eslint).
+  - `configs/validate-branch-name/` — Branch name validation rules.
+  - `configs/vitest/` — Vitest test runner configuration.
+- `scripts/` holds helper shell scripts. Name scripts with descriptive verbs (e.g., `create-git-branch.sh`, `create-pull-request.sh`).
+
+## DTO and validation patterns
+
+This project uses **Zod** with **nestjs-zod** for runtime validation and automatic OpenAPI schema generation.
+
+### Creating a DTO
+
+```typescript
+import { createZodDto } from "nestjs-zod";
+import { z } from "zod";
+
+const MY_ENTITY_DTO = z.object({
+  id: z.string()
+    .regex(/^[\da-f]{24}$/iu)
+    .describe("Entity's unique MongoDB ObjectId."),
+  name: z.string()
+    .describe("Entity's name."),
+  status: z.enum(["active", "archived"])
+    .describe("Entity's current status."),
+  createdAt: z.iso.datetime()
+    .describe("Entity's creation timestamp."),
+});
+
+class MyEntityDto extends createZodDto(MY_ENTITY_DTO) {}
+
+export { MY_ENTITY_DTO, MyEntityDto };
+```
+
+### Using DTOs in controllers
+
+```typescript
+import { ZodResponse } from "nestjs-zod";
+import { HttpStatus } from "@nestjs/common";
+
+@Get()
+@ZodResponse({
+  status: HttpStatus.OK,
+  type: [MyEntityDto],
+})
+public async findAll(): Promise<MyEntityDto[]> {
+  // ...
+}
+```
+
+## Repository pattern
+
+### Defining the repository interface (port)
+
+In `domain/repositories/<entity>.repository.types.ts`:
+
+```typescript
+import type { MyEntity } from "@context/modules/feature/domain/entities/my-entity.types";
+
+type MyEntityRepository = {
+  findAll: () => Promise<MyEntity[]>;
+  findById: (id: string) => Promise<MyEntity | undefined>;
+  create: (entity: MyEntity) => Promise<MyEntity>;
+  update: (id: string, entity: Partial<MyEntity>) => Promise<MyEntity | undefined>;
+};
+
+export type { MyEntityRepository };
+```
+
+### Defining the injection token
+
+In `domain/repositories/<entity>.repository.constants.ts`:
+
+```typescript
+const MY_ENTITY_REPOSITORY_TOKEN = Symbol("MyEntityRepository");
+
+export { MY_ENTITY_REPOSITORY_TOKEN };
+```
+
+It must be defined as a `Symbol` to avoid collisions.
+
+### Implementing the repository (adapter)
+
+In `infrastructure/persistence/mongoose/repository/<entity>.mongoose.repository.ts`:
+
+```typescript
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+
+@Injectable()
+export class MyEntityMongooseRepository implements MyEntityRepository {
+  public constructor(
+    @InjectModel(MyEntityMongooseSchema.name)
+    private readonly model: Model<MyEntityMongooseDocument>,
+  ) {}
+
+  public async findAll(): Promise<MyEntity[]> {
+    const documents = await this.model.find();
+    return documents.map(mapDocumentToEntity);
+  }
+  // ...
+}
+```
+
+### Wiring in the module
+
+```typescript
+@Module({
+  imports: [
+    MongooseModule.forFeature([
+      { name: MyEntityMongooseSchema.name, schema: MY_ENTITY_MONGOOSE_SCHEMA },
+    ]),
+  ],
+  providers: [
+    MyUseCase,
+    {
+      provide: MY_ENTITY_REPOSITORY_TOKEN,
+      useClass: MyEntityMongooseRepository,
+    },
+  ],
+})
+export class MyFeatureModule {}
+```
+
+## Error handling patterns
+
+### Domain errors
+
+Create custom error classes for domain-specific errors:
+
+```typescript
+// domain/errors/<entity>.errors.ts
+class EntityNotFoundError extends Error {
+  public constructor(entityId: string) {
+    super(`Entity with id ${entityId} not found`);
+    this.name = "EntityNotFoundError";
+  }
+}
+
+class EntityAlreadyArchivedError extends Error {
+  public constructor(entityId: string) {
+    super(`Entity with id ${entityId} already has status 'archived'`);
+    this.name = "EntityAlreadyArchivedError";
+  }
+}
+
+export { EntityNotFoundError, EntityAlreadyArchivedError };
+```
+
+### Using errors in use cases
+
+```typescript
+public async getById(id: string): Promise<MyEntity> {
+  const entity = await this.repository.findById(id);
+  if (!entity) {
+    throw new EntityNotFoundError(id);
+  }
+  return entity;
+}
+```
 
 ## General rules and small reminders
 
-- Prefer path aliases (e.g., `@app`, `@modules`, `@shared`) when importing across the project to keep imports stable across builds and tests.
-- Keep controllers thin: business logic belongs in services.
-- Tests must be added/updated alongside behavioral changes. Use `.spec.ts` naming and follow existing factory/mocks helpers.
+- Prefer path aliases (e.g., `@app`, `@shared`, `@question`, `@faketories`) when importing across the project to keep imports stable across builds and tests.
+- Follow Hexagonal Architecture: domain logic must not depend on infrastructure. Use repository interfaces (ports) in domain/application layers.
+- Keep controllers thin: business logic belongs in use cases/services.
+- Use dependency injection with tokens for repository implementations.
+- Tests must be added/updated alongside behavioral changes. Use `.spec.ts` naming and follow existing faketory/mock helpers.
 - File and folder names should be consistent and predictable — prefer `kebab-case` for folders and the `<name>.<type>.ts` pattern for files.
+- Use Zod for all DTO validation; leverage `nestjs-zod` for automatic OpenAPI schema generation.
 
 ## Examples
 
-- New feature "auth":
-  - `src/modules/auth/auth.module.ts`
-  - `src/modules/auth/auth.controller.ts`
-  - `src/modules/auth/auth.service.ts`
-  - `src/modules/auth/dto/login.dto.ts`
-  - `src/modules/auth/auth.service.spec.ts`
+### New bounded context "user"
 
-- Shared util:
-  - `src/shared/validators/email.validator.ts`
-  - `src/shared/index.ts` (optional barrel for shared exports)
+```
+src/contexts/user/
+├── user.module.ts
+└── modules/
+    └── user/
+        ├── user.module.ts
+        ├── domain/
+        │   ├── entities/user.types.ts
+        │   ├── repositories/
+        │   │   ├── user.repository.types.ts
+        │   │   └── user.repository.constants.ts
+        │   └── errors/user.errors.ts
+        ├── application/
+        │   ├── use-cases/
+        │   │   ├── create-user/
+        │   │   │   ├── create-user.use-case.ts
+        │   │   │   └── create-user.use-case.spec.ts
+        │   │   └── find-user-by-id/
+        │   │       ├── find-user-by-id.use-case.ts
+        │   │       └── find-user-by-id.use-case.spec.ts
+        │   ├── dto/user.dto.ts
+        │   └── mappers/user.dto.mappers.ts
+        └── infrastructure/
+            ├── http/controllers/
+            │   ├── user.controller.ts
+            │   └── user.controller.spec.ts
+            └── persistence/mongoose/
+                ├── schema/user.mongoose.schema.ts
+                └── repository/
+                    ├── user.mongoose.repository.ts
+                    └── user.mongoose.repository.spec.ts
+```
 
-Agent rule-of-thumb: If you're unsure where to place a file, prefer `src/modules/<feature>/` when it's feature-specific, `src/shared/` for cross-cutting utilities, and `configs/` for tooling/configuration.
+### Shared utility
 
-## Environment variables
+```
+src/shared/infrastructure/http/pipes/validation/
+├── validation.pipe.ts
+└── validation.pipe.spec.ts
+```
 
-- HOST (optional) — server host; default `0.0.0.0`.
-- PORT (optional) — server port; default `3000`.
+### Test utilities for a new feature
+
+```
+tests/shared/utils/faketories/contexts/user/
+└── user.faketory.ts
+
+tests/unit/utils/mocks/contexts/user/modules/user/
+├── application/use-cases/
+│   └── create-user.use-case.mock.ts
+└── infrastructure/persistence/mongoose/
+    └── user.mongoose.types.mock.ts
+```
+
+Agent rule-of-thumb: If you're unsure where to place a file:
+- Feature-specific domain/application/infrastructure code → `src/contexts/<context>/modules/<feature>/`
+- Cross-cutting utilities → `src/shared/<layer>/`
+- Configuration files → `configs/<tool>/`
+- Test factories (faketories) → `tests/shared/utils/faketories/`
+- Test mocks → `tests/unit/utils/mocks/`
 
 ## Common scripts
 
 From `package.json` (standard usage):
 
-- Setup / lifecycle:
-  - `pnpm install` — install dependencies (pnpm is the expected package manager).
-- Development / runtime:
-  - `pnpm run start` — run the app (uses Nest start with SWC builder as configured).
-  - `pnpm run start:dev` — start in watch mode.
-  - `pnpm run start:prod` — run the built `dist/main.js`.
-- Build / typecheck:
-  - `pnpm run build` — run `nest build` with `configs/nest/nest-cli.config.json` (swc builder).
-  - `pnpm run typecheck` — run `tsc -b --clean && tsc -b --noEmit`.
-- Linting:
-  - `pnpm run lint` — run ESLint and Oxlint checks. Oxlint is run first, then ESLint.
-  - `pnpm run lint:fix` — fix lint issues with ESLint and Oxlint where possible.
-  - `pnpm run lint:eslint` — run only ESLint.
-  - `pnpm run lint:oxlint` — run only Oxlint.
-- Tests:
-  - `pnpm run test` or `pnpm run test:unit` — run unit tests using Vitest.
-  - `pnpm run test:unit:cov` — run unit tests with a coverage report. If coverage thresholds of `100%` are not met, the command fails.
-  - `pnpm run test:unit:watch` — watch mode for unit tests.
-- Mutation testing (expensive / CI):
-  - `pnpm run test:mutation` — run Stryker (configurable via `configs/stryker`).
-  - `pnpm run test:mutation:ci` — CI-oriented mutation run.
-- Docker:
-  - `pnpm run docker:build` — build a Docker image using `Dockerfile`.
-  - `pnpm run docker:build:linux/amd64` — build a Linux AMD64 image.
-  - `pnpm run docker:build:linux/arm64` — build a Linux ARM64 image.
+### Setup / lifecycle
+
+- `pnpm install` — install dependencies (pnpm is the expected package manager).
+- `pnpm run prepare` — runs post-install script (Husky setup).
+
+### Development / runtime
+
+- `pnpm run start` — run the app (uses Nest start with SWC builder as configured).
+- `pnpm run start:dev` — start in watch mode (hot reload).
+- `pnpm run start:debug` — start in debug mode with watch.
+- `pnpm run start:prod` — run the built `dist/main.js` in production mode.
+- `pnpm run start:prod:test` — run the built app in test mode (used by acceptance tests).
+
+### Build / typecheck
+
+- `pnpm run build` — run `nest build` with `configs/nest/nest-cli.config.json` (swc builder).
+- `pnpm run typecheck` — run `tsgo -b --clean && tsgo -b --noEmit` (uses native TypeScript preview).
+
+### Linting
+
+- `pnpm run lint` — run both Oxlint and ESLint checks (Oxlint first, then ESLint).
+- `pnpm run lint:fix` — fix lint issues with both linters where possible.
+- `pnpm run lint:eslint` — run only ESLint.
+- `pnpm run lint:eslint:fix` — run ESLint with auto-fix.
+- `pnpm run lint:eslint:inspect-config` — inspect ESLint config with config inspector.
+- `pnpm run lint:oxlint` — run only Oxlint.
+- `pnpm run lint:oxlint:fix` — run Oxlint with auto-fix.
+- `pnpm run lint:staged:fix` — run linters on staged files only (used by pre-commit hook).
+
+### Tests
+
+- `pnpm run test` — run full test suite: unit tests with coverage, mutation tests and acceptance tests.
+- `pnpm run test:unit` — run unit tests using Vitest.
+- `pnpm run test:unit:cov` — run unit tests with the coverage report. Fails if `100%` threshold is not met.
+- `pnpm run test:unit:watch` — watch mode for unit tests.
+- `pnpm run test:unit:staged` — run unit tests for staged files only.
+
+### Mutation testing (expensive / CI)
+
+- `pnpm run test:mutation` — run Stryker with incremental mode (reuses previous results).
+- `pnpm run test:mutation:force` — run Stryker from scratch (clears incremental cache).
+- `pnpm run test:mutation:ci` — CI-oriented mutation run with CI-specific config.
+
+### Acceptance tests
+
+- `pnpm run test:acceptance` — run Cucumber acceptance tests (builds app first, then runs tests).
+- `pnpm run test:acceptance:skip-build` — run acceptance tests without rebuilding (use when app is already built).
+- `pnpm run test:cucumber:html-report` — generate the HTML report from Cucumber results.
+
+### Docker
+
+- `pnpm run docker:build` — build a Docker image named `goat-it-api`.
+- `pnpm run docker:build:linux/amd64` — build a Linux AMD64 image.
+- `pnpm run docker:build:linux/arm64` — build a Linux ARM64 image.
+- `pnpm run docker:acceptance-tests:start` — start Docker containers for acceptance tests (MongoDB).
+- `pnpm run docker:acceptance-tests:stop` — stop acceptance test containers.
+- `pnpm run docker:acceptance-tests:reset` — restart acceptance test containers.
+
+### Utility scripts
+
+- `pnpm run script:create-branch` — interactive script to create a properly named git branch.
+- `pnpm run script:create-pull-request` — script to create a pull request.
+- `pnpm run script:create-release-changelog` — script to create release changelog.
+- `pnpm run validate:branch-name` — validate current branch name against naming rules.
 
 ## Testing conventions
 
-- Test framework: Vitest with globals enabled.
-- Test files live next to source with `*.spec.ts` pattern and Vitest is configured to include `src/**/*.spec.ts`.
-- Tests use path aliases to reference source, mocks and factories.
-- Coverage: V8 provider; coverage directory `tests/unit/coverage`. Coverage thresholds are enforced via config and currently set to `100%` for all metrics.
-- Mocks and factories: under `tests/unit/utils/mocks` and `tests/unit/utils/factories`. Use the provided helpers to create consistent test doubles.
-- `*.constants.ts` and `*.types.ts` files in `src/` don't require tests as they contain no logic.
+### Test framework
+
+- **Test framework**: Vitest with globals enabled.
+- **Test files**: Live next to source with `*.spec.ts` pattern. Vitest is configured to include `src/**/*.spec.ts`.
+- **Path aliases**: Tests use path aliases to reference source, mocks, and faketories.
+- **Setup files**: Global mocks are configured in `tests/unit/setup/mocks.setup.ts`.
+
+### Coverage
+
+- **Coverage provider**: V8
+- **Coverage directory**: `tests/unit/coverage`
+- **Thresholds**: `100%` for all metrics (statements, branches, functions, lines). Enforced via config.
+- **Excluded from coverage**:
+  - `*.module.ts` files (NestJS modules)
+  - `**/mongoose/**/*.schema.ts` files (Mongoose schemas)
+  - `*.constants.ts` files (no logic)
+  - `*.types.ts` files (type definitions only)
+  - `*.dto.ts` files (Zod DTOs)
+
+### Mocks
+
+Location: `tests/unit/utils/mocks/`
+
+Mocks mirror the source structure:
+
+```
+tests/unit/utils/mocks/
+├── app/                          # Mocks for src/app/
+├── contexts/
+│   └── question/
+│       └── modules/
+│           └── question-theme/
+│               ├── application/uses-cases/   # Use case mocks
+│               └── infrastructure/persistence/mongoose/  # Repository mocks
+├── infrastructure/               # Mocks for src/infrastructure/
+└── shared/                       # Mocks for src/shared/
+```
+
+Mock naming: `<what-is-mocked>.mock.ts`
+
+Example mock:
+
+```typescript
+// tests/unit/utils/mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock.ts
+import { vi } from "vitest";
+
+import type { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+
+function createMockFindAllQuestionThemesUseCase(): FindAllQuestionThemesUseCase {
+  return {
+    list: vi.fn(),
+  } as unknown as FindAllQuestionThemesUseCase;
+}
+
+export { createMockFindAllQuestionThemesUseCase };
+```
+
+### Faketories (test data factories)
+
+Location: `tests/shared/utils/faketories/`
+
+Faketories mirror the source structure and use `@faker-js/faker` for generating test data:
+
+```
+tests/shared/utils/faketories/
+├── app/                          # Faketories for src/app/
+├── contexts/
+│   └── question/
+│       └── question-theme/
+│           └── question-theme.faketory.ts
+├── infrastructure/               # Faketories for src/infrastructure/
+└── shared/                       # Faketories for src/shared/
+```
+
+Faketory naming: `<entity>.faketory.ts`
+
+Example faketory:
+
+```typescript
+// tests/shared/utils/faketories/contexts/question/question-theme/question-theme.faketory.ts
+import { faker } from "@faker-js/faker";
+
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+function createFakeQuestionTheme(override: Partial<QuestionTheme> = {}): QuestionTheme {
+  return {
+    id: faker.database.mongodbObjectId(),
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    status: faker.helpers.arrayElement(["active", "archived"]),
+    createdAt: faker.date.anytime(),
+    updatedAt: faker.date.anytime(),
+    ...override,
+  };
+}
+
+export { createFakeQuestionTheme };
+```
+
+### Writing unit tests
+
+1. Import dependencies and mocks:
+
+```typescript
+import { createMockFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+```
+
+2. Structure tests with describe/it blocks:
+
+```typescript
+describe("QuestionThemeController", () => {
+  let controller: QuestionThemeController;
+  let mockUseCase: ReturnType<typeof createMockFindAllQuestionThemesUseCase>;
+
+  beforeEach(() => {
+    mockUseCase = createMockFindAllQuestionThemesUseCase();
+    controller = new QuestionThemeController(mockUseCase);
+  });
+
+  describe("findAll", () => {
+    it("should return all question themes when called.", async () => {
+      const fakeThemes = [createFakeQuestionTheme(), createFakeQuestionTheme()];
+      mockUseCase.list.mockResolvedValue(fakeThemes);
+
+      const result = await controller.findAll();
+
+      expect(result).toHaveLength(2);
+    });
+  });
+});
+```
+
+Tests labels must clearly state the expected behavior with "should ... when ...".
+
+Each test must contain one and only one assertion (use multiple tests if needed).
+
+### Files that don't require tests
+
+- `*.constants.ts` — contain only constant values, no logic.
+- `*.types.ts` — contain only TypeScript type definitions.
+- `*.dto.ts` — Zod schemas validated at runtime, tested indirectly.
+- `*.module.ts` — NestJS module wiring, no business logic.
+- `**/mongoose/**/*.schema.ts` — Mongoose schema definitions.
 
 ## Mutation testing (Stryker)
 
@@ -230,98 +854,247 @@ From `package.json` (standard usage):
 
 ## Acceptance tests
 
-This project includes a full acceptance (end-to-end) test ecosystem powered by Cucumber (Gherkin) and a small set of TypeScript helpers that build, start and exercise the real application binary.
+This project includes a full acceptance (end-to-end) test ecosystem powered by Cucumber (Gherkin) and a small set of TypeScript helpers that build, start and exercise the real application binary with a real MongoDB test database.
 
 ### High-level contract / quick commands
 
 Run the acceptance suite locally:
 
 ```bash
+# Full run (builds app, starts DB, runs tests)
 pnpm run test:acceptance
+
+# Skip build (use when app is already built and sources haven't changed since)
+pnpm run test:acceptance:skip-build
 ```
 
 This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then generates an HTML report via `pnpm run test:cucumber:html-report`.
 
 ### What the acceptance runner does
 
-- Before the Cucumber scenarios run, the acceptance helpers build the project (the hooks call `pnpm run build`).
-- For each scenario the test harness starts a real instance of the built app using `pnpm run start:prod` (spawned by the helpers). The helper waits for the startup message on stdout (the helper looks for the string `Goat It API is running on`) before proceeding.
-- After each scenario, the helper gracefully stops the app and force-kills it after a short grace period if it doesn't exit.
+1. **Before all scenarios** (`BeforeAll` hook):
+   - Loads test environment configuration from `.env.test`.
+   - Builds the project by calling `pnpm run build` (unless `SKIP_BUILD=true`).
+   - Connects to the test MongoDB database.
+   - Starts a real instance of the built app using `pnpm run start:prod:test`.
+
+2. **Before each scenario** (`Before` hook):
+   - Resets the test database (clears all collections).
+   - Provides the app process handle to the test world.
+
+3. **After all scenarios** (`AfterAll` hook):
+   - Closes the database connection.
+   - Gracefully stops the app process (sends `SIGTERM`, then `SIGKILL` if needed).
+
+### Test database
+
+Acceptance tests use a real MongoDB instance. The database connection is configured via environment variables in `.env.test`:
+
+- `DATABASE_HOST` — MongoDB host (e.g., `localhost`)
+- `DATABASE_PORT` — MongoDB port (e.g., `27017`)
+- `DATABASE_NAME` — Test database name
+
+To start the test database locally using Docker:
+
+```bash
+pnpm run docker:acceptance-tests:start
+```
+
+To stop the test database:
+
+```bash
+pnpm run docker:acceptance-tests:stop
+```
 
 ### Key paths and files
 
-- Feature files under `tests/acceptance/features/`
-  - Holds `.feature` files written in Gherkin. The cucumber config (`configs/cucumber/cucumber.json`) includes `tests/acceptance/features/**/*.feature`.
-  - Organize features by domain, e.g., `tests/acceptance/features/app/metadata/app-metadata.feature`.
-- Step definition under `tests/acceptance/features/step-definitions/`
-  - Place step definition files next to their feature area. The project uses a readable naming convention: `*.given-steps.ts`, `*.when-steps.ts`, and `*.then-steps.ts` to separate step types.
-  - Step definitions use `@cucumber/cucumber` API imports (Given/When/Then, Before, After, etc.).
-- Support files under `tests/acceptance/support/`
-  - `hooks.ts` — registers world constructor and wires lifecycle hooks (`BeforeAll` builds, `Before` starts the server, `After` stops it).
-  - `helpers/` — implementation helpers used by the hooks and step definitions (for example `setup.helpers.ts` which builds and serves the app, and implements readiness/kill timeouts).
-  - `constants/` — shared constants such as app base URL and reports' path.
-  - `types/` and `world/` — the custom `GoatItWorld` is defined here and exposes convenience methods used by steps (for example `fetchAndStoreResponse`, `expectLastResponseJson`, and an `appProcess` handle).
-- HTML and other reports under `tests/acceptance/reports/`
-  - Cucumber produces `report.json`, `message.json` and `junit.xml` in this folder.
-  - The HTML report generator reads `report.json` and writes `index.html`. Screenshots (if stored) go to `tests/acceptance/reports/screenshots`.
+- **Feature files**: `tests/acceptance/features/`
+  - Holds `.feature` files written in Gherkin.
+  - Organized by context: `tests/acceptance/features/contexts/<context>/<feature>/`.
+  - App-level features: `tests/acceptance/features/app/`.
+- **Step definitions**: `tests/acceptance/features/step-definitions/`
+  - Naming convention: `*.given-steps.ts`, `*.when-steps.ts`, `*.then-steps.ts`.
+  - Shared steps: `tests/acceptance/features/step-definitions/shared/`.
+- **Support files**: `tests/acceptance/support/`
+  - `hooks.ts` — lifecycle hooks (`BeforeAll`, `Before`, `AfterAll`).
+  - `helpers/` — setup helpers, database helpers.
+  - `constants/` — shared constants (base URL, timeouts).
+  - `types/` — TypeScript types and `GoatItWorld` definition.
+  - `fixtures/` — test fixtures.
+- **Reports**: `tests/acceptance/reports/`
+  - `report.json`, `message.json`, `junit.xml` — Cucumber outputs.
+  - `index.html` — generated HTML report.
 
-### Helpful implementation details agents must know
+### GoatItWorld
 
-- The lifecycle helpers call `pnpm run build` synchronously before running scenarios. If the build fails, the whole acceptance run fails early.
-- The server is started with `pnpm run start:prod` which runs the built `dist/main.js` — acceptance tests, therefore, exercise the exact production artifact produced by `pnpm run build`.
-- **Readiness**: helpers wait for the application stdout to include the message `Goat It API is running on` within `APP_READINESS_TIMEOUT_MS` (currently 10_000 ms). If the message isn't observed, the process is killed and the scenario fails.
-- **Shutdown**: tests send `SIGTERM` and wait; after `APP_FORCE_KILL_TIMEOUT_MS` (5_000 ms) the helpers send `SIGKILL` if needed.
+The custom `GoatItWorld` class exposes convenience methods used by step definitions:
 
-### Writing features and step defs (conventions and examples)
+- `fetchAndStoreResponse(path)` — performs HTTP GET and stores response.
+- `expectLastResponseJson<T>(schema)` — validates response against Zod schema.
+- `appProcess` — handle to the running app process.
 
-- **Features**:
-  - Use descriptive feature files and tags for grouping (see `@app @app-metadata` used in examples).
-  - Keep scenarios focused and idempotent so they can run in CI in sequence.
-  - Always use the `Given-When-Then` structure.
-  - Always use `the client` as the actor who performs HTTP calls.
-- **Step definitions**:
-  - Keep step-definitions thin and call into `GoatItWorld` helpers for HTTP calls and assertions. Example usage seen in the repo:
-    - Given steps call `await this.fetchAndStoreResponse("/")` to perform an HTTP call on root endpoint and save the response.
-    - Then steps call `this.expectLastResponseJson<T>(SCHEMA)` to validate the last response body against a schema and return typed data for further assertions.
-  - Prefer shared step libraries inside `tests/acceptance/features/step-definitions/shared/` for re-use.
-- **World helpers**:
-  - The `GoatItWorld` exposes state across steps (last fetch response, appProcess handle). Use it to share data between Given/When/Then steps if needed.
+### Writing features and step definitions
 
-### Reporting and CI notes
+#### Features
 
-- The cucumber runner outputs JSON and JUnit reports into `tests/acceptance/reports` (configured in `configs/cucumber/cucumber.json`).
-- After Cucumber finishes, the repo runs `tests/acceptance/plugins/html-reporter/cucumber-html-reporter.ts` to generate an HTML report from `report.json`.
+```gherkin
+@question @question-theme
+Feature: 🏷️ List Question Themes
 
-### Best practices for agents making changes that affect acceptance tests
+  Scenario: 🎉 Client requests all question themes
+    Given the client requests all question themes
+    Then the response status code should be 200
+    And the response body should be a list of question themes
+```
 
-- When adding new endpoints used by acceptance tests, add unit tests first and ensure `pnpm run test:unit:cov` remains green before touching acceptance features.
-- Keep feature files and step definitions deterministic; avoid relying on external network calls in acceptance scenarios unless they are mocked/stubbed explicitly.
-- If you modify server startup logs, update the acceptance readiness matcher (currently looks for `Goat It API is running on`).
-- When adding new features, add corresponding acceptance scenarios to cover the end-to-end behavior.
-- Always write scenarios for every new public API endpoint or significant behavior change.
-- Scenario must also test negative/error cases where applicable (e.g., `404` for missing resources or `400` for invalid input with associated validation errors).
+Conventions:
+- Use descriptive tags for grouping (`@context`, `@feature`).
+- Keep scenarios focused and idempotent.
+- Use `Given-When-Then` structure.
+- Use "the client" as the actor for HTTP calls.
 
-### Quick troubleshooting
+#### Step definitions
 
-- Inspect the `pnpm run build` output locally and fix compile errors when `pnpm run test:acceptance` fails due to a build failure.
-- When the server never becomes ready: check `tests/acceptance/support/helpers/setup.helpers.ts` for the readiness string and review the server startup logs in `src/server/server.ts`.
-- Ensure `tests/acceptance/reports/report.json` exists when the HTML report is empty or missing — cucumber writes it during the run and the HTML generator reads that file.
+```typescript
+// given-steps.ts
+import { Given } from "@cucumber/cucumber";
+
+Given("the client requests all question themes", async function(this: GoatItWorld) {
+  await this.fetchAndStoreResponse("/question-themes");
+});
+
+// then-steps.ts
+import { Then } from "@cucumber/cucumber";
+import { expect } from "expect";
+
+Then("the response status code should be {int}", function(this: GoatItWorld, statusCode: number) {
+  expect(this.lastResponse?.status).toBe(statusCode);
+});
+```
+
+### Database fixtures
+
+For tests that require pre-populated data, use fixtures:
+
+```typescript
+// tests/acceptance/support/fixtures/question-theme.fixtures.ts
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+
+async function seedQuestionThemes(count: number) {
+  const themes = Array.from({ length: count }, () => createFakeQuestionTheme());
+  // Insert into test database...
+  return themes;
+}
+```
+
+### Best practices for acceptance tests
+
+- Add unit tests first and ensure `pnpm run test:unit:cov` passes before touching acceptance features.
+- Keep feature files and step definitions deterministic.
+- Always reset the database before each scenario (handled by `Before` hook).
+- If you modify server startup logs, update the acceptance readiness matcher.
+- Write scenarios for every new public API endpoint.
+- Include negative/error case scenarios (404, 400, validation errors).
+
+### Troubleshooting
+
+- **Build failures**: Check `pnpm run build` output. Fix compile errors before running acceptance tests.
+- **Server never ready**: Check `tests/acceptance/support/helpers/setup.helpers.ts` for readiness string; review `src/server/server.ts` startup logs.
+- **Database connection fails**: Ensure test database is running (`pnpm run docker:acceptance-tests:start`).
+- **Missing HTML report**: Ensure `tests/acceptance/reports/report.json` exists.
 
 ## Linting, commits and release automation
 
-- `pnpm run lint` runs both Oxlint and ESLint checks.
-- ESLint is configured using a custom flat configuration under `configs/eslint`. Use `pnpm run lint:eslint` or `pnpm run lint:eslint:fix` to check/fix issues.
-- Oxlint is configured under `configs/oxlint`. Use `pnpm run lint:oxlint` or `pnpm run lint:oxlint:fix` to check/fix issues.
-- When dealing with lint issues, run the appropriate `:fix` command to auto-fix where possible, according to the error (ESLint or Oxlint).
-- Linting & formatting: this project uses ESLint (with the stylistic plugin responsible for formatting/style rules) as the single source of truth for both linting and formatting. All lint and style rules are defined in the flat-config files under `configs/eslint` (see the `flat-configs/` subfolder). Agents must consult and follow these flat configs when adding or modifying code — do not apply separate formatters or rule sets that conflict with the project's ESLint configs.
-- Commit messages are validated by `commitlint` (config under `configs/commitlint`).
-- Husky and lint-staged are present in devDependencies: pre-commit hooks and staged lint/test flows are used in CI/hook scripts (see `configs/lint-staged` files).
-- Release is automated by `semantic-release` using `configs/semantic-release/release.config.mjs`.
+### Linting
+
+- `pnpm run lint` runs both Oxlint (first) and ESLint checks.
+- **Oxlint**: Fast linter configured under `configs/oxlint/oxlint.config.jsonc`. Use `pnpm run lint:oxlint` or `pnpm run lint:oxlint:fix`.
+- **ESLint**: Full-featured linter using flat-config under `configs/eslint/`. Use `pnpm run lint:eslint` or `pnpm run lint:eslint:fix`.
+- When dealing with lint issues, run the appropriate `:fix` command to auto-fix where possible.
+- ESLint uses the stylistic plugin for formatting/style rules — no separate formatter (like Prettier) is used.
+- Agents must consult and follow `configs/eslint/flat-configs/` when adding or modifying code.
+- Agents should avoid disabling lint rules unless absolutely necessary; if a rule must be disabled, document the reason in code comments.
+
+### Commit messages
+
+- Validated by `commitlint` (config under `configs/commitlint/.commitlintrc.json`).
+- Must follow Conventional Commits format: `<type>(<scope>): <description>`
+- Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `perf`, `build`, `ci`, `chore`, `revert`
+- Husky pre-commit hooks enforce commit message validation.
+
+### Pre-commit hooks (Husky)
+
+Located in `.husky/`:
+- `commit-msg` — validates commit messages with commitlint.
+- `pre-commit` — validates branch name and runs lint/tests on staged files.
+
+Pre-commit runs:
+1. `pnpm run validate:branch-name` — ensure branch follows naming rules.
+2. `pnpm run lint:staged:fix` — lint and fix staged files.
+3. `pnpm run test:unit:staged` — run unit tests for staged files.
+
+### Branch naming
+
+- Must match pattern: `^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)/.+$`
+- Examples: `feat/add-user-endpoint`, `fix/validation-error`, `docs/update-readme`
+- Validate with: `pnpm run validate:branch-name`
+
+### Release automation
+
+- Automated by `semantic-release` using `configs/semantic-release/release.config.mjs`.
+- Version is automatically determined from commit messages.
+- CHANGELOG is auto-generated.
+
+## CI/CD Workflows
+
+Located in `.github/workflows/`:
+
+### Build workflow (`build.yml`)
+
+Runs on pull requests to `main` and `develop`:
+1. **CodeQL Scan** — security analysis
+2. **Lint GitHub Workflows** — validate workflow files
+3. **Install** — install dependencies
+4. **Docker Builds** — build Docker images for `linux/amd64` and `linux/arm64`
+5. **Build App** — compile the application
+6. **Lint Codebase** — run ESLint and Oxlint
+7. **Unit Tests** — run Vitest with coverage
+8. **Mutation Tests** — run Stryker mutation testing
+9. **Acceptance Tests** — run Cucumber tests
+10. **SonarCloud Analysis** — code quality analysis
+
+### Other workflows
+
+- `deploy-to-production.yml` — deploy to production
+- `deploy-to-staging.yml` — deploy to staging
+- `docker-build-and-push.yml` — build and push Docker images
+- `lint-pr-name-into-develop.yml` — validate PR titles
+- `protect-main-branch.yml` — protect main branch
+- `release-creation.yml` — create releases
+- `upsert-pr-release.yml` — manage release PRs
 
 ## Docker
 
-- A `Dockerfile` exists at the repo root. Use `pnpm run docker:build` to build an image named `goat-it-api` locally.
-- You can specify platform targets with `pnpm run docker:build:linux/amd64` or `pnpm run docker:build:linux/arm64`.
+### Building images
+
+- `pnpm run docker:build` — build image named `goat-it-api`.
+- `pnpm run docker:build:linux/amd64` — build for Linux AMD64.
+- `pnpm run docker:build:linux/arm64` — build for Linux ARM64.
+
+### Acceptance test containers
+
+```bash
+# Start MongoDB for acceptance tests
+pnpm run docker:acceptance-tests:start
+
+# Stop containers
+pnpm run docker:acceptance-tests:stop
+
+# Reset (stop then start)
+pnpm run docker:acceptance-tests:reset
+```
+
+Docker Compose file: `docker/goat-it-api-acceptance-tests/docker-compose.yml`
 
 ## Development workflow for an agent (checklist)
 
@@ -346,59 +1119,218 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 
 ## Conventions and coding style
 
-- Follow TypeScript strictness and use the NestJS idioms (decorators, providers, DI).
-- Use single responsibility for services and controllers; controllers should be thin.
-- Prefer small, focused unit tests with mocked dependencies.
-- Linting and formatting are enforced by ESLint and Oxlint using the project's flat-configs. Agents must refer to `configs/eslint` and `configs/oxlint` for the authoritative rule definitions (stylistic and code-quality rules) and ensure code adheres to those configurations before opening a PR.
+### TypeScript
+
+- Follow TypeScript strictness (strict mode enabled).
+- Use `type` keyword for type definitions (not `interface` for simple types).
+- Prefer `const` assertions where appropriate.
+- Use path aliases for imports.
+
+### NestJS conventions
+
+- Use NestJS decorators for dependency injection (`@Injectable`, `@Controller`, `@Module`, etc.).
+- Controllers should be thin — delegate business logic to use cases/services.
+- Use custom decorators for cross-cutting concerns (e.g., `@Localization()` for i18n).
+- Use pipes for validation (e.g., `MongoIdPipe` for MongoDB ObjectId validation).
+- Use middlewares for request-level concerns (e.g., `LocalizationMiddleware`).
+
+### Architecture conventions
+
+- **Hexagonal Architecture**: Domain must not depend on infrastructure.
+- **Repository pattern**: Define interfaces in domain, implement in infrastructure.
+- **Use cases**: One use case per business operation, named as verb-noun (e.g., `FindAllQuestionThemesUseCase`).
+- **DTOs**: Use Zod schemas with `nestjs-zod` for validation and OpenAPI generation.
+- **Mappers**: Create explicit mapper functions for entity-to-DTO and document-to-entity transformations.
+
+### Testing conventions
+
+- Unit tests are colocated with source files (`*.spec.ts`).
+- Use faketories for test data generation.
+- Use mocks for dependencies.
+- Aim for 100% code coverage.
+- Test edge cases and error conditions.
+
+### Code style
+
+- Linting and formatting enforced by ESLint and Oxlint.
+- Agents must refer to `configs/eslint` and `configs/oxlint` for authoritative rule definitions.
+- Ensure the code adheres to these configurations before opening a PR.
 
 ## Examples of small tasks an agent may be asked to do
 
-- Add a new GET endpoint that returns computed data: create controller + service + tests.
+### Feature development
+
+- Add a new GET endpoint that returns computed data: create use case + controller + tests.
+- Add a new POST endpoint with validation: create DTO + use case + controller + tests.
+- Add a new bounded context with CRUD operations.
+
+### Bug fixes
+
 - Fix a failing unit test and add a regression test.
+- Fix validation error handling in a controller.
+
+### Testing
+
 - Improve code coverage for a module by adding tests.
-- Refactor a service internals with preserved public API and tests.
-- Update dependency versions and fix any type errors caused by the update.
+- Add acceptance tests for an existing endpoint.
+
+### Refactoring
+
+- Refactor a service to use the repository pattern.
+- Extract shared logic into a utility function.
+
+### Documentation
+
+- Update API documentation (OpenAPI schemas via Zod DTOs).
+- Update AGENTS.md with new conventions.
+
+### Maintenance
+
+- Update dependency versions and fix any type errors.
+- Add missing error handling for edge cases.
 
 ## What an agent must do before committing any change
 
-- Address warnings/errors from `pnpm run lint`.
-- Execute `pnpm run typecheck`.
-- Ensure `pnpm run test:unit:cov` passes and coverage remains `100%`.
-- Update or add unit tests for changed/added behavior.
-- Ensure path aliases and imports remain valid.
+### Mandatory checks
+
+1. **Lint**: `pnpm run lint` — fix all warnings and errors.
+2. **Type check**: `pnpm run typecheck` — ensure no type errors.
+3. **Unit tests with coverage**: `pnpm run test:unit:cov` — must pass with 100% coverage.
+4. **Tests for changes**: Add or update unit tests for any changed/added behavior.
+5. **Path aliases**: Ensure all imports use path aliases and remain valid.
+
+### Recommended checks (before opening PR)
+
+- `pnpm run test:mutation` — run mutation tests to ensure test quality.
+- `pnpm run test:acceptance` — run acceptance tests for API changes.
+- `pnpm run validate:branch-name` — ensure branch follows naming conventions.
+
+### Quality gates summary
+
+| Check            | Command                    | Required                        |
+|------------------|----------------------------|---------------------------------|
+| Linting          | `pnpm run lint`            | ✅ Yes                           |
+| Type checking    | `pnpm run typecheck`       | ✅ Yes                           |
+| Unit tests       | `pnpm run test:unit:cov`   | ✅ Yes (100% coverage)           |
+| Mutation tests   | `pnpm run test:mutation`   | ⚠️ CI (but recommended locally) |
+| Acceptance tests | `pnpm run test:acceptance` | ✅ Yes                           |
 
 ## Minimal local setup for a developer/agent
+
+### Prerequisites
+
+- **Node.js**: `>= 25.2.1` (see `package.json` `engines` field)
+- **pnpm**: `10.24.0` (see `package.json` `packageManager` field)
+- **Docker**: For running the acceptance test database
 
 ### Package manager and commands
 
 Install pnpm (if not present): <https://pnpm.io/installation>
 
-- Commands:
-
 ```bash
+# Clone the repository
+git clone https://github.com/antoinezanardi/goat-it-api.git
+cd goat-it-api
+
+# Install dependencies
 pnpm install
 ```
 
-- Development server:
+### Development server
 
 ```bash
+# Start in development mode with hot reload
 pnpm run start:dev
+
+# Start in debug mode
+pnpm run start:debug
 ```
 
-- Tests and checks:
+### Running tests
 
 ```bash
+# Unit tests (quick feedback)
+pnpm run test:unit
+
+# Unit tests with coverage (required for CI)
+pnpm run test:unit:cov
+
+# Unit tests in watch mode (development)
+pnpm run test:unit:watch
+
+# Acceptance tests (requires Docker for MongoDB)
+pnpm run docker:acceptance-tests:start
+pnpm run test:acceptance
+```
+
+### Full validation (before PR)
+
+```bash
+# Run all checks
 pnpm run lint
 pnpm run typecheck
 pnpm run test:unit:cov
-pnpm run test:mutation
+pnpm run test:mutation  # optional but recommended
 pnpm run test:acceptance
 ```
 
 ## Notes and warnings
 
-- The project currently enforces `100%` coverage in config. Ensure any changes maintain coverage.
-- Mutation testing is expensive; run it selectively (CI preferred). Usually, run mutation tests locally before merging significant changes.
+### Coverage requirements
+
+- The project enforces `100%` code coverage. Any change must maintain full coverage.
+- If you add new code, you must add corresponding unit tests.
+- Coverage exclusions are defined in `configs/vitest/vitest.config.ts`.
+
+### Mutation testing
+
+- Mutation testing is expensive (CPU and time intensive).
+- Run it selectively: locally before large PRs, or rely on CI.
+- Use incremental mode (`pnpm run test:mutation`) to reuse previous results.
+- Force mode (`pnpm run test:mutation:force`) clears cache and runs from scratch.
+
+### Type checking
+
+- The project uses `tsgo` (native TypeScript preview) for type checking.
+- Run `pnpm run typecheck` to verify types.
+- Type errors must be fixed before committing.
+
+### Path aliases
+
+- Always use path aliases in imports.
+- When adding new bounded contexts, update all relevant configs (swc, typescript, vitest).
+
+### Database
+
+- MongoDB is used with Mongoose ODM.
+- Acceptance tests require a running MongoDB instance.
+- Use Docker for local database: `pnpm run docker:acceptance-tests:start`.
+
+## Environment variables
+
+### Application variables
+
+| Variable          | Description                         | Default       |
+|-------------------|-------------------------------------|---------------|
+| `SERVER_HOST`     | Server host                         | `0.0.0.0`     |
+| `SERVER_PORT`     | Server port                         | `3000`        |
+| `NODE_ENV`        | Environment mode                    | `development` |
+| `CORS_ORIGIN`     | CORS configuration (allowed origin) | `*`           |
+| `FALLBACK_LOCALE` | Internationalization default locale | `en`          |
+
+### Database variables
+
+| Variable        | Description   | Default     |
+|-----------------|---------------|-------------|
+| `DATABASE_HOST` | MongoDB host  | `localhost` |
+| `DATABASE_PORT` | MongoDB port  | `27017`     |
+| `DATABASE_NAME` | Database name | `goat-it`   |
+
+### Test variables
+
+| Variable     | Description                                     | Default |
+|--------------|-------------------------------------------------|---------|
+| `SKIP_BUILD` | Skip build in acceptance tests (`true`/`false`) | `false` |
 
 ## Contact and maintainers
 

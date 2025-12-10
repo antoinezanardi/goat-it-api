@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Types } from "mongoose";
 
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
 
@@ -14,6 +13,14 @@ import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/loca
   collection: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
 })
 class QuestionThemeMongooseSchema {
+  @Prop({
+    required: true,
+    type: String,
+    unique: true,
+    index: true,
+  })
+  public slug!: string;
+
   @Prop({
     required: true,
     type: Object,
@@ -31,13 +38,6 @@ class QuestionThemeMongooseSchema {
     type: Object,
   })
   public description!: LocalizedText;
-
-  @Prop({
-    required: false,
-    type: Types.ObjectId,
-    ref: QuestionThemeMongooseSchema.name,
-  })
-  public parentId?: Types.ObjectId;
 
   @Prop({
     required: true,

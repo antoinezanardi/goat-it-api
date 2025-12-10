@@ -136,7 +136,7 @@
       "error",
       "declaration",
       {
-        "allowArrowFunctions": "true"
+        "allowArrowFunctions": true
       }
     ],
     "grouped-accessor-pairs": "error",
@@ -174,10 +174,7 @@
       "error",
       5
     ],
-    "max-params": [
-      "error",
-      "8"
-    ],
+    "max-params": "off",
     "max-statements": "off",
     "new-cap": "error",
     "no-alert": "error",
@@ -244,6 +241,8 @@
     "no-param-reassign": [
       "error",
       {
+        // Allow property modifications on accumulator parameters in reduce() calls
+        "ignorePropertyModificationsFor": ["accumulator"],
         "props": true
       }
     ],
@@ -739,7 +738,12 @@
         "typescript/explicit-member-accessibility": "error",
         "typescript/explicit-module-boundary-types": "error",
         "typescript/init-declarations": "error",
-        "typescript/max-params": "error",
+        "typescript/max-params": [
+          "error",
+          {
+            "max": 8
+          }
+        ],
         "typescript/member-ordering": "error",
         "typescript/method-signature-style": "error",
         "typescript/naming-convention": [
@@ -1017,12 +1021,16 @@
             "capIsNewExceptions": [
               "Controller",
               "Get",
+              "Post",
+              "Delete",
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
               "HealthCheck",
               "Localization",
-              "Param"
+              "Param",
+              "Body",
+              "Query"
             ]
           }
         ]
@@ -1099,6 +1107,23 @@
         ]
       }
     },
+    // ---- Override for filters -----
+    {
+      "files": [
+        "**/src/**/*.filter.ts"
+      ],
+      "rules": {
+        "class-methods-use-this": "off",
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Catch"
+            ]
+          }
+        ]
+      }
+    },
     // ---- Override for mongoose schemas -----
     {
       "files": [
@@ -1167,6 +1192,7 @@
           }
         ],
         "unicorn/no-null": "off",
+        "unicorn/consistent-function-scoping": "off",
         "vitest/consistent-test-filename": [
           "error",
           {

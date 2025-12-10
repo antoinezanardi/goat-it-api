@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 
+import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
@@ -8,12 +9,12 @@ import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
     id: faker.database.mongodbObjectId(),
-    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
+    slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
@@ -24,10 +25,21 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
   };
 }
 
+function createFakeQuestionThemeDraft(questionThemeDraft: Partial<QuestionThemeDraft> = {}): QuestionThemeDraft {
+  return {
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
+    status: "active",
+    ...questionThemeDraft,
+  };
+}
+
 function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> = {}): QuestionThemeDto {
   return {
     id: faker.database.mongodbObjectId(),
-    parentId: faker.datatype.boolean() ? faker.database.mongodbObjectId() : undefined,
+    slug: faker.lorem.slug(),
     label: faker.word.sample(),
     aliases: [faker.word.sample(), faker.word.sample(), faker.word.sample()],
     description: faker.word.sample(),
@@ -38,13 +50,23 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
   };
 }
 
+function createFakeCreateQuestionThemeDto(createDto: Partial<CreateQuestionThemeDto> = {}): CreateQuestionThemeDto {
+  return {
+    slug: createDto.slug ?? faker.lorem.slug(),
+    label: createDto.label ?? createFakeLocalizedText(),
+    aliases: createDto.aliases ?? createFakeLocalizedTexts(),
+    description: createDto.description ?? createFakeLocalizedText(),
+    ...createDto,
+  };
+}
+
 function createFakeQuestionThemeDocument(questionThemeDocument: Partial<QuestionThemeMongooseDocumentStub> = {}): QuestionThemeMongooseDocumentStub {
   const documentId = questionThemeDocument._id?.toString() ?? faker.database.mongodbObjectId();
 
   return {
     _id: createFakeObjectId(documentId),
     id: documentId,
-    parentId: faker.datatype.boolean() ? createFakeObjectId(faker.database.mongodbObjectId()) : undefined,
+    slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
@@ -57,6 +79,8 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
 
 export {
   createFakeQuestionTheme,
+  createFakeQuestionThemeDraft,
   createFakeQuestionThemeDto,
+  createFakeCreateQuestionThemeDto,
   createFakeQuestionThemeDocument,
 };
