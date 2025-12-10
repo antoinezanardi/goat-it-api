@@ -1,5 +1,5 @@
 import { zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
-import { SLUG_MAX_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
+import { SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -15,7 +15,7 @@ describe("String Zod Validators", () => {
       },
       {
         test: "should return true when slug length equals SLUG_MIN_LENGTH after trim.",
-        value: "  a-b  ",
+        value: `  ${"a".repeat(SLUG_MIN_LENGTH - 1)}-b  `,
         expected: true,
       },
       {
@@ -55,17 +55,17 @@ describe("String Zod Validators", () => {
       },
       {
         test: "should return false when slug is too short.",
-        value: "s",
+        value: "a".repeat(SLUG_MIN_LENGTH - 1),
         expected: false,
       },
       {
         test: "should return false when slug is too long.",
-        value: "a".repeat(51),
+        value: "a".repeat(SLUG_MAX_LENGTH + 1),
         expected: false,
       },
       {
         test: "should return false when slug is too short after trim.",
-        value: "  s  ",
+        value: `  ${"a".repeat(SLUG_MIN_LENGTH - 1)}  `,
         expected: false,
       },
     ])("$test", ({ value, expected }) => {

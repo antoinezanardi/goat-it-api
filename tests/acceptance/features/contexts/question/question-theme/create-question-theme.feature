@@ -186,7 +186,7 @@ Feature: Create Question Theme
       | code              | message                | path    | keys |
       | unrecognized_keys | Unrecognized key: "jp" | aliases | jp   |
 
-  Scenario: Trying to create a question theme with too few spanish aliases
+  Scenario: Trying to create a question theme with too few Spanish aliases
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value |
@@ -212,7 +212,7 @@ Feature: Create Question Theme
       | code    | message                                    | path       | origin | maximum | inclusive |
       | too_big | Too big: expected array to have <=10 items | aliases.en | array  | 10      | true      |
 
-  Scenario: Trying to create a question theme with an empty spanish description
+  Scenario: Trying to create a question theme with an empty Spanish description
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path           | type   | value |
@@ -238,7 +238,7 @@ Feature: Create Question Theme
       | code         | message                                          | expected | path           |
       | invalid_type | Invalid input: expected string, received boolean | string   | description.de |
 
-  Scenario: Trying to create a question theme with a too long italian description
+  Scenario: Trying to create a question theme with a too long Italian description
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path           | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
