@@ -40,6 +40,24 @@ describe("Localization Zod Validators", () => {
         expected: true,
       },
       {
+        test: "should return true when localized text entry is valid even with spaces around for \"en\" locale.",
+        locale: "en",
+        value: "  Hello  ",
+        expected: true,
+      },
+      {
+        test: "should return false when localized text entry is spaces only for \"en\" locale.",
+        locale: "en",
+        value: "      ",
+        expected: false,
+      },
+      {
+        test: "should return false when localized text entry is too long for \"fr\" locale.",
+        locale: "fr",
+        value: "a".repeat(501),
+        expected: false,
+      },
+      {
         test: "should return false when localized text entry is an empty string for \"en\" locale.",
         locale: "en",
         value: "",
@@ -70,6 +88,15 @@ describe("Localization Zod Validators", () => {
 
       expect(schema.description).toBe(`Text in french.`);
     });
+
+    it("should trim the localized text entry when parsing.", () => {
+      const locale = "en";
+      const schema = zLocalizedTextEntry(locale);
+      const value = "  Hello World  ";
+      const result = schema.parse(value);
+
+      expect(result).toBe("Hello World");
+    });
   });
 
   describe(zLocalizedTextsEntry, () => {
@@ -98,10 +125,34 @@ describe("Localization Zod Validators", () => {
         expected: false,
       },
       {
+        test: "should return true when localized texts entry is valid even with spaces around for \"en\" locale.",
+        locale: "en",
+        value: ["  Hello  ", "  Hi  "],
+        expected: true,
+      },
+      {
+        test: "should return false when localized texts entry has a spaces only string for \"en\" locale.",
+        locale: "en",
+        value: ["      ", "      "],
+        expected: false,
+      },
+      {
         test: "should return true when localized texts entry is undefined for \"fr\" locale.",
         locale: "fr",
         value: undefined,
         expected: true,
+      },
+      {
+        test: "should return false when localized texts entry is an empty array for \"en\" locale.",
+        locale: "en",
+        value: [],
+        expected: false,
+      },
+      {
+        test: "should return false when localized texts entry is too long for \"fr\" locale.",
+        locale: "fr",
+        value: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"],
+        expected: false,
       },
       {
         test: "should return false when localized texts entry has a number for \"en\" locale.",
@@ -121,6 +172,15 @@ describe("Localization Zod Validators", () => {
       const schema = zLocalizedTextsEntry(locale);
 
       expect(schema.description).toBe(`Texts in english.`);
+    });
+
+    it("should trim the localized texts entry when parsing.", () => {
+      const locale = "en";
+      const schema = zLocalizedTextsEntry(locale);
+      const value = ["  Hello World  ", "  Hi There  "];
+      const result = schema.parse(value);
+
+      expect(result).toStrictEqual(["Hello World", "Hi There"]);
     });
   });
 
@@ -269,6 +329,20 @@ describe("Localization Zod Validators", () => {
       const schema = zLocalizedTexts();
 
       expect(schema.description).toBe("Localized texts object with translations for multiple languages.");
+    });
+
+    it("should trim each localized text entry when parsing.", () => {
+      const schema = zLocalizedTexts();
+      const value = {
+        en: ["  Hello World  ", "  Hi There  "],
+        fr: ["  Bonjour le monde  ", "  Salut là-bas  "],
+      };
+      const result = schema.parse(value);
+
+      expect(result).toStrictEqual({
+        en: ["Hello World", "Hi There"],
+        fr: ["Bonjour le monde", "Salut là-bas"],
+      });
     });
   });
 });

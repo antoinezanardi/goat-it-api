@@ -118,6 +118,18 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
   });
 
+  describe("maximum", () => {
+    it("should throw a zod error when assigned a non-number value (when present).", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { maximum: "NaN" });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.description).toBe("Expected maximum value when applicable.");
+    });
+  });
+
   describe("inclusive", () => {
     it("should throw a zod error when assigned a non-boolean value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { inclusive: "true" });
@@ -126,7 +138,7 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum value is inclusive when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum or maximum value is inclusive when applicable.");
     });
   });
 

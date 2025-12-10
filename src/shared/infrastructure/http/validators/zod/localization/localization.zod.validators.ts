@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/localization/constants/localization.zod.validators.constants";
+
 import type { ZodObject, ZodString, ZodOptional, ZodArray } from "zod";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
@@ -17,14 +19,22 @@ function createZLocaleEntries<T>(entryFactory: (localLabel: string) => T): Recor
 
 function zLocalizedTextEntry(localLabel: string): ZodOptional<ZodString> {
   return z.string()
-    .min(1)
+    .trim()
+    .min(LOCALIZED_TEXT_ENTRY_MIN_LENGTH)
+    .max(LOCALIZED_TEXT_ENTRY_MAX_LENGTH)
     .optional()
     .describe(`Text in ${localLabel}.`);
 }
 
 function zLocalizedTextsEntry(localLabel: string): ZodOptional<ZodArray<ZodString>> {
-  return z.array(z.string().min(1))
-    .min(1)
+  const zLocalizedTextsValue = z.string()
+    .trim()
+    .min(LOCALIZED_TEXT_ENTRY_MIN_LENGTH)
+    .max(LOCALIZED_TEXT_ENTRY_MAX_LENGTH);
+
+  return z.array(zLocalizedTextsValue)
+    .min(LOCALIZED_TEXTS_MIN_LENGTH)
+    .max(LOCALIZED_TEXTS_MAX_LENGTH)
     .optional()
     .describe(`Texts in ${localLabel}.`);
 }
