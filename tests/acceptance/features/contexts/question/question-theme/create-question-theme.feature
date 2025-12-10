@@ -121,7 +121,7 @@ Feature: Create Question Theme
       | code      | message                                           | path     | origin | minimum | inclusive |
       | too_small | Too small: expected string to have >=1 characters | label.fr | string | 1       | true      |
 
-  Scenario: Trying to create a question theme with a number as english label
+  Scenario: Trying to create a question theme with a number as English label
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path     | type    | value |
@@ -147,7 +147,7 @@ Feature: Create Question Theme
       | code              | message                | path  | keys |
       | unrecognized_keys | Unrecognized key: "jp" | label | jp   |
 
-  Scenario: Trying to create a question theme with a too long english label
+  Scenario: Trying to create a question theme with a too long English label
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path     | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -199,7 +199,7 @@ Feature: Create Question Theme
       | code      | message                                     | path       | origin | minimum | inclusive |
       | too_small | Too small: expected array to have >=1 items | aliases.es | array  | 1       | true      |
 
-  Scenario: Trying to create a question theme with too many english aliases
+  Scenario: Trying to create a question theme with too many English aliases
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value                                                                                                            |

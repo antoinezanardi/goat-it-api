@@ -138,7 +138,7 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum value is inclusive when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum or maximum value is inclusive when applicable.");
     });
   });
 

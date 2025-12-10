@@ -15,7 +15,7 @@ describe("String Zod Validators", () => {
       },
       {
         test: "should return true when slug length equals SLUG_MIN_LENGTH after trim.",
-        value: `  ${"a".repeat(SLUG_MIN_LENGTH - 1)}-b  `,
+        value: `  ${"a".repeat(SLUG_MIN_LENGTH - 2)}-b  `,
         expected: true,
       },
       {
