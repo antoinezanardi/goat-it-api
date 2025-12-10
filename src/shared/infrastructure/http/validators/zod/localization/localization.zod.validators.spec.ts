@@ -173,6 +173,15 @@ describe("Localization Zod Validators", () => {
 
       expect(schema.description).toBe(`Texts in english.`);
     });
+
+    it("should trim the localized texts entry when parsing.", () => {
+      const locale = "en";
+      const schema = zLocalizedTextsEntry(locale);
+      const value = ["  Hello World  ", "  Hi There  "];
+      const result = schema.parse(value);
+
+      expect(result).toStrictEqual(["Hello World", "Hi There"]);
+    });
   });
 
   describe(zLocalizedText, () => {

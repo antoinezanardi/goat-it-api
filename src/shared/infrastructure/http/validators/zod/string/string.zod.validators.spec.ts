@@ -1,4 +1,5 @@
 import { zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { SLUG_MAX_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -10,6 +11,16 @@ describe("String Zod Validators", () => {
       {
         test: "should return true when slug is valid.",
         value: "valid-slug",
+        expected: true,
+      },
+      {
+        test: "should return true when slug length equals SLUG_MIN_LENGTH after trim.",
+        value: "  a-b  ",
+        expected: true,
+      },
+      {
+        test: "should return true when slug length equals SLUG_MAX_LENGTH.",
+        value: "a".repeat(SLUG_MAX_LENGTH),
         expected: true,
       },
       {
@@ -81,9 +92,9 @@ describe("String Zod Validators", () => {
 
     it("should trim spaces from the slug value when parsing.", () => {
       const schema = zSlug();
-      const result = schema.parse("  valid-slug  ");
+      const parsed = schema.parse("  valid-slug  ");
 
-      expect(result).toBe("valid-slug");
+      expect(parsed).toBe("valid-slug");
     });
   });
 

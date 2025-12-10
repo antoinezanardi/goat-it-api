@@ -186,7 +186,7 @@ Feature: Create Question Theme
       | code              | message                | path    | keys |
       | unrecognized_keys | Unrecognized key: "jp" | aliases | jp   |
 
-  Scenario: Trying to create a question theme with too less spanish aliases
+  Scenario: Trying to create a question theme with too few spanish aliases
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value |
@@ -199,7 +199,7 @@ Feature: Create Question Theme
       | code      | message                                     | path       | origin | minimum | inclusive |
       | too_small | Too small: expected array to have >=1 items | aliases.es | array  | 1       | true      |
 
-  Scenario: Trying to create a question theme with too much english aliases
+  Scenario: Trying to create a question theme with too many english aliases
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value                                                                                                            |
