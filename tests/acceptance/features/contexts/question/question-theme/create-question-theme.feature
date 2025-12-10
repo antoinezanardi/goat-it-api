@@ -51,8 +51,9 @@ Feature: Create Question Theme
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
-      | code           | message                  | format | path | origin | pattern                       |
-      | invalid_format | Invalid kebab-case value | regex  | slug | string | /^[\\da-z]+(?:-[\\da-z]+)*$/u |
+      | code           | message                                           | format | path | origin | pattern                       | inclusive | minimum |
+      | too_small      | Too small: expected string to have >=3 characters |        | slug | string |                               | true      | 3       |
+      | invalid_format | Invalid kebab-case value                          | regex  | slug | string | /^[\\da-z]+(?:-[\\da-z]+)*$/u |           |         |
 
   Scenario: Trying to create a question theme with an invalid kebab-case slug
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
@@ -122,8 +123,8 @@ Feature: Create Question Theme
   Scenario: Trying to create a question theme with a string as french aliases
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
-      | path       | type   | value         |
-      | aliases.fr | string | Connaissances |
+      | path       | type   | value   |
+      | aliases.fr | string | Culture |
     And the client creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |

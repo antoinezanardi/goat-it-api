@@ -23,6 +23,9 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
   minimum: z.number()
     .optional()
     .describe("Expected minimum value when applicable."),
+  maximum: z.number()
+    .optional()
+    .describe("Expected maximum value when applicable."),
   inclusive: z.boolean()
     .optional()
     .describe("Whether the minimum value is inclusive when applicable."),

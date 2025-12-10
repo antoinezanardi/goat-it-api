@@ -13,6 +13,11 @@ describe("String Zod Validators", () => {
         expected: true,
       },
       {
+        test: "should return true when slug is valid even with spaces around.",
+        value: "  valid-slug  ",
+        expected: true,
+      },
+      {
         test: "should return false when slug is invalid (uppercase letters).",
         value: "Invalid-Slug",
         expected: false,
@@ -37,6 +42,21 @@ describe("String Zod Validators", () => {
         value: "",
         expected: false,
       },
+      {
+        test: "should return false when slug is too short.",
+        value: "s",
+        expected: false,
+      },
+      {
+        test: "should return false when slug is too long.",
+        value: "a".repeat(51),
+        expected: false,
+      },
+      {
+        test: "should return false when slug is too short after trim.",
+        value: "  s  ",
+        expected: false,
+      },
     ])("$test", ({ value, expected }) => {
       const schema = zSlug();
       const result = schema.safeParse(value);
@@ -58,6 +78,13 @@ describe("String Zod Validators", () => {
 
       expect(result.error?.issues[0].message).toBe(customMessage);
     });
+
+    it("should trim spaces from the slug value when parsing.", () => {
+      const schema = zSlug();
+      const result = schema.parse("  valid-slug  ");
+
+      expect(result).toBe("valid-slug");
+    });
   });
 
   describe(zMongoId, () => {
@@ -69,6 +96,11 @@ describe("String Zod Validators", () => {
       {
         test: "should return true when MongoDB ObjectId is valid.",
         value: "507f1f77bcf86cd799439011",
+        expected: true,
+      },
+      {
+        test: "should return true when MongoDB ObjectId is valid even with spaces around.",
+        value: "  507f1f77bcf86cd799439011  ",
         expected: true,
       },
       {
