@@ -159,7 +159,7 @@
     "@nestjs/common": "^11.1.9",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.9",
-    "@nestjs/mongoose": "^11.0.3",
+    "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-fastify": "^11.1.9",
     "@nestjs/swagger": "^11.2.3",
     "@nestjs/terminus": "^11.0.0",
