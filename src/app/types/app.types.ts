@@ -1,17 +1,9 @@
-import { createZodDto } from "nestjs-zod";
-
-import { APP_METADATA_SCHEMA } from "@app/types/app.constants";
+import type { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto";
 
 import type { z } from "zod";
 
-type AppMetadata = z.infer<typeof APP_METADATA_SCHEMA>;
-
-class GetAppMetadataResponseDto extends createZodDto(APP_METADATA_SCHEMA) {}
+type AppMetadata = z.infer<typeof APP_METADATA_DTO>;
 
 export type {
   AppMetadata,
-};
-
-export {
-  GetAppMetadataResponseDto,
 };

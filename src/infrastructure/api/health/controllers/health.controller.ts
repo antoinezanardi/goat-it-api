@@ -3,13 +3,11 @@ import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { HealthCheck } from "@nestjs/terminus";
 import { ZodResponse } from "nestjs-zod";
 
+import { AppHealthCheckResultDto, APP_HEALTH_CHECK_RESULT_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
-import { HEALTH_CHECK_RESULT_SCHEMA } from "@src/infrastructure/api/health/constants/health.constants";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
-
-import { GetAppHealthCheckResultResponseDto } from "@src/infrastructure/api/health/types/health.types";
 
 @Controller(ControllerPrefixes.HEALTH)
 export class HealthController {
@@ -25,15 +23,15 @@ export class HealthController {
   @ZodResponse({
     status: HttpStatus.OK,
     description: "Application is healthy and ready to serve requests",
-    type: GetAppHealthCheckResultResponseDto,
+    type: AppHealthCheckResultDto,
   })
   @ApiResponse({
     status: HttpStatus.SERVICE_UNAVAILABLE,
     description: "Application is not ready yet",
   })
-  public async check(): Promise<GetAppHealthCheckResultResponseDto> {
+  public async check(): Promise<AppHealthCheckResultDto> {
     const appHealth = await this.healthService.checkAppHealth();
 
-    return HEALTH_CHECK_RESULT_SCHEMA.parse(appHealth);
+    return APP_HEALTH_CHECK_RESULT_DTO.parse(appHealth);
   }
 }

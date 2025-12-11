@@ -405,7 +405,7 @@ This project uses **Zod** with **nestjs-zod** for runtime validation and automat
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-const MY_ENTITY_DTO = z.object({
+const MY_ENTITY_DTO = z.strictObject({
   id: z.string()
     .regex(/^[\da-f]{24}$/iu)
     .describe("Entity's unique MongoDB ObjectId."),

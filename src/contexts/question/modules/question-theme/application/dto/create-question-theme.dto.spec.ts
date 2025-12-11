@@ -26,6 +26,15 @@ describe("Create Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(CREATE_QUESTION_THEME_DTO.shape.slug.description).toBe("Question Theme's unique slug in kebab-case.");
     });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's unique slug in kebab-case.",
+        example: "general-knowledge",
+      };
+
+      expect(CREATE_QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("label", () => {
