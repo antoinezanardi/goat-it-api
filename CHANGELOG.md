@@ -1,5 +1,53 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.9.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.8.0...v1.9.0) (2025-12-10)
+
+### 🚀 Features
+
+* **acceptance:** enhance payload override functionality with type pa… ([#246](https://github.com/antoinezanardi/goat-it-api/issues/246)) ([be95ef1](https://github.com/antoinezanardi/goat-it-api/commit/be95ef11a4e6326d8b2a01095f98d1a73f4e86ad))
+* **acceptance:** implement acceptance payloads system ([#240](https://github.com/antoinezanardi/goat-it-api/issues/240)) ([845636a](https://github.com/antoinezanardi/goat-it-api/commit/845636afb235320eb48d679a1c5472261b8bc3ea))
+* add automated cleanup of numbered diffhunk links from PR descriptions ([#231](https://github.com/antoinezanardi/goat-it-api/issues/231)) ([68e8ad6](https://github.com/antoinezanardi/goat-it-api/commit/68e8ad6ff01a9b550b0fe882ed08a06dd5cdaee6)), closes [#127](https://github.com/antoinezanardi/goat-it-api/issues/127) [antoinezanardi/goat-it-api#127](https://github.com/antoinezanardi/goat-it-api/issues/127)
+* **dto:** enforce validation and scenarios ([#248](https://github.com/antoinezanardi/goat-it-api/issues/248)) ([b54f9e6](https://github.com/antoinezanardi/goat-it-api/commit/b54f9e662ce64233e86f5c17600904b2bc8244ee)), closes [/#diff-f6a97b9512a41f320a72d9965f5ea3002d2b0e20829092bb3171fa3a819514bfL62-R65](https://github.com/antoinezanardi///issues/diff-f6a97b9512a41f320a72d9965f5ea3002d2b0e20829092bb3171fa3a819514bfL62-R65) [/#diff-9aa7a4cf4b8f7d150bc9259f2b39afb0fc407894b6319c7c12983acc71b3fdf6L1-L5](https://github.com/antoinezanardi///issues/diff-9aa7a4cf4b8f7d150bc9259f2b39afb0fc407894b6319c7c12983acc71b3fdf6L1-L5)
+* **exceptions:** implement global exception filter for handling errors ([#220](https://github.com/antoinezanardi/goat-it-api/issues/220)) ([53d9ce7](https://github.com/antoinezanardi/goat-it-api/commit/53d9ce72ae77522c21a1fd292354db08d557a0b1))
+* **question-theme:** add slug property to question theme structure ([#225](https://github.com/antoinezanardi/goat-it-api/issues/225)) ([dd70046](https://github.com/antoinezanardi/goat-it-api/commit/dd700463ce4e9cfcb700c2659ef7085fd2ce9264))
+* **question-theme:** implement archive functionality for question themes ([#227](https://github.com/antoinezanardi/goat-it-api/issues/227)) ([ccd404d](https://github.com/antoinezanardi/goat-it-api/commit/ccd404d0b4aca251eeaf2435615924c6e630621b))
+* **question-theme:** remove parentId from question theme structure ([#223](https://github.com/antoinezanardi/goat-it-api/issues/223)) ([548a231](https://github.com/antoinezanardi/goat-it-api/commit/548a2315432fe69dc5384f40958a318da5b0d0d4))
+* **questions:** create question theme endpoint ([#233](https://github.com/antoinezanardi/goat-it-api/issues/233)) ([dae4ad1](https://github.com/antoinezanardi/goat-it-api/commit/dae4ad1a68551c47da59c8c55277ca9fc88b6dc2))
+* **typescript:** use native-preview for typechecking ([#226](https://github.com/antoinezanardi/goat-it-api/issues/226)) ([9d3c77c](https://github.com/antoinezanardi/goat-it-api/commit/9d3c77c0fcd3c9b5c9f76467895a10e3b3af9f6e))
+* **validators:** add slug and MongoDB ID validation functions ([#232](https://github.com/antoinezanardi/goat-it-api/issues/232)) ([6908194](https://github.com/antoinezanardi/goat-it-api/commit/690819445eb5c176107acae476e8e899d27d3252))
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency @nestjs/mongoose to ^11.0.4 ([#251](https://github.com/antoinezanardi/goat-it-api/issues/251)) ([b7577bb](https://github.com/antoinezanardi/goat-it-api/commit/b7577bb4c4a01ffcd6b31c8fcf1477ee64a7a29c))
+* **deps:** update dependency mongoose to ^9.0.1 ([#228](https://github.com/antoinezanardi/goat-it-api/issues/228)) ([cb4ab6c](https://github.com/antoinezanardi/goat-it-api/commit/cb4ab6ce6d278874e985457d45cf728e7db48365))
+
+### 📖 Docs
+
+* update AGENTS.md to reflect actual project practices and architecture ([#229](https://github.com/antoinezanardi/goat-it-api/issues/229)) ([2469f88](https://github.com/antoinezanardi/goat-it-api/commit/2469f88eace502cb4d209af36462aa645b06244f))
+
+### ✅ Tests
+
+* include DTO validation tests for API response and question theme ([#247](https://github.com/antoinezanardi/goat-it-api/issues/247)) ([88277ea](https://github.com/antoinezanardi/goat-it-api/commit/88277ea6ad07140e5a37b326c2472a0508655ef0))
+
+### 🧹 Chore
+
+* **deps:** update commitlint monorepo to ^20.2.0 ([#224](https://github.com/antoinezanardi/goat-it-api/issues/224)) ([2509f8a](https://github.com/antoinezanardi/goat-it-api/commit/2509f8a0a1676bc5d042512f0f66de89c5490ea8))
+* **deps:** update dependency @types/node to ^24.10.2 ([#243](https://github.com/antoinezanardi/goat-it-api/issues/243)) ([df43ff9](https://github.com/antoinezanardi/goat-it-api/commit/df43ff96617a798a7a2b7d34a9067e1c76968891))
+* **deps:** update dependency @typescript/native-preview to v7.0.0-dev.20251206.1 ([#230](https://github.com/antoinezanardi/goat-it-api/issues/230)) ([f405112](https://github.com/antoinezanardi/goat-it-api/commit/f405112dad470a7fe8265093f5f1d1a70a975948))
+* **deps:** update dependency @typescript/native-preview to v7.0.0-dev.20251209.1 ([#234](https://github.com/antoinezanardi/goat-it-api/issues/234)) ([ef1e0e1](https://github.com/antoinezanardi/goat-it-api/commit/ef1e0e1b53fe10c57e63abb432b9b88930f663a1))
+* **deps:** update dependency @typescript/native-preview to v7.0.0-dev.20251210.1 ([#249](https://github.com/antoinezanardi/goat-it-api/issues/249)) ([4d7bea3](https://github.com/antoinezanardi/goat-it-api/commit/4d7bea3ef2de251534877a810d967241b2bd68fc))
+* **deps:** update dependency @vitest/eslint-plugin to ^1.5.2 ([#236](https://github.com/antoinezanardi/goat-it-api/issues/236)) ([117e2b9](https://github.com/antoinezanardi/goat-it-api/commit/117e2b93bdf4f46dc4bc199a529566e2f735c484))
+* **deps:** update dependency eslint-plugin-oxlint to v1.32.0 ([#239](https://github.com/antoinezanardi/goat-it-api/issues/239)) ([48a57f8](https://github.com/antoinezanardi/goat-it-api/commit/48a57f8c42d8d287f090effe471c37cc2d395133))
+* **deps:** update dependency oxlint to ^1.32.0 ([#238](https://github.com/antoinezanardi/goat-it-api/issues/238)) ([f1cc000](https://github.com/antoinezanardi/goat-it-api/commit/f1cc0009905a3764b3e6bd8dbb300d6702289a44))
+* **deps:** update dependency oxlint-tsgolint to ^0.8.4 ([#237](https://github.com/antoinezanardi/goat-it-api/issues/237)) ([f7f02e8](https://github.com/antoinezanardi/goat-it-api/commit/f7f02e8e3716630f4a1aaf12aa124224970d6210))
+* **deps:** update dependency oxlint-tsgolint to ^0.8.5 ([#250](https://github.com/antoinezanardi/goat-it-api/issues/250)) ([0210e8e](https://github.com/antoinezanardi/goat-it-api/commit/0210e8e47de0b3c8f3a3a41f21c12efa6802a670))
+* **deps:** update dependency type-fest to ^5.3.1 ([#235](https://github.com/antoinezanardi/goat-it-api/issues/235)) ([963720a](https://github.com/antoinezanardi/goat-it-api/commit/963720a2cf2261eb0269fe020e46b134dd5e4721))
+* **deps:** update pnpm to v10.25.0 ([#241](https://github.com/antoinezanardi/goat-it-api/issues/241)) ([67be706](https://github.com/antoinezanardi/goat-it-api/commit/67be706c5de19de6c1a5d7b11f460f98da1a2d65))
+* **deps:** update raven-actions/actionlint action to v2.1.0 ([#244](https://github.com/antoinezanardi/goat-it-api/issues/244)) ([f85e896](https://github.com/antoinezanardi/goat-it-api/commit/f85e8965677e45bc42304e64daa0311c6e730012))
+* **deps:** update sonarsource/sonarqube-scan-action action to v7 ([#245](https://github.com/antoinezanardi/goat-it-api/issues/245)) ([197f3ce](https://github.com/antoinezanardi/goat-it-api/commit/197f3ce3d15f5c4e8e2bd351acb28e3fd400b3b1))
+* **deps:** update typescript-eslint monorepo to ^8.49.0 ([#242](https://github.com/antoinezanardi/goat-it-api/issues/242)) ([8f48c4c](https://github.com/antoinezanardi/goat-it-api/commit/8f48c4c55ce355ed6eb7f3c052df7f13bef1e8db))
+* **deps:** update vitest monorepo to ^4.0.15 ([#221](https://github.com/antoinezanardi/goat-it-api/issues/221)) ([887075e](https://github.com/antoinezanardi/goat-it-api/commit/887075e61d44a0b8c23afc57b1329132a04e2eb6))
+
 ## [1.8.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.7.0...v1.8.0) (2025-12-02)
 
 ### 🚀 Features
