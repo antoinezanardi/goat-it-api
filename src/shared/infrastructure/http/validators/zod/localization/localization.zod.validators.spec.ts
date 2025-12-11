@@ -5,14 +5,14 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 describe("Localization Zod Validators", () => {
   describe(createZLocaleEntries, () => {
     it("should create locale entries correctly when called.", () => {
-      const entryFactory = (localLabel: string): string => `Label in ${localLabel}`;
+      const entryFactory = (localLabel: Locale): string => `Label in ${localLabel}`;
       const expectedEntries: Record<Locale, string> = {
-        en: entryFactory("english"),
-        fr: entryFactory("french"),
-        de: entryFactory("german"),
-        es: entryFactory("spanish"),
-        it: entryFactory("italian"),
-        pt: entryFactory("portuguese"),
+        en: entryFactory("en"),
+        fr: entryFactory("fr"),
+        de: entryFactory("de"),
+        es: entryFactory("es"),
+        it: entryFactory("it"),
+        pt: entryFactory("pt"),
       };
       const entries = createZLocaleEntries(entryFactory);
 
@@ -83,14 +83,25 @@ describe("Localization Zod Validators", () => {
     });
 
     it("should have correct description for the locale when called.", () => {
-      const locale = "french";
+      const locale: Locale = "fr";
       const schema = zLocalizedTextEntry(locale);
 
-      expect(schema.description).toBe(`Text in french.`);
+      expect(schema.description).toBe(`Text in French.`);
+    });
+
+    it("should have correct metadata for the locale when called.", () => {
+      const locale: Locale = "de";
+      const schema = zLocalizedTextEntry(locale);
+      const expectedMetadata = {
+        description: `Text in German.`,
+        example: `Beispieltext auf Deutsch.`,
+      };
+
+      expect(schema.meta()).toStrictEqual(expectedMetadata);
     });
 
     it("should trim the localized text entry when parsing.", () => {
-      const locale = "en";
+      const locale: Locale = "en";
       const schema = zLocalizedTextEntry(locale);
       const value = "  Hello World  ";
       const result = schema.parse(value);
@@ -168,19 +179,30 @@ describe("Localization Zod Validators", () => {
     });
 
     it("should have correct description for the locale when called.", () => {
-      const locale = "english";
+      const locale: Locale = "pt";
       const schema = zLocalizedTextsEntry(locale);
 
-      expect(schema.description).toBe(`Texts in english.`);
+      expect(schema.description).toBe(`Texts in Portuguese.`);
     });
 
     it("should trim the localized texts entry when parsing.", () => {
-      const locale = "en";
+      const locale: Locale = "en";
       const schema = zLocalizedTextsEntry(locale);
       const value = ["  Hello World  ", "  Hi There  "];
       const result = schema.parse(value);
 
       expect(result).toStrictEqual(["Hello World", "Hi There"]);
+    });
+
+    it("should have correct metadata for the locale when called.", () => {
+      const locale: Locale = "it";
+      const schema = zLocalizedTextsEntry(locale);
+      const expectedMetadata = {
+        description: `Texts in Italian.`,
+        example: [`Testo di esempio in italiano.`],
+      };
+
+      expect(schema.meta()).toStrictEqual(expectedMetadata);
     });
   });
 

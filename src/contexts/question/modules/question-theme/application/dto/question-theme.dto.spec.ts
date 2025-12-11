@@ -26,6 +26,15 @@ describe("Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.id.description).toBe("Question Theme's unique identifier.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's unique identifier.",
+        example: "60af924f4f1a2563f8e8b456",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.id.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("slug", () => {
@@ -38,6 +47,15 @@ describe("Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.slug.description).toBe("Question Theme's unique slug in kebab-case.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's unique slug in kebab-case.",
+        example: "history",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("label", () => {
@@ -49,6 +67,15 @@ describe("Question Theme Dto", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's translated label.");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's translated label.",
+        example: "History",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.label.meta()).toStrictEqual(expectedMetadata);
     });
   });
 
@@ -68,6 +95,15 @@ describe("Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's translated aliases. Help to find the theme with different keywords.",
+        example: ["Historical Events", "Past", "Future"],
+      };
+
+      expect(QUESTION_THEME_DTO.shape.aliases.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("description", () => {
@@ -79,6 +115,15 @@ describe("Question Theme Dto", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's translated description.");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's translated description.",
+        example: "Questions related to historical events and timelines.",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.description.meta()).toStrictEqual(expectedMetadata);
     });
   });
 
@@ -92,6 +137,15 @@ describe("Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.status.description).toBe("Question Theme's status.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's status.",
+        example: "active",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.status.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("createdAt", () => {
@@ -104,6 +158,15 @@ describe("Question Theme Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.createdAt.description).toBe("Question Theme's creation date.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's creation date.",
+        example: "2026-04-14T00:00:00.000Z",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.createdAt.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("updatedAt", () => {
@@ -115,6 +178,15 @@ describe("Question Theme Dto", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_DTO.shape.updatedAt.description).toBe("Question Theme's last update date.");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's last update date.",
+        example: "2026-04-14T00:00:00.000Z",
+      };
+
+      expect(QUESTION_THEME_DTO.shape.updatedAt.meta()).toStrictEqual(expectedMetadata);
     });
   });
 });

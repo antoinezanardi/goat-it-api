@@ -70,6 +70,10 @@ export class QuestionThemeController {
     status: HttpStatus.OK,
     type: QuestionThemeDto,
   })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeDto,
+  })
   public async archiveQuestionTheme(
     @Param("id", MongoIdPipe) id: string,
     @Localization() localization: LocalizationOptions,
