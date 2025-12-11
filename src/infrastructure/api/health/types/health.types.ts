@@ -1,13 +1,7 @@
-import { createZodDto } from "nestjs-zod";
-
-import { HEALTH_CHECK_RESULT_SCHEMA } from "@src/infrastructure/api/health/constants/health.constants";
+import type { APP_HEALTH_CHECK_RESULT_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
 
 import type { z } from "zod";
 
-type AppHealthCheckResult = z.infer<typeof HEALTH_CHECK_RESULT_SCHEMA>;
-
-class GetAppHealthCheckResultResponseDto extends createZodDto(HEALTH_CHECK_RESULT_SCHEMA) {}
+type AppHealthCheckResult = z.infer<typeof APP_HEALTH_CHECK_RESULT_DTO>;
 
 export type { AppHealthCheckResult };
-
-export { GetAppHealthCheckResultResponseDto };

@@ -5,7 +5,7 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 describe("Localization Zod Validators", () => {
   describe(createZLocaleEntries, () => {
     it("should create locale entries correctly when called.", () => {
-      const entryFactory = (localLabel: Locale): string => `Label in ${localLabel}`;
+      const entryFactory = (local: Locale): string => `Label in ${local}`;
       const expectedEntries: Record<Locale, string> = {
         en: entryFactory("en"),
         fr: entryFactory("fr"),
