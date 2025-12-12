@@ -5,7 +5,7 @@ import { Logger } from "nestjs-pino";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { SWAGGER_DOCUMENTATION_PATH } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
-import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
+import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
 import { AppModule } from "@app/app.module";
 
@@ -36,9 +36,10 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   await app.listen(appConfigService.serverConfig);
 
   const appUrl = await app.getUrl();
+  const documentationUrl = getSwaggerUrl(appUrl);
 
   logger.log(`🐐 Goat It API is running on: ${appUrl}`);
-  logger.log(`📚 Swagger documentation is available on: ${appUrl}${SWAGGER_DOCUMENTATION_PATH}`);
+  logger.log(`📚 Swagger documentation is available on: ${documentationUrl}`);
 
   return app;
 }

@@ -14,6 +14,14 @@ export class AppConfigService {
     };
   }
 
+  public get serverBaseUrl(): string {
+    let serverHost = this.serverConfig.host;
+    if (!serverHost.startsWith("http") && !serverHost.startsWith("https")) {
+      serverHost = `http://${serverHost}`;
+    }
+    return `${serverHost}:${this.serverConfig.port}`;
+  }
+
   public get corsConfig(): CorsConfigFromEnv {
     return {
       origin: this.configService.getOrThrow<CorsConfigFromEnv["origin"]>("CORS_ORIGIN"),
