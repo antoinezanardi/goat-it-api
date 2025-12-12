@@ -17,6 +17,7 @@ const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
       setTimeout: "readonly",
       clearTimeout: "readonly",
       console: "readonly",
+      URL: "readonly",
     },
   },
   rules: {

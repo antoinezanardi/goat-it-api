@@ -5,7 +5,7 @@ import { Logger } from "nestjs-pino";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
-import { setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
+import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
 import type { AppModule } from "@app/app.module";
@@ -164,6 +164,12 @@ describe("Server", () => {
       expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();
     });
 
+    it("should get swagger url when called.", async() => {
+      await bootstrap();
+
+      expect(getSwaggerUrl).toHaveBeenCalledExactlyOnceWith("http://mocked-host:9090");
+    });
+
     it("should log the app url when called.", async() => {
       const app = await bootstrap();
 
@@ -171,6 +177,7 @@ describe("Server", () => {
     });
 
     it("should log the swagger documentation path when called.", async() => {
+      vi.mocked(getSwaggerUrl).mockReturnValue("http://mocked-host:9090/docs");
       const app = await bootstrap();
 
       expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, "📚 Swagger documentation is available on: http://mocked-host:9090/docs");

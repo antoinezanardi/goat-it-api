@@ -14,6 +14,15 @@ export class AppConfigService {
     };
   }
 
+  public get serverBaseUrl(): string {
+    const { host, port } = this.serverConfig;
+    const normalizedHost = host.startsWith("http://") || host.startsWith("https://") ? host : `http://${host}`;
+    const url = new URL(normalizedHost);
+    url.port = String(port);
+
+    return url.origin;
+  }
+
   public get corsConfig(): CorsConfigFromEnv {
     return {
       origin: this.configService.getOrThrow<CorsConfigFromEnv["origin"]>("CORS_ORIGIN"),
