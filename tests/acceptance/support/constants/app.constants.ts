@@ -1,6 +1,6 @@
 const SERVER_HOST = "0.0.0.0";
 
-const SERVER_PORT = 3000;
+const SERVER_PORT = 4242;
 
 const APP_BASE_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
 

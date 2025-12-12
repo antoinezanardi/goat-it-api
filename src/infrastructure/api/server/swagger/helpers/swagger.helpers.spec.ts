@@ -1,7 +1,7 @@
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { cleanupOpenApiDoc } from "nestjs-zod";
 
-import { createSwaggerDocument, getSwaggerConfig, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
+import { createSwaggerDocument, getSwaggerConfig, getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
 import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
@@ -38,6 +38,16 @@ describe("Swagger Helper", () => {
         build: vi.spyOn(DocumentBuilder.prototype, "build").mockReturnValue({} as Omit<OpenAPIObject, "paths">),
       },
     };
+  });
+
+  describe(getSwaggerUrl, () => {
+    it("should return correct swagger url when called.", () => {
+      const appUrl = "http://localhost:3000";
+      const expectedSwaggerUrl = "http://localhost:3000/docs";
+      const swaggerUrl = getSwaggerUrl(appUrl);
+
+      expect(swaggerUrl).toBe(expectedSwaggerUrl);
+    });
   });
 
   describe(getSwaggerConfig, () => {

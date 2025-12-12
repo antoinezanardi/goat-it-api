@@ -65,6 +65,26 @@ describe("App Config Service", () => {
     });
   });
 
+  describe("serverBaseUrl", () => {
+    it("should return server base url when called.", () => {
+      expect(services.appConfig.serverBaseUrl).toBe("http://127.0.0.1:8080");
+    });
+
+    it("should return server base url with https when host includes https scheme.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "https://0.0.0.0");
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "8080");
+
+      expect(services.appConfig.serverBaseUrl).toBe("https://0.0.0.0:8080");
+    });
+
+    it("should return server base url with http when host includes http scheme.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "http://127.0.0.0");
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "8080");
+
+      expect(services.appConfig.serverBaseUrl).toBe("http://127.0.0.0:8080");
+    });
+  });
+
   describe("corsConfig", () => {
     it("should return cors config from env when called.", () => {
       const expectedCorsConfig = createFakeCorsConfigFromEnv({

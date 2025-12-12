@@ -28,8 +28,8 @@ export class HealthService {
   }
 
   private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {
-    const docsUrl = getSwaggerUrl(this.appConfig.serverBaseUrl);
+    const documentationUrl = getSwaggerUrl(this.appConfig.serverBaseUrl);
 
-    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, "http://127.0.0.1:4000/docs");
+    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, documentationUrl);
   }
 }

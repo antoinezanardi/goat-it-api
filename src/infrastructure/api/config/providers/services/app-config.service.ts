@@ -15,11 +15,12 @@ export class AppConfigService {
   }
 
   public get serverBaseUrl(): string {
-    let serverHost = this.serverConfig.host;
-    if (!serverHost.startsWith("http") && !serverHost.startsWith("https")) {
-      serverHost = `http://${serverHost}`;
-    }
-    return `${serverHost}:${this.serverConfig.port}`;
+    const { host, port } = this.serverConfig;
+    const normalizedHost = host.startsWith("http://") || host.startsWith("https://") ? host : `http://${host}`;
+    const url = new URL(normalizedHost);
+    url.port = String(port);
+
+    return url.origin;
   }
 
   public get corsConfig(): CorsConfigFromEnv {

@@ -4,7 +4,6 @@ import { Logger } from "nestjs-pino";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
-import { SWAGGER_DOCUMENTATION_PATH } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
 import { AppModule } from "@app/app.module";
