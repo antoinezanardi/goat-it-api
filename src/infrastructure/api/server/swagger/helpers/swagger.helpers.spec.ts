@@ -48,6 +48,10 @@ describe("Swagger Helper", () => {
 
       expect(swaggerUrl).toBe(expectedSwaggerUrl);
     });
+
+    it("should not double-slash when base url ends with slash.", () => {
+      expect(getSwaggerUrl("http://localhost:3000/")).toBe("http://localhost:3000/docs");
+    });
   });
 
   describe(getSwaggerConfig, () => {

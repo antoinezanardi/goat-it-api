@@ -167,7 +167,7 @@ describe("Server", () => {
     it("should get swagger url when called.", async() => {
       await bootstrap();
 
-      expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+      expect(getSwaggerUrl).toHaveBeenCalledExactlyOnceWith("http://mocked-host:9090");
     });
 
     it("should log the app url when called.", async() => {
