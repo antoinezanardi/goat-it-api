@@ -64,8 +64,8 @@ importers:
         specifier: ^20.2.0
         version: 20.2.0
       '@cucumber/cucumber':
-        specifier: ^12.3.0
-        version: 12.3.0
+        specifier: ^12.4.0
+        version: 12.4.0
       '@eslint/config-inspector':
         specifier: ^1.4.2
         version: 1.4.2(eslint@9.39.2(jiti@2.6.1))
@@ -511,8 +511,8 @@ packages:
   '@cucumber/cucumber-expressions@18.0.1':
     resolution: {integrity: sha512-NSid6bI+7UlgMywl5octojY5NXnxR9uq+JisjOrO52VbFsQM6gTWuQFE8syI10KnIBEdPzuEUSVEeZ0VFzRnZA==}
 
-  '@cucumber/cucumber@12.3.0':
-    resolution: {integrity: sha512-36cIyplE1iDl12s4k6lBVpceua8tKLklFTf7CUITPrNHTLlQ/KBr7NYUUHviPzCbj2Ox3BPTZ6qkSLd6WMvVQg==}
+  '@cucumber/cucumber@12.4.0':
+    resolution: {integrity: sha512-zGtGIx4Q/+AMbZclgCOvlbJzQxFd35/gpnB+bbpRGarsQks8nL4MxoHz9qn/sYzqBiFPgnv29wcL8r4nOb8r3g==}
     engines: {node: 20 || 22 || >=24}
     hasBin: true
 
@@ -6793,7 +6793,7 @@ snapshots:
     dependencies:
       regexp-match-indices: 1.0.2
 
-  '@cucumber/cucumber@12.3.0':
+  '@cucumber/cucumber@12.4.0':
     dependencies:
       '@cucumber/ci-environment': 12.0.0
       '@cucumber/cucumber-expressions': 18.0.1
@@ -6804,7 +6804,7 @@ snapshots:
       '@cucumber/junit-xml-formatter': 0.9.0(@cucumber/messages@31.0.0)
       '@cucumber/message-streams': 4.0.1(@cucumber/messages@31.0.0)
       '@cucumber/messages': 31.0.0
-      '@cucumber/pretty-formatter': 1.0.1(@cucumber/cucumber@12.3.0)(@cucumber/messages@31.0.0)
+      '@cucumber/pretty-formatter': 1.0.1(@cucumber/cucumber@12.4.0)(@cucumber/messages@31.0.0)
       '@cucumber/tag-expressions': 8.1.0
       assertion-error-formatter: 3.0.0
       capital-case: 1.0.4
@@ -6982,9 +6982,9 @@ snapshots:
       class-transformer: 0.5.1
       reflect-metadata: 0.2.2
 
-  '@cucumber/pretty-formatter@1.0.1(@cucumber/cucumber@12.3.0)(@cucumber/messages@31.0.0)':
+  '@cucumber/pretty-formatter@1.0.1(@cucumber/cucumber@12.4.0)(@cucumber/messages@31.0.0)':
     dependencies:
-      '@cucumber/cucumber': 12.3.0
+      '@cucumber/cucumber': 12.4.0
       '@cucumber/messages': 31.0.0
       ansi-styles: 5.2.0
       cli-table3: 0.6.5
