@@ -14,7 +14,8 @@ function zSlug(options: Partial<$ZodCustomParams> = {}): ZodString {
     .regex(SLUG_REGEX, {
       error: "Invalid kebab-case value",
       ...options,
-    });
+    })
+    .meta({ example: "example-slug-value" });
 }
 
 function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
@@ -23,7 +24,8 @@ function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
     .refine(isMongoId, {
       error: "Invalid ObjectId value",
       ...options,
-    });
+    })
+    .meta({ example: "60af924f4f1a2563f8e8b456" });
 }
 
 export {

@@ -1,5 +1,8 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
+
+import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
@@ -26,6 +29,11 @@ export class QuestionThemeController {
   ) {}
 
   @Get()
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Get all question themes",
+    description: "Get the list of all question themes available in the database in the desired localization.",
+  })
   @ZodResponse({
     status: HttpStatus.OK,
     type: [QuestionThemeDto],
@@ -37,6 +45,11 @@ export class QuestionThemeController {
   }
 
   @Get("/:id")
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Get question theme by ID",
+    description: "Get a specific question theme by its unique identifier in the desired localization.",
+  })
   @ZodResponse({
     status: HttpStatus.OK,
     type: QuestionThemeDto,
@@ -51,6 +64,11 @@ export class QuestionThemeController {
   }
 
   @Post()
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Create a new question theme",
+    description: "Create a new question theme with the provided details. Returns the created question theme in the desired localization.",
+  })
   @ZodResponse({
     status: HttpStatus.CREATED,
     type: QuestionThemeDto,
@@ -66,6 +84,11 @@ export class QuestionThemeController {
   }
 
   @Post("/:id/archive")
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Archive a question theme",
+    description: `Archive a specific question theme by its unique identifier. Returns the archived question theme in the desired localization. An already archived theme can't be archived again.`,
+  })
   @ZodResponse({
     status: HttpStatus.OK,
     type: QuestionThemeDto,

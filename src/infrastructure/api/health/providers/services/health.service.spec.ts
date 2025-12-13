@@ -1,8 +1,10 @@
 import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
 import { Test } from "@nestjs/testing";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 
+import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
 
 import type { TestingModule } from "@nestjs/testing";
@@ -14,6 +16,7 @@ describe("Health Service", () => {
       health: ReturnType<typeof createMockedTerminusHealthCheckService>;
       mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;
       docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;
+      appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
   };
 
@@ -23,6 +26,9 @@ describe("Health Service", () => {
         health: createMockedTerminusHealthCheckService(),
         mongooseHealth: createMockedTerminusHealthIndicatorService(),
         docsHealth: createMockedTerminusHealthIndicatorService(),
+        appConfig: createMockedAppConfigService({
+          serverBaseUrl: "http://0.0.0.0:3000",
+        }),
       },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +44,10 @@ describe("Health Service", () => {
         {
           provide: HttpHealthIndicator,
           useValue: mocks.services.docsHealth,
+        },
+        {
+          provide: AppConfigService,
+          useValue: mocks.services.appConfig,
         },
         HealthService,
       ],
@@ -82,7 +92,7 @@ describe("Health Service", () => {
     it("should call ping check from http health indicator when called.", async() => {
       await services.health["checkGoatItDocs"]();
 
-      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith("goat-it-docs", "http://127.0.0.1:3000/docs");
+      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith("goat-it-docs", "http://0.0.0.0:3000/docs");
     });
   });
 });

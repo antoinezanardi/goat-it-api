@@ -32,7 +32,8 @@
     "Buffer": "readonly",
     "setTimeout": "readonly",
     "clearTimeout": "readonly",
-    "console": "readonly"
+    "console": "readonly",
+    "URL": "readonly"
   },
   "rules": {
     // ---- ESLint Rules -----

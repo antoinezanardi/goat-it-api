@@ -26,6 +26,15 @@ describe("Api Response Exception Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.description).toBe("HTTP status code of the error response.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "HTTP status code of the error response.",
+        example: 400,
+      };
+
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("message", () => {
@@ -38,6 +47,15 @@ describe("Api Response Exception Dto", () => {
     it("should have correct description when accessing the description.", () => {
       expect(API_RESPONSE_EXCEPTION_DTO.shape.message.description).toBe("Error message.");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Error message.",
+        example: "The request could not be understood by the server due to malformed syntax.",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.message.meta()).toStrictEqual(expectedMetadata);
+    });
   });
 
   describe("error", () => {
@@ -49,6 +67,15 @@ describe("Api Response Exception Dto", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(API_RESPONSE_EXCEPTION_DTO.shape.error.description).toBe("Short description of the HTTP error.");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Short description of the HTTP error.",
+        example: "Bad Request",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.error.meta()).toStrictEqual(expectedMetadata);
     });
   });
 
