@@ -1,8 +1,9 @@
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
-import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
+import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
-import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeAdminQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 describe("Question Theme Dto Mappers", () => {
   describe(createQuestionThemeDtoFromEntity, () => {
@@ -24,6 +25,25 @@ describe("Question Theme Dto Mappers", () => {
       });
 
       expect(questionThemeDto).toStrictEqual<QuestionThemeDto>(expectedQuestionThemeDto);
+    });
+  });
+
+  describe(createAdminQuestionThemeDtoFromEntity, () => {
+    it("should map a QuestionTheme entity to a AdminQuestionThemeDto when called.", () => {
+      const questionTheme = createFakeQuestionTheme();
+      const adminQuestionThemeDto = createAdminQuestionThemeDtoFromEntity(questionTheme);
+      const expectedAdminQuestionThemeDto = createFakeAdminQuestionThemeDto({
+        id: questionTheme.id,
+        slug: questionTheme.slug,
+        label: questionTheme.label,
+        aliases: questionTheme.aliases,
+        description: questionTheme.description,
+        status: questionTheme.status,
+        createdAt: questionTheme.createdAt.toISOString(),
+        updatedAt: questionTheme.updatedAt.toISOString(),
+      });
+
+      expect(adminQuestionThemeDto).toStrictEqual<AdminQuestionThemeDto>(expectedAdminQuestionThemeDto);
     });
   });
 });

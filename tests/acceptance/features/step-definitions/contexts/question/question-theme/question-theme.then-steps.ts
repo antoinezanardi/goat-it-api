@@ -2,8 +2,8 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { z } from "zod";
 
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
-import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme.dto";
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
 import type { DataTable } from "@cucumber/cucumber";
 
