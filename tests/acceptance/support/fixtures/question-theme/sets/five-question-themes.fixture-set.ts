@@ -9,6 +9,10 @@ const FIVE_QUESTION_THEMES_FIXTURE_SET = [
     label: createFakeLocalizedText({
       fr: "Cinéma",
       en: "Cinema",
+      it: "Cinema",
+      pt: "Cinema",
+      es: "Cine",
+      de: "Kino",
     }),
     aliases: createFakeLocalizedTexts({
       fr: ["Films", "Ciné"],
