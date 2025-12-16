@@ -5,7 +5,7 @@ Feature: List Question Themes as Admin
   As an admin API client
   I want to be able to retrieve all question themes for administration purposes
 
-  Scenario: Listing all admin question themes returns detailed results in every locale
+  Scenario: Listing all admin question themes returns localized data for all supported locales
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin retrieves all question themes
     Then the request should have succeeded with status code 200
@@ -17,7 +17,7 @@ Feature: List Question Themes as Admin
       | sports  | archived |
       | history | active   |
       | science | active   |
-    And the response should contain an admin question theme from others with slug "cinema" and the following localized labels:
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized labels:
       | locale | label  |
       | en     | Cinema |
       | fr     | Cinéma |
@@ -25,6 +25,46 @@ Feature: List Question Themes as Admin
       | es     | Cine   |
       | de     | Kino   |
       | pt     | Cinema |
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized aliases:
+      | locale | aliases         |
+      | en     | Movies, Films   |
+      | fr     | Films, Ciné     |
+      | it     | Film, Pellicole |
+      | es     | Películas, Cine |
+      | de     | Filme, Kino     |
+      | pt     | Filmes, Cinema  |
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized descriptions:
+      | locale | description                              |
+      | en     | Theme about cinema and movies.           |
+      | fr     | Thème concernant le cinéma et les films. |
+      | it     | Argomento sul cinema e i film.           |
+      | es     | Tema sobre cine y películas.             |
+      | de     | Thema über Kino und Filme.               |
+      | pt     | Tema sobre o cinema e filmes.            |
+    And the response should contain an admin question theme among them with slug "science" and the following localized labels:
+      | locale | label        |
+      | en     | Science      |
+      | fr     | Science      |
+      | it     | Scienza      |
+      | es     | Ciencia      |
+      | de     | Wissenschaft |
+      | pt     | Ciência      |
+    And the response should contain an admin question theme among them with slug "science" and the following localized aliases:
+      | locale | aliases                   |
+      | en     | Technology, Research      |
+      | fr     | Technologie, Recherche    |
+      | it     | Tecnologia, Ricerca       |
+      | es     | Tecnología, Investigación |
+      | de     | Technologie, Forschung    |
+      | pt     | Tecnologia, Pesquisa      |
+    And the response should contain an admin question theme among them with slug "science" and the following localized descriptions:
+      | locale | description                                                       |
+      | en     | Theme covering sciences, discoveries and innovations.             |
+      | fr     | Thème couvrant les sciences, découvertes et innovations.          |
+      | it     | Argomento che copre scienze, scoperte e innovazioni.              |
+      | es     | Tema que abarca ciencias, descubrimientos e innovaciones.         |
+      | de     | Thema, das Wissenschaften, Entdeckungen und Innovationen abdeckt. |
+      | pt     | Tema que abrange ciências, descobertas e inovações.               |
 
   Scenario: Listing all admin question themes when none exist
     When the admin retrieves all question themes

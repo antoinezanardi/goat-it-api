@@ -54,9 +54,10 @@ Then(/^the response should contain the following admin question themes:$/u, func
   }
 });
 
-Then(/^the response should contain an admin question theme from others with slug "(?<slug>[^"]+)" and the following localized labels:$/u, function(this: GoatItWorld, slug: string, localizedLabelsDataTable: DataTable): void {
+Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized labels:$/u, function(this: GoatItWorld, slug: string, localizedLabelsDataTable: DataTable): void {
   const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
-  const localizedLabelsRows = localizedLabelsDataTable.hashes() as Record<"locale" | "label", string>[];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const localizedLabelsRows = localizedLabelsDataTable.hashes() as { locale: Locale; label: string }[];
   const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
 
   expect(adminQuestionTheme).toBeDefined();
@@ -64,11 +65,42 @@ Then(/^the response should contain an admin question theme from others with slug
     return;
   }
 
-  for (const [_, expectedLocalizedLabel] of localizedLabelsRows.entries()) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-    const expectedLocale = expectedLocalizedLabel.locale as Locale;
+  for (const { locale: expectedLocale, label: expectedLabel } of localizedLabelsRows) {
+    expect(adminQuestionTheme.label[expectedLocale]).toBe(expectedLabel);
+  }
+});
 
-    expect(adminQuestionTheme.label[expectedLocale]).toBe(expectedLocalizedLabel.label);
+Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized aliases:$/u, function(this: GoatItWorld, slug: string, localizedAliasesDataTable: DataTable): void {
+  const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const localizedAliasesRows = localizedAliasesDataTable.hashes() as { locale: Locale; aliases: string }[];
+  const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
+
+  expect(adminQuestionTheme).toBeDefined();
+  if (!adminQuestionTheme) {
+    return;
+  }
+
+  for (const { locale: expectedLocale, aliases: expectedAliasesAsString } of localizedAliasesRows) {
+    const expectedAliases = expectedAliasesAsString.split(",").map(alias => alias.trim());
+
+    expect(adminQuestionTheme.aliases[expectedLocale]).toStrictEqual(expectedAliases);
+  }
+});
+
+Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized descriptions:$/u, function(this: GoatItWorld, slug: string, localizedLabelsDataTable: DataTable): void {
+  const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const localizedLabelsRows = localizedLabelsDataTable.hashes() as { locale: Locale; description: string }[];
+  const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
+
+  expect(adminQuestionTheme).toBeDefined();
+  if (!adminQuestionTheme) {
+    return;
+  }
+
+  for (const { locale: expectedLocale, description: expectedDescription } of localizedLabelsRows) {
+    expect(adminQuestionTheme.description[expectedLocale]).toBe(expectedDescription);
   }
 });
 
