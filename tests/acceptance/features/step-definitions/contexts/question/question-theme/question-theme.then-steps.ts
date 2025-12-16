@@ -7,6 +7,8 @@ import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/appli
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
+import { findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/question-theme.steps.helpers";
+
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
@@ -58,12 +60,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   const localizedLabelsRows = localizedLabelsDataTable.hashes() as { locale: Locale; label: string }[];
-  const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
-
-  expect(adminQuestionTheme).toBeDefined();
-  if (!adminQuestionTheme) {
-    return;
-  }
+  const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
   for (const { locale: expectedLocale, label } of localizedLabelsRows) {
     const expectedLabel = label.trim() || undefined;
@@ -76,12 +73,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   const localizedAliasesRows = localizedAliasesDataTable.hashes() as { locale: Locale; aliases: string }[];
-  const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
-
-  expect(adminQuestionTheme).toBeDefined();
-  if (!adminQuestionTheme) {
-    return;
-  }
+  const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
   for (const { locale: expectedLocale, aliases: expectedAliasesAsString } of localizedAliasesRows) {
     const expectedAliases = expectedAliasesAsString.trim() ? expectedAliasesAsString.split(",").map(alias => alias.trim()) : undefined;
@@ -94,12 +86,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   const localizedDescriptionsRows = localizedDescriptionsDataTable.hashes() as { locale: Locale; description: string }[];
-  const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
-
-  expect(adminQuestionTheme).toBeDefined();
-  if (!adminQuestionTheme) {
-    return;
-  }
+  const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
   for (const { locale: expectedLocale, description } of localizedDescriptionsRows) {
     const expectedDescription = description.trim() || undefined;
