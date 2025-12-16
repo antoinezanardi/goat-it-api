@@ -10,6 +10,10 @@ When(/^the client retrieves all question themes(?: in locale "(?<locale>[^"]+)")
   await this.fetchAndStoreResponse("/question-themes", fetchOptions);
 });
 
+When(/^the admin retrieves all question themes$/u, async function(this: GoatItWorld) {
+  await this.fetchAndStoreResponse("/admin/question-themes");
+});
+
 When(/^the client retrieves the question theme with id "(?<id>[^"]+)"(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, id: string, locale?: Locale) {
   const fetchOptions = createFetchOptions(locale);
   await this.fetchAndStoreResponse(`/question-themes/${id}`, fetchOptions);

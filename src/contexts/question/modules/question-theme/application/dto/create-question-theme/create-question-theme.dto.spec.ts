@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
-import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme.dto";
-import { CREATE_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/create-question-theme.dto";
+import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
+import { CREATE_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
 
 import { createFakeCreateQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 

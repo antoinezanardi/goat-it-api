@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme.dto";
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme.dto";
+import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
+import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
 import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
@@ -50,6 +51,20 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
   };
 }
 
+function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQuestionThemeDto> = {}): AdminQuestionThemeDto {
+  return {
+    id: faker.database.mongodbObjectId(),
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
+    status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
+    updatedAt: faker.date.anytime().toISOString(),
+    createdAt: faker.date.anytime().toISOString(),
+    ...adminQuestionThemeDto,
+  };
+}
+
 function createFakeCreateQuestionThemeDto(createDto: Partial<CreateQuestionThemeDto> = {}): CreateQuestionThemeDto {
   return {
     slug: createDto.slug ?? faker.lorem.slug(),
@@ -81,6 +96,7 @@ export {
   createFakeQuestionTheme,
   createFakeQuestionThemeDraft,
   createFakeQuestionThemeDto,
+  createFakeAdminQuestionThemeDto,
   createFakeCreateQuestionThemeDto,
   createFakeQuestionThemeDocument,
 };
