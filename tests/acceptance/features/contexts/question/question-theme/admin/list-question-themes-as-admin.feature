@@ -66,6 +66,36 @@ Feature: List Question Themes as Admin
       | de     | Thema, das Wissenschaften, Entdeckungen und Innovationen abdeckt. |
       | pt     | Tema que abrange ciências, descobertas e inovações.               |
 
+  Scenario: Listing all admin question themes with partial translation returns localized data with undefined values
+    Given the database is populated with question themes fixture set with name "two-english-only-question-themes"
+    When the admin retrieves all question themes
+    Then the request should have succeeded with status code 200
+    And the response should contain 2 admin question themes
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized labels:
+      | locale | label  |
+      | en     | Cinema |
+      | fr     |        |
+      | it     |        |
+      | es     |        |
+      | de     |        |
+      | pt     |        |
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized aliases:
+      | locale | aliases       |
+      | en     | Movies, Films |
+      | fr     |               |
+      | it     |               |
+      | es     |               |
+      | de     |               |
+      | pt     |               |
+    And the response should contain an admin question theme among them with slug "cinema" and the following localized descriptions:
+      | locale | description                    |
+      | en     | Theme about cinema and movies. |
+      | fr     |                                |
+      | it     |                                |
+      | es     |                                |
+      | de     |                                |
+      | pt     |                                |
+
   Scenario: Listing all admin question themes when none exist
     When the admin retrieves all question themes
     Then the request should have succeeded with status code 200

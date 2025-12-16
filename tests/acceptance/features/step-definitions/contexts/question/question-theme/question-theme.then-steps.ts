@@ -65,7 +65,9 @@ Then(/^the response should contain an admin question theme among them with slug 
     return;
   }
 
-  for (const { locale: expectedLocale, label: expectedLabel } of localizedLabelsRows) {
+  for (const { locale: expectedLocale, label } of localizedLabelsRows) {
+    const expectedLabel = label.trim() || undefined;
+
     expect(adminQuestionTheme.label[expectedLocale]).toBe(expectedLabel);
   }
 });
@@ -82,16 +84,16 @@ Then(/^the response should contain an admin question theme among them with slug 
   }
 
   for (const { locale: expectedLocale, aliases: expectedAliasesAsString } of localizedAliasesRows) {
-    const expectedAliases = expectedAliasesAsString.split(",").map(alias => alias.trim());
+    const expectedAliases = expectedAliasesAsString.trim() ? expectedAliasesAsString.split(",").map(alias => alias.trim()) : undefined;
 
     expect(adminQuestionTheme.aliases[expectedLocale]).toStrictEqual(expectedAliases);
   }
 });
 
-Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized descriptions:$/u, function(this: GoatItWorld, slug: string, localizedLabelsDataTable: DataTable): void {
+Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized descriptions:$/u, function(this: GoatItWorld, slug: string, localizedDescriptionsDataTable: DataTable): void {
   const adminQuestionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-  const localizedLabelsRows = localizedLabelsDataTable.hashes() as { locale: Locale; description: string }[];
+  const localizedDescriptionsRows = localizedDescriptionsDataTable.hashes() as { locale: Locale; description: string }[];
   const adminQuestionTheme = adminQuestionThemes.find(theme => theme.slug === slug);
 
   expect(adminQuestionTheme).toBeDefined();
@@ -99,7 +101,9 @@ Then(/^the response should contain an admin question theme among them with slug 
     return;
   }
 
-  for (const { locale: expectedLocale, description: expectedDescription } of localizedLabelsRows) {
+  for (const { locale: expectedLocale, description } of localizedDescriptionsRows) {
+    const expectedDescription = description.trim() || undefined;
+
     expect(adminQuestionTheme.description[expectedLocale]).toBe(expectedDescription);
   }
 });
