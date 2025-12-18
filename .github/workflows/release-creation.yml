@@ -25,6 +25,7 @@ jobs:
   install:
     name: Install ⚙️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v6
@@ -35,6 +36,7 @@ jobs:
   release:
     name: Release 🏷️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - install
     env:
@@ -59,6 +61,7 @@ jobs:
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs:
       - install
     outputs:
@@ -117,6 +120,7 @@ jobs:
   badges:
     name: Generate Badges 💠
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - unit-tests
       - acceptance-tests
@@ -142,6 +146,7 @@ jobs:
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - unit-tests
     steps:

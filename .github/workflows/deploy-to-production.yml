@@ -11,6 +11,7 @@ concurrency:
 jobs:
   upload-and-merge-images:
     name: Build and publish Docker images 🐳
+    timeout-minutes: 30
     uses: ./.github/workflows/docker-build-and-push.yml
     with:
       registry-image: ${{ vars.DOCKER_REGISTRY_IMAGE }}
