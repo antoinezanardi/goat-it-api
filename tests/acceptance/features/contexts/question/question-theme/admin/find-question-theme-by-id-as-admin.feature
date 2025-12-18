@@ -12,6 +12,62 @@ Feature: Find Question Theme by ID as Admin
     And the response should contain the following admin question theme:
       | slug  | status |
       | music | active |
+    And the response should contain the following localized labels for the question theme:
+      | locale | label   |
+      | en     | Music   |
+      | fr     | Musique |
+      | it     | Musica  |
+      | es     | Música  |
+      | de     | Musik   |
+      | pt     | Música  |
+    And the response should contain the following localized aliases for the question theme:
+      | locale | aliases             |
+      | en     | Songs, Tunes        |
+      | fr     | Chanson, Son        |
+      | it     | Canzoni, Brani      |
+      | es     | Canciones, Melodías |
+      | de     | Lieder, Melodien    |
+      | pt     | Canções, Músicas    |
+    And the response should contain the following localized descriptions for the question theme:
+      | locale | description                                                  |
+      | en     | Theme about music, artists and music genres.                 |
+      | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
+      | it     | Argomento sulla musica, artisti e generi musicali.     |
+      | es     | Tema sobre música, artistas y géneros musicales.             |
+      | de     | Thema über Musik, Künstler und Musikgenres.                  |
+      | pt     | Tema sobre música, artistas e gêneros musicais.              |
+
+  Scenario: Finding a question theme with partial translation returns localized data with undefined values
+    Given the database is populated with question themes fixture set with name "two-english-only-question-themes"
+    When the admin retrieves the question theme with id "5cd8edcc5fdf4cf6aaf79c9e"
+    Then the request should have succeeded with status code 200
+    And the response should contain the following admin question theme:
+      | slug   | status |
+      | cinema | active |
+    And the response should contain the following localized labels for the question theme:
+      | locale | label   |
+      | en     | Cinema  |
+      | fr     |         |
+      | it     |         |
+      | es     |         |
+      | de     |         |
+      | pt     |         |
+    And the response should contain the following localized aliases for the question theme:
+      | locale | aliases       |
+      | en     | Movies, Films |
+      | fr     |               |
+      | it     |               |
+      | es     |               |
+      | de     |               |
+      | pt     |               |
+    And the response should contain the following localized descriptions for the question theme:
+      | locale | description                    |
+      | en     | Theme about cinema and movies. |
+      | fr     |                                |
+      | it     |                                |
+      | es     |                                |
+      | de     |                                |
+      | pt     |                                |
 
   Scenario: Trying to find a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"

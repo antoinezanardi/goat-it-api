@@ -100,14 +100,5 @@ describe("Admin Question Theme Controller", () => {
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(questionTheme);
     });
-
-    it("should call the mapper with the correct parameters when called.", async() => {
-      const questionTheme = createFakeQuestionTheme();
-      mocks.useCases.findQuestionThemeById.getById.mockResolvedValueOnce(questionTheme);
-      const questionThemeId = "question-theme-id-123";
-      await adminQuestionThemeController.findQuestionThemeById(questionThemeId);
-
-      expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionTheme);
-    });
   });
 });
