@@ -86,6 +86,7 @@ jobs:
   build:
     name: Build App ✨
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - install
     steps:
