@@ -8,7 +8,7 @@ import type { QuestionThemeDto } from "@question/modules/question-theme/applicat
 import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
 import { ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA, QUESTION_THEME_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/datatables/question-theme.datatables.schemas";
-import { expectQuestionThemeDtoToMatch, findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/helpers/question-theme.steps.helpers";
+import { expectAdminQuestionThemeDtoToMatch, expectQuestionThemeDtoToMatch, findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/helpers/question-theme.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -48,8 +48,7 @@ Then(/^the response should contain the following admin question themes:$/u, func
   for (const [index, expectedAdminQuestionTheme] of dataTableRows.entries()) {
     const adminQuestionTheme = questionThemes[index];
 
-    expect(adminQuestionTheme.slug).toBe(expectedAdminQuestionTheme.slug);
-    expect(adminQuestionTheme.status).toBe(expectedAdminQuestionTheme.status);
+    expectAdminQuestionThemeDtoToMatch(adminQuestionTheme, expectedAdminQuestionTheme);
   }
 });
 
@@ -94,4 +93,11 @@ Then(/^the response should contain the following question theme:$/u, function(th
   const expectedQuestionTheme = validateDataTableAndGetFirstRow(questionThemeDataTable, QUESTION_THEME_DATATABLE_ROW_SCHEMA);
 
   expectQuestionThemeDtoToMatch(questionTheme, expectedQuestionTheme);
+});
+
+Then(/^the response should contain the following admin question theme:$/u, function(this: GoatItWorld, questionThemeDataTable: DataTable): void {
+  const adminQuestionTheme = this.expectLastResponseJson<AdminQuestionThemeDto>(ADMIN_QUESTION_THEME_DTO);
+  const expectedAdminQuestionTheme = validateDataTableAndGetFirstRow(questionThemeDataTable, ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA);
+
+  expectAdminQuestionThemeDtoToMatch(adminQuestionTheme, expectedAdminQuestionTheme);
 });
