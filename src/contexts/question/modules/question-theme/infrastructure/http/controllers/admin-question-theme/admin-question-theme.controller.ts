@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -7,6 +7,7 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
@@ -17,6 +18,7 @@ export class AdminQuestionThemeController {
   public constructor(
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+    private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
   @Get()
@@ -55,5 +57,24 @@ export class AdminQuestionThemeController {
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
     return createAdminQuestionThemeDtoFromEntity(questionTheme);
+  }
+
+  @Post("/:id/archive")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTION_THEMES,
+    ],
+    summary: "Archive a question theme",
+    description: `Archive a specific question theme by its unique identifier. Returns the archived question theme with detailed structure for backend administration. An already archived question theme cannot be archived again.`,
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionThemeDto,
+  })
+  public async archiveQuestionTheme(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionThemeDto> {
+    const archivedQuestionTheme = await this.archiveQuestionThemeUseCase.archive(id);
+
+    return createAdminQuestionThemeDtoFromEntity(archivedQuestionTheme);
   }
 }
