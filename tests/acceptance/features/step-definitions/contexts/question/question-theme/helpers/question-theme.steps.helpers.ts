@@ -1,5 +1,6 @@
 import { expect } from "expect";
 
+import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
 function findQuestionThemeBySlugOrThrow<T extends Pick<QuestionThemeDto, "slug">>(questionThemes: T[], slug: string): T {
@@ -21,7 +22,13 @@ function expectQuestionThemeDtoToMatch(questionThemeDto: QuestionThemeDto, expec
   expect(questionThemeDto.status).toBe(expectedQuestionThemeDto.status);
 }
 
+function expectAdminQuestionThemeDtoToMatch(adminQuestionThemeDto: AdminQuestionThemeDto, expectedAdminQuestionThemeDto: Record<string, string>): void {
+  expect(adminQuestionThemeDto.slug).toBe(expectedAdminQuestionThemeDto.slug);
+  expect(adminQuestionThemeDto.status).toBe(expectedAdminQuestionThemeDto.status);
+}
+
 export {
   findQuestionThemeBySlugOrThrow,
   expectQuestionThemeDtoToMatch,
+  expectAdminQuestionThemeDtoToMatch,
 };

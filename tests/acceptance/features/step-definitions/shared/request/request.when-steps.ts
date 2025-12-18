@@ -1,7 +1,7 @@
 import { When } from "@cucumber/cucumber";
 import { construct, crush } from "radashi";
 
-import { tryParseOverriddenPayloadValue } from "@acceptance-features/step-definitions/shared/request/request.steps.helpers";
+import { tryParseOverriddenPayloadValue } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
 

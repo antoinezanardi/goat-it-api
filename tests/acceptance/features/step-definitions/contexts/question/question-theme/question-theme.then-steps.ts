@@ -7,8 +7,9 @@ import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/appli
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
+import { expectLocalizedTextFieldToBe, expectLocalizedTextsFieldToBe } from "@acceptance-features/step-definitions/shared/locale/helpers/locale.steps.helpers";
 import { ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA, QUESTION_THEME_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/datatables/question-theme.datatables.schemas";
-import { expectQuestionThemeDtoToMatch, findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/helpers/question-theme.steps.helpers";
+import { expectAdminQuestionThemeDtoToMatch, expectQuestionThemeDtoToMatch, findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/helpers/question-theme.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -48,8 +49,7 @@ Then(/^the response should contain the following admin question themes:$/u, func
   for (const [index, expectedAdminQuestionTheme] of dataTableRows.entries()) {
     const adminQuestionTheme = questionThemes[index];
 
-    expect(adminQuestionTheme.slug).toBe(expectedAdminQuestionTheme.slug);
-    expect(adminQuestionTheme.status).toBe(expectedAdminQuestionTheme.status);
+    expectAdminQuestionThemeDtoToMatch(adminQuestionTheme, expectedAdminQuestionTheme);
   }
 });
 
@@ -58,11 +58,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const localizedLabelsRows = validateDataTableAndGetRows(localizedLabelsDataTable, QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA);
   const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
-  for (const { locale: expectedLocale, label } of localizedLabelsRows) {
-    const expectedLabel = label.trim() || undefined;
-
-    expect(adminQuestionTheme.label[expectedLocale]).toBe(expectedLabel);
-  }
+  expectLocalizedTextFieldToBe(adminQuestionTheme.label, localizedLabelsRows, "label");
 });
 
 Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized aliases:$/u, function(this: GoatItWorld, slug: string, localizedAliasesDataTable: DataTable): void {
@@ -70,11 +66,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const localizedAliasesRows = validateDataTableAndGetRows(localizedAliasesDataTable, QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA);
   const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
-  for (const { locale: expectedLocale, aliases: expectedAliasesAsString } of localizedAliasesRows) {
-    const expectedAliases = expectedAliasesAsString.trim() ? expectedAliasesAsString.split(",").map(alias => alias.trim()) : undefined;
-
-    expect(adminQuestionTheme.aliases[expectedLocale]).toStrictEqual(expectedAliases);
-  }
+  expectLocalizedTextsFieldToBe(adminQuestionTheme.aliases, localizedAliasesRows, "aliases");
 });
 
 Then(/^the response should contain an admin question theme among them with slug "(?<slug>[^"]+)" and the following localized descriptions:$/u, function(this: GoatItWorld, slug: string, localizedDescriptionsDataTable: DataTable): void {
@@ -82,11 +74,7 @@ Then(/^the response should contain an admin question theme among them with slug 
   const localizedDescriptionsRows = validateDataTableAndGetRows(localizedDescriptionsDataTable, QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA);
   const adminQuestionTheme = findQuestionThemeBySlugOrThrow(adminQuestionThemes, slug);
 
-  for (const { locale: expectedLocale, description } of localizedDescriptionsRows) {
-    const expectedDescription = description.trim() || undefined;
-
-    expect(adminQuestionTheme.description[expectedLocale]).toBe(expectedDescription);
-  }
+  expectLocalizedTextFieldToBe(adminQuestionTheme.description, localizedDescriptionsRows, "description");
 });
 
 Then(/^the response should contain the following question theme:$/u, function(this: GoatItWorld, questionThemeDataTable: DataTable): void {
@@ -94,4 +82,32 @@ Then(/^the response should contain the following question theme:$/u, function(th
   const expectedQuestionTheme = validateDataTableAndGetFirstRow(questionThemeDataTable, QUESTION_THEME_DATATABLE_ROW_SCHEMA);
 
   expectQuestionThemeDtoToMatch(questionTheme, expectedQuestionTheme);
+});
+
+Then(/^the response should contain the following admin question theme:$/u, function(this: GoatItWorld, questionThemeDataTable: DataTable): void {
+  const adminQuestionTheme = this.expectLastResponseJson<AdminQuestionThemeDto>(ADMIN_QUESTION_THEME_DTO);
+  const expectedAdminQuestionTheme = validateDataTableAndGetFirstRow(questionThemeDataTable, ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA);
+
+  expectAdminQuestionThemeDtoToMatch(adminQuestionTheme, expectedAdminQuestionTheme);
+});
+
+Then(/^the response should contain the following localized labels for the question theme:$/u, function(this: GoatItWorld, localizedLabelsDataTable: DataTable): void {
+  const adminQuestionTheme = this.expectLastResponseJson<AdminQuestionThemeDto>(ADMIN_QUESTION_THEME_DTO);
+  const localizedLabelsRows = validateDataTableAndGetRows(localizedLabelsDataTable, QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA);
+
+  expectLocalizedTextFieldToBe(adminQuestionTheme.label, localizedLabelsRows, "label");
+});
+
+Then(/^the response should contain the following localized aliases for the question theme:$/u, function(this: GoatItWorld, localizedAliasesDataTable: DataTable): void {
+  const adminQuestionTheme = this.expectLastResponseJson<AdminQuestionThemeDto>(ADMIN_QUESTION_THEME_DTO);
+  const localizedAliasesRows = validateDataTableAndGetRows(localizedAliasesDataTable, QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA);
+
+  expectLocalizedTextsFieldToBe(adminQuestionTheme.aliases, localizedAliasesRows, "aliases");
+});
+
+Then(/^the response should contain the following localized descriptions for the question theme:$/u, function(this: GoatItWorld, localizedDescriptionsDataTable: DataTable): void {
+  const adminQuestionTheme = this.expectLastResponseJson<AdminQuestionThemeDto>(ADMIN_QUESTION_THEME_DTO);
+  const localizedDescriptionsRows = validateDataTableAndGetRows(localizedDescriptionsDataTable, QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA);
+
+  expectLocalizedTextFieldToBe(adminQuestionTheme.description, localizedDescriptionsRows, "description");
 });
