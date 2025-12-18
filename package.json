@@ -170,6 +170,6 @@
     "nestjs-zod": "^5.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "validator": "^13.15.23"
+    "validator": "^13.15.26"
   }
 }
