@@ -11,7 +11,8 @@ function findQuestionThemeBySlugOrThrow<T extends Pick<QuestionThemeDto, "slug">
 }
 
 function expectQuestionThemeDtoToMatch(questionThemeDto: QuestionThemeDto, expectedQuestionThemeDto: Record<string, string>): void {
-  const expectedQuestionThemeDtoAliases = expectedQuestionThemeDto.aliases.split(",").map(alias => alias.trim());
+  const rawAliases = expectedQuestionThemeDto.aliases.trim();
+  const expectedQuestionThemeDtoAliases = rawAliases ? rawAliases.split(",").map(alias => alias.trim()) : [];
 
   expect(questionThemeDto.slug).toBe(expectedQuestionThemeDto.slug);
   expect(questionThemeDto.label).toBe(expectedQuestionThemeDto.label);

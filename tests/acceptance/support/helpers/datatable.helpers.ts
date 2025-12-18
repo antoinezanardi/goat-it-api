@@ -6,13 +6,13 @@ function validateDataTableAndGetRows<T>(
   schema: ZodType<T>,
 ): T[] {
   const rows = dataTable.hashes();
-  const parsedRows = schema.array().safeParse(rows);
-
-  if (!parsedRows.success) {
-    throw new Error(`Invalid DataTable:\n${parsedRows.error.message}`);
-  }
   if (rows.length === 0) {
     throw new Error("DataTable must contain at least one data row.");
+  }
+
+  const parsedRows = schema.array().safeParse(rows);
+  if (!parsedRows.success) {
+    throw new Error(`Invalid DataTable:\n${parsedRows.error.message}`);
   }
   return parsedRows.data;
 }
