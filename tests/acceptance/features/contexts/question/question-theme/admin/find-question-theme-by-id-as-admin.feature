@@ -32,7 +32,7 @@ Feature: Find Question Theme by ID as Admin
       | locale | description                                                  |
       | en     | Theme about music, artists and music genres.                 |
       | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
-      | it     | Argomento sulla musica, artisti e generi musicali.     |
+      | it     | Argomento sulla musica, artisti e generi musicali.           |
       | es     | Tema sobre música, artistas y géneros musicales.             |
       | de     | Thema über Musik, Künstler und Musikgenres.                  |
       | pt     | Tema sobre música, artistas e gêneros musicais.              |
@@ -45,13 +45,13 @@ Feature: Find Question Theme by ID as Admin
       | slug   | status |
       | cinema | active |
     And the response should contain the following localized labels for the question theme:
-      | locale | label   |
-      | en     | Cinema  |
-      | fr     |         |
-      | it     |         |
-      | es     |         |
-      | de     |         |
-      | pt     |         |
+      | locale | label  |
+      | en     | Cinema |
+      | fr     |        |
+      | it     |        |
+      | es     |        |
+      | de     |        |
+      | pt     |        |
     And the response should contain the following localized aliases for the question theme:
       | locale | aliases       |
       | en     | Movies, Films |

@@ -3,16 +3,14 @@ import { Test } from "@nestjs/testing";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 
-import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/create-question-theme.use-case.mock";
-import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/archive-question-theme.use-case.mock";
-import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
+import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock";
+import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/create-question-theme.use-case.mock";
 
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 import { createFakeCreateQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDraft, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
@@ -29,7 +27,6 @@ describe("Question Theme Controller", () => {
       findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
       createQuestionTheme: ReturnType<typeof createMockedCreateQuestionThemeUseCase>;
-      archiveQuestionTheme: ReturnType<typeof createMockedArchiveQuestionThemeUseCase>;
     };
     mappers: {
       createQuestionThemeDtoFromEntity: Mock;
@@ -43,7 +40,6 @@ describe("Question Theme Controller", () => {
         findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
         createQuestionTheme: createMockedCreateQuestionThemeUseCase(),
-        archiveQuestionTheme: createMockedArchiveQuestionThemeUseCase(),
       },
       mappers: {
         createQuestionThemeDtoFromEntity: vi.mocked(createQuestionThemeDtoFromEntity),
@@ -64,10 +60,6 @@ describe("Question Theme Controller", () => {
         {
           provide: CreateQuestionThemeUseCase,
           useValue: mocks.useCases.createQuestionTheme,
-        },
-        {
-          provide: ArchiveQuestionThemeUseCase,
-          useValue: mocks.useCases.archiveQuestionTheme,
         },
       ],
     }).compile();
@@ -180,39 +172,6 @@ describe("Question Theme Controller", () => {
       mocks.useCases.createQuestionTheme.create.mockResolvedValueOnce(createdQuestionTheme);
       mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
       const result = await questionThemeController.createQuestionTheme(createQuestionThemeDto, localization);
-
-      expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
-    });
-  });
-
-  describe(QuestionThemeController.prototype.archiveQuestionTheme, () => {
-    it("should archive question theme by id when called.", async() => {
-      const questionThemeId = "question-theme-id";
-      const localization = createFakeLocalizationOptions();
-      await questionThemeController.archiveQuestionTheme(questionThemeId, localization);
-
-      expect(mocks.useCases.archiveQuestionTheme.archive).toHaveBeenCalledExactlyOnceWith(questionThemeId);
-    });
-
-    it("should map the archived question theme to dto when called.", async() => {
-      const questionThemeId = "question-theme-id";
-      const localization = createFakeLocalizationOptions();
-      const archivedQuestionTheme = createFakeQuestionTheme();
-      mocks.useCases.archiveQuestionTheme.archive.mockResolvedValueOnce(archivedQuestionTheme);
-      await questionThemeController.archiveQuestionTheme(questionThemeId, localization);
-
-      expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(archivedQuestionTheme, localization);
-    });
-
-    it("should return the mapped dto from the mapper when archived.", async() => {
-      const questionThemeId = "question-theme-id";
-      const localization = createFakeLocalizationOptions();
-      const archivedQuestionTheme = createFakeQuestionTheme();
-      const expectedDto = createFakeQuestionThemeDto();
-
-      mocks.useCases.archiveQuestionTheme.archive.mockResolvedValueOnce(archivedQuestionTheme);
-      mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
-      const result = await questionThemeController.archiveQuestionTheme(questionThemeId, localization);
 
       expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
     });
