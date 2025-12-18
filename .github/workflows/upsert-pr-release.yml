@@ -12,6 +12,7 @@ jobs:
   install:
     name: Install ⚙️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v6
@@ -22,6 +23,7 @@ jobs:
   get-next-release-version:
     name: Get next release version 🏷️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - install
     steps:
@@ -61,6 +63,7 @@ jobs:
   upsert-pr-release:
     name: Upsert Pull Request Release 🔃
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - get-next-release-version
     steps:
