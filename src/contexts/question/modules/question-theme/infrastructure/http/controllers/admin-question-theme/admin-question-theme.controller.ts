@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -7,6 +7,9 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
+import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
+import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
@@ -18,6 +21,7 @@ export class AdminQuestionThemeController {
   public constructor(
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+    private readonly createQuestionThemeUseCase: CreateQuestionThemeUseCase,
     private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
@@ -57,6 +61,26 @@ export class AdminQuestionThemeController {
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
 
     return createAdminQuestionThemeDtoFromEntity(questionTheme);
+  }
+
+  @Post()
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTION_THEMES,
+    ],
+    summary: "Create a new question theme",
+    description: "Create a new question theme with the provided details. Returns the created question theme with detailed structure for backend administration.",
+  })
+  @ZodResponse({
+    status: HttpStatus.CREATED,
+    type: AdminQuestionThemeDto,
+  })
+  public async createQuestionTheme(@Body() createQuestionThemeDto: CreateQuestionThemeDto): Promise<AdminQuestionThemeDto> {
+    const questionThemeDraft = createQuestionThemeDraftEntityFromCreateDto(createQuestionThemeDto);
+    const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeDraft);
+
+    return createAdminQuestionThemeDtoFromEntity(createdQuestionTheme);
   }
 
   @Post("/:id/archive")

@@ -1,33 +1,41 @@
-@question @question-theme @create-question-theme
+@question @question-theme @create-question-theme @admin
 
-Feature: Create Question Theme
+Feature: Create Question Theme As Admin
   In order to create question themes to categorize questions
-  As an API client
+  As an admin API client
   I want to be able to create a question theme by providing its data
 
-  Scenario: Creating a question theme in default locale
+  Scenario: Creating a question theme with complete data
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
-    When the client creates a new question theme with the request payload
+    When the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
-    And the response should contain the following question theme:
-      | slug              | label             | aliases            | description                                                        | status |
-      | general-knowledge | General Knowledge | Knowledge, General | A theme that encompasses a wide range of general knowledge topics. | active |
-
-  Scenario: Creating a question theme in wildcard locale
-    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
-    When the client creates a new question theme with the request payload in locale "*"
-    Then the request should have succeeded with status code 201
-    And the response should contain the following question theme:
-      | slug              | label             | aliases            | description                                                        | status |
-      | general-knowledge | General Knowledge | Knowledge, General | A theme that encompasses a wide range of general knowledge topics. | active |
-
-  Scenario: Creating a question theme in French locale
-    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
-    When the client creates a new question theme with the request payload in locale "fr"
-    Then the request should have succeeded with status code 201
-    And the response should contain the following question theme:
-      | slug              | label            | aliases                | description                                                         | status |
-      | general-knowledge | Culture générale | Connaissances, Général | Un thème qui englobe une large gamme de sujets de culture générale. | active |
+    And the response should contain the following admin question theme:
+      | slug              | status |
+      | general-knowledge | active |
+    And the response should contain the following localized labels for the question theme:
+      | locale | label                |
+      | en     | General knowledge    |
+      | fr     | Culture générale     |
+      | it     | Conoscenza generale  |
+      | es     | Conocimiento general |
+      | de     | Allgemeines Wissen   |
+      | pt     | Conhecimento geral   |
+    And the response should contain the following localized aliases for the question theme:
+      | locale | aliases                       |
+      | en     | Knowledge, General            |
+      | fr     | Connaissances, Général        |
+      | it     | Conoscenza, Generale          |
+      | es     | Conocimiento, General         |
+      | de     | Allgemeines Wissen, Allgemein |
+      | pt     | Conhecimento, Geral           |
+    And the response should contain the following localized descriptions for the question theme:
+      | locale | description                                                                 |
+      | en     | A theme that encompasses a wide range of general knowledge topics.          |
+      | fr     | Un thème qui englobe une large gamme de sujets de culture générale.         |
+      | it     | Un tema che abbraccia una grande gamma di argomenti di conoscenza generale. |
+      | es     | Un tema que abarca una amplia gama de temas de conocimiento general.        |
+      | de     | Ein Thema, das eine breite Palette von allgemeinen Wissensthemen abdeckt.   |
+      | pt     | Um tema que abrange uma ampla gama de tópicos de conhecimento geral.        |
 
   Scenario: Creating a question theme in Spanish Locale with trimmed values
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
@@ -37,14 +45,23 @@ Feature: Create Question Theme
       | label.es       | string | "   Cultura general "                            |
       | aliases.es     | array  | ["   Conocimientos ", "  General  "]             |
       | description.es | string | "   Un tema que abarca una amplia gama de temas" |
-    When the client creates a new question theme with the request payload in locale "es"
+    When the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
-    And the response should contain the following question theme:
-      | slug              | label           | aliases                | description                                 | status |
-      | general-knowledge | Cultura general | Conocimientos, General | Un tema que abarca una amplia gama de temas | active |
+    And the response should contain the following admin question theme:
+      | slug              | status |
+      | general-knowledge | active |
+    And the response should contain the following localized labels for the question theme:
+      | locale | label           |
+      | es     | Cultura general |
+    And the response should contain the following localized aliases for the question theme:
+      | locale | aliases                |
+      | es     | Conocimientos, General |
+    And the response should contain the following localized descriptions for the question theme:
+      | locale | description                                 |
+      | es     | Un tema que abarca una amplia gama de temas |
 
   Scenario: Trying to create a question theme with missing required fields
-    When the client creates a new question theme with an empty payload
+    When the admin creates a new question theme with an empty payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -60,7 +77,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path | type   | value |
       | slug | string |       |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -74,7 +91,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path | type   | value       |
       | slug | string | InvalidSlug |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -87,7 +104,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path | type   | value |
       | slug | string | ab    |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -100,7 +117,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path | type   | value                                                                |
       | slug | string | a-very-long-slug-that-exceeds-the-maximum-length-of-fifty-characters |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -113,7 +130,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path     | type   | value |
       | label.fr | string |       |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -126,7 +143,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path     | type    | value |
       | label.en | integer | 123   |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -139,7 +156,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path     | type   | value |
       | label.jp | string | 日本語   |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -152,7 +169,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path     | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
       | label.en | string | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut bibendum magna. Morbi fringilla quis massa eu molestie. Nunc sed dictum ipsum, at fermentum ante. Morbi viverra tortor vulputate nisl mollis, sed placerat quam finibus. Mauris neque velit, interdum a gravida id, hendrerit vel metus. Pellentesque convallis mi ut venenatis malesuada. In at convallis nisi, non porta leo. Fusce lectus ex, consequat at pulvinar in, consectetur sit amet ligula. Vestibulum placerat lobortis turpis. |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -165,7 +182,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path       | type   | value   |
       | aliases.fr | string | Culture |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -178,7 +195,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path       | type  | value          |
       | aliases.jp | array | ["日本語", "クイズ"] |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -191,7 +208,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path       | type  | value |
       | aliases.es | array | []    |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -204,7 +221,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path       | type  | value                                                                                                            |
       | aliases.en | array | ["Alias1", "Alias2", "Alias3", "Alias4", "Alias5", "Alias6", "Alias7", "Alias8", "Alias9", "Alias10", "Alias11"] |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -217,7 +234,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path           | type   | value |
       | description.es | string |       |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -230,7 +247,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path           | type    | value |
       | description.de | boolean | true  |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -243,7 +260,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path           | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
       | description.it | string | Questo è un tema che copre una vasta gamma di argomenti di conoscenza generale. Viene utilizzato per testare la conoscenza generale dei partecipanti su vari argomenti, tra cui storia, geografia, scienza, cultura pop e molto altro. Le domande in questo tema sono progettate per essere stimolanti e coinvolgenti, incoraggiando i partecipanti a pensare in modo critico e ad applicare le loro conoscenze in modi nuovi. Che tu sia un appassionato di quiz o semplicemente desideri mettere alla prova la tua conoscenza generale, questo tema offre qualcosa per tutti. Preparati a mettere alla prova la tua mente e a divertirti lungo il percorso! |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -256,7 +273,7 @@ Feature: Create Question Theme
     When the request payload is overridden with the following values:
       | path           | type   | value                        |
       | description.lt | string | Tema apimties įvairias temas |
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
@@ -266,9 +283,9 @@ Feature: Create Question Theme
 
   Scenario: Trying to create a question theme with an already existing slug
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
-    When the client creates a new question theme with the request payload
+    When the admin creates a new question theme with the request payload
     And the request payload is set from scope "question-theme", type "creation" and name "complete"
-    And the client creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 409 and the response should contain the following error:
       | error    | statusCode | message                                                   |
       | Conflict | 409        | Question theme with slug general-knowledge already exists |
