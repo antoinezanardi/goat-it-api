@@ -4,7 +4,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 const COMPLETE_QUESTION_THEME_CREATION_PAYLOAD = Object.freeze(createFakeCreateQuestionThemeDto({
   slug: "general-knowledge",
   label: createFakeLocalizedText({
-    en: "General Knowledge",
+    en: "General knowledge",
     fr: "Culture générale",
     es: "Conocimiento general",
     pt: "Conhecimento geral",
