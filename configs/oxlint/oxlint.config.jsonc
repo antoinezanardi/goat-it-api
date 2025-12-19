@@ -116,10 +116,7 @@
     ],
     "capitalized-comments": [
       "error",
-      "never",
-      {
-        "ignorePattern": "TODO|Stryker"
-      }
+      "always"
     ],
     "class-methods-use-this": "error",
     "complexity": "error",
