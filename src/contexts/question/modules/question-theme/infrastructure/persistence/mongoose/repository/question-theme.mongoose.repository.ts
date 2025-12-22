@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 
+import { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
@@ -43,6 +44,18 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
+  }
+
+  public async update(id: string, questionThemeUpdateContract: QuestionThemeUpdateContract): Promise<QuestionTheme> {
+    const updatedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(
+      id,
+      questionThemeUpdateContract,
+      { new: true },
+    );
+    if (!updatedQuestionThemeDocument) {
+      throw new Error(`QuestionTheme with id ${id} not found`);
+    }
+    return createQuestionThemeFromDocument(updatedQuestionThemeDocument);
   }
 
   public async archive(id: string): Promise<QuestionTheme | undefined> {

@@ -7,6 +7,7 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
+import { createFakeQuestionThemeUpdateContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 import { createFakeQuestionTheme, createFakeQuestionThemeDocument, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
@@ -161,6 +162,52 @@ describe("Question Theme Mongoose Repository", () => {
       const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);
 
       expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.update, () => {
+    it("should update document in model when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeUpdateContract = createFakeQuestionThemeUpdateContract();
+      await repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract);
+
+      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(
+        questionThemeId,
+        questionThemeUpdateContract,
+        { new: true },
+      );
+    });
+
+    it("should map and return updated question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeUpdateContract = createFakeQuestionThemeUpdateContract();
+      const updatedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(updatedQuestionThemeDocument);
+      await repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(updatedQuestionThemeDocument);
+    });
+
+    it("should return updated question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeUpdateContract = createFakeQuestionThemeUpdateContract();
+      const updatedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      const updatedQuestionTheme = createFakeQuestionTheme();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(updatedQuestionThemeDocument);
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(updatedQuestionTheme);
+      const actualQuestionTheme = await repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract);
+
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(updatedQuestionTheme);
+    });
+
+    it("should throw an error when document to update is not found.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeUpdateContract = createFakeQuestionThemeUpdateContract();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(null);
+
+      await expect(repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract))
+        .rejects
+        .toThrowError(`QuestionTheme with id ${questionThemeId} not found`);
     });
   });
 
