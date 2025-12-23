@@ -200,14 +200,13 @@ describe("Question Theme Mongoose Repository", () => {
       expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(updatedQuestionTheme);
     });
 
-    it("should throw an error when document to update is not found.", async() => {
+    it("should return undefined when document to update is not found.", async() => {
       const questionThemeId = "question-theme-id";
       const questionThemeUpdateContract = createFakeQuestionThemeUpdateContract();
       mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(null);
+      const actualQuestionTheme = await repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract);
 
-      await expect(repositories.questionTheme.update(questionThemeId, questionThemeUpdateContract))
-        .rejects
-        .toThrowError(`QuestionTheme with id ${questionThemeId} not found`);
+      expect(actualQuestionTheme).toBeUndefined();
     });
   });
 

@@ -208,6 +208,21 @@ describe("Admin Question Theme Controller", () => {
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(updatedQuestionTheme);
     });
+
+    it("should return the mapped dto from the mapper when updated.", async() => {
+      const questionThemeId = "question-theme-id";
+      const patchQuestionThemeDto = {
+        slug: "new-slug",
+      };
+      const updatedQuestionTheme = createFakeQuestionTheme();
+      const expectedDto = createFakeAdminQuestionThemeDto();
+
+      mocks.useCases.updateQuestionTheme.update.mockResolvedValueOnce(updatedQuestionTheme);
+      mocks.mappers.createAdminQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
+      const result = await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
+
+      expect(result).toStrictEqual<AdminQuestionThemeDto>(expectedDto);
+    });
   });
 
   describe(AdminQuestionThemeController.prototype.archiveQuestionTheme, () => {

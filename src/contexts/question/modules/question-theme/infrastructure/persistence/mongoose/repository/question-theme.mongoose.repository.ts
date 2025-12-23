@@ -46,14 +46,14 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }
 
-  public async update(id: string, questionThemeUpdateContract: QuestionThemeUpdateContract): Promise<QuestionTheme> {
+  public async update(id: string, questionThemeUpdateContract: QuestionThemeUpdateContract): Promise<QuestionTheme | undefined> {
     const updatedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(
       id,
       questionThemeUpdateContract,
       { new: true },
     );
     if (!updatedQuestionThemeDocument) {
-      throw new Error(`QuestionTheme with id ${id} not found`);
+      return undefined;
     }
     return createQuestionThemeFromDocument(updatedQuestionThemeDocument);
   }

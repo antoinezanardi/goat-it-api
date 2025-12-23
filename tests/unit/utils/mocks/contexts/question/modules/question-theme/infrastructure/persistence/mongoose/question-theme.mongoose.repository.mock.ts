@@ -11,7 +11,7 @@ type QuestionThemeRepositoryStub = {
   findById: (id: string) => Promise<QuestionTheme | undefined>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (data: QuestionThemeDraft) => Promise<QuestionTheme>;
-  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme>;
+  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme | undefined>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
 

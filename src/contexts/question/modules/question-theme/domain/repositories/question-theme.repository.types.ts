@@ -7,7 +7,7 @@ type QuestionThemeRepository = {
   findById: (id: string) => Promise<QuestionTheme | undefined>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (questionTheme: QuestionThemeDraft) => Promise<QuestionTheme>;
-  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme>;
+  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme | undefined>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
 

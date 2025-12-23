@@ -7,12 +7,12 @@ import type { Mock } from "vitest";
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 type UpdateQuestionThemeUseCaseStub = {
-  update: (questionThemeDraft: QuestionThemeUpdateCommand) => Promise<QuestionTheme>;
+  update: (questionThemeUpdateCommand: QuestionThemeUpdateCommand) => Promise<QuestionTheme>;
 };
 
-type MockedCreateQuestionThemeUseCase = { [K in keyof UpdateQuestionThemeUseCaseStub]: Mock<UpdateQuestionThemeUseCaseStub[K]> };
+type MockedUpdateQuestionThemeUseCase = { [K in keyof UpdateQuestionThemeUseCaseStub]: Mock<UpdateQuestionThemeUseCaseStub[K]> };
 
-function createMockedUpdateQuestionThemeUseCase(): MockedCreateQuestionThemeUseCase {
+function createMockedUpdateQuestionThemeUseCase(): MockedUpdateQuestionThemeUseCase {
   return {
     update: vi.fn<UpdateQuestionThemeUseCaseStub["update"]>().mockResolvedValue(createFakeQuestionTheme()),
   };

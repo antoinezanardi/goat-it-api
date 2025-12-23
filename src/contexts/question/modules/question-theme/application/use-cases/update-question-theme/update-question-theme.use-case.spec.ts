@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 
 import { UpdateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/update-question-theme.use-case";
+import { QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
@@ -49,6 +50,19 @@ describe("Update Question Theme Use Case", () => {
       await updateQuestionThemeUseCase.update(updateQuestionThemeCommand);
 
       expect(mocks.repositories.questionTheme.update).toHaveBeenCalledExactlyOnceWith(id, payload);
+    });
+
+    it("should throw an error when question theme to update is not found.", async() => {
+      const id = "question-theme-id-1";
+      const payload = createFakeQuestionThemeUpdateContract();
+      mocks.repositories.questionTheme.update.mockResolvedValueOnce(undefined);
+      const updateQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+        questionThemeId: id,
+        payload,
+      });
+      const expectedError = new QuestionThemeNotFoundError(id);
+
+      await expect(updateQuestionThemeUseCase.update(updateQuestionThemeCommand)).rejects.toThrowError(expectedError);
     });
 
     it("should return the updated question theme from repository when called.", async() => {

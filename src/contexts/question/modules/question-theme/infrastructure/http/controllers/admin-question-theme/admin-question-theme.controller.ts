@@ -87,7 +87,7 @@ export class AdminQuestionThemeController {
     return createAdminQuestionThemeDtoFromEntity(createdQuestionTheme);
   }
 
-  @Patch()
+  @Patch("/:id")
   @ApiOperation({
     tags: [
       SwaggerTags.ADMIN,
