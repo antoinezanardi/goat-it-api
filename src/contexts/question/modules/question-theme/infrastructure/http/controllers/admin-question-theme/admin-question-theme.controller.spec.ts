@@ -17,7 +17,8 @@ import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/questi
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/archive-question-theme.use-case.mock";
 
-import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeUpdateCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
@@ -190,7 +191,7 @@ describe("Admin Question Theme Controller", () => {
       const patchQuestionThemeDto = {
         slug: "new-slug",
       };
-      const mappedUpdateCommand = {};
+      const mappedUpdateCommand = createFakeQuestionThemeUpdateCommand();
       mocks.mappers.createQuestionThemeUpdateCommandFromPatchQuestionThemeDto.mockReturnValueOnce(mappedUpdateCommand);
       await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
 
@@ -199,9 +200,9 @@ describe("Admin Question Theme Controller", () => {
 
     it("should map the updated question theme to dto when updated.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = {
+      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({
         slug: "new-slug",
-      };
+      });
       const updatedQuestionTheme = createFakeQuestionTheme();
       mocks.useCases.updateQuestionTheme.update.mockResolvedValueOnce(updatedQuestionTheme);
       await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
@@ -211,9 +212,9 @@ describe("Admin Question Theme Controller", () => {
 
     it("should return the mapped dto from the mapper when updated.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = {
+      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({
         slug: "new-slug",
-      };
+      });
       const updatedQuestionTheme = createFakeQuestionTheme();
       const expectedDto = createFakeAdminQuestionThemeDto();
 
