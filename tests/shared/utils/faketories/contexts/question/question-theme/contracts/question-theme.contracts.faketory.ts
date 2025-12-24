@@ -4,13 +4,13 @@ import type { QuestionThemeModificationContract } from "@question/modules/questi
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-function createFakeQuestionThemeModificationContract(questionThemeUpdateContract: Partial<QuestionThemeModificationContract> = {}): QuestionThemeModificationContract {
+function createFakeQuestionThemeModificationContract(questionThemeModificationContract: Partial<QuestionThemeModificationContract> = {}): QuestionThemeModificationContract {
   return {
     slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
     label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
     aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
     description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    ...questionThemeUpdateContract,
+    ...questionThemeModificationContract,
   };
 }
 

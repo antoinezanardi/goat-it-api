@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
 
-import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme-use-case.service";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme.use-case.service";
 import { QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
 
@@ -13,7 +13,7 @@ import { createFakeQuestionThemeUpdateCommand } from "@faketories/contexts/quest
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 describe("Update Question Theme Use Case", () => {
-  let updateQuestionThemeUseCase: ModifyQuestionThemeUseCase;
+  let modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase;
   let mocks: {
     repositories: {
       questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;
@@ -36,7 +36,7 @@ describe("Update Question Theme Use Case", () => {
       ],
     }).compile();
 
-    updateQuestionThemeUseCase = testingModule.get<ModifyQuestionThemeUseCase>(ModifyQuestionThemeUseCase);
+    modifyQuestionThemeUseCase = testingModule.get<ModifyQuestionThemeUseCase>(ModifyQuestionThemeUseCase);
   });
 
   describe(ModifyQuestionThemeUseCase.prototype.modify, () => {
@@ -51,7 +51,7 @@ describe("Update Question Theme Use Case", () => {
         questionThemeId: id,
         payload,
       });
-      await updateQuestionThemeUseCase.modify(updateQuestionThemeCommand);
+      await modifyQuestionThemeUseCase.modify(updateQuestionThemeCommand);
 
       expect(mocks.repositories.questionTheme.modify).toHaveBeenCalledExactlyOnceWith(id, payload);
     });
@@ -66,7 +66,7 @@ describe("Update Question Theme Use Case", () => {
       });
       const expectedError = new QuestionThemeNotFoundError(id);
 
-      await expect(updateQuestionThemeUseCase.modify(updateQuestionThemeCommand)).rejects.toThrowError(expectedError);
+      await expect(modifyQuestionThemeUseCase.modify(updateQuestionThemeCommand)).rejects.toThrowError(expectedError);
     });
 
     it("should return the updated question theme from repository when called.", async() => {
@@ -78,7 +78,7 @@ describe("Update Question Theme Use Case", () => {
         questionThemeId: id,
         payload,
       });
-      const result = await updateQuestionThemeUseCase.modify(updateQuestionThemeCommand);
+      const result = await modifyQuestionThemeUseCase.modify(updateQuestionThemeCommand);
 
       expect(result).toStrictEqual<QuestionTheme>(expectedUpdatedQuestionTheme);
     });
@@ -92,7 +92,7 @@ describe("Update Question Theme Use Case", () => {
         questionThemeId: id,
         payload,
       });
-      await updateQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand);
+      await modifyQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand);
 
       expect(mocks.repositories.questionTheme.findBySlug).not.toHaveBeenCalled();
     });
@@ -105,7 +105,7 @@ describe("Update Question Theme Use Case", () => {
         payload,
       });
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(undefined);
-      await updateQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand);
+      await modifyQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand);
 
       expect(mocks.repositories.questionTheme.findBySlug).toHaveBeenCalledExactlyOnceWith("new-slug");
     });
@@ -122,7 +122,7 @@ describe("Update Question Theme Use Case", () => {
       });
       const expectedError = new QuestionThemeSlugAlreadyExistsError(existingSlug);
 
-      await expect(updateQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).rejects.toThrowError(expectedError);
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).rejects.toThrowError(expectedError);
     });
 
     it("should not throw an error when no other question theme with same slug exists.", async() => {
@@ -135,7 +135,7 @@ describe("Update Question Theme Use Case", () => {
         payload,
       });
 
-      await expect(updateQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).resolves.not.toThrowError();
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).resolves.not.toThrowError();
     });
 
     it("should not throw an error when the question theme with same slug is the one being updated.", async() => {
@@ -149,7 +149,7 @@ describe("Update Question Theme Use Case", () => {
         payload,
       });
 
-      await expect(updateQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).resolves.not.toThrowError();
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNewSlugAlreadyExists"](updateQuestionThemeCommand)).resolves.not.toThrowError();
     });
   });
 });

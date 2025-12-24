@@ -47,8 +47,8 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }
 
-  public async modify(id: string, questionThemeUpdateContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
-    const questionThemeUpdateData = crush(questionThemeUpdateContract);
+  public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
+    const questionThemeUpdateData = crush(questionThemeModificationContract);
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
