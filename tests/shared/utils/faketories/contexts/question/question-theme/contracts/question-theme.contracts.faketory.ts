@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import type { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-function createFakeQuestionThemeUpdateContract(questionThemeUpdateContract: Partial<QuestionThemeUpdateContract> = {}): QuestionThemeUpdateContract {
+function createFakeQuestionThemeModificationContract(questionThemeUpdateContract: Partial<QuestionThemeModificationContract> = {}): QuestionThemeModificationContract {
   return {
     slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
     label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
@@ -15,5 +15,5 @@ function createFakeQuestionThemeUpdateContract(questionThemeUpdateContract: Part
 }
 
 export {
-  createFakeQuestionThemeUpdateContract,
+  createFakeQuestionThemeModificationContract,
 };

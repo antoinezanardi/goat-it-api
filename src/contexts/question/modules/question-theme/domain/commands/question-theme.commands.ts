@@ -1,10 +1,10 @@
-import type { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import type { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
-type QuestionThemeUpdateCommand = {
+type QuestionThemeModificationCommand = {
   questionThemeId: string;
-  payload: QuestionThemeUpdateContract;
+  payload: QuestionThemeModificationContract;
 };
 
 export type {
-  QuestionThemeUpdateCommand,
+  QuestionThemeModificationCommand,
 };

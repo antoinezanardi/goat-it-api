@@ -1,4 +1,4 @@
-import type { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import type { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
@@ -11,7 +11,7 @@ type QuestionThemeRepositoryStub = {
   findById: (id: string) => Promise<QuestionTheme | undefined>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (data: QuestionThemeDraft) => Promise<QuestionTheme>;
-  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme | undefined>;
+  modify: (id: string, questionTheme: QuestionThemeModificationContract) => Promise<QuestionTheme | undefined>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
 
@@ -27,7 +27,7 @@ function createMockedQuestionThemeRepository(): MockedQuestionThemeRepository {
     findById: vi.fn<QuestionThemeRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestionTheme()),
     findBySlug: vi.fn<QuestionThemeRepositoryStub["findBySlug"]>().mockResolvedValue(createFakeQuestionTheme()),
     create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
-    update: vi.fn<QuestionThemeRepositoryStub["update"]>().mockResolvedValue(createFakeQuestionTheme()),
+    modify: vi.fn<QuestionThemeRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestionTheme()),
     archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
   };
 }

@@ -1,6 +1,6 @@
 import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
-type QuestionThemeUpdateContract = {
+type QuestionThemeModificationContract = {
   slug?: string;
   label?: Partial<LocalizedText>;
   aliases?: Partial<LocalizedTexts>;
@@ -8,5 +8,5 @@ type QuestionThemeUpdateContract = {
 };
 
 export type {
-  QuestionThemeUpdateContract,
+  QuestionThemeModificationContract,
 };

@@ -1,4 +1,4 @@
-import type { QuestionThemeUpdateCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
@@ -6,16 +6,16 @@ import type { Mock } from "vitest";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
-type UpdateQuestionThemeUseCaseStub = {
-  update: (questionThemeUpdateCommand: QuestionThemeUpdateCommand) => Promise<QuestionTheme>;
+type ModifyQuestionThemeUseCaseStub = {
+  modify: (questionThemeModificationCommand: QuestionThemeModificationCommand) => Promise<QuestionTheme>;
 };
 
-type MockedUpdateQuestionThemeUseCase = { [K in keyof UpdateQuestionThemeUseCaseStub]: Mock<UpdateQuestionThemeUseCaseStub[K]> };
+type MockedModifyQuestionThemeUseCase = { [K in keyof ModifyQuestionThemeUseCaseStub]: Mock<ModifyQuestionThemeUseCaseStub[K]> };
 
-function createMockedUpdateQuestionThemeUseCase(): MockedUpdateQuestionThemeUseCase {
+function createMockedModifyQuestionThemeUseCase(): MockedModifyQuestionThemeUseCase {
   return {
-    update: vi.fn<UpdateQuestionThemeUseCaseStub["update"]>().mockResolvedValue(createFakeQuestionTheme()),
+    modify: vi.fn<ModifyQuestionThemeUseCaseStub["modify"]>().mockResolvedValue(createFakeQuestionTheme()),
   };
 }
 
-export { createMockedUpdateQuestionThemeUseCase };
+export { createMockedModifyQuestionThemeUseCase };

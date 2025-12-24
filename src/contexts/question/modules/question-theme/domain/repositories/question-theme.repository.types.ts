@@ -1,4 +1,4 @@
-import type { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import type { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
 import type { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
@@ -7,7 +7,7 @@ type QuestionThemeRepository = {
   findById: (id: string) => Promise<QuestionTheme | undefined>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (questionTheme: QuestionThemeDraft) => Promise<QuestionTheme>;
-  update: (id: string, questionTheme: QuestionThemeUpdateContract) => Promise<QuestionTheme | undefined>;
+  modify: (id: string, questionTheme: QuestionThemeModificationContract) => Promise<QuestionTheme | undefined>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
 

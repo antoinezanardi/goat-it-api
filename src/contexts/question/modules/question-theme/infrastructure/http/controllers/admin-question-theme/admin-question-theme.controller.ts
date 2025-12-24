@@ -7,8 +7,8 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import { createQuestionThemeUpdateCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
-import { UpdateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/update-question-theme.use-case";
+import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme-use-case.service";
 import { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
 import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
@@ -25,7 +25,7 @@ export class AdminQuestionThemeController {
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly createQuestionThemeUseCase: CreateQuestionThemeUseCase,
-    private readonly updateQuestionThemeUseCase: UpdateQuestionThemeUseCase,
+    private readonly updateQuestionThemeUseCase: ModifyQuestionThemeUseCase,
     private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
@@ -104,8 +104,8 @@ export class AdminQuestionThemeController {
     @Param("id", MongoIdPipe) id: string,
     @Body() patchQuestionThemeDto: PatchQuestionThemeDto,
   ): Promise<AdminQuestionThemeDto> {
-    const questionThemeUpdateCommand = createQuestionThemeUpdateCommandFromPatchQuestionThemeDto(id, patchQuestionThemeDto);
-    const updatedQuestionTheme = await this.updateQuestionThemeUseCase.update(questionThemeUpdateCommand);
+    const questionThemeUpdateCommand = createQuestionThemeModificationCommandFromPatchQuestionThemeDto(id, patchQuestionThemeDto);
+    const updatedQuestionTheme = await this.updateQuestionThemeUseCase.modify(questionThemeUpdateCommand);
 
     return createAdminQuestionThemeDtoFromEntity(updatedQuestionTheme);
   }

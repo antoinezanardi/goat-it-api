@@ -1,7 +1,7 @@
 import type { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
-import type { QuestionThemeUpdateCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
-function createQuestionThemeUpdateCommandFromPatchQuestionThemeDto(questionThemeId: string, patchQuestionThemeDto: PatchQuestionThemeDto): QuestionThemeUpdateCommand {
+function createQuestionThemeModificationCommandFromPatchQuestionThemeDto(questionThemeId: string, patchQuestionThemeDto: PatchQuestionThemeDto): QuestionThemeModificationCommand {
   return {
     questionThemeId,
     payload: {
@@ -14,5 +14,5 @@ function createQuestionThemeUpdateCommandFromPatchQuestionThemeDto(questionTheme
 }
 
 export {
-  createQuestionThemeUpdateCommandFromPatchQuestionThemeDto,
+  createQuestionThemeModificationCommandFromPatchQuestionThemeDto,
 };

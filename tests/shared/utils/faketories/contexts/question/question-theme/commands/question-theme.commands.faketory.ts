@@ -1,13 +1,13 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeUpdateCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
-import { createFakeQuestionThemeUpdateContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 
-function createFakeQuestionThemeUpdateCommand(updateCommand: Partial<QuestionThemeUpdateCommand> = {}): QuestionThemeUpdateCommand {
+function createFakeQuestionThemeUpdateCommand(updateCommand: Partial<QuestionThemeModificationCommand> = {}): QuestionThemeModificationCommand {
   return {
     questionThemeId: faker.database.mongodbObjectId(),
-    payload: createFakeQuestionThemeUpdateContract(),
+    payload: createFakeQuestionThemeModificationContract(),
     ...updateCommand,
   };
 }

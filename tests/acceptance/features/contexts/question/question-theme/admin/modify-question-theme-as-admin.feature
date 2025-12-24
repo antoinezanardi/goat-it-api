@@ -48,6 +48,22 @@ Feature: Modify Question Theme As Admin
       | de     | Thema über Musik, Künstler und Musikgenres.                  |
       | pt     | Tema sobre música, artistas e gêneros musicais.              |
 
+  Scenario: Modifying only the french label of a question theme
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path     | type   | value      |
+      | label.fr | string | Musique FR |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following localized labels for the question theme:
+      | locale | label      |
+      | en     | Music      |
+      | fr     | Musique FR |
+      | it     | Musica     |
+      | es     | Música     |
+      | de     | Musik      |
+      | pt     | Música     |
+
   Scenario: Trying to modify a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the request payload is overridden with the following values:

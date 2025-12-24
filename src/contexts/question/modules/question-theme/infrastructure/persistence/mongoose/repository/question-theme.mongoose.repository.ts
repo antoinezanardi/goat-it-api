@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
+import { crush } from "radashi";
 
-import { QuestionThemeUpdateContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
@@ -46,16 +47,16 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }
 
-  public async update(id: string, questionThemeUpdateContract: QuestionThemeUpdateContract): Promise<QuestionTheme | undefined> {
-    const updatedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(
-      id,
-      questionThemeUpdateContract,
-      { new: true },
-    );
-    if (!updatedQuestionThemeDocument) {
+  public async modify(id: string, questionThemeUpdateContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
+    const questionThemeUpdateData = crush(questionThemeUpdateContract);
+    const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
+      $set: questionThemeUpdateData,
+    };
+    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { new: true });
+    if (!modifiedQuestionThemeDocument) {
       return undefined;
     }
-    return createQuestionThemeFromDocument(updatedQuestionThemeDocument);
+    return createQuestionThemeFromDocument(modifiedQuestionThemeDocument);
   }
 
   public async archive(id: string): Promise<QuestionTheme | undefined> {
