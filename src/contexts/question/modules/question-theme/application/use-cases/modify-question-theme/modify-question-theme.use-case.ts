@@ -12,9 +12,9 @@ export class ModifyQuestionThemeUseCase {
   public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)
   private readonly questionThemeRepository: QuestionThemeRepository) {}
 
-  public async modify(updateQuestionThemeCommand: QuestionThemeModificationCommand): Promise<QuestionTheme> {
-    const { questionThemeId, payload } = updateQuestionThemeCommand;
-    await this.throwIfQuestionThemeNewSlugAlreadyExists(updateQuestionThemeCommand);
+  public async modify(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<QuestionTheme> {
+    const { questionThemeId, payload } = questionThemeModificationCommand;
+    await this.throwIfQuestionThemeNewSlugAlreadyExists(questionThemeModificationCommand);
     const modifiedQuestionTheme = await this.questionThemeRepository.modify(questionThemeId, payload);
     if (!modifiedQuestionTheme) {
       throw new QuestionThemeNotFoundError(questionThemeId);
@@ -22,8 +22,8 @@ export class ModifyQuestionThemeUseCase {
     return modifiedQuestionTheme;
   }
 
-  private async throwIfQuestionThemeNewSlugAlreadyExists(updateQuestionThemeCommand: QuestionThemeModificationCommand): Promise<void> {
-    const { questionThemeId, payload } = updateQuestionThemeCommand;
+  private async throwIfQuestionThemeNewSlugAlreadyExists(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<void> {
+    const { questionThemeId, payload } = questionThemeModificationCommand;
     if (payload.slug === undefined) {
       return;
     }

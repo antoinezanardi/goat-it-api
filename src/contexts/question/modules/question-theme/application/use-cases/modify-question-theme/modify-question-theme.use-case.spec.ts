@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
 
-import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme.use-case.service";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
 
@@ -8,7 +8,7 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/mo
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
-import { createFakeQuestionThemeUpdateCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
@@ -47,7 +47,7 @@ describe("Modify Question Theme Use Case", () => {
     it("should update a question theme from repository when called.", async() => {
       const id = "question-theme-id-1";
       const payload = createFakeQuestionThemeModificationContract();
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -60,7 +60,7 @@ describe("Modify Question Theme Use Case", () => {
       const id = "question-theme-id-1";
       const payload = createFakeQuestionThemeModificationContract();
       mocks.repositories.questionTheme.modify.mockResolvedValueOnce(undefined);
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -74,7 +74,7 @@ describe("Modify Question Theme Use Case", () => {
       const payload = createFakeQuestionThemeModificationContract();
       const expectedUpdatedQuestionTheme = createFakeQuestionTheme();
       mocks.repositories.questionTheme.modify.mockResolvedValueOnce(expectedUpdatedQuestionTheme);
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -88,7 +88,7 @@ describe("Modify Question Theme Use Case", () => {
     it("should not find a question theme with same slug when payload slug is undefined.", async() => {
       const id = "question-theme-id-1";
       const payload = createFakeQuestionThemeModificationContract({ slug: undefined });
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -100,7 +100,7 @@ describe("Modify Question Theme Use Case", () => {
     it("should find a question theme with same slug when payload slug is defined.", async() => {
       const id = "question-theme-id-1";
       const payload = createFakeQuestionThemeModificationContract({ slug: "new-slug" });
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -116,7 +116,7 @@ describe("Modify Question Theme Use Case", () => {
       const payload = createFakeQuestionThemeModificationContract({ slug: existingSlug });
       const existingQuestionTheme = createFakeQuestionTheme({ id: "question-theme-id-2", slug: existingSlug });
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(existingQuestionTheme);
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -130,7 +130,7 @@ describe("Modify Question Theme Use Case", () => {
       const updatedSlug = "new-slug";
       const payload = createFakeQuestionThemeModificationContract({ slug: updatedSlug });
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(undefined);
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });
@@ -144,7 +144,7 @@ describe("Modify Question Theme Use Case", () => {
       const payload = createFakeQuestionThemeModificationContract({ slug: updatedSlug });
       const existingQuestionTheme = createFakeQuestionTheme({ id, slug: updatedSlug });
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(existingQuestionTheme);
-      const modifyQuestionThemeCommand = createFakeQuestionThemeUpdateCommand({
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId: id,
         payload,
       });

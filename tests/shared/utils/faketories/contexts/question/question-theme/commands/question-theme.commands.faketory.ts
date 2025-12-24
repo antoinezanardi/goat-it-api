@@ -4,7 +4,7 @@ import type { QuestionThemeModificationCommand } from "@question/modules/questio
 
 import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 
-function createFakeQuestionThemeUpdateCommand(updateCommand: Partial<QuestionThemeModificationCommand> = {}): QuestionThemeModificationCommand {
+function createFakeQuestionThemeModificationCommand(updateCommand: Partial<QuestionThemeModificationCommand> = {}): QuestionThemeModificationCommand {
   return {
     questionThemeId: faker.database.mongodbObjectId(),
     payload: createFakeQuestionThemeModificationContract(),
@@ -13,5 +13,5 @@ function createFakeQuestionThemeUpdateCommand(updateCommand: Partial<QuestionThe
 }
 
 export {
-  createFakeQuestionThemeUpdateCommand,
+  createFakeQuestionThemeModificationCommand,
 };

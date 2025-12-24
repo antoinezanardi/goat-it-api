@@ -8,7 +8,7 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
 import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
-import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme.use-case.service";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
 import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
@@ -104,10 +104,10 @@ export class AdminQuestionThemeController {
     @Param("id", MongoIdPipe) id: string,
     @Body() patchQuestionThemeDto: PatchQuestionThemeDto,
   ): Promise<AdminQuestionThemeDto> {
-    const questionThemeUpdateCommand = createQuestionThemeModificationCommandFromPatchQuestionThemeDto(id, patchQuestionThemeDto);
-    const updatedQuestionTheme = await this.modifyQuestionThemeUseCase.modify(questionThemeUpdateCommand);
+    const questionThemeModificationCommand = createQuestionThemeModificationCommandFromPatchQuestionThemeDto(id, patchQuestionThemeDto);
+    const modifiedQuestionTheme = await this.modifyQuestionThemeUseCase.modify(questionThemeModificationCommand);
 
-    return createAdminQuestionThemeDtoFromEntity(updatedQuestionTheme);
+    return createAdminQuestionThemeDtoFromEntity(modifiedQuestionTheme);
   }
 
   @Post("/:id/archive")

@@ -8,16 +8,16 @@ import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/ap
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
-import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme.use-case.service";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { AdminQuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 
-import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/modify-question-theme.use-case.mock";
-import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock";
-import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
-import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/create-question-theme.use-case.mock";
-import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/archive-question-theme.use-case.mock";
+import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/modify-question-theme.use-case.mock";
+import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
+import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
+import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
+import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
-import { createFakeQuestionThemeUpdateCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
@@ -39,7 +39,7 @@ describe("Admin Question Theme Controller", () => {
     mappers: {
       createAdminQuestionThemeDtoFromEntity: Mock;
       createQuestionThemeDraftEntityFromCreateDto: Mock;
-      createQuestionThemeUpdateCommandFromPatchQuestionThemeDto: Mock;
+      createQuestionThemeModificationCommandFromPatchQuestionThemeDto: Mock;
     };
   };
 
@@ -55,7 +55,7 @@ describe("Admin Question Theme Controller", () => {
       mappers: {
         createAdminQuestionThemeDtoFromEntity: vi.mocked(createAdminQuestionThemeDtoFromEntity),
         createQuestionThemeDraftEntityFromCreateDto: vi.mocked(createQuestionThemeDraftEntityFromCreateDto),
-        createQuestionThemeUpdateCommandFromPatchQuestionThemeDto: vi.mocked(createQuestionThemeModificationCommandFromPatchQuestionThemeDto),
+        createQuestionThemeModificationCommandFromPatchQuestionThemeDto: vi.mocked(createQuestionThemeModificationCommandFromPatchQuestionThemeDto),
       },
     };
     const testingModule = await Test.createTestingModule({
@@ -178,21 +178,17 @@ describe("Admin Question Theme Controller", () => {
   describe(AdminQuestionThemeController.prototype.patchQuestionTheme, () => {
     it("should map patch question theme dto to update command when called.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = {
-        slug: "new-slug",
-      };
+      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({ slug: "new-slug" });
       await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
 
-      expect(mocks.mappers.createQuestionThemeUpdateCommandFromPatchQuestionThemeDto).toHaveBeenCalledExactlyOnceWith(questionThemeId, patchQuestionThemeDto);
+      expect(mocks.mappers.createQuestionThemeModificationCommandFromPatchQuestionThemeDto).toHaveBeenCalledExactlyOnceWith(questionThemeId, patchQuestionThemeDto);
     });
 
     it("should update question theme when called.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = {
-        slug: "new-slug",
-      };
-      const mappedUpdateCommand = createFakeQuestionThemeUpdateCommand();
-      mocks.mappers.createQuestionThemeUpdateCommandFromPatchQuestionThemeDto.mockReturnValueOnce(mappedUpdateCommand);
+      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({ slug: "new-slug" });
+      const mappedUpdateCommand = createFakeQuestionThemeModificationCommand();
+      mocks.mappers.createQuestionThemeModificationCommandFromPatchQuestionThemeDto.mockReturnValueOnce(mappedUpdateCommand);
       await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
 
       expect(mocks.useCases.modifyQuestionTheme.modify).toHaveBeenCalledExactlyOnceWith(mappedUpdateCommand);

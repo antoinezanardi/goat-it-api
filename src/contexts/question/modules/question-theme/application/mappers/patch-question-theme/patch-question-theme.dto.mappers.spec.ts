@@ -1,18 +1,18 @@
 import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
 import type { QuestionThemeModificationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
-import { createFakeQuestionThemeUpdateCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 import { createFakePatchQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 
 describe("Patch Question Theme Dto Mappers", () => {
   describe(createQuestionThemeModificationCommandFromPatchQuestionThemeDto, () => {
-    it("should return mapped UpdateQuestionThemeCommand when called.", () => {
+    it("should return mapped QuestionThemeModificationCommand when called.", () => {
       const questionThemeId = createFakeObjectId().toString();
       const patchQuestionThemeDto = createFakePatchQuestionThemeDto({
         slug: "new-slug",
       });
-      const expectedUpdateCommand = createFakeQuestionThemeUpdateCommand({
+      const expectedUpdateCommand = createFakeQuestionThemeModificationCommand({
         questionThemeId,
         payload: {
           slug: patchQuestionThemeDto.slug,
