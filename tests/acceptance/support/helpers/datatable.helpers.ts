@@ -3,18 +3,32 @@ import { z } from "zod";
 import type { ZodType } from "zod";
 import type { DataTable } from "@cucumber/cucumber";
 
+/**
+ * Coerces a value to an optional boolean. If the value is an empty string or not a string, it returns undefined. Only used in acceptance tests.
+ */
 function zCoerceOptionalBoolean(): ZodType<boolean | undefined> {
   return z.preprocess((value: unknown): boolean | undefined => (typeof value !== "string" || value === "" ? undefined : value.toLowerCase() === "true"), z.boolean().optional());
 }
 
+/**
+ * Coerces a value to an optional string. If the value is an empty string or not a string, it returns undefined. Only used in acceptance tests.
+ */
 function zCoerceOptionalString(): ZodType<string | undefined> {
   return z.preprocess((value: unknown): string | undefined => (typeof value !== "string" || value === "" ? undefined : value), z.string().optional());
 }
 
+/**
+ * Coerces a value to an optional number. If the value is an empty string or not a string, it returns undefined. Only used in acceptance tests.
+ */
 function zCoerceOptionalNumber(): ZodType<number | undefined> {
-  return z.preprocess((value: unknown): number | undefined => (typeof value !== "string" || value === "" ? undefined : Number.parseInt(value)), z.number().optional());
+  return z.preprocess((value: unknown): number | undefined => (typeof value !== "string" || value === "" ? undefined : Number(value)), z.number().optional());
 }
 
+/**
+ * Validates the given Cucumber DataTable against the provided Zod schema and returns all rows. Only used in acceptance tests.
+ * @param dataTable
+ * @param schema
+ */
 function validateDataTableAndGetRows<T>(
   dataTable: DataTable,
   schema: ZodType<T>,
@@ -31,6 +45,11 @@ function validateDataTableAndGetRows<T>(
   return parsedRows.data;
 }
 
+/**
+ * Validates the given Cucumber DataTable against the provided Zod schema and returns the first row. Only used in acceptance tests.
+ * @param dataTable
+ * @param schema
+ */
 function validateDataTableAndGetFirstRow<T>(
   dataTable: DataTable,
   schema: ZodType<T>,
