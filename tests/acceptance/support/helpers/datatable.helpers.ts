@@ -1,5 +1,19 @@
+import { z } from "zod";
+
 import type { ZodType } from "zod";
 import type { DataTable } from "@cucumber/cucumber";
+
+function zCoerceOptionalBoolean(): ZodType<boolean | undefined> {
+  return z.preprocess((value: unknown): boolean | undefined => (typeof value !== "string" || value === "" ? undefined : value.toLowerCase() === "true"), z.boolean().optional());
+}
+
+function zCoerceOptionalString(): ZodType<string | undefined> {
+  return z.preprocess((value: unknown): string | undefined => (typeof value !== "string" || value === "" ? undefined : value), z.string().optional());
+}
+
+function zCoerceOptionalNumber(): ZodType<number | undefined> {
+  return z.preprocess((value: unknown): number | undefined => (typeof value !== "string" || value === "" ? undefined : Number.parseInt(value)), z.number().optional());
+}
 
 function validateDataTableAndGetRows<T>(
   dataTable: DataTable,
@@ -25,6 +39,9 @@ function validateDataTableAndGetFirstRow<T>(
 }
 
 export {
+  zCoerceOptionalBoolean,
+  zCoerceOptionalString,
+  zCoerceOptionalNumber,
   validateDataTableAndGetRows,
   validateDataTableAndGetFirstRow,
 };
