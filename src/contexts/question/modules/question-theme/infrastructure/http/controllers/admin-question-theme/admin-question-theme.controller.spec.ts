@@ -11,7 +11,7 @@ import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/a
 import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/update-question-theme/modify-question-theme.use-case.service";
 import { AdminQuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 
-import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/update-question-theme.use-case.mock";
+import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/modify-question-theme.use-case.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/create-question-theme.use-case.mock";
