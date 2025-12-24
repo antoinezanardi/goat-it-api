@@ -1076,7 +1076,7 @@ async function seedQuestionThemes(count: number) {
 ### Troubleshooting
 
 - **Build failures**: Check `pnpm run build` output. Fix compile errors before running acceptance tests.
-- **Server never ready**: Check `tests/acceptance/support/helpers/setup.helpers.ts` for readiness string; review `src/server/server.ts` startup logs.
+- **Server never ready**: Check `tests/acceptance/support/helpers/setup.helpers.ts` for readiness string; review `src/infrastructure/api/server/server.ts` startup logs.
 - **Database connection fails**: Ensure test database is running (`pnpm run docker:acceptance-tests:start`).
 - **Missing HTML report**: Ensure `tests/acceptance/reports/report.json` exists.
 
@@ -1297,7 +1297,7 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 ### Prerequisites
 
 - **Node.js**: `>= 25.2.1` (see `package.json` `engines` field)
-- **pnpm**: `10.24.0` (see `package.json` `packageManager` field)
+- **pnpm**: Version specified in `package.json` `packageManager` field (currently `10.26.2`)
 - **Docker**: For running the acceptance test database
 
 ### Package manager and commands
