@@ -1,5 +1,6 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
+import { crush } from "radashi";
 
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -7,6 +8,7 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
+import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 import { createFakeQuestionTheme, createFakeQuestionThemeDocument, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
@@ -161,6 +163,54 @@ describe("Question Theme Mongoose Repository", () => {
       const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);
 
       expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.modify, () => {
+    it("should modify document in model when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const updateQuery = {
+        $set: crush(questionThemeModificationContract),
+      };
+      await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(
+        questionThemeId,
+        updateQuery,
+        { new: true },
+      );
+    });
+
+    it("should map and return modified question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const modifiedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(modifiedQuestionThemeDocument);
+      await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(modifiedQuestionThemeDocument);
+    });
+
+    it("should return modified question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const modifiedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      const modifiedQuestionTheme = createFakeQuestionTheme();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(modifiedQuestionThemeDocument);
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(modifiedQuestionTheme);
+      const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(modifiedQuestionTheme);
+    });
+
+    it("should return undefined when document to modify is not found.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(null);
+      const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(actualQuestionTheme).toBeUndefined();
     });
   });
 

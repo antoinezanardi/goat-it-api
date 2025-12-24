@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
+import { crush } from "radashi";
 
+import { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
@@ -43,6 +45,18 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
+  }
+
+  public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
+    const questionThemeUpdateData = crush(questionThemeModificationContract);
+    const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
+      $set: questionThemeUpdateData,
+    };
+    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { new: true });
+    if (!modifiedQuestionThemeDocument) {
+      return undefined;
+    }
+    return createQuestionThemeFromDocument(modifiedQuestionThemeDocument);
   }
 
   public async archive(id: string): Promise<QuestionTheme | undefined> {

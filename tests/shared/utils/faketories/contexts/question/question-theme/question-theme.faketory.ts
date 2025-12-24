@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
+import type { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
@@ -67,11 +68,21 @@ function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQue
 
 function createFakeCreateQuestionThemeDto(createDto: Partial<CreateQuestionThemeDto> = {}): CreateQuestionThemeDto {
   return {
-    slug: createDto.slug ?? faker.lorem.slug(),
-    label: createDto.label ?? createFakeLocalizedText(),
-    aliases: createDto.aliases ?? createFakeLocalizedTexts(),
-    description: createDto.description ?? createFakeLocalizedText(),
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
     ...createDto,
+  };
+}
+
+function createFakePatchQuestionThemeDto(patchDto: Partial<PatchQuestionThemeDto> = {}): PatchQuestionThemeDto {
+  return {
+    slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
+    label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
+    aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
+    description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
+    ...patchDto,
   };
 }
 
@@ -98,5 +109,6 @@ export {
   createFakeQuestionThemeDto,
   createFakeAdminQuestionThemeDto,
   createFakeCreateQuestionThemeDto,
+  createFakePatchQuestionThemeDto,
   createFakeQuestionThemeDocument,
 };

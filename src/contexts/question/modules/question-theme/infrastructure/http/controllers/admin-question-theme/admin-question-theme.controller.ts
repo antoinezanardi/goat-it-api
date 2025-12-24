@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -7,6 +7,9 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
+import { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
 import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
@@ -22,6 +25,7 @@ export class AdminQuestionThemeController {
     private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly createQuestionThemeUseCase: CreateQuestionThemeUseCase,
+    private readonly modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase,
     private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
 
@@ -81,6 +85,29 @@ export class AdminQuestionThemeController {
     const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeDraft);
 
     return createAdminQuestionThemeDtoFromEntity(createdQuestionTheme);
+  }
+
+  @Patch("/:id")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTION_THEMES,
+    ],
+    summary: "Update an existing question theme",
+    description: "Update an existing question theme with the provided details. Returns the updated question theme with detailed structure for backend administration.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionThemeDto,
+  })
+  public async patchQuestionTheme(
+    @Param("id", MongoIdPipe) id: string,
+    @Body() patchQuestionThemeDto: PatchQuestionThemeDto,
+  ): Promise<AdminQuestionThemeDto> {
+    const questionThemeModificationCommand = createQuestionThemeModificationCommandFromPatchQuestionThemeDto(id, patchQuestionThemeDto);
+    const modifiedQuestionTheme = await this.modifyQuestionThemeUseCase.modify(questionThemeModificationCommand);
+
+    return createAdminQuestionThemeDtoFromEntity(modifiedQuestionTheme);
   }
 
   @Post("/:id/archive")

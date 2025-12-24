@@ -18,4 +18,7 @@ type QuestionThemeDraft = Omit<QuestionTheme, "id" | "status" | "createdAt" | "u
   status: typeof DEFAULT_QUESTION_THEME_STATUS;
 };
 
-export type { QuestionTheme, QuestionThemeDraft };
+export type {
+  QuestionTheme,
+  QuestionThemeDraft,
+};

@@ -39,6 +39,22 @@ When(/^the admin creates a new question theme with the request payload$/u, async
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });
 
+When(/^the admin modifies the question theme with id "(?<id>[^"]+)" with an empty payload$/u, async function(this: GoatItWorld, id: string) {
+  const fetchOptions = createFetchOptions(undefined, {
+    method: "PATCH",
+    body: JSON.stringify({}),
+  });
+  await this.fetchAndStoreResponse(`/admin/question-themes/${id}`, fetchOptions);
+});
+
+When(/^the admin modifies the question theme with id "(?<id>[^"]+)" with the request payload$/u, async function(this: GoatItWorld, id: string) {
+  const fetchOptions = createFetchOptions(undefined, {
+    method: "PATCH",
+    body: JSON.stringify(this.payload),
+  });
+  await this.fetchAndStoreResponse(`/admin/question-themes/${id}`, fetchOptions);
+});
+
 When(/^the admin archives the question theme with id "(?<id>[^"]+)"$/u, async function(this: GoatItWorld, id: string) {
   const fetchOptions = createFetchOptions(undefined, {
     method: "POST",

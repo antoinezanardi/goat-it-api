@@ -12,6 +12,9 @@ export default {
     "!**/*.schema.ts",
     "!**/*.constants.ts",
     "!**/*.module.ts",
+    "!**/*.types.ts",
+    "!**/*.commands.ts",
+    "!**/*.contracts.ts",
   ],
   plugins: [
     "@stryker-mutator/vitest-runner",
