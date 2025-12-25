@@ -1,17 +1,18 @@
 import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
+import type { QuestionThemeCreationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
-import type { QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
-function createQuestionThemeDraftEntityFromCreateDto(createQuestionThemeDto: CreateQuestionThemeDto): QuestionThemeDraft {
+function createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto: CreateQuestionThemeDto): QuestionThemeCreationCommand {
   return {
-    slug: createQuestionThemeDto.slug,
-    label: createQuestionThemeDto.label,
-    aliases: createQuestionThemeDto.aliases,
-    description: createQuestionThemeDto.description,
-    status: "active",
+    payload: {
+      slug: createQuestionThemeDto.slug,
+      label: createQuestionThemeDto.label,
+      aliases: createQuestionThemeDto.aliases,
+      description: createQuestionThemeDto.description,
+      status: "active",
+    },
   };
 }
 
 export {
-  createQuestionThemeDraftEntityFromCreateDto,
+  createQuestionThemeCreationCommandFromCreateDto,
 };

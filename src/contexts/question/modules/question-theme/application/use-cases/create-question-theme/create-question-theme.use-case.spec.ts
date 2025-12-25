@@ -6,7 +6,8 @@ import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-them
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
@@ -50,34 +51,34 @@ describe("Create Question Theme Use Case", () => {
     });
 
     it("should check if question theme slug already exists when called.", async() => {
-      const questionThemeDraft = createFakeQuestionThemeDraft();
-      await createQuestionThemeUseCase.create(questionThemeDraft);
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
+      await createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
-      expect(localMocks.throwIfQuestionThemeSlugAlreadyExists).toHaveBeenCalledExactlyOnceWith(questionThemeDraft);
+      expect(localMocks.throwIfQuestionThemeSlugAlreadyExists).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand);
     });
 
     it("should create a question theme from repository when called.", async() => {
-      const questionThemeDraft = createFakeQuestionThemeDraft();
-      await createQuestionThemeUseCase.create(questionThemeDraft);
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
+      await createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
-      expect(mocks.repositories.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeDraft);
+      expect(mocks.repositories.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand.payload);
     });
   });
 
   describe("throwIfQuestionThemeSlugAlreadyExists", () => {
     it("should throw an error when question theme slug already exists.", async() => {
-      const questionThemeDraft = createFakeQuestionThemeDraft();
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(createFakeQuestionTheme());
-      const expectedError = new QuestionThemeSlugAlreadyExistsError(questionThemeDraft.slug);
+      const expectedError = new QuestionThemeSlugAlreadyExistsError(questionThemeCreationCommand.payload.slug);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeDraft)).rejects.toThrowError(expectedError);
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeCreationCommand)).rejects.toThrowError(expectedError);
     });
 
     it("should not throw an error when question theme slug does not exist.", async() => {
-      const questionThemeDraft = createFakeQuestionThemeDraft();
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(undefined);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeDraft)).resolves.not.toThrowError();
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeCreationCommand)).resolves.not.toThrowError();
     });
   });
 });

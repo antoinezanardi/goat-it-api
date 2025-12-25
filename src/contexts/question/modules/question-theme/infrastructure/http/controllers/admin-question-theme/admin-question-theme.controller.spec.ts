@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
@@ -17,8 +17,9 @@ import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/questi
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
+import { createFakeQuestionThemeCreationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
-import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
@@ -38,7 +39,7 @@ describe("Admin Question Theme Controller", () => {
     };
     mappers: {
       createAdminQuestionThemeDtoFromEntity: Mock;
-      createQuestionThemeDraftEntityFromCreateDto: Mock;
+      createQuestionThemeCreationCommandFromCreateDto: Mock;
       createQuestionThemeModificationCommandFromPatchQuestionThemeDto: Mock;
     };
   };
@@ -54,7 +55,7 @@ describe("Admin Question Theme Controller", () => {
       },
       mappers: {
         createAdminQuestionThemeDtoFromEntity: vi.mocked(createAdminQuestionThemeDtoFromEntity),
-        createQuestionThemeDraftEntityFromCreateDto: vi.mocked(createQuestionThemeDraftEntityFromCreateDto),
+        createQuestionThemeCreationCommandFromCreateDto: vi.mocked(createQuestionThemeCreationCommandFromCreateDto),
         createQuestionThemeModificationCommandFromPatchQuestionThemeDto: vi.mocked(createQuestionThemeModificationCommandFromPatchQuestionThemeDto),
       },
     };
@@ -137,20 +138,20 @@ describe("Admin Question Theme Controller", () => {
   });
 
   describe(AdminQuestionThemeController.prototype.createQuestionTheme, () => {
-    it("should map create question theme dto to draft entity when called.", async() => {
+    it("should map create question theme dto to question theme creation command when called.", async() => {
       const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
       await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
 
-      expect(mocks.mappers.createQuestionThemeDraftEntityFromCreateDto).toHaveBeenCalledExactlyOnceWith(createQuestionThemeDto);
+      expect(mocks.mappers.createQuestionThemeCreationCommandFromCreateDto).toHaveBeenCalledExactlyOnceWith(createQuestionThemeDto);
     });
 
     it("should create question theme when called.", async() => {
       const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
-      const mappedQuestionThemeDraft = createFakeQuestionThemeDraft();
-      mocks.mappers.createQuestionThemeDraftEntityFromCreateDto.mockReturnValueOnce(mappedQuestionThemeDraft);
+      const mappedQuestionThemeCreationContract = createFakeQuestionThemeCreationContract();
+      mocks.mappers.createQuestionThemeCreationCommandFromCreateDto.mockReturnValueOnce(mappedQuestionThemeCreationContract);
       await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
 
-      expect(mocks.useCases.createQuestionTheme.create).toHaveBeenCalledExactlyOnceWith(mappedQuestionThemeDraft);
+      expect(mocks.useCases.createQuestionTheme.create).toHaveBeenCalledExactlyOnceWith(mappedQuestionThemeCreationContract);
     });
 
     it("should map the created question theme to dto when created.", async() => {

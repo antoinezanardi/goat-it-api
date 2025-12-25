@@ -11,7 +11,7 @@ import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-import type { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
@@ -24,17 +24,6 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     ...questionTheme,
-  };
-}
-
-function createFakeQuestionThemeDraft(questionThemeDraft: Partial<QuestionThemeDraft> = {}): QuestionThemeDraft {
-  return {
-    slug: faker.lorem.slug(),
-    label: createFakeLocalizedText(),
-    aliases: createFakeLocalizedTexts(),
-    description: createFakeLocalizedText(),
-    status: "active",
-    ...questionThemeDraft,
   };
 }
 
@@ -105,7 +94,6 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
 
 export {
   createFakeQuestionTheme,
-  createFakeQuestionThemeDraft,
   createFakeQuestionThemeDto,
   createFakeAdminQuestionThemeDto,
   createFakeCreateQuestionThemeDto,
