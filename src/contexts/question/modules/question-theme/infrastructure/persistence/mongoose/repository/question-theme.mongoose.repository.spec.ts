@@ -8,8 +8,9 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";

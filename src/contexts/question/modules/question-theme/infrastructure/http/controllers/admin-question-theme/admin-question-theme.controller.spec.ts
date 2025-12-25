@@ -17,8 +17,9 @@ import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/questi
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
-import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto, createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 

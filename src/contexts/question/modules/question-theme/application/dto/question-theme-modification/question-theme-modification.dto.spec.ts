@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import { QUESTION_THEME_MODIFICATION_DTO } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 
-import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 
 describe("Question Theme Modification Dto", () => {
   let validQuestionThemeModificationDto: QuestionThemeModificationDto;

@@ -6,8 +6,8 @@ import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-them
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 

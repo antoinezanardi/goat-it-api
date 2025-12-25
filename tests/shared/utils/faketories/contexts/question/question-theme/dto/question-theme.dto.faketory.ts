@@ -1,8 +1,10 @@
 import { faker } from "@faker-js/faker";
 
+import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import type { QuestionThemeCreationDto } from "@question/modules/question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
 import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
@@ -17,6 +19,20 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),
     ...questionThemeDto,
+  };
+}
+
+function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQuestionThemeDto> = {}): AdminQuestionThemeDto {
+  return {
+    id: faker.database.mongodbObjectId(),
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
+    status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
+    updatedAt: faker.date.anytime().toISOString(),
+    createdAt: faker.date.anytime().toISOString(),
+    ...adminQuestionThemeDto,
   };
 }
 
@@ -42,6 +58,7 @@ function createFakeQuestionThemeModificationDto(modificationDto: Partial<Questio
 
 export {
   createFakeQuestionThemeDto,
+  createFakeAdminQuestionThemeDto,
   createFakeQuestionThemeCreationDto,
   createFakeQuestionThemeModificationDto,
 };
