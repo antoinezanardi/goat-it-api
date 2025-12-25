@@ -88,8 +88,8 @@ This project follows a **Hexagonal Architecture** (Ports and Adapters) combined 
 
 ### Entry points
 
-- **Entry point**: `src/main.ts` — imports and calls the bootstrap function from `src/server/server.ts`.
-- **Server setup**: `src/infrastructure/api/server/server.ts` — builds a Nest application using `AppModule`, uses `FastifyAdapter`, enables shutdown hooks, binds to env variables, and logs the listen URL.
+- **Entry point**: `src/main.ts` — imports and calls the bootstrap function from `src/infrastructure/api/server/server.ts`.
+- **Server setup**: `src/infrastructure/api/server/server.ts` — builds a Nest application using `AppModule`, uses `FastifyAdapter`, enables shutdown hooks, binds to env variables, sets up Swagger documentation, applies global exception filters, and logs the listen URL.
 - **Application module**: `src/app/app.module.ts` — central wiring for infrastructure modules (`config`, `database`, `health`, `logging`) and bounded context modules.
 
 ### Bounded contexts' structure
@@ -104,8 +104,10 @@ src/contexts/<context-name>/
         ├── <feature-name>.module.ts  # Feature module (wires all layers)
         ├── domain/
         │   ├── entities/             # Domain entities and their types
-        │   ├── value-objects/        # Domain value objects
+        │   ├── value-objects/        # Domain value objects (types and constants)
         │   ├── repositories/         # Repository interface (port) + token
+        │   ├── contracts/            # Data contracts for modifications/operations
+        │   ├── commands/             # Command types that wrap contracts with IDs
         │   └── errors/               # Domain-specific errors
         ├── application/
         │   ├── use-cases/            # Business logic operations
@@ -113,7 +115,7 @@ src/contexts/<context-name>/
         │   └── mappers/              # Entity-to-DTO mappers
         └── infrastructure/
             ├── http/
-            │   └── controllers/      # NestJS HTTP controllers
+            │   └── controllers/      # NestJS HTTP controllers (can be nested)
             └── persistence/
                 └── mongoose/
                     ├── schema/       # Mongoose schema definitions
@@ -155,7 +157,7 @@ src/contexts/<context-name>/
 The main entry points for application startup:
 
 - `src/main.ts` — simple bootstrap caller.
-- `src/server/server.ts` — Nest/Fastify bootstrap logic.
+- `src/infrastructure/api/server/server.ts` — Nest/Fastify bootstrap logic.
 - `src/app/app.module.ts` — Nest root module that imports infrastructure and context modules.
 - `src/app/controllers/app.controller.ts` — root controller exposing API metadata.
 - `src/app/providers/services/app.service.ts` — service that reads `package.json` for metadata.
@@ -164,7 +166,9 @@ The main entry points for application startup:
 
 Modules providing infrastructure capabilities and not specific to any bounded context:
 
-- `src/infrastructure/api/server/` — Server bootstrap and Fastify adapter setup.
+- `src/infrastructure/api/server/` — Server bootstrap and Fastify adapter setup. Contains subdirectories:
+  - `src/infrastructure/api/server/swagger/` — Swagger/OpenAPI documentation setup and helpers.
+  - `src/infrastructure/api/server/cors/` — CORS configuration helpers.
 - `src/infrastructure/api/config/` — Application configuration module using `@nestjs/config`.
 - `src/infrastructure/api/health/` — Health check endpoints using `@nestjs/terminus`.
 - `src/infrastructure/database/` — MongoDB/Mongoose database configuration and connection.
@@ -182,7 +186,15 @@ When functionality is shared across multiple contexts, it is placed under `src/s
 - `src/shared/domain/` — Shared domain value objects (e.g., locale).
 - `src/shared/application/` — Shared application utilities (e.g., mappers).
 - `src/shared/infrastructure/` — Shared infrastructure code:
-  - `src/shared/infrastructure/http/` — HTTP-related utilities (controllers, decorators, pipes, middlewares).
+  - `src/shared/infrastructure/http/` — HTTP-related utilities:
+    - `controllers/` — Base controller patterns and enums.
+    - `decorators/` — Custom decorators (e.g., `@Localization`).
+    - `pipes/` — Validation and transformation pipes (e.g., `MongoIdPipe`).
+    - `middlewares/` — Request/response middlewares (e.g., `LocalizationMiddleware`).
+    - `filters/` — Exception filters (e.g., `GlobalExceptionFilter`).
+    - `validators/` — Zod validator helpers and custom validators.
+    - `dto/` — Shared DTO definitions.
+    - `types/` — HTTP-related TypeScript types.
   - `src/shared/infrastructure/persistence/` — Persistence-related utilities (Mongoose constants).
 
 ### Test utilities
@@ -236,7 +248,7 @@ This project follows a **Hexagonal Architecture** with **DDD** layout. When addi
 ### Top-level folders
 
 - `src/` — application source. Add new runtime code here.
-  - `src/server/` — server bootstrap and adapter-related code (`server.ts`, server-specific setup).
+  - `src/main.ts` — application entry point (bootstrap caller).
   - `src/app/` — application module (root module, controllers, services, helpers, types).
   - `src/contexts/` — bounded contexts containing domain features.
   - `src/shared/` — shared code organized by architectural layers:
@@ -244,7 +256,7 @@ This project follows a **Hexagonal Architecture** with **DDD** layout. When addi
     - `src/shared/application/` — shared application utilities (mappers).
     - `src/shared/infrastructure/` — shared infrastructure code (HTTP utilities, persistence helpers).
   - `src/infrastructure/` — infrastructure modules:
-    - `src/infrastructure/api/` — API-related infrastructure (config, health, server).
+    - `src/infrastructure/api/` — API-related infrastructure (config, health, server with Swagger and CORS).
     - `src/infrastructure/database/` — database configuration and connection.
 - `tests/` — test code organized by type:
   - `tests/unit/` — unit test setup, utilities, mocks, and coverage output.
@@ -271,11 +283,15 @@ Use the NestJS-style filename pattern: `<name>.<type>.ts` where `<type>` indicat
 | `constants`   | Constant values                             | `question-theme.repository.constants.ts`    |
 | `errors`      | Custom error classes                        | `question-theme.errors.ts`                  |
 | `mappers`     | Data transformation functions               | `question-theme.dto.mappers.ts`             |
+| `contracts`   | Domain modification contracts               | `question-theme.contracts.ts`               |
+| `commands`    | Domain command types                        | `question-theme.commands.ts`                |
 | `pipe`        | NestJS pipe                                 | `mongo-id.pipe.ts`                          |
 | `guard`       | NestJS guard                                | `auth.guard.ts`                             |
 | `interceptor` | NestJS interceptor                          | `logging.interceptor.ts`                    |
 | `middleware`  | NestJS middleware                           | `localization.middleware.ts`                |
 | `decorator`   | Custom decorator                            | `localization.decorator.ts`                 |
+| `filter`      | NestJS exception filter                     | `global-exception.filter.ts`                |
+| `validators`  | Validation helpers (Zod)                    | `string.zod.validators.ts`                  |
 | `schema`      | Mongoose schema (use `.mongoose.schema.ts`) | `question-theme.mongoose.schema.ts`         |
 | `repository`  | Repository implementation                   | `question-theme.mongoose.repository.ts`     |
 | `spec`        | Unit test file                              | `question-theme.controller.spec.ts`         |
@@ -287,11 +303,15 @@ Use the NestJS-style filename pattern: `<name>.<type>.ts` where `<type>` indicat
 ### Domain-Driven Design naming
 
 - **Entities**: Place in `domain/entities/` with types defined in `<entity>.types.ts`.
-- **Value Objects**: Place in `domain/value-objects/` with constants in `<vo>.constants.ts`.
+- **Value Objects**: Place in `domain/value-objects/` with:
+  - Types in `<vo>.types.ts`
+  - Constants in `<vo>.constants.ts`
 - **Repository interfaces**: Place in `domain/repositories/` with:
   - Interface types in `<entity>.repository.types.ts`
   - Injection token in `<entity>.repository.constants.ts`
 - **Domain errors**: Place in `domain/errors/` as `<entity>.errors.ts`.
+- **Contracts**: Place in `domain/contracts/` as `<entity>.contracts.ts` — define data shapes for modifications/operations.
+- **Commands**: Place in `domain/commands/` as `<entity>.commands.ts` — wrap contracts with identifiers.
 - **Use cases**: Place each use case in its own folder under `application/use-cases/<use-case-name>/`.
 
 ### Tests
@@ -332,6 +352,10 @@ src/contexts/<context>/modules/<feature>/
 │   ├── repositories/
 │   │   ├── <feature>.repository.types.ts  # Repository interface
 │   │   └── <feature>.repository.constants.ts  # Injection token
+│   ├── contracts/                         # (if needed)
+│   │   └── <feature>.contracts.ts         # Modification contracts
+│   ├── commands/                          # (if needed)
+│   │   └── <feature>.commands.ts          # Command types
 │   └── errors/
 │       ├── <feature>.errors.ts            # Domain error classes
 │       └── <feature>.errors.spec.ts       # Error tests
@@ -348,8 +372,12 @@ src/contexts/<context>/modules/<feature>/
 └── infrastructure/
     ├── http/
     │   └── controllers/
-    │       ├── <feature>.controller.ts
-    │       └── <feature>.controller.spec.ts
+    │       ├── <feature>/                 # Standard controller
+    │       │   ├── <feature>.controller.ts
+    │       │   └── <feature>.controller.spec.ts
+    │       └── admin-<feature>/           # Admin controller (if needed)
+    │           ├── admin-<feature>.controller.ts
+    │           └── admin-<feature>.controller.spec.ts
     └── persistence/
         └── mongoose/
             ├── schema/
@@ -405,7 +433,7 @@ This project uses **Zod** with **nestjs-zod** for runtime validation and automat
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-const MY_ENTITY_DTO = z.object({
+const MY_ENTITY_DTO = z.strictObject({
   id: z.string()
     .regex(/^[\da-f]{24}$/iu)
     .describe("Entity's unique MongoDB ObjectId."),
@@ -437,6 +465,31 @@ public async findAll(): Promise<MyEntityDto[]> {
   // ...
 }
 ```
+
+### Custom Zod validators
+
+The project provides reusable Zod validator helpers in `src/shared/infrastructure/http/validators/zod/`:
+
+#### String validators (`string.zod.validators.ts`)
+
+- `zSlug()` — validates kebab-case slugs (min/max length, regex pattern).
+- `zMongoId()` — validates MongoDB ObjectId format using the `validator` library.
+
+Example usage:
+
+```typescript
+import { zSlug, zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+
+const MY_DTO = z.strictObject({
+  id: zMongoId()
+    .describe("Unique identifier."),
+  slug: zSlug()
+    .describe("URL-friendly slug.")
+    .meta({ example: "my-entity-slug" }),
+});
+```
+
+These validators are used consistently across DTOs to ensure validation is uniform and follows project standards.
 
 ## Repository pattern
 
@@ -549,6 +602,27 @@ public async getById(id: string): Promise<MyEntity> {
   return entity;
 }
 ```
+
+### Global exception filter
+
+The project uses a `GlobalExceptionFilter` in `src/shared/infrastructure/http/filters/global-exception/global-exception.filter.ts` that:
+
+- Catches all exceptions thrown in the application
+- Converts domain errors to appropriate HTTP exceptions using a factory map
+- Handles `ZodValidationException` and converts it to a structured `BadRequestException` with validation details
+- Handles generic `HttpException` instances
+- Logs unexpected errors and returns `InternalServerErrorException`
+
+Domain errors must be registered in the `domainErrorHttpExceptionFactories` map to be automatically converted:
+
+```typescript
+private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
+  [EntityNotFoundError.name]: error => new NotFoundException(error.message),
+  [EntityAlreadyArchivedError.name]: error => new BadRequestException(error.message),
+};
+```
+
+This ensures consistent error responses and proper HTTP status codes without cluttering domain or application layers with HTTP concerns.
 
 ## General rules and small reminders
 
@@ -801,7 +875,7 @@ export { createFakeQuestionTheme };
 
 ```typescript
 import { createMockFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 ```
 
 2. Structure tests with describe/it blocks:
@@ -833,10 +907,13 @@ Tests labels must clearly state the expected behavior with "should ... when ..."
 
 Each test must contain one and only one assertion (use multiple tests if needed).
 
-### Files that don't require tests
+- **Coverage exclusions are defined in `configs/vitest/vitest.config.ts`.**
 
+Files that don't require tests (explicitly excluded from coverage):
 - `*.constants.ts` — contain only constant values, no logic.
 - `*.types.ts` — contain only TypeScript type definitions.
+- `*.contracts.ts` — contain only TypeScript type definitions for contracts.
+- `*.commands.ts` — contain only TypeScript type definitions for commands.
 - `*.dto.ts` — Zod schemas validated at runtime, tested indirectly.
 - `*.module.ts` — NestJS module wiring, no business logic.
 - `**/mongoose/**/*.schema.ts` — Mongoose schema definitions.
@@ -978,7 +1055,7 @@ For tests that require pre-populated data, use fixtures:
 
 ```typescript
 // tests/acceptance/support/fixtures/question-theme.fixtures.ts
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
 async function seedQuestionThemes(count: number) {
   const themes = Array.from({ length: count }, () => createFakeQuestionTheme());
@@ -999,7 +1076,7 @@ async function seedQuestionThemes(count: number) {
 ### Troubleshooting
 
 - **Build failures**: Check `pnpm run build` output. Fix compile errors before running acceptance tests.
-- **Server never ready**: Check `tests/acceptance/support/helpers/setup.helpers.ts` for readiness string; review `src/server/server.ts` startup logs.
+- **Server never ready**: Check `tests/acceptance/support/helpers/setup.helpers.ts` for readiness string; review `src/infrastructure/api/server/server.ts` startup logs.
 - **Database connection fails**: Ensure test database is running (`pnpm run docker:acceptance-tests:start`).
 - **Missing HTML report**: Ensure `tests/acceptance/reports/report.json` exists.
 
@@ -1220,7 +1297,7 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 ### Prerequisites
 
 - **Node.js**: `>= 25.2.1` (see `package.json` `engines` field)
-- **pnpm**: `10.24.0` (see `package.json` `packageManager` field)
+- **pnpm**: Version specified in `package.json` `packageManager` field (currently `10.26.2`)
 - **Docker**: For running the acceptance test database
 
 ### Package manager and commands

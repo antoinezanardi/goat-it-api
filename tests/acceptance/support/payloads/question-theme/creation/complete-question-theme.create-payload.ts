@@ -1,10 +1,10 @@
-import { createFakeCreateQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-const COMPLETE_QUESTION_THEME_CREATION_PAYLOAD = Object.freeze(createFakeCreateQuestionThemeDto({
+const COMPLETE_QUESTION_THEME_CREATION_PAYLOAD = Object.freeze(createFakeQuestionThemeCreationDto({
   slug: "general-knowledge",
   label: createFakeLocalizedText({
-    en: "General Knowledge",
+    en: "General knowledge",
     fr: "Culture générale",
     es: "Conocimiento general",
     pt: "Conhecimento geral",

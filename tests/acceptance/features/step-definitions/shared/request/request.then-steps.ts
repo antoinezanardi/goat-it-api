@@ -6,6 +6,9 @@ import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastru
 import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
 import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
 
+import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
+
+import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 import { SUCCESS_HTTP_STATUSES } from "@acceptance-support/constants/http.constants";
 
 import type { DataTable } from "@cucumber/cucumber";
@@ -25,16 +28,13 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
   if (SUCCESS_HTTP_STATUSES.includes(expectedStatus)) {
     throw new Error(`The expected status code ${expectedStatus} is a success status code.`);
   }
-  const errorRows = errorDataTable.hashes() as Record<keyof ApiResponseExceptionDto, string>[];
-  if (errorRows.length === 0) {
-    throw new Error("Error DataTable must contain at least one data row.");
-  }
+  const requestError = validateDataTableAndGetFirstRow(errorDataTable, REQUEST_ERROR_ROW_SCHEMA);
   const expectedError: Omit<ApiResponseExceptionDto, "validationDetails"> & { validationDetails?: ReturnType<typeof expect.any> } = {
-    error: errorRows[0].error,
-    message: errorRows[0].message,
-    statusCode: Number.parseInt(errorRows[0].statusCode),
+    error: requestError.error,
+    message: requestError.message,
+    statusCode: requestError.statusCode,
   };
-  if (errorRows[0].validationDetails) {
+  if (requestError.validationDetails !== undefined) {
     expectedError.validationDetails = expect.any(Array);
   }
 
@@ -49,7 +49,7 @@ Then(/^the failed request's response should contain the following validation det
   if (!actualValidationDetails) {
     throw new Error("The response does not contain any validation details.");
   }
-  const dataTableRows = validationDetailsDataTable.hashes() as Record<keyof ApiResponseExceptionValidationDetailsDto, string>[];
+  const dataTableRows = validateDataTableAndGetRows(validationDetailsDataTable, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA);
 
   expect(actualValidationDetails).toHaveLength(dataTableRows.length);
 
@@ -59,14 +59,14 @@ Then(/^the failed request's response should contain the following validation det
       code: validationDetailsEntry.code,
       message: validationDetailsEntry.message,
       path: validationDetailsEntry.path.split(".").map(segment => segment.trim()).filter(Boolean),
-      expected: validationDetailsEntry.expected || undefined,
-      origin: validationDetailsEntry.origin || undefined,
-      format: validationDetailsEntry.format || undefined,
-      pattern: validationDetailsEntry.pattern || undefined,
-      minimum: validationDetailsEntry.minimum ? Number.parseInt(validationDetailsEntry.minimum) : undefined,
-      maximum: validationDetailsEntry.maximum ? Number.parseInt(validationDetailsEntry.maximum) : undefined,
-      inclusive: validationDetailsEntry.inclusive ? validationDetailsEntry.inclusive === "true" : undefined,
-      keys: validationDetailsEntry.keys ? validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean) : undefined,
+      expected: validationDetailsEntry.expected,
+      origin: validationDetailsEntry.origin,
+      format: validationDetailsEntry.format,
+      pattern: validationDetailsEntry.pattern,
+      minimum: validationDetailsEntry.minimum,
+      maximum: validationDetailsEntry.maximum,
+      inclusive: validationDetailsEntry.inclusive,
+      keys: validationDetailsEntry.keys === undefined ? undefined : validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean),
     };
     const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
 

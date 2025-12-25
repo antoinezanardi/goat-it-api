@@ -3,7 +3,7 @@
 services:
   mongo:
     container_name: "mongo-acceptance-tests"
-    image: mongo:8.2.2
+    image: mongo:8.2.3
     environment:
       MONGO_INITDB_DATABASE: goat-it-api-acceptance-tests
     ports:

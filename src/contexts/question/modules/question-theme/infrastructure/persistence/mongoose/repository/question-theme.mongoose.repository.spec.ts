@@ -1,5 +1,6 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
+import { crush } from "radashi";
 
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -7,7 +8,9 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -137,30 +140,78 @@ describe("Question Theme Mongoose Repository", () => {
 
   describe(QuestionThemeMongooseRepository.prototype.create, () => {
     it("should create document in model when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
-      await repositories.questionTheme.create(questionThemeToCreate);
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
+      await repositories.questionTheme.create(questionThemeCreationContract);
 
-      expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeToCreate);
+      expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationContract);
     });
 
     it("should map and return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
-      await repositories.questionTheme.create(questionThemeToCreate);
+      await repositories.questionTheme.create(questionThemeCreationContract);
 
       expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(createdQuestionThemeDocument);
     });
 
     it("should return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
       const createdQuestionTheme = createFakeQuestionTheme();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
       mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(createdQuestionTheme);
-      const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);
+      const actualQuestionTheme = await repositories.questionTheme.create(questionThemeCreationContract);
 
       expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.modify, () => {
+    it("should modify document in model when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const updateQuery = {
+        $set: crush(questionThemeModificationContract),
+      };
+      await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(
+        questionThemeId,
+        updateQuery,
+        { new: true },
+      );
+    });
+
+    it("should map and return modified question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const modifiedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(modifiedQuestionThemeDocument);
+      await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(modifiedQuestionThemeDocument);
+    });
+
+    it("should return modified question theme when called.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const modifiedQuestionThemeDocument = createFakeQuestionThemeDocument();
+      const modifiedQuestionTheme = createFakeQuestionTheme();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(modifiedQuestionThemeDocument);
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(modifiedQuestionTheme);
+      const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(modifiedQuestionTheme);
+    });
+
+    it("should return undefined when document to modify is not found.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      mocks.models.questionTheme.findByIdAndUpdate.mockResolvedValue(null);
+      const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
+
+      expect(actualQuestionTheme).toBeUndefined();
     });
   });
 

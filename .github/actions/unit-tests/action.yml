@@ -77,7 +77,7 @@ runs:
         } >> "$GITHUB_OUTPUT"
 
     - name: Save unit tests coverage in cache 🥡
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       id: cache-unit-tests-coverage
       if: ${{ hashFiles(format('{0}/lcov.info', inputs.unit-tests-coverage-reports-path)) != '' }}
       with:
@@ -85,7 +85,7 @@ runs:
         key: ${{ inputs.unit-tests-coverage-base-cache-key }}-${{ steps.safe-branch-name.outputs.safe-branch-name }}-${{ hashFiles(format('{0}/lcov.info', inputs.unit-tests-coverage-reports-path)) }}
 
     - name: Save unit tests coverage report as artifact 💎
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: unit-tests-coverage-report
         path: ${{ inputs.unit-tests-coverage-reports-path }}

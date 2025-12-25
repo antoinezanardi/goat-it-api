@@ -36,6 +36,7 @@ jobs:
   upload-to-docker-hub:
     name: Upload image(s) to registry 🐳
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -88,7 +89,7 @@ jobs:
           echo "${{ steps.build.outputs.digest }}" > "/tmp/digests/${{ matrix.tag }}/${{ env.PLATFORM_DIR }}-digest.txt"
 
       - name: Upload digest artifact 📦
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: docker-digest-${{ matrix.tag }}-${{ env.PLATFORM_DIR }}
           path: /tmp/digests/${{ matrix.tag }}/${{ env.PLATFORM_DIR }}-digest.txt
@@ -97,6 +98,7 @@ jobs:
   merge-images-into-manifest-list:
     name: Merge images into a manifest list 🗂️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: upload-to-docker-hub
     strategy:
       matrix:
@@ -106,7 +108,7 @@ jobs:
       url: ${{ inputs.environment-url }}
     steps:
       - name: Download digests 📩
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: docker-digest-${{ matrix.tag }}-*
           path: /tmp/digests/${{ matrix.tag }}

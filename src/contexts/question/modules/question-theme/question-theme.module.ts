@@ -5,8 +5,10 @@ import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/ap
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
-import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme.controller";
+import { AdminQuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
+import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
 import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
@@ -19,11 +21,15 @@ import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@qu
       },
     ]),
   ],
-  controllers: [QuestionThemeController],
+  controllers: [
+    QuestionThemeController,
+    AdminQuestionThemeController,
+  ],
   providers: [
     FindAllQuestionThemesUseCase,
     FindQuestionThemeByIdUseCase,
     CreateQuestionThemeUseCase,
+    ModifyQuestionThemeUseCase,
     ArchiveQuestionThemeUseCase,
     {
       provide: QUESTION_THEME_REPOSITORY_TOKEN,

@@ -59,6 +59,7 @@ jobs:
   install:
     name: Install ⚙️
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v6
@@ -86,6 +87,7 @@ jobs:
   build:
     name: Build App ✨
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs:
       - install
     steps:
@@ -98,6 +100,7 @@ jobs:
   lint-codebase:
     name: Lint Codebase 🔍
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs:
       - install
     steps:
@@ -111,6 +114,7 @@ jobs:
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs:
       - install
     steps:
