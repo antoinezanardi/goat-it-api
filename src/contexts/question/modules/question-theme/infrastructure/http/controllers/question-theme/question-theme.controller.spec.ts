@@ -9,8 +9,9 @@ import { QuestionThemeController } from "@question/modules/question-theme/infras
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
 
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
-import { createFakeQuestionTheme, createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 

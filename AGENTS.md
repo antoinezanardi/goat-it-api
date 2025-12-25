@@ -875,7 +875,7 @@ export { createFakeQuestionTheme };
 
 ```typescript
 import { createMockFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/uses-cases/find-all-question-themes.use-case.mock";
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 ```
 
 2. Structure tests with describe/it blocks:
@@ -1055,7 +1055,7 @@ For tests that require pre-populated data, use fixtures:
 
 ```typescript
 // tests/acceptance/support/fixtures/question-theme.fixtures.ts
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
 async function seedQuestionThemes(count: number) {
   const themes = Array.from({ length: count }, () => createFakeQuestionTheme());

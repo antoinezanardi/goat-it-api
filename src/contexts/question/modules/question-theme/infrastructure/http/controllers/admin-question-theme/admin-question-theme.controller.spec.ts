@@ -1,8 +1,8 @@
 import { Test } from "@nestjs/testing";
 
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import { createQuestionThemeCreationCommandFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
-import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
+import { createQuestionThemeModificationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
@@ -17,14 +17,15 @@ import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/questi
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
-import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers"));
-vi.mock(import("@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers"));
-vi.mock(import("@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers"));
+vi.mock(import("@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers"));
+vi.mock(import("@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers"));
 
 describe("Admin Question Theme Controller", () => {
   let adminQuestionThemeController: AdminQuestionThemeController;
@@ -38,8 +39,8 @@ describe("Admin Question Theme Controller", () => {
     };
     mappers: {
       createAdminQuestionThemeDtoFromEntity: Mock;
-      createQuestionThemeCreationCommandFromCreateDto: Mock;
-      createQuestionThemeModificationCommandFromPatchQuestionThemeDto: Mock;
+      createQuestionThemeCreationCommandFromDto: Mock;
+      createQuestionThemeModificationCommandFromDto: Mock;
     };
   };
 
@@ -54,8 +55,8 @@ describe("Admin Question Theme Controller", () => {
       },
       mappers: {
         createAdminQuestionThemeDtoFromEntity: vi.mocked(createAdminQuestionThemeDtoFromEntity),
-        createQuestionThemeCreationCommandFromCreateDto: vi.mocked(createQuestionThemeCreationCommandFromCreateDto),
-        createQuestionThemeModificationCommandFromPatchQuestionThemeDto: vi.mocked(createQuestionThemeModificationCommandFromPatchQuestionThemeDto),
+        createQuestionThemeCreationCommandFromDto: vi.mocked(createQuestionThemeCreationCommandFromDto),
+        createQuestionThemeModificationCommandFromDto: vi.mocked(createQuestionThemeModificationCommandFromDto),
       },
     };
     const testingModule = await Test.createTestingModule({
@@ -137,78 +138,78 @@ describe("Admin Question Theme Controller", () => {
   });
 
   describe(AdminQuestionThemeController.prototype.createQuestionTheme, () => {
-    it("should map create question theme dto to question theme creation command when called.", async() => {
-      const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
-      await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
+    it("should map question theme creation dto to question theme creation command when called.", async() => {
+      const questionThemeCreationDto = createFakeQuestionThemeCreationDto();
+      await adminQuestionThemeController.createQuestionTheme(questionThemeCreationDto);
 
-      expect(mocks.mappers.createQuestionThemeCreationCommandFromCreateDto).toHaveBeenCalledExactlyOnceWith(createQuestionThemeDto);
+      expect(mocks.mappers.createQuestionThemeCreationCommandFromDto).toHaveBeenCalledExactlyOnceWith(questionThemeCreationDto);
     });
 
     it("should create question theme when called.", async() => {
-      const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
+      const questionThemeCreationDto = createFakeQuestionThemeCreationDto();
       const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
-      mocks.mappers.createQuestionThemeCreationCommandFromCreateDto.mockReturnValueOnce(questionThemeCreationCommand);
-      await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
+      mocks.mappers.createQuestionThemeCreationCommandFromDto.mockReturnValueOnce(questionThemeCreationCommand);
+      await adminQuestionThemeController.createQuestionTheme(questionThemeCreationDto);
 
       expect(mocks.useCases.createQuestionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand);
     });
 
     it("should map the created question theme to dto when created.", async() => {
-      const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
+      const questionThemeCreationDto = createFakeQuestionThemeCreationDto();
       const createdQuestionTheme = createFakeQuestionTheme();
       mocks.useCases.createQuestionTheme.create.mockResolvedValueOnce(createdQuestionTheme);
-      await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
+      await adminQuestionThemeController.createQuestionTheme(questionThemeCreationDto);
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(createdQuestionTheme);
     });
 
     it("should return the mapped dto from the mapper when created.", async() => {
-      const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
+      const questionThemeCreationDto = createFakeQuestionThemeCreationDto();
       const createdQuestionTheme = createFakeQuestionTheme();
       const expectedDto = createFakeAdminQuestionThemeDto();
 
       mocks.useCases.createQuestionTheme.create.mockResolvedValueOnce(createdQuestionTheme);
       mocks.mappers.createAdminQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
-      const result = await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
+      const result = await adminQuestionThemeController.createQuestionTheme(questionThemeCreationDto);
 
       expect(result).toStrictEqual<AdminQuestionThemeDto>(expectedDto);
     });
   });
 
   describe(AdminQuestionThemeController.prototype.patchQuestionTheme, () => {
-    it("should map patch question theme dto to update command when called.", async() => {
+    it("should map question theme modification dto to update command when called.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({ slug: "new-slug" });
-      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
+      const questionThemeModificationDto = createFakeQuestionThemeModificationDto({ slug: "new-slug" });
+      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, questionThemeModificationDto);
 
-      expect(mocks.mappers.createQuestionThemeModificationCommandFromPatchQuestionThemeDto).toHaveBeenCalledExactlyOnceWith(questionThemeId, patchQuestionThemeDto);
+      expect(mocks.mappers.createQuestionThemeModificationCommandFromDto).toHaveBeenCalledExactlyOnceWith(questionThemeId, questionThemeModificationDto);
     });
 
     it("should update question theme when called.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({ slug: "new-slug" });
+      const questionThemeModificationDto = createFakeQuestionThemeModificationDto({ slug: "new-slug" });
       const mappedUpdateCommand = createFakeQuestionThemeModificationCommand();
-      mocks.mappers.createQuestionThemeModificationCommandFromPatchQuestionThemeDto.mockReturnValueOnce(mappedUpdateCommand);
-      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
+      mocks.mappers.createQuestionThemeModificationCommandFromDto.mockReturnValueOnce(mappedUpdateCommand);
+      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, questionThemeModificationDto);
 
       expect(mocks.useCases.modifyQuestionTheme.modify).toHaveBeenCalledExactlyOnceWith(mappedUpdateCommand);
     });
 
     it("should map the updated question theme to dto when updated.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({
+      const questionThemeModificationDto = createFakeQuestionThemeModificationDto({
         slug: "new-slug",
       });
       const updatedQuestionTheme = createFakeQuestionTheme();
       mocks.useCases.modifyQuestionTheme.modify.mockResolvedValueOnce(updatedQuestionTheme);
-      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
+      await adminQuestionThemeController.patchQuestionTheme(questionThemeId, questionThemeModificationDto);
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledExactlyOnceWith(updatedQuestionTheme);
     });
 
     it("should return the mapped dto from the mapper when updated.", async() => {
       const questionThemeId = "question-theme-id";
-      const patchQuestionThemeDto = createFakePatchQuestionThemeDto({
+      const questionThemeModificationDto = createFakeQuestionThemeModificationDto({
         slug: "new-slug",
       });
       const updatedQuestionTheme = createFakeQuestionTheme();
@@ -216,7 +217,7 @@ describe("Admin Question Theme Controller", () => {
 
       mocks.useCases.modifyQuestionTheme.modify.mockResolvedValueOnce(updatedQuestionTheme);
       mocks.mappers.createAdminQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
-      const result = await adminQuestionThemeController.patchQuestionTheme(questionThemeId, patchQuestionThemeDto);
+      const result = await adminQuestionThemeController.patchQuestionTheme(questionThemeId, questionThemeModificationDto);
 
       expect(result).toStrictEqual<AdminQuestionThemeDto>(expectedDto);
     });
