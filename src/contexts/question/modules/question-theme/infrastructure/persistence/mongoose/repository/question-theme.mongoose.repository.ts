@@ -41,8 +41,8 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
-  public async create(questionTheme: QuestionThemeCreationContract): Promise<QuestionTheme> {
-    const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
+  public async create(questionThemeCreationContract: QuestionThemeCreationContract): Promise<QuestionTheme> {
+    const createdQuestionThemeDocument = await this.questionThemeModel.create(questionThemeCreationContract);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }

@@ -17,8 +17,7 @@ import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/questi
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
-import { createFakeQuestionThemeCreationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
-import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
+import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 import { createFakeAdminQuestionThemeDto, createFakeCreateQuestionThemeDto, createFakePatchQuestionThemeDto, createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
@@ -147,11 +146,11 @@ describe("Admin Question Theme Controller", () => {
 
     it("should create question theme when called.", async() => {
       const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
-      const mappedQuestionThemeCreationContract = createFakeQuestionThemeCreationContract();
-      mocks.mappers.createQuestionThemeCreationCommandFromCreateDto.mockReturnValueOnce(mappedQuestionThemeCreationContract);
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
+      mocks.mappers.createQuestionThemeCreationCommandFromCreateDto.mockReturnValueOnce(questionThemeCreationCommand);
       await adminQuestionThemeController.createQuestionTheme(createQuestionThemeDto);
 
-      expect(mocks.useCases.createQuestionTheme.create).toHaveBeenCalledExactlyOnceWith(mappedQuestionThemeCreationContract);
+      expect(mocks.useCases.createQuestionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand);
     });
 
     it("should map the created question theme to dto when created.", async() => {

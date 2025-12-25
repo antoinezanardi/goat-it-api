@@ -81,8 +81,8 @@ export class AdminQuestionThemeController {
     type: AdminQuestionThemeDto,
   })
   public async createQuestionTheme(@Body() createQuestionThemeDto: CreateQuestionThemeDto): Promise<AdminQuestionThemeDto> {
-    const questionThemeCreationContract = createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto);
-    const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeCreationContract);
+    const questionThemeCreationCommand = createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto);
+    const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
     return createAdminQuestionThemeDtoFromEntity(createdQuestionTheme);
   }

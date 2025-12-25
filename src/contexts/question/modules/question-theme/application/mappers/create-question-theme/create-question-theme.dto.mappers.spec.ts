@@ -8,7 +8,7 @@ describe("Create Question Theme Dto Mappers", () => {
   describe(createQuestionThemeCreationCommandFromCreateDto, () => {
     it("should map a CreateQuestionThemeDto to a QuestionThemeCreationCommand when called.", () => {
       const createQuestionThemeDto = createFakeCreateQuestionThemeDto();
-      const questionThemeDraftEntity = createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto);
+      const questionThemeCreationCommand = createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto);
       const expectedQuestionThemeCreationCommand = createFakeQuestionThemeCreationCommand({
         payload: {
           slug: createQuestionThemeDto.slug,
@@ -19,7 +19,7 @@ describe("Create Question Theme Dto Mappers", () => {
         },
       });
 
-      expect(questionThemeDraftEntity).toStrictEqual<QuestionThemeCreationCommand>(expectedQuestionThemeCreationCommand);
+      expect(questionThemeCreationCommand).toStrictEqual<QuestionThemeCreationCommand>(expectedQuestionThemeCreationCommand);
     });
   });
 });
