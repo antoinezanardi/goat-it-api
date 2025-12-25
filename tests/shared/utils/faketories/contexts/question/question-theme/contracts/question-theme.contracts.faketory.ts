@@ -1,8 +1,19 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+
+function createFakeQuestionThemeCreationContract(questionThemeCreationContract: Partial<QuestionThemeCreationContract> = {}): QuestionThemeCreationContract {
+  return {
+    slug: faker.lorem.slug(),
+    label: createFakeLocalizedText(),
+    aliases: createFakeLocalizedTexts(),
+    description: createFakeLocalizedText(),
+    status: "active",
+    ...questionThemeCreationContract,
+  };
+}
 
 function createFakeQuestionThemeModificationContract(questionThemeModificationContract: Partial<QuestionThemeModificationContract> = {}): QuestionThemeModificationContract {
   return {
@@ -15,5 +26,6 @@ function createFakeQuestionThemeModificationContract(questionThemeModificationCo
 }
 
 export {
+  createFakeQuestionThemeCreationContract,
   createFakeQuestionThemeModificationContract,
 };

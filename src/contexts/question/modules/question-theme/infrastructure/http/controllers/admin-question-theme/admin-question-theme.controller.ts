@@ -10,7 +10,7 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 import { createQuestionThemeModificationCommandFromPatchQuestionThemeDto } from "@question/modules/question-theme/application/mappers/patch-question-theme/patch-question-theme.dto.mappers";
 import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
-import { createQuestionThemeDraftEntityFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromCreateDto } from "@question/modules/question-theme/application/mappers/create-question-theme/create-question-theme.dto.mappers";
 import { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
@@ -81,8 +81,8 @@ export class AdminQuestionThemeController {
     type: AdminQuestionThemeDto,
   })
   public async createQuestionTheme(@Body() createQuestionThemeDto: CreateQuestionThemeDto): Promise<AdminQuestionThemeDto> {
-    const questionThemeDraft = createQuestionThemeDraftEntityFromCreateDto(createQuestionThemeDto);
-    const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeDraft);
+    const questionThemeCreationCommand = createQuestionThemeCreationCommandFromCreateDto(createQuestionThemeDto);
+    const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
     return createAdminQuestionThemeDtoFromEntity(createdQuestionTheme);
   }

@@ -3,13 +3,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 import { crush } from "radashi";
 
-import { QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
+import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
 import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
-import { QuestionTheme, QuestionThemeDraft } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
 @Injectable()
@@ -41,8 +41,8 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
-  public async create(questionTheme: QuestionThemeDraft): Promise<QuestionTheme> {
-    const createdQuestionThemeDocument = await this.questionThemeModel.create(questionTheme);
+  public async create(questionThemeCreationContract: QuestionThemeCreationContract): Promise<QuestionTheme> {
+    const createdQuestionThemeDocument = await this.questionThemeModel.create(questionThemeCreationContract);
 
     return createQuestionThemeFromDocument(createdQuestionThemeDocument);
   }

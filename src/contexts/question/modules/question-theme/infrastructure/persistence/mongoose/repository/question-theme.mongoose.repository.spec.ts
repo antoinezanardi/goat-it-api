@@ -8,8 +8,8 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
-import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
-import { createFakeQuestionTheme, createFakeQuestionThemeDocument, createFakeQuestionThemeDraft } from "@faketories/contexts/question/question-theme/question-theme.faketory";
+import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionTheme, createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/question-theme.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -139,28 +139,28 @@ describe("Question Theme Mongoose Repository", () => {
 
   describe(QuestionThemeMongooseRepository.prototype.create, () => {
     it("should create document in model when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
-      await repositories.questionTheme.create(questionThemeToCreate);
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
+      await repositories.questionTheme.create(questionThemeCreationContract);
 
-      expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeToCreate);
+      expect(mocks.models.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationContract);
     });
 
     it("should map and return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
-      await repositories.questionTheme.create(questionThemeToCreate);
+      await repositories.questionTheme.create(questionThemeCreationContract);
 
       expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(createdQuestionThemeDocument);
     });
 
     it("should return created question theme when called.", async() => {
-      const questionThemeToCreate = createFakeQuestionThemeDraft();
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
       const createdQuestionTheme = createFakeQuestionTheme();
       const createdQuestionThemeDocument = createFakeQuestionThemeDocument();
       mocks.models.questionTheme.create.mockResolvedValue(createdQuestionThemeDocument);
       mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(createdQuestionTheme);
-      const actualQuestionTheme = await repositories.questionTheme.create(questionThemeToCreate);
+      const actualQuestionTheme = await repositories.questionTheme.create(questionThemeCreationContract);
 
       expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
     });
