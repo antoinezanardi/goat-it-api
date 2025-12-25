@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import type { CreateQuestionThemeDto } from "@question/modules/question-theme/application/dto/create-question-theme/create-question-theme.dto";
-import type { PatchQuestionThemeDto } from "@question/modules/question-theme/application/dto/patch-question-theme/patch-question-theme.dto";
+import type { QuestionThemeCreationDto } from "@question/modules/question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
+import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
 
@@ -55,23 +55,23 @@ function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQue
   };
 }
 
-function createFakeCreateQuestionThemeDto(createDto: Partial<CreateQuestionThemeDto> = {}): CreateQuestionThemeDto {
+function createFakeQuestionThemeCreationDto(creationDto: Partial<QuestionThemeCreationDto> = {}): QuestionThemeCreationDto {
   return {
     slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
-    ...createDto,
+    ...creationDto,
   };
 }
 
-function createFakePatchQuestionThemeDto(patchDto: Partial<PatchQuestionThemeDto> = {}): PatchQuestionThemeDto {
+function createFakeQuestionThemeModificationDto(modificationDto: Partial<QuestionThemeModificationDto> = {}): QuestionThemeModificationDto {
   return {
     slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
     label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
     aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
     description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    ...patchDto,
+    ...modificationDto,
   };
 }
 
@@ -96,7 +96,7 @@ export {
   createFakeQuestionTheme,
   createFakeQuestionThemeDto,
   createFakeAdminQuestionThemeDto,
-  createFakeCreateQuestionThemeDto,
-  createFakePatchQuestionThemeDto,
+  createFakeQuestionThemeCreationDto,
+  createFakeQuestionThemeModificationDto,
   createFakeQuestionThemeDocument,
 };
