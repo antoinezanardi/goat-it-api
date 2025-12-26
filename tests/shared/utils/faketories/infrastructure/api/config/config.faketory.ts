@@ -46,10 +46,10 @@ function createFakeAuthenticationConfigFromEnv(authenticationConfig: Partial<Aut
 
   return {
     admin: {
-      apiKey: fakeAppEnv.ADMIN_API_KEY,
+      apiKeyValidator: fakeAppEnv.ADMIN_API_KEY,
     },
     game: {
-      apiKey: fakeAppEnv.GAME_API_KEY,
+      apiKeyValidator: fakeAppEnv.GAME_API_KEY,
     },
     ...authenticationConfig,
   };

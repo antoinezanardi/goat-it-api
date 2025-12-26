@@ -13,6 +13,7 @@ function createFakeAppEnv(appEnv: Partial<AppEnv> = {}): AppEnv {
     MONGODB_PORT: faker.number.int({ min: 1024, max: 65_535 }),
     MONGODB_DATABASE: faker.lorem.word(),
     FALLBACK_LOCALE: faker.helpers.arrayElement(LOCALES),
+    API_KEY_HMAC_SECRET: faker.string.alpha({ length: 32 }),
     ADMIN_API_KEY: faker.string.uuid(),
     GAME_API_KEY: faker.string.uuid(),
     ...appEnv,

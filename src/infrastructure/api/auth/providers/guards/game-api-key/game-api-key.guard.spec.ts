@@ -32,10 +32,10 @@ describe("Game Api Key Guard", () => {
         appConfig: createMockedAppConfigService({
           authenticationConfig: createFakeAuthenticationConfigFromEnv({
             admin: {
-              apiKey: "test-admin-api",
+              apiKeyValidator: "test-admin-api",
             },
             game: {
-              apiKey: "test-game-api",
+              apiKeyValidator: "test-game-api",
             },
           }),
         }),

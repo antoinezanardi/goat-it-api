@@ -1,11 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
+import { createApiKeyValidator, hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
+
 import { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 @Injectable()
 export class AppConfigService {
-  public constructor(private readonly configService: ConfigService) {}
+  private readonly authenticationConfigCache: AuthenticationConfigFromEnv;
+
+  public constructor(private readonly configService: ConfigService) {
+    this.authenticationConfigCache = this.computeAuthenticationConfigCache();
+  }
 
   public get serverConfig(): ServerConfigFromEnv {
     return {
@@ -44,13 +50,30 @@ export class AppConfigService {
   }
 
   public get authenticationConfig(): AuthenticationConfigFromEnv {
+    return this.authenticationConfigCache;
+  }
+
+  private computeAuthenticationConfigCache(): AuthenticationConfigFromEnv {
+    const hmacSecret = this.configService.getOrThrow<string>("API_KEY_HMAC_SECRET");
+    const adminApiKey = this.configService.getOrThrow<string>("ADMIN_API_KEY");
+    const gameApiKey = this.configService.getOrThrow<string>("GAME_API_KEY");
+
+    const hashedAdminApiKey = hashApiKey(adminApiKey, hmacSecret);
+    const hashedGameApiKey = hashApiKey(gameApiKey, hmacSecret);
+
     return {
       admin: {
-        apiKey: this.configService.getOrThrow<AuthenticationConfigFromEnv["admin"]["apiKey"]>("ADMIN_API_KEY"),
+        apiKeyValidator: createApiKeyValidator(hashedAdminApiKey, hmacSecret),
       },
       game: {
-        apiKey: this.configService.getOrThrow<AuthenticationConfigFromEnv["game"]["apiKey"]>("GAME_API_KEY"),
+        apiKeyValidator: createApiKeyValidator(hashedGameApiKey, hmacSecret),
       },
     };
+  }
+
+  private deleteSensitiveEnvVariables(): void {
+    delete process.env.API_KEY_HMAC_SECRET;
+    delete process.env.ADMIN_API_KEY;
+    delete process.env.GAME_API_KEY;
   }
 }

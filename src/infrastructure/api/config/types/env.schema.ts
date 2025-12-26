@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import { hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
-import { API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
+import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { validateCorsOrigin } from "@src/infrastructure/api/config/helpers/env.helpers";
 import { DEFAULT_ENV_SERVER_HOST, DEFAULT_ENV_SERVER_PORT, DEFAULT_ENV_CORS_ORIGIN, DEFAULT_ENV_MONGODB_DATABASE, DEFAULT_ENV_MONGODB_HOST, DEFAULT_ENV_MONGODB_PORT, MIN_PORT_NUMBER, MAX_PORT_NUMBER, MONGODB_DATABASE_REGEX, DEFAULT_ENV_FALLBACK_LOCALE } from "@src/infrastructure/api/config/types/env.constants";
 
@@ -27,12 +26,12 @@ const APP_ENV_SCHEMA = z.object({
     .default(DEFAULT_ENV_MONGODB_DATABASE),
   FALLBACK_LOCALE: z.enum(LOCALES)
     .default(DEFAULT_ENV_FALLBACK_LOCALE),
+  API_KEY_HMAC_SECRET: z.string()
+    .min(API_KEY_HMAC_SECRET_MINIMAL_LENGTH, `API_KEY_HMAC_SECRET must be set and at least ${API_KEY_HMAC_SECRET_MINIMAL_LENGTH} characters long`),
   ADMIN_API_KEY: z.string()
-    .min(API_KEY_MINIMAL_LENGTH, `ADMIN_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`)
-    .pipe(z.transform(hashApiKey)),
+    .min(API_KEY_MINIMAL_LENGTH, `ADMIN_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
   GAME_API_KEY: z.string()
-    .min(API_KEY_MINIMAL_LENGTH, `GAME_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`)
-    .pipe(z.transform(hashApiKey)),
+    .min(API_KEY_MINIMAL_LENGTH, `GAME_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
 });
 
 export { APP_ENV_SCHEMA };

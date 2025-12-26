@@ -2,28 +2,51 @@ import { timingSafeEqual, createHmac } from "node:crypto";
 
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
 
-function hashApiKey(apiKey: string): string {
-  return createHmac("sha256", "this_is_a_secret_salt")
+/**
+ * **SECURITY WARNING**:
+ *
+ * This function is only for hashing API keys for comparison purposes. Not for storing passwords.
+ *
+ * This is a high-entropy API token validated using HMAC-SHA256,
+ * which is the recommended approach for server-side API key authentication.
+ */
+function hashApiKey(apiKey: string, hmacKey: string): string {
+  return createHmac("sha256", hmacKey)
     .update(apiKey)
     .digest("hex");
 }
 
-function validateReceivedApiKey(expectedHashedKey: string, receivedKey: unknown): void {
-  if (typeof receivedKey !== "string") {
+function createApiKeyValidator(
+  expectedHashedApiKey: string,
+  hmacSecret: string,
+): (receivedApiKey: unknown) => void {
+  return function validate(receivedApiKey: unknown): void {
+    validateReceivedApiKey(expectedHashedApiKey, receivedApiKey, hmacSecret);
+  };
+}
+
+function validateReceivedApiKey(expectedHashedApiKey: string, receivedApiKey: unknown, hmacSecret: string): void {
+  if (typeof receivedApiKey !== "string") {
     throw new MissingApiKeyError();
   }
-  const bufferedHashedExpectedKey = Buffer.from(expectedHashedKey);
-  const bufferedHashedReceivedKey = Buffer.from(hashApiKey(receivedKey));
+  const receivedHashedApiKey = hashApiKey(receivedApiKey, hmacSecret);
 
-  const areKeysSameLength = bufferedHashedExpectedKey.length === bufferedHashedReceivedKey.length;
-  const areKeysMatching = timingSafeEqual(bufferedHashedExpectedKey, bufferedHashedReceivedKey);
+  const expectedBuffer = Buffer.from(expectedHashedApiKey, "hex");
+  const receivedBuffer = Buffer.from(receivedHashedApiKey, "hex");
 
-  if (!areKeysSameLength || !areKeysMatching) {
+  const areKeysSameLength = expectedBuffer.length === receivedBuffer.length;
+  if (!areKeysSameLength) {
+    throw new InvalidApiKeyError();
+  }
+
+  const areKeysMatching = timingSafeEqual(expectedBuffer, receivedBuffer);
+  if (!areKeysMatching) {
     throw new InvalidApiKeyError();
   }
 }
 
 export {
   hashApiKey,
+  createApiKeyValidator,
   validateReceivedApiKey,
 };
