@@ -1091,6 +1091,22 @@
         ]
       }
     },
+    // ---- Override for guards -----
+    {
+      "files": [
+        "**/src/**/*.guard.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable"
+            ]
+          }
+        ]
+      }
+    },
     // ---- Override for pipes -----
     {
       "files": [

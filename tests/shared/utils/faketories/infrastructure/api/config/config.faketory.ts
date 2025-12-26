@@ -1,6 +1,6 @@
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
-import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 function createFakeServerConfigFromEnv(serverConfig: Partial<ServerConfigFromEnv> = {}): ServerConfigFromEnv {
   const fakeAppEnv = createFakeAppEnv();
@@ -41,9 +41,24 @@ function createFakeLocalizationConfigFromEnv(localizationConfig: Partial<Localiz
   };
 }
 
+function createFakeAuthenticationConfigFromEnv(authenticationConfig: Partial<AuthenticationConfigFromEnv> = {}): AuthenticationConfigFromEnv {
+  const fakeAppEnv = createFakeAppEnv();
+
+  return {
+    admin: {
+      apiKey: fakeAppEnv.ADMIN_API_KEY,
+    },
+    game: {
+      apiKey: fakeAppEnv.GAME_API_KEY,
+    },
+    ...authenticationConfig,
+  };
+}
+
 export {
   createFakeServerConfigFromEnv,
   createFakeCorsConfigFromEnv,
   createFakeMongoDatabaseConfigFromEnv,
   createFakeLocalizationConfigFromEnv,
+  createFakeAuthenticationConfigFromEnv,
 };

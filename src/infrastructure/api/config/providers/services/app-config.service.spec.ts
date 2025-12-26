@@ -30,6 +30,8 @@ describe("App Config Service", () => {
           MONGODB_PORT: 27_018,
           MONGODB_DATABASE: "goat-it-test",
           FALLBACK_LOCALE: "en",
+          GAME_API_KEY: "valid-game-api-key-of-sufficient-length",
+          ADMIN_API_KEY: "valid-admin-api-key-of-sufficient-length",
         }),
       },
     };
@@ -138,6 +140,36 @@ describe("App Config Service", () => {
       });
 
       expect(() => services.appConfig.localizationConfig).toThrowError("FALLBACK_LOCALE is not defined");
+    });
+  });
+
+  describe("authenticationConfig", () => {
+    it("should return authentication config from env when called.", () => {
+      expect(services.appConfig.authenticationConfig).toStrictEqual({
+        admin: {
+          apiKey: "valid-admin-api-key-of-sufficient-length",
+        },
+        game: {
+          apiKey: "valid-game-api-key-of-sufficient-length",
+        },
+      });
+    });
+
+    it("should throw error when admin api key is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => {
+        throw new Error("ADMIN_API_KEY is not defined");
+      });
+
+      expect(() => services.appConfig.authenticationConfig).toThrowError("ADMIN_API_KEY is not defined");
+    });
+
+    it("should throw error when game api key is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "valid-admin-api-key-of-sufficient-length");
+      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => {
+        throw new Error("GAME_API_KEY is not defined");
+      });
+
+      expect(() => services.appConfig.authenticationConfig).toThrowError("GAME_API_KEY is not defined");
     });
   });
 });

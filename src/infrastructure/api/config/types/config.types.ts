@@ -19,9 +19,19 @@ type LocalizationConfigFromEnv = {
   fallbackLocale: Locale;
 };
 
+type AuthenticationConfigFromEnv = {
+  admin: {
+    apiKey: string;
+  };
+  game: {
+    apiKey: string;
+  };
+};
+
 export type {
   ServerConfigFromEnv,
   CorsConfigFromEnv,
   MongoDatabaseConfigFromEnv,
   LocalizationConfigFromEnv,
+  AuthenticationConfigFromEnv,
 };

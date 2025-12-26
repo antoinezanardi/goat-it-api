@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 @Injectable()
 export class AppConfigService {
@@ -40,6 +40,17 @@ export class AppConfigService {
   public get localizationConfig(): LocalizationConfigFromEnv {
     return {
       fallbackLocale: this.configService.getOrThrow<LocalizationConfigFromEnv["fallbackLocale"]>("FALLBACK_LOCALE"),
+    };
+  }
+
+  public get authenticationConfig(): AuthenticationConfigFromEnv {
+    return {
+      admin: {
+        apiKey: this.configService.getOrThrow<AuthenticationConfigFromEnv["admin"]["apiKey"]>("ADMIN_API_KEY"),
+      },
+      game: {
+        apiKey: this.configService.getOrThrow<AuthenticationConfigFromEnv["game"]["apiKey"]>("GAME_API_KEY"),
+      },
     };
   }
 }
