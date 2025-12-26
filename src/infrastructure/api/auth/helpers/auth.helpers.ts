@@ -1,24 +1,24 @@
-import { hash, compare } from "bcrypt";
+import { timingSafeEqual, createHmac } from "node:crypto";
 
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
 
-async function hashApiKey(apiKey: string): Promise<string> {
-  const saltRounds = 12;
-
-  return hash(apiKey, saltRounds);
+function hashApiKey(apiKey: string): string {
+  return createHmac("sha256", "this_is_a_secret_salt")
+    .update(apiKey)
+    .digest("hex");
 }
 
-async function validateReceivedApiKey(expectedKey: string, receivedKey: unknown): Promise<void> {
+function validateReceivedApiKey(expectedHashedKey: string, receivedKey: unknown): void {
   if (typeof receivedKey !== "string") {
     throw new MissingApiKeyError();
   }
-  const [hashedExpectedKey, hashedReceivedKey] = await Promise.all([
-    hashApiKey(expectedKey),
-    hashApiKey(receivedKey),
-  ]);
-  const areKeysMatching = await compare(hashedExpectedKey, hashedReceivedKey);
+  const bufferedHashedExpectedKey = Buffer.from(expectedHashedKey);
+  const bufferedHashedReceivedKey = Buffer.from(hashApiKey(receivedKey));
 
-  if (!areKeysMatching) {
+  const areKeysSameLength = bufferedHashedExpectedKey.length === bufferedHashedReceivedKey.length;
+  const areKeysMatching = timingSafeEqual(bufferedHashedExpectedKey, bufferedHashedReceivedKey);
+
+  if (!areKeysSameLength || !areKeysMatching) {
     throw new InvalidApiKeyError();
   }
 }

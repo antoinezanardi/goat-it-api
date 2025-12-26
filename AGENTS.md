@@ -396,13 +396,15 @@ src/contexts/<context>/modules/<feature>/
 ```
 
 3. Wire the module:
-  - Register Mongoose schema in module imports.
-  - Register controller.
-  - Register use cases and repository provider with injection token.
+
+- Register Mongoose schema in module imports.
+- Register controller.
+- Register use cases and repository provider with injection token.
 
 4. Add test utilities:
-  - Faketory: `tests/shared/utils/faketories/contexts/<context>/<feature>/<feature>.faketory.ts`
-  - Mocks: `tests/unit/utils/mocks/contexts/<context>/modules/<feature>/`
+
+- Faketory: `tests/shared/utils/faketories/contexts/<context>/<feature>/<feature>.faketory.ts`
+- Mocks: `tests/unit/utils/mocks/contexts/<context>/modules/<feature>/`
 
 5. Import the feature module in the context's root module.
 
@@ -973,18 +975,21 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 ### What the acceptance runner does
 
 1. **Before all scenarios** (`BeforeAll` hook):
-  - Loads test environment configuration from `.env.test`.
-  - Builds the project by calling `pnpm run build` (unless `SKIP_BUILD=true`).
-  - Connects to the test MongoDB database.
-  - Starts a real instance of the built app using `pnpm run start:prod:test`.
+
+- Loads test environment configuration from `.env.test`.
+- Builds the project by calling `pnpm run build` (unless `SKIP_BUILD=true`).
+- Connects to the test MongoDB database.
+- Starts a real instance of the built app using `pnpm run start:prod:test`.
 
 2. **Before each scenario** (`Before` hook):
-  - Resets the test database (clears all collections).
-  - Provides the app process handle to the test world.
+
+- Resets the test database (clears all collections).
+- Provides the app process handle to the test world.
 
 3. **After all scenarios** (`AfterAll` hook):
-  - Closes the database connection.
-  - Gracefully stops the app process (sends `SIGTERM`, then `SIGKILL` if needed).
+
+- Closes the database connection.
+- Gracefully stops the app process (sends `SIGTERM`, then `SIGKILL` if needed).
 
 ### Test database
 
