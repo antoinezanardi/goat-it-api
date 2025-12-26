@@ -1,5 +1,7 @@
 import { Test } from "@nestjs/testing";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
 import { createQuestionThemeModificationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers";
@@ -11,6 +13,7 @@ import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/a
 import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { AdminQuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 
+import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/modify-question-theme.use-case.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
@@ -30,6 +33,9 @@ vi.mock(import("@question/modules/question-theme/application/mappers/question-th
 describe("Admin Question Theme Controller", () => {
   let adminQuestionThemeController: AdminQuestionThemeController;
   let mocks: {
+    services: {
+      appConfig: ReturnType<typeof createMockedAppConfigService>;
+    };
     useCases: {
       findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
@@ -46,6 +52,9 @@ describe("Admin Question Theme Controller", () => {
 
   beforeEach(async() => {
     mocks = {
+      services: {
+        appConfig: createMockedAppConfigService(),
+      },
       useCases: {
         findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
@@ -62,6 +71,10 @@ describe("Admin Question Theme Controller", () => {
     const testingModule = await Test.createTestingModule({
       controllers: [AdminQuestionThemeController],
       providers: [
+        {
+          provide: AppConfigService,
+          useValue: mocks.services.appConfig,
+        },
         {
           provide: FindAllQuestionThemesUseCase,
           useValue: mocks.useCases.findAllQuestionThemes,

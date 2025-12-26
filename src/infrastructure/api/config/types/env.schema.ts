@@ -27,9 +27,9 @@ const APP_ENV_SCHEMA = z.object({
   FALLBACK_LOCALE: z.enum(LOCALES)
     .default(DEFAULT_ENV_FALLBACK_LOCALE),
   ADMIN_API_KEY: z.string()
-    .min(API_KEY_MINIMAL_LENGTH, `ADMIN_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH}`),
+    .min(API_KEY_MINIMAL_LENGTH, `ADMIN_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
   GAME_API_KEY: z.string()
-    .min(API_KEY_MINIMAL_LENGTH, `GAME_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH}`),
+    .min(API_KEY_MINIMAL_LENGTH, `GAME_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
 });
 
 export { APP_ENV_SCHEMA };

@@ -12,17 +12,17 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 @Injectable()
-export class AdminApiKeyGuard implements CanActivate {
+export class GameApiKeyGuard implements CanActivate {
   public constructor(private readonly configService: AppConfigService) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();
 
     const receivedApiKey = request.headers[API_KEY_HEADER];
-    const { apiKey: expectedAdminApiKey } = this.configService.authenticationConfig.admin;
+    const { apiKey: expectedGameApiKey } = this.configService.authenticationConfig.game;
 
     try {
-      await validateReceivedApiKey(expectedAdminApiKey, receivedApiKey);
+      await validateReceivedApiKey(expectedGameApiKey, receivedApiKey);
     } catch(error) {
       throw new UnauthorizedException(error);
     }

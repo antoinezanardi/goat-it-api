@@ -237,6 +237,7 @@ import { QuestionTheme } from "@question/modules/question-theme/domain/entities/
 ```
 
 When adding a new bounded context, add corresponding path aliases in:
+
 1. `configs/swc/swc.config.json` (for runtime)
 2. `configs/typescript/tsconfig.app.json` (for IDE/type checking)
 3. `configs/vitest/vitest.config.ts` (for tests)
@@ -395,13 +396,13 @@ src/contexts/<context>/modules/<feature>/
 ```
 
 3. Wire the module:
-   - Register Mongoose schema in module imports.
-   - Register controller.
-   - Register use cases and repository provider with injection token.
+  - Register Mongoose schema in module imports.
+  - Register controller.
+  - Register use cases and repository provider with injection token.
 
 4. Add test utilities:
-   - Faketory: `tests/shared/utils/faketories/contexts/<context>/<feature>/<feature>.faketory.ts`
-   - Mocks: `tests/unit/utils/mocks/contexts/<context>/modules/<feature>/`
+  - Faketory: `tests/shared/utils/faketories/contexts/<context>/<feature>/<feature>.faketory.ts`
+  - Mocks: `tests/unit/utils/mocks/contexts/<context>/modules/<feature>/`
 
 5. Import the feature module in the context's root module.
 
@@ -439,13 +440,17 @@ const MY_ENTITY_DTO = z.strictObject({
     .describe("Entity's unique MongoDB ObjectId."),
   name: z.string()
     .describe("Entity's name."),
-  status: z.enum(["active", "archived"])
+  status: z.enum([
+    "active",
+    "archived"
+  ])
     .describe("Entity's current status."),
   createdAt: z.iso.datetime()
     .describe("Entity's creation timestamp."),
 });
 
-class MyEntityDto extends createZodDto(MY_ENTITY_DTO) {}
+class MyEntityDto extends createZodDto(MY_ENTITY_DTO) {
+}
 
 export { MY_ENTITY_DTO, MyEntityDto };
 ```
@@ -456,12 +461,13 @@ export { MY_ENTITY_DTO, MyEntityDto };
 import { ZodResponse } from "nestjs-zod";
 import { HttpStatus } from "@nestjs/common";
 
-@Get()
-@ZodResponse({
+@Get() @ZodResponse({
   status: HttpStatus.OK,
   type: [MyEntityDto],
-})
-public async findAll(): Promise<MyEntityDto[]> {
+}) public async
+findAll()
+:
+Promise < MyEntityDto[] > {
   // ...
 }
 ```
@@ -501,10 +507,7 @@ In `domain/repositories/<entity>.repository.types.ts`:
 import type { MyEntity } from "@context/modules/feature/domain/entities/my-entity.types";
 
 type MyEntityRepository = {
-  findAll: () => Promise<MyEntity[]>;
-  findById: (id: string) => Promise<MyEntity | undefined>;
-  create: (entity: MyEntity) => Promise<MyEntity>;
-  update: (id: string, entity: Partial<MyEntity>) => Promise<MyEntity | undefined>;
+  findAll: () => Promise<MyEntity[]>; findById: (id: string) => Promise<MyEntity | undefined>; create: (entity: MyEntity) => Promise<MyEntity>; update: (id: string, entity: Partial<MyEntity>) => Promise<MyEntity | undefined>;
 };
 
 export type { MyEntityRepository };
@@ -533,15 +536,14 @@ import { Model } from "mongoose";
 
 @Injectable()
 export class MyEntityMongooseRepository implements MyEntityRepository {
-  public constructor(
-    @InjectModel(MyEntityMongooseSchema.name)
-    private readonly model: Model<MyEntityMongooseDocument>,
-  ) {}
+  public constructor(@InjectModel(MyEntityMongooseSchema.name) private readonly model: Model<MyEntityMongooseDocument>,) {
+  }
 
   public async findAll(): Promise<MyEntity[]> {
     const documents = await this.model.find();
     return documents.map(mapDocumentToEntity);
   }
+
   // ...
 }
 ```
@@ -549,10 +551,14 @@ export class MyEntityMongooseRepository implements MyEntityRepository {
 ### Wiring in the module
 
 ```typescript
+
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: MyEntityMongooseSchema.name, schema: MY_ENTITY_MONGOOSE_SCHEMA },
+      {
+        name: MyEntityMongooseSchema.name,
+        schema: MY_ENTITY_MONGOOSE_SCHEMA
+      },
     ]),
   ],
   providers: [
@@ -563,7 +569,8 @@ export class MyEntityMongooseRepository implements MyEntityRepository {
     },
   ],
 })
-export class MyFeatureModule {}
+export class MyFeatureModule {
+}
 ```
 
 ## Error handling patterns
@@ -594,12 +601,20 @@ export { EntityNotFoundError, EntityAlreadyArchivedError };
 ### Using errors in use cases
 
 ```typescript
-public async getById(id: string): Promise<MyEntity> {
+public async
+getById(id
+:
+string
+):
+Promise < MyEntity > {
   const entity = await this.repository.findById(id);
-  if (!entity) {
-    throw new EntityNotFoundError(id);
-  }
-  return entity;
+  if(!
+entity
+)
+{
+  throw new EntityNotFoundError(id);
+}
+return entity;
 }
 ```
 
@@ -616,7 +631,8 @@ The project uses a `GlobalExceptionFilter` in `src/shared/infrastructure/http/fi
 Domain errors must be registered in the `domainErrorHttpExceptionFactories` map to be automatically converted:
 
 ```typescript
-private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
+private static readonly
+domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
   [EntityNotFoundError.name]: error => new NotFoundException(error.message),
   [EntityAlreadyArchivedError.name]: error => new BadRequestException(error.message),
 };
@@ -693,6 +709,7 @@ tests/unit/utils/mocks/contexts/user/modules/user/
 ```
 
 Agent rule-of-thumb: If you're unsure where to place a file:
+
 - Feature-specific domain/application/infrastructure code → `src/contexts/<context>/modules/<feature>/`
 - Cross-cutting utilities → `src/shared/<layer>/`
 - Configuration files → `configs/<tool>/`
@@ -859,10 +876,12 @@ function createFakeQuestionTheme(override: Partial<QuestionTheme> = {}): Questio
     id: faker.database.mongodbObjectId(),
     slug: faker.lorem.slug(),
     label: createFakeLocalizedText(),
-    status: faker.helpers.arrayElement(["active", "archived"]),
+    status: faker.helpers.arrayElement([
+      "active",
+      "archived"
+    ]),
     createdAt: faker.date.anytime(),
-    updatedAt: faker.date.anytime(),
-    ...override,
+    updatedAt: faker.date.anytime(), ...override,
   };
 }
 
@@ -892,7 +911,10 @@ describe("QuestionThemeController", () => {
 
   describe("findAll", () => {
     it("should return all question themes when called.", async () => {
-      const fakeThemes = [createFakeQuestionTheme(), createFakeQuestionTheme()];
+      const fakeThemes = [
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme()
+      ];
       mockUseCase.list.mockResolvedValue(fakeThemes);
 
       const result = await controller.findAll();
@@ -910,6 +932,7 @@ Each test must contain one and only one assertion (use multiple tests if needed)
 - **Coverage exclusions are defined in `configs/vitest/vitest.config.ts`.**
 
 Files that don't require tests (explicitly excluded from coverage):
+
 - `*.constants.ts` — contain only constant values, no logic.
 - `*.types.ts` — contain only TypeScript type definitions.
 - `*.contracts.ts` — contain only TypeScript type definitions for contracts.
@@ -950,18 +973,18 @@ This command runs `cucumber-js` with `configs/cucumber/cucumber.json`, then gene
 ### What the acceptance runner does
 
 1. **Before all scenarios** (`BeforeAll` hook):
-   - Loads test environment configuration from `.env.test`.
-   - Builds the project by calling `pnpm run build` (unless `SKIP_BUILD=true`).
-   - Connects to the test MongoDB database.
-   - Starts a real instance of the built app using `pnpm run start:prod:test`.
+  - Loads test environment configuration from `.env.test`.
+  - Builds the project by calling `pnpm run build` (unless `SKIP_BUILD=true`).
+  - Connects to the test MongoDB database.
+  - Starts a real instance of the built app using `pnpm run start:prod:test`.
 
 2. **Before each scenario** (`Before` hook):
-   - Resets the test database (clears all collections).
-   - Provides the app process handle to the test world.
+  - Resets the test database (clears all collections).
+  - Provides the app process handle to the test world.
 
 3. **After all scenarios** (`AfterAll` hook):
-   - Closes the database connection.
-   - Gracefully stops the app process (sends `SIGTERM`, then `SIGKILL` if needed).
+  - Closes the database connection.
+  - Gracefully stops the app process (sends `SIGTERM`, then `SIGKILL` if needed).
 
 ### Test database
 
@@ -1025,6 +1048,7 @@ Feature: 🏷️ List Question Themes
 ```
 
 Conventions:
+
 - Use descriptive tags for grouping (`@context`, `@feature`).
 - Keep scenarios focused and idempotent.
 - Use `Given-When-Then` structure.
@@ -1036,7 +1060,7 @@ Conventions:
 // given-steps.ts
 import { Given } from "@cucumber/cucumber";
 
-Given("the client requests all question themes", async function(this: GoatItWorld) {
+Given("the client requests all question themes", async function (this: GoatItWorld) {
   await this.fetchAndStoreResponse("/question-themes");
 });
 
@@ -1044,7 +1068,7 @@ Given("the client requests all question themes", async function(this: GoatItWorl
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-Then("the response status code should be {int}", function(this: GoatItWorld, statusCode: number) {
+Then("the response status code should be {int}", function (this: GoatItWorld, statusCode: number) {
   expect(this.lastResponse?.status).toBe(statusCode);
 });
 ```
@@ -1102,10 +1126,12 @@ async function seedQuestionThemes(count: number) {
 ### Pre-commit hooks (Husky)
 
 Located in `.husky/`:
+
 - `commit-msg` — validates commit messages with commitlint.
 - `pre-commit` — validates branch name and runs lint/tests on staged files.
 
 Pre-commit runs:
+
 1. `pnpm run validate:branch-name` — ensure branch follows naming rules.
 2. `pnpm run lint:staged:fix` — lint and fix staged files.
 3. `pnpm run test:unit:staged` — run unit tests for staged files.
@@ -1129,6 +1155,7 @@ Located in `.github/workflows/`:
 ### Build workflow (`build.yml`)
 
 Runs on pull requests to `main` and `develop`:
+
 1. **CodeQL Scan** — security analysis
 2. **Lint GitHub Workflows** — validate workflow files
 3. **Install** — install dependencies
@@ -1402,6 +1429,13 @@ pnpm run test:acceptance
 | `DATABASE_HOST` | MongoDB host  | `localhost` |
 | `DATABASE_PORT` | MongoDB port  | `27017`     |
 | `DATABASE_NAME` | Database name | `goat-it`   |
+
+### Authentication variables
+
+| Variable        | Description                                                          | Default |
+|-----------------|----------------------------------------------------------------------|---------|
+| `ADMIN_API_KEY` | Admin API key for protected ops. Must be at least 24 characters long | ❌       |
+| `GAME_API_KEY`  | Game API key for protected ops . Must be at least 24 characters long | ❌       |
 
 ### Test variables
 

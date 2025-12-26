@@ -1,18 +1,25 @@
-import { createHash } from "node:crypto";
+import { hash, compare } from "bcrypt";
 
-function hashApiKey(apiKey: string): string {
-  return createHash("sha256")
-    .update(apiKey)
-    .digest("hex");
+import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
+
+async function hashApiKey(apiKey: string): Promise<string> {
+  const saltRounds = 12;
+
+  return hash(apiKey, saltRounds);
 }
 
-function validateReceivedApiKey(expectedKey: string, receivedKey: unknown): void {
+async function validateReceivedApiKey(expectedKey: string, receivedKey: unknown): Promise<void> {
   if (typeof receivedKey !== "string") {
-    throw new TypeError("Missing or invalid API key format");
+    throw new MissingApiKeyError();
   }
+  const [hashedExpectedKey, hashedReceivedKey] = await Promise.all([
+    hashApiKey(expectedKey),
+    hashApiKey(receivedKey),
+  ]);
+  const areKeysMatching = await compare(hashedExpectedKey, hashedReceivedKey);
 
-  if (hashApiKey(receivedKey) !== hashApiKey(expectedKey)) {
-    throw new Error("Invalid API key");
+  if (!areKeysMatching) {
+    throw new InvalidApiKeyError();
   }
 }
 

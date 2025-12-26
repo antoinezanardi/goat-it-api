@@ -1,36 +1,69 @@
+import { compare, hash } from "bcrypt";
+
+import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
 import { hashApiKey, validateReceivedApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
+
+vi.mock(import("bcrypt"));
 
 describe("Auth Helpers", () => {
   describe(hashApiKey, () => {
-    it("should hash the API key when called.", () => {
+    it("should call bcrypt hash with correct parameters when called.", async() => {
       const apiKey = "my-secret-api";
-      const expectedHashedKey = "3d2437e09b228ca01f1b491dc935d43dad0563ab0e8bbe67b09fa8df6302e160";
+      const saltRounds = 12;
+      await hashApiKey(apiKey);
 
-      expect(hashApiKey(apiKey)).toBe(expectedHashedKey);
+      expect(vi.mocked(hash)).toHaveBeenCalledExactlyOnceWith(apiKey, saltRounds);
     });
   });
 
   describe(validateReceivedApiKey, () => {
-    it("should throw error when received key is not a string.", () => {
-      const expectedKey = "my-secret-api";
-      const expectedError = new TypeError("Missing or invalid API key format");
-
-      expect(() => validateReceivedApiKey(expectedKey, undefined)).toThrowError(expectedError);
+    beforeEach(() => {
+      // @ts-expect-error: Hash types are not correctly inferred
+      vi.mocked(hash).mockResolvedValue("hashed-value");
+      // @ts-expect-error: Hash types are not correctly inferred
+      vi.mocked(compare).mockResolvedValue(true);
     });
 
-    it("should throw error when received key does not match expected key.", () => {
+    it("should throw error when received key is not a string.", async() => {
+      const expectedKey = "my-secret-api";
+      const expectedError = new MissingApiKeyError();
+
+      await expect(validateReceivedApiKey(expectedKey, undefined)).rejects.toThrowError(expectedError);
+    });
+
+    it("should hash received key when called.", async() => {
+      const expectedKey = "my-secret-api";
+      const receivedKey = "received-api-key";
+
+      await validateReceivedApiKey(expectedKey, receivedKey);
+
+      expect(vi.mocked(hash)).toHaveBeenCalledWith(receivedKey, expect.any(Number));
+    });
+
+    it("should hash expected key when called.", async() => {
+      const expectedKey = "my-secret-api";
+      const receivedKey = "received-api-key";
+
+      await validateReceivedApiKey(expectedKey, receivedKey);
+
+      expect(vi.mocked(hash)).toHaveBeenCalledWith(expectedKey, expect.any(Number));
+    });
+
+    it("should throw error when received key does not match expected key.", async() => {
       const expectedKey = "my-secret-api";
       const receivedKey = "invalid-api-key";
-      const expectedError = new Error("Invalid API key");
+      const expectedError = new InvalidApiKeyError();
+      // @ts-expect-error: Hash types are not correctly inferred
+      vi.mocked(compare).mockResolvedValueOnce(false);
 
-      expect(() => validateReceivedApiKey(expectedKey, receivedKey)).toThrowError(expectedError);
+      await expect(validateReceivedApiKey(expectedKey, receivedKey)).rejects.toThrowError(expectedError);
     });
 
-    it("should not throw error when received key matches expected key.", () => {
+    it("should not throw error when received key matches expected key.", async() => {
       const expectedKey = "my-secret-api";
       const receivedKey = "my-secret-api";
 
-      expect(() => validateReceivedApiKey(expectedKey, receivedKey)).not.toThrowError();
+      await expect(validateReceivedApiKey(expectedKey, receivedKey)).resolves.not.toThrowError();
     });
   });
 });
