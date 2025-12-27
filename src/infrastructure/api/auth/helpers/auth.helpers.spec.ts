@@ -29,7 +29,7 @@ describe("Auth Helpers", () => {
       expectTypeOf(apiKeyValidator).toBeFunction();
     });
 
-    it("should return true when the provided API key is valid.", () => {
+    it("should not throw when the provided API key is valid.", () => {
       const apiKey = "my-secret-api";
       const hmacKey = "test-hmac";
       const hashedApiKey = hashApiKey(apiKey, hmacKey);
@@ -82,10 +82,10 @@ describe("Auth Helpers", () => {
   });
 
   describe(canActivateApiKeyGuardHandler, () => {
-    let appConfigSevice: ReturnType<typeof createMockedAppConfigService>;
+    let appConfigService: ReturnType<typeof createMockedAppConfigService>;
 
     beforeEach(() => {
-      appConfigSevice = createMockedAppConfigService();
+      appConfigService = createMockedAppConfigService();
     });
 
     it("should return true when API key is valid for admin auth type.", () => {
@@ -98,7 +98,7 @@ describe("Auth Helpers", () => {
           }),
         }),
       } as unknown as ExecutionContext;
-      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigSevice as unknown as AppConfigService, "admin");
+      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin");
 
       expect(isValid).toBeTruthy();
     });
@@ -113,13 +113,13 @@ describe("Auth Helpers", () => {
           }),
         }),
       } as unknown as ExecutionContext;
-      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigSevice as unknown as AppConfigService, "game");
+      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game");
 
       expect(isValid).toBeTruthy();
     });
 
     it("should throw UnauthorizedException with error message when API key is invalid for admin auth type and error is type Error.", () => {
-      vi.spyOn(appConfigSevice.authenticationConfig.admin, "apiKeyValidator").mockImplementation(() => {
+      vi.spyOn(appConfigService.authenticationConfig.admin, "apiKeyValidator").mockImplementation(() => {
         throw new InvalidApiKeyError();
       });
 
@@ -134,11 +134,11 @@ describe("Auth Helpers", () => {
       } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Invalid API key");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigSevice as unknown as AppConfigService, "admin")).toThrowError(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin")).toThrowError(expectedError);
     });
 
     it("should throw UnauthorizedException with generic message when API key is invalid for game auth type and error is not type Error.", () => {
-      vi.spyOn(appConfigSevice.authenticationConfig.game, "apiKeyValidator").mockImplementation(() => {
+      vi.spyOn(appConfigService.authenticationConfig.game, "apiKeyValidator").mockImplementation(() => {
         // oxlint-disable-next-line only-throw-error no-throw-literal
         throw "Some string error";
       });
@@ -154,7 +154,7 @@ describe("Auth Helpers", () => {
       } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Unauthorized");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigSevice as unknown as AppConfigService, "game")).toThrowError(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game")).toThrowError(expectedError);
     });
   });
 });
