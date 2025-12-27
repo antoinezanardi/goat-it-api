@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+import { createFakeAuthenticationConfigFromEnv, createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
 type MockedAppConfigService = {
   serverConfig: AppConfigService["serverConfig"];
@@ -10,6 +10,7 @@ type MockedAppConfigService = {
   corsConfig: AppConfigService["corsConfig"];
   mongoDbConfig: AppConfigService["mongoDbConfig"];
   localizationConfig: AppConfigService["localizationConfig"];
+  authenticationConfig: AppConfigService["authenticationConfig"];
 };
 
 function createMockedAppConfigService(appEnv: Partial<AppConfigService> = {}): MockedAppConfigService {
@@ -19,6 +20,7 @@ function createMockedAppConfigService(appEnv: Partial<AppConfigService> = {}): M
     corsConfig: createFakeCorsConfigFromEnv(appEnv.corsConfig),
     mongoDbConfig: createFakeMongoDatabaseConfigFromEnv(appEnv.mongoDbConfig),
     localizationConfig: createFakeLocalizationConfigFromEnv(appEnv.localizationConfig),
+    authenticationConfig: createFakeAuthenticationConfigFromEnv(appEnv.authenticationConfig),
     ...appEnv,
   };
 }

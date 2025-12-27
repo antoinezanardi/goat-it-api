@@ -1024,6 +1024,8 @@
               "Post",
               "Patch",
               "Delete",
+              "GameAuth",
+              "AdminAuth",
               "ApiOperation",
               "ApiResponse",
               "ZodResponse",
@@ -1055,10 +1057,11 @@
         ]
       }
     },
-    // ---- Override for domain errors -----
+    // ---- Override for domain and infrastructure errors -----
     {
       "files": [
-        "**/src/**/domain/**/*.errors.ts"
+        "**/src/**/domain/**/*.errors.ts",
+        "**/src/**/infrastructure/**/*.errors.ts"
       ],
       "rules": {
         "max-classes-per-file": [
@@ -1087,6 +1090,22 @@
           {
             "ignorePropertyModificationsFor": ["requestRaw"],
             "props": true
+          }
+        ]
+      }
+    },
+    // ---- Override for guards -----
+    {
+      "files": [
+        "**/src/**/*.guard.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "Injectable"
+            ]
           }
         ]
       }
@@ -1120,6 +1139,22 @@
           {
             "capIsNewExceptions": [
               "Catch"
+            ]
+          }
+        ]
+      }
+    },
+    // ---- Override for decorators -----
+    {
+      "files": [
+        "**/src/**/*.decorator.ts"
+      ],
+      "rules": {
+        "new-cap": [
+          "error",
+          {
+            "capIsNewExceptions": [
+              "UseGuards"
             ]
           }
         ]

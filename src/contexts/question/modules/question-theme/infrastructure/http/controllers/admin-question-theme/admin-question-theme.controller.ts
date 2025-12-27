@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpStatus, Param, Patch, Post } from "@nestjs/c
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
+import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
@@ -19,6 +20,7 @@ import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/questio
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
+@AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
 export class AdminQuestionThemeController {
   public constructor(

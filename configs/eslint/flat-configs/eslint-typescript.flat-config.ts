@@ -181,7 +181,7 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/no-useless-empty-export": "error",
     "@typescript-eslint/no-wrapper-object-types": "error",
     "@typescript-eslint/non-nullable-type-assertion-style": "error",
-    "@typescript-eslint/only-throw-error": "error",
+    "@typescript-eslint/only-throw-error": "off",
     "@typescript-eslint/parameter-properties": ["error", { allow: ["private readonly"] }],
     "@typescript-eslint/prefer-as-const": "error",
     "@typescript-eslint/prefer-destructuring": [

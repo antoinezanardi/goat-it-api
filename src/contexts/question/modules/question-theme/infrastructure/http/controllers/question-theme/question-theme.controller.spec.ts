@@ -1,11 +1,14 @@
 import { Test } from "@nestjs/testing";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 
+import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
 
@@ -20,6 +23,9 @@ vi.mock(import("@question/modules/question-theme/application/mappers/question-th
 describe("Question Theme Controller", () => {
   let questionThemeController: QuestionThemeController;
   let mocks: {
+    services: {
+      appConfig: ReturnType<typeof createMockedAppConfigService>;
+    };
     useCases: {
       findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
@@ -31,6 +37,9 @@ describe("Question Theme Controller", () => {
 
   beforeEach(async() => {
     mocks = {
+      services: {
+        appConfig: createMockedAppConfigService(),
+      },
       useCases: {
         findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
@@ -42,6 +51,10 @@ describe("Question Theme Controller", () => {
     const testingModule = await Test.createTestingModule({
       controllers: [QuestionThemeController],
       providers: [
+        {
+          provide: AppConfigService,
+          useValue: mocks.services.appConfig,
+        },
         {
           provide: FindAllQuestionThemesUseCase,
           useValue: mocks.useCases.findAllQuestionThemes,

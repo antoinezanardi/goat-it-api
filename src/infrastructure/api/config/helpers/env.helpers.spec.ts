@@ -1,3 +1,4 @@
+import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { getEnvFilePath, validate, validateCorsOrigin } from "@src/infrastructure/api/config/helpers/env.helpers";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
@@ -5,7 +6,14 @@ import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.fake
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
 describe("Env Validation", () => {
+  const minimalValidEnv: Partial<AppEnv> = {
+    API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
+    ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+    GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+  };
+
   const defaultEnv = Object.freeze(createFakeAppEnv({
+    ...minimalValidEnv,
     SERVER_HOST: "0.0.0.0",
     SERVER_PORT: 3000,
     CORS_ORIGIN: "*",
@@ -91,6 +99,9 @@ describe("Env Validation", () => {
         MONGODB_PORT: "27018",
         MONGODB_DATABASE: "goat-it-test",
         FALLBACK_LOCALE: "fr",
+        API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
+        ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
       };
       const expectedConfig = createFakeAppEnv({
         SERVER_HOST: "192.168.1.1",
@@ -100,19 +111,25 @@ describe("Env Validation", () => {
         MONGODB_PORT: 27_018,
         MONGODB_DATABASE: "goat-it-test",
         FALLBACK_LOCALE: "fr",
+        API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
+        ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
       });
 
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
-    it("should return parsed env with all defaults when config is empty.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {};
+    it("should return parsed env with all defaults when config only has optional fields missing.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
+      };
 
       expect(validate(config)).toStrictEqual<AppEnv>(defaultEnv);
     });
 
     it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         SERVER_PORT: "8080",
       };
       const expectedConfig = createFakeAppEnv({
@@ -125,6 +142,7 @@ describe("Env Validation", () => {
 
     it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         SERVER_PORT: 9000,
       };
       const expectedConfig = createFakeAppEnv({
@@ -137,6 +155,7 @@ describe("Env Validation", () => {
 
     it("should accept a non-default valid IPv4 for when MONGODB_HOST is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         MONGODB_HOST: "192.168.0.10",
       };
       const expectedConfig = createFakeAppEnv({
@@ -149,6 +168,7 @@ describe("Env Validation", () => {
 
     it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         CORS_ORIGIN: "https://example.com",
       };
       const expectedConfig = createFakeAppEnv({
@@ -161,6 +181,7 @@ describe("Env Validation", () => {
 
     it("should accept a valid MONGODB_PORT when it is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         MONGODB_PORT: "28017",
       };
       const expectedConfig = createFakeAppEnv({
@@ -173,6 +194,7 @@ describe("Env Validation", () => {
 
     it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         MONGODB_DATABASE: "my-database-1",
       };
       const expectedConfig = createFakeAppEnv({
@@ -185,6 +207,7 @@ describe("Env Validation", () => {
 
     it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
         FALLBACK_LOCALE: "es",
       };
       const expectedConfig = createFakeAppEnv({
@@ -197,6 +220,7 @@ describe("Env Validation", () => {
 
     it("should return parsed env when config contains additional properties.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> & { EXTRA_FIELD: string } = {
+        ...minimalValidEnv,
         EXTRA_FIELD: "should be ignored",
       };
 
@@ -369,8 +393,55 @@ describe("Env Validation", () => {
         },
         errorMessage: "Invalid environment variables",
       },
+      {
+        test: "should throw error when API_KEY_HMAC_SECRET is missing.",
+        config: {
+          API_KEY_HMAC_SECRET: undefined,
+        },
+        errorMessage: "Invalid environment variables",
+      },
+      {
+        test: "should throw error when API_KEY_HMAC_SECRET is too short.",
+        config: {
+          API_KEY_HMAC_SECRET: "short-secret",
+        },
+        errorMessage: "Invalid environment variables",
+      },
+      {
+        test: "should throw error when ADMIN_API_KEY is missing.",
+        config: {
+          ADMIN_API_KEY: undefined,
+        },
+        errorMessage: "Invalid environment variables",
+      },
+      {
+        test: "should throw error when ADMIN_API_KEY is too short.",
+        config: {
+          ADMIN_API_KEY: "short-key",
+        },
+        errorMessage: "Invalid environment variables",
+      },
+      {
+        test: "should throw error when GAME_API_KEY is missing.",
+        config: {
+          GAME_API_KEY: undefined,
+        },
+        errorMessage: "Invalid environment variables",
+      },
+      {
+        test: "should throw error when GAME_API_KEY is too short.",
+        config: {
+          GAME_API_KEY: "short-key",
+        },
+        errorMessage: "Invalid environment variables",
+      },
     ])("$test", ({ config, errorMessage }) => {
-      expect(() => validate(config)).toThrowError(errorMessage);
+      const fullConfig = {
+        ...defaultEnv,
+        ...config,
+      };
+
+      expect(() => validate(fullConfig)).toThrowError(errorMessage);
     });
   });
 
