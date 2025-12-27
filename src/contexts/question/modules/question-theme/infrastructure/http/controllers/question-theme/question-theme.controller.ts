@@ -2,6 +2,7 @@ import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
+import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
@@ -15,6 +16,7 @@ import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/a
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
+@GameAuth()
 @Controller(ControllerPrefixes.QUESTION_THEMES)
 export class QuestionThemeController {
   public constructor(

@@ -59,8 +59,22 @@ Feature: List Question Themes
     Then the request should have succeeded with status code 200
     And the response should contain 0 question themes
 
-  Scenario: Listing all question themes with invalid locale
+  Scenario: Trying to list all question themes with invalid locale
     When the client retrieves all question themes in locale "invalid-locale"
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                                                                                                                              |
       | Bad Request | 400        | Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered) |
+
+  Scenario: Trying to list all question themes without API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the client retrieves all question themes without an API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message                    |
+      | Unauthorized | 401        | Missing API key in headers |
+
+  Scenario: Trying to list all question themes with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the client retrieves all question themes with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |

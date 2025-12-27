@@ -14,6 +14,10 @@ const APP_HEALTH_RETRY_ATTEMPTS = 20;
 
 const APP_HEALTH_RETRY_DELAY_MS = 200;
 
+const APP_ADMIN_API_KEY = "test_admin_api_key_for_testing";
+
+const APP_GAME_API_KEY = "test_game_api_key_for_testing";
+
 export {
   SERVER_HOST,
   SERVER_PORT,
@@ -23,4 +27,6 @@ export {
   APP_HEALTH_OK_STATUS,
   APP_HEALTH_RETRY_ATTEMPTS,
   APP_HEALTH_RETRY_DELAY_MS,
+  APP_ADMIN_API_KEY,
+  APP_GAME_API_KEY,
 };

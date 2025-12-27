@@ -3,6 +3,7 @@ import { APP_PIPE } from "@nestjs/core";
 import { LoggerModule } from "nestjs-pino";
 import { ZodValidationPipe } from "nestjs-zod";
 
+import { AuthModule } from "@src/infrastructure/api/auth/auth.module";
 import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
 import { DatabaseModule } from "@src/infrastructure/database/database.module";
@@ -22,6 +23,7 @@ import { QuestionModule } from "@question/question.module";
     HealthModule,
     DatabaseModule,
     QuestionModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,6 +1,8 @@
+import { vi } from "vitest";
+
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
-import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 function createFakeServerConfigFromEnv(serverConfig: Partial<ServerConfigFromEnv> = {}): ServerConfigFromEnv {
   const fakeAppEnv = createFakeAppEnv();
@@ -41,9 +43,22 @@ function createFakeLocalizationConfigFromEnv(localizationConfig: Partial<Localiz
   };
 }
 
+function createFakeAuthenticationConfigFromEnv(authenticationConfig: Partial<AuthenticationConfigFromEnv> = {}): AuthenticationConfigFromEnv {
+  return {
+    admin: {
+      apiKeyValidator: vi.fn<(receivedApiKey: unknown) => void>(),
+    },
+    game: {
+      apiKeyValidator: vi.fn<(receivedApiKey: unknown) => void>(),
+    },
+    ...authenticationConfig,
+  };
+}
+
 export {
   createFakeServerConfigFromEnv,
   createFakeCorsConfigFromEnv,
   createFakeMongoDatabaseConfigFromEnv,
   createFakeLocalizationConfigFromEnv,
+  createFakeAuthenticationConfigFromEnv,
 };
