@@ -1,6 +1,14 @@
 import { timingSafeEqual, createHmac } from "node:crypto";
 
+import { UnauthorizedException } from "@nestjs/common";
+
+import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
+import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
+
+import type { ExecutionContext } from "@nestjs/common";
+
+import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 /**
  * **SECURITY WARNING**:
@@ -45,8 +53,28 @@ function validateReceivedApiKey(expectedHashedApiKey: string, receivedApiKey: un
   }
 }
 
+/**
+ * This function handles the common logic for API key guards. It is used for both admin and game API key guards and only in those guards.
+ */
+function canActivateApiKeyGuardHandler(context: ExecutionContext, configService: AppConfigService, apiKeyAuthType: "admin" | "game"): boolean {
+  const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();
+  const receivedApiKey = request.headers[API_KEY_HEADER];
+  const { game, admin } = configService.authenticationConfig;
+
+  const validator = apiKeyAuthType === "admin" ? admin.apiKeyValidator : game.apiKeyValidator;
+  try {
+    validator(receivedApiKey);
+  } catch(error) {
+    const message = error instanceof Error ? error.message : "Unauthorized";
+
+    throw new UnauthorizedException(message);
+  }
+  return true;
+}
+
 export {
   hashApiKey,
   createApiKeyValidator,
   validateReceivedApiKey,
+  canActivateApiKeyGuardHandler,
 };

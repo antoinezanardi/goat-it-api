@@ -11,6 +11,7 @@ export class AppConfigService {
 
   public constructor(private readonly configService: ConfigService) {
     this.authenticationConfigCache = this.computeAuthenticationConfigCache();
+    AppConfigService.deleteSensitiveEnvVariables();
   }
 
   public get serverConfig(): ServerConfigFromEnv {
@@ -53,6 +54,12 @@ export class AppConfigService {
     return this.authenticationConfigCache;
   }
 
+  private static deleteSensitiveEnvVariables(): void {
+    delete process.env.API_KEY_HMAC_SECRET;
+    delete process.env.ADMIN_API_KEY;
+    delete process.env.GAME_API_KEY;
+  }
+
   private computeAuthenticationConfigCache(): AuthenticationConfigFromEnv {
     const hmacSecret = this.configService.getOrThrow<string>("API_KEY_HMAC_SECRET");
     const adminApiKey = this.configService.getOrThrow<string>("ADMIN_API_KEY");
@@ -69,11 +76,5 @@ export class AppConfigService {
         apiKeyValidator: createApiKeyValidator(hashedGameApiKey, hmacSecret),
       },
     };
-  }
-
-  private deleteSensitiveEnvVariables(): void {
-    delete process.env.API_KEY_HMAC_SECRET;
-    delete process.env.ADMIN_API_KEY;
-    delete process.env.GAME_API_KEY;
   }
 }

@@ -1,15 +1,19 @@
 import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 
+import { createApiKeyValidator, hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createMockedNestConfigService } from "@mocks/infrastructure/api/config/providers/services/nest-config.service.mock";
 
 import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
+import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+
+vi.mock(import("@src/infrastructure/api/auth/helpers/auth.helpers"));
 
 describe("App Config Service", () => {
   let services: { appConfig: AppConfigService };
@@ -17,9 +21,21 @@ describe("App Config Service", () => {
     services: {
       nestConfig: ReturnType<typeof createMockedNestConfigService>;
     };
+    helpers: {
+      hashApiKey: Mock;
+      createApiKeyValidator: Mock;
+    };
   };
 
   beforeEach(async() => {
+    const apiKeyHmacSecret = "valid-hmac-secret-of-sufficient-length";
+    const adminApiKey = "valid-admin-api-key-of-sufficient-length";
+    const gameApiKey = "valid-game-api-key-of-sufficient-length";
+
+    process.env.API_KEY_HMAC_SECRET = apiKeyHmacSecret;
+    process.env.ADMIN_API_KEY = adminApiKey;
+    process.env.GAME_API_KEY = gameApiKey;
+
     mocks = {
       services: {
         nestConfig: createMockedNestConfigService({
@@ -30,9 +46,14 @@ describe("App Config Service", () => {
           MONGODB_PORT: 27_018,
           MONGODB_DATABASE: "goat-it-test",
           FALLBACK_LOCALE: "en",
-          GAME_API_KEY: "valid-game-api-key-of-sufficient-length",
-          ADMIN_API_KEY: "valid-admin-api-key-of-sufficient-length",
+          API_KEY_HMAC_SECRET: apiKeyHmacSecret,
+          ADMIN_API_KEY: adminApiKey,
+          GAME_API_KEY: gameApiKey,
         }),
+      },
+      helpers: {
+        hashApiKey: vi.mocked(hashApiKey).mockReturnValue("hashed-api-key"),
+        createApiKeyValidator: vi.mocked(createApiKeyValidator).mockReturnValue(() => true),
       },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -147,29 +168,52 @@ describe("App Config Service", () => {
     it("should return authentication config from env when called.", () => {
       expect(services.appConfig.authenticationConfig).toStrictEqual({
         admin: {
-          apiKey: "valid-admin-api-key-of-sufficient-length",
+          apiKeyValidator: expect.any(Function) as () => boolean,
         },
         game: {
-          apiKey: "valid-game-api-key-of-sufficient-length",
+          apiKeyValidator: expect.any(Function) as () => boolean,
         },
       });
     });
+  });
 
-    it("should throw error when admin api key is not defined.", () => {
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => {
-        throw new Error("ADMIN_API_KEY is not defined");
+  describe("computeAuthenticationConfigCache", () => {
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("API_KEY_HMAC_SECRET is not defined");
       });
 
-      expect(() => services.appConfig.authenticationConfig).toThrowError("ADMIN_API_KEY is not defined");
+      expect(() => services.appConfig["computeAuthenticationConfigCache"]()).toThrowError("API_KEY_HMAC_SECRET is not defined");
     });
 
-    it("should throw error when game api key is not defined.", () => {
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "valid-admin-api-key-of-sufficient-length");
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => {
-        throw new Error("GAME_API_KEY is not defined");
-      });
+    it("should call hashApiKey for adminApiKey when config service is created.", () => {
+      expect(mocks.helpers.hashApiKey).toHaveBeenNthCalledWith(1, "valid-admin-api-key-of-sufficient-length", "valid-hmac-secret-of-sufficient-length");
+    });
 
-      expect(() => services.appConfig.authenticationConfig).toThrowError("GAME_API_KEY is not defined");
+    it("should call hashApiKey for gameApiKey when config service is created.", () => {
+      expect(mocks.helpers.hashApiKey).toHaveBeenNthCalledWith(2, "valid-game-api-key-of-sufficient-length", "valid-hmac-secret-of-sufficient-length");
+    });
+
+    it("should call createApiKeyValidator for adminApiKey when config service is created.", () => {
+      expect(mocks.helpers.createApiKeyValidator).toHaveBeenNthCalledWith(1, "hashed-api-key", "valid-hmac-secret-of-sufficient-length");
+    });
+
+    it("should call createApiKeyValidator for gameApiKey when config service is created.", () => {
+      expect(mocks.helpers.createApiKeyValidator).toHaveBeenNthCalledWith(2, "hashed-api-key", "valid-hmac-secret-of-sufficient-length");
+    });
+  });
+
+  describe("deleteSensitiveEnvVariables", () => {
+    it("should delete api key hmac secret when computing authentication config cache.", () => {
+      expect(process.env.API_KEY_HMAC_SECRET).toBeUndefined();
+    });
+
+    it("should delete admin api key when computing authentication config cache.", () => {
+      expect(process.env.ADMIN_API_KEY).toBeUndefined();
+    });
+
+    it("should delete game api key when computing authentication config cache.", () => {
+      expect(process.env.GAME_API_KEY).toBeUndefined();
     });
   });
 });
