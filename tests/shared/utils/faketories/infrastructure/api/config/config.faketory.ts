@@ -46,10 +46,10 @@ function createFakeLocalizationConfigFromEnv(localizationConfig: Partial<Localiz
 function createFakeAuthenticationConfigFromEnv(authenticationConfig: Partial<AuthenticationConfigFromEnv> = {}): AuthenticationConfigFromEnv {
   return {
     admin: {
-      apiKeyValidator: vi.fn<() => boolean>(() => true),
+      apiKeyValidator: vi.fn<(receivedApiKey: unknown) => void>(),
     },
     game: {
-      apiKeyValidator: vi.fn<() => boolean>(() => true),
+      apiKeyValidator: vi.fn<(receivedApiKey: unknown) => void>(),
     },
     ...authenticationConfig,
   };

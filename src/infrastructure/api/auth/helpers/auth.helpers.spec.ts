@@ -1,5 +1,6 @@
 import { UnauthorizedException } from "@nestjs/common";
 
+import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
 import { canActivateApiKeyGuardHandler, createApiKeyValidator, hashApiKey, validateReceivedApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
 import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
@@ -92,7 +93,7 @@ describe("Auth Helpers", () => {
         switchToHttp: (): unknown => ({
           getRequest: (): unknown => ({
             headers: {
-              "x-api-key": "valid-admin-api-key-of-sufficient-length",
+              [API_KEY_HEADER]: "valid-admin-api-key-of-sufficient-length",
             },
           }),
         }),
@@ -107,7 +108,7 @@ describe("Auth Helpers", () => {
         switchToHttp: (): unknown => ({
           getRequest: (): unknown => ({
             headers: {
-              "x-api-key": "valid-game-api-key-of-sufficient-length",
+              [API_KEY_HEADER]: "valid-game-api-key-of-sufficient-length",
             },
           }),
         }),
@@ -126,7 +127,7 @@ describe("Auth Helpers", () => {
         switchToHttp: (): unknown => ({
           getRequest: (): unknown => ({
             headers: {
-              "x-api-key": "invalid-api-key",
+              [API_KEY_HEADER]: "invalid-api-key",
             },
           }),
         }),
@@ -146,7 +147,7 @@ describe("Auth Helpers", () => {
         switchToHttp: (): unknown => ({
           getRequest: (): unknown => ({
             headers: {
-              "x-api-key": "invalid-api-key",
+              [API_KEY_HEADER]: "invalid-api-key",
             },
           }),
         }),

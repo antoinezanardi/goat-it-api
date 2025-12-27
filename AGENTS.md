@@ -1440,7 +1440,7 @@ pnpm run test:acceptance
 | Variable        | Description                                                          | Default |
 |-----------------|----------------------------------------------------------------------|---------|
 | `ADMIN_API_KEY` | Admin API key for protected ops. Must be at least 24 characters long | ❌       |
-| `GAME_API_KEY`  | Game API key for protected ops . Must be at least 24 characters long | ❌       |
+| `GAME_API_KEY`  | Game API key for protected ops. Must be at least 24 characters long  | ❌       |
 
 ### Test variables
 

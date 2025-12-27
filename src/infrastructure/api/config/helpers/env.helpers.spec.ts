@@ -1,3 +1,4 @@
+import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { getEnvFilePath, validate, validateCorsOrigin } from "@src/infrastructure/api/config/helpers/env.helpers";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
@@ -6,9 +7,9 @@ import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
 describe("Env Validation", () => {
   const minimalValidEnv: Partial<AppEnv> = {
-    API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length",
-    ADMIN_API_KEY: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
-    GAME_API_KEY: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+    API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
+    ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+    GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
   };
 
   const defaultEnv = Object.freeze(createFakeAppEnv({
