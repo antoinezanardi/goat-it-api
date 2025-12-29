@@ -165,7 +165,7 @@
     "@nestjs/terminus": "^11.0.0",
     "axios": "^1.13.2",
     "fastify": "^5.6.2",
-    "mongoose": "^9.0.2",
+    "mongoose": "^9.1.0",
     "nestjs-pino": "^4.5.0",
     "nestjs-zod": "^5.0.1",
     "reflect-metadata": "^0.2.2",
