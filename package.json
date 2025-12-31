@@ -150,7 +150,7 @@
     "unplugin-swc": "^1.5.9",
     "validate-branch-name": "^1.3.2",
     "vitest": "^4.0.16",
-    "zod": "^4.2.1"
+    "zod": "^4.3.2"
   },
   "packageManager": "pnpm@10.26.2",
   "dependencies": {
