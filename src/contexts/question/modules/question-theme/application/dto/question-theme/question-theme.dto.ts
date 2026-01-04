@@ -4,7 +4,7 @@ import { z } from "zod";
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
 import { zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
 
-import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
+import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 
 const QUESTION_THEME_DTO = z.strictObject({
   id: zMongoId()
