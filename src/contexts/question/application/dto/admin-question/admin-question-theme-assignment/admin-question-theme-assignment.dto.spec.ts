@@ -16,6 +16,14 @@ describe("Admin Question Theme Assignment DTO Specs", () => {
     expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(validAdminQuestionThemeAssignmentDto)).not.toThrowError();
   });
 
+  it("should have correct metadata when accessing the metadata.", () => {
+    const expectedMetadata = {
+      description: "Question's Theme assignment",
+    };
+
+    expect(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.meta()).toStrictEqual(expectedMetadata);
+  });
+
   describe("theme", () => {
     it("should throw zod error when theme is invalid.", () => {
       const dtoWithInvalidTheme = Object.assign(validAdminQuestionThemeAssignmentDto, { theme: "invalid" });

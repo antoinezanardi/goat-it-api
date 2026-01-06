@@ -9,9 +9,9 @@ const QUESTION_REJECTION_DTO = z.strictObject({
     .meta({ example: QUESTION_REJECTION_TYPES[0] }),
   comment: z.string()
     .optional()
-    .describe("Comment explaining the reason for rejection.")
+    .describe("Comment explaining the reason for rejection")
     .meta({ example: "The question is too ambiguous." }),
-}).describe("Question rejection details.");
+}).describe("Question rejection details");
 
 class QuestionRejectionDto extends createZodDto(QUESTION_REJECTION_DTO) {}
 

@@ -86,14 +86,14 @@ describe("Localization Zod Validators", () => {
       const locale: Locale = "fr";
       const schema = zLocalizedTextEntry(locale);
 
-      expect(schema.description).toBe(`Text in French.`);
+      expect(schema.description).toBe(`Text in French`);
     });
 
     it("should have correct metadata for the locale when called.", () => {
       const locale: Locale = "de";
       const schema = zLocalizedTextEntry(locale);
       const expectedMetadata = {
-        description: `Text in German.`,
+        description: `Text in German`,
         example: `Beispieltext auf Deutsch.`,
       };
 
@@ -182,7 +182,7 @@ describe("Localization Zod Validators", () => {
       const locale: Locale = "pt";
       const schema = zLocalizedTextsEntry(locale);
 
-      expect(schema.description).toBe(`Texts in Portuguese.`);
+      expect(schema.description).toBe(`Texts in Portuguese`);
     });
 
     it("should trim the localized texts entry when parsing.", () => {
@@ -198,7 +198,7 @@ describe("Localization Zod Validators", () => {
       const locale: Locale = "it";
       const schema = zLocalizedTextsEntry(locale);
       const expectedMetadata = {
-        description: `Texts in Italian.`,
+        description: `Texts in Italian`,
         example: [`Testo di esempio in italiano.`],
       };
 
@@ -272,7 +272,7 @@ describe("Localization Zod Validators", () => {
     it("should have correct description when called.", () => {
       const schema = zLocalizedText();
 
-      expect(schema.description).toBe("Localized text object with translations for multiple languages.");
+      expect(schema.description).toBe("Localized text object with translations for multiple languages");
     });
   });
 
@@ -350,7 +350,7 @@ describe("Localization Zod Validators", () => {
     it("should have correct description when called.", () => {
       const schema = zLocalizedTexts();
 
-      expect(schema.description).toBe("Localized texts object with translations for multiple languages.");
+      expect(schema.description).toBe("Localized texts object with translations for multiple languages");
     });
 
     it("should trim each localized text entry when parsing.", () => {

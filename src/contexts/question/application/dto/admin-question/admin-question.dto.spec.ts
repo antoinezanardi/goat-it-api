@@ -134,6 +134,12 @@ describe("Admin Question DTO Specs", () => {
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidRejection)).toThrowError(ZodError);
     });
 
+    it("should pass validation when rejection is omitted.", () => {
+      const dtoWithoutRejection = createFakeAdminQuestionDto({ rejection: undefined });
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithoutRejection)).not.toThrowError();
+    });
+
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_DTO.shape.rejection.meta();
       const expectedMetadata = {

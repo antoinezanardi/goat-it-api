@@ -24,12 +24,12 @@ describe("Api Response Exception Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.description).toBe("HTTP status code of the error response.");
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.description).toBe("HTTP status code of the error response");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "HTTP status code of the error response.",
+        description: "HTTP status code of the error response",
         example: 400,
       };
 
@@ -45,12 +45,12 @@ describe("Api Response Exception Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.message.description).toBe("Error message.");
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.message.description).toBe("Error message");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Error message.",
+        description: "Error message",
         example: "The request could not be understood by the server due to malformed syntax.",
       };
 
@@ -66,12 +66,12 @@ describe("Api Response Exception Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.error.description).toBe("Short description of the HTTP error.");
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.error.description).toBe("Short description of the HTTP error");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Short description of the HTTP error.",
+        description: "Short description of the HTTP error",
         example: "Bad Request",
       };
 
@@ -87,7 +87,7 @@ describe("Api Response Exception Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.validationDetails.description).toBe("List of validation errors, when requested DTO validation fails.");
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.validationDetails.description).toBe("List of validation errors, when requested DTO validation fails");
     });
   });
 });

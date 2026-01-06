@@ -17,13 +17,13 @@ describe("App Health Details Dto", () => {
 
   describe(MONGOOSE_HEALTH_KEY, () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DETAILS_DTO.shape[MONGOOSE_HEALTH_KEY].description).toBe("Health details of the Mongoose (MongoDB) connection.");
+      expect(APP_HEALTH_DETAILS_DTO.shape[MONGOOSE_HEALTH_KEY].description).toBe("Health details of the Mongoose (MongoDB) connection");
     });
   });
 
   describe(DOCS_ENDPOINT_HEALTH_KEY, () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DETAILS_DTO.shape[DOCS_ENDPOINT_HEALTH_KEY].description).toBe("Health details of the API Documentation endpoint.");
+      expect(APP_HEALTH_DETAILS_DTO.shape[DOCS_ENDPOINT_HEALTH_KEY].description).toBe("Health details of the API Documentation endpoint");
     });
   });
 });

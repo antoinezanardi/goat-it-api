@@ -18,7 +18,7 @@ describe("Question Rejection DTO Specs", () => {
 
   it("should have correct metadata when accessing the metadata.", () => {
     const expectedMetadata = {
-      description: "Question rejection details.",
+      description: "Question rejection details",
     };
 
     expect(QUESTION_REJECTION_DTO.meta()).toStrictEqual(expectedMetadata);
@@ -94,7 +94,7 @@ describe("Question Rejection DTO Specs", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Comment explaining the reason for rejection.",
+        description: "Comment explaining the reason for rejection",
         example: "The question is too ambiguous.",
       };
 
