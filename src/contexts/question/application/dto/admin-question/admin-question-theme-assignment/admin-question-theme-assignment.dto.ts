@@ -3,7 +3,7 @@ import { z } from "zod";
 import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 
 const ADMIN_QUESTION_THEME_ASSIGNMENT_DTO = z.strictObject({
-  theme: z.strictObject(ADMIN_QUESTION_THEME_DTO.shape)
+  theme: ADMIN_QUESTION_THEME_DTO
     .describe("Question assigned theme."),
   isPrimary: z.boolean()
     .describe("Indicates if the assigned theme is the primary theme for the question."),

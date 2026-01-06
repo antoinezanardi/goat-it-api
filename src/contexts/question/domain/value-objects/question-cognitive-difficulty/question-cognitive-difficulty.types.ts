@@ -2,6 +2,13 @@ import type { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-obj
 
 import type { TupleToUnion } from "type-fest";
 
+import type { TupleToEnum } from "@shared/types/enum.types";
+
 type QuestionCognitiveDifficulty = TupleToUnion<typeof QUESTION_COGNITIVE_DIFFICULTIES>;
 
-export type { QuestionCognitiveDifficulty };
+type QuestionCognitiveDifficultyEnum = TupleToEnum<typeof QUESTION_COGNITIVE_DIFFICULTIES>;
+
+export type {
+  QuestionCognitiveDifficulty,
+  QuestionCognitiveDifficultyEnum,
+};

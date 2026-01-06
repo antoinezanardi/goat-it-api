@@ -28,8 +28,10 @@ function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
     .meta({ example: "60af924f4f1a2563f8e8b456" });
 }
 
-function zIsoDateTime(): ZodISODateTime {
-  return z.iso.datetime()
+function zIsoDateTime(options: Partial<$ZodCustomParams> = {}): ZodISODateTime {
+  return z.iso.datetime({
+    ...options,
+  })
     .meta({ example: ISO_DATE_TIME_EXAMPLE });
 }
 

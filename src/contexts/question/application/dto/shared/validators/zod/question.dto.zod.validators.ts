@@ -5,16 +5,17 @@ import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/
 
 import type { ZodArray, ZodEnum, ZodURL } from "zod";
 
-function zQuestionCognitiveDifficulty(): ZodEnum {
+import type { QuestionStatusEnum } from "@question/domain/value-objects/question-status/question-status.types";
+import type { QuestionCognitiveDifficultyEnum } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
+
+function zQuestionCognitiveDifficulty(): ZodEnum<QuestionCognitiveDifficultyEnum> {
   return z.enum(QUESTION_COGNITIVE_DIFFICULTIES)
-    .describe("Question's cognitive difficulty level.")
-    .meta({ example: QUESTION_COGNITIVE_DIFFICULTIES[2] });
+    .describe("Question's cognitive difficulty level.");
 }
 
-function zQuestionStatus(): ZodEnum {
+function zQuestionStatus(): ZodEnum<QuestionStatusEnum> {
   return z.enum(QUESTION_STATUSES)
-    .describe("Question's status.")
-    .meta({ example: QUESTION_STATUSES[1] });
+    .describe("Question's status.");
 }
 
 function zQuestionSourceUrls(): ZodArray<ZodURL> {

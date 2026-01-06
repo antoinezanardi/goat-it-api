@@ -4,11 +4,23 @@ import type { TupleToUnion } from "type-fest";
 
 type QuestionAuthorRole = TupleToUnion<typeof QUESTION_AUTHOR_ROLES>;
 
-type QuestionAuthor = {
-  type: QuestionAuthorRole;
-  gameId?: string;
+type BaseQuestionAuthor<T extends QuestionAuthorRole> = {
+  type: T;
   name?: string;
 };
+
+type QuestionGameAuthor = BaseQuestionAuthor<"game"> & {
+  gameId: string;
+};
+
+type QuestionAIAuthor = BaseQuestionAuthor<"ai">;
+
+type QuestionAdminAuthor = BaseQuestionAuthor<"admin">;
+
+type QuestionAuthor =
+  | QuestionGameAuthor
+  | QuestionAIAuthor
+  | QuestionAdminAuthor;
 
 export type {
   QuestionAuthorRole,

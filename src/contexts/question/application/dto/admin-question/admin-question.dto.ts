@@ -15,11 +15,11 @@ const ADMIN_QUESTION_DTO = z.strictObject({
   themes: z.array(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO)
     .min(1)
     .describe("Question's themes"),
-  content: z.strictObject(ADMIN_QUESTION_CONTENT_DTO.shape),
+  content: ADMIN_QUESTION_CONTENT_DTO,
   cognitiveDifficulty: zQuestionCognitiveDifficulty(),
-  author: z.strictObject(QUESTION_AUTHOR_DTO.shape),
+  author: QUESTION_AUTHOR_DTO,
   status: zQuestionStatus(),
-  rejection: z.strictObject(QUESTION_REJECTION_DTO.shape)
+  rejection: QUESTION_REJECTION_DTO
     .optional(),
   sourceUrls: zQuestionSourceUrls(),
   createdAt: zIsoDateTime()
