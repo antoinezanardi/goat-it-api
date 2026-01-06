@@ -1,3 +1,4 @@
+import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
 import { zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
@@ -17,6 +18,9 @@ const QUESTION_AUTHOR_DTO = z.strictObject({
     .meta({ example: "TriviaMaster3000" }),
 }).describe("Question's author");
 
+class QuestionAuthorDto extends createZodDto(QUESTION_AUTHOR_DTO) {}
+
 export {
   QUESTION_AUTHOR_DTO,
+  QuestionAuthorDto,
 };

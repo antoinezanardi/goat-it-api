@@ -30,6 +30,7 @@ function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
 
 function zIsoDateTime(options: Partial<$ZodCustomParams> = {}): ZodISODateTime {
   return z.iso.datetime({
+    error: "Invalid ISO 8601 datetime value",
     ...options,
   })
     .meta({ example: ISO_DATE_TIME_EXAMPLE });

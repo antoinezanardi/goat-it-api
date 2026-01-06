@@ -1,5 +1,5 @@
-import { zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
-import { SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
+import { zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -170,6 +170,57 @@ describe("String Zod Validators", () => {
       const metadata = schema.meta();
 
       expect(metadata).toHaveProperty("example", "60af924f4f1a2563f8e8b456");
+    });
+  });
+
+  describe(zIsoDateTime, () => {
+    it.each<{
+      test: string;
+      value: string;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when ISO 8601 datetime is valid.",
+        value: "2023-10-05T14:48:00.000Z",
+        expected: true,
+      },
+      {
+        test: "should return false when ISO 8601 datetime is invalid.",
+        value: "2023-10-05 14:48:00",
+        expected: false,
+      },
+      {
+        test: "should return false when ISO 8601 datetime is empty.",
+        value: "",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const schema = zIsoDateTime();
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should default error message when ISO 8601 datetime is invalid.", () => {
+      const schema = zIsoDateTime();
+      const result = schema.safeParse("invalid-datetime");
+
+      expect(result.error?.issues[0].message).toBe("Invalid ISO 8601 datetime value");
+    });
+
+    it("should allow custom error message when ISO 8601 datetime is invalid.", () => {
+      const customMessage = "Custom error: Not a valid ISO datetime";
+      const schema = zIsoDateTime({ error: customMessage });
+      const result = schema.safeParse("invalid-datetime");
+
+      expect(result.error?.issues[0].message).toBe(customMessage);
+    });
+
+    it("should have correct example metadata when accessing the metadata.", () => {
+      const schema = zIsoDateTime();
+      const metadata = schema.meta();
+
+      expect(metadata).toHaveProperty("example", ISO_DATE_TIME_EXAMPLE);
     });
   });
 });

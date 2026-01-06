@@ -1,3 +1,4 @@
+import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
 import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
@@ -11,6 +12,9 @@ const ADMIN_QUESTION_THEME_ASSIGNMENT_DTO = z.strictObject({
     .describe("Indicates if the assigned theme is a hint for the question's answer."),
 });
 
+class AdminQuestionThemeAssignmentDto extends createZodDto(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO) {}
+
 export {
   ADMIN_QUESTION_THEME_ASSIGNMENT_DTO,
+  AdminQuestionThemeAssignmentDto,
 };

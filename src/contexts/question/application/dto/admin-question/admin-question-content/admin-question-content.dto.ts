@@ -1,3 +1,4 @@
+import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
 import { zLocalizedText, zLocalizedTexts } from "@shared/infrastructure/http/validators/zod/localization/localization.zod.validators";
@@ -15,6 +16,9 @@ const ADMIN_QUESTION_CONTENT_DTO = z.strictObject({
     .describe("Interesting trivia related to the question in supported locales."),
 }).describe("Question's content.");
 
+class AdminQuestionContentDto extends createZodDto(ADMIN_QUESTION_CONTENT_DTO) {}
+
 export {
   ADMIN_QUESTION_CONTENT_DTO,
+  AdminQuestionContentDto,
 };
