@@ -122,7 +122,7 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/object-curly-spacing": ["error", "always"],
     "@stylistic/object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
     "@stylistic/one-var-declaration-per-line": ["error", "always"],
-    "@stylistic/operator-linebreak": ["error", "after"],
+    "@stylistic/operator-linebreak": ["error", "after", { overrides: { "|": "before" } }],
     "@stylistic/padded-blocks": ["error", "never"],
     "@stylistic/padding-line-between-statements": [
       "error",

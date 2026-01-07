@@ -6,9 +6,9 @@ import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructu
 
 const APP_HEALTH_DETAILS_DTO = z.strictObject({
   [MONGOOSE_HEALTH_KEY]: APP_HEALTH_DETAILS_CHECK_DTO
-    .describe("Health details of the Mongoose (MongoDB) connection."),
+    .describe("Health details of the Mongoose (MongoDB) connection"),
   [DOCS_ENDPOINT_HEALTH_KEY]: APP_HEALTH_DETAILS_CHECK_DTO
-    .describe("Health details of the API Documentation endpoint."),
+    .describe("Health details of the API Documentation endpoint"),
 });
 
 class AppHealthDetailsDto extends createZodDto(APP_HEALTH_DETAILS_DTO) {}

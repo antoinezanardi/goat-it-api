@@ -5,10 +5,10 @@ import { HEALTH_DETAILS_STATUS_ENUM } from "@src/infrastructure/api/health/const
 
 const APP_HEALTH_DETAILS_CHECK_DTO = z.strictObject({
   status: z.enum(HEALTH_DETAILS_STATUS_ENUM)
-    .describe("Health status of the component."),
+    .describe("Health status of the component"),
   message: z.string()
     .optional()
-    .describe("Optional message providing additional information about the health status when it is not up.")
+    .describe("Optional message providing additional information about the health status when it is not up")
     .meta({ example: "Database connection failed." }),
 });
 

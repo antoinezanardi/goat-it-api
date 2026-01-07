@@ -6,9 +6,9 @@ import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-h
 
 const APP_HEALTH_DTO = z.strictObject({
   status: z.enum(HEALTH_STATUS_ENUM)
-    .describe("Overall health status of the application."),
+    .describe("Overall health status of the application"),
   details: APP_HEALTH_DETAILS_DTO
-    .describe("Detailed health status of individual checked components."),
+    .describe("Detailed health status of individual checked components"),
 });
 
 class AppHealthDto extends createZodDto(APP_HEALTH_DTO) {}

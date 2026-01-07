@@ -24,12 +24,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.description).toBe("Validation error code.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.description).toBe("Validation error code");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Validation error code.",
+        description: "Validation error code",
         example: "type_error",
       };
 
@@ -45,13 +45,13 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.description).toBe("Validation error message.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.description).toBe("Validation error message");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Validation error message.",
-        example: "Expected type string but received type number.",
+        description: "Validation error message",
+        example: "Expected type string but received type number",
       };
 
       expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.meta()).toStrictEqual(expectedMetadata);
@@ -72,12 +72,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.description).toBe("Path to the invalid property.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.description).toBe("Path to the invalid property");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Path to the invalid property.",
+        description: "Path to the invalid property",
         example: ["user", "age"],
       };
 
@@ -93,12 +93,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.description).toBe("Expected type of the invalid property value when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.description).toBe("Expected type of the invalid property value when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Expected type of the invalid property value when applicable.",
+        description: "Expected type of the invalid property value when applicable",
         example: "string",
       };
 
@@ -114,12 +114,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.description).toBe("Origin type of the invalid property value when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.description).toBe("Origin type of the invalid property value when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Origin type of the invalid property value when applicable.",
+        description: "Origin type of the invalid property value when applicable",
         example: "number",
       };
 
@@ -135,12 +135,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.description).toBe("Expected high-level value format (e.g. 'uuid', 'email') when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.description).toBe("Expected high-level value format (e.g. 'uuid', 'email') when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Expected high-level value format (e.g. 'uuid', 'email') when applicable.",
+        description: "Expected high-level value format (e.g. 'uuid', 'email') when applicable",
         example: "email",
       };
 
@@ -156,13 +156,13 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.description).toBe("Expected regex pattern when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.description).toBe("Expected regex pattern when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Expected regex pattern when applicable.",
-        example: String.raw`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`,
+        description: "Expected regex pattern when applicable",
+        example: String.raw`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`,
       };
 
       expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.meta()).toStrictEqual(expectedMetadata);
@@ -177,12 +177,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.description).toBe("Expected minimum value when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.description).toBe("Expected minimum value when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Expected minimum value when applicable.",
+        description: "Expected minimum value when applicable",
         example: 1,
       };
 
@@ -198,12 +198,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.description).toBe("Expected maximum value when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.description).toBe("Expected maximum value when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Expected maximum value when applicable.",
+        description: "Expected maximum value when applicable",
         example: 255,
       };
 
@@ -219,12 +219,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum or maximum value is inclusive when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum or maximum value is inclusive when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "Whether the minimum or maximum value is inclusive when applicable.",
+        description: "Whether the minimum or maximum value is inclusive when applicable",
         example: true,
       };
 
@@ -246,12 +246,12 @@ describe("Api Response Exception Validation Details Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.description).toBe("List unrecognized keys when applicable.");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.description).toBe("List unrecognized keys when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "List unrecognized keys when applicable.",
+        description: "List unrecognized keys when applicable",
         example: ["unexpectedKey1", "unexpectedKey2"],
       };
 
