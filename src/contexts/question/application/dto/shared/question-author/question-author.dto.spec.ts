@@ -76,7 +76,7 @@ describe("Question Author DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_AUTHOR_DTO.shape.gameId.meta();
       const expectedMetadata = {
-        description: "Game's unique identifier, if the author is a game.",
+        description: "Game's unique identifier, if the author is a game",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -98,7 +98,7 @@ describe("Question Author DTO Specs", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question author's name, if applicable.",
+        description: "Question author's name, if applicable",
         example: "TriviaMaster3000",
       };
 
@@ -109,6 +109,12 @@ describe("Question Author DTO Specs", () => {
   describe(isGameIdSetOnGameRole, () => {
     it("should throw a zod error when role is 'game' and gameId is not set.", () => {
       const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
+
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+    });
+
+    it("should throw a zod error when role is not 'game' and gameId is set.", () => {
+      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "admin", gameId: "64b64c4f2f9b2567e4d8b123" });
 
       expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
     });

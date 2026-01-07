@@ -11,7 +11,7 @@ import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-a
 
 const QUESTION_DTO = z.strictObject({
   id: zMongoId()
-    .describe("Question's unique identifier."),
+    .describe("Question's unique identifier"),
   themes: z.array(QUESTION_THEME_ASSIGNMENT_DTO)
     .min(1)
     .describe("Question's themes"),
@@ -21,7 +21,7 @@ const QUESTION_DTO = z.strictObject({
   status: zQuestionStatus(),
   rejection: QUESTION_REJECTION_DTO
     .optional()
-    .describe("Question's rejection details, if applicable."),
+    .describe("Question's rejection details, if applicable"),
   sourceUrls: zQuestionSourceUrls(),
   createdAt: zIsoDateTime()
     .describe("Question's creation date"),

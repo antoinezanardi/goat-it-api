@@ -12,10 +12,10 @@ const QUESTION_AUTHOR_DTO = z.strictObject({
     .meta({ example: QUESTION_AUTHOR_ROLES[0] }),
   gameId: zMongoId()
     .optional()
-    .describe("Game's unique identifier, if the author is a game."),
+    .describe("Game's unique identifier, if the author is a game"),
   name: z.string()
     .optional()
-    .describe("Question author's name, if applicable.")
+    .describe("Question author's name, if applicable")
     .meta({ example: "TriviaMaster3000" }),
 }).describe("Question's author")
   .refine(isGameIdSetOnGameRole, { error: "Game ID must be set if and only if the author role is 'game'." });

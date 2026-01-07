@@ -15,7 +15,6 @@ function createFakeQuestionAuthorDto(questionAuthorDto: Partial<QuestionAuthorDt
   return {
     role,
     name: faker.datatype.boolean() ? faker.internet.username() : undefined,
-    gameId,
     ...questionAuthorDto,
   };
 }

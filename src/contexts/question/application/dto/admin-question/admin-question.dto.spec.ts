@@ -28,7 +28,7 @@ describe("Admin Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_DTO.shape.id.meta();
       const expectedMetadata = {
-        description: "Question's unique identifier.",
+        description: "Question's unique identifier",
         example: "60af924f4f1a2563f8e8b456",
       };
 
@@ -143,7 +143,7 @@ describe("Admin Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_DTO.shape.rejection.meta();
       const expectedMetadata = {
-        description: "Question's rejection details, if applicable.",
+        description: "Question's rejection details, if applicable",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
