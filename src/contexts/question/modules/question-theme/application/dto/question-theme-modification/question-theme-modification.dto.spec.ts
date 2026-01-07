@@ -51,7 +51,7 @@ describe("Question Theme Modification Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_MODIFICATION_DTO.shape.label.description).toBe("Question Theme's translated label.");
+      expect(QUESTION_THEME_MODIFICATION_DTO.shape.label.description).toBe("Question Theme's translated label");
     });
   });
 
@@ -63,7 +63,7 @@ describe("Question Theme Modification Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_MODIFICATION_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords.");
+      expect(QUESTION_THEME_MODIFICATION_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords");
     });
   });
 
@@ -75,7 +75,7 @@ describe("Question Theme Modification Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_MODIFICATION_DTO.shape.description.description).toBe("Question Theme's translated description.");
+      expect(QUESTION_THEME_MODIFICATION_DTO.shape.description.description).toBe("Question Theme's translated description");
     });
   });
 });

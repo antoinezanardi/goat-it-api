@@ -11,13 +11,13 @@ const QUESTION_THEME_MODIFICATION_DTO = z.object({
     .meta({ example: "general-knowledge" }),
   label: zLocalizedText()
     .optional()
-    .describe("Question Theme's translated label."),
+    .describe("Question Theme's translated label"),
   aliases: zLocalizedTexts()
     .optional()
-    .describe("Question Theme's translated aliases. Help to find the theme with different keywords."),
+    .describe("Question Theme's translated aliases. Help to find the theme with different keywords"),
   description: zLocalizedText()
     .optional()
-    .describe("Question Theme's translated description."),
+    .describe("Question Theme's translated description"),
 });
 
 class QuestionThemeModificationDto extends createZodDto(QUESTION_THEME_MODIFICATION_DTO) {}

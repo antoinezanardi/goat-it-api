@@ -9,11 +9,11 @@ const QUESTION_THEME_CREATION_DTO = z.object({
     .describe("Question Theme's unique slug in kebab-case")
     .meta({ example: "general-knowledge" }),
   label: zLocalizedText()
-    .describe("Question Theme's translated label."),
+    .describe("Question Theme's translated label"),
   aliases: zLocalizedTexts()
-    .describe("Question Theme's translated aliases. Help to find the theme with different keywords."),
+    .describe("Question Theme's translated aliases. Help to find the theme with different keywords"),
   description: zLocalizedText()
-    .describe("Question Theme's translated description."),
+    .describe("Question Theme's translated description"),
 });
 
 class QuestionThemeCreationDto extends createZodDto(QUESTION_THEME_CREATION_DTO) {}

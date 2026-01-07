@@ -10,7 +10,7 @@ const QUESTION_THEME_ASSIGNMENT_DTO = z.strictObject({
     .describe("Indicates if the assigned theme is the primary theme for the question"),
   isHint: z.boolean()
     .describe("Indicates if the assigned theme is a hint for the question's answer"),
-}).describe("Question's Theme assignment");
+}).describe("Question's theme assignment");
 
 class QuestionThemeAssignmentDto extends createZodDto(QUESTION_THEME_ASSIGNMENT_DTO) {}
 

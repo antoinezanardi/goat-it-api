@@ -66,12 +66,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's translated label.");
+      expect(QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's translated label");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated label.",
+        description: "Question Theme's translated label",
         example: "History",
       };
 
@@ -93,12 +93,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords.");
+      expect(QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated aliases. Help to find the theme with different keywords.",
+        description: "Question Theme's translated aliases. Help to find the theme with different keywords",
         example: ["Historical Events", "Past", "Future"],
       };
 
@@ -114,12 +114,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's translated description.");
+      expect(QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's translated description");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated description.",
+        description: "Question Theme's translated description",
         example: "Questions related to historical events and timelines.",
       };
 

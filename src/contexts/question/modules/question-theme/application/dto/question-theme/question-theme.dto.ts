@@ -13,13 +13,13 @@ const QUESTION_THEME_DTO = z.strictObject({
     .describe("Question Theme's unique slug in kebab-case")
     .meta({ example: "history" }),
   label: z.string()
-    .describe("Question Theme's translated label.")
+    .describe("Question Theme's translated label")
     .meta({ example: "History" }),
   aliases: z.array(z.string())
-    .describe("Question Theme's translated aliases. Help to find the theme with different keywords.")
+    .describe("Question Theme's translated aliases. Help to find the theme with different keywords")
     .meta({ example: ["Historical Events", "Past", "Future"] }),
   description: z.string()
-    .describe("Question Theme's translated description.")
+    .describe("Question Theme's translated description")
     .meta({ example: "Questions related to historical events and timelines." }),
   status: z.enum(QUESTION_THEME_STATUSES)
     .describe("Question Theme's status")

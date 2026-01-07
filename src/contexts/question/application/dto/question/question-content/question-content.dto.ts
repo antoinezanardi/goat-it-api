@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const QUESTION_CONTENT_DTO = z.strictObject({
   statement: z.string()
-    .describe("Additional translated context for the question")
+    .describe("Question translated statement")
     .meta({ example: "What is the capital of France?" }),
   answer: z.string()
     .describe("Question translated answer")

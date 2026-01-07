@@ -32,7 +32,7 @@ describe("Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.statement.meta();
       const expectedMetadata = {
-        description: "Additional translated context for the question",
+        description: "Question translated statement",
         example: "What is the capital of France?",
       };
 

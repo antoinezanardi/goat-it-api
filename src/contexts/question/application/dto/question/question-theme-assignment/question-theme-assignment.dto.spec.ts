@@ -18,7 +18,7 @@ describe("Question Theme Assignment DTO Specs", () => {
 
   it("should have correct metadata when accessing the metadata.", () => {
     const expectedMetadata = {
-      description: "Question's Theme assignment",
+      description: "Question's theme assignment",
     };
 
     expect(QUESTION_THEME_ASSIGNMENT_DTO.meta()).toStrictEqual(expectedMetadata);
