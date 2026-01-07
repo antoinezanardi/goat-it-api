@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
 
 import { ADMIN_QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto";
-import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/validators/zod/question.dto.zod.validators";
+import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto";
 import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto";

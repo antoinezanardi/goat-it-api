@@ -1350,6 +1350,7 @@
       ],
       "rules": {
         "no-magic-numbers": "off",
+        "no-param-reassign": "off",
         "typescript/no-magic-numbers": "off"
       }
     },

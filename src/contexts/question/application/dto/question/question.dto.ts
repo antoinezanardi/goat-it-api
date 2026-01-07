@@ -5,7 +5,7 @@ import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/validators/z
 
 import { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto";
-import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/validators/zod/question.dto.zod.validators";
+import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto";
 

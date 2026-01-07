@@ -36,7 +36,7 @@ describe("Question DTO Zod Validators", () => {
     it("should have the correct description when called.", () => {
       const schema = zQuestionCognitiveDifficulty();
 
-      expect(schema.description).toBe("Question's cognitive difficulty level.");
+      expect(schema.description).toBe("Question's cognitive difficulty level");
     });
   });
 
@@ -80,7 +80,7 @@ describe("Question DTO Zod Validators", () => {
     it("should have the correct description when called.", () => {
       const schema = zQuestionStatus();
 
-      expect(schema.description).toBe("Question's status.");
+      expect(schema.description).toBe("Question's status");
     });
   });
 
@@ -114,7 +114,7 @@ describe("Question DTO Zod Validators", () => {
     it("should have the correct metadata when accessed.", () => {
       const schema = zQuestionSourceUrls();
       const expectedMeta = {
-        description: "List of source URLs for the question.",
+        description: "List of source URLs for the question",
         example: ["https://example.com/source1", "https://example.com/source2"],
       };
 

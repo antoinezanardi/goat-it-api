@@ -1,5 +1,6 @@
 import { ZodError } from "zod";
 
+import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
 import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto";
 
@@ -16,40 +17,40 @@ describe("Question Author DTO Specs", () => {
     expect(() => QUESTION_AUTHOR_DTO.parse(validQuestionAuthorDto)).not.toThrowError();
   });
 
-  describe("type", () => {
+  describe("role", () => {
     it.each<{
       test: string;
       value: string;
       expected: boolean;
     }>([
       {
-        test: "should return true when author type is 'admin'.",
+        test: "should return true when author role is 'admin'.",
         value: "admin",
         expected: true,
       },
       {
-        test: "should return true when author type is 'game'.",
+        test: "should return true when author role is 'game'.",
         value: "game",
         expected: true,
       },
       {
-        test: "should return true when author type is 'ai'.",
+        test: "should return true when author role is 'ai'.",
         value: "ai",
         expected: true,
       },
       {
-        test: "should return false when author type is 'bot'.",
+        test: "should return false when author role is 'bot'.",
         value: "bot",
         expected: false,
       },
     ])("$test", ({ value, expected }) => {
-      const result = QUESTION_AUTHOR_DTO.shape.type.safeParse(value);
+      const result = QUESTION_AUTHOR_DTO.shape.role.safeParse(value);
 
       expect(result.success).toBe(expected);
     });
 
     it("should have the correct meta when accessed.", () => {
-      const metadata = QUESTION_AUTHOR_DTO.shape.type.meta();
+      const metadata = QUESTION_AUTHOR_DTO.shape.role.meta();
       const expectedMetadata = {
         description: "Question's author role",
         example: "admin",
@@ -102,6 +103,27 @@ describe("Question Author DTO Specs", () => {
       };
 
       expect(QUESTION_AUTHOR_DTO.shape.name.meta()).toStrictEqual(expectedMetadata);
+    });
+  });
+
+  describe(isGameIdSetOnGameRole, () => {
+    it("should throw a zod error when role is 'game' and gameId is not set.", () => {
+      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
+
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+    });
+
+    it("should pass validation when role is 'game' and gameId is set.", () => {
+      const validDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: "64b64c4f2f9b2567e4d8b123" });
+
+      expect(() => QUESTION_AUTHOR_DTO.parse(validDto)).not.toThrowError();
+    });
+
+    it("should set error message correctly when validation fails.", () => {
+      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
+      const parseResult = QUESTION_AUTHOR_DTO.safeParse(invalidDto);
+
+      expect(parseResult.error?.issues[0].message).toBe("Game ID must be set if and only if the author role is 'game'.");
     });
   });
 });

@@ -5,7 +5,7 @@ import type { TupleToUnion } from "type-fest";
 type QuestionAuthorRole = TupleToUnion<typeof QUESTION_AUTHOR_ROLES>;
 
 type BaseQuestionAuthor<T extends QuestionAuthorRole> = {
-  type: T;
+  role: T;
   name?: string;
 };
 

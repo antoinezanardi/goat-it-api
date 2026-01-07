@@ -86,7 +86,7 @@ describe("Admin Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_DTO.shape.cognitiveDifficulty.meta();
       const expectedMetadata = {
-        description: "Question's cognitive difficulty level.",
+        description: "Question's cognitive difficulty level",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -120,7 +120,7 @@ describe("Admin Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_DTO.shape.status.meta();
       const expectedMetadata = {
-        description: "Question's status.",
+        description: "Question's status",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);

@@ -10,18 +10,18 @@ import type { QuestionCognitiveDifficultyEnum } from "@question/domain/value-obj
 
 function zQuestionCognitiveDifficulty(): ZodEnum<QuestionCognitiveDifficultyEnum> {
   return z.enum(QUESTION_COGNITIVE_DIFFICULTIES)
-    .describe("Question's cognitive difficulty level.");
+    .describe("Question's cognitive difficulty level");
 }
 
 function zQuestionStatus(): ZodEnum<QuestionStatusEnum> {
   return z.enum(QUESTION_STATUSES)
-    .describe("Question's status.");
+    .describe("Question's status");
 }
 
 function zQuestionSourceUrls(): ZodArray<ZodURL> {
   return z.array(z.url())
     .min(1)
-    .describe("List of source URLs for the question.")
+    .describe("List of source URLs for the question")
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 
