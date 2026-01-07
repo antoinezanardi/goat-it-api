@@ -32,7 +32,7 @@ describe("Admin Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_CONTENT_DTO.shape.statement.meta();
       const expectedMetadata = {
-        description: "Question statement in supported locales.",
+        description: "Question statement in supported locales",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -55,7 +55,7 @@ describe("Admin Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_CONTENT_DTO.shape.answer.meta();
       const expectedMetadata = {
-        description: "Question answer in supported locales.",
+        description: "Question answer in supported locales",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -78,7 +78,7 @@ describe("Admin Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_CONTENT_DTO.shape.context.meta();
       const expectedMetadata = {
-        description: "Additional context for the question in supported locales.",
+        description: "Additional context for the question in supported locales",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -101,7 +101,7 @@ describe("Admin Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_QUESTION_CONTENT_DTO.shape.trivia.meta();
       const expectedMetadata = {
-        description: "Interesting trivia related to the question in supported locales.",
+        description: "Interesting trivia related to the question in supported locales",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);

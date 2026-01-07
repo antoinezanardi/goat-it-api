@@ -5,16 +5,16 @@ import { zLocalizedText, zLocalizedTexts } from "@shared/infrastructure/http/val
 
 const ADMIN_QUESTION_CONTENT_DTO = z.strictObject({
   statement: zLocalizedText()
-    .describe("Question statement in supported locales."),
+    .describe("Question statement in supported locales"),
   answer: zLocalizedText()
-    .describe("Question answer in supported locales."),
+    .describe("Question answer in supported locales"),
   context: zLocalizedText()
     .optional()
-    .describe("Additional context for the question in supported locales."),
+    .describe("Additional context for the question in supported locales"),
   trivia: zLocalizedTexts()
     .optional()
-    .describe("Interesting trivia related to the question in supported locales."),
-}).describe("Question's content.");
+    .describe("Interesting trivia related to the question in supported locales"),
+}).describe("Question's content");
 
 class AdminQuestionContentDto extends createZodDto(ADMIN_QUESTION_CONTENT_DTO) {}
 

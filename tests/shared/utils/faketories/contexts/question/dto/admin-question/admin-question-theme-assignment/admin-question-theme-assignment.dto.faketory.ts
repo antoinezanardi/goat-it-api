@@ -4,12 +4,12 @@ import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/
 
 import { createFakeAdminQuestionThemeDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 
-function createFakeAdminQuestionThemeAssignmentDto(assign: Partial<AdminQuestionThemeAssignmentDto> = {}): AdminQuestionThemeAssignmentDto {
+function createFakeAdminQuestionThemeAssignmentDto(adminQuestionThemeAssignmentDto: Partial<AdminQuestionThemeAssignmentDto> = {}): AdminQuestionThemeAssignmentDto {
   return {
     theme: createFakeAdminQuestionThemeDto(),
     isPrimary: faker.datatype.boolean(),
     isHint: faker.datatype.boolean(),
-    ...assign,
+    ...adminQuestionThemeAssignmentDto,
   };
 }
 

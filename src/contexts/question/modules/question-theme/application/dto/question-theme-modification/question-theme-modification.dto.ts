@@ -7,7 +7,7 @@ import { zSlug } from "@shared/infrastructure/http/validators/zod/string/string.
 const QUESTION_THEME_MODIFICATION_DTO = z.object({
   slug: zSlug()
     .optional()
-    .describe("Question Theme's unique slug in kebab-case.")
+    .describe("Question Theme's unique slug in kebab-case")
     .meta({ example: "general-knowledge" }),
   label: zLocalizedText()
     .optional()

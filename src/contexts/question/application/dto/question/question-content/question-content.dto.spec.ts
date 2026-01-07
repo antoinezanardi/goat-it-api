@@ -32,7 +32,7 @@ describe("Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.statement.meta();
       const expectedMetadata = {
-        description: "Question translated statement.",
+        description: "Additional translated context for the question",
         example: "What is the capital of France?",
       };
 
@@ -56,7 +56,7 @@ describe("Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.answer.meta();
       const expectedMetadata = {
-        description: "Question translated answer.",
+        description: "Question translated answer",
         example: "The capital of France is Paris.",
       };
 
@@ -80,7 +80,7 @@ describe("Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.context.meta();
       const expectedMetadata = {
-        description: "Additional translated context for the question.",
+        description: "Additional translated context for the question",
         example: "France is a country in Western Europe.",
       };
 
@@ -104,7 +104,7 @@ describe("Question Content DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.trivia.meta();
       const expectedMetadata = {
-        description: "Interesting translated trivia related to the question.",
+        description: "Interesting translated trivia related to the question",
         example: ["Paris is known as the 'City of Light'.", "The Eiffel Tower is located in Paris."],
       };
 

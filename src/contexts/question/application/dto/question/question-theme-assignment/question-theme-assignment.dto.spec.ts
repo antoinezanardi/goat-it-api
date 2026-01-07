@@ -34,7 +34,7 @@ describe("Question Theme Assignment DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_THEME_ASSIGNMENT_DTO.shape.theme.meta();
       const expectedMetadata = {
-        description: "Question assigned theme.",
+        description: "Question assigned theme",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -51,7 +51,7 @@ describe("Question Theme Assignment DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_THEME_ASSIGNMENT_DTO.shape.isPrimary.meta();
       const expectedMetadata = {
-        description: "Indicates if the assigned theme is the primary theme for the question.",
+        description: "Indicates if the assigned theme is the primary theme for the question",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -68,7 +68,7 @@ describe("Question Theme Assignment DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_THEME_ASSIGNMENT_DTO.shape.isHint.meta();
       const expectedMetadata = {
-        description: "Indicates if the assigned theme is a hint for the question's answer.",
+        description: "Indicates if the assigned theme is a hint for the question's answer",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);

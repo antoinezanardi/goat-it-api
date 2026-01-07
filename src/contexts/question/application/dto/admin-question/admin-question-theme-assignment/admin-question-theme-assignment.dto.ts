@@ -5,11 +5,11 @@ import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/appli
 
 const ADMIN_QUESTION_THEME_ASSIGNMENT_DTO = z.strictObject({
   theme: ADMIN_QUESTION_THEME_DTO
-    .describe("Question assigned theme."),
+    .describe("Question assigned theme"),
   isPrimary: z.boolean()
-    .describe("Indicates if the assigned theme is the primary theme for the question."),
+    .describe("Indicates if the assigned theme is the primary theme for the question"),
   isHint: z.boolean()
-    .describe("Indicates if the assigned theme is a hint for the question's answer."),
+    .describe("Indicates if the assigned theme is a hint for the question's answer"),
 }).describe("Question's Theme assignment");
 
 class AdminQuestionThemeAssignmentDto extends createZodDto(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO) {}

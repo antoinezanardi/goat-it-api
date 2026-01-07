@@ -24,12 +24,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.id.description).toBe("Question Theme's unique identifier.");
+      expect(QUESTION_THEME_DTO.shape.id.description).toBe("Question Theme's unique identifier");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's unique identifier.",
+        description: "Question Theme's unique identifier",
         example: "60af924f4f1a2563f8e8b456",
       };
 
@@ -45,12 +45,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.slug.description).toBe("Question Theme's unique slug in kebab-case.");
+      expect(QUESTION_THEME_DTO.shape.slug.description).toBe("Question Theme's unique slug in kebab-case");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's unique slug in kebab-case.",
+        description: "Question Theme's unique slug in kebab-case",
         example: "history",
       };
 
@@ -135,12 +135,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.status.description).toBe("Question Theme's status.");
+      expect(QUESTION_THEME_DTO.shape.status.description).toBe("Question Theme's status");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's status.",
+        description: "Question Theme's status",
         example: "active",
       };
 
@@ -156,12 +156,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.createdAt.description).toBe("Question Theme's creation date.");
+      expect(QUESTION_THEME_DTO.shape.createdAt.description).toBe("Question Theme's creation date");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's creation date.",
+        description: "Question Theme's creation date",
         example: "2026-04-14T00:00:00.000Z",
       };
 
@@ -177,12 +177,12 @@ describe("Question Theme Dto", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.updatedAt.description).toBe("Question Theme's last update date.");
+      expect(QUESTION_THEME_DTO.shape.updatedAt.description).toBe("Question Theme's last update date");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's last update date.",
+        description: "Question Theme's last update date",
         example: "2026-04-14T00:00:00.000Z",
       };
 

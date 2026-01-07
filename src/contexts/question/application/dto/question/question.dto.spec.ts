@@ -69,7 +69,7 @@ describe("Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_DTO.shape.content.meta();
       const expectedMetadata = {
-        description: "Question's content.",
+        description: "Question's content",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
