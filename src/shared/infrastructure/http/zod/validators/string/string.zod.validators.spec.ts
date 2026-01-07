@@ -1,5 +1,5 @@
-import { zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
-import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
+import { zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
