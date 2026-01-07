@@ -1,7 +1,7 @@
 import { isMongoId } from "validator";
 import { z } from "zod";
 
-import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/validators/zod/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 import type { $ZodCustomParams } from "zod/v4/core";
 import type { ZodString, ZodISODateTime } from "zod";

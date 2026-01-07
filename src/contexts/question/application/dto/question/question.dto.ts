@@ -1,7 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto";

@@ -51,7 +51,7 @@ describe("Admin Question Theme Dto", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
         description: "Question Theme's unique slug in kebab-case",
-        example: "history",
+        example: "general-knowledge",
       };
 
       expect(ADMIN_QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);

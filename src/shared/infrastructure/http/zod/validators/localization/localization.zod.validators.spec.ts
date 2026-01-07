@@ -1,4 +1,4 @@
-import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries } from "@shared/infrastructure/http/validators/zod/localization/localization.zod.validators";
+import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 

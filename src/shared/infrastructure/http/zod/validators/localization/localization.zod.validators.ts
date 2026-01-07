@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { LOCALE_LABELS } from "@shared/domain/value-objects/locale/locale.constants";
-import { LOCALE_EXAMPLES, LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH } from "@shared/infrastructure/http/validators/zod/localization/constants/localization.zod.validators.constants";
+import { LOCALE_EXAMPLES, LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH } from "@shared/infrastructure/http/zod/validators/localization/constants/localization.zod.validators.constants";
 
 import type { ZodObject, ZodString, ZodOptional, ZodArray } from "zod";
 

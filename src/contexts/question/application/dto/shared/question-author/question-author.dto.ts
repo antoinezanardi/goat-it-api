@@ -1,7 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-import { zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
 import { QUESTION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";

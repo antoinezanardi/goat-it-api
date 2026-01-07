@@ -447,7 +447,7 @@ const MY_ENTITY_DTO = z.strictObject({
     "archived"
   ])
     .describe("Entity's current status."),
-  createdAt: z.iso.datetime()
+  createdAt: zIsoDateTime()
     .describe("Entity's creation timestamp."),
 });
 
