@@ -486,7 +486,7 @@ The project provides reusable Zod validator helpers in `src/shared/infrastructur
 Example usage:
 
 ```typescript
-import { zSlug, zMongoId } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { zSlug, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 const MY_DTO = z.strictObject({
   id: zMongoId()
