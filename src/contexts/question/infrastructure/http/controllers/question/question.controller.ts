@@ -18,7 +18,7 @@ export class QuestionController {
   @Get()
   @ApiOperation({
     tags: [SwaggerTags.QUESTIONS],
-    summary: "Get all question",
+    summary: "Get all questions",
     description: "Get the list of all questions available in the database in the desired localization.",
   })
   @ZodResponse({

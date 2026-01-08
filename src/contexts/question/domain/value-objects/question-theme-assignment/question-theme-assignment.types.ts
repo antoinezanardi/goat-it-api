@@ -1,7 +1,7 @@
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 type QuestionThemeAssignment = {
-  questionTheme: QuestionTheme;
+  theme: QuestionTheme;
   isPrimary: boolean;
   isHint: boolean;
 };

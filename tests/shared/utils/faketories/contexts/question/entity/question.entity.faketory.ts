@@ -16,7 +16,7 @@ import type { QuestionThemeAssignment } from "@question/domain/value-objects/que
 
 function createFakeQuestionThemeAssignment(questionThemeAssignment: Partial<QuestionThemeAssignment> = {}): QuestionThemeAssignment {
   return {
-    questionTheme: createFakeQuestionTheme(),
+    theme: createFakeQuestionTheme(),
     isPrimary: faker.datatype.boolean(),
     isHint: faker.datatype.boolean(),
     ...questionThemeAssignment,
@@ -62,7 +62,7 @@ function createFakeQuestionRejection(questionRejection: Partial<QuestionRejectio
 
 function createFakeQuestion(question: Partial<Question> = {}): Question {
   return {
-    id: faker.string.uuid(),
+    id: faker.database.mongodbObjectId(),
     themes: [createFakeQuestionThemeAssignment(), createFakeQuestionThemeAssignment()],
     content: createFakeQuestionContent(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
