@@ -36,7 +36,7 @@ function createFakeQuestionContent(questionContent: Partial<QuestionContent> = {
 function createFakeQuestionAuthor(questionAuthor: Partial<QuestionAuthor> = {}): QuestionAuthor {
   const role = questionAuthor.role ?? faker.helpers.arrayElement(QUESTION_AUTHOR_ROLES);
   const providedName = questionAuthor.name;
-  const providedGameId = (questionAuthor as Partial<QuestionAuthor> & { gameId?: string }).gameId;
+  const providedGameId = "gameId" in questionAuthor ? questionAuthor.gameId : undefined;
   const fakeName = faker.datatype.boolean() ? faker.person.fullName() : undefined;
 
   if (role === "game") {
@@ -69,7 +69,7 @@ function createFakeQuestion(question: Partial<Question> = {}): Question {
     author: createFakeQuestionAuthor(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
-    sourceUrls: [faker.internet.url(), faker.internet.url()],
+    sourceUrls: new Set(["https://first-example.fr", "https://second-example.com"]),
     createdAt: faker.date.past(),
     updatedAt: faker.date.recent(),
     ...question,
