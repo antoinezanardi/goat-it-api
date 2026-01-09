@@ -2,6 +2,13 @@ import type { QuestionThemeMongooseSchema } from "@question/modules/question-the
 
 import type { HydratedDocument } from "mongoose";
 
+import type { MongooseCollectionSchemaBase } from "@shared/infrastructure/persistence/mongoose/mongoose.types";
+
 type QuestionThemeMongooseDocument = HydratedDocument<QuestionThemeMongooseSchema>;
 
-export type { QuestionThemeMongooseDocument };
+type QuestionThemeMongooseSchemaShape = QuestionThemeMongooseSchema & MongooseCollectionSchemaBase;
+
+export type {
+  QuestionThemeMongooseDocument,
+  QuestionThemeMongooseSchemaShape,
+};

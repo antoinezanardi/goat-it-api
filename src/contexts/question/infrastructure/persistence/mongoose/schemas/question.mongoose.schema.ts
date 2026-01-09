@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
 
 import { QUESTION_THEME_ASSIGNMENT_MONGOOSE_SCHEMA, QuestionThemeAssignmentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
-import { QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
+import { QUESTION_AUTHOR_MONGOOSE_SCHEMA, QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
 import { QUESTION_CONTENT_MONGOOSE_SCHEMA, QuestionContentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-content/question-content.mongoose.schema";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 import { QUESTION_MONGOOSE_COLLECTION_NAME } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
@@ -39,7 +39,7 @@ class QuestionMongooseSchema {
 
   @Prop({
     required: true,
-    type: QuestionAuthorMongooseSchema,
+    type: QUESTION_AUTHOR_MONGOOSE_SCHEMA,
   })
   public author!: QuestionAuthorMongooseSchema;
 
