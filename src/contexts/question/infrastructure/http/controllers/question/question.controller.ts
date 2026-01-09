@@ -8,6 +8,8 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
+import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
 import { QuestionDto } from "@question/application/dto/question/question.dto";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
@@ -15,6 +17,8 @@ import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.
 @GameAuth()
 @Controller(ControllerPrefixes.QUESTIONS)
 export class QuestionController {
+  public constructor(private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase) {}
+
   @Get()
   @ApiOperation({
     tags: [SwaggerTags.QUESTIONS],
@@ -26,7 +30,8 @@ export class QuestionController {
     type: [QuestionDto],
   })
   public async findAllQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
-    // TODO: Implement the logic to fetch and return all questions
-    return [];
+    const questions = await this.findAllQuestionsUseCase.list();
+
+    return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }
 }

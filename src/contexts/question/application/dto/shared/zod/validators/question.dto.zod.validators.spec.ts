@@ -114,7 +114,7 @@ describe("Question DTO Zod Validators", () => {
     it("should have the correct metadata when accessed.", () => {
       const schema = zQuestionSourceUrls();
       const expectedMeta = {
-        description: "List of source URLs for the question",
+        description: "List of unique source URLs for the question",
         example: ["https://example.com/source1", "https://example.com/source2"],
       };
 

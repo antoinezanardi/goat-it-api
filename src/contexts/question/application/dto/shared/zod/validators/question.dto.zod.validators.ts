@@ -21,7 +21,7 @@ function zQuestionStatus(): ZodEnum<QuestionStatusEnum> {
 function zQuestionSourceUrls(): ZodSet<ZodURL> {
   return z.set(z.url())
     .min(1)
-    .describe("List of source URLs for the question")
+    .describe("List of unique source URLs for the question")
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 

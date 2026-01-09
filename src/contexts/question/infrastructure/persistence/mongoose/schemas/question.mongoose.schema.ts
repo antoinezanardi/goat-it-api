@@ -55,7 +55,7 @@ class QuestionMongooseSchema {
     type: [String],
     minItems: 1,
   })
-  public sourceUrls!: Set<string>;
+  public sourceUrls!: string[];
 
   public createdAt!: Date;
 

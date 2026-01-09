@@ -11,7 +11,7 @@ import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question/modules/quest
 class QuestionThemeAssignmentMongooseSchema {
   @Prop({
     required: true,
-    type: String,
+    type: Types.ObjectId,
     ref: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
     index: true,
   })
