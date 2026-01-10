@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
 
+import { QUESTION_REJECTION_MONGOOSE_SCHEMA, QuestionRejectionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
 import { QUESTION_THEME_ASSIGNMENT_MONGOOSE_SCHEMA, QuestionThemeAssignmentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
 import { QUESTION_AUTHOR_MONGOOSE_SCHEMA, QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
 import { QUESTION_CONTENT_MONGOOSE_SCHEMA, QuestionContentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-content/question-content.mongoose.schema";
@@ -56,6 +57,12 @@ class QuestionMongooseSchema {
     minItems: 1,
   })
   public sourceUrls!: string[];
+
+  @Prop({
+    required: false,
+    type: QUESTION_REJECTION_MONGOOSE_SCHEMA,
+  })
+  public rejection?: QuestionRejectionMongooseSchema;
 
   public createdAt!: Date;
 

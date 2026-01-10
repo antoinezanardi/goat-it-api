@@ -4,7 +4,7 @@ import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose-document/question-theme.mongoose-document.faketory";
-import { createFakeQuestionAuthor } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionAuthor, createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
@@ -38,6 +38,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
     author: createFakeQuestionAuthor(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: ["https://first-example.fr", "https://second-example.com"],
+    rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     ...questionAggregate,
@@ -46,5 +47,6 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
 
 export {
   createFakeQuestionContentAggregate,
+  createFakeQuestionThemeAssignmentAggregate,
   createFakeQuestionAggregate,
 };
