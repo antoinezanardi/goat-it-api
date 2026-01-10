@@ -152,7 +152,7 @@
     "vitest": "^4.0.16",
     "zod": "^4.3.5"
   },
-  "packageManager": "pnpm@10.27.0",
+  "packageManager": "pnpm@10.28.0",
   "dependencies": {
     "@fastify/static": "^9.0.0",
     "@nestjs/axios": "^4.0.1",
