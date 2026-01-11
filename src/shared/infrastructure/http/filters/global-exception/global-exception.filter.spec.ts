@@ -233,6 +233,7 @@ describe("Global Exception Filter", () => {
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
 
+      // Disabling lint rule which confuses promise catch method call with global exception filter own catch method.
       // oxlint-disable-next-line valid-params prefer-await-to-then
       globalExceptionFilter.catch(exception, localMocks.filters.globalException.host);
 

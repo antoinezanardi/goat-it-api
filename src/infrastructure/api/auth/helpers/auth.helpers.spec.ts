@@ -139,6 +139,7 @@ describe("Auth Helpers", () => {
 
     it("should throw UnauthorizedException with generic message when API key is invalid for game auth type and error is not type Error.", () => {
       vi.spyOn(appConfigService.authenticationConfig.game, "apiKeyValidator").mockImplementation(() => {
+        // This is ok because we are simulating an unexpected error type
         // oxlint-disable-next-line only-throw-error no-throw-literal
         throw "Some string error";
       });
