@@ -18,7 +18,7 @@ function createFakeAdminQuestionDto(adminQuestionDto: Partial<AdminQuestionDto> 
     author: createFakeQuestionAuthorDto(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejectionDto() : undefined,
-    sourceUrls: new Set(["https://first-example.fr", "https://second-example.com"]),
+    sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
     createdAt: faker.date.anytime().toISOString(),
     updatedAt: faker.date.anytime().toISOString(),
     ...adminQuestionDto,

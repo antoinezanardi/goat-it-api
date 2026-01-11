@@ -37,7 +37,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthor(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
-    sourceUrls: ["https://first-example.fr", "https://second-example.com"],
+    sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),

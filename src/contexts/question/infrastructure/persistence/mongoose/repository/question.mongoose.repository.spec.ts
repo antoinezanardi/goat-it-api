@@ -9,6 +9,7 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
+import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 
 import type { Mock } from "vitest";
@@ -69,11 +70,24 @@ describe("Question Mongoose Repository", () => {
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenCalledTimes(questions.length);
     });
 
+    it("should call the mapper with every aggregate returned from model when called.", async() => {
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+      await repositories.question.findAll();
+
+      expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(1, questionAggregates[0], 0, questionAggregates);
+      // oxlint-disable-next-line max-expects
+      expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(2, questionAggregates[1], 1, questionAggregates);
+    });
+
     it("should return mapped questions from model when called.", async() => {
-      const expectedQuestions: Question[] = [
-        { id: "q-1" } as unknown as Question,
-        { id: "q-2" } as unknown as Question,
-        { id: "q-3" } as unknown as Question,
+      const expectedQuestions = [
+        createFakeQuestion(),
+        createFakeQuestion(),
+        createFakeQuestion(),
       ];
 
       vi.mocked(createQuestionFromAggregate)

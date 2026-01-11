@@ -69,7 +69,7 @@ function createFakeQuestion(question: Partial<Question> = {}): Question {
     author: createFakeQuestionAuthor(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
-    sourceUrls: new Set(["https://first-example.fr", "https://second-example.com"]),
+    sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
     createdAt: faker.date.past(),
     updatedAt: faker.date.recent(),
     ...question,
