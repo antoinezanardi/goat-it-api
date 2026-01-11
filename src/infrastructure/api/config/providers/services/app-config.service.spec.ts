@@ -94,15 +94,15 @@ describe("App Config Service", () => {
     });
 
     it("should return server base url with https when host includes https scheme.", () => {
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "https://0.0.0.0");
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "8080");
+      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("https://0.0.0.0");
+      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("8080");
 
       expect(services.appConfig.serverBaseUrl).toBe("https://0.0.0.0:8080");
     });
 
     it("should return server base url with http when host includes http scheme.", () => {
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "http://127.0.0.0");
-      mocks.services.nestConfig.getOrThrow.mockImplementationOnce(() => "8080");
+      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("http://127.0.0.0");
+      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("8080");
 
       expect(services.appConfig.serverBaseUrl).toBe("http://127.0.0.0:8080");
     });

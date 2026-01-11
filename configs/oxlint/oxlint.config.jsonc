@@ -1297,6 +1297,7 @@
         "vitest/prefer-importing-vitest-globals": "off",
         "jest/prefer-lowercase-title": "off",
         "jest/prefer-mock-promise-shorthand": "error",
+        "vitest/prefer-mock-return-shorthand": "error",
         "vitest/prefer-snapshot-hint": "error",
         "jest/prefer-spy-on": "error",
         "vitest/prefer-strict-boolean-matchers": "off",

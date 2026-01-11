@@ -63,7 +63,6 @@ const ESLINT_STYLISTIC_FLAT_CONFIG: Linter.Config = {
     "@stylistic/jsx-pascal-case": "error",
     "@stylistic/jsx-quotes": "error",
     "@stylistic/jsx-self-closing-comp": "error",
-    "@stylistic/jsx-sort-props": "error",
     "@stylistic/jsx-tag-spacing": "error",
     "@stylistic/jsx-wrap-multilines": "error",
     "@stylistic/key-spacing": ["error", { mode: "strict" }],
