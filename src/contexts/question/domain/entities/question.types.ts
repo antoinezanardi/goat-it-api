@@ -13,7 +13,7 @@ type Question = {
   author: QuestionAuthor;
   status: QuestionStatus;
   rejection?: QuestionRejection;
-  sourceUrls: string[];
+  sourceUrls: Set<string>;
   createdAt: Date;
   updatedAt: Date;
 };

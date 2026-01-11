@@ -160,7 +160,7 @@ describe("Question DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_DTO.shape.sourceUrls.meta();
       const expectedMetadata = {
-        description: "List of source URLs for the question",
+        description: "List of unique source URLs for the question",
         example: [
           "https://example.com/source1",
           "https://example.com/source2",

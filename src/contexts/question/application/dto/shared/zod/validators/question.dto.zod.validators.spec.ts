@@ -92,7 +92,7 @@ describe("Question DTO Zod Validators", () => {
     }>([
       {
         test: "should return true when array of valid URLs is provided",
-        value: ["https://example.com/source1", "https://example.com/source2"],
+        value: new Set(["https://example.com/source1", "https://example.com/source2"]),
         expected: true,
       },
       {
@@ -114,7 +114,7 @@ describe("Question DTO Zod Validators", () => {
     it("should have the correct metadata when accessed.", () => {
       const schema = zQuestionSourceUrls();
       const expectedMeta = {
-        description: "List of source URLs for the question",
+        description: "List of unique source URLs for the question",
         example: ["https://example.com/source1", "https://example.com/source2"],
       };
 

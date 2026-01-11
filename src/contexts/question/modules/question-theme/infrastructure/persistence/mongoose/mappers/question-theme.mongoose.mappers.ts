@@ -1,7 +1,7 @@
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
+import type { QuestionThemeMongooseDocument, QuestionThemeMongooseSchemaShape } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
-function createQuestionThemeFromDocument(questionThemeDocument: QuestionThemeMongooseDocument): QuestionTheme {
+function createQuestionThemeFromDocument(questionThemeDocument: QuestionThemeMongooseDocument | QuestionThemeMongooseSchemaShape): QuestionTheme {
   return {
     id: questionThemeDocument._id.toString(),
     slug: questionThemeDocument.slug,
