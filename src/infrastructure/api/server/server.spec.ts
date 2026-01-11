@@ -11,7 +11,7 @@ import type { AppModule } from "@app/app.module";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
-import { mockByRules } from "@unit-tests/utils/mock-by-rules.helpers";
+import { mockByRules } from "@unit-tests/utils/helpers/mock-by-rules.helpers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
