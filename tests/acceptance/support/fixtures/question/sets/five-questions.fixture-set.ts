@@ -252,7 +252,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       }),
       context: createFakeLocalizedText({
         en: "Elephants are not widely known for their fear of bees, which may seem surprising given their imposing size. However, this phobia is well documented, and elephants often avoid areas where bees are present.",
-        fr: "Les éléphants ne sont connus pas vraiment pour leur peur des abeilles, ce qui peut sembler surprenant compte tenu de leur taille imposante. Cependant, cette phobie est bien documentée et les éléphants évitent souvent les zones où les abeilles sont présentes.",
+        fr: "Les éléphants ne sont pas vraiment connus pour leur peur des abeilles, ce qui peut sembler surprenant compte tenu de leur taille imposante. Cependant, cette phobie est bien documentée et les éléphants évitent souvent les zones où les abeilles sont présentes.",
         it: "Gli elefanti non sono ampiamente conosciuti per la loro paura delle api, il che può sembrare sorprendente data la loro imponente dimensione. Tuttavia, questa fobia è ben documentata e gli elefanti evitano spesso le aree dove sono presenti le api.",
         pt: "Os elefantes não são amplamente conhecidos por seu medo de abelhas, o que pode parecer surpreendente dado o seu tamanho imponente. No entanto, essa fobia é bem documentada, e os elefantes frequentemente evitam áreas onde as abelhas estão presentes.",
         es: "Los elefantes no son ampliamente conocidos por su miedo a las abejas, lo que puede parecer sorprendente dada su imponente tamaño. Sin embargo, esta fobia está bien documentada y los elefantes a menudo evitan las áreas donde hay abejas.",

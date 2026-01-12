@@ -50,6 +50,7 @@ export type {
   FixtureDomain,
   FixtureDefinition,
   FixtureKey,
+  FixtureData,
   DomainFixtureData,
   AnyFixtureReference,
   FixtureReference,

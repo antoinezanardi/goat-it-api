@@ -3,9 +3,9 @@ import { FIXTURE_INSERTERS, FIXTURE_REGISTRY } from "@acceptance-support/fixture
 import type { DomainFixtureData, FixtureDefinition, FixtureDomain, FixtureKey, FixtureReference } from "@acceptance-support/fixtures/types/fixture.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-async function loadFixtureDependencies<Domain extends FixtureDomain>(
+async function loadFixtureDependencies(
   world: GoatItWorld,
-  dependencies: readonly FixtureReference<Domain>[],
+  dependencies: readonly FixtureReference<FixtureDomain>[],
   loaded: Set<string>,
 ): Promise<void> {
   for (const [depDomain, depName] of dependencies) {
@@ -35,6 +35,7 @@ async function loadFixture<Domain extends FixtureDomain>(
   if (loadedKeys.has(key)) {
     throw new Error(`Circular fixture dependency detected: Trying to load already loaded fixture "${key}".`);
   }
+  loadedKeys.add(key);
 
   // This is acceptable here because we ensure the types via the function signature.
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
@@ -48,8 +49,6 @@ async function loadFixture<Domain extends FixtureDomain>(
   }
 
   await FIXTURE_INSERTERS[domain](world, fixture.data);
-
-  loadedKeys.add(key);
 }
 
 export {
