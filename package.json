@@ -119,7 +119,7 @@
     "@typescript-eslint/eslint-plugin": "^8.52.0",
     "@typescript-eslint/parser": "^8.52.0",
     "@typescript/native-preview": "7.0.0-dev.20260111.1",
-    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.17",
     "@vitest/eslint-plugin": "^1.6.6",
     "commitlint": "^20.3.1",
     "conventional-changelog-conventionalcommits": "^9.1.0",
@@ -149,7 +149,7 @@
     "typescript": "^5.9.3",
     "unplugin-swc": "^1.5.9",
     "validate-branch-name": "^1.3.2",
-    "vitest": "^4.0.16",
+    "vitest": "^4.0.17",
     "zod": "^4.3.5"
   },
   "packageManager": "pnpm@10.28.0",
