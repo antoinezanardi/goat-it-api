@@ -19,7 +19,7 @@ function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate)
   }
   return {
     role: questionAuthor.role,
-    gameId: questionAuthor.gameId,
+    gameId: questionAuthor.gameId.toString(),
     name: questionAuthor.name,
   };
 }

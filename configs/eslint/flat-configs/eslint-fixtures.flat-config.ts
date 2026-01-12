@@ -1,7 +1,7 @@
 import type { Linter } from "eslint";
 
 const ESLINT_FIXTURES_FLAT_CONFIG: Linter.Config = {
-  name: "services",
+  name: "fixtures",
   files: ["tests/acceptance/support/fixtures/**/*.fixture-set.ts"],
   rules: {
     "@stylistic/max-len": "off",

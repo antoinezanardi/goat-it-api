@@ -3,11 +3,9 @@ import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-type FixtureName<TDomain extends FixtureDomain> = keyof FixtureRegistry[TDomain];
-
-type FixtureReference<TDomain extends FixtureDomain> = readonly [
-  domain: TDomain,
-  name: FixtureName<TDomain>,
+type FixtureReference<Domain extends FixtureDomain> = readonly [
+  domain: Domain,
+  name: FixtureKey<Domain>,
 ];
 
 type FixtureDomain = keyof FixtureRegistry;
@@ -49,6 +47,12 @@ type FixtureInserterRegistry = {
 };
 
 export type {
+  FixtureDomain,
+  FixtureDefinition,
+  FixtureKey,
+  DomainFixtureData,
+  AnyFixtureReference,
+  FixtureReference,
   FixtureRegistry,
   FixtureInserterRegistry,
 };

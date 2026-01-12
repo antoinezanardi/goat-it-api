@@ -6,7 +6,7 @@ import { QUESTION_STATUSES } from "@question/domain/value-objects/question-statu
 import type { QuestionMongooseDocumentStub, QuestionThemeAssignmentMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
 
 import { createFakeQuestionAuthorAggregate, createFakeQuestionContentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
-import { createFakeQuestionAuthor, createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 
 function createFakeQuestionThemeAssignmentDocument(questionThemeAssignmentDocument: Partial<QuestionThemeAssignmentMongooseDocumentStub> = {}):

@@ -11,11 +11,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 import type { QuestionAggregate, QuestionThemeAssignmentAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 function createFakeQuestionAuthorAggregate(questionAuthorAggregate: Partial<QuestionAggregate["author"]> = {}): QuestionAggregate["author"] {
-  const fakeQuestionAuthor = createFakeQuestionAuthor({
-    name: questionAuthorAggregate.name,
-    role: questionAuthorAggregate.role,
-    gameId: questionAuthorAggregate.gameId?.toString(),
-  });
+  const fakeQuestionAuthor = createFakeQuestionAuthor();
 
   return {
     ...fakeQuestionAuthor,

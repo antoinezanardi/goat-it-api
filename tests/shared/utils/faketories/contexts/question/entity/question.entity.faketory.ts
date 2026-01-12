@@ -5,6 +5,7 @@ import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/
 import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/question-rejection/question-rejection.constants";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
@@ -42,7 +43,7 @@ function createFakeQuestionAuthor(questionAuthor: Partial<QuestionAuthor> = {}):
   if (role === "game") {
     return {
       role,
-      gameId: providedGameId ?? faker.string.uuid(),
+      gameId: providedGameId ?? createFakeObjectId().toString(),
       name: providedName ?? fakeName,
     };
   }
