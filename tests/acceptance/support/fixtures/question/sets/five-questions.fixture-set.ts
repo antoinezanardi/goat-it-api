@@ -4,14 +4,14 @@ import { createFakeQuestionDocument, createFakeQuestionThemeAssignmentDocument }
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
+import { FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 
 const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("a1b2c3d4e5f6012345678901"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[0]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY._id,
         isHint: false,
         isPrimary: true,
       }),
@@ -63,7 +63,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     _id: createFakeObjectId("b2c3d4e5f6a7012345678902"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[1]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY._id,
         isHint: false,
         isPrimary: true,
       }),
@@ -115,7 +115,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     _id: createFakeObjectId("c3d4e5f6a7b8012345678903"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[2]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY._id,
         isHint: true,
         isPrimary: false,
       }),
@@ -168,12 +168,12 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     _id: createFakeObjectId("d4e5f6a7b8c9012345678904"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[3]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id,
         isHint: false,
         isPrimary: true,
       }),
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[4]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id,
         isHint: true,
         isPrimary: false,
       }),
@@ -228,7 +228,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     _id: createFakeObjectId("efd39a4ac3bdfd03d2f8cdf1"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
-        themeId: FIVE_QUESTION_THEMES_FIXTURE_SET[4]._id,
+        themeId: FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id,
         isHint: false,
         isPrimary: true,
       }),
