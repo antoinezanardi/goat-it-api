@@ -4,6 +4,11 @@ import { FIVE_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/questio
 
 import type { FixtureInserterRegistry, FixtureRegistry } from "@acceptance-support/fixtures/types/fixture.types";
 
+/**
+ * Constant registry mapping fixture domains and their sets to data and dependencies.
+ * When adding a new fixture set, ensure you add its definition in the FixtureRegistry type.
+ * This registry is used by fixture loading helpers to resolve and insert fixture data.
+ */
 const FIXTURE_REGISTRY: FixtureRegistry = {
   "question": {
     "five-questions": {

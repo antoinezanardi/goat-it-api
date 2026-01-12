@@ -19,6 +19,10 @@ type FixtureDefinition<TData> = {
   dependencies?: readonly AnyFixtureReference[];
 };
 
+/**
+ * Central registry type for all fixture domains and their fixture sets.
+ * When adding a new fixture set, ensure you add its definition here.
+ */
 type FixtureRegistry = {
   "question": {
     "five-questions": FixtureDefinition<QuestionMongooseDocumentStub>;

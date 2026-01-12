@@ -17,6 +17,8 @@ async function loadFixtureDependencies(
 
 /**
  * Loads a fixture from the FIXTURE_REGISTRY into the database via the appropriate inserter.
+ * Please ensure that you call this function only once per scenario.
+ * Only used in acceptance tests.
  * @example
  * await loadFixture(world, "question-theme", "five-question-themes");
  * @param world - The GoatItWorld instance from the current acceptance test context.
