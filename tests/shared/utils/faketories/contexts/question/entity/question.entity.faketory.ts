@@ -42,7 +42,7 @@ function createFakeQuestionAuthor(questionAuthor: Partial<QuestionAuthor> = {}):
   if (role === "game") {
     return {
       role,
-      gameId: providedGameId ?? faker.string.uuid(),
+      gameId: providedGameId ?? faker.database.mongodbObjectId(),
       name: providedName ?? fakeName,
     };
   }

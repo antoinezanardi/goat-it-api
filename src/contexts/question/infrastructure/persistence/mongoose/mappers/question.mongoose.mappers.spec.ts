@@ -2,7 +2,8 @@ import { QuestionPersistenceMappingError } from "@question/infrastructure/persis
 import { createQuestionAuthorFromAggregate, createQuestionFromAggregate, createQuestionThemeAssignmentFromQuestionThemeAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 
-import { createFakeQuestionAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
+import { createFakeQuestionAggregate, createFakeQuestionAuthorAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestion, createFakeQuestionAuthor, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 import type { Question } from "@question/domain/entities/question.types";
@@ -13,7 +14,7 @@ describe("Question Mongoose Mappers", () => {
   describe(createQuestionAuthorFromAggregate, () => {
     it("should correctly map a question author when role is 'ai'.", () => {
       const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthor({
+        author: createFakeQuestionAuthorAggregate({
           role: "ai",
           name: "AI Question Generator",
         }),
@@ -29,16 +30,17 @@ describe("Question Mongoose Mappers", () => {
     });
 
     it("should correctly map a question author when role is 'game' and gameId is provided.", () => {
+      const gameId = createFakeObjectId();
       const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthor({
+        author: createFakeQuestionAuthorAggregate({
           role: "game",
-          gameId: "game-123",
+          gameId,
           name: "Trivia Master",
         }),
       });
       const expectedQuestionAuthor = createFakeQuestionAuthor({
         role: "game",
-        gameId: "game-123",
+        gameId: gameId.toString(),
         name: "Trivia Master",
       });
       const result = createQuestionAuthorFromAggregate(questionAggregate);
@@ -48,7 +50,7 @@ describe("Question Mongoose Mappers", () => {
 
     it("should throw an error when role is 'game' and gameId is missing.", () => {
       const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthor({
+        author: createFakeQuestionAuthorAggregate({
           role: "game",
           name: "Trivia Master",
         }),

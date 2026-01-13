@@ -10,6 +10,16 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 
 import type { QuestionAggregate, QuestionThemeAssignmentAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
+function createFakeQuestionAuthorAggregate(questionAuthorAggregate: Partial<QuestionAggregate["author"]> = {}): QuestionAggregate["author"] {
+  const fakeQuestionAuthor = createFakeQuestionAuthor();
+
+  return {
+    ...fakeQuestionAuthor,
+    gameId: "gameId" in fakeQuestionAuthor && fakeQuestionAuthor.gameId ? createFakeObjectId(fakeQuestionAuthor.gameId) : undefined,
+    ...questionAuthorAggregate,
+  };
+}
+
 function createFakeQuestionContentAggregate(questionContentAggregate: Partial<QuestionAggregate["content"]> = {}): QuestionAggregate["content"] {
   return {
     statement: createFakeLocalizedText(),
@@ -35,7 +45,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
     content: createFakeQuestionContentAggregate(),
     themes: [createFakeQuestionThemeAssignmentAggregate()],
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
-    author: createFakeQuestionAuthor(),
+    author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
@@ -46,6 +56,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
 }
 
 export {
+  createFakeQuestionAuthorAggregate,
   createFakeQuestionContentAggregate,
   createFakeQuestionThemeAssignmentAggregate,
   createFakeQuestionAggregate,
