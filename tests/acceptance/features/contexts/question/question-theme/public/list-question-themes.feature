@@ -1,4 +1,4 @@
-@question @question-theme @list-question-themes
+@question-theme @list-question-themes @public
 
 Feature: List Question Themes
   In order to display question themes to end users

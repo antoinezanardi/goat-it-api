@@ -1,4 +1,4 @@
-@question @question-theme @modify-question-theme @admin
+@question-theme @modify-question-theme @admin
 
 Feature: Modify Question Theme As Admin
   In order to modify an existing question theme

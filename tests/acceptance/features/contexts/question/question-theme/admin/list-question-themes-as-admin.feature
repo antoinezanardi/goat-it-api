@@ -1,4 +1,4 @@
-@question @question-theme @list-question-themes @admin
+@question-theme @list-question-themes @admin
 
 Feature: List Question Themes as Admin
   In order to display question themes to back office users

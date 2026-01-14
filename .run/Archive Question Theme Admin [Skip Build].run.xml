@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Archive Question Theme Admin [Skip Build]" type="cucumber.js" factoryName="Cucumber.js" folderName="Question Themes">
+    <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
+    <option name="myNameFilter" value="" />
+    <option name="cucumberJsArguments" value="--config configs/cucumber/cucumber.json --tags @archive-question-theme --tags @admin" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="SKIP_BUILD" value="true" />
+      <env name="NODE_ENV" value="test" />
+      <env name="TSX_TSCONFIG_PATH" value="configs/typescript/tsconfig.acceptance.json" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

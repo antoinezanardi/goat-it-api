@@ -58,7 +58,7 @@ function createQuestionDtoFromEntity(question: Question, localizationOptions: Lo
     author: createQuestionAuthorDtoFromEntity(question.author),
     status: question.status,
     rejection: question.rejection ? createQuestionRejectionDtoFromEntity(question.rejection) : undefined,
-    sourceUrls: question.sourceUrls,
+    sourceUrls: [...question.sourceUrls],
     createdAt: question.createdAt.toISOString(),
     updatedAt: question.updatedAt.toISOString(),
   };

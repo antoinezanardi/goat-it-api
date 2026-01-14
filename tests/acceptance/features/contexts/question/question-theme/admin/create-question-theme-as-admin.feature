@@ -1,4 +1,4 @@
-@question @question-theme @create-question-theme @admin
+@question-theme @create-question-theme @admin
 
 Feature: Create Question Theme As Admin
   In order to create question themes to categorize questions
