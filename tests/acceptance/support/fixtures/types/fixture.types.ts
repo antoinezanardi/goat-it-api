@@ -26,6 +26,7 @@ type FixtureDefinition<TData> = {
 type FixtureRegistry = {
   "question": {
     "five-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
+    "two-english-only-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
   };
   "question-theme": {
     "five-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;
