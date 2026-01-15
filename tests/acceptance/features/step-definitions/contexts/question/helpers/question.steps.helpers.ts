@@ -3,7 +3,7 @@ import { expect } from "expect";
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
 
 function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T[], id: string): T {
-  const question = questions.find(theme => theme.id === id);
+  const question = questions.find(questionItem => questionItem.id === id);
   if (!question) {
     throw new Error(`Question with id "${id}" not found`);
   }

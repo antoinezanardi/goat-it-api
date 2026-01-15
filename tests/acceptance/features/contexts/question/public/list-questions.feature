@@ -25,6 +25,13 @@ Feature: List Questions
       | trivia                                                               |
       | 'Psycho' is famous for its shower scene, scored by Bernard Herrmann. |
       | The film is based on the novel 'Psycho' by Robert Bloch.             |
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following themes:
+      | slug   | label  | description                    | isPrimary | isHint |
+      | cinema | Cinema | Theme about cinema and movies. | true      | false  |
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following author:
+      | role  | name            | gameId |
+      | admin | Antoine ZANARDI |        |
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" but without rejection
 
     And the response should contain a question among them with id "b2c3d4e5f6a7012345678902" and the following content:
       | statement                                              | answer     | context                                                                                             |
@@ -32,11 +39,25 @@ Feature: List Questions
     And the response should contain a question among them with id "b2c3d4e5f6a7012345678902" and the following trivia:
       | trivia                                                                          |
       | The album stayed on the Billboard charts for a record-breaking number of weeks. |
+    And the response should contain a question among them with id "b2c3d4e5f6a7012345678902" and the following themes:
+      | slug  | label | description                                  | isPrimary | isHint |
+      | music | Music | Theme about music, artists and music genres. | true      | false  |
+    And the response should contain a question among them with id "b2c3d4e5f6a7012345678902" and the following author:
+      | role | name     | gameId |
+      | ai   | Music AI |        |
+    And the response should contain a question among them with id "b2c3d4e5f6a7012345678902" but without rejection
 
     And the response should contain a question among them with id "c3d4e5f6a7b8012345678903" and the following content:
       | statement                                     | answer | context |
       | Which country won the FIFA World Cup in 2018? | France |         |
     And the response should contain a question among them with id "c3d4e5f6a7b8012345678903" but without trivia
+    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903" and the following themes:
+      | slug   | label  | description                                    | isPrimary | isHint |
+      | sports | Sports | Theme about sports, competitions and athletes. | false     | true   |
+    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903" and the following author:
+      | role | name | gameId                   |
+      | game |      | 32dafb5cfb677b53d1f7b60d |
+    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903" but without rejection
 
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following content:
       | statement                                         | answer            | context                                                                                 |
@@ -44,6 +65,16 @@ Feature: List Questions
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following trivia:
       | trivia                                                  |
       | Washington is often called the 'Father of His Country'. |
+    And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following themes:
+      | slug    | label   | description                                           | isPrimary | isHint |
+      | science | Science | Theme covering sciences, discoveries and innovations. | false     | true   |
+      | history | History | Theme about historical events, figures and periods.   | true      | false  |
+    And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following author:
+      | role | name       | gameId |
+      | ai   | History AI |        |
+    And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following rejection:
+      | type                  | comment                                                          |
+      | incorrect-information | Second theme assignment is not relevant to the question content. |
 
     And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" and the following content:
       | statement                               | answer | context                                                                                                                                                                                                      |
@@ -51,8 +82,16 @@ Feature: List Questions
     And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" and the following trivia:
       | trivia                                                                                                                                |
       | Bees are used by some wildlife rangers to protect elephants from poachers, as elephants naturally avoid areas where bees are present. |
+    And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" and the following themes:
+      | slug    | label   | description                                           | isPrimary | isHint |
+      | science | Science | Theme covering sciences, discoveries and innovations. | true      | false  |
+    And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" and the following author:
+      | role | name                  | gameId |
+      | ai   | AI Question Generator |        |
 
-  Scenario: Listing all question when none exist
+    And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" but without rejection
+
+  Scenario: Listing all questions when none exist
     When the client retrieves all questions
     Then the request should have succeeded with status code 200
     And the response should contain 0 questions

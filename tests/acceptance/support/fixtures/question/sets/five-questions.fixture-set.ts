@@ -161,7 +161,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     cognitiveDifficulty: "easy",
     author: createFakeQuestionAuthorAggregate({
       role: "game",
-      name: "Sports Desk",
+      name: undefined,
       gameId: createFakeObjectId("32dafb5cfb677b53d1f7b60d"),
     }),
     rejection: undefined,

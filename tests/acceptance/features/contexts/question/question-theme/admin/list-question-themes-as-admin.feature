@@ -15,8 +15,8 @@ Feature: List Question Themes as Admin
       | cinema  | active   |
       | music   | active   |
       | sports  | archived |
-      | history | active   |
       | science | active   |
+      | history | active   |
     And the response should contain an admin question theme among them with slug "cinema" and the following localized labels:
       | locale | label  |
       | en     | Cinema |

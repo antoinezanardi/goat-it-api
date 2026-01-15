@@ -92,36 +92,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY = createFakeQuestionThemeDocumen
   status: "archived",
 });
 
-const FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY = createFakeQuestionThemeDocument({
-  _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
-  slug: "history",
-  label: createFakeLocalizedText({
-    fr: "Histoire",
-    en: "History",
-    it: "Storia",
-    pt: "História",
-    es: "Historia",
-    de: "Geschichte",
-  }),
-  aliases: createFakeLocalizedTexts({
-    fr: ["Passé", "Chronologie"],
-    en: ["Past", "Chronology"],
-    it: ["Passato", "Cronologia"],
-    pt: ["Passado", "Cronologia"],
-    es: ["Pasado", "Cronología"],
-    de: ["Vergangenheit", "Chronologie"],
-  }),
-  description: createFakeLocalizedText({
-    fr: "Thème sur les événements historiques, personnages et périodes.",
-    en: "Theme about historical events, figures and periods.",
-    it: "Tema sugli eventi storici, personaggi e periodi.",
-    pt: "Tema sobre eventos históricos, personagens e períodos.",
-    es: "Tema sobre eventos históricos, figuras y períodos.",
-    de: "Thema über historische Ereignisse, Persönlichkeiten und Epochen.",
-  }),
-  status: "active",
-});
-
 const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
   slug: "science",
@@ -152,19 +122,49 @@ const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocume
   status: "active",
 });
 
+const FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
+  slug: "history",
+  label: createFakeLocalizedText({
+    fr: "Histoire",
+    en: "History",
+    it: "Storia",
+    pt: "História",
+    es: "Historia",
+    de: "Geschichte",
+  }),
+  aliases: createFakeLocalizedTexts({
+    fr: ["Passé", "Chronologie"],
+    en: ["Past", "Chronology"],
+    it: ["Passato", "Cronologia"],
+    pt: ["Passado", "Cronologia"],
+    es: ["Pasado", "Cronología"],
+    de: ["Vergangenheit", "Chronologie"],
+  }),
+  description: createFakeLocalizedText({
+    fr: "Thème sur les événements historiques, personnages et périodes.",
+    en: "Theme about historical events, figures and periods.",
+    it: "Tema sugli eventi storici, personaggi e periodi.",
+    pt: "Tema sobre eventos históricos, personagens e períodos.",
+    es: "Tema sobre eventos históricos, figuras y períodos.",
+    de: "Thema über historische Ereignisse, Persönlichkeiten und Epochen.",
+  }),
+  status: "active",
+});
+
 const FIVE_QUESTION_THEMES_FIXTURE_SET = [
   FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY,
-  FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY,
+  FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY,
 ] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
 
 export {
   FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY,
-  FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY,
+  FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY,
   FIVE_QUESTION_THEMES_FIXTURE_SET,
 };

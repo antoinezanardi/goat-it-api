@@ -16,7 +16,6 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
     },
   },
   { $unwind: "$themes.theme" },
-  { $sort: { _id: 1 } },
   {
     $group: {
       _id: "$_id",
