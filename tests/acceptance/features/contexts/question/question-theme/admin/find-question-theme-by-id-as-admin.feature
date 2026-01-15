@@ -1,4 +1,4 @@
-@question @question-theme @find-question-theme-by-id @admin
+@question-theme @find-question-theme-by-id @admin
 
 Feature: Find Question Theme by ID as Admin
   In order to display question theme to back office users

@@ -92,7 +92,7 @@ describe("Question DTO Zod Validators", () => {
     }>([
       {
         test: "should return true when array of valid URLs is provided",
-        value: new Set(["https://example.com/source1", "https://example.com/source2"]),
+        value: ["https://example.com/source1", "https://example.com/source2"],
         expected: true,
       },
       {

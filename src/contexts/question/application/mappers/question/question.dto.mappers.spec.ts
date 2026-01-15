@@ -121,7 +121,7 @@ describe("Question DTO Mappers", () => {
         author: createQuestionAuthorDtoFromEntity(questionEntity.author),
         status: questionEntity.status,
         rejection: createQuestionRejectionDtoFromEntity(questionRejection),
-        sourceUrls: questionEntity.sourceUrls,
+        sourceUrls: [...questionEntity.sourceUrls],
         createdAt: questionEntity.createdAt.toISOString(),
         updatedAt: questionEntity.updatedAt.toISOString(),
       });
@@ -142,7 +142,7 @@ describe("Question DTO Mappers", () => {
         author: createQuestionAuthorDtoFromEntity(questionEntity.author),
         status: questionEntity.status,
         rejection: undefined,
-        sourceUrls: questionEntity.sourceUrls,
+        sourceUrls: [...questionEntity.sourceUrls],
         createdAt: questionEntity.createdAt.toISOString(),
         updatedAt: questionEntity.updatedAt.toISOString(),
       });

@@ -32,6 +32,16 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
   {
     $replaceWith: { $mergeObjects: ["$_root", { themes: "$themes" }] },
   },
+  {
+    $set: {
+      themes: {
+        $sortArray: {
+          input: "$themes",
+          sortBy: { "theme._id": 1 },
+        },
+      },
+    },
+  },
 ] as const satisfies QuestionAggregatePipeline;
 
 export { QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE };

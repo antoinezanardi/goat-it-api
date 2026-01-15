@@ -2,6 +2,9 @@ import { QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE } from "@questio
 
 import type { QuestionAggregatePipeline } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
-const QUESTION_MONGOOSE_REPOSITORY_PIPELINE = [...QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE] as const satisfies QuestionAggregatePipeline;
+const QUESTION_MONGOOSE_REPOSITORY_PIPELINE = [
+  ...QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE,
+  { $sort: { _id: 1 } },
+] as const satisfies QuestionAggregatePipeline;
 
 export { QUESTION_MONGOOSE_REPOSITORY_PIPELINE };
