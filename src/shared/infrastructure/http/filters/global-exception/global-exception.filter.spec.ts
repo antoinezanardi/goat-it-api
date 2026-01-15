@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
+import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
@@ -207,6 +208,11 @@ describe("Global Exception Filter", () => {
         test: "should map domain error to http exception and send it when called with known QuestionThemeNotFoundError.",
         exception: new QuestionThemeNotFoundError("question-theme-id"),
         expectedSentException: new NotFoundException("Question theme with id question-theme-id not found"),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with QuestionNotFoundError.",
+        exception: new QuestionNotFoundError("question-id"),
+        expectedSentException: new NotFoundException("Question with id question-id not found"),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeAlreadyArchivedError.",

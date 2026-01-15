@@ -1,13 +1,15 @@
-import { Controller, Get, HttpStatus } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
+import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
 import { QuestionDto } from "@question/application/dto/question/question.dto";
@@ -17,7 +19,10 @@ import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.
 @GameAuth()
 @Controller(ControllerPrefixes.QUESTIONS)
 export class QuestionController {
-  public constructor(private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase) {}
+  public constructor(
+    private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase,
+    private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -33,5 +38,24 @@ export class QuestionController {
     const questions = await this.findAllQuestionsUseCase.list();
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
+  }
+
+  @Get("/:id")
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTIONS],
+    summary: "Get question by ID",
+    description: "Get a specific question by its unique identifier in the desired localization.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionDto,
+  })
+  public async findQuestionById(
+    @Param("id", MongoIdPipe) id: string,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionDto> {
+    const question = await this.findQuestionByIdUseCase.getById(id);
+
+    return createQuestionDtoFromEntity(question, localization);
   }
 }
