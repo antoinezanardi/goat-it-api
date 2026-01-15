@@ -12,7 +12,7 @@ function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T
 
 function expectQuestionDtoToMatch(questionDto: QuestionDto, expectedQuestionDto: Record<string, string>): void {
   const rawSourceUrls = expectedQuestionDto.sourceUrls.trim();
-  const expectedQuestionDtoSourceUrls = rawSourceUrls ? rawSourceUrls.split(",").map(alias => alias.trim()) : [];
+  const expectedQuestionDtoSourceUrls = rawSourceUrls ? rawSourceUrls.split(",").map(url => url.trim()) : [];
 
   expect(questionDto.id).toBe(expectedQuestionDto.id);
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
