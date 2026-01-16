@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { zCoerceOptionalBoolean, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
+import { zCoerceOptionalBoolean, zCoerceOptionalString, zCoerceOptionalStringArray } from "@acceptance-support/helpers/datatable.helpers";
 
 const QUESTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   id: z.string(),
   cognitiveDifficulty: z.string(),
   status: z.string(),
-  sourceUrls: z.string(),
+  sourceUrls: zCoerceOptionalStringArray(),
 });
 
 const QUESTION_CONTENT_DATATABLE_ROW_SCHEMA = z.strictObject({

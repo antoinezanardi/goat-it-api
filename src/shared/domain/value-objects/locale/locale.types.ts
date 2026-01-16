@@ -2,7 +2,11 @@ import type { LOCALES } from "@shared/domain/value-objects/locale/locale.constan
 
 import type { TupleToUnion } from "type-fest";
 
+import type { TupleToEnum } from "@shared/types/enum.types";
+
 type Locale = TupleToUnion<typeof LOCALES>;
+
+type LocaleEnum = TupleToEnum<typeof LOCALES>;
 
 type LocalizationOptions = {
   locale: Locale;
@@ -15,6 +19,7 @@ type LocalizedTexts = Record<Locale, string[]>;
 
 export type {
   Locale,
+  LocaleEnum,
   LocalizationOptions,
   LocalizedText,
   LocalizedTexts,
