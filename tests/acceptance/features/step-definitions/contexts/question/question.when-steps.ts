@@ -25,3 +25,23 @@ When(/^the client retrieves all questions with an invalid API key$/u, async func
   });
   await this.fetchAndStoreResponse("/questions", fetchOptions);
 });
+
+When(/^the client retrieves the question with id "(?<questionId>[^"]+)"(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, questionId: string, locale: Locale | null) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    locale: locale ?? undefined,
+  });
+  await this.fetchAndStoreResponse(`/questions/${questionId}`, fetchOptions);
+});
+
+When(/^the client retrieves the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, questionId: string) {
+  const fetchOptions = createFetchOptions();
+  await this.fetchAndStoreResponse(`/questions/${questionId}`, fetchOptions);
+});
+
+When(/^the client retrieves the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: "invalid-api-key",
+  });
+  await this.fetchAndStoreResponse(`/questions/${questionId}`, fetchOptions);
+});

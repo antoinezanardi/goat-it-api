@@ -6,7 +6,7 @@ import type { QuestionDto } from "@question/application/dto/question/question.dt
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
 
 import { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
-import { expectQuestionDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/helpers/question.steps.helpers";
+import { expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, expectQuestionThemeAssignmentsDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/helpers/question.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -37,9 +37,7 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   const dataTableRows = validateDataTableAndGetFirstRow(questionContentDataTable, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA);
   const question = findQuestionByIdOrThrow(questions, id);
 
-  expect(question.content.statement).toBe(dataTableRows.statement);
-  expect(question.content.answer).toBe(dataTableRows.answer);
-  expect(question.content.context).toBe(dataTableRows.context);
+  expectQuestionContentDtoToMatch(question, dataTableRows);
 });
 
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following trivia:$/u, function(this: GoatItWorld, id: string, questionTriviaDataTable: DataTable): void {
@@ -63,17 +61,7 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   const dataTableRows = validateDataTableAndGetRows(questionThemeAssignmentsDataTable, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA);
   const question = findQuestionByIdOrThrow(questions, id);
 
-  expect(question.themes).toHaveLength(dataTableRows.length);
-
-  for (const [index, expectedTheme] of dataTableRows.entries()) {
-    const questionThemeAssignment = question.themes[index];
-
-    expect(questionThemeAssignment.isPrimary).toBe(expectedTheme.isPrimary);
-    expect(questionThemeAssignment.isHint).toBe(expectedTheme.isHint);
-    expect(questionThemeAssignment.theme.slug).toBe(expectedTheme.slug);
-    expect(questionThemeAssignment.theme.label).toBe(expectedTheme.label);
-    expect(questionThemeAssignment.theme.description).toBe(expectedTheme.description);
-  }
+  expectQuestionThemeAssignmentsDtoToMatch(question, dataTableRows);
 });
 
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following author:$/u, function(this: GoatItWorld, id: string, questionAuthorDataTable: DataTable): void {
@@ -81,9 +69,7 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   const dataTableRows = validateDataTableAndGetFirstRow(questionAuthorDataTable, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA);
   const question = findQuestionByIdOrThrow(questions, id);
 
-  expect(question.author.role).toBe(dataTableRows.role);
-  expect(question.author.name).toBe(dataTableRows.name);
-  expect(question.author.gameId).toBe(dataTableRows.gameId);
+  expectQuestionAuthorDtoToMatch(question, dataTableRows);
 });
 
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following rejection:$/u, function(this: GoatItWorld, id: string, questionRejectionDataTable: DataTable): void {
@@ -91,13 +77,67 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   const dataTableRows = validateDataTableAndGetFirstRow(questionRejectionDataTable, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA);
   const question = findQuestionByIdOrThrow(questions, id);
 
-  expect(question.rejection?.type).toBe(dataTableRows.type);
-  expect(question.rejection?.comment).toBe(dataTableRows.comment);
+  expectQuestionRejectionDtoToMatch(question, dataTableRows);
 });
 
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" but without rejection$/u, function(this: GoatItWorld, id: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
   const question = findQuestionByIdOrThrow(questions, id);
+
+  expect(question.rejection).toBeUndefined();
+});
+
+Then(/^the response should contain the following question:$/u, function(this: GoatItWorld, questionDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const expectedQuestion = validateDataTableAndGetFirstRow(questionDataTable, QUESTION_DATATABLE_ROW_SCHEMA);
+
+  expectQuestionDtoToMatch(question, expectedQuestion);
+});
+
+Then(/^the response should contain the following content for the question:$/u, function(this: GoatItWorld, questionContentDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const dataTableRows = validateDataTableAndGetFirstRow(questionContentDataTable, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA);
+
+  expectQuestionContentDtoToMatch(question, dataTableRows);
+});
+
+Then(/^the response should contain the following trivia for the question:$/u, function(this: GoatItWorld, questionTriviaDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const dataTableRows = validateDataTableAndGetRows(questionTriviaDataTable, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA);
+  const expectedTrivia = dataTableRows.map(row => row.trivia);
+
+  expect(question.content.trivia).toStrictEqual(expectedTrivia);
+});
+
+Then(/^the response should contain no trivia for the question$/u, function(this: GoatItWorld): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+
+  expect(question.content.trivia).toBeUndefined();
+});
+
+Then(/^the response should contain the following themes for the question:$/u, function(this: GoatItWorld, questionThemeAssignmentsDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const dataTableRows = validateDataTableAndGetRows(questionThemeAssignmentsDataTable, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA);
+
+  expectQuestionThemeAssignmentsDtoToMatch(question, dataTableRows);
+});
+
+Then(/^the response should contain the following author for the question:$/u, function(this: GoatItWorld, questionAuthorDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const dataTableRows = validateDataTableAndGetFirstRow(questionAuthorDataTable, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA);
+
+  expectQuestionAuthorDtoToMatch(question, dataTableRows);
+});
+
+Then(/^the response should contain the following rejection for the question:$/u, function(this: GoatItWorld, questionRejectionDataTable: DataTable): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
+  const dataTableRows = validateDataTableAndGetFirstRow(questionRejectionDataTable, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA);
+
+  expectQuestionRejectionDtoToMatch(question, dataTableRows);
+});
+
+Then(/^the response should contain no rejection for the question$/u, function(this: GoatItWorld): void {
+  const question = this.expectLastResponseJson<QuestionDto>(QUESTION_DTO);
 
   expect(question.rejection).toBeUndefined();
 });
