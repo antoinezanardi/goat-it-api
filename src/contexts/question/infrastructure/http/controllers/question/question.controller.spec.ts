@@ -2,10 +2,12 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
+import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindAllQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-all-questions.use-case.mock";
 
@@ -24,6 +26,7 @@ describe("Question Controller", () => {
     };
     useCases: {
       findAllQuestions: ReturnType<typeof createMockedFindAllQuestionsUseCase>;
+      findQuestionById: ReturnType<typeof createMockedFindQuestionByIdUseCase>;
     };
     mappers: {
       createQuestionDtoFromEntity: Mock;
@@ -37,6 +40,7 @@ describe("Question Controller", () => {
       },
       useCases: {
         findAllQuestions: createMockedFindAllQuestionsUseCase(),
+        findQuestionById: createMockedFindQuestionByIdUseCase(),
       },
       mappers: {
         createQuestionDtoFromEntity: vi.mocked(createQuestionDtoFromEntity),
@@ -53,6 +57,10 @@ describe("Question Controller", () => {
         {
           provide: FindAllQuestionsUseCase,
           useValue: mocks.useCases.findAllQuestions,
+        },
+        {
+          provide: FindQuestionByIdUseCase,
+          useValue: mocks.useCases.findQuestionById,
         },
       ],
     }).compile();
@@ -93,6 +101,26 @@ describe("Question Controller", () => {
       await questionController.findAllQuestions(localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0], localization);
+    });
+  });
+
+  describe(QuestionController.prototype.findQuestionById, () => {
+    it("should get question by id when called.", async() => {
+      const localization = createFakeLocalizationOptions();
+      const questionId = "123";
+      await questionController.findQuestionById(questionId, localization);
+
+      expect(mocks.useCases.findQuestionById.getById).toHaveBeenCalledExactlyOnceWith(questionId);
+    });
+
+    it("should map the question to dto when called.", async() => {
+      const localization = createFakeLocalizationOptions();
+      const questionId = "123";
+      const question = createFakeQuestion();
+      mocks.useCases.findQuestionById.getById.mockResolvedValueOnce(question);
+      await questionController.findQuestionById(questionId, localization);
+
+      expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledExactlyOnceWith(question, localization);
     });
   });
 });
