@@ -2,6 +2,10 @@ import { expect } from "expect";
 
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
 
+import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
+
+import type { z } from "zod";
+
 function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T[], id: string): T {
   const question = questions.find(questionItem => questionItem.id === id);
   if (!question) {
@@ -10,23 +14,20 @@ function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T
   return question;
 }
 
-function expectQuestionDtoToMatch(questionDto: QuestionDto, expectedQuestionDto: Record<string, string>): void {
-  const rawSourceUrls = expectedQuestionDto.sourceUrls.trim();
-  const expectedQuestionDtoSourceUrls = rawSourceUrls ? rawSourceUrls.split(",").map(url => url.trim()) : [];
-
+function expectQuestionDtoToMatch(questionDto: QuestionDto, expectedQuestionDto: z.infer<typeof QUESTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.id).toBe(expectedQuestionDto.id);
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
-  expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDtoSourceUrls);
+  expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);
 }
 
-function expectQuestionContentDtoToMatch(questionDto: QuestionDto, expectedContent: Record<string, string | undefined>): void {
+function expectQuestionContentDtoToMatch(questionDto: QuestionDto, expectedContent: z.infer<typeof QUESTION_CONTENT_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.content.statement).toBe(expectedContent.statement);
   expect(questionDto.content.answer).toBe(expectedContent.answer);
   expect(questionDto.content.context).toBe(expectedContent.context);
 }
 
-function expectQuestionThemeAssignmentsDtoToMatch(questionDto: QuestionDto, expectedThemeAssignments: Record<string, string | boolean | undefined>[]): void {
+function expectQuestionThemeAssignmentsDtoToMatch(questionDto: QuestionDto, expectedThemeAssignments: z.infer<typeof QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA>[]): void {
   expect(questionDto.themes).toHaveLength(expectedThemeAssignments.length);
 
   for (const [index, expectedTheme] of expectedThemeAssignments.entries()) {
@@ -40,13 +41,13 @@ function expectQuestionThemeAssignmentsDtoToMatch(questionDto: QuestionDto, expe
   }
 }
 
-function expectQuestionAuthorDtoToMatch(questionDto: QuestionDto, expectedAuthor: Record<string, string | undefined>): void {
+function expectQuestionAuthorDtoToMatch(questionDto: QuestionDto, expectedAuthor: z.infer<typeof QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.author.role).toBe(expectedAuthor.role);
   expect(questionDto.author.name).toBe(expectedAuthor.name);
   expect(questionDto.author.gameId).toBe(expectedAuthor.gameId);
 }
 
-function expectQuestionRejectionDtoToMatch(questionDto: QuestionDto, expectedRejection: Record<string, string | undefined>): void {
+function expectQuestionRejectionDtoToMatch(questionDto: QuestionDto, expectedRejection: z.infer<typeof QUESTION_REJECTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.rejection?.type).toBe(expectedRejection.type);
   expect(questionDto.rejection?.comment).toBe(expectedRejection.comment);
 }
