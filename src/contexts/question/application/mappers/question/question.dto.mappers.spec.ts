@@ -1,60 +1,20 @@
+import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto";
 import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto";
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
-import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto";
-import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
-import { createQuestionAuthorDtoFromEntity, createQuestionContentDtoFromEntity, createQuestionDtoFromEntity, createQuestionRejectionDtoFromEntity, createQuestionThemeAssignmentDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
-import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
+import { createAdminQuestionDtoFromEntity, createAdminQuestionThemeAssignmentDtoFromEntity, createQuestionContentDtoFromEntity, createQuestionDtoFromEntity, createQuestionThemeAssignmentDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 
-import { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
-import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
-import { createFakeLocalizationOptions, createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
+import { createFakeAdminQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.faketory";
 import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
-import { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
-import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
-import { createFakeQuestion, createFakeQuestionAuthor, createFakeQuestionContent, createFakeQuestionRejection, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
+import { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
+import { createFakeQuestion, createFakeQuestionContent, createFakeQuestionRejection, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeLocalizationOptions, createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 describe("Question DTO Mappers", () => {
-  describe(createQuestionRejectionDtoFromEntity, () => {
-    it("should map a Question Rejection entity to a Question Rejection DTO when called.", () => {
-      const questionRejection = createFakeQuestionRejection();
-      const expectedQuestionRejectionDto = createFakeQuestionRejectionDto({
-        type: questionRejection.type,
-        comment: questionRejection.comment,
-      });
-
-      expect(createQuestionRejectionDtoFromEntity(questionRejection)).toStrictEqual<QuestionRejectionDto>(expectedQuestionRejectionDto);
-    });
-  });
-
-  describe(createQuestionAuthorDtoFromEntity, () => {
-    it("should map a Question Author entity to a Question Author DTO when called.", () => {
-      const questionAuthor = createFakeQuestionAuthor({ role: "ai" });
-      const expectedQuestionAuthorDto = createFakeQuestionAuthorDto({
-        name: questionAuthor.name,
-        role: questionAuthor.role,
-        gameId: undefined,
-      });
-
-      expect(createQuestionAuthorDtoFromEntity(questionAuthor)).toStrictEqual<QuestionAuthorDto>(expectedQuestionAuthorDto);
-    });
-
-    it("should map a Question Author entity with role 'game' to a Question Author DTO when called.", () => {
-      const gameId = "game-123";
-      const questionAuthor = createFakeQuestionAuthor({
-        role: "game",
-        gameId,
-      });
-      const expectedQuestionAuthorDto = createFakeQuestionAuthorDto({
-        name: questionAuthor.name,
-        role: questionAuthor.role,
-        gameId,
-      });
-
-      expect(createQuestionAuthorDtoFromEntity(questionAuthor)).toStrictEqual<QuestionAuthorDto>(expectedQuestionAuthorDto);
-    });
-  });
-
   describe(createQuestionContentDtoFromEntity, () => {
     it("should map a Question Content entity without context nor trivia to a Question Content DTO when called.", () => {
       const localizationOptions = createFakeLocalizationOptions({ locale: "en" });
@@ -118,9 +78,9 @@ describe("Question DTO Mappers", () => {
         themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
         content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
         cognitiveDifficulty: questionEntity.cognitiveDifficulty,
-        author: createQuestionAuthorDtoFromEntity(questionEntity.author),
+        author: questionEntity.author,
         status: questionEntity.status,
-        rejection: createQuestionRejectionDtoFromEntity(questionRejection),
+        rejection: questionEntity.rejection,
         sourceUrls: [...questionEntity.sourceUrls],
         createdAt: questionEntity.createdAt.toISOString(),
         updatedAt: questionEntity.updatedAt.toISOString(),
@@ -139,7 +99,7 @@ describe("Question DTO Mappers", () => {
         themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
         content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
         cognitiveDifficulty: questionEntity.cognitiveDifficulty,
-        author: createQuestionAuthorDtoFromEntity(questionEntity.author),
+        author: questionEntity.author,
         status: questionEntity.status,
         rejection: undefined,
         sourceUrls: [...questionEntity.sourceUrls],
@@ -148,6 +108,43 @@ describe("Question DTO Mappers", () => {
       });
 
       expect(createQuestionDtoFromEntity(questionEntity, localizationOptions)).toStrictEqual<QuestionDto>(expectedQuestionDto);
+    });
+  });
+
+  describe(createAdminQuestionThemeAssignmentDtoFromEntity, () => {
+    it("should map a Question Theme Assignment entity to an Admin Question Theme Assignment DTO when called.", () => {
+      const questionThemeAssignment = createFakeQuestionThemeAssignment();
+      const expectedAdminQuestionThemeAssignmentDto = createFakeAdminQuestionThemeAssignmentDto({
+        theme: createAdminQuestionThemeDtoFromEntity(questionThemeAssignment.theme),
+        isPrimary: questionThemeAssignment.isPrimary,
+        isHint: questionThemeAssignment.isHint,
+      });
+      const result = createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment);
+
+      expect(result).toStrictEqual<AdminQuestionThemeAssignmentDto>(expectedAdminQuestionThemeAssignmentDto);
+    });
+  });
+
+  describe(createAdminQuestionDtoFromEntity, () => {
+    it("should map a Question entity to an Admin Question DTO when called.", () => {
+      const questionRejection = createFakeQuestionRejection();
+      const questionEntity = createFakeQuestion({
+        rejection: questionRejection,
+      });
+      const expectedAdminQuestionDto = createFakeAdminQuestionDto({
+        id: questionEntity.id,
+        themes: questionEntity.themes.map(themeAssignment => createAdminQuestionThemeAssignmentDtoFromEntity(themeAssignment)),
+        content: questionEntity.content,
+        cognitiveDifficulty: questionEntity.cognitiveDifficulty,
+        author: questionEntity.author,
+        status: questionEntity.status,
+        rejection: questionEntity.rejection,
+        sourceUrls: [...questionEntity.sourceUrls],
+        createdAt: questionEntity.createdAt.toISOString(),
+        updatedAt: questionEntity.updatedAt.toISOString(),
+      });
+
+      expect(createAdminQuestionDtoFromEntity(questionEntity)).toStrictEqual<AdminQuestionDto>(expectedAdminQuestionDto);
     });
   });
 });
