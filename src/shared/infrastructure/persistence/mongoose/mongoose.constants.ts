@@ -7,4 +7,14 @@ const DEFAULT_MONGOOSE_SCHEMA_OPTIONS: Partial<SchemaOptions> = {
   id: true,
 } as const;
 
-export { DEFAULT_MONGOOSE_SCHEMA_OPTIONS };
+const DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS: Partial<SchemaOptions> = {
+  ...DEFAULT_MONGOOSE_SCHEMA_OPTIONS,
+  timestamps: false,
+  _id: false,
+  id: false,
+} as const;
+
+export {
+  DEFAULT_MONGOOSE_SCHEMA_OPTIONS,
+  DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS,
+};
