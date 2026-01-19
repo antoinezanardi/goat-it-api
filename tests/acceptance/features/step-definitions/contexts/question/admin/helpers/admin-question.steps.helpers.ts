@@ -2,10 +2,13 @@ import { expect } from "expect";
 
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 
-import type { ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
-import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
+import { expectLocalizedTextFieldToBe } from "@acceptance-features/step-definitions/shared/locale/helpers/locale.steps.helpers";
+import type { ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
+import type { QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 
 import type { z } from "zod";
+
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 function findQuestionByIdOrThrow<T extends Pick<AdminQuestionDto, "id">>(questions: T[], id: string): T {
   const question = questions.find(questionItem => questionItem.id === id);
@@ -15,17 +18,11 @@ function findQuestionByIdOrThrow<T extends Pick<AdminQuestionDto, "id">>(questio
   return question;
 }
 
-function expectQuestionDtoToMatch(questionDto: AdminQuestionDto, expectedQuestionDto: z.infer<typeof QUESTION_DATATABLE_ROW_SCHEMA>): void {
+function expectAdminQuestionDtoToMatch(questionDto: AdminQuestionDto, expectedQuestionDto: z.infer<typeof QUESTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.id).toBe(expectedQuestionDto.id);
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
   expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);
-}
-
-function expectQuestionContentDtoToMatch(questionDto: AdminQuestionDto, expectedContent: z.infer<typeof QUESTION_CONTENT_DATATABLE_ROW_SCHEMA>): void {
-  expect(questionDto.content.statement).toBe(expectedContent.statement);
-  expect(questionDto.content.answer).toBe(expectedContent.answer);
-  expect(questionDto.content.context).toBe(expectedContent.context);
 }
 
 function expectAdminQuestionThemeAssignmentsDtoToMatch(
@@ -43,22 +40,34 @@ function expectAdminQuestionThemeAssignmentsDtoToMatch(
   }
 }
 
-function expectQuestionAuthorDtoToMatch(questionDto: AdminQuestionDto, expectedAuthor: z.infer<typeof QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA>): void {
-  expect(questionDto.author.role).toBe(expectedAuthor.role);
-  expect(questionDto.author.name).toBe(expectedAuthor.name);
-  expect(questionDto.author.gameId).toBe(expectedAuthor.gameId);
+function expectAdminQuestionDtoToHaveTriviaForLocale(
+  questionDto: AdminQuestionDto,
+  locale: Locale,
+  localizedTriviaRows: z.infer<typeof QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA>[],
+): void {
+  const expectedTrivia = localizedTriviaRows.map(row => row.trivia);
+  const triviaForLocale = questionDto.content.trivia?.[locale];
+
+  expect(triviaForLocale).toStrictEqual(expectedTrivia);
 }
 
-function expectQuestionRejectionDtoToMatch(questionDto: AdminQuestionDto, expectedRejection: z.infer<typeof QUESTION_REJECTION_DATATABLE_ROW_SCHEMA>): void {
-  expect(questionDto.rejection?.type).toBe(expectedRejection.type);
-  expect(questionDto.rejection?.comment).toBe(expectedRejection.comment);
+function expectAdminQuestionDtoToHaveThemeWithLabel(
+  questionDto: AdminQuestionDto,
+  slug: string,
+  localizedLabelRows: z.infer<typeof ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA>[],
+): void {
+  const questionThemeAssignment = questionDto.themes.find(themeAssignment => themeAssignment.theme.slug === slug);
+  if (!questionThemeAssignment) {
+    throw new Error(`Question theme with slug "${slug}" not found in question with id "${questionDto.id}"`);
+  }
+
+  expectLocalizedTextFieldToBe(questionThemeAssignment.theme.label, localizedLabelRows, "label");
 }
 
 export {
   findQuestionByIdOrThrow,
-  expectQuestionDtoToMatch,
-  expectQuestionContentDtoToMatch,
+  expectAdminQuestionDtoToMatch,
   expectAdminQuestionThemeAssignmentsDtoToMatch,
-  expectQuestionAuthorDtoToMatch,
-  expectQuestionRejectionDtoToMatch,
+  expectAdminQuestionDtoToHaveTriviaForLocale,
+  expectAdminQuestionDtoToHaveThemeWithLabel,
 };
