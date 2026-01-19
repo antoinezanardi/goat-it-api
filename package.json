@@ -46,7 +46,7 @@
   "main": "dist/main.js",
   "readme": "README.md",
   "engines": {
-    "node": ">=25.3.0"
+    "node": ">=25.4.0"
   },
   "os": [
     "darwin",
