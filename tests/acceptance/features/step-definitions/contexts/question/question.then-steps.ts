@@ -10,8 +10,8 @@ import type { QuestionDto } from "@question/application/dto/question/question.dt
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
 
 import { expectLocalizedTextFieldToBe } from "@acceptance-features/step-definitions/shared/locale/helpers/locale.steps.helpers";
-import { ADMIN_QUESTION_CONTENT_ANSWER_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_CONTENT_CONTEXT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_CONTENT_STATEMENT_DATATABLE_ROW_SCHEMA, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
-import { expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, expectQuestionThemeAssignmentsDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/helpers/question.steps.helpers";
+import { ADMIN_QUESTION_CONTENT_ANSWER_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_CONTENT_CONTEXT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_CONTENT_STATEMENT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
+import { expectAdminQuestionThemeAssignmentsDtoToMatch, expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, expectQuestionThemeAssignmentsDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/helpers/question.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -138,6 +138,26 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   expectQuestionThemeAssignmentsDtoToMatch(question, dataTableRows);
 });
 
+Then(/^the response should contain an admin question among them with id "(?<id>[^"]+)" and the following themes:$/u, function(this: GoatItWorld, id: string, questionThemeAssignmentsDataTable: DataTable): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+  const dataTableRows = validateDataTableAndGetRows(questionThemeAssignmentsDataTable, ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA);
+  const question = findQuestionByIdOrThrow(questions, id);
+
+  expectAdminQuestionThemeAssignmentsDtoToMatch(question, dataTableRows);
+});
+
+Then(/^the response should contain an admin question among them with id "(?<id>[^"]+)" and the question theme with slug "(?<slug>[^"]+)" with the following label:$/u, function(this: GoatItWorld, id: string, slug: string, localizedLabelDataTable: DataTable): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+  const localizedLabelRows = validateDataTableAndGetRows(localizedLabelDataTable, ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA);
+  const question = findQuestionByIdOrThrow(questions, id);
+  const questionThemeAssignment = question.themes.find(themeAssignment => themeAssignment.theme.slug === slug);
+  if (!questionThemeAssignment) {
+    throw new Error(`Question theme with slug "${slug}" not found in question with id "${id}"`);
+  }
+
+  expectLocalizedTextFieldToBe(questionThemeAssignment.theme.label, localizedLabelRows, "label");
+});
+
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following author:$/u, function(this: GoatItWorld, id: string, questionAuthorDataTable: DataTable): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
   const dataTableRows = validateDataTableAndGetFirstRow(questionAuthorDataTable, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA);
@@ -177,7 +197,7 @@ Then(/^the response should contain a question among them with id "(?<id>[^"]+)" 
   expect(question.rejection).toBeUndefined();
 });
 
-Then(`the response should contain an admin question among them with id "(?<id>[^"]+)" but without rejection`, function(this: GoatItWorld, id: string): void {
+Then(/^the response should contain an admin question among them with id "(?<id>[^"]+)" but without rejection$/u, function(this: GoatItWorld, id: string): void {
   const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
   const question = findQuestionByIdOrThrow(questions, id);
 

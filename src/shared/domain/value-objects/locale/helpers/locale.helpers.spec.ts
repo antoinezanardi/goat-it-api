@@ -38,7 +38,7 @@ describe("Locale Helpers", () => {
         expected: true,
       },
       {
-        test: "should return false when the locale is 'jp",
+        test: "should return false when the locale is 'jp'",
         input: "jp",
         expected: false,
       },

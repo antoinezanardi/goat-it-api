@@ -26,9 +26,10 @@ When(/^the client retrieves all questions with an invalid API key$/u, async func
   await this.fetchAndStoreResponse("/questions", fetchOptions);
 });
 
-When(/^the admin retrieves all questions$/u, async function(this: GoatItWorld) {
+When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
+    locale: locale ?? undefined,
   });
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });

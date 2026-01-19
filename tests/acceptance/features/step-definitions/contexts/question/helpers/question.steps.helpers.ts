@@ -3,7 +3,7 @@ import { expect } from "expect";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
 
-import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
+import type { ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA, QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/datatables/question.datatables.schemas";
 
 import type { z } from "zod";
 
@@ -42,6 +42,21 @@ function expectQuestionThemeAssignmentsDtoToMatch(questionDto: QuestionDto, expe
   }
 }
 
+function expectAdminQuestionThemeAssignmentsDtoToMatch(
+  questionDto: AdminQuestionDto,
+  expectedThemeAssignments: z.infer<typeof ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA>[],
+): void {
+  expect(questionDto.themes).toHaveLength(expectedThemeAssignments.length);
+
+  for (const [index, expectedTheme] of expectedThemeAssignments.entries()) {
+    const questionThemeAssignment = questionDto.themes[index];
+
+    expect(questionThemeAssignment.isPrimary).toBe(expectedTheme.isPrimary);
+    expect(questionThemeAssignment.isHint).toBe(expectedTheme.isHint);
+    expect(questionThemeAssignment.theme.slug).toBe(expectedTheme.slug);
+  }
+}
+
 function expectQuestionAuthorDtoToMatch(questionDto: QuestionDto | AdminQuestionDto, expectedAuthor: z.infer<typeof QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.author.role).toBe(expectedAuthor.role);
   expect(questionDto.author.name).toBe(expectedAuthor.name);
@@ -58,6 +73,7 @@ export {
   expectQuestionDtoToMatch,
   expectQuestionContentDtoToMatch,
   expectQuestionThemeAssignmentsDtoToMatch,
+  expectAdminQuestionThemeAssignmentsDtoToMatch,
   expectQuestionAuthorDtoToMatch,
   expectQuestionRejectionDtoToMatch,
 };
