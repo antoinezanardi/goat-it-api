@@ -10,7 +10,7 @@ function expectLocalizedTextFieldToBe<K extends string>(
   field: K,
 ): void {
   if (!localizedTexts) {
-    throw new Error(`Localized texts is undefined when it was expected to be defined for field: ${field}`);
+    throw new Error(`Localized texts are undefined when they were expected to be defined for field: ${field}`);
   }
   for (const { locale, [field]: value } of expected) {
     expect(localizedTexts[locale]).toBe(value.trim() || undefined);
