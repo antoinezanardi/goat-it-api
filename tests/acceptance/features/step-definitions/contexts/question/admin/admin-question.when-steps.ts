@@ -26,7 +26,7 @@ When(/^the admin retrieves all questions with an invalid API key$/u, async funct
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
 
-When(/^the admin retrieves the question with id "(?<questionId>[^"]+)"/u, async function(this: GoatItWorld, questionId: string) {
+When(/^the admin retrieves the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, questionId: string) {
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
   });

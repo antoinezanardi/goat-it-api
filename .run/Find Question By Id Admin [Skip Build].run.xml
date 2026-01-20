@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Find Question By Id Admin [Skip Public]" type="cucumber.js" factoryName="Cucumber.js" folderName="Questions">
+  <configuration default="false" name="Find Question By Id Admin [Skip Build]" type="cucumber.js" factoryName="Cucumber.js" folderName="Questions">
     <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
     <option name="myNameFilter" value="" />
     <option name="cucumberJsArguments" value="--config configs/cucumber/cucumber.json --tags @find-question-by-id --tags @admin" />

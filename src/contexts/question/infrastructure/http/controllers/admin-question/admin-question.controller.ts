@@ -42,7 +42,10 @@ export class AdminQuestionController {
 
   @Get("/:id")
   @ApiOperation({
-    tags: [SwaggerTags.QUESTIONS],
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
     summary: "Get question by ID for backend administration",
     description: "Get a specific question by its unique identifier with detailed structure for backend administration.",
   })
