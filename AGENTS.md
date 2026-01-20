@@ -24,22 +24,22 @@
 12. [DTO and validation patterns](#dto-and-validation-patterns)
 13. [Repository pattern](#repository-pattern)
 14. [Error handling patterns](#error-handling-patterns)
-15. [API Design and REST conventions](#api-design-and-rest-conventions) ⭐ NEW
-16. [Authentication and Security Patterns](#authentication-and-security-patterns) ⭐ NEW
-17. [Dependency Injection and Provider Patterns](#dependency-injection-and-provider-patterns) ⭐ NEW
-18. [Import and Export Conventions](#import-and-export-conventions) ⭐ NEW
-19. [Performance and Scalability Considerations](#performance-and-scalability-considerations) ⭐ NEW
+15. [API Design and REST conventions](#api-design-and-rest-conventions)
+16. [Authentication and Security Patterns](#authentication-and-security-patterns)
+17. [Dependency Injection and Provider Patterns](#dependency-injection-and-provider-patterns)
+18. [Import and Export Conventions](#import-and-export-conventions)
+19. [Performance and Scalability Considerations](#performance-and-scalability-considerations)
 
 ### Testing and Quality
 20. [Testing conventions](#testing-conventions)
-21. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid) ⭐ NEW
+21. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid)
 22. [Mutation testing (Stryker)](#mutation-testing-stryker)
 23. [Acceptance tests](#acceptance-tests)
-24. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement) ⭐ NEW
+24. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement)
 
 ### Anti-Patterns and Best Practices
-25. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid) ⭐ NEW
-26. [Industry Best Practices (2024-2025) Compliance](#industry-best-practices-2024-2025-compliance) ⭐ NEW
+25. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid)
+26. [Industry Best Practices Compliance](#industry-best-practices-compliance)
 
 ### Operational Guides
 27. [Common scripts](#common-scripts)
@@ -1517,7 +1517,7 @@ Two guards implement API key validation:
 - `GameApiKeyGuard` — For game endpoints
 
 Both guards:
-1. Extract API key from `x-api-key` header
+1. Extract API key from `goat-it-api-key` header
 2. Validate using timing-safe comparison
 3. Throw `UnauthorizedException` on failure
 
@@ -1681,7 +1681,7 @@ export const QUESTION_MONGOOSE_REPOSITORY_PIPELINE = [
 ];
 ```
 
-Location: `src/contexts/question/infrastructure/persistence/mongoose/repository/pipeline/question.mongoose.repository.pipeline.ts`
+Location: `src/contexts/question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline.ts`
 
 ### Lazy DTO mapping
 
@@ -1827,7 +1827,6 @@ Excluded from coverage:
 - `*.schema.ts` — Mongoose schemas
 - `*.constants.ts` — Constant definitions
 - `*.types.ts` — Type definitions
-- `*.dto.ts` — Zod DTOs (validated at runtime)
 - `*.contracts.ts` — Contract type definitions
 - `*.commands.ts` — Command type definitions
 - `*.pipeline.ts` — MongoDB aggregation pipelines
@@ -2005,8 +2004,8 @@ This section validates the codebase against current industry standards.
 
 ### Prerequisites
 
-- **Node.js**: `>= 25.4.0` (see `package.json` `engines` field)
-- **pnpm**: Version specified in `package.json` `packageManager` field (currently `10.26.2`)
+- **Node.js**: Version specified in `package.json` `engines` field.
+- **pnpm**: Version specified in `package.json` `packageManager` field.
 - **Docker**: For running the acceptance test database
 
 ### Package manager and commands
