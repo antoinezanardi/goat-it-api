@@ -1,5 +1,113 @@
 # AGENTS.md
 
+## 🚀 Quick Start for Agents
+
+**Last Updated**: 2025-01-20  
+**Document Version**: 2.0 (Enhanced with industry best practices)
+
+### What's New in This Version
+
+This comprehensive update adds **9 new sections** documenting actual patterns found in the codebase:
+
+1. **API Design and REST conventions** — Controller patterns, HTTP methods, Swagger documentation
+2. **Authentication and Security Patterns** — HMAC-SHA256, timing-safe comparison, two-tier API keys
+3. **Dependency Injection Patterns** — Symbol tokens, use case injection, provider rules
+4. **Import/Export Conventions** — Enforced import order, named exports only, path alias usage
+5. **Performance Considerations** — Aggregation pipelines, lazy DTO mapping, async/await
+6. **Testing Anti-Patterns** — Identified issues and better approaches
+7. **Code Quality Enforcement** — Dual-linter strategy, tsgo type checking, 100% coverage
+8. **Common Pitfalls** — Domain violations, repository anti-patterns, DTO mistakes
+9. **Industry Best Practices Compliance** — 2024-2025 standards validation
+
+### Critical Rules Summary
+
+**✅ MUST DO**:
+- Use path aliases (never relative imports)
+- Symbol tokens for repository injection
+- Timing-safe comparison for API keys
+- Single assertion per test
+- 100% code coverage
+- Domain errors (not HTTP exceptions in domain)
+
+**❌ NEVER DO**:
+- Test private methods
+- Call repositories from controllers
+- Use `===` for API key comparison
+- Import infrastructure in domain
+- Use Zod `z.object()` (use `z.strictObject()`)
+- Skip `.describe()` on DTO properties
+
+### Architecture Quick Reference
+
+```
+Domain (ports) → Application (use cases) → Infrastructure (adapters)
+     ↓                    ↓                        ↓
+ Entities            DTOs/Mappers          Controllers/Repos
+ Errors              Commands             Guards/Pipes
+ Repositories(I)                          Repositories(Impl)
+```
+
+---
+
+## Table of Contents
+
+### Core Documentation
+1. [Purpose](#purpose)
+2. [Agent guidelines](#agent-guidelines)
+3. [Project summary](#project-summary)
+4. [High-level architecture](#high-level-architecture)
+5. [Key design decisions](#key-design-decisions)
+
+### Project Structure and Organization
+6. [Important files and locations](#important-files-and-locations)
+7. [Path aliases](#path-aliases)
+8. [Project Directory Structure](#project-directory-structure)
+9. [Naming conventions (filenames and types)](#naming-conventions-filenames-and-types)
+10. [Where to put a new bounded context / feature (concrete recipe)](#where-to-put-a-new-bounded-context--feature-concrete-recipe)
+11. [Config and tooling files](#config-and-tooling-files)
+
+### Development Patterns and Conventions
+12. [DTO and validation patterns](#dto-and-validation-patterns)
+13. [Repository pattern](#repository-pattern)
+14. [Error handling patterns](#error-handling-patterns)
+15. [API Design and REST conventions](#api-design-and-rest-conventions) ⭐ NEW
+16. [Authentication and Security Patterns](#authentication-and-security-patterns) ⭐ NEW
+17. [Dependency Injection and Provider Patterns](#dependency-injection-and-provider-patterns) ⭐ NEW
+18. [Import and Export Conventions](#import-and-export-conventions) ⭐ NEW
+19. [Performance and Scalability Considerations](#performance-and-scalability-considerations) ⭐ NEW
+
+### Testing and Quality
+20. [Testing conventions](#testing-conventions)
+21. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid) ⭐ NEW
+22. [Mutation testing (Stryker)](#mutation-testing-stryker)
+23. [Acceptance tests](#acceptance-tests)
+24. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement) ⭐ NEW
+
+### Anti-Patterns and Best Practices
+25. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid) ⭐ NEW
+26. [Industry Best Practices (2024-2025) Compliance](#industry-best-practices-2024-2025-compliance) ⭐ NEW
+
+### Operational Guides
+27. [Common scripts](#common-scripts)
+28. [Linting, commits and release automation](#linting-commits-and-release-automation)
+29. [CI/CD Workflows](#cicd-workflows)
+30. [Docker](#docker)
+31. [Minimal local setup for a developer/agent](#minimal-local-setup-for-a-developeragent)
+32. [Environment variables](#environment-variables)
+
+### Reference
+33. [General rules and small reminders](#general-rules-and-small-reminders)
+34. [Examples](#examples)
+35. [Security and sensitive data](#security-and-sensitive-data)
+36. [Conventions and coding style](#conventions-and-coding-style)
+37. [What an agent must do before committing any change](#what-an-agent-must-do-before-committing-any-change)
+38. [Examples of small tasks an agent may be asked to do](#examples-of-small-tasks-an-agent-may-be-asked-to-do)
+39. [Notes and warnings](#notes-and-warnings)
+40. [Contact and maintainers](#contact-and-maintainers)
+41. [Contributing](#contributing)
+
+---
+
 ## Purpose
 
 This document is written for automated agents (AIs) and humans who will programmatically interact with the repository. It explains the project's goals, architecture, conventions, important files, workflows (build/test/lint/release), and provides step-by-step guidance and safety rules for making changes, writing tests and preparing PRs.
