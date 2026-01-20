@@ -1,53 +1,7 @@
 # AGENTS.md
 
-## 🚀 Quick Start for Agents
-
 **Last Updated**: 2025-01-20  
 **Document Version**: 2.0 (Enhanced with industry best practices)
-
-### What's New in This Version
-
-This comprehensive update adds **9 new sections** documenting actual patterns found in the codebase:
-
-1. **API Design and REST conventions** — Controller patterns, HTTP methods, Swagger documentation
-2. **Authentication and Security Patterns** — HMAC-SHA256, timing-safe comparison, two-tier API keys
-3. **Dependency Injection Patterns** — Symbol tokens, use case injection, provider rules
-4. **Import/Export Conventions** — Enforced import order, named exports only, path alias usage
-5. **Performance Considerations** — Aggregation pipelines, lazy DTO mapping, async/await
-6. **Testing Anti-Patterns** — Identified issues and better approaches
-7. **Code Quality Enforcement** — Dual-linter strategy, tsgo type checking, 100% coverage
-8. **Common Pitfalls** — Domain violations, repository anti-patterns, DTO mistakes
-9. **Industry Best Practices Compliance** — 2024-2025 standards validation
-
-### Critical Rules Summary
-
-**✅ MUST DO**:
-- Use path aliases (never relative imports)
-- Symbol tokens for repository injection
-- Timing-safe comparison for API keys
-- Single assertion per test
-- 100% code coverage
-- Domain errors (not HTTP exceptions in domain)
-
-**❌ NEVER DO**:
-- Test private methods
-- Call repositories from controllers
-- Use `===` for API key comparison
-- Import infrastructure in domain
-- Use Zod `z.object()` (use `z.strictObject()`)
-- Skip `.describe()` on DTO properties
-
-### Architecture Quick Reference
-
-```
-Domain (ports) → Application (use cases) → Infrastructure (adapters)
-     ↓                    ↓                        ↓
- Entities            DTOs/Mappers          Controllers/Repos
- Errors              Commands             Guards/Pipes
- Repositories(I)                          Repositories(Impl)
-```
-
----
 
 ## Table of Contents
 
@@ -1764,7 +1718,6 @@ request.localization = { locale, languageCode, countryCode };
 
 ### What NOT to do (performance anti-patterns)
 
-❌ **Never** load all documents without pagination  
 ❌ **Never** perform N+1 queries (use aggregation or populate)  
 ❌ **Never** map to DTOs in repositories  
 ❌ **Never** perform synchronous operations in request handlers  
@@ -1773,32 +1726,6 @@ request.localization = { locale, languageCode, countryCode };
 ## Testing Anti-Patterns to Avoid
 
 Based on the codebase analysis, the following testing anti-patterns have been identified:
-
-### Testing private methods (discovered anti-pattern)
-
-**Current practice found in codebase**:
-```typescript
-// ❌ Avoid: Spying on private methods
-const createQuestionThemeUseCaseStub = createQuestionThemeUseCase as unknown as { 
-  throwIfQuestionThemeSlugAlreadyExists: () => void 
-};
-localMocks.throwIfQuestionThemeSlugAlreadyExists = vi.spyOn(
-  createQuestionThemeUseCaseStub, 
-  "throwIfQuestionThemeSlugAlreadyExists"
-).mockResolvedValue();
-```
-
-**Better approach**:
-Test the public interface only. Private methods are implementation details:
-```typescript
-// ✅ Better: Test public method behavior
-it("should throw error when question theme slug already exists.", async() => {
-  mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(existingTheme);
-  const command = createFakeQuestionThemeCreationCommand();
-  
-  await expect(useCase.create(command)).rejects.toThrowError(QuestionThemeSlugAlreadyExistsError);
-});
-```
 
 ### Multiple assertions per test
 
@@ -2015,7 +1942,7 @@ const MY_DTO = z.strictObject({
 ❌ **Never** test implementation details (focus on behavior)  
 ❌ **Never** skip tests or use `.only()` in commits  
 
-## Industry Best Practices (2024-2025) Compliance
+## Industry Best Practices Compliance
 
 This section validates the codebase against current industry standards.
 
@@ -2073,13 +2000,6 @@ This section validates the codebase against current industry standards.
 - **Health checks** — `/health` endpoint with database status
 - **Structured errors** — Consistent error format
 - **Request logging** — Middleware-based logging (ready to add)
-
-### ⚠️ Areas for improvement (future considerations)
-
-- **Rate limiting** — Not currently implemented (consider for production)
-- **Request logging** — Middleware exists but could add correlation IDs
-- **Caching layer** — Could add Redis for frequently accessed data
-- **Monitoring** — Could add APM (Application Performance Monitoring)
 
 ## Minimal local setup for a developer/agent
 
