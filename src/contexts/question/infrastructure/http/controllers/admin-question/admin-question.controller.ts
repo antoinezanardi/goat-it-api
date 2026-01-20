@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -6,7 +6,9 @@ import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/adm
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
+import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
@@ -14,7 +16,10 @@ import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-al
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
 export class AdminQuestionController {
-  public constructor(private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase) {}
+  public constructor(
+    private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase,
+    private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -33,5 +38,24 @@ export class AdminQuestionController {
     const questions = await this.findAllQuestionsUseCase.list();
 
     return questions.map(question => createAdminQuestionDtoFromEntity(question));
+  }
+
+  @Get("/:id")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Get question by ID for backend administration",
+    description: "Get a specific question by its unique identifier with detailed structure for backend administration.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionDto,
+  })
+  public async findQuestionById(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionDto> {
+    const question = await this.findQuestionByIdUseCase.getById(id);
+
+    return createAdminQuestionDtoFromEntity(question);
   }
 }

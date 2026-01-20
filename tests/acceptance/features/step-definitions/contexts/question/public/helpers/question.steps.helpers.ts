@@ -1,5 +1,6 @@
 import { expect } from "expect";
 
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
 
 import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
@@ -41,13 +42,13 @@ function expectQuestionThemeAssignmentsDtoToMatch(questionDto: QuestionDto, expe
   }
 }
 
-function expectQuestionAuthorDtoToMatch(questionDto: QuestionDto, expectedAuthor: z.infer<typeof QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA>): void {
+function expectQuestionAuthorDtoToMatch(questionDto: QuestionDto | AdminQuestionDto, expectedAuthor: z.infer<typeof QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.author.role).toBe(expectedAuthor.role);
   expect(questionDto.author.name).toBe(expectedAuthor.name);
   expect(questionDto.author.gameId).toBe(expectedAuthor.gameId);
 }
 
-function expectQuestionRejectionDtoToMatch(questionDto: QuestionDto, expectedRejection: z.infer<typeof QUESTION_REJECTION_DATATABLE_ROW_SCHEMA>): void {
+function expectQuestionRejectionDtoToMatch(questionDto: QuestionDto | AdminQuestionDto, expectedRejection: z.infer<typeof QUESTION_REJECTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.rejection?.type).toBe(expectedRejection.type);
   expect(questionDto.rejection?.comment).toBe(expectedRejection.comment);
 }

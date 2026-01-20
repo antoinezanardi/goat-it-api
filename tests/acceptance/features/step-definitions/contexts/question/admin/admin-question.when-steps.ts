@@ -25,3 +25,22 @@ When(/^the admin retrieves all questions with an invalid API key$/u, async funct
   });
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
+
+When(/^the admin retrieves the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}`, fetchOptions);
+});
+
+When(/^the admin retrieves the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, questionId: string) {
+  const fetchOptions = createFetchOptions();
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}`, fetchOptions);
+});
+
+When(/^the admin retrieves the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: "invalid-api-key",
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}`, fetchOptions);
+});
