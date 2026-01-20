@@ -72,7 +72,7 @@ This consolidated section presents the authoritative rules an agent (automated o
 - Acceptance tests: Cucumber with Gherkin feature files.
 - Linting: ESLint (flat-configs under `configs/eslint`) and Oxlint (under `configs/oxlint`)
 - Package manager: `pnpm` (see `package.json` for `packageManager` field to specify the version)
-- Node engine: Node.js `>= 25.2.1` (see `package.json` `engines` field)
+- Node engine: Node.js `>= 25.4.0` (see `package.json` `engines` field)
 - Database: MongoDB with Mongoose ODM
 - Validation: Zod schemas with `nestjs-zod` integration for DTO validation and OpenAPI schema generation
 
@@ -1324,11 +1324,660 @@ See the consolidated "Agent guidelines" section above for the full, authoritativ
 | Mutation tests   | `pnpm run test:mutation`   | ⚠️ CI (but recommended locally) |
 | Acceptance tests | `pnpm run test:acceptance` | ✅ Yes                           |
 
+## API Design and REST conventions
+
+This section documents the actual REST API patterns and conventions used in the codebase.
+
+### Controller organization
+
+- **Public controllers**: Located at `src/contexts/<context>/infrastructure/http/controllers/<feature>/`
+  - Use `@GameAuth()` decorator for game client authentication
+  - Endpoint prefix: `/<feature-name>` (e.g., `/question-themes`)
+- **Admin controllers**: Located at `src/contexts/<context>/infrastructure/http/controllers/admin-<feature>/`
+  - Use `@AdminAuth()` decorator for administrative authentication
+  - Endpoint prefix: `/admin/<feature-name>` (e.g., `/admin/question-themes`)
+
+Example from codebase:
+```typescript
+// Public controller
+@GameAuth()
+@Controller(ControllerPrefixes.QUESTION_THEMES)
+export class QuestionThemeController { ... }
+
+// Admin controller
+@AdminAuth()
+@Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
+export class AdminQuestionThemeController { ... }
+```
+
+### HTTP method conventions
+
+The project follows RESTful conventions:
+
+- `GET /<resource>` — List all resources
+- `GET /<resource>/:id` — Get a single resource by ID
+- `POST /<resource>` — Create a new resource
+- `PATCH /<resource>/:id` — Update a resource
+- `POST /<resource>/:id/<action>` — Perform a specific action (e.g., `/question-themes/:id/archive`)
+
+### Response documentation
+
+All endpoints must use:
+- `@ApiOperation()` — Swagger documentation with tags, summary, description
+- `@ZodResponse()` — Response schema with HTTP status code
+
+Example:
+```typescript
+@Get()
+@ApiOperation({
+  tags: [SwaggerTags.QUESTION_THEMES],
+  summary: "Get all question themes",
+  description: "Returns a list of all active question themes.",
+})
+@ZodResponse({
+  status: HttpStatus.OK,
+  type: [QuestionThemeDto],
+})
+public async findAll(): Promise<QuestionThemeDto[]> { ... }
+```
+
+### Path parameter validation
+
+Use `MongoIdPipe` for MongoDB ObjectId validation in path parameters:
+```typescript
+public async findById(@Param("id", MongoIdPipe) id: string): Promise<QuestionThemeDto> { ... }
+```
+
+### Controller responsibilities
+
+Controllers must:
+- Validate inputs (automatic via Zod DTOs)
+- Call use cases with domain commands
+- Map entities to DTOs before returning
+- **Never** contain business logic
+- **Never** directly access repositories
+
+Example pattern:
+```typescript
+public async create(@Body() dto: QuestionThemeCreationDto): Promise<QuestionThemeDto> {
+  // 1. Map DTO to domain command
+  const command = createQuestionThemeCreationCommandFromDto(dto);
+  
+  // 2. Call use case
+  const entity = await this.createUseCase.create(command);
+  
+  // 3. Map entity to DTO
+  return createQuestionThemeDtoFromEntity(entity);
+}
+```
+
+## Authentication and Security Patterns
+
+This section documents the actual security implementation in the codebase.
+
+### API Key Authentication
+
+The project uses a **two-tier API key system** with HMAC-SHA256 hashing:
+
+1. **Game API Key** — For regular game clients
+2. **Admin API Key** — For administrative operations
+
+### Security implementation details
+
+**HMAC-SHA256 hashing with timing-safe comparison**:
+```typescript
+// Hash API key using HMAC-SHA256
+function hashApiKey(apiKey: string, hmacKey: string): string {
+  return createHmac("sha256", hmacKey)
+    .update(apiKey)
+    .digest("hex");
+}
+
+// Timing-safe comparison prevents timing attacks
+const areKeysMatching = timingSafeEqual(expectedBuffer, receivedBuffer);
+```
+
+Location: `src/infrastructure/api/auth/helpers/auth.helpers.ts`
+
+### API key configuration
+
+API keys are configured via environment variables:
+- `ADMIN_API_KEY` — Admin API key (minimum 24 characters)
+- `GAME_API_KEY` — Game API key (minimum 24 characters)
+- `API_KEY_HMAC_SECRET` — HMAC secret for hashing
+
+Keys are validated and hashed at application startup in `AppConfigService`.
+
+### Authentication guards
+
+Two guards implement API key validation:
+- `AdminApiKeyGuard` — For admin endpoints
+- `GameApiKeyGuard` — For game endpoints
+
+Both guards:
+1. Extract API key from `x-api-key` header
+2. Validate using timing-safe comparison
+3. Throw `UnauthorizedException` on failure
+
+### Applying authentication
+
+Use decorators at controller class level:
+```typescript
+@AdminAuth()  // For admin endpoints
+@Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
+export class AdminQuestionThemeController { ... }
+
+@GameAuth()  // For game endpoints
+@Controller(ControllerPrefixes.QUESTIONS)
+export class QuestionController { ... }
+```
+
+### Security best practices followed
+
+✅ **Timing-safe comparison** — Prevents timing attacks  
+✅ **HMAC-SHA256** — Industry-standard hashing for API keys  
+✅ **Minimum key length** — 24 characters enforced  
+✅ **Separation of concerns** — Game vs Admin API keys  
+✅ **Environment-based configuration** — No hardcoded secrets  
+
+### What NOT to do (security anti-patterns)
+
+❌ **Never** compare API keys using `===` (vulnerable to timing attacks)  
+❌ **Never** store plaintext API keys in code or configs  
+❌ **Never** use simple hashing (MD5, SHA1) for API keys  
+❌ **Never** skip validation for "development" environments  
+❌ **Never** log API keys (even hashed)  
+
+## Dependency Injection and Provider Patterns
+
+### Repository injection pattern
+
+The project uses **Symbol-based injection tokens** to avoid collisions:
+
+```typescript
+// 1. Define injection token (domain/repositories/*.repository.constants.ts)
+export const QUESTION_THEME_REPOSITORY_TOKEN = Symbol("QuestionThemeRepository");
+
+// 2. Inject in use case
+@Injectable()
+export class CreateQuestionThemeUseCase {
+  public constructor(
+    @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
+    private readonly questionThemeRepository: QuestionThemeRepository
+  ) {}
+}
+
+// 3. Provide in module
+@Module({
+  providers: [
+    CreateQuestionThemeUseCase,
+    {
+      provide: QUESTION_THEME_REPOSITORY_TOKEN,
+      useClass: QuestionThemeMongooseRepository,
+    },
+  ],
+})
+export class QuestionThemeModule {}
+```
+
+### Use case dependency injection
+
+Use cases are injected directly without tokens (NestJS handles class tokens automatically):
+```typescript
+@Controller(ControllerPrefixes.QUESTION_THEMES)
+export class QuestionThemeController {
+  public constructor(
+    private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
+    private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+  ) {}
+}
+```
+
+### Service vs Use Case naming
+
+- **Use cases**: Domain-specific operations (e.g., `CreateQuestionThemeUseCase`)
+- **Services**: Infrastructure concerns (e.g., `AppConfigService`, `DatabaseService`)
+
+### Injection token rules
+
+**MUST use Symbol tokens for**:
+- Repository interfaces (prevents naming collisions)
+- Any interface-based injection
+
+**CAN use class tokens for**:
+- Use cases
+- Services
+- Any concrete class
+
+## Import and Export Conventions
+
+### Import order (enforced by ESLint)
+
+The project enforces a specific import order:
+
+1. Node.js built-in modules (e.g., `node:crypto`, `node:path`)
+2. External dependencies (e.g., `@nestjs/common`, `mongoose`)
+3. Internal path aliases (e.g., `@question/*`, `@shared/*`)
+4. Type-only imports (grouped separately)
+
+Example:
+```typescript
+import { timingSafeEqual, createHmac } from "node:crypto";
+
+import { UnauthorizedException } from "@nestjs/common";
+import { Model } from "mongoose";
+
+import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
+import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+import type { ExecutionContext } from "@nestjs/common";
+import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+```
+
+### Export conventions
+
+**Named exports only** (no default exports):
+```typescript
+// ✅ Correct
+export class CreateQuestionThemeUseCase { ... }
+export { QUESTION_THEME_REPOSITORY_TOKEN };
+
+// ❌ Incorrect
+export default CreateQuestionThemeUseCase;
+```
+
+### Path alias usage
+
+**Always use path aliases** instead of relative imports:
+```typescript
+// ✅ Correct
+import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+// ❌ Incorrect
+import { QuestionTheme } from "../../../domain/entities/question-theme.types";
+```
+
+### Type-only imports
+
+Use `import type` for types to improve tree-shaking:
+```typescript
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+import type { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+```
+
+## Performance and Scalability Considerations
+
+### Database query optimization
+
+**Aggregation pipelines** for complex queries:
+```typescript
+// Example: Question repository uses aggregation for efficient filtering
+export const QUESTION_MONGOOSE_REPOSITORY_PIPELINE = [
+  { $match: { status: "active" } },
+  { $lookup: { from: "questionthemes", localField: "themeId", foreignField: "_id", as: "theme" } },
+  { $unwind: "$theme" },
+];
+```
+
+Location: `src/contexts/question/infrastructure/persistence/mongoose/repository/pipeline/question.mongoose.repository.pipeline.ts`
+
+### Lazy DTO mapping
+
+DTOs are mapped **only when needed** (in controllers, not in repositories):
+```typescript
+// ✅ Correct: Repository returns domain entities
+public async findAll(): Promise<QuestionTheme[]> {
+  const documents = await this.model.find();
+  return documents.map(mapDocumentToEntity);
+}
+
+// ✅ Correct: Controller maps entities to DTOs
+public async findAll(): Promise<QuestionThemeDto[]> {
+  const themes = await this.findAllUseCase.list();
+  return themes.map(theme => createQuestionThemeDtoFromEntity(theme));
+}
+```
+
+### Async/Await consistency
+
+All repository operations and use cases use `async/await` consistently:
+- No callback-based APIs
+- Promises properly awaited
+- Errors naturally propagate to global exception filter
+
+### Localization caching
+
+Locale is extracted once per request via middleware:
+```typescript
+// LocalizationMiddleware processes locale from Accept-Language header
+// Stores in request object for reuse
+request.localization = { locale, languageCode, countryCode };
+```
+
+### What NOT to do (performance anti-patterns)
+
+❌ **Never** load all documents without pagination  
+❌ **Never** perform N+1 queries (use aggregation or populate)  
+❌ **Never** map to DTOs in repositories  
+❌ **Never** perform synchronous operations in request handlers  
+❌ **Never** block the event loop with heavy computations  
+
+## Testing Anti-Patterns to Avoid
+
+Based on the codebase analysis, the following testing anti-patterns have been identified:
+
+### Testing private methods (discovered anti-pattern)
+
+**Current practice found in codebase**:
+```typescript
+// ❌ Avoid: Spying on private methods
+const createQuestionThemeUseCaseStub = createQuestionThemeUseCase as unknown as { 
+  throwIfQuestionThemeSlugAlreadyExists: () => void 
+};
+localMocks.throwIfQuestionThemeSlugAlreadyExists = vi.spyOn(
+  createQuestionThemeUseCaseStub, 
+  "throwIfQuestionThemeSlugAlreadyExists"
+).mockResolvedValue();
+```
+
+**Better approach**:
+Test the public interface only. Private methods are implementation details:
+```typescript
+// ✅ Better: Test public method behavior
+it("should throw error when question theme slug already exists.", async() => {
+  mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(existingTheme);
+  const command = createFakeQuestionThemeCreationCommand();
+  
+  await expect(useCase.create(command)).rejects.toThrowError(QuestionThemeSlugAlreadyExistsError);
+});
+```
+
+### Multiple assertions per test
+
+**Rule**: Each test should contain **one and only one assertion**. If you need multiple assertions, create multiple tests.
+
+```typescript
+// ❌ Incorrect: Multiple assertions
+it("should create and return question theme.", async() => {
+  const result = await useCase.create(command);
+  expect(result).toBeDefined();
+  expect(result.slug).toBe(command.payload.slug);
+  expect(result.status).toBe("active");
+});
+
+// ✅ Correct: Single assertion per test
+it("should create question theme when called.", async() => {
+  await useCase.create(command);
+  
+  expect(mocks.repositories.questionTheme.create).toHaveBeenCalledExactlyOnceWith(command.payload);
+});
+
+it("should return created question theme when called.", async() => {
+  const expected = createFakeQuestionTheme();
+  mocks.repositories.questionTheme.create.mockResolvedValueOnce(expected);
+  
+  const result = await useCase.create(command);
+  
+  expect(result).toStrictEqual(expected);
+});
+```
+
+### Test naming conventions
+
+Test labels must follow the pattern: `"should <expected behavior> when <condition>."`
+
+```typescript
+// ✅ Correct
+it("should throw error when question theme slug already exists.", async() => { ... });
+it("should create question theme when called.", async() => { ... });
+it("should return all active question themes when called.", async() => { ... });
+
+// ❌ Incorrect
+it("tests the create method", async() => { ... });
+it("should work correctly", async() => { ... });
+```
+
+### Mock setup anti-patterns
+
+❌ **Never** mock the system under test  
+❌ **Never** share mocks between test suites  
+❌ **Never** forget to reset mocks (handled automatically by Vitest config)  
+❌ **Never** use real services in unit tests  
+
+## Code Quality and Style Enforcement
+
+### Linting strategy
+
+The project uses **two linters** for comprehensive checking:
+
+1. **Oxlint** — Fast, performance-focused linter (runs first)
+2. **ESLint** — Full-featured linter with custom rules
+
+Run order: `pnpm run lint` → runs Oxlint first, then ESLint
+
+### ESLint configuration structure
+
+ESLint uses **flat-config** with modular rule files:
+- `configs/eslint/flat-configs/eslint-global.flat-config.ts` — Global rules
+- `configs/eslint/flat-configs/eslint-typescript.flat-config.ts` — TypeScript rules
+- `configs/eslint/flat-configs/eslint-stylistic.flat-config.ts` — Formatting rules
+- `configs/eslint/flat-configs/eslint-controllers.flat-config.ts` — Controller-specific rules
+- `configs/eslint/flat-configs/eslint-unit-tests.flat-config.ts` — Test-specific rules
+
+### Formatting approach
+
+**No Prettier** — ESLint's stylistic plugin handles formatting:
+- Indentation: 2 spaces
+- Quotes: Double quotes
+- Semicolons: Required
+- Trailing commas: Multi-line only
+
+### Type checking
+
+The project uses **tsgo** (native TypeScript preview) instead of standard `tsc`:
+```bash
+pnpm run typecheck  # Runs: tsgo -b --clean && tsgo -b --noEmit
+```
+
+### Coverage requirements
+
+**100% coverage enforced** for:
+- Statements
+- Branches
+- Functions
+- Lines
+
+Excluded from coverage:
+- `*.module.ts` — NestJS modules (wiring only)
+- `*.schema.ts` — Mongoose schemas
+- `*.constants.ts` — Constant definitions
+- `*.types.ts` — Type definitions
+- `*.dto.ts` — Zod DTOs (validated at runtime)
+- `*.contracts.ts` — Contract type definitions
+- `*.commands.ts` — Command type definitions
+- `*.pipeline.ts` — MongoDB aggregation pipelines
+
+### When to disable rules
+
+Only disable lint rules when:
+1. There's a legitimate technical reason (document with comment)
+2. TypeScript limitations require it (e.g., type assertions)
+3. Generated code that can't be changed
+
+```typescript
+// ✅ Acceptable: Legitimate type assertion with explanation
+// eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+const swcJsc = SwcConfig.jsc as unknown as JscConfig;
+
+// ❌ Unacceptable: Disabling without reason
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const data: any = fetchData();
+```
+
+## Common Pitfalls and Anti-Patterns to Avoid
+
+### Domain layer violations
+
+❌ **Never** import infrastructure code in domain layer  
+❌ **Never** throw HTTP exceptions in domain (use domain errors)  
+❌ **Never** use NestJS decorators in domain layer  
+
+```typescript
+// ❌ Incorrect: Domain depends on infrastructure
+import { NotFoundException } from "@nestjs/common";
+throw new NotFoundException("Theme not found");
+
+// ✅ Correct: Domain uses domain errors
+export class QuestionThemeNotFoundError extends Error {
+  public name = "QuestionThemeNotFoundError";
+  public constructor(themeId: string) {
+    super(`Question theme with id ${themeId} not found`);
+  }
+}
+throw new QuestionThemeNotFoundError(id);
+```
+
+### Repository pattern violations
+
+❌ **Never** call repositories directly from controllers  
+❌ **Never** return DTOs from repositories (return entities)  
+❌ **Never** perform business logic in repositories  
+
+```typescript
+// ❌ Incorrect: Controller calls repository directly
+@Controller(ControllerPrefixes.QUESTION_THEMES)
+export class QuestionThemeController {
+  public constructor(
+    @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
+    private readonly repository: QuestionThemeRepository
+  ) {}
+  
+  public async findAll() {
+    return this.repository.findAll();  // ❌ Bypasses use case
+  }
+}
+
+// ✅ Correct: Controller calls use case
+public constructor(
+  private readonly findAllUseCase: FindAllQuestionThemesUseCase
+) {}
+
+public async findAll() {
+  return this.findAllUseCase.list();  // ✅ Uses use case
+}
+```
+
+### Use case anti-patterns
+
+❌ **Never** inject controllers into use cases  
+❌ **Never** inject HTTP-related services into use cases  
+❌ **Never** handle HTTP concerns (status codes, headers) in use cases  
+
+### DTO and validation anti-patterns
+
+❌ **Never** use Zod schemas without `z.strictObject()` (allows extra properties)  
+❌ **Never** skip `.describe()` for DTO properties (needed for OpenAPI)  
+❌ **Never** forget `.meta({ example })` for better API documentation  
+
+```typescript
+// ❌ Incorrect: Missing strict validation
+const MY_DTO = z.object({  // Allows extra properties
+  id: z.string(),
+});
+
+// ✅ Correct: Strict validation
+const MY_DTO = z.strictObject({
+  id: zMongoId()
+    .describe("Unique identifier")
+    .meta({ example: "60af924f4f1a2563f8e8b456" }),
+});
+```
+
+### Module organization anti-patterns
+
+❌ **Never** create circular dependencies between modules  
+❌ **Never** expose implementation details in module exports  
+❌ **Never** import from `src/contexts/<other-context>` (contexts should be independent)  
+
+### Test anti-patterns summary
+
+❌ **Never** test private methods directly  
+❌ **Never** use real database in unit tests  
+❌ **Never** share test state between tests  
+❌ **Never** test implementation details (focus on behavior)  
+❌ **Never** skip tests or use `.only()` in commits  
+
+## Industry Best Practices (2024-2025) Compliance
+
+This section validates the codebase against current industry standards.
+
+### ✅ TypeScript best practices
+
+- **Strict mode enabled** — Full type safety enforced
+- **Type-only imports** — Better tree-shaking with `import type`
+- **No `any` types** — Enforced by ESLint rules
+- **Path aliases** — Cleaner imports, easier refactoring
+
+### ✅ NestJS best practices
+
+- **Modular architecture** — Bounded contexts with clear modules
+- **Dependency injection** — Constructor-based DI with tokens
+- **Guards for authorization** — Declarative security with decorators
+- **Exception filters** — Centralized error handling
+
+### ✅ API design best practices
+
+- **RESTful conventions** — Standard HTTP methods and status codes
+- **OpenAPI documentation** — Auto-generated from Zod schemas
+- **Validation at edge** — DTOs validated before reaching use cases
+- **Consistent error responses** — Global exception filter ensures uniformity
+
+### ✅ Security best practices
+
+- **Timing-safe comparison** — Prevents timing attacks
+- **HMAC-SHA256** — Industry-standard for API keys
+- **Environment-based secrets** — No hardcoded credentials
+- **Separation of privileges** — Game vs Admin API keys
+
+### ✅ Testing best practices
+
+- **100% code coverage** — Enforced by CI
+- **Unit + Integration + E2E** — Full testing pyramid
+- **Mutation testing** — Ensures test quality (Stryker)
+- **BDD acceptance tests** — Cucumber for user scenarios
+
+### ✅ Database best practices
+
+- **Repository pattern** — Abstraction over data access
+- **Aggregation pipelines** — Efficient complex queries
+- **Schema validation** — Mongoose schemas with types
+- **Connection pooling** — Handled by Mongoose/MongoDB driver
+
+### ✅ Performance best practices
+
+- **Fastify** — High-performance HTTP server
+- **SWC** — Fast transpilation (5-10x faster than Babel)
+- **Lazy DTO mapping** — Only in controllers, not repositories
+- **Async/await** — Non-blocking operations
+
+### ✅ Observability and monitoring
+
+- **Health checks** — `/health` endpoint with database status
+- **Structured errors** — Consistent error format
+- **Request logging** — Middleware-based logging (ready to add)
+
+### ⚠️ Areas for improvement (future considerations)
+
+- **Rate limiting** — Not currently implemented (consider for production)
+- **Request logging** — Middleware exists but could add correlation IDs
+- **Caching layer** — Could add Redis for frequently accessed data
+- **Monitoring** — Could add APM (Application Performance Monitoring)
+
 ## Minimal local setup for a developer/agent
 
 ### Prerequisites
 
-- **Node.js**: `>= 25.2.1` (see `package.json` `engines` field)
+- **Node.js**: `>= 25.4.0` (see `package.json` `engines` field)
 - **pnpm**: Version specified in `package.json` `packageManager` field (currently `10.26.2`)
 - **Docker**: For running the acceptance test database
 
