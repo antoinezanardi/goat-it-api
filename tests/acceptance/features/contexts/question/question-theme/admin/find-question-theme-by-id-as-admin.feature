@@ -12,7 +12,7 @@ Feature: Find Question Theme by ID as Admin
     And the response should contain the following admin question theme:
       | slug  | status |
       | music | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label   |
       | en     | Music   |
       | fr     | Musique |
@@ -20,7 +20,7 @@ Feature: Find Question Theme by ID as Admin
       | es     | Música  |
       | de     | Musik   |
       | pt     | Música  |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases             |
       | en     | Songs, Tunes        |
       | fr     | Chanson, Son        |
@@ -28,7 +28,7 @@ Feature: Find Question Theme by ID as Admin
       | es     | Canciones, Melodías |
       | de     | Lieder, Melodien    |
       | pt     | Canções, Músicas    |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                  |
       | en     | Theme about music, artists and music genres.                 |
       | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
@@ -44,7 +44,7 @@ Feature: Find Question Theme by ID as Admin
     And the response should contain the following admin question theme:
       | slug   | status |
       | cinema | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label  |
       | en     | Cinema |
       | fr     |        |
@@ -52,7 +52,7 @@ Feature: Find Question Theme by ID as Admin
       | es     |        |
       | de     |        |
       | pt     |        |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases       |
       | en     | Movies, Films |
       | fr     |               |
@@ -60,7 +60,7 @@ Feature: Find Question Theme by ID as Admin
       | es     |               |
       | de     |               |
       | pt     |               |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                    |
       | en     | Theme about cinema and movies. |
       | fr     |                                |

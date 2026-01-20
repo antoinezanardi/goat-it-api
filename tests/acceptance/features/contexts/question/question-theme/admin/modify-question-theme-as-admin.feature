@@ -23,7 +23,7 @@ Feature: Modify Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug  | status |
       | music | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label   |
       | en     | Music   |
       | fr     | Musique |
@@ -31,7 +31,7 @@ Feature: Modify Question Theme As Admin
       | es     | Música  |
       | de     | Musik   |
       | pt     | Música  |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases             |
       | en     | Songs, Tunes        |
       | fr     | Chanson, Son        |
@@ -39,7 +39,7 @@ Feature: Modify Question Theme As Admin
       | es     | Canciones, Melodías |
       | de     | Lieder, Melodien    |
       | pt     | Canções, Músicas    |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                  |
       | en     | Theme about music, artists and music genres.                 |
       | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
@@ -55,7 +55,7 @@ Feature: Modify Question Theme As Admin
       | label.fr | string | Musique FR |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label      |
       | en     | Music      |
       | fr     | Musique FR |
@@ -76,7 +76,7 @@ Feature: Modify Question Theme As Admin
       | description.pt | string | "   Nova descrição em Português       "  |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                      |
       | en     | New description in English       |
       | fr     | Nouvelle description en Français |
