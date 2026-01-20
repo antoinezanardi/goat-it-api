@@ -12,7 +12,7 @@ Feature: Create Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug              | status |
       | general-knowledge | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label                |
       | en     | General knowledge    |
       | fr     | Culture générale     |
@@ -20,7 +20,7 @@ Feature: Create Question Theme As Admin
       | es     | Conocimiento general |
       | de     | Allgemeines Wissen   |
       | pt     | Conhecimento geral   |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases                       |
       | en     | Knowledge, General            |
       | fr     | Connaissances, Général        |
@@ -28,7 +28,7 @@ Feature: Create Question Theme As Admin
       | es     | Conocimiento, General         |
       | de     | Allgemeines Wissen, Allgemein |
       | pt     | Conhecimento, Geral           |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                                 |
       | en     | A theme that encompasses a wide range of general knowledge topics.          |
       | fr     | Un thème qui englobe une large gamme de sujets de culture générale.         |
@@ -50,13 +50,13 @@ Feature: Create Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug              | status |
       | general-knowledge | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label           |
       | es     | Cultura general |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases                |
       | es     | Conocimientos, General |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                 |
       | es     | Un tema que abarca una amplia gama de temas |
 

@@ -1,9 +1,8 @@
 import { expect } from "expect";
 
-import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 
-import type { ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA, QUESTION_THEME_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/datatables/question-theme.datatables.schemas";
+import type { QUESTION_THEME_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/datatables/question-theme.datatables.schemas";
 
 import type { z } from "zod";
 
@@ -23,16 +22,7 @@ function expectQuestionThemeDtoToMatch(questionThemeDto: QuestionThemeDto, expec
   expect(questionThemeDto.status).toBe(expectedQuestionThemeDto.status);
 }
 
-function expectAdminQuestionThemeDtoToMatch(
-  adminQuestionThemeDto: AdminQuestionThemeDto,
-  expectedAdminQuestionThemeDto: z.infer<typeof ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA>,
-): void {
-  expect(adminQuestionThemeDto.slug).toBe(expectedAdminQuestionThemeDto.slug);
-  expect(adminQuestionThemeDto.status).toBe(expectedAdminQuestionThemeDto.status);
-}
-
 export {
   findQuestionThemeBySlugOrThrow,
   expectQuestionThemeDtoToMatch,
-  expectAdminQuestionThemeDtoToMatch,
 };
