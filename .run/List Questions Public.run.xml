@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="List Questions Public" type="cucumber.js" factoryName="Cucumber.js" folderName="Questions">
+    <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
+    <option name="myNameFilter" value="" />
+    <option name="cucumberJsArguments" value="--config configs/cucumber/cucumber.json --tags @list-questions --tags @public" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="NODE_ENV" value="test" />
+      <env name="TSX_TSCONFIG_PATH" value="configs/typescript/tsconfig.acceptance.json" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

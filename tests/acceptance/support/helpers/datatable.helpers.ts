@@ -25,6 +25,18 @@ function zCoerceOptionalNumber(): ZodType<number | undefined> {
 }
 
 /**
+ * Coerces a comma-separated string to an optional array of strings. If the value is an empty string or not a string, it returns undefined. Only used in acceptance tests.
+ */
+function zCoerceOptionalStringArray(): ZodType<string[] | undefined> {
+  return z.preprocess((value: unknown): string[] | undefined => {
+    if (typeof value !== "string" || value === "") {
+      return undefined;
+    }
+    return value.split(",").map(item => item.trim());
+  }, z.array(z.string()).optional());
+}
+
+/**
  * Validates the given Cucumber DataTable against the provided Zod schema and returns all rows. Only used in acceptance tests.
  * @param dataTable
  * @param schema
@@ -61,6 +73,7 @@ export {
   zCoerceOptionalBoolean,
   zCoerceOptionalString,
   zCoerceOptionalNumber,
+  zCoerceOptionalStringArray,
   validateDataTableAndGetRows,
   validateDataTableAndGetFirstRow,
 };

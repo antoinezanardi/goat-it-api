@@ -28,6 +28,7 @@ export default defineConfig({
         "src/**/*.module.ts",
         "src/**/mongoose/**/*.schema.ts",
         "src/**/*.constants.ts",
+        "src/**/*.pipeline.ts",
         "src/**/*.types.ts",
         "src/**/*.commands.ts",
         "src/**/*.contracts.ts",

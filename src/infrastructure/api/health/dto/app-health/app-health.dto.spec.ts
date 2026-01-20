@@ -16,13 +16,13 @@ describe("App Health Dto", () => {
 
   describe("status", () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DTO.shape.status.description).toBe("Overall health status of the application.");
+      expect(APP_HEALTH_DTO.shape.status.description).toBe("Overall health status of the application");
     });
   });
 
   describe("details", () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DTO.shape.details.description).toBe("Detailed health status of individual checked components.");
+      expect(APP_HEALTH_DTO.shape.details.description).toBe("Detailed health status of individual checked components");
     });
   });
 });

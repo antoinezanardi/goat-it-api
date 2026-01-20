@@ -4,7 +4,7 @@ import { Model, UpdateQuery } from "mongoose";
 import { crush } from "radashi";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
-import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status.constants";
+import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 

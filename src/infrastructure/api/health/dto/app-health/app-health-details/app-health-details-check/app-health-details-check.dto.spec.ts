@@ -16,18 +16,18 @@ describe("App Health Details Check Dto", () => {
 
   describe("status", () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.status.description).toBe("Health status of the component.");
+      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.status.description).toBe("Health status of the component");
     });
   });
 
   describe("message", () => {
     it("should have correct description when accessing description.", () => {
-      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.message.description).toBe("Optional message providing additional information about the health status when it is not up.");
+      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.message.description).toBe("Optional message providing additional information about the health status when it is not up");
     });
 
     it("should have correct metadata when accessing metadata.", () => {
       const expectedMetadata = {
-        description: "Optional message providing additional information about the health status when it is not up.",
+        description: "Optional message providing additional information about the health status when it is not up",
         example: "Database connection failed.",
       };
 

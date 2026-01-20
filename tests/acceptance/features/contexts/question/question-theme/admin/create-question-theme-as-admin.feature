@@ -1,4 +1,4 @@
-@question @question-theme @create-question-theme @admin
+@question-theme @create-question-theme @admin
 
 Feature: Create Question Theme As Admin
   In order to create question themes to categorize questions
@@ -12,7 +12,7 @@ Feature: Create Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug              | status |
       | general-knowledge | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label                |
       | en     | General knowledge    |
       | fr     | Culture générale     |
@@ -20,7 +20,7 @@ Feature: Create Question Theme As Admin
       | es     | Conocimiento general |
       | de     | Allgemeines Wissen   |
       | pt     | Conhecimento geral   |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases                       |
       | en     | Knowledge, General            |
       | fr     | Connaissances, Général        |
@@ -28,7 +28,7 @@ Feature: Create Question Theme As Admin
       | es     | Conocimiento, General         |
       | de     | Allgemeines Wissen, Allgemein |
       | pt     | Conhecimento, Geral           |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                                 |
       | en     | A theme that encompasses a wide range of general knowledge topics.          |
       | fr     | Un thème qui englobe une large gamme de sujets de culture générale.         |
@@ -50,13 +50,13 @@ Feature: Create Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug              | status |
       | general-knowledge | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label           |
       | es     | Cultura general |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases                |
       | es     | Conocimientos, General |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                 |
       | es     | Un tema que abarca una amplia gama de temas |
 
@@ -289,3 +289,18 @@ Feature: Create Question Theme As Admin
     Then the request should have failed with status code 409 and the response should contain the following error:
       | error    | statusCode | message                                                   |
       | Conflict | 409        | Question theme with slug general-knowledge already exists |
+
+  Scenario: Trying to create a question theme without API key
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the admin creates a new question theme with the request payload but without an API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message                    |
+      | Unauthorized | 401        | Missing API key in headers |
+
+  Scenario: Trying to create a question theme with invalid API key
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the admin creates a new question theme with the request payload with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |
+

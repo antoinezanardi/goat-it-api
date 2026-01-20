@@ -1,4 +1,4 @@
-@question @question-theme @list-question-themes @admin
+@question-theme @list-question-themes @admin
 
 Feature: List Question Themes as Admin
   In order to display question themes to back office users
@@ -15,8 +15,8 @@ Feature: List Question Themes as Admin
       | cinema  | active   |
       | music   | active   |
       | sports  | archived |
-      | history | active   |
       | science | active   |
+      | history | active   |
     And the response should contain an admin question theme among them with slug "cinema" and the following localized labels:
       | locale | label  |
       | en     | Cinema |
@@ -100,3 +100,17 @@ Feature: List Question Themes as Admin
     When the admin retrieves all question themes
     Then the request should have succeeded with status code 200
     And the response should contain 0 admin question themes
+
+  Scenario: Trying to list all admin question themes without API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin retrieves all question themes without an API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message                    |
+      | Unauthorized | 401        | Missing API key in headers |
+
+  Scenario: Trying to list all admin question themes with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin retrieves all question themes with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |

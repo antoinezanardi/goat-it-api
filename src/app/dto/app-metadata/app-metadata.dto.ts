@@ -1,7 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-import { zSlug } from "@shared/infrastructure/http/validators/zod/string/string.zod.validators";
+import { zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 const APP_METADATA_DTO = z.strictObject({
   name: z.string()

@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
+import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
@@ -209,6 +210,11 @@ describe("Global Exception Filter", () => {
         expectedSentException: new NotFoundException("Question theme with id question-theme-id not found"),
       },
       {
+        test: "should map domain error to http exception and send it when called with QuestionNotFoundError.",
+        exception: new QuestionNotFoundError("question-id"),
+        expectedSentException: new NotFoundException("Question with id question-id not found"),
+      },
+      {
         test: "should map domain error to http exception and send it when called with QuestionThemeAlreadyArchivedError.",
         exception: new QuestionThemeAlreadyArchivedError("question-theme-id"),
         expectedSentException: new BadRequestException("Question theme with id question-theme-id already has status 'archived'"),
@@ -233,6 +239,7 @@ describe("Global Exception Filter", () => {
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
 
+      // Disabling lint rule which confuses promise catch method call with global exception filter own catch method.
       // oxlint-disable-next-line valid-params prefer-await-to-then
       globalExceptionFilter.catch(exception, localMocks.filters.globalException.host);
 

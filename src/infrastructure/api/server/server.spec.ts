@@ -1,4 +1,3 @@
-/* oxlint-disable jest/no-conditional-in-test */
 import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
@@ -11,6 +10,8 @@ import { bootstrap } from "@src/infrastructure/api/server/server";
 import type { AppModule } from "@app/app.module";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
+
+import { mockByRules } from "@unit-tests/utils/helpers/mock-by-rules.helpers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
@@ -55,15 +56,13 @@ describe("Server", () => {
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
       useGlobalFilters: vi.fn<() => INestApplication>(),
-      get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(service => {
-        if (service === AppConfigService) {
-          return mocks.services.config;
-        }
-        if (service === Logger) {
-          return getMockedLoggerInstance();
-        }
-        return {};
-      }),
+      get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(mockByRules<typeof AppConfigService | typeof Logger, object>(
+        [
+          [AppConfigService, mocks.services.config],
+          [Logger, getMockedLoggerInstance()],
+        ],
+        {},
+      )),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
       useStaticAssets: vi.fn<() => void>(),

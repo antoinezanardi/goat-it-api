@@ -1,4 +1,4 @@
-@question @question-theme @modify-question-theme @admin
+@question-theme @modify-question-theme @admin
 
 Feature: Modify Question Theme As Admin
   In order to modify an existing question theme
@@ -23,7 +23,7 @@ Feature: Modify Question Theme As Admin
     And the response should contain the following admin question theme:
       | slug  | status |
       | music | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label   |
       | en     | Music   |
       | fr     | Musique |
@@ -31,7 +31,7 @@ Feature: Modify Question Theme As Admin
       | es     | Música  |
       | de     | Musik   |
       | pt     | Música  |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases             |
       | en     | Songs, Tunes        |
       | fr     | Chanson, Son        |
@@ -39,7 +39,7 @@ Feature: Modify Question Theme As Admin
       | es     | Canciones, Melodías |
       | de     | Lieder, Melodien    |
       | pt     | Canções, Músicas    |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                  |
       | en     | Theme about music, artists and music genres.                 |
       | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
@@ -55,7 +55,7 @@ Feature: Modify Question Theme As Admin
       | label.fr | string | Musique FR |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label      |
       | en     | Music      |
       | fr     | Musique FR |
@@ -76,7 +76,7 @@ Feature: Modify Question Theme As Admin
       | description.pt | string | "   Nova descrição em Português       "  |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                      |
       | en     | New description in English       |
       | fr     | Nouvelle description en Français |
@@ -323,3 +323,23 @@ Feature: Modify Question Theme As Admin
     And the failed request's response should contain the following validation details:
       | code              | message                | path        | keys |
       | unrecognized_keys | Unrecognized key: "lt" | description | lt   |
+
+  Scenario: Trying to modify a question theme without API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path | type   | value       |
+      | slug | string | video-games |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload but without an API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message                    |
+      | Unauthorized | 401        | Missing API key in headers |
+
+  Scenario: Trying to modify a question theme with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path | type   | value       |
+      | slug | string | video-games |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |

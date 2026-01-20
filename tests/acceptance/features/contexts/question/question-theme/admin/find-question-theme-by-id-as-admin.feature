@@ -1,4 +1,4 @@
-@question @question-theme @find-question-theme-by-id @admin
+@question-theme @find-question-theme-by-id @admin
 
 Feature: Find Question Theme by ID as Admin
   In order to display question theme to back office users
@@ -12,7 +12,7 @@ Feature: Find Question Theme by ID as Admin
     And the response should contain the following admin question theme:
       | slug  | status |
       | music | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label   |
       | en     | Music   |
       | fr     | Musique |
@@ -20,7 +20,7 @@ Feature: Find Question Theme by ID as Admin
       | es     | Música  |
       | de     | Musik   |
       | pt     | Música  |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases             |
       | en     | Songs, Tunes        |
       | fr     | Chanson, Son        |
@@ -28,7 +28,7 @@ Feature: Find Question Theme by ID as Admin
       | es     | Canciones, Melodías |
       | de     | Lieder, Melodien    |
       | pt     | Canções, Músicas    |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                                                  |
       | en     | Theme about music, artists and music genres.                 |
       | fr     | Thème lié à la musique, aux artistes et aux genres musicaux. |
@@ -44,7 +44,7 @@ Feature: Find Question Theme by ID as Admin
     And the response should contain the following admin question theme:
       | slug   | status |
       | cinema | active |
-    And the response should contain the following localized labels for the question theme:
+    And the response should contain the following localized labels for the admin question theme:
       | locale | label  |
       | en     | Cinema |
       | fr     |        |
@@ -52,7 +52,7 @@ Feature: Find Question Theme by ID as Admin
       | es     |        |
       | de     |        |
       | pt     |        |
-    And the response should contain the following localized aliases for the question theme:
+    And the response should contain the following localized aliases for the admin question theme:
       | locale | aliases       |
       | en     | Movies, Films |
       | fr     |               |
@@ -60,7 +60,7 @@ Feature: Find Question Theme by ID as Admin
       | es     |               |
       | de     |               |
       | pt     |               |
-    And the response should contain the following localized descriptions for the question theme:
+    And the response should contain the following localized descriptions for the admin question theme:
       | locale | description                    |
       | en     | Theme about cinema and movies. |
       | fr     |                                |
@@ -82,3 +82,17 @@ Feature: Find Question Theme by ID as Admin
     Then the request should have failed with status code 404 and the response should contain the following error:
       | error     | statusCode | message                                                   |
       | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found |
+
+  Scenario: Trying to find a question theme without API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin retrieves the question theme with id "ddb03d94cae8df38d28e5adc" without an API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message                    |
+      | Unauthorized | 401        | Missing API key in headers |
+
+  Scenario: Trying to find a question theme with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin retrieves the question theme with id "ddb03d94cae8df38d28e5adc" with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |
