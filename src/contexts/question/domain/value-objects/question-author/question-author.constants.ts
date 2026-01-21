@@ -1,9 +1,19 @@
+const QUESTION_AUTHOR_ROLE_ADMIN = "admin";
+const QUESTION_AUTHOR_ROLE_GAME = "game";
+const QUESTION_AUTHOR_ROLE_AI = "ai";
+
 const QUESTION_AUTHOR_ROLES = [
-  "admin",
-  "game",
-  "ai",
+  QUESTION_AUTHOR_ROLE_ADMIN,
+  QUESTION_AUTHOR_ROLE_GAME,
+  QUESTION_AUTHOR_ROLE_AI,
+] as const satisfies readonly string[];
+
+const QUESTION_AUTHOR_CREATION_ROLES = [
+  QUESTION_AUTHOR_ROLE_ADMIN,
+  QUESTION_AUTHOR_ROLE_AI,
 ] as const satisfies readonly string[];
 
 export {
   QUESTION_AUTHOR_ROLES,
+  QUESTION_AUTHOR_CREATION_ROLES,
 };
