@@ -1,15 +1,19 @@
+import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
 import { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto";
 
+import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
 import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto/question-creation/question-creation.dto.faketory";
 
 describe("Question Creation DTO Specs", () => {
   let validDto: QuestionCreationDto;
 
   beforeEach(() => {
-    validDto = createFakeQuestionCreationDto();
+    validDto = createFakeQuestionCreationDto({
+      themes: [createFakeQuestionThemeAssignmentCreationDto({ isPrimary: true })],
+    });
   });
 
   it("should pass validation when a valid QuestionCreationDto is provided.", () => {
@@ -30,6 +34,87 @@ describe("Question Creation DTO Specs", () => {
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
+    });
+
+    it("should throw zod error when themes have non-unique themeIds.", () => {
+      const sameThemeId = faker.database.mongodbObjectId();
+      const invalid = Object.assign(validDto, {
+        themes: [
+          createFakeQuestionThemeAssignmentCreationDto({
+            themeId: sameThemeId,
+          }),
+          createFakeQuestionThemeAssignmentCreationDto({
+            themeId: sameThemeId,
+          }),
+        ],
+      });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
+    it("should have correct error message when themes have non-unique themeIds.", () => {
+      const sameThemeId = faker.database.mongodbObjectId();
+      const invalid = Object.assign(validDto, {
+        themes: [
+          createFakeQuestionThemeAssignmentCreationDto({
+            themeId: sameThemeId,
+          }),
+          createFakeQuestionThemeAssignmentCreationDto({
+            themeId: sameThemeId,
+          }),
+        ],
+      });
+      const expectedErrorMessage = "Theme IDs must be unique";
+      const result = QUESTION_CREATION_DTO.safeParse(invalid);
+
+      expect(result.error?.issues[0].message).toBe(expectedErrorMessage);
+    });
+
+    it("should throw zod error when themes do not have exactly one primary theme.", () => {
+      const invalid = Object.assign(validDto, {
+        themes: [
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: false,
+          }),
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: false,
+          }),
+        ],
+      });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
+    it("should throw zod error when themes have more than one primary theme.", () => {
+      const invalid = Object.assign(validDto, {
+        themes: [
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: true,
+          }),
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: true,
+          }),
+        ],
+      });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
+    it("should have correct error message when themes do not have exactly one primary theme.", () => {
+      const invalid = Object.assign(validDto, {
+        themes: [
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: false,
+          }),
+          createFakeQuestionThemeAssignmentCreationDto({
+            isPrimary: false,
+          }),
+        ],
+      });
+      const expectedErrorMessage = "There must be exactly one primary theme";
+      const result = QUESTION_CREATION_DTO.safeParse(invalid);
+
+      expect(result.error?.issues[0].message).toBe(expectedErrorMessage);
     });
   });
 
@@ -78,23 +163,6 @@ describe("Question Creation DTO Specs", () => {
       const metadata = QUESTION_CREATION_DTO.shape.author.meta();
       const expectedMetadata = {
         description: "Question's author",
-      };
-
-      expect(metadata).toStrictEqual(expectedMetadata);
-    });
-  });
-
-  describe("status", () => {
-    it("should throw zod error when status is invalid.", () => {
-      const invalid = Object.assign(validDto, { status: "invalid" });
-
-      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
-    });
-
-    it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = QUESTION_CREATION_DTO.shape.status.meta();
-      const expectedMetadata = {
-        description: "Question's status",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);

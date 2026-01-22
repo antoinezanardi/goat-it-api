@@ -44,7 +44,7 @@ describe("Question Author Creation DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_AUTHOR_CREATION_DTO.shape.name.meta();
       const expectedMetadata = {
-        description: "Question author's name, if applicable",
+        description: "Question author's name",
         example: "TriviaMaster3000",
       };
 
