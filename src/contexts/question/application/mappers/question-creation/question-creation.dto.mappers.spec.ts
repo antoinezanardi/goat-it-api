@@ -93,6 +93,7 @@ describe("Question Creation Dto Mappers", () => {
             name: dto.author.name,
           },
           status: computeQuestionStatusFromAuthorRole(dto.author.role),
+          sourceUrls: new Set(...dto.sourceUrls),
         },
       });
 

@@ -180,6 +180,13 @@ describe("Question Creation DTO Specs", () => {
       expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
     });
 
+    it("should throw zod error when sourceUrls contain duplicates.", () => {
+      const duplicateUrl = "https://example.com/source1";
+      const invalid = Object.assign(validDto, { sourceUrls: [duplicateUrl, duplicateUrl] });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CREATION_DTO.shape.sourceUrls.meta();
       const expectedMetadata = {

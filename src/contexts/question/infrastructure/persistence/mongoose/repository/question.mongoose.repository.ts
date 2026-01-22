@@ -34,7 +34,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
   }
 
   public async create(questionCreationContract: QuestionCreationContract): Promise<Question | undefined> {
-    const createdQuestionDocument = await this.questionModel.create(questionCreationContract);
+    const createdQuestionDocument = await this.questionModel.create({
+      ...questionCreationContract,
+      sourceUrls: [...questionCreationContract.sourceUrls],
+    });
 
     return this.findById(createdQuestionDocument._id.toString());
   }

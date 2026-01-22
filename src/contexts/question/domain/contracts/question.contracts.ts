@@ -11,6 +11,7 @@ type QuestionCreationContract = {
   cognitiveDifficulty: QuestionCognitiveDifficulty;
   author: QuestionAuthorCreationContract;
   status: QuestionCreationStatus;
+  sourceUrls: Set<string>;
 };
 
 export type {

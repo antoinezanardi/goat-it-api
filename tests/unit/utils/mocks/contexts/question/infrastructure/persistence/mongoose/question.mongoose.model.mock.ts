@@ -11,7 +11,7 @@ import type { QuestionAggregate, QuestionAggregatePipeline } from "@question/inf
 
 type QuestionMongooseModelStub = {
   aggregate: (pipeline?: QuestionAggregatePipeline) => Promise<QuestionAggregate[]>;
-  create: (questionCreationContract: Partial<QuestionAggregate>) => QuestionMongooseDocumentStub;
+  create: (questionCreationContract: Partial<QuestionAggregate>) => Promise<QuestionMongooseDocumentStub>;
 };
 
 type MockedQuestionMongooseModel = { [K in keyof QuestionMongooseModelStub]: Mock<QuestionMongooseModelStub[K]> };

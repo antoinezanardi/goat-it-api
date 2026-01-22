@@ -147,8 +147,12 @@ describe("Question Mongoose Repository", () => {
     it("should call model.create with contract when called.", async() => {
       const questionCreationContract = createFakeQuestionCreationContract();
       await repositories.question.create(questionCreationContract);
+      const expectedCreateArgument = {
+        ...questionCreationContract,
+        sourceUrls: [...questionCreationContract.sourceUrls],
+      };
 
-      expect(mocks.models.question.create).toHaveBeenCalledExactlyOnceWith(questionCreationContract);
+      expect(mocks.models.question.create).toHaveBeenCalledExactlyOnceWith(expectedCreateArgument);
     });
 
     it("should call findById with created id when called.", async() => {

@@ -15,6 +15,7 @@ function createFakeQuestionCreationContract(contract: Partial<QuestionCreationCo
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthorCreationContract(),
     status: faker.helpers.arrayElement(QUESTION_CREATION_STATUSES),
+    sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
     ...contract,
   };
 }

@@ -112,6 +112,13 @@ describe("Array Zod Refinements Helpers", () => {
         value: "primary",
         expected: true,
       },
+      {
+        test: "should return false when array is empty.",
+        input: [],
+        key: "isPrimary",
+        value: true,
+        expected: false,
+      },
     ])("$test", ({ input, key, value, expected }) => {
       const isValid = hasExactlyOneByKey(input, key, value);
 
