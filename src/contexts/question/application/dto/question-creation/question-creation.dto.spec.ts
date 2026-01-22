@@ -42,9 +42,11 @@ describe("Question Creation DTO Specs", () => {
         themes: [
           createFakeQuestionThemeAssignmentCreationDto({
             themeId: sameThemeId,
+            isPrimary: true,
           }),
           createFakeQuestionThemeAssignmentCreationDto({
             themeId: sameThemeId,
+            isPrimary: false,
           }),
         ],
       });
@@ -58,9 +60,11 @@ describe("Question Creation DTO Specs", () => {
         themes: [
           createFakeQuestionThemeAssignmentCreationDto({
             themeId: sameThemeId,
+            isPrimary: true,
           }),
           createFakeQuestionThemeAssignmentCreationDto({
             themeId: sameThemeId,
+            isPrimary: false,
           }),
         ],
       });

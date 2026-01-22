@@ -63,6 +63,12 @@ describe("Array Zod Refinements Helpers", () => {
         key: "value",
         expected: false,
       },
+      {
+        test: "should return true for empty object arrays when checking uniqueness by key.",
+        input: [],
+        key: "id",
+        expected: true,
+      },
     ])("$test", ({ input, key, expected }) => {
       const isValid = areValuesUniqueByKey(input, key);
 

@@ -18,7 +18,7 @@ describe("Question Theme Assignment Creation DTO Specs", () => {
 
   describe("themeId", () => {
     it("should throw zod error when themeId is invalid.", () => {
-      const invalid: unknown = Object.assign(validDto, { themeId: "not-an-id" });
+      const invalid = Object.assign(validDto, { themeId: "not-an-id" });
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
     });
@@ -36,7 +36,7 @@ describe("Question Theme Assignment Creation DTO Specs", () => {
 
   describe("isPrimary", () => {
     it("should throw zod error when isPrimary is invalid.", () => {
-      const invalid: unknown = Object.assign(validDto, { isPrimary: "not-boolean" });
+      const invalid = Object.assign(validDto, { isPrimary: "not-boolean" });
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
     });
@@ -44,7 +44,7 @@ describe("Question Theme Assignment Creation DTO Specs", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_THEME_ASSIGNMENT_CREATION_DTO.shape.isPrimary.meta();
       const expectedMetadata = {
-        description: "Indicates if the assigned theme is the primary theme for the question",
+        description: "Indicates if the assigned theme is the primary theme for the question. Only one primary theme is allowed per question",
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
@@ -53,7 +53,7 @@ describe("Question Theme Assignment Creation DTO Specs", () => {
 
   describe("isHint", () => {
     it("should throw zod error when isHint is invalid.", () => {
-      const invalid: unknown = Object.assign(validDto, { isHint: "not-boolean" });
+      const invalid = Object.assign(validDto, { isHint: "not-boolean" });
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
     });

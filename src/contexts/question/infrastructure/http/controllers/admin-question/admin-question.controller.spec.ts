@@ -2,8 +2,10 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
+import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
@@ -11,13 +13,17 @@ import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindAllQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-all-questions.use-case.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
+import { createMockedCreateQuestionUseCase } from "@mocks/contexts/question/application/use-cases/create-question.use-case.mock";
 
 import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto/question-creation/question-creation.dto.faketory";
+import { createFakeQuestionCreationCommand } from "@faketories/contexts/question/commands/question.commands.faketory";
 
 import type { Mock } from "vitest";
 
 vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
+vi.mock(import("@question/application/mappers/question-creation/question-creation.dto.mappers"));
 
 describe("Admin Question Controller", () => {
   let adminQuestionController: AdminQuestionController;
@@ -28,9 +34,11 @@ describe("Admin Question Controller", () => {
     useCases: {
       findAllQuestions: ReturnType<typeof createMockedFindAllQuestionsUseCase>;
       findQuestionById: ReturnType<typeof createMockedFindQuestionByIdUseCase>;
+      createQuestion: ReturnType<typeof createMockedCreateQuestionUseCase>;
     };
     mappers: {
       createAdminQuestionDtoFromEntity: Mock;
+      createQuestionCreationCommandFromDto: Mock;
     };
   };
 
@@ -42,9 +50,11 @@ describe("Admin Question Controller", () => {
       useCases: {
         findAllQuestions: createMockedFindAllQuestionsUseCase(),
         findQuestionById: createMockedFindQuestionByIdUseCase(),
+        createQuestion: createMockedCreateQuestionUseCase(),
       },
       mappers: {
         createAdminQuestionDtoFromEntity: vi.mocked(createAdminQuestionDtoFromEntity),
+        createQuestionCreationCommandFromDto: vi.mocked(createQuestionCreationCommandFromDto),
       },
     };
 
@@ -62,6 +72,10 @@ describe("Admin Question Controller", () => {
         {
           provide: FindQuestionByIdUseCase,
           useValue: mocks.useCases.findQuestionById,
+        },
+        {
+          provide: CreateQuestionUseCase,
+          useValue: mocks.useCases.createQuestion,
         },
       ],
     }).compile();
@@ -142,6 +156,45 @@ describe("Admin Question Controller", () => {
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
 
       const result = await adminQuestionController.findQuestionById(questionId);
+
+      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+    });
+  });
+
+  describe(AdminQuestionController.prototype.createQuestion, () => {
+    it("should map question creation dto to command when called.", async() => {
+      const questionCreationDto = createFakeQuestionCreationDto();
+      await adminQuestionController.createQuestion(questionCreationDto);
+
+      expect(mocks.mappers.createQuestionCreationCommandFromDto).toHaveBeenCalledExactlyOnceWith(questionCreationDto);
+    });
+
+    it("should create question when called.", async() => {
+      const questionCreationDto = createFakeQuestionCreationDto();
+      const questionCreationCommand = createFakeQuestionCreationCommand();
+      mocks.mappers.createQuestionCreationCommandFromDto.mockReturnValueOnce(questionCreationCommand);
+      await adminQuestionController.createQuestion(questionCreationDto);
+
+      expect(mocks.useCases.createQuestion.create).toHaveBeenCalledExactlyOnceWith(questionCreationCommand);
+    });
+
+    it("should map the created question to dto when created.", async() => {
+      const questionCreationDto = createFakeQuestionCreationDto();
+      const createdQuestion = createFakeQuestion();
+      mocks.useCases.createQuestion.create.mockResolvedValueOnce(createdQuestion);
+      await adminQuestionController.createQuestion(questionCreationDto);
+
+      expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledExactlyOnceWith(createdQuestion);
+    });
+
+    it("should return the mapped dto from the mapper when created.", async() => {
+      const questionCreationDto = createFakeQuestionCreationDto();
+      const createdQuestion = createFakeQuestion();
+      const expectedDto = createFakeAdminQuestionDto();
+
+      mocks.useCases.createQuestion.create.mockResolvedValueOnce(createdQuestion);
+      mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
+      const result = await adminQuestionController.createQuestion(questionCreationDto);
 
       expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
     });
