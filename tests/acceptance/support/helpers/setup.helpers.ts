@@ -4,9 +4,14 @@ import { URL } from "node:url";
 
 import { config as loadEnvConfig } from "dotenv";
 
+import { prettyJsonStringify } from "@test-helpers/json/json.helpers";
+
 import { APP_BASE_URL, APP_ENV_TEST_PATH, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
 
+import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams, SpawnOptions, SpawnOptionsWithoutStdio } from "node:child_process";
+
+import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 function loadEnvTestConfig(): void {
   const envLoadResult = loadEnvConfig({
@@ -121,6 +126,31 @@ async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithou
   });
 }
 
+function printDebugOnScenarioFailure(world: GoatItWorld, scenario: ITestCaseHookParameter): void {
+  console.error("Scenario:", scenario.pickle.name);
+
+  console.error("-- Stored request payload in World --");
+  console.error(prettyJsonStringify(world.lastPayload));
+
+  console.error("-- Last stored request payload in World --");
+  console.error(prettyJsonStringify(world.payload));
+
+  console.error("-- Last HTTP response (if any) --");
+  if (world.lastFetchResponse) {
+    const { _data: data, headers, status } = world.lastFetchResponse;
+    console.error("Status:", status);
+    console.error("Headers:", prettyJsonStringify(headers));
+    console.error("Body:", prettyJsonStringify(data));
+  } else {
+    console.error("No HTTP response stored on the World.");
+  }
+
+  console.error("-- Other World data --");
+  console.error("App process PID:", world.appProcess?.pid ?? "<none>");
+  console.error("Registered models:", Object.keys(world.models).join(", ") || "<none>");
+  console.error("=== End debug ===\n");
+}
+
 async function killAppProcess(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
   serverProcess.kill("SIGTERM");
 
@@ -131,5 +161,6 @@ export {
   loadEnvTestConfig,
   buildAppForAcceptanceTests,
   serveAppForAcceptanceTests,
+  printDebugOnScenarioFailure,
   killAppProcess,
 };

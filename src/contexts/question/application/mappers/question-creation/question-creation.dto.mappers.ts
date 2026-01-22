@@ -40,7 +40,7 @@ function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): Questio
       cognitiveDifficulty: dto.cognitiveDifficulty,
       author: createQuestionAuthorCreationContractFromDto(dto.author),
       status: computeQuestionStatusFromAuthorRole(dto.author.role),
-      sourceUrls: new Set(...dto.sourceUrls),
+      sourceUrls: new Set(dto.sourceUrls),
     },
   };
 }

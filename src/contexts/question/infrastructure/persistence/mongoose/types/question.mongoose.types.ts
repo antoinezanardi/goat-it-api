@@ -25,9 +25,15 @@ type QuestionAggregate = Omit<
   themes: QuestionThemeAssignmentAggregate[];
 };
 
+type QuestionMongooseInsertPayload = Parameters<Model<QuestionMongooseDocument>["create"]>[0];
+
+type QuestionThemeAssignmentMongooseInsertPayload = QuestionMongooseDocument["themes"][number];
+
 export type {
   QuestionMongooseDocument,
   QuestionAggregatePipeline,
   QuestionThemeAssignmentAggregate,
   QuestionAggregate,
+  QuestionMongooseInsertPayload,
+  QuestionThemeAssignmentMongooseInsertPayload,
 };

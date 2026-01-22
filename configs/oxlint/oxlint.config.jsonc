@@ -1368,13 +1368,14 @@
     {
       "files": [
         "**/tests/acceptance/features/**/*-steps.ts",
-        "**/tests/acceptance/support/hooks.ts"
+        "**/tests/acceptance/support/hooks.ts",
+        "**/tests/acceptance/support/helpers/setup.helpers.ts"
       ],
       "rules": {
         "no-console": [
           "error",
           {
-            "allow": ["info"]
+            "allow": ["info", "error"]
           }
         ],
         "new-cap": [
