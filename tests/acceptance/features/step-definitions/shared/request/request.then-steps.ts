@@ -67,6 +67,7 @@ Then(/^the failed request's response should contain the following validation det
       maximum: validationDetailsEntry.maximum,
       inclusive: validationDetailsEntry.inclusive,
       keys: validationDetailsEntry.keys === undefined ? undefined : validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean),
+      values: validationDetailsEntry.values === undefined ? undefined : validationDetailsEntry.values.split(",").map(value => value.trim()).filter(Boolean),
     };
     const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
 

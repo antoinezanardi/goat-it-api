@@ -130,10 +130,10 @@ function printDebugOnScenarioFailure(world: GoatItWorld, scenario: ITestCaseHook
   console.error("Scenario:", scenario.pickle.name);
 
   console.error("-- Stored request payload in World --");
-  console.error(prettyJsonStringify(world.lastPayload));
+  console.error(prettyJsonStringify(world.payload));
 
   console.error("-- Last stored request payload in World --");
-  console.error(prettyJsonStringify(world.payload));
+  console.error(prettyJsonStringify(world.lastPayload));
 
   console.error("-- Last HTTP response (if any) --");
   if (world.lastFetchResponse) {

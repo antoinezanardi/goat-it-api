@@ -27,6 +27,7 @@ const REQUEST_VALIDATION_DETAILS_ROW_SCHEMA = z.strictObject({
   maximum: zCoerceOptionalNumber(),
   inclusive: zCoerceOptionalBoolean(),
   keys: zCoerceOptionalString(),
+  values: zCoerceOptionalString(),
 });
 
 export {

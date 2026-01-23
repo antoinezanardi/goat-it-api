@@ -37,6 +37,6 @@ export class QuestionMongooseRepository implements QuestionRepository {
     const questionCreationDocument = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
     const createdQuestionDocument = await this.questionModel.create(questionCreationDocument);
 
-    return this.findById(createdQuestionDocument.id);
+    return this.findById(createdQuestionDocument._id.toString());
   }
 }
