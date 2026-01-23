@@ -4,7 +4,7 @@ import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto
 import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-import { FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
+import { FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 
 const COMPLETE_QUESTION_CREATION_PAYLOAD = Object.freeze(createFakeQuestionCreationDto({
   themes: [
@@ -13,67 +13,72 @@ const COMPLETE_QUESTION_CREATION_PAYLOAD = Object.freeze(createFakeQuestionCreat
       isPrimary: true,
       isHint: false,
     }),
+    createFakeQuestionThemeAssignmentCreationDto({
+      themeId: FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id.toString(),
+      isPrimary: false,
+      isHint: true,
+    }),
   ],
   content: createFakeQuestionContentCreationDto({
     statement: createFakeLocalizedText({
-      en: "Which planet in our solar system is known as the Red Planet?",
-      fr: "Quelle planète de notre système solaire est connue sous le nom de planète rouge ?",
-      es: "¿Qué planeta de nuestro sistema solar es conocido como el Planeta Rojo?",
-      pt: "Qual planeta do nosso sistema solar é conhecido como o Planeta Vermelho?",
-      it: "Quale pianeta del nostro sistema solare è conosciuto come il Pianeta Rosso?",
-      de: "Welcher Planet in unserem Sonnensystem ist als der Rote Planet bekannt?",
+      en: "Who discovered penicillin?",
+      fr: "Qui a découvert la pénicilline ?",
+      es: "¿Quién descubrió la penicilina?",
+      pt: "Quem descobriu a penicilina?",
+      it: "Chi ha scoperto la penicillina?",
+      de: "Wer entdeckte Penicillin?",
     }),
     answer: createFakeLocalizedText({
-      en: "Mars",
-      fr: "Mars",
-      es: "Marte",
-      pt: "Marte",
-      it: "Marte",
-      de: "Mars",
+      en: "Alexander Fleming",
+      fr: "Alexander Fleming",
+      es: "Alexander Fleming",
+      pt: "Alexander Fleming",
+      it: "Alexander Fleming",
+      de: "Alexander Fleming",
     }),
     context: createFakeLocalizedText({
-      en: "Basic astronomy — planets and their nicknames.",
-      fr: "Astronomie de base — planètes et leurs surnoms.",
-      es: "Astronomía básica: planetas y sus apodos.",
-      pt: "Astronomia básica — planetas e seus apelidos.",
-      it: "Astronomia di base: pianeti e i loro soprannomi.",
-      de: "Grundlegende Astronomie — Planeten und ihre Spitznamen.",
+      en: "In 1928 Alexander Fleming discovered penicillin, a breakthrough that led to modern antibiotics.",
+      fr: "En 1928, Alexander Fleming a découvert la pénicilline, une percée qui a conduit aux antibiotiques modernes.",
+      es: "En 1928 Alexander Fleming descubrió la penicilina, un avance que condujo a los antibióticos modernos.",
+      pt: "Em 1928, Alexander Fleming descobriu a penicilina, uma descoberta que levou aos antibióticos modernos.",
+      it: "Nel 1928 Alexander Fleming scoprì la penicillina, una scoperta che portò agli antibiotici moderni.",
+      de: "1928 entdeckte Alexander Fleming das Penicillin, ein Durchbruch, der zu modernen Antibiotika führte.",
     }),
     trivia: createFakeLocalizedTexts({
       en: [
-        "Mars appears red because of iron oxide (rust) on its surface.",
-        "It has the largest volcano in the solar system, Olympus Mons.",
+        "Alexander Fleming discovered penicillin in 1928.",
+        "Fleming, Florey and Chain received the Nobel Prize in 1945 for their work on antibiotics.",
       ],
       fr: [
-        "Mars semble rouge à cause de l'oxyde de fer à sa surface.",
-        "Elle possède le plus grand volcan du système solaire, Olympus Mons.",
+        "Alexander Fleming a découvert la pénicilline en 1928.",
+        "Fleming, Florey et Chain ont reçu le prix Nobel en 1945 pour leurs travaux sur les antibiotiques.",
       ],
       es: [
-        "Marte parece rojo debido al óxido de hierro en su superficie.",
-        "Tiene el volcán más grande del sistema solar, Olympus Mons.",
+        "Alexander Fleming descubrió la penicilina en 1928.",
+        "Fleming, Florey y Chain recibieron el Premio Nobel en 1945 por su trabajo sobre antibióticos.",
       ],
       pt: [
-        "Marte parece vermelho por causa do óxido de ferro em sua superfície.",
-        "Possui o maior vulcão do sistema solar, Olympus Mons.",
+        "Alexander Fleming descobriu a penicilina em 1928.",
+        "Fleming, Florey e Chain receberam o Prêmio Nobel em 1945 por seu trabalho com antibióticos.",
       ],
       it: [
-        "Marte appare rosso a causa dell'ossido di ferro sulla sua superficie.",
-        "Ha il vulcano più grande del sistema solare, Olympus Mons.",
+        "Alexander Fleming scoprì la penicillina nel 1928.",
+        "Fleming, Florey e Chain ricevettero il Premio Nobel nel 1945 per il loro lavoro sugli antibiotici.",
       ],
       de: [
-        "Mars erscheint rot wegen Eisenoxid auf seiner Oberfläche.",
-        "Er hat den größten Vulkan im Sonnensystem, Olympus Mons.",
+        "Alexander Fleming entdeckte 1928 das Penicillin.",
+        "Fleming, Florey und Chain erhielten 1945 den Nobelpreis für ihre Arbeit an Antibiotika.",
       ],
     }),
   }),
-  cognitiveDifficulty: "easy",
+  cognitiveDifficulty: "medium",
   author: createFakeQuestionAuthorCreationDto({
     role: "admin",
     name: "Antoine ZANARDI",
   }),
   sourceUrls: [
-    "https://solarsystem.nasa.gov/planets/mars/overview/",
-    "https://en.wikipedia.org/wiki/Mars",
+    "https://en.wikipedia.org/wiki/Penicillin",
+    "https://www.nobelprize.org/prizes/medicine/1945/summary/",
   ],
 }));
 

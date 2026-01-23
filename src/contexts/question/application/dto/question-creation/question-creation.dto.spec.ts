@@ -27,6 +27,26 @@ describe("Question Creation DTO Specs", () => {
       expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
     });
 
+    it("should throw zod error when themes exceed maximum items.", () => {
+      const themes = [
+        createFakeQuestionThemeAssignmentCreationDto({
+          isPrimary: true,
+        }),
+        createFakeQuestionThemeAssignmentCreationDto({
+          isPrimary: false,
+        }),
+        createFakeQuestionThemeAssignmentCreationDto({
+          isPrimary: false,
+        }),
+        createFakeQuestionThemeAssignmentCreationDto({
+          isPrimary: false,
+        }),
+      ];
+      const invalid = Object.assign(validDto, { themes });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CREATION_DTO.shape.themes.meta();
       const expectedMetadata = {

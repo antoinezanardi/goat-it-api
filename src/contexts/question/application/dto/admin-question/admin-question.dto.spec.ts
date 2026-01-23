@@ -5,6 +5,7 @@ import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validator
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto";
 
+import { createFakeAdminQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.faketory";
 import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
 
 describe("Admin Question DTO Specs", () => {
@@ -56,6 +57,18 @@ describe("Admin Question DTO Specs", () => {
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
+    });
+
+    it("should throw zod error when themes exceed maximum items.", () => {
+      const themes = [
+        createFakeAdminQuestionThemeAssignmentDto(),
+        createFakeAdminQuestionThemeAssignmentDto(),
+        createFakeAdminQuestionThemeAssignmentDto(),
+        createFakeAdminQuestionThemeAssignmentDto(),
+      ];
+      const dtoWithTooManyThemes = Object.assign(validAdminQuestionDto, { themes });
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrowError(ZodError);
     });
   });
 
