@@ -1,9 +1,11 @@
 import { Test } from "@nestjs/testing";
 
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
+import { CheckQuestionThemesExistenceUseCase } from "@question/modules/question-theme/application/use-cases/check-question-themes-existence/check-question-themes-existence.use-case";
 import { QuestionCreationError } from "@question/domain/errors/question.errors";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
+import { createMockedCheckQuestionThemesExistenceUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/check-question-themes-existence.use-case.mock";
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
@@ -19,6 +21,9 @@ describe("Create Question Use Case", () => {
     repositories: {
       question: ReturnType<typeof createMockedQuestionRepository>;
     };
+    useCases: {
+      checkQuestionThemesExistence: ReturnType<typeof createMockedCheckQuestionThemesExistenceUseCase>;
+    };
   };
 
   beforeEach(async() => {
@@ -26,11 +31,18 @@ describe("Create Question Use Case", () => {
       repositories: {
         question: createMockedQuestionRepository(),
       },
+      useCases: {
+        checkQuestionThemesExistence: createMockedCheckQuestionThemesExistenceUseCase(),
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CreateQuestionUseCase,
+        {
+          provide: CheckQuestionThemesExistenceUseCase,
+          useValue: mocks.useCases.checkQuestionThemesExistence,
+        },
         {
           provide: QUESTION_REPOSITORY_TOKEN,
           useValue: mocks.repositories.question,
@@ -66,6 +78,17 @@ describe("Create Question Use Case", () => {
       const actual = await createQuestionUseCase.create(command);
 
       expect(actual).toStrictEqual<Question>(expected);
+    });
+  });
+
+  describe("checkQuestionIsCreatable", () => {
+    it("should call checkQuestionThemesExistenceUseCase.checkExistenceByIds with theme ids when called.", async() => {
+      const command = createFakeQuestionCreationCommand();
+      const expectedThemeIds = new Set(command.payload.themes.map(themeAssignment => themeAssignment.themeId));
+
+      await createQuestionUseCase["checkQuestionIsCreatable"](command);
+
+      expect(mocks.useCases.checkQuestionThemesExistence.checkExistenceByIds).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
     });
   });
 });
