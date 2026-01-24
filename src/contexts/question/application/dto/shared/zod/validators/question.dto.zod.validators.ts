@@ -25,9 +25,9 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
   return z.array(z.url())
     .min(QUESTION_SOURCE_URLS_MIN_ITEMS)
     .max(QUESTION_SOURCE_URLS_MAX_ITEMS)
+    .refine(areValuesUniqueFromStrings, { message: "Source URLs must be unique" })
     .describe("List of unique source URLs for the question")
-    .meta({ example: ["https://example.com/source1", "https://example.com/source2"] })
-    .refine(areValuesUniqueFromStrings, { message: "Source URLs must be unique" });
+    .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 
 export {

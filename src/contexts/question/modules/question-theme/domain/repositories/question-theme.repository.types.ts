@@ -5,6 +5,7 @@ import type { QuestionTheme } from "@question/modules/question-theme/domain/enti
 type QuestionThemeRepository = {
   findAll: () => Promise<QuestionTheme[]>;
   findById: (id: string) => Promise<QuestionTheme | undefined>;
+  findByIds: (ids: Set<string>) => Promise<QuestionTheme[]>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;
   create: (questionThemeCreationContract: QuestionThemeCreationContract) => Promise<QuestionTheme>;
   modify: (id: string, questionThemeModificationContract: QuestionThemeModificationContract) => Promise<QuestionTheme | undefined>;

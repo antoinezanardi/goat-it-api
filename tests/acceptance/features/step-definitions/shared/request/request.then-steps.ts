@@ -61,7 +61,7 @@ Then(/^the failed request's response should contain the following validation det
       path: validationDetailsEntry.path.split(".").map(segment => {
         const trimmedValue = segment.trim();
 
-        return Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
+        return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
       }).filter(value => value !== ""),
       expected: validationDetailsEntry.expected,
       origin: validationDetailsEntry.origin,

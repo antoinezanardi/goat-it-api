@@ -31,6 +31,14 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
+  public async findByIds(ids: Set<string>): Promise<QuestionTheme[]> {
+    const questionThemeDocuments = await this.questionThemeModel.find({
+      _id: { $in: [...ids] },
+    });
+
+    return questionThemeDocuments.map(createQuestionThemeFromDocument);
+  }
+
   public async findBySlug(slug: string): Promise<QuestionTheme | undefined> {
     const questionThemeDocument = await this.questionThemeModel.findOne({
       slug,

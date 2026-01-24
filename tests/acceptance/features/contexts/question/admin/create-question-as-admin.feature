@@ -142,6 +142,7 @@ Feature: Create Question as Admin
       | Fleming, Florey et Chain ont reçu le prix Nobel en 1945 pour leurs travaux sur les antibiotiques. |
 
   Scenario: Trying to create a question with empty English statement
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path                 | type   | value |
@@ -155,6 +156,7 @@ Feature: Create Question as Admin
       | too_small | Too small: expected string to have >=1 characters | content.statement.en | string | 1       | true      |
 
   Scenario: Trying to create a question with Spanish statement that is too long
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path                 | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -168,6 +170,7 @@ Feature: Create Question as Admin
       | too_big | Too big: expected string to have <=500 characters | content.statement.es | string | 500     | true      |
 
   Scenario: Trying to create a question with an unknown locale key for statement
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path                 | type   | value   |
@@ -181,6 +184,7 @@ Feature: Create Question as Admin
       | unrecognized_keys | Unrecognized key: "jp" | content.statement | jp   |
 
   Scenario: Trying to create a question with statement of wrong type (integer)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path                 | type    | value |
@@ -194,6 +198,7 @@ Feature: Create Question as Admin
       | invalid_type | Invalid input: expected string, received number | string   | content.statement.it |
 
   Scenario: Trying to create a question with empty Portuguese answer
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type   | value |
@@ -207,6 +212,7 @@ Feature: Create Question as Admin
       | too_small | Too small: expected string to have >=1 characters | content.answer.pt | string | 1       | true      |
 
   Scenario: Trying to create a question with German answer that is too long
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -220,6 +226,7 @@ Feature: Create Question as Admin
       | too_big | Too big: expected string to have <=500 characters | content.answer.de | string | 500     | true      |
 
   Scenario: Trying to create a question with unknown locale key for answer
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type   | value     |
@@ -233,6 +240,7 @@ Feature: Create Question as Admin
       | unrecognized_keys | Unrecognized key: "lt" | content.answer | lt   |
 
   Scenario: Trying to create a question with answer of wrong type (boolean)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type    | value |
@@ -246,6 +254,7 @@ Feature: Create Question as Admin
       | invalid_type | Invalid input: expected string, received boolean | string   | content.answer.en |
 
   Scenario: Trying to create a question with empty Italian context
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path               | type   | value |
@@ -259,6 +268,7 @@ Feature: Create Question as Admin
       | too_small | Too small: expected string to have >=1 characters | content.context.it | string | 1       | true      |
 
   Scenario: Trying to create a question with English context that is too long
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path               | type   | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
@@ -272,6 +282,7 @@ Feature: Create Question as Admin
       | too_big | Too big: expected string to have <=500 characters | content.context.en | string | 500     | true      |
 
   Scenario: Trying to create a question with unknown locale key for context
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path               | type   | value    |
@@ -285,6 +296,7 @@ Feature: Create Question as Admin
       | unrecognized_keys | Unrecognized key: "jp" | content.context | jp   |
 
   Scenario: Trying to create a question with context of wrong type (number)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path               | type    | value |
@@ -298,6 +310,7 @@ Feature: Create Question as Admin
       | invalid_type | Invalid input: expected string, received number | string   | content.context.es |
 
   Scenario: Trying to create a question with an empty trivia item for English locale
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type  | value |
@@ -311,6 +324,7 @@ Feature: Create Question as Admin
       | too_small | Too small: expected string to have >=1 characters | content.trivia.en.0 | string | 1       | true      |
 
   Scenario: Trying to create a question with a trivia element that is too long (French)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type  | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -324,6 +338,7 @@ Feature: Create Question as Admin
       | too_big | Too big: expected string to have <=500 characters | content.trivia.fr.0 | string | 500     | true      |
 
   Scenario: Trying to create a question with unknown locale key for trivia
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type  | value        |
@@ -337,6 +352,7 @@ Feature: Create Question as Admin
       | unrecognized_keys | Unrecognized key: "jp" | content.trivia | jp   |
 
   Scenario: Trying to create a question with trivia value of wrong type (should be array)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path              | type   | value        |
@@ -351,6 +367,7 @@ Feature: Create Question as Admin
       | too_big      | Too big: expected string to have <=10 characters |          | content.trivia.de | true      | 10      | string |
 
   Scenario: Trying to create a question with missing required fields
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin creates a new question with an empty payload
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
@@ -364,6 +381,7 @@ Feature: Create Question as Admin
       | invalid_type  | Invalid input: expected array, received undefined        | array    | sourceUrls          |                  |
 
   Scenario: Trying to create a question without themes
+    Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path   | type  | value |
@@ -419,8 +437,20 @@ Feature: Create Question as Admin
       | code   | message                  | path   |
       | custom | Theme IDs must be unique | themes |
 
+  Scenario: Trying to create a question with unknown theme ID
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type   | value                    |
+      | themes[0].themeId | string | aaa921ed56ba7de91c2aa57f |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 404 and the response should contain the following error:
+      | error     | statusCode | message                                                   |
+      | Not Found | 404        | Question theme with id aaa921ed56ba7de91c2aa57f not found |
+
   Scenario: Trying to create a question without source URLs
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value |
       | sourceUrls | array | []    |
@@ -432,9 +462,9 @@ Feature: Create Question as Admin
       | code      | message                                     | path       | origin | minimum | inclusive |
       | too_small | Too small: expected array to have >=1 items | sourceUrls | array  | 1       | true      |
 
-
   Scenario: Trying to create a question with too many source URLs
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path       | type  | value                                                                                                                           |
       | sourceUrls | array | ["http://source1.com","http://source2.com","http://source3.com","http://source4.com","http://source5.com","http://source6.com"] |
@@ -447,7 +477,8 @@ Feature: Create Question as Admin
       | too_big | Too big: expected array to have <=5 items | sourceUrls | array  | 5       | true      |
 
   Scenario: Trying to create a question with duplicate source URLs
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path          | type   | value                                    |
       | sourceUrls[1] | string | https://en.wikipedia.org/wiki/Penicillin |
@@ -460,7 +491,8 @@ Feature: Create Question as Admin
       | custom | Source URLs must be unique | sourceUrls |
 
   Scenario: Trying to create a question with invalid author role
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path        | type   | value |
       | author.role | string | game  |
@@ -473,7 +505,8 @@ Feature: Create Question as Admin
       | invalid_value | Invalid option: expected one of "admin"\|"ai" | admin,ai | author.role |
 
   Scenario: Trying to create a question without author name
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path        | type   | value |
       | author.name | string |       |
@@ -486,7 +519,8 @@ Feature: Create Question as Admin
       | too_small | Too small: expected string to have >=3 characters | author.name | string | 3       | true      |
 
   Scenario: Trying to create a question with author name that is too long
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path        | type   | value                                                                              |
       | author.name | string | This author name is definitely way too long to be accepted by the validation rules |
@@ -499,14 +533,16 @@ Feature: Create Question as Admin
       | too_big | Too big: expected string to have <=30 characters | author.name | string | 30      | true      |
 
   Scenario: Trying to create a question without API key
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the admin creates a new question with the request payload but without an API key
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message                    |
       | Unauthorized | 401        | Missing API key in headers |
 
   Scenario: Trying to create a question with invalid API key
-    Given the request payload is set from scope "question", type "creation" and name "complete"
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
     When the admin creates a new question with the request payload but with an invalid API key
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
