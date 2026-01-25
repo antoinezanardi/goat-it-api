@@ -1,5 +1,6 @@
 import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from "@cucumber/cucumber";
 
+import { flushAndPrintLogTail } from "@acceptance-support/helpers/logging.helpers";
 import { buildAppForAcceptanceTests, killAppProcess, loadEnvTestConfig, printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
@@ -21,7 +22,9 @@ BeforeAll(async function() {
   }
   await connectToTestDatabase();
 
-  processes.app = await serveAppForAcceptanceTests();
+  const { process: appProcess, appLogs } = await serveAppForAcceptanceTests();
+  processes.app = appProcess;
+  processes.appLogs = appLogs;
 });
 
 Before(async function(this: GoatItWorld) {
@@ -32,12 +35,17 @@ Before(async function(this: GoatItWorld) {
   this.appProcess = processes.app;
 });
 
-After(function(this: GoatItWorld, scenario: ITestCaseHookParameter): void {
+After(async function(this: GoatItWorld, scenario: ITestCaseHookParameter): Promise<void> {
   const status = scenario.result?.status;
 
   if (status !== Status.FAILED) {
     return;
   }
+
+  if (processes.appLogs) {
+    await flushAndPrintLogTail(processes.appLogs, scenario);
+  }
+
   printDebugOnScenarioFailure(this, scenario);
 });
 
