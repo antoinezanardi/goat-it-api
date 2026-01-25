@@ -1,4 +1,5 @@
 import { COMPLETE_QUESTION_THEME_CREATION_PAYLOAD } from "@acceptance-support/payloads/question-theme/creation/complete-question-theme.create-payload";
+import { COMPLETE_QUESTION_CREATION_PAYLOAD } from "@acceptance-support/payloads/question/creation/complete-question.create-payload";
 
 import type { PayloadScope, PayloadType } from "@acceptance-support/payloads/types/payload.types";
 
@@ -6,6 +7,11 @@ const PAYLOADS = {
   "question-theme": {
     creation: {
       complete: COMPLETE_QUESTION_THEME_CREATION_PAYLOAD,
+    },
+  },
+  "question": {
+    creation: {
+      complete: COMPLETE_QUESTION_CREATION_PAYLOAD,
     },
   },
 } as const satisfies Record<PayloadScope, Record<PayloadType, Record<string, object>>>;

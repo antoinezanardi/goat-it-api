@@ -44,3 +44,38 @@ When(/^the admin retrieves the question with id "(?<questionId>[^"]+)" with an i
   });
   await this.fetchAndStoreResponse(`/admin/questions/${questionId}`, fetchOptions);
 });
+
+When(/^the admin creates a new question with an empty payload$/u, async function(this: GoatItWorld) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    method: "POST",
+    body: {},
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
+When(/^the admin creates a new question with the request payload$/u, async function(this: GoatItWorld) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    method: "POST",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
+When(/^the admin creates a new question with the request payload but without an API key$/u, async function(this: GoatItWorld) {
+  const fetchOptions = createFetchOptions({
+    method: "POST",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
+When(/^the admin creates a new question with the request payload but with an invalid API key$/u, async function(this: GoatItWorld) {
+  const fetchOptions = createFetchOptions({
+    apiKey: "invalid-api-key",
+    method: "POST",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});

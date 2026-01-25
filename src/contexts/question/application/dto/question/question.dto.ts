@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
+import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 import { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto";
 import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
@@ -13,7 +14,8 @@ const QUESTION_DTO = z.strictObject({
   id: zMongoId()
     .describe("Question's unique identifier"),
   themes: z.array(QUESTION_THEME_ASSIGNMENT_DTO)
-    .min(1)
+    .min(QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS)
+    .max(QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS)
     .describe("Question's themes"),
   content: QUESTION_CONTENT_DTO,
   cognitiveDifficulty: zQuestionCognitiveDifficulty(),

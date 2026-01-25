@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
@@ -27,6 +28,7 @@ import { QuestionThemeModule } from "@question/modules/question-theme/question-t
   providers: [
     FindAllQuestionsUseCase,
     FindQuestionByIdUseCase,
+    CreateQuestionUseCase,
     {
       provide: QUESTION_REPOSITORY_TOKEN,
       useClass: QuestionMongooseRepository,

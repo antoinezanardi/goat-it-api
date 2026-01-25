@@ -30,6 +30,7 @@
       "@shared/*": ["../../src/shared/*"],
       "@unit-tests/*": ["../../tests/unit/*"],
       "@faketories/*": ["../../tests/shared/utils/faketories/*"],
+      "@test-helpers/*": ["../../tests/shared/utils/helpers/*"],
       "@mocks/*": ["../../tests/unit/utils/mocks/*"],
       "@acceptance-tests/*": ["../../tests/acceptance/*"],
       "@acceptance-features/*": ["../../tests/acceptance/features/*"],

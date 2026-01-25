@@ -112,6 +112,47 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
+  describe(QuestionThemeMongooseRepository.prototype.findByIds, () => {
+    it("should find documents by ids from model when called.", async() => {
+      const questionThemeIds: Set<string> = new Set(["question-theme-id-1", "question-theme-id-2"]);
+      await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith({ _id: { $in: [...questionThemeIds] } });
+    });
+
+    it("should map and return question themes when called.", async() => {
+      const questionThemeIds: Set<string> = new Set(["question-theme-id-1", "question-theme-id-2"]);
+      const foundQuestionThemeDocuments = [
+        createFakeQuestionThemeDocument(),
+        createFakeQuestionThemeDocument(),
+      ];
+      mocks.models.questionTheme.find.mockResolvedValue(foundQuestionThemeDocuments);
+      await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(foundQuestionThemeDocuments.length);
+    });
+
+    it("should return mapped question themes from model when called.", async() => {
+      const questionThemeIds: Set<string> = new Set([
+        "question-theme-id-1",
+        "question-theme-id-2",
+        "question-theme-id-3",
+      ]);
+      const expectedQuestionThemes = [
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+      ];
+      vi.mocked(createQuestionThemeFromDocument)
+        .mockReturnValueOnce(expectedQuestionThemes[0])
+        .mockReturnValueOnce(expectedQuestionThemes[1])
+        .mockReturnValueOnce(expectedQuestionThemes[2]);
+      const actualQuestionThemes = await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(actualQuestionThemes).toStrictEqual<QuestionTheme[]>(expectedQuestionThemes);
+    });
+  });
+
   describe(QuestionThemeMongooseRepository.prototype.findBySlug, () => {
     it("should find document by slug from model when called.", async() => {
       const questionThemeSlug = "question-theme-slug";

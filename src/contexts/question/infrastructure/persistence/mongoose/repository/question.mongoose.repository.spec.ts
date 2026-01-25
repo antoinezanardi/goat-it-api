@@ -2,15 +2,18 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
-import { createQuestionFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
+import { createFakeQuestionMongooseInsertPayload } from "@faketories/contexts/question/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
+import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
+import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -28,6 +31,7 @@ describe("Question Mongoose Repository", () => {
     mappers: {
       question: {
         createQuestionFromAggregate: Mock;
+        createQuestionMongooseInsertPayloadFromContract: Mock;
       };
     };
   };
@@ -40,6 +44,7 @@ describe("Question Mongoose Repository", () => {
       mappers: {
         question: {
           createQuestionFromAggregate: vi.mocked(createQuestionFromAggregate),
+          createQuestionMongooseInsertPayloadFromContract: vi.mocked(createQuestionMongooseInsertPayloadFromContract),
         },
       },
     };
@@ -138,6 +143,41 @@ describe("Question Mongoose Repository", () => {
       await repositories.question.findById(questionId);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.create, () => {
+    it("should call model.create with mapped when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const expectedInsertPayload = createFakeQuestionMongooseInsertPayload();
+      mocks.mappers.question.createQuestionMongooseInsertPayloadFromContract.mockReturnValueOnce(expectedInsertPayload);
+      await repositories.question.create(questionCreationContract);
+
+      expect(mocks.models.question.create).toHaveBeenCalledExactlyOnceWith(expectedInsertPayload);
+    });
+
+    it("should call findById with created id when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.create.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      await repositories.question.create(questionCreationContract);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.create.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actualQuestion = await repositories.question.create(questionCreationContract);
+
+      expect(actualQuestion).toStrictEqual(expectedQuestion);
     });
   });
 });

@@ -258,4 +258,31 @@ describe("Api Response Exception Validation Details Dto", () => {
       expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.meta()).toStrictEqual(expectedMetadata);
     });
   });
+
+  describe("values", () => {
+    it("should throw a zod error when assigned a non-array value (when present).", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: "not-an-array" });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+    });
+
+    it("should throw a zod error when array items are not strings.", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: ["a", 2] });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.description).toBe("List unrecognized values when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "List unrecognized values when applicable",
+        example: ["unexpectedValue1", "unexpectedValue2"],
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.meta()).toStrictEqual(expectedMetadata);
+    });
+  });
 });

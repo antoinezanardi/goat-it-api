@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
 
-import { createQuestionFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
+import { createQuestionMongooseInsertPayloadFromContract, createQuestionFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
@@ -30,5 +31,12 @@ export class QuestionMongooseRepository implements QuestionRepository {
       return undefined;
     }
     return createQuestionFromAggregate(questions[0]);
+  }
+
+  public async create(questionCreationContract: QuestionCreationContract): Promise<Question | undefined> {
+    const questionCreationDocument = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
+    const createdQuestionDocument = await this.questionModel.create(questionCreationDocument);
+
+    return this.findById(createdQuestionDocument._id.toString());
   }
 }

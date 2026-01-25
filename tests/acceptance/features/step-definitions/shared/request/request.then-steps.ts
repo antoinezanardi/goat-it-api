@@ -58,7 +58,11 @@ Then(/^the failed request's response should contain the following validation det
     const expectedValidationDetails: ApiResponseExceptionValidationDetailsDto = {
       code: validationDetailsEntry.code,
       message: validationDetailsEntry.message,
-      path: validationDetailsEntry.path.split(".").map(segment => segment.trim()).filter(Boolean),
+      path: validationDetailsEntry.path.split(".").map(segment => {
+        const trimmedValue = segment.trim();
+
+        return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
+      }).filter(value => value !== ""),
       expected: validationDetailsEntry.expected,
       origin: validationDetailsEntry.origin,
       format: validationDetailsEntry.format,
@@ -67,6 +71,7 @@ Then(/^the failed request's response should contain the following validation det
       maximum: validationDetailsEntry.maximum,
       inclusive: validationDetailsEntry.inclusive,
       keys: validationDetailsEntry.keys === undefined ? undefined : validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean),
+      values: validationDetailsEntry.values === undefined ? undefined : validationDetailsEntry.values.split(",").map(value => value.trim()).filter(Boolean),
     };
     const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
 

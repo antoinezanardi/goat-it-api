@@ -6,7 +6,12 @@ import type { QuestionAggregatePipeline } from "@question/infrastructure/persist
  * Mongoose aggregation pipeline to fetch question theme assignments for questions.
  */
 const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
-  { $unwind: "$themes" },
+  {
+    $unwind: {
+      path: "$themes",
+      preserveNullAndEmptyArrays: true,
+    },
+  },
   {
     $lookup: {
       from: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
@@ -15,7 +20,7 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
       as: "themes.theme",
     },
   },
-  { $unwind: "$themes.theme" },
+  { $unwind: { path: "$themes.theme", preserveNullAndEmptyArrays: true } },
   {
     $group: {
       _id: "$_id",
