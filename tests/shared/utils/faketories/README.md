@@ -49,6 +49,12 @@ Organization and Shared Pieces
         contracts/
   ```
 
+- `entity/` - domain entity faketories (use when you need full domain objects used by application logic).
+- `dto/` - data transfer object faketories (use for payload shapes defined by DTOs or for controller/service inputs).
+- `mongoose/` - MongoDB document/payload faketories (use when you need raw mongoose documents or insert payload shapes).
+- `commands/` - command object faketories (use for faketories that produce command objects sent to application use-cases).
+- `contracts/` - contract/interface faketories (use for interface-shaped payloads and cross-layer contracts).
+
 
 - Consolidate common building blocks (for example: content, author, theme-assignment) into a `shared` faketory inside the context to avoid duplication. Suggested path:
 
@@ -58,10 +64,12 @@ Important Design Rules (do not break)
 -----------------------------------
 
 1. Always accept `overrides?: Partial<T>` as param. Tests must be able to set explicit values.
-2. Do not randomly omit fields that tests commonly assert. If a field is optional, make its presence randomized but still include it sometimes.
+2. Do not randomly omit fields that tests commonly assert.
 3. Keep factories single-responsibility: produce objects, do not perform DB operations or call external services.
 4. Always use realistic data from `faker` (e.g. use `faker.internet.email()` for email fields, not hardcoded strings).
-5. For optional fields, randomize their presence to help tests cover both cases.
+5. For optional fields that tests don't commonly assert, randomize their presence to help tests cover both cases.
+
+Clarification: test reliability takes precedence — if an optional field is commonly asserted by tests, do not randomize its presence; keep it present (or let tests set it explicitly via `overrides`).
 
 
 Examples
