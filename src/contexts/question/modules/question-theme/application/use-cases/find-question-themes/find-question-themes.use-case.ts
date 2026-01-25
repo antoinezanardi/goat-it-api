@@ -6,7 +6,7 @@ import { QuestionTheme } from "@question/modules/question-theme/domain/entities/
 import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
 
 @Injectable()
-export class FindAllQuestionThemesUseCase {
+export class FindQuestionThemesUseCase {
   public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)
   private readonly questionThemeRepository: QuestionThemeRepository) {}
 

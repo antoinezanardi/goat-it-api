@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
-import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
+import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
@@ -11,7 +11,7 @@ import type { AdminQuestionDto } from "@question/application/dto/admin-question/
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
-import { createMockedFindAllQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-all-questions.use-case.mock";
+import { createMockedFindQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-questions.use-case.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedCreateQuestionUseCase } from "@mocks/contexts/question/application/use-cases/create-question.use-case.mock";
 
@@ -32,7 +32,7 @@ describe("Admin Question Controller", () => {
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
     useCases: {
-      findAllQuestions: ReturnType<typeof createMockedFindAllQuestionsUseCase>;
+      findQuestions: ReturnType<typeof createMockedFindQuestionsUseCase>;
       findQuestionById: ReturnType<typeof createMockedFindQuestionByIdUseCase>;
       createQuestion: ReturnType<typeof createMockedCreateQuestionUseCase>;
     };
@@ -48,7 +48,7 @@ describe("Admin Question Controller", () => {
         appConfig: createMockedAppConfigService(),
       },
       useCases: {
-        findAllQuestions: createMockedFindAllQuestionsUseCase(),
+        findQuestions: createMockedFindQuestionsUseCase(),
         findQuestionById: createMockedFindQuestionByIdUseCase(),
         createQuestion: createMockedCreateQuestionUseCase(),
       },
@@ -66,8 +66,8 @@ describe("Admin Question Controller", () => {
           useValue: mocks.services.appConfig,
         },
         {
-          provide: FindAllQuestionsUseCase,
-          useValue: mocks.useCases.findAllQuestions,
+          provide: FindQuestionsUseCase,
+          useValue: mocks.useCases.findQuestions,
         },
         {
           provide: FindQuestionByIdUseCase,
@@ -83,11 +83,11 @@ describe("Admin Question Controller", () => {
     adminQuestionController = testingModule.get<AdminQuestionController>(AdminQuestionController);
   });
 
-  describe(AdminQuestionController.prototype.findAllQuestions, () => {
+  describe(AdminQuestionController.prototype.findQuestions, () => {
     it("should list all questions when called.", async() => {
-      await adminQuestionController.findAllQuestions();
+      await adminQuestionController.findQuestions();
 
-      expect(mocks.useCases.findAllQuestions.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should map every question to admin dto when called.", async() => {
@@ -96,8 +96,8 @@ describe("Admin Question Controller", () => {
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-      mocks.useCases.findAllQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findAllQuestions();
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
+      await adminQuestionController.findQuestions();
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);
     });
@@ -108,8 +108,8 @@ describe("Admin Question Controller", () => {
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-      mocks.useCases.findAllQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findAllQuestions();
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
+      await adminQuestionController.findQuestions();
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0]);
     });
@@ -119,13 +119,13 @@ describe("Admin Question Controller", () => {
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-      mocks.useCases.findAllQuestions.list.mockResolvedValueOnce(questions);
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
       const expectedDtos = [
         createFakeAdminQuestionDto(),
         createFakeAdminQuestionDto(),
       ];
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDtos[0]).mockReturnValueOnce(expectedDtos[1]);
-      const result = await adminQuestionController.findAllQuestions();
+      const result = await adminQuestionController.findQuestions();
 
       expect(result).toStrictEqual<AdminQuestionDto[]>(expectedDtos);
     });

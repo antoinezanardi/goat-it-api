@@ -6,7 +6,7 @@ import { Question } from "@question/domain/entities/question.types";
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()
-export class FindAllQuestionsUseCase {
+export class FindQuestionsUseCase {
   public constructor(@Inject(QUESTION_REPOSITORY_TOKEN)
   private readonly questionRepository: QuestionRepository) {}
 

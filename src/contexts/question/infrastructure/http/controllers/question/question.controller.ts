@@ -11,7 +11,7 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
-import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
+import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionDto } from "@question/application/dto/question/question.dto";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
@@ -20,7 +20,7 @@ import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.
 @Controller(ControllerPrefixes.QUESTIONS)
 export class QuestionController {
   public constructor(
-    private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase,
+    private readonly findQuestionsUseCase: FindQuestionsUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}
 
@@ -34,8 +34,8 @@ export class QuestionController {
     status: HttpStatus.OK,
     type: [QuestionDto],
   })
-  public async findAllQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
-    const questions = await this.findAllQuestionsUseCase.list();
+  public async findQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
+    const questions = await this.findQuestionsUseCase.list();
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }

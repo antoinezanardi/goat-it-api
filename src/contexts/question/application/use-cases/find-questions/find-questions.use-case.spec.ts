@@ -1,14 +1,14 @@
 import { Test } from "@nestjs/testing";
 
-import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
+import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-describe("Find All Questions Use Case", () => {
-  let findAllQuestionsUseCase: FindAllQuestionsUseCase;
+describe("Find Questions Use Case", () => {
+  let findQuestionsUseCase: FindQuestionsUseCase;
   let mocks: {
     repositories: {
       question: ReturnType<typeof createMockedQuestionRepository>;
@@ -23,7 +23,7 @@ describe("Find All Questions Use Case", () => {
     };
     const testingModule = await Test.createTestingModule({
       providers: [
-        FindAllQuestionsUseCase,
+        FindQuestionsUseCase,
         {
           provide: QUESTION_REPOSITORY_TOKEN,
           useValue: mocks.repositories.question,
@@ -31,12 +31,12 @@ describe("Find All Questions Use Case", () => {
       ],
     }).compile();
 
-    findAllQuestionsUseCase = testingModule.get<FindAllQuestionsUseCase>(FindAllQuestionsUseCase);
+    findQuestionsUseCase = testingModule.get<FindQuestionsUseCase>(FindQuestionsUseCase);
   });
 
-  describe(FindAllQuestionsUseCase.prototype.list, () => {
+  describe(FindQuestionsUseCase.prototype.list, () => {
     it("should list all questions from repository when called.", async() => {
-      await findAllQuestionsUseCase.list();
+      await findQuestionsUseCase.list();
 
       expect(mocks.repositories.question.findAll).toHaveBeenCalledExactlyOnceWith();
     });
@@ -49,7 +49,7 @@ describe("Find All Questions Use Case", () => {
       ];
       mocks.repositories.question.findAll.mockResolvedValueOnce(expectedQuestions);
 
-      const actualQuestions = await findAllQuestionsUseCase.list();
+      const actualQuestions = await findQuestionsUseCase.list();
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
     });
