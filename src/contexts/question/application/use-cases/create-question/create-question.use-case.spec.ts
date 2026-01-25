@@ -79,6 +79,14 @@ describe("Create Question Use Case", () => {
 
       expect(actual).toStrictEqual<Question>(expected);
     });
+
+    it("should call checkQuestionIsCreatable with command when called.", async() => {
+      const command = createFakeQuestionCreationCommand();
+      const checkQuestionIsCreatableSpy = vi.spyOn(createQuestionUseCase as unknown as { checkQuestionIsCreatable: () => Promise<void> }, "checkQuestionIsCreatable");
+      await createQuestionUseCase.create(command);
+
+      expect(checkQuestionIsCreatableSpy).toHaveBeenCalledExactlyOnceWith(command);
+    });
   });
 
   describe("checkQuestionIsCreatable", () => {

@@ -37,7 +37,7 @@ describe("Check Question Themes Existence Use Case", () => {
   });
 
   describe(CheckQuestionThemesExistenceUseCase.prototype.checkExistenceByIds, () => {
-    it("should call repository.findByIds when all ids exist.", async() => {
+    it("should call questionTheme.findByIds with the provided ids when called.", async() => {
       const themes = [
         createFakeQuestionTheme({ id: "theme-1" }),
         createFakeQuestionTheme({ id: "theme-2" }),
@@ -49,13 +49,51 @@ describe("Check Question Themes Existence Use Case", () => {
       expect(mocks.repositories.questionTheme.findByIds).toHaveBeenCalledExactlyOnceWith(ids);
     });
 
-    it("should throw QuestionThemeNotFoundError when some ids are missing.", async() => {
-      const missingId = "missing-id";
-      const ids = new Set([missingId]);
-      vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce([]);
-      const expectedError = new QuestionThemeNotFoundError(missingId);
+    it("should call throwErrorForMissingQuestionThemeIds when some ids are missing.", async() => {
+      const themes = [createFakeQuestionTheme({ id: "theme-1" })];
+      const ids = new Set([...themes.map(theme => theme.id), "missing-theme-id"]);
+      vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
+      const throwErrorForMissingQuestionThemeIdsStub = CheckQuestionThemesExistenceUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
+      const throwErrorForMissingQuestionThemeIdsMock = vi.spyOn(throwErrorForMissingQuestionThemeIdsStub, "throwErrorForMissingQuestionThemeIds").mockImplementation(vi.fn);
 
-      await expect(checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids)).rejects.toThrowError(expectedError);
+      await checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids);
+
+      expect(throwErrorForMissingQuestionThemeIdsMock).toHaveBeenCalledExactlyOnceWith(ids, new Set(themes.map(theme => theme.id)));
+    });
+
+    it("should not call throwErrorForMissingQuestionThemeIds when all ids are found.", async() => {
+      const themes = [
+        createFakeQuestionTheme({ id: "theme-1" }),
+        createFakeQuestionTheme({ id: "theme-2" }),
+      ];
+      const ids = new Set(themes.map(theme => theme.id));
+      vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
+      const throwErrorForMissingQuestionThemeIdsStub = CheckQuestionThemesExistenceUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
+      const throwErrorForMissingQuestionThemeIdsMock = vi.spyOn(throwErrorForMissingQuestionThemeIdsStub, "throwErrorForMissingQuestionThemeIds").mockImplementation(vi.fn);
+      await checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids);
+
+      expect(throwErrorForMissingQuestionThemeIdsMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("throwErrorForMissingQuestionThemeIds", () => {
+    it("should throw QuestionThemeNotFoundError for first missing id when called.", () => {
+      const requestedIds = new Set(["id-1", "id-2", "id-3"]);
+      const foundIds = new Set(["id-1", "id-3"]);
+      const expectedError = new QuestionThemeNotFoundError("id-2");
+
+      expect(() => {
+        CheckQuestionThemesExistenceUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
+      }).toThrowError(expectedError);
+    });
+
+    it("should not throw any error when all ids are found.", () => {
+      const requestedIds = new Set(["id-1", "id-2"]);
+      const foundIds = new Set(["id-1", "id-2"]);
+
+      expect(() => {
+        CheckQuestionThemesExistenceUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
+      }).not.toThrowError();
     });
   });
 });

@@ -10,14 +10,21 @@ export class CheckQuestionThemesExistenceUseCase {
   public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)
   private readonly questionThemeRepository: QuestionThemeRepository) {}
 
-  public async checkExistenceByIds(ids: Set<string>): Promise<void> {
-    const foundQuestionThemes = await this.questionThemeRepository.findByIds(ids);
-    const foundQuestionThemeIds = new Set(foundQuestionThemes.map(theme => theme.id));
-
-    for (const id of ids) {
-      if (!foundQuestionThemeIds.has(id)) {
+  private static throwErrorForMissingQuestionThemeIds(requestedIds: Set<string>, foundIds: Set<string>): void {
+    for (const id of requestedIds) {
+      if (!foundIds.has(id)) {
         throw new QuestionThemeNotFoundError(id);
       }
     }
+  }
+
+  public async checkExistenceByIds(ids: Set<string>): Promise<void> {
+    const foundQuestionThemes = await this.questionThemeRepository.findByIds(ids);
+    const foundQuestionThemeIds = new Set(foundQuestionThemes.map(theme => theme.id));
+    if (foundQuestionThemeIds.size === ids.size) {
+      return;
+    }
+
+    CheckQuestionThemesExistenceUseCase.throwErrorForMissingQuestionThemeIds(ids, foundQuestionThemeIds);
   }
 }
