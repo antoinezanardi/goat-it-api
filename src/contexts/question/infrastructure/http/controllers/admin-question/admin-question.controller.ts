@@ -14,13 +14,13 @@ import { QuestionCreationDto } from "@question/application/dto/question-creation
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
-import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
+import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
 export class AdminQuestionController {
   public constructor(
-    private readonly findAllQuestionsUseCase: FindAllQuestionsUseCase,
+    private readonly findQuestionsUseCase: FindQuestionsUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
     private readonly createQuestionUseCase: CreateQuestionUseCase,
   ) {}
@@ -38,8 +38,8 @@ export class AdminQuestionController {
     status: HttpStatus.OK,
     type: [AdminQuestionDto],
   })
-  public async findAllQuestions(): Promise<AdminQuestionDto[]> {
-    const questions = await this.findAllQuestionsUseCase.list();
+  public async findQuestions(): Promise<AdminQuestionDto[]> {
+    const questions = await this.findQuestionsUseCase.list();
 
     return questions.map(question => createAdminQuestionDtoFromEntity(question));
   }

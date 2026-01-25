@@ -4,15 +4,15 @@ import type { Mock } from "vitest";
 
 import type { Question } from "@question/domain/entities/question.types";
 
-type FindAllQuestionsUseCaseStub = {
+type FindQuestionsUseCaseStub = {
   list: () => Promise<Question[]>;
 };
 
-type MockedFindAllQuestionsUseCase = { [K in keyof FindAllQuestionsUseCaseStub]: Mock<FindAllQuestionsUseCaseStub[K]> };
+type MockedFindQuestionsUseCase = { [K in keyof FindQuestionsUseCaseStub]: Mock<FindQuestionsUseCaseStub[K]> };
 
-function createMockedFindAllQuestionsUseCase(): MockedFindAllQuestionsUseCase {
+function createMockedFindQuestionsUseCase(): MockedFindQuestionsUseCase {
   return {
-    list: vi.fn<FindAllQuestionsUseCaseStub["list"]>().mockResolvedValue([
+    list: vi.fn<FindQuestionsUseCaseStub["list"]>().mockResolvedValue([
       createFakeQuestion(),
       createFakeQuestion(),
       createFakeQuestion(),
@@ -20,4 +20,4 @@ function createMockedFindAllQuestionsUseCase(): MockedFindAllQuestionsUseCase {
   };
 }
 
-export { createMockedFindAllQuestionsUseCase };
+export { createMockedFindQuestionsUseCase };

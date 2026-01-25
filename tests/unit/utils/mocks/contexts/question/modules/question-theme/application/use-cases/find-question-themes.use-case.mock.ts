@@ -4,15 +4,15 @@ import type { Mock } from "vitest";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
-type FindAllQuestionThemesUseCaseStub = {
+type FindQuestionThemesUseCaseStub = {
   list: () => Promise<QuestionTheme[]>;
 };
 
-type MockedFindAllQuestionThemesUseCase = { [K in keyof FindAllQuestionThemesUseCaseStub]: Mock<FindAllQuestionThemesUseCaseStub[K]> };
+type MockedFindQuestionThemesUseCase = { [K in keyof FindQuestionThemesUseCaseStub]: Mock<FindQuestionThemesUseCaseStub[K]> };
 
-function createMockedFindAllQuestionThemesUseCase(): MockedFindAllQuestionThemesUseCase {
+function createMockedFindQuestionThemesUseCase(): MockedFindQuestionThemesUseCase {
   return {
-    list: vi.fn<FindAllQuestionThemesUseCaseStub["list"]>().mockResolvedValue([
+    list: vi.fn<FindQuestionThemesUseCaseStub["list"]>().mockResolvedValue([
       createFakeQuestionTheme(),
       createFakeQuestionTheme(),
       createFakeQuestionTheme(),
@@ -20,4 +20,4 @@ function createMockedFindAllQuestionThemesUseCase(): MockedFindAllQuestionThemes
   };
 }
 
-export { createMockedFindAllQuestionThemesUseCase };
+export { createMockedFindQuestionThemesUseCase };

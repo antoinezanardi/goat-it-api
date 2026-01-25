@@ -1,14 +1,14 @@
 import { Test } from "@nestjs/testing";
 
-import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
 import type { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
 
-describe("Find All Question Themes Use Case", () => {
-  let findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase;
+describe("Find Question Themes Use Case", () => {
+  let findQuestionThemesUseCase: FindQuestionThemesUseCase;
   let mocks: {
     repositories: {
       questionTheme: QuestionThemeRepository;
@@ -23,7 +23,7 @@ describe("Find All Question Themes Use Case", () => {
     };
     const testingModule = await Test.createTestingModule({
       providers: [
-        FindAllQuestionThemesUseCase,
+        FindQuestionThemesUseCase,
         {
           provide: QUESTION_THEME_REPOSITORY_TOKEN,
           useValue: mocks.repositories.questionTheme,
@@ -31,12 +31,12 @@ describe("Find All Question Themes Use Case", () => {
       ],
     }).compile();
 
-    findAllQuestionThemesUseCase = testingModule.get<FindAllQuestionThemesUseCase>(FindAllQuestionThemesUseCase);
+    findQuestionThemesUseCase = testingModule.get<FindQuestionThemesUseCase>(FindQuestionThemesUseCase);
   });
 
-  describe(FindAllQuestionThemesUseCase.prototype.list, () => {
+  describe(FindQuestionThemesUseCase.prototype.list, () => {
     it("should list all question themes from repository when called.", async() => {
-      await findAllQuestionThemesUseCase.list();
+      await findQuestionThemesUseCase.list();
 
       expect(mocks.repositories.questionTheme.findAll).toHaveBeenCalledExactlyOnceWith();
     });
