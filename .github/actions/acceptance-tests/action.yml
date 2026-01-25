@@ -46,6 +46,15 @@ runs:
         if-no-files-found: ignore
         retention-days: 2
 
+    - name: Save acceptance logs as artifact 📋
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: acceptance-logs
+        path: tests/acceptance/logs
+        if-no-files-found: ignore
+        retention-days: 2
+
     - name: Exit with error if acceptance tests failed 🚨
       if: steps.acceptance-tests.outcome != 'success'
       shell: bash

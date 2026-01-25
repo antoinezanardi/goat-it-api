@@ -1,5 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 import { request as fetch } from "node:http";
+import path from "node:path";
 import { URL } from "node:url";
 
 import { config as loadEnvConfig } from "dotenv";
@@ -7,10 +8,12 @@ import { config as loadEnvConfig } from "dotenv";
 import { prettyJsonStringify } from "@test-helpers/json/json.helpers";
 
 import { APP_BASE_URL, APP_ENV_TEST_PATH, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
+import { createLogDirectory, DEFAULT_TAIL_LINES, generateRunId, RingBuffer } from "@acceptance-support/helpers/logging.helpers";
 
 import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams, SpawnOptions, SpawnOptionsWithoutStdio } from "node:child_process";
 
+import type { AppLogsFlushResult, AppLogsManager } from "@acceptance-support/types/hooks.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 function loadEnvTestConfig(): void {
@@ -91,13 +94,71 @@ async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams
   throw new Error(`❌ Application did not become ready after ${APP_HEALTH_RETRY_ATTEMPTS} attempts.`);
 }
 
-async function serveAppForAcceptanceTests(): Promise<ChildProcessWithoutNullStreams> {
+function createFlushLogsFunction(
+  stdoutBuffer: RingBuffer,
+  stderrBuffer: RingBuffer,
+  runId: string,
+): (tailLines?: number) => Promise<AppLogsFlushResult> {
+  return async(tailLines: number = DEFAULT_TAIL_LINES): Promise<AppLogsFlushResult> => {
+    const logDirectory = await createLogDirectory(runId);
+    const stdoutPath = path.resolve(path.join(logDirectory, "app.stdout.log"));
+    const stderrPath = path.resolve(path.join(logDirectory, "app.stderr.log"));
+
+    // Get tails before flushing
+    const stdoutTail = stdoutBuffer.tail(tailLines);
+    const stderrTail = stderrBuffer.tail(tailLines);
+
+    await Promise.all([
+      stdoutBuffer.flushToFile(stdoutPath),
+      stderrBuffer.flushToFile(stderrPath),
+    ]);
+
+    return { stdoutPath, stderrPath, stdoutTail, stderrTail };
+  };
+}
+
+function attachBuffersToProcessStreams(
+  serverProcess: ChildProcessWithoutNullStreams,
+  stdoutBuffer: RingBuffer,
+  stderrBuffer: RingBuffer,
+): void {
+  serverProcess.stdout.on("data", (chunk: Buffer) => {
+    stdoutBuffer.append(chunk.toString());
+  });
+
+  serverProcess.stderr.on("data", (chunk: Buffer) => {
+    stderrBuffer.append(chunk.toString());
+  });
+}
+
+async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWithoutNullStreams; appLogs: AppLogsManager }> {
   const spawnOptions: SpawnOptionsWithoutStdio = {
     shell: true,
   };
   const serverProcess = spawn("pnpm run start:prod:test", spawnOptions);
 
-  return waitForAppToBeReady(serverProcess);
+  // Create ring buffers for stdout and stderr
+  const stdoutBuffer = new RingBuffer();
+  const stderrBuffer = new RingBuffer();
+  const runId = generateRunId();
+
+  // Attach buffers to process streams
+  attachBuffersToProcessStreams(serverProcess, stdoutBuffer, stderrBuffer);
+
+  // Create flush function
+  const flushLogs = createFlushLogsFunction(stdoutBuffer, stderrBuffer, runId);
+
+  const readyProcess = await waitForAppToBeReady(serverProcess);
+
+  return {
+    process: readyProcess,
+    appLogs: {
+      flushLogs,
+      runId,
+      stdoutBuffer,
+      stderrBuffer,
+    },
+  };
 }
 
 async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
