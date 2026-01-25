@@ -8,7 +8,7 @@ type MockedCheckQuestionThemesExistenceUseCase = { [K in keyof CheckQuestionThem
 
 function createMockedCheckQuestionThemesExistenceUseCase(): MockedCheckQuestionThemesExistenceUseCase {
   return {
-    checkExistenceByIds: vi.fn<CheckQuestionThemesExistenceUseCaseStub["checkExistenceByIds"]>().mockResolvedValue(undefined),
+    checkExistenceByIds: vi.fn<CheckQuestionThemesExistenceUseCaseStub["checkExistenceByIds"]>().mockResolvedValue(),
   };
 }
 

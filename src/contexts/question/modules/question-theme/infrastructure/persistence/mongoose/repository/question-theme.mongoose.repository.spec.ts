@@ -133,7 +133,11 @@ describe("Question Theme Mongoose Repository", () => {
     });
 
     it("should return mapped question themes from model when called.", async() => {
-      const questionThemeIds: Set<string> = new Set(["question-theme-id-1", "question-theme-id-2"]);
+      const questionThemeIds: Set<string> = new Set([
+        "question-theme-id-1",
+        "question-theme-id-2",
+        "question-theme-id-3",
+      ]);
       const expectedQuestionThemes = [
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
