@@ -1,0 +1,9 @@
+const RING_BUFFER_DEFAULT_CAPACITY = 10_000;
+const DEFAULT_TAIL_LINES = 200;
+const LOGS_BASE_DIR = "tests/acceptance/logs";
+
+export {
+  RING_BUFFER_DEFAULT_CAPACITY,
+  DEFAULT_TAIL_LINES,
+  LOGS_BASE_DIR,
+};

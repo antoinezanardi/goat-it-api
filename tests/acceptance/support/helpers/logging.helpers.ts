@@ -1,9 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const RING_BUFFER_DEFAULT_CAPACITY = 10_000;
-const DEFAULT_TAIL_LINES = 200;
-const LOGS_BASE_DIR = "tests/acceptance/logs";
+import { DEFAULT_TAIL_LINES, LOGS_BASE_DIR, RING_BUFFER_DEFAULT_CAPACITY } from "@acceptance-support/constants/logging.constants";
+
+import type { ITestCaseHookParameter } from "@cucumber/cucumber";
+
+import type { AppLogsManager } from "@acceptance-support/types/hooks.types";
 
 /**
  * RingBuffer maintains a bounded circular buffer of complete lines.
@@ -28,15 +30,16 @@ class RingBuffer {
     const text = this.carryBuffer + chunk;
     const lines = text.split("\n");
 
-    // Last element might be incomplete, save it for next append
     this.carryBuffer = lines.pop() ?? "";
 
-    // Add complete lines to the ring buffer
-    for (const line of lines) {
-      if (this.lines.length >= this.capacity) {
-        this.lines.shift();
-      }
-      this.lines.push(line);
+    if (lines.length <= 0) {
+      return;
+    }
+
+    this.lines.push(...lines);
+    const overflow = this.lines.length - this.capacity;
+    if (overflow > 0) {
+      this.lines.splice(0, overflow);
     }
   }
 
@@ -45,13 +48,6 @@ class RingBuffer {
    */
   public tail(lineCount: number): string[] {
     return this.lines.slice(-lineCount);
-  }
-
-  /**
-   * Get all lines from the buffer.
-   */
-  public getAllLines(): string[] {
-    return [...this.lines];
   }
 
   /**
@@ -68,8 +64,8 @@ class RingBuffer {
     try {
       await writeFile(filePath, content, "utf8");
     } catch(error) {
-      // oxlint-disable-next-line no-console
       console.error(`Failed to write log file ${filePath}:`, error);
+      throw error;
     }
   }
 }
@@ -92,7 +88,6 @@ async function createLogDirectory(runId: string): Promise<string> {
   try {
     await mkdir(logDirectory, { recursive: true });
   } catch(error) {
-    // oxlint-disable-next-line no-console
     console.error(`Failed to create log directory ${logDirectory}:`, error);
   }
   return logDirectory;
@@ -102,22 +97,36 @@ async function createLogDirectory(runId: string): Promise<string> {
  * Print a tail of log lines to stderr with a header.
  */
 function printLogTail(streamName: string, filePath: string, lines: string[], tailLength: number): void {
-  // oxlint-disable-next-line no-console
-  console.error(`\n=== ${streamName} (last ${tailLength} lines) ===`);
-  // oxlint-disable-next-line no-console
+  console.error(`\n=== ${streamName} (last ${tailLength} lines, showing ${lines.length}) ===`);
   console.error(`Full log: ${filePath}`);
-  // oxlint-disable-next-line no-console
   console.error(lines.join("\n"));
-  // oxlint-disable-next-line no-console
   console.error(`=== End ${streamName} ===\n`);
+}
+
+/**
+ * Flush logs and print tails for a failed scenario.
+ * Only used in acceptance test hooks.
+ * @param appLogs
+ * @param scenario
+ */
+async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: ITestCaseHookParameter): Promise<void> {
+  try {
+    const { stdoutPath, stderrPath, stdoutTail, stderrTail } = await appLogs.flushLogs();
+
+    console.error(`\n📋 Acceptance test logs saved for failed scenario: "${scenario.pickle.name}"`);
+    console.error(`Run ID: ${appLogs.runId}`);
+
+    printLogTail("STDOUT", stdoutPath, stdoutTail, DEFAULT_TAIL_LINES);
+    printLogTail("STDERR", stderrPath, stderrTail, DEFAULT_TAIL_LINES);
+  } catch(error) {
+    console.error("Failed to flush acceptance logs:", error);
+  }
 }
 
 export {
   RingBuffer,
-  RING_BUFFER_DEFAULT_CAPACITY,
-  DEFAULT_TAIL_LINES,
-  LOGS_BASE_DIR,
   generateRunId,
   createLogDirectory,
   printLogTail,
+  flushAndPrintLogTail,
 };

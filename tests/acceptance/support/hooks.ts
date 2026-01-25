@@ -1,7 +1,7 @@
 import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from "@cucumber/cucumber";
 
+import { flushAndPrintLogTail } from "@acceptance-support/helpers/logging.helpers";
 import { buildAppForAcceptanceTests, killAppProcess, loadEnvTestConfig, printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
-import { DEFAULT_TAIL_LINES, printLogTail } from "@acceptance-support/helpers/logging.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
 import type { ITestCaseHookParameter } from "@cucumber/cucumber";
@@ -42,21 +42,8 @@ After(async function(this: GoatItWorld, scenario: ITestCaseHookParameter): Promi
     return;
   }
 
-  // Flush logs to files on failure
   if (processes.appLogs) {
-    try {
-      const { stdoutPath, stderrPath, stdoutTail, stderrTail } = await processes.appLogs.flushLogs();
-
-      // Print log file paths and tails
-      console.error(`\n📋 Acceptance test logs saved for failed scenario: "${scenario.pickle.name}"`);
-      console.error(`Run ID: ${processes.appLogs.runId}`);
-
-      // Print tails with file paths
-      printLogTail("STDOUT", stdoutPath, stdoutTail, DEFAULT_TAIL_LINES);
-      printLogTail("STDERR", stderrPath, stderrTail, DEFAULT_TAIL_LINES);
-    } catch(error) {
-      console.error("Failed to flush acceptance logs:", error);
-    }
+    await flushAndPrintLogTail(processes.appLogs, scenario);
   }
 
   printDebugOnScenarioFailure(this, scenario);

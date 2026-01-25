@@ -1,5 +1,3 @@
-import type { RingBuffer } from "@acceptance-support/helpers/logging.helpers";
-
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 
 type AppLogsFlushResult = {
@@ -12,8 +10,6 @@ type AppLogsFlushResult = {
 type AppLogsManager = {
   flushLogs: (tailLines?: number) => Promise<AppLogsFlushResult>;
   runId: string;
-  stdoutBuffer: RingBuffer;
-  stderrBuffer: RingBuffer;
 };
 
 type AcceptanceHooksProcesses = {

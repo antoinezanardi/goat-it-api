@@ -7,8 +7,9 @@ import { config as loadEnvConfig } from "dotenv";
 
 import { prettyJsonStringify } from "@test-helpers/json/json.helpers";
 
+import { DEFAULT_TAIL_LINES } from "@acceptance-support/constants/logging.constants";
 import { APP_BASE_URL, APP_ENV_TEST_PATH, APP_FORCE_KILL_TIMEOUT_MS, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
-import { createLogDirectory, DEFAULT_TAIL_LINES, generateRunId, RingBuffer } from "@acceptance-support/helpers/logging.helpers";
+import { createLogDirectory, generateRunId, RingBuffer } from "@acceptance-support/helpers/logging.helpers";
 
 import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams, SpawnOptions, SpawnOptionsWithoutStdio } from "node:child_process";
@@ -94,7 +95,13 @@ async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams
   throw new Error(`❌ Application did not become ready after ${APP_HEALTH_RETRY_ATTEMPTS} attempts.`);
 }
 
-function createFlushLogsFunction(
+/**
+ * Create a handler to flush logs from buffers to files.
+ * @param stdoutBuffer
+ * @param stderrBuffer
+ * @param runId
+ */
+function createFlushLogsHandler(
   stdoutBuffer: RingBuffer,
   stderrBuffer: RingBuffer,
   runId: string,
@@ -104,7 +111,6 @@ function createFlushLogsFunction(
     const stdoutPath = path.resolve(path.join(logDirectory, "app.stdout.log"));
     const stderrPath = path.resolve(path.join(logDirectory, "app.stderr.log"));
 
-    // Get tails before flushing
     const stdoutTail = stdoutBuffer.tail(tailLines);
     const stderrTail = stderrBuffer.tail(tailLines);
 
@@ -137,16 +143,13 @@ async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWith
   };
   const serverProcess = spawn("pnpm run start:prod:test", spawnOptions);
 
-  // Create ring buffers for stdout and stderr
   const stdoutBuffer = new RingBuffer();
   const stderrBuffer = new RingBuffer();
   const runId = generateRunId();
 
-  // Attach buffers to process streams
   attachBuffersToProcessStreams(serverProcess, stdoutBuffer, stderrBuffer);
 
-  // Create flush function
-  const flushLogs = createFlushLogsFunction(stdoutBuffer, stderrBuffer, runId);
+  const flushLogs = createFlushLogsHandler(stdoutBuffer, stderrBuffer, runId);
 
   const readyProcess = await waitForAppToBeReady(serverProcess);
 
@@ -155,8 +158,6 @@ async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWith
     appLogs: {
       flushLogs,
       runId,
-      stdoutBuffer,
-      stderrBuffer,
     },
   };
 }
