@@ -2,7 +2,7 @@ import { vi } from "vitest";
 
 import type { QuestionMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
 
-import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose-document/question.mongoose-document.faketory";
+import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 
 import type { Mock } from "vitest";

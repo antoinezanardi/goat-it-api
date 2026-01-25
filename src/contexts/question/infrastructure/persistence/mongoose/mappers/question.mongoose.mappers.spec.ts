@@ -4,8 +4,8 @@ import { QuestionPersistenceMappingError } from "@question/infrastructure/persis
 import { createQuestionAuthorFromAggregate, createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentFromQuestionThemeAggregate, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 
+import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
-import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeQuestionAggregate, createFakeQuestionAuthorAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";

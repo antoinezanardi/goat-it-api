@@ -9,8 +9,8 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
-import { createFakeQuestionMongooseInsertPayload } from "@faketories/contexts/question/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
-import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose-document/question.mongoose-document.faketory";
+import { createFakeQuestionMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
+import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
