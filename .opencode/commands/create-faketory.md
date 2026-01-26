@@ -121,7 +121,7 @@ Checklist when adding a faketory
 1. Place the file under `tests/shared/utils/faketories/...` mirroring the source path.
 2. Use path aliases when importing types (e.g., `@question/*`, `@shared/*`).
 3. Export a single factory function named `createFakeX` returning the proper typed object.
-4. Accept an `override: Partial<T>` parameter and spread it into the returned object.
+4. Accept an `overrides: Partial<T>` parameter and spread it into the returned object.
 5. Use `@faker-js/faker` to populate realistic defaults.
 6. Run project checks locally in this order:
    - `pnpm run lint`
