@@ -44,9 +44,10 @@ runs:
       id: ssh-setup
       shell: bash
       run: |
-        eval $(ssh-agent -s)
-        # Use printf to preserve multiline key formatting
-        printf "%s" "${{ inputs.ssh-private-key }}" | ssh-add -
+        eval "$(ssh-agent -s)"
+        echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
 
     - name: Deploy script over SSH
       shell: bash
@@ -60,3 +61,12 @@ runs:
         ssh $SSH_OPTIONS ${{ inputs.ssh-user }}@${{ inputs.ssh-server-ip }} << EOF
           ${{ inputs.update-script-full-path }}
         EOF
+
+    - name: Cleanup SSH key material
+      if: always()
+      shell: bash
+      run: |
+        rm -f ~/.ssh/id_rsa
+        if [ -n "$SSH_AGENT_PID" ]; then
+          ssh-agent -k || true
+        fi
