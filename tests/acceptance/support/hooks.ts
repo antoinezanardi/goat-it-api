@@ -1,7 +1,10 @@
 import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from "@cucumber/cucumber";
 
-import { flushAndPrintLogTail } from "@acceptance-support/helpers/logging.helpers";
-import { buildAppForAcceptanceTests, killAppProcess, loadEnvTestConfig, printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
+import { buildAppForAcceptanceTests } from "@acceptance-support/helpers/setup/build.helpers";
+import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
+import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
+import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
+import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
 import type { ITestCaseHookParameter } from "@cucumber/cucumber";

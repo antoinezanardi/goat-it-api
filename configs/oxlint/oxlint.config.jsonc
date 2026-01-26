@@ -1369,7 +1369,7 @@
       "files": [
         "**/tests/acceptance/features/**/*-steps.ts",
         "**/tests/acceptance/support/hooks.ts",
-        "**/tests/acceptance/support/helpers/*.helpers.ts"
+        "**/tests/acceptance/support/helpers/**/*.helpers.ts"
       ],
       "rules": {
         "no-console": [
