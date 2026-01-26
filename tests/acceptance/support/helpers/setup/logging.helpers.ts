@@ -4,8 +4,9 @@ import path from "node:path";
 import { DEFAULT_TAIL_LINES, LOGS_BASE_DIR, RING_BUFFER_DEFAULT_CAPACITY } from "@acceptance-support/constants/logging.constants";
 
 import type { ITestCaseHookParameter } from "@cucumber/cucumber";
+import type { ChildProcessWithoutNullStreams } from "node:child_process";
 
-import type { AppLogsManager } from "@acceptance-support/types/hooks.types";
+import type { AppLogsManager, AppLogsFlushResult } from "@acceptance-support/types/hooks.types";
 
 /**
  * RingBuffer maintains a bounded circular buffer of complete lines.
@@ -123,10 +124,54 @@ async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: ITestCase
   }
 }
 
+/**
+ * Create a handler to flush logs from buffers to files.
+ * @param stdoutBuffer
+ * @param stderrBuffer
+ * @param runId
+ */
+function createFlushLogsHandler(
+  stdoutBuffer: RingBuffer,
+  stderrBuffer: RingBuffer,
+  runId: string,
+): (tailLines?: number) => Promise<AppLogsFlushResult> {
+  return async(tailLines: number = DEFAULT_TAIL_LINES): Promise<AppLogsFlushResult> => {
+    const logDirectory = await createLogDirectory(runId);
+    const stdoutPath = path.resolve(path.join(logDirectory, "app.stdout.log"));
+    const stderrPath = path.resolve(path.join(logDirectory, "app.stderr.log"));
+
+    const stdoutTail = stdoutBuffer.tail(tailLines);
+    const stderrTail = stderrBuffer.tail(tailLines);
+
+    await Promise.all([
+      stdoutBuffer.flushToFile(stdoutPath),
+      stderrBuffer.flushToFile(stderrPath),
+    ]);
+
+    return { stdoutPath, stderrPath, stdoutTail, stderrTail };
+  };
+}
+
+function attachBuffersToProcessStreams(
+  serverProcess: ChildProcessWithoutNullStreams,
+  stdoutBuffer: RingBuffer,
+  stderrBuffer: RingBuffer,
+): void {
+  serverProcess.stdout.on("data", (chunk: Buffer) => {
+    stdoutBuffer.append(chunk.toString());
+  });
+
+  serverProcess.stderr.on("data", (chunk: Buffer) => {
+    stderrBuffer.append(chunk.toString());
+  });
+}
+
 export {
   RingBuffer,
   generateRunId,
   createLogDirectory,
   printLogTail,
   flushAndPrintLogTail,
+  createFlushLogsHandler,
+  attachBuffersToProcessStreams,
 };
