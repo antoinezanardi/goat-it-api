@@ -102,12 +102,11 @@ PR Checklist when touching mocks
 1. Ensure any behavioural changes are covered by unit tests that use the mocks.
 2. Keep the `createMockedX(overrides?)` pattern. If you need a different API, update this README first and explain the reasoning in the PR description.
 3. Run linters and unit tests locally: `pnpm run lint` and `pnpm run test:unit:cov`.
-4. Update this README when adding new mock public factories or changing conventions.
+4. Run type checking and the build: `pnpm run typecheck` and `pnpm run build`.
+5. Run mutation tests: `pnpm run test:mutation` (recommended locally; CI will also run mutation tests).
 
 Contacts & References
 ---------------------
 
 - See `AGENTS.md` for repository editing rules and conventions.
 - When adding a new bounded context mock, follow the repo's file layout conventions under `tests/unit/utils/mocks/contexts/<context>/...`.
-
-If you want, I can also add a short example test that demonstrates overriding mocks and asserting behaviour — tell me if you'd like that included in this directory.

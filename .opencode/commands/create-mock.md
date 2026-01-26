@@ -83,7 +83,7 @@ Checklist when adding a mock
 2. Export a single factory `createMockedX(overrides?)` returning typed mocks.
 3. Use `vi.fn` typed generics for each mock method.
 4. Use faketories for default return values when applicable.
-5. Run `pnpm run lint`, `pnpm run typecheck`, and `pnpm run test:unit:cov`.
+5. Run `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:unit:cov`, and `pnpm run test:mutation`.
 
 If you need a scaffold snippet committed to a new file, run this command and adapt the generated template.
 
