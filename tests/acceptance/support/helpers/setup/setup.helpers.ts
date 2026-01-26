@@ -25,15 +25,20 @@ async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWith
 
   const flushLogs = createFlushLogsHandler(stdoutBuffer, stderrBuffer, runId);
 
-  const readyProcess = await waitForAppToBeReady(serverProcess);
+  try {
+    const readyProcess = await waitForAppToBeReady(serverProcess);
 
-  return {
-    process: readyProcess,
-    appLogs: {
-      flushLogs,
-      runId,
-    },
-  };
+    return {
+      process: readyProcess,
+      appLogs: {
+        flushLogs,
+        runId,
+      },
+    };
+  } catch(error) {
+    serverProcess.kill("SIGTERM");
+    throw error;
+  }
 }
 
 function printDebugOnScenarioFailure(world: GoatItWorld, scenario: ITestCaseHookParameter): void {
