@@ -38,6 +38,9 @@ importers:
       axios:
         specifier: ^1.13.3
         version: 1.13.3
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
       fastify:
         specifier: ^5.7.1
         version: 5.7.1
@@ -132,9 +135,6 @@ importers:
       conventional-changelog-conventionalcommits:
         specifier: ^9.1.0
         version: 9.1.0
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
       cucumber-html-reporter:
         specifier: ^7.2.0
         version: 7.2.0
