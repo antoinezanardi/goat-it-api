@@ -44,9 +44,11 @@ runs:
       id: ssh-setup
       shell: bash
       run: |
-        eval $(ssh-agent -s)
-        # Use printf to preserve multiline key formatting
-        printf "%s" "${{ inputs.ssh-private-key }}" | ssh-add -
+        eval "$(ssh-agent -s)"
+        mkdir -p ~/.ssh
+        echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
 
     - name: Deploy script over SSH
       shell: bash

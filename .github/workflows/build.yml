@@ -13,6 +13,25 @@ env:
   GH_TOKEN: ${{ github.token }}
 
 jobs:
+  # This is for testing purposes, it's will be erased before merging to develop
+  deploy-to-preproduction:
+    name: Deploy to preproduction server 🚀
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository 📡
+        uses: actions/checkout@v6
+
+      - name: Deploy to preproduction server 🚀
+        uses: ./.github/actions/deploy
+        with:
+          ssh-private-key: ${{ secrets.PREPRODUCTION_SERVER_SSH_PRIVATE_KEY }}
+          ssh-user: ${{ secrets.PREPRODUCTION_SERVER_SSH_USER }}
+          ssh-server-ip: ${{ secrets.PREPRODUCTION_SERVER_SSH_ADDRESS }}
+          update-script-full-path: ${{ secrets.PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH }}
+
   code-ql:
     name: CodeQL Scan ❇️
     runs-on: ubuntu-latest
