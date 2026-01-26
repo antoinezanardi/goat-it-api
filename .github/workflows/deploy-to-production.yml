@@ -28,6 +28,9 @@ jobs:
     needs: upload-and-merge-images
     timeout-minutes: 10
     steps:
+      - name: Checkout repository 📡
+        uses: actions/checkout@v6
+
       - name: Deploy to production server 🚀
         uses: ./.github/actions/deploy
         with:
