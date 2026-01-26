@@ -12,9 +12,10 @@ type CreateQuestionThemeUseCaseStub = {
 
 type MockedCreateQuestionThemeUseCase = { [K in keyof CreateQuestionThemeUseCaseStub]: Mock<CreateQuestionThemeUseCaseStub[K]> };
 
-function createMockedCreateQuestionThemeUseCase(): MockedCreateQuestionThemeUseCase {
+function createMockedCreateQuestionThemeUseCase(overrides: Partial<MockedCreateQuestionThemeUseCase> = {}): MockedCreateQuestionThemeUseCase {
   return {
     create: vi.fn<CreateQuestionThemeUseCaseStub["create"]>().mockResolvedValue(createFakeQuestionTheme({ status: "active" })),
+    ...overrides,
   };
 }
 

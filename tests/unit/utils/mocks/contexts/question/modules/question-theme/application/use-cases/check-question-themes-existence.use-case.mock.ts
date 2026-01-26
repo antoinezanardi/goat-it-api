@@ -6,9 +6,10 @@ type CheckQuestionThemesExistenceUseCaseStub = {
 
 type MockedCheckQuestionThemesExistenceUseCase = { [K in keyof CheckQuestionThemesExistenceUseCaseStub]: Mock<CheckQuestionThemesExistenceUseCaseStub[K]> };
 
-function createMockedCheckQuestionThemesExistenceUseCase(): MockedCheckQuestionThemesExistenceUseCase {
+function createMockedCheckQuestionThemesExistenceUseCase(overrides: Partial<MockedCheckQuestionThemesExistenceUseCase> = {}): MockedCheckQuestionThemesExistenceUseCase {
   return {
     checkExistenceByIds: vi.fn<CheckQuestionThemesExistenceUseCaseStub["checkExistenceByIds"]>().mockResolvedValue(),
+    ...overrides,
   };
 }
 

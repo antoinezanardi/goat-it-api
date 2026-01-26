@@ -10,13 +10,14 @@ type FindQuestionThemesUseCaseStub = {
 
 type MockedFindQuestionThemesUseCase = { [K in keyof FindQuestionThemesUseCaseStub]: Mock<FindQuestionThemesUseCaseStub[K]> };
 
-function createMockedFindQuestionThemesUseCase(): MockedFindQuestionThemesUseCase {
+function createMockedFindQuestionThemesUseCase(overrides: Partial<MockedFindQuestionThemesUseCase> = {}): MockedFindQuestionThemesUseCase {
   return {
     list: vi.fn<FindQuestionThemesUseCaseStub["list"]>().mockResolvedValue([
       createFakeQuestionTheme(),
       createFakeQuestionTheme(),
       createFakeQuestionTheme(),
     ]),
+    ...overrides,
   };
 }
 

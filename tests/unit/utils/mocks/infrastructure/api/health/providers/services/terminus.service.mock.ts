@@ -17,15 +17,17 @@ type HealthCheckServiceStub = {
 
 type MockedHealthCheckService = { [K in keyof HealthCheckServiceStub]: Mock<HealthCheckServiceStub[K]> };
 
-function createMockedTerminusHealthIndicatorService(): MockedHealthIndicatorService {
+function createMockedTerminusHealthIndicatorService(overrides: Partial<MockedHealthIndicatorService> = {}): MockedHealthIndicatorService {
   return {
     pingCheck: vi.fn<HealthCheckIndicatorServiceStub["pingCheck"]>().mockResolvedValue(createFakeHealthIndicatorResult()),
+    ...overrides,
   };
 }
 
-function createMockedTerminusHealthCheckService(): MockedHealthCheckService {
+function createMockedTerminusHealthCheckService(overrides: Partial<MockedHealthCheckService> = {}): MockedHealthCheckService {
   return {
     check: vi.fn<HealthCheckServiceStub["check"]>().mockResolvedValue(createFakeHealthCheckResult()),
+    ...overrides,
   };
 }
 

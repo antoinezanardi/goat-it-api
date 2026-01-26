@@ -1,5 +1,3 @@
-import { vi } from "vitest";
-
 import type { QuestionMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
 
 import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
@@ -16,7 +14,7 @@ type QuestionMongooseModelStub = {
 
 type MockedQuestionMongooseModel = { [K in keyof QuestionMongooseModelStub]: Mock<QuestionMongooseModelStub[K]> };
 
-function createMockedQuestionMongooseModel(): MockedQuestionMongooseModel {
+function createMockedQuestionMongooseModel(overrides: Partial<MockedQuestionMongooseModel> = {}): MockedQuestionMongooseModel {
   return {
     aggregate: vi.fn<QuestionMongooseModelStub["aggregate"]>().mockResolvedValue([
       createFakeQuestionAggregate(),
@@ -24,6 +22,7 @@ function createMockedQuestionMongooseModel(): MockedQuestionMongooseModel {
       createFakeQuestionAggregate(),
     ]),
     create: vi.fn<QuestionMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionDocument()),
+    ...overrides,
   };
 }
 

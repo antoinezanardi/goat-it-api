@@ -10,9 +10,10 @@ type FindQuestionByIdStub = {
 
 type MockedFindQuestionByIdUseCase = { [K in keyof FindQuestionByIdStub]: Mock<FindQuestionByIdStub[K]> };
 
-function createMockedFindQuestionByIdUseCase(): MockedFindQuestionByIdUseCase {
+function createMockedFindQuestionByIdUseCase(overrides: Partial<MockedFindQuestionByIdUseCase> = {}): MockedFindQuestionByIdUseCase {
   return {
     getById: vi.fn<FindQuestionByIdStub["getById"]>().mockResolvedValue(createFakeQuestion()),
+    ...overrides,
   };
 }
 
