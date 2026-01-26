@@ -105,12 +105,8 @@ Advanced patterns and variations
 - For command faketories, name the file `*.commands.faketory.ts` and export `createFake<CommandName>Command`.
 - For mongoose insert payloads or raw documents, use separate faketories to reflect the different shapes (for example `*-mongoose-insert-payload.faketory.ts`).
 - If a field is optional but commonly asserted in tests, keep it present by default; randomize presence only for rarely-asserted optional fields.
-
-Advanced patterns and variations
-
 - For DTO faketories, return the DTO type and populate fields with values that pass Zod validators (use `zMongoId()` pattern for ids).
 - For command faketories (domain commands), name the file `*.commands.faketory.ts` and export `createFake<CommandName>Command`.
-- For mongoose-document faketories, follow existing files under `mongoose-document/` and return a plain object shaped like the Mongoose document used in tests (include `_id` where appropriate).
 
 Import examples in tests
 
