@@ -42,7 +42,7 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       fastify:
-        specifier: ^5.7.2
+        specifier: ^5.7.1
         version: 5.7.2
       mongoose:
         specifier: ^9.1.5
