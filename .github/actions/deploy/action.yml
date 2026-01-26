@@ -48,7 +48,6 @@ runs:
         echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-add ~/.ssh/id_rsa
-        rm ~/.ssh/id_rsa
 
     - name: Deploy script over SSH
       shell: bash
@@ -66,4 +65,8 @@ runs:
     - name: Cleanup SSH key material
       if: always()
       shell: bash
-      run: rm -f ~/.ssh/id_rsa
+      run: |
+        rm -f ~/.ssh/id_rsa
+        if [ -n "$SSH_AGENT_PID" ]; then
+          ssh-agent -k || true
+        fi
