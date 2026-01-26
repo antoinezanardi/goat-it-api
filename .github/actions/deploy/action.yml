@@ -45,10 +45,10 @@ runs:
       shell: bash
       run: |
         eval "$(ssh-agent -s)"
-        mkdir -p ~/.ssh
         echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-add ~/.ssh/id_rsa
+        rm ~/.ssh/id_rsa
 
     - name: Deploy script over SSH
       shell: bash
@@ -62,3 +62,8 @@ runs:
         ssh $SSH_OPTIONS ${{ inputs.ssh-user }}@${{ inputs.ssh-server-ip }} << EOF
           ${{ inputs.update-script-full-path }}
         EOF
+
+    - name: Cleanup SSH key material
+      if: always()
+      shell: bash
+      run: rm -f ~/.ssh/id_rsa
