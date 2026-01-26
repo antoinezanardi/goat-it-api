@@ -166,6 +166,32 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
     });
 
+    it("should accept a non-default valid hostname for when MONGODB_HOST is an override.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
+        MONGODB_HOST: "mongo.example.com",
+      };
+      const expectedConfig = createFakeAppEnv({
+        ...defaultEnv,
+        MONGODB_HOST: "mongo.example.com",
+      });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+    });
+
+    it("should accept a non-default docker hostname for when MONGODB_HOST is an override.", () => {
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
+        MONGODB_HOST: "mongodb",
+      };
+      const expectedConfig = createFakeAppEnv({
+        ...defaultEnv,
+        MONGODB_HOST: "mongodb",
+      });
+
+      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+    });
+
     it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         ...minimalValidEnv,
@@ -306,13 +332,6 @@ describe("Env Validation", () => {
         test: "should throw error when MONGODB_HOST is not a valid IPv4 address.",
         config: {
           MONGODB_HOST: "invalid_ip_address",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_HOST is localhost.",
-        config: {
-          MONGODB_HOST: "localhost",
         },
         errorMessage: "Invalid environment variables",
       },
