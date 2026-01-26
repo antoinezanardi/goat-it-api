@@ -9,9 +9,10 @@ type HealthServiceStub = {
 
 type MockedHealthService = { [K in keyof HealthServiceStub]: Mock<HealthServiceStub[K]> };
 
-function createMockedHealthService(): MockedHealthService {
+function createMockedHealthService(overrides: Partial<MockedHealthService> = {}): MockedHealthService {
   return {
     checkAppHealth: vi.fn<HealthServiceStub["checkAppHealth"]>().mockResolvedValue(createFakeHealthCheckResult()),
+    ...overrides,
   };
 }
 

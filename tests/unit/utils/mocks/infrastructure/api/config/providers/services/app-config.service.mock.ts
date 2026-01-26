@@ -13,15 +13,15 @@ type MockedAppConfigService = {
   authenticationConfig: AppConfigService["authenticationConfig"];
 };
 
-function createMockedAppConfigService(appEnv: Partial<AppConfigService> = {}): MockedAppConfigService {
+function createMockedAppConfigService(overrides: Partial<MockedAppConfigService> = {}): MockedAppConfigService {
   return {
-    serverConfig: createFakeServerConfigFromEnv(appEnv.serverConfig),
+    serverConfig: createFakeServerConfigFromEnv(),
     serverBaseUrl: faker.internet.url(),
-    corsConfig: createFakeCorsConfigFromEnv(appEnv.corsConfig),
-    mongoDbConfig: createFakeMongoDatabaseConfigFromEnv(appEnv.mongoDbConfig),
-    localizationConfig: createFakeLocalizationConfigFromEnv(appEnv.localizationConfig),
-    authenticationConfig: createFakeAuthenticationConfigFromEnv(appEnv.authenticationConfig),
-    ...appEnv,
+    corsConfig: createFakeCorsConfigFromEnv(),
+    mongoDbConfig: createFakeMongoDatabaseConfigFromEnv(),
+    localizationConfig: createFakeLocalizationConfigFromEnv(),
+    authenticationConfig: createFakeAuthenticationConfigFromEnv(),
+    ...overrides,
   };
 }
 

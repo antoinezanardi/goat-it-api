@@ -10,9 +10,10 @@ type AppServiceStub = {
 
 type MockedAppService = { [K in keyof AppServiceStub]: Mock<AppServiceStub[K]> };
 
-function createMockedAppService(): MockedAppService {
+function createMockedAppService(overrides: Partial<MockedAppService> = {}): MockedAppService {
   return {
     getApiMeta: vi.fn<AppServiceStub["getApiMeta"]>().mockReturnValue(createFakeAppMetadata()),
+    ...overrides,
   };
 }
 

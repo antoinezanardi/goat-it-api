@@ -1,5 +1,3 @@
-import { vi } from "vitest";
-
 import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
@@ -16,7 +14,7 @@ type QuestionRepositoryStub = {
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };
 
-function createMockedQuestionRepository(): MockedQuestionRepository {
+function createMockedQuestionRepository(overrides: Partial<MockedQuestionRepository> = {}): MockedQuestionRepository {
   return {
     findAll: vi.fn<QuestionRepositoryStub["findAll"]>().mockResolvedValue([
       createFakeQuestion(),
@@ -25,6 +23,7 @@ function createMockedQuestionRepository(): MockedQuestionRepository {
     ]),
     findById: vi.fn<QuestionRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestion()),
     create: vi.fn<QuestionRepositoryStub["create"]>().mockResolvedValue(createFakeQuestion()),
+    ...overrides,
   };
 }
 

@@ -18,7 +18,7 @@ type QuestionThemeRepositoryStub = {
 
 type MockedQuestionThemeRepository = { [K in keyof QuestionThemeRepositoryStub]: Mock<QuestionThemeRepositoryStub[K]> };
 
-function createMockedQuestionThemeRepository(): MockedQuestionThemeRepository {
+function createMockedQuestionThemeRepository(overrides: Partial<MockedQuestionThemeRepository> = {}): MockedQuestionThemeRepository {
   return {
     findAll: vi.fn<QuestionThemeRepositoryStub["findAll"]>().mockResolvedValue([
       createFakeQuestionTheme(),
@@ -34,6 +34,7 @@ function createMockedQuestionThemeRepository(): MockedQuestionThemeRepository {
     create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
     modify: vi.fn<QuestionThemeRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestionTheme()),
     archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
+    ...overrides,
   };
 }
 
