@@ -48,7 +48,7 @@ Type signature & implementation pattern
 
 - Factory signature must accept an optional override object so callers can customize values while keeping defaults realistic:
 
-  const createFakeX = (override: Partial<X> = {}): X => ({ ...defaults, ...override });
+  const createFakeX = (overrides: Partial<X> = {}): X => ({ ...defaults, ...override });
 
 - Use `@faker-js/faker` for realistic values and `faker.database.mongodbObjectId()` for `id` fields.
 - Use Date helpers for `createdAt` / `updatedAt` (`faker.date.anytime()` or `new Date()`); prefer `faker` for variety.
@@ -106,7 +106,6 @@ Advanced patterns and variations
 - For mongoose insert payloads or raw documents, use separate faketories to reflect the different shapes (for example `*-mongoose-insert-payload.faketory.ts`).
 - If a field is optional but commonly asserted in tests, keep it present by default; randomize presence only for rarely-asserted optional fields.
 - For DTO faketories, return the DTO type and populate fields with values that pass Zod validators (use `zMongoId()` pattern for ids).
-- For command faketories (domain commands), name the file `*.commands.faketory.ts` and export `createFake<CommandName>Command`.
 
 Import examples in tests
 
