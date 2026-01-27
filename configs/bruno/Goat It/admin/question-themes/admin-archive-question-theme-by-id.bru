@@ -1,0 +1,38 @@
+meta {
+  name: Archive Question Theme By Id
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/admin/question-themes/:id/archive
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: {{questionThemeId}}
+}
+
+body:json {
+  {
+    "slug": "cinema",
+    "label": {
+      "en": "Cinema",
+      "fr": "Cinéma"
+    },
+    "description": {
+      "en": "A theme about movies, series and actors",
+      "fr": "Un thème sur les films, séries et les acteurs"
+    },
+    "aliases": {
+      "en": ["Movies", "Series"],
+      "fr": ["Films", "Séries"]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

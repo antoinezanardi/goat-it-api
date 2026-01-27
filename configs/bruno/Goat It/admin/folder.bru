@@ -1,0 +1,13 @@
+meta {
+  name: admin
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: goat-it-api-key
+  value: {{adminApiKey}}
+  placement: header
+}

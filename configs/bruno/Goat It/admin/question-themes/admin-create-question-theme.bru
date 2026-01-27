@@ -1,0 +1,34 @@
+meta {
+  name: Create Question Theme
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/admin/question-themes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "slug": "cinema",
+    "label": {
+      "en": "Cinema",
+      "fr": "Cinéma"
+    },
+    "description": {
+      "en": "A theme about movies, series and actors",
+      "fr": "Un thème sur les films, séries et les acteurs"
+    },
+    "aliases": {
+      "en": ["Movies", "Series"],
+      "fr": ["Films", "Séries"]
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

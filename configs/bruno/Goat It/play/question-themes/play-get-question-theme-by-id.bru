@@ -1,0 +1,20 @@
+meta {
+  name: Get Question Themes By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/question-themes/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: {{questionThemeId}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

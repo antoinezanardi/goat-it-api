@@ -1,0 +1,20 @@
+meta {
+  name: Get Question By Id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/questions/:id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  id: {{questionId}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
