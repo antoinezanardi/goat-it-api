@@ -9,7 +9,7 @@ What is included
 - `configs/bruno/Goat It/bruno.json` — collection metadata.
 - `configs/bruno/Goat It/collection.bru` — global headers and shared settings.
 - `configs/bruno/Goat It/environments/` — environment variable sets (`local.bru`, `preproduction.bru`, `production.bru`).
-- `configs/bruno/Goat It/admin/`, `play/`, `public/` — request folders for admin and public APIs (questions, question-themes, health, metadata).
+- `configs/bruno/Goat It/admin/`, `play/`, `public/` — request folders for admin and public APIs (questions, question-themes, health, metadata). Public endpoints refer to unauthenticated requests.
 
 Goals
 -----
@@ -18,11 +18,11 @@ Goals
 - Keep requests environment-agnostic by using variables for secrets and resource ids.
 - Maintain example payloads that mirror acceptance-test fixtures.
 
-Important environnement variables
+Important environment variables
 -------------------
 
 - `baseUrl` — API base URL. Set in `environments/*` (for local it's `http://localhost:3000`).
-- `adminApiKey`, `gameApiKey` — secret API keys used by requests requiring auth. Declared as `vars:secret`. You must set these based on your local config or `.env` file.
+- `adminApiKey`, `gameApiKey` — secret API keys used by requests requiring auth. Declared as `vars:secret`.
 - `questionThemeId`, `questionId` — optional secrets that hold resource ids used by example requests.
 
 Setup (local)
@@ -33,7 +33,7 @@ Setup (local)
 3. Switch environment to `local`:
    - `baseUrl` defaults to `http://localhost:3000` in `environments/local.bru`.
    - Set `adminApiKey` and `gameApiKey` as secrets in Bruno (copy from your `.env` or local config).
-4. (Optional but recommended) Create a theme with `POST /admin/question-themes` then copy the `_id` returned and paste into the `questionThemeId` secret (so subsequent requests like create-question work without editing requests).
+4. (Optional but recommended) Create a theme with `POST /admin/question-themes` then copy the `id` returned and paste into the `questionThemeId` secret (so subsequent requests like create-question work without editing requests).
 
 Best practices used in this repo
 --------------------------------

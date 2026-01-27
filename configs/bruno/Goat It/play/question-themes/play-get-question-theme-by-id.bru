@@ -1,5 +1,5 @@
 meta {
-  name: Get Question Themes By Id
+  name: Get Question Theme By Id
   type: http
   seq: 2
 }
@@ -16,5 +16,7 @@ params:path {
 
 settings {
   encodeUrl: true
-  timeout: 0
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
 }
