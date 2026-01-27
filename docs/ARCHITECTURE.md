@@ -15,7 +15,11 @@ Table of contents
 - Dependency Injection & repository pattern
 - Validation, DTOs and OpenAPI
 - Testing strategy and quality gates
-- Git workflows
+- Branching
+- Commits
+- Pre-commit hooks
+- Pull requests
+- Continuous Integration
 - Deployment & acceptance tests
 - Where to find important files
 - Diagrams
@@ -123,7 +127,7 @@ Validation, DTOs and OpenAPI
 
 - All response DTOs use Zod with `z.strictObject(...)` and `.describe()` for properties to enable `nestjs-zod` OpenAPI generation.
 - Request DTOs use `z.object(...)` where the code intentionally allows additional properties; controllers map only allowed fields to domain commands.
-- Shared Zod validators live under `src/shared/infrastructure/http/validators/`.
+- Shared Zod validators live under `src/shared/infrastructure/http/zod/validators/`.
 - Controllers use `@ZodResponse()` to document response types.
 
 Testing strategy and quality gates
@@ -140,7 +144,7 @@ Testing strategy and quality gates
 Branching
 -------
 
-- Branch naming pattern: `<type>/<scope>-<short-desc>` where `type` is one of `feat`, `fix`, `docs`, `test`, `chore`, etc.
+- Branch naming pattern: `<type>/<scope>-<short-desc>` where `type` is one of `feat`, `fix`, `docs`, `test`, `chore`, `style`, `refactor`, `perf`, `build`, `ci`, `revert`.
 - Example: `feat/add-user-endpoint`.
 
 Commits
@@ -152,7 +156,7 @@ Commits
 Pre-commit hooks
 -------
 
-- Husky runs staged checks: branch name validation, `pnpm run lint:staged:fix`, and `pnpm run test:unit:staged`.
+- Husky runs staged checks in this order: `pnpm run typecheck`, branch name validation, `pnpm run lint:staged:fix`, and `pnpm run test:unit:staged`.
 
 Pull requests
 -------
@@ -171,7 +175,7 @@ Deployment & acceptance tests
 -------
 
 - Server bootstrap: `src/main.ts` → `src/infrastructure/api/server/server.ts`.
-- Environment variables documented in `AGENTS.md` and `.env.example`.
+- Environment variables documented in `AGENTS.md` and `./env/.env.example`.
 - Docker builds: `pnpm run docker:build`.
 - Acceptance test runner builds the app (unless `SKIP_BUILD=true`), starts test DB containers and runs Cucumber scenarios.
 
