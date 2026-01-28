@@ -85,6 +85,28 @@ Feature: Modify Question Theme As Admin
       | de     | Neue Beschreibung auf Deutsch    |
       | pt     | Nova descrição em Português      |
 
+  Scenario: Modifying the portuguese aliases of a question theme to more than two existing associated aliases
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path       | type  | value                                   |
+      | aliases.pt | array | ["Músicas", "Canções Populares", "Hits"] |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following localized aliases for the admin question theme:
+      | locale | aliases                          |
+      | pt     | Músicas, Canções Populares, Hits |
+
+  Scenario: Modifying the italian aliases of a question theme to only one associated alias rather than the two existing ones
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path       | type  | value      |
+      | aliases.it | array | ["Canzoni"] |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following localized aliases for the admin question theme:
+      | locale | aliases  |
+      | it     | Canzoni  |
+
   Scenario: Trying to modify a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the request payload is overridden with the following values:
