@@ -95,6 +95,34 @@ describe("Mongoose Helpers", () => {
           ],
         },
       },
+      {
+        test: "should preserve null values when called.",
+        input: {
+          name: "Sample",
+          deletedAt: null,
+          nested: {
+            value: null,
+          },
+        },
+        expected: {
+          "name": "Sample",
+          "deletedAt": null,
+          "nested.value": null,
+        },
+      },
+      {
+        test: "should preserve Date objects when called.",
+        input: {
+          createdAt: new Date("2024-01-01"),
+          meta: {
+            updatedAt: new Date("2024-01-02"),
+          },
+        },
+        expected: {
+          "createdAt": new Date("2024-01-01"),
+          "meta.updatedAt": new Date("2024-01-02"),
+        },
+      },
     ])("$test", ({ input, expected }) => {
       const result = getCrushedDataForMongoPatchUpdate(input);
 
