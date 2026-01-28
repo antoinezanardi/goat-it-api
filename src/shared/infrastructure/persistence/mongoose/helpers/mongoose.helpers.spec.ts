@@ -27,7 +27,7 @@ describe("Mongoose Helpers", () => {
         },
       },
       {
-        test: "should not flatten arrays items when called.",
+        test: "should not flatten array items when called.",
         input: {
           name: "Sample Name",
           tags: ["tag1", "tag2", "tag3"],
@@ -76,6 +76,23 @@ describe("Mongoose Helpers", () => {
         },
         expected: {
           "level1.level2.level3": {},
+        },
+      },
+      {
+        test: "should handle nested arrays in objects correctly when called.",
+        input: {
+          level1: {
+            level2: [
+              { item1: "value1" },
+              { item2: "value2" },
+            ],
+          },
+        },
+        expected: {
+          "level1.level2": [
+            { item1: "value1" },
+            { item2: "value2" },
+          ],
         },
       },
     ])("$test", ({ input, expected }) => {
