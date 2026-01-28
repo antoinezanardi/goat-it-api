@@ -1,6 +1,7 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
-import { crush } from "radashi";
+
+import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -213,7 +214,7 @@ describe("Question Theme Mongoose Repository", () => {
       const questionThemeId = "question-theme-id";
       const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
       const updateQuery = {
-        $set: crush(questionThemeModificationContract),
+        $set: getCrushedDataForMongoPatchUpdate(questionThemeModificationContract),
       };
       await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
 

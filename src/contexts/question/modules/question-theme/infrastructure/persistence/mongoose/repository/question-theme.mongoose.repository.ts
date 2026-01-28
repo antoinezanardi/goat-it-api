@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
-import { crush } from "radashi";
+
+import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
@@ -56,7 +57,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   }
 
   public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
-    const questionThemeUpdateData = crush(questionThemeModificationContract);
+    const questionThemeUpdateData = getCrushedDataForMongoPatchUpdate(questionThemeModificationContract);
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
