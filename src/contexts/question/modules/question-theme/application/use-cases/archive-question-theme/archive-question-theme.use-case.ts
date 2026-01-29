@@ -2,9 +2,10 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
+import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 
-import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 @Injectable()
 export class ArchiveQuestionThemeUseCase {
@@ -25,7 +26,7 @@ export class ArchiveQuestionThemeUseCase {
     if (!questionTheme) {
       throw new QuestionThemeNotFoundError(id);
     }
-    if (questionTheme.status === "archived") {
+    if (questionTheme.status === QUESTION_THEME_STATUS_ARCHIVED) {
       throw new QuestionThemeAlreadyArchivedError(id);
     }
   }

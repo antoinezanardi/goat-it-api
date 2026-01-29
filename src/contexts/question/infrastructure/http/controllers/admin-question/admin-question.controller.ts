@@ -8,6 +8,7 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
@@ -23,6 +24,7 @@ export class AdminQuestionController {
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
     private readonly createQuestionUseCase: CreateQuestionUseCase,
+    private readonly archiveQuestionUseCase: ArchiveQuestionUseCase,
   ) {}
 
   @Get()
@@ -81,5 +83,24 @@ export class AdminQuestionController {
     const question = await this.createQuestionUseCase.create(questionCreationCommand);
 
     return createAdminQuestionDtoFromEntity(question);
+  }
+
+  @Post("/:id/archive")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Archive a question",
+    description: `Archive a specific question by its unique identifier. Returns the archived question with detailed structure for backend administration. An already archived question cannot be archived again.`,
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionDto,
+  })
+  public async archiveQuestion(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionDto> {
+    const archivedQuestion = await this.archiveQuestionUseCase.archive(id);
+
+    return createAdminQuestionDtoFromEntity(archivedQuestion);
   }
 }

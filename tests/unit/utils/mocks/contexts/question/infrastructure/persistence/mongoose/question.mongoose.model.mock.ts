@@ -10,6 +10,7 @@ import type { QuestionAggregate, QuestionAggregatePipeline } from "@question/inf
 type QuestionMongooseModelStub = {
   aggregate: (pipeline?: QuestionAggregatePipeline) => Promise<QuestionAggregate[]>;
   create: (questionCreationContract: Partial<QuestionAggregate>) => Promise<QuestionMongooseDocumentStub>;
+  findByIdAndUpdate: (id: string, update: Partial<QuestionAggregate>, options?: unknown) => Promise<QuestionMongooseDocumentStub | null>;
 };
 
 type MockedQuestionMongooseModel = { [K in keyof QuestionMongooseModelStub]: Mock<QuestionMongooseModelStub[K]> };
@@ -22,6 +23,7 @@ function createMockedQuestionMongooseModel(overrides: Partial<MockedQuestionMong
       createFakeQuestionAggregate(),
     ]),
     create: vi.fn<QuestionMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionDocument()),
+    findByIdAndUpdate: vi.fn<QuestionMongooseModelStub["findByIdAndUpdate"]>().mockResolvedValue(createFakeQuestionDocument()),
     ...overrides,
   };
 }

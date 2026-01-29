@@ -10,6 +10,7 @@ type QuestionRepositoryStub = {
   findAll: () => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
+  archive: (id: string) => Promise<Question | undefined>;
 };
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };
@@ -23,6 +24,7 @@ function createMockedQuestionRepository(overrides: Partial<MockedQuestionReposit
     ]),
     findById: vi.fn<QuestionRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestion()),
     create: vi.fn<QuestionRepositoryStub["create"]>().mockResolvedValue(createFakeQuestion()),
+    archive: vi.fn<QuestionRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestion()),
     ...overrides,
   };
 }

@@ -6,6 +6,7 @@ type QuestionRepository = {
   findAll: () => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
+  archive: (id: string) => Promise<Question | undefined>;
 };
 
 export type { QuestionRepository };

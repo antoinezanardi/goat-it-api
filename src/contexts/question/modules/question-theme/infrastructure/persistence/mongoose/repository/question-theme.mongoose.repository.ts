@@ -5,7 +5,7 @@ import { Model, UpdateQuery } from "mongoose";
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
-import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
@@ -70,7 +70,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
 
   public async archive(id: string): Promise<QuestionTheme | undefined> {
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
-      status: ARCHIVED_QUESTION_THEME_STATUS,
+      status: QUESTION_THEME_STATUS_ARCHIVED,
     };
     const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
     if (!archivedQuestionThemeDocument) {
