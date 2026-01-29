@@ -6,6 +6,7 @@ import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromCon
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -178,6 +179,49 @@ describe("Question Mongoose Repository", () => {
       const actualQuestion = await repositories.question.create(questionCreationContract);
 
       expect(actualQuestion).toStrictEqual(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.archive, () => {
+    it("should call model.findByIdAndUpdate with archived status when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000010";
+      const expectedUpdate = { status: QUESTION_STATUS_ARCHIVED } as const;
+
+      await repositories.question.archive(questionId);
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+    });
+
+    it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
+      const questionId = "618c1f4b3a2f000000000011";
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(null);
+
+      const actual = await repositories.question.archive(questionId);
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("should call findById with the document id when model returns a document.", async() => {
+      const questionId = "618c1f4b3a2f000000000012";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.archive(questionId);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000013";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.archive(questionId);
+
+      expect(actual).toStrictEqual(expectedQuestion);
     });
   });
 });

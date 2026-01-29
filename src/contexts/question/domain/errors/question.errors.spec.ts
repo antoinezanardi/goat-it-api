@@ -1,4 +1,5 @@
-import { QuestionCreationError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionAlreadyArchivedError, QuestionCreationError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 
 describe("Question Errors", () => {
   describe(QuestionNotFoundError, () => {
@@ -28,6 +29,22 @@ describe("Question Errors", () => {
       const error = new QuestionCreationError();
 
       expect(error.message).toBe(`Failed to create question`);
+    });
+  });
+
+  describe(QuestionAlreadyArchivedError, () => {
+    it("should have the correct name when created.", () => {
+      const questionId = "test-question-id";
+      const error = new QuestionAlreadyArchivedError(questionId);
+
+      expect(error.name).toBe("QuestionAlreadyArchivedError");
+    });
+
+    it("should have the correct message when created.", () => {
+      const questionId = "test-question-id";
+      const error = new QuestionAlreadyArchivedError(questionId);
+
+      expect(error.message).toBe(`Question with id ${questionId} already has status '${QUESTION_STATUS_ARCHIVED}'`);
     });
   });
 });

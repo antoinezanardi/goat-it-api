@@ -2,6 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
@@ -10,6 +11,7 @@ import { AdminQuestionController } from "@question/infrastructure/http/controlle
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
+import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-questions.use-case.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
@@ -35,6 +37,7 @@ describe("Admin Question Controller", () => {
       findQuestions: ReturnType<typeof createMockedFindQuestionsUseCase>;
       findQuestionById: ReturnType<typeof createMockedFindQuestionByIdUseCase>;
       createQuestion: ReturnType<typeof createMockedCreateQuestionUseCase>;
+      archiveQuestion: ReturnType<typeof createMockedArchiveQuestionUseCase>;
     };
     mappers: {
       createAdminQuestionDtoFromEntity: Mock;
@@ -51,6 +54,7 @@ describe("Admin Question Controller", () => {
         findQuestions: createMockedFindQuestionsUseCase(),
         findQuestionById: createMockedFindQuestionByIdUseCase(),
         createQuestion: createMockedCreateQuestionUseCase(),
+        archiveQuestion: createMockedArchiveQuestionUseCase(),
       },
       mappers: {
         createAdminQuestionDtoFromEntity: vi.mocked(createAdminQuestionDtoFromEntity),
@@ -76,6 +80,10 @@ describe("Admin Question Controller", () => {
         {
           provide: CreateQuestionUseCase,
           useValue: mocks.useCases.createQuestion,
+        },
+        {
+          provide: ArchiveQuestionUseCase,
+          useValue: mocks.useCases.archiveQuestion,
         },
       ],
     }).compile();
@@ -195,6 +203,36 @@ describe("Admin Question Controller", () => {
       mocks.useCases.createQuestion.create.mockResolvedValueOnce(createdQuestion);
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
       const result = await adminQuestionController.createQuestion(questionCreationDto);
+
+      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+    });
+  });
+
+  describe(AdminQuestionController.prototype.archiveQuestion, () => {
+    it("should archive question when called.", async() => {
+      const questionId = "archive-id-1";
+      await adminQuestionController.archiveQuestion(questionId);
+
+      expect(mocks.useCases.archiveQuestion.archive).toHaveBeenCalledExactlyOnceWith(questionId);
+    });
+
+    it("should map the archived question to admin dto when called.", async() => {
+      const questionId = "archive-id-2";
+      const archivedQuestion = createFakeQuestion();
+      mocks.useCases.archiveQuestion.archive.mockResolvedValueOnce(archivedQuestion);
+      await adminQuestionController.archiveQuestion(questionId);
+
+      expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledExactlyOnceWith(archivedQuestion);
+    });
+
+    it("should return the mapped dto when called.", async() => {
+      const questionId = "archive-id-3";
+      const archivedQuestion = createFakeQuestion();
+      const expectedDto = createFakeAdminQuestionDto();
+
+      mocks.useCases.archiveQuestion.archive.mockResolvedValueOnce(archivedQuestion);
+      mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
+      const result = await adminQuestionController.archiveQuestion(questionId);
 
       expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
     });
