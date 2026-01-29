@@ -201,7 +201,7 @@ describe("Question Mongoose Repository", () => {
       expect(actual).toBeUndefined();
     });
 
-    it("should call findById with created id when model returns a document.", async() => {
+    it("should call findById with the document id when model returns a document.", async() => {
       const questionId = "618c1f4b3a2f000000000012";
       const createdDocument = createFakeQuestionDocument();
       mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);

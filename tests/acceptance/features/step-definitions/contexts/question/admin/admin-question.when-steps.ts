@@ -79,3 +79,26 @@ When(/^the admin creates a new question with the request payload but with an inv
   });
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
+
+When(/^the admin archives the question with id "(?<id>[^"]+)"$/u, async function(this: GoatItWorld, id: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    method: "POST",
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${id}/archive`, fetchOptions);
+});
+
+When(/^the admin archives the question with id "(?<id>[^"]+)" without an API key$/u, async function(this: GoatItWorld, id: string) {
+  const fetchOptions = createFetchOptions({
+    method: "POST",
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${id}/archive`, fetchOptions);
+});
+
+When(/^the admin archives the question with id "(?<id>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, id: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: "invalid-api-key",
+    method: "POST",
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${id}/archive`, fetchOptions);
+});

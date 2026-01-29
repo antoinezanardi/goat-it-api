@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
-import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
@@ -72,8 +72,9 @@ describe("Archive Question Use Case", () => {
     it("should throw QuestionAlreadyArchivedError when question is already archived.", async() => {
       const id = "archived-question-id";
       mocks.repositories.question.findById.mockResolvedValueOnce(createFakeQuestion({ id, status: "archived" }));
+      const expectedError = new QuestionAlreadyArchivedError(id);
 
-      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrowError(`Question with id ${id} already has status 'archived'`);
+      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrowError(expectedError);
     });
 
     it("should not throw any error when question is archivable.", async() => {

@@ -5,7 +5,7 @@ import { ArgumentsHost, BadRequestException, Catch, ConflictException, Exception
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
 
-import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
@@ -14,6 +14,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [QuestionThemeNotFoundError.name]: error => new NotFoundException(error.message),
     [QuestionNotFoundError.name]: error => new NotFoundException(error.message),
     [QuestionThemeAlreadyArchivedError.name]: error => new BadRequestException(error.message),
+    [QuestionAlreadyArchivedError.name]: error => new BadRequestException(error.message),
     [QuestionThemeSlugAlreadyExistsError.name]: error => new ConflictException(error.message),
   };
 

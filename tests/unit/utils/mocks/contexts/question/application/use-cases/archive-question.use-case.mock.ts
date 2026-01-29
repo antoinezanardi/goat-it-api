@@ -1,3 +1,5 @@
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
+
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 import type { Mock } from "vitest";
@@ -12,7 +14,7 @@ type MockedArchiveQuestionUseCase = { [K in keyof ArchiveQuestionStub]: Mock<Arc
 
 function createMockedArchiveQuestionUseCase(overrides: Partial<MockedArchiveQuestionUseCase> = {}): MockedArchiveQuestionUseCase {
   return {
-    archive: vi.fn<ArchiveQuestionStub["archive"]>().mockResolvedValue(createFakeQuestion()),
+    archive: vi.fn<ArchiveQuestionStub["archive"]>().mockResolvedValue(createFakeQuestion({ status: QUESTION_STATUS_ARCHIVED })),
     ...overrides,
   };
 }
