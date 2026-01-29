@@ -1,17 +1,17 @@
 meta {
-  name: Archive Question Theme By Id
+  name: Archive Question By Id
   type: http
   seq: 4
 }
 
 post {
-  url: {{baseUrl}}/admin/question-themes/:id/archive
+  url: {{baseUrl}}/admin/questions/:id/archive
   body: json
   auth: inherit
 }
 
 params:path {
-  id: {{questionThemeId}}
+  id: {{questionId}}
 }
 
 body:json {
