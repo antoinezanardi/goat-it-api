@@ -437,6 +437,17 @@ Feature: Create Question as Admin
       | code   | message                  | path   |
       | custom | Theme IDs must be unique | themes |
 
+  Scenario: Trying to create a question with archived theme
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type   | value                    |
+      | themes[0].themeId | string | dbb0664ad4797c6cc79d5aee |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                                                                |
+      | Bad Request | 400        | Referenced question theme with id dbb0664ad4797c6cc79d5aee is archived |
+
   Scenario: Trying to create a question with unknown theme ID
     Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"
