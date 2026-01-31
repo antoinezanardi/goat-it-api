@@ -4,7 +4,7 @@ import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-qu
 import { QuestionThemeAssignmentCreationCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment.commands";
 import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import { QuestionThemeAssignmentAlreadyExistsError, QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
-import { findQuestionThemeAssignmentInQuestionById } from "@question/domain/helpers/question-theme-assignment/question-theme-assignment.helpers";
+import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/helpers/question-theme-assignment/question-theme-assignment.helpers";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
@@ -26,7 +26,7 @@ export class AssignThemeToQuestionUseCase {
     await this.checkThemeIsAssignableToQuestion(questionThemeAssignmentPayload, questionId);
     const updatedQuestion = await this.questionRepository.assignTheme(questionId, questionThemeAssignmentPayload);
     if (!updatedQuestion) {
-      throw new QuestionThemeAssignmentCreationError(questionId, questionThemeAssignmentPayload.themeId);
+      throw new QuestionThemeAssignmentCreationError(questionThemeAssignmentPayload.themeId, questionId);
     }
     return updatedQuestion;
   }
@@ -35,12 +35,12 @@ export class AssignThemeToQuestionUseCase {
     const question = await this.findQuestionByIdUseCase.getById(questionId);
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(questionThemeAssignmentContract.themeId);
 
-    const existingThemeAssignment = findQuestionThemeAssignmentInQuestionById(question, questionTheme.id);
+    const existingThemeAssignment = findQuestionThemeAssignmentInQuestionByThemeId(question, questionTheme.id);
     if (existingThemeAssignment) {
       throw new QuestionThemeAssignmentAlreadyExistsError(questionId, questionTheme.id);
     }
     if (isQuestionThemeArchived(questionTheme)) {
-      throw new ReferencedQuestionThemeArchivedError(questionId);
+      throw new ReferencedQuestionThemeArchivedError(questionTheme.id);
     }
   }
 }

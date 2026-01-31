@@ -19,7 +19,7 @@ describe("Question Theme Assignment Errors", () => {
     it("should set message including ids when constructed.", () => {
       const error = new QuestionThemeAssignmentCreationError("theme-2", "question-2");
 
-      expect(error.message).toBe("Question theme assignment with id theme-2 could not be created in question with id question-2");
+      expect(error.message).toBe("Question theme with id theme-2 could not be assigned in question with id question-2");
     });
 
     it("should set the error name to QuestionThemeAssignmentCreationError when constructed.", () => {

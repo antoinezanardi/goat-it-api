@@ -79,7 +79,7 @@ describe("Assign Theme To Question Use Case", () => {
 
       await assignThemeToQuestionUseCase.assign(command);
 
-      expect(mocks.repositories.question.assignTheme).toHaveBeenCalledExactlyOnceWith("q-1", command.payload);
+      expect(mocks.repositories.question.assignTheme).toHaveBeenCalledExactlyOnceWith(command.questionId, command.payload);
     });
 
     it("should throw when repository.assignTheme returns undefined.", async() => {
@@ -91,7 +91,7 @@ describe("Assign Theme To Question Use Case", () => {
       }));
       mocks.useCases.findQuestionById.getById.mockResolvedValue(createFakeQuestion());
       mocks.repositories.question.assignTheme.mockResolvedValueOnce(undefined);
-      const expectedError = new QuestionThemeAssignmentCreationError("q-1", command.payload.themeId);
+      const expectedError = new QuestionThemeAssignmentCreationError(command.payload.themeId, command.questionId);
 
       await expect(async() => assignThemeToQuestionUseCase.assign(command)).rejects.toThrowError(expectedError);
     });
@@ -133,10 +133,13 @@ describe("Assign Theme To Question Use Case", () => {
         questionId: "q-1",
       });
       mocks.useCases.findQuestionById.getById.mockResolvedValue(createFakeQuestion({ themes: [] }));
-      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ status: QUESTION_THEME_STATUS_ARCHIVED }));
-      const expectedError = new ReferencedQuestionThemeArchivedError("q-1");
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({
+        id: command.payload.themeId,
+        status: QUESTION_THEME_STATUS_ARCHIVED,
+      }));
+      const expectedError = new ReferencedQuestionThemeArchivedError(command.payload.themeId);
 
-      await expect(async() => assignThemeToQuestionUseCase["checkThemeIsAssignableToQuestion"](command.payload, "q-1")).rejects.toThrowError(expectedError);
+      await expect(async() => assignThemeToQuestionUseCase["checkThemeIsAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrowError(expectedError);
     });
   });
 });

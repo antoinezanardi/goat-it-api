@@ -6,8 +6,8 @@ class QuestionThemeAssignmentAlreadyExistsError extends Error {
 }
 
 class QuestionThemeAssignmentCreationError extends Error {
-  public constructor(questionThemeAssignmentId: string, questionId: string) {
-    super(`Question theme assignment with id ${questionThemeAssignmentId} could not be created in question with id ${questionId}`);
+  public constructor(questionThemeId: string, questionId: string) {
+    super(`Question theme with id ${questionThemeId} could not be assigned in question with id ${questionId}`);
     this.name = "QuestionThemeAssignmentCreationError";
   }
 }

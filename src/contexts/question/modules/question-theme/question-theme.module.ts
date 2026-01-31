@@ -38,6 +38,9 @@ import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@qu
       useClass: QuestionThemeMongooseRepository,
     },
   ],
-  exports: [GetQuestionThemesByIdsOrThrowUseCase],
+  exports: [
+    FindQuestionThemeByIdUseCase,
+    GetQuestionThemesByIdsOrThrowUseCase,
+  ],
 })
 export class QuestionThemeModule {}
