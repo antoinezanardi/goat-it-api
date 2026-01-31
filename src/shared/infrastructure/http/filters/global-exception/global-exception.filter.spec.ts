@@ -9,7 +9,7 @@ import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/globa
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
@@ -220,6 +220,11 @@ describe("Global Exception Filter", () => {
         test: "should map domain error to http exception and send it when called with QuestionThemeAlreadyArchivedError.",
         exception: new QuestionThemeAlreadyArchivedError("question-theme-id"),
         expectedSentException: new BadRequestException(`Question theme with id question-theme-id already has status '${QUESTION_THEME_STATUS_ARCHIVED}'`),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with ReferencedQuestionThemeArchivedError.",
+        exception: new ReferencedQuestionThemeArchivedError("question-theme-id"),
+        expectedSentException: new BadRequestException("Referenced question theme with id question-theme-id is archived"),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionAlreadyArchivedError.",

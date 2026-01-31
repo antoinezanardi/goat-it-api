@@ -1,15 +1,18 @@
 import { Test } from "@nestjs/testing";
 
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
-import { CheckQuestionThemesExistenceUseCase } from "@question/modules/question-theme/application/use-cases/check-question-themes-existence/check-question-themes-existence.use-case";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 import { QuestionCreationError } from "@question/domain/errors/question.errors";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 
-import { createMockedCheckQuestionThemesExistenceUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/check-question-themes-existence.use-case.mock";
+import { createMockedGetQuestionThemesByIdsOrThrowUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock";
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionCreationCommand } from "@faketories/contexts/question/commands/question.commands.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
 import type { TestingModule } from "@nestjs/testing";
 
@@ -22,7 +25,7 @@ describe("Create Question Use Case", () => {
       question: ReturnType<typeof createMockedQuestionRepository>;
     };
     useCases: {
-      checkQuestionThemesExistence: ReturnType<typeof createMockedCheckQuestionThemesExistenceUseCase>;
+      getQuestionThemesByIdsOrThrow: ReturnType<typeof createMockedGetQuestionThemesByIdsOrThrowUseCase>;
     };
   };
 
@@ -32,16 +35,20 @@ describe("Create Question Use Case", () => {
         question: createMockedQuestionRepository(),
       },
       useCases: {
-        checkQuestionThemesExistence: createMockedCheckQuestionThemesExistenceUseCase(),
+        getQuestionThemesByIdsOrThrow: createMockedGetQuestionThemesByIdsOrThrowUseCase(),
       },
     };
+    mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow.mockResolvedValue([
+      createFakeQuestionTheme({ status: DEFAULT_QUESTION_THEME_STATUS }),
+      createFakeQuestionTheme({ status: DEFAULT_QUESTION_THEME_STATUS }),
+    ]);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CreateQuestionUseCase,
         {
-          provide: CheckQuestionThemesExistenceUseCase,
-          useValue: mocks.useCases.checkQuestionThemesExistence,
+          provide: GetQuestionThemesByIdsOrThrowUseCase,
+          useValue: mocks.useCases.getQuestionThemesByIdsOrThrow,
         },
         {
           provide: QUESTION_REPOSITORY_TOKEN,
@@ -90,13 +97,34 @@ describe("Create Question Use Case", () => {
   });
 
   describe("checkQuestionIsCreatable", () => {
-    it("should call checkQuestionThemesExistenceUseCase.checkExistenceByIds with theme ids when called.", async() => {
+    it("should call getQuestionThemesByIdsOrThrow.getByIdsOrThrow with theme ids when called.", async() => {
       const command = createFakeQuestionCreationCommand();
       const expectedThemeIds = new Set(command.payload.themes.map(themeAssignment => themeAssignment.themeId));
 
       await createQuestionUseCase["checkQuestionIsCreatable"](command);
 
-      expect(mocks.useCases.checkQuestionThemesExistence.checkExistenceByIds).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
+      expect(mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
+    });
+
+    it("should not throw when all referenced themes exist and are not archived.", async() => {
+      const command = createFakeQuestionCreationCommand();
+
+      await expect(createQuestionUseCase["checkQuestionIsCreatable"](command)).resolves.not.toThrowError();
+    });
+
+    it("should throw ReferencedQuestionThemeArchivedError when some referenced theme is archived.", async() => {
+      const command = createFakeQuestionCreationCommand();
+      const archivedThemeId = command.payload.themes[0].themeId;
+      mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow.mockResolvedValueOnce([
+        createFakeQuestionTheme({
+          id:
+          archivedThemeId,
+          status: QUESTION_THEME_STATUS_ARCHIVED,
+        }),
+      ]);
+      const expectedError = new ReferencedQuestionThemeArchivedError(archivedThemeId);
+
+      await expect(createQuestionUseCase["checkQuestionIsCreatable"](command)).rejects.toThrowError(expectedError);
     });
   });
 });

@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
 
-import { CheckQuestionThemesExistenceUseCase } from "@question/modules/question-theme/application/use-cases/check-question-themes-existence/check-question-themes-existence.use-case";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
 import { QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
@@ -8,8 +8,10 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/mo
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
-describe("Check Question Themes Existence Use Case", () => {
-  let checkQuestionThemesExistenceUseCase: CheckQuestionThemesExistenceUseCase;
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+describe("Get Question Themes By Ids Or Throw Use Case", () => {
+  let getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase;
   let mocks: {
     repositories: {
       questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;
@@ -25,7 +27,7 @@ describe("Check Question Themes Existence Use Case", () => {
 
     const testingModule = await Test.createTestingModule({
       providers: [
-        CheckQuestionThemesExistenceUseCase,
+        GetQuestionThemesByIdsOrThrowUseCase,
         {
           provide: QUESTION_THEME_REPOSITORY_TOKEN,
           useValue: mocks.repositories.questionTheme,
@@ -33,10 +35,10 @@ describe("Check Question Themes Existence Use Case", () => {
       ],
     }).compile();
 
-    checkQuestionThemesExistenceUseCase = testingModule.get<CheckQuestionThemesExistenceUseCase>(CheckQuestionThemesExistenceUseCase);
+    getQuestionThemesByIdsOrThrowUseCase = testingModule.get<GetQuestionThemesByIdsOrThrowUseCase>(GetQuestionThemesByIdsOrThrowUseCase);
   });
 
-  describe(CheckQuestionThemesExistenceUseCase.prototype.checkExistenceByIds, () => {
+  describe(GetQuestionThemesByIdsOrThrowUseCase.prototype.getByIdsOrThrow, () => {
     it("should call questionTheme.findByIds with the provided ids when called.", async() => {
       const themes = [
         createFakeQuestionTheme({ id: "theme-1" }),
@@ -44,7 +46,7 @@ describe("Check Question Themes Existence Use Case", () => {
       ];
       const ids = new Set(themes.map(theme => theme.id));
       vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
-      await checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids);
+      await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
 
       expect(mocks.repositories.questionTheme.findByIds).toHaveBeenCalledExactlyOnceWith(ids);
     });
@@ -53,10 +55,10 @@ describe("Check Question Themes Existence Use Case", () => {
       const themes = [createFakeQuestionTheme({ id: "theme-1" })];
       const ids = new Set([...themes.map(theme => theme.id), "missing-theme-id"]);
       vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
-      const throwErrorForMissingQuestionThemeIdsStub = CheckQuestionThemesExistenceUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
+      const throwErrorForMissingQuestionThemeIdsStub = GetQuestionThemesByIdsOrThrowUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
       const throwErrorForMissingQuestionThemeIdsMock = vi.spyOn(throwErrorForMissingQuestionThemeIdsStub, "throwErrorForMissingQuestionThemeIds").mockImplementation(vi.fn);
 
-      await checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids);
+      await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
 
       expect(throwErrorForMissingQuestionThemeIdsMock).toHaveBeenCalledExactlyOnceWith(ids, new Set(themes.map(theme => theme.id)));
     });
@@ -68,11 +70,23 @@ describe("Check Question Themes Existence Use Case", () => {
       ];
       const ids = new Set(themes.map(theme => theme.id));
       vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
-      const throwErrorForMissingQuestionThemeIdsStub = CheckQuestionThemesExistenceUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
+      const throwErrorForMissingQuestionThemeIdsStub = GetQuestionThemesByIdsOrThrowUseCase as unknown as { throwErrorForMissingQuestionThemeIds: () => void };
       const throwErrorForMissingQuestionThemeIdsMock = vi.spyOn(throwErrorForMissingQuestionThemeIdsStub, "throwErrorForMissingQuestionThemeIds").mockImplementation(vi.fn);
-      await checkQuestionThemesExistenceUseCase.checkExistenceByIds(ids);
+      await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
 
       expect(throwErrorForMissingQuestionThemeIdsMock).not.toHaveBeenCalled();
+    });
+
+    it("should return found question themes when all ids are found.", async() => {
+      const themes = [
+        createFakeQuestionTheme({ id: "theme-1" }),
+        createFakeQuestionTheme({ id: "theme-2" }),
+      ];
+      const ids = new Set(themes.map(theme => theme.id));
+      vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
+      const foundThemes = await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
+
+      expect(foundThemes).toStrictEqual<QuestionTheme[]>(themes);
     });
   });
 
@@ -83,7 +97,7 @@ describe("Check Question Themes Existence Use Case", () => {
       const expectedError = new QuestionThemeNotFoundError("id-2");
 
       expect(() => {
-        CheckQuestionThemesExistenceUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
+        GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
       }).toThrowError(expectedError);
     });
 
@@ -92,7 +106,7 @@ describe("Check Question Themes Existence Use Case", () => {
       const foundIds = new Set(["id-1", "id-2"]);
 
       expect(() => {
-        CheckQuestionThemesExistenceUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
+        GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
       }).not.toThrowError();
     });
   });
