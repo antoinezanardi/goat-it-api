@@ -25,7 +25,7 @@ describe("Create Question Use Case", () => {
       question: ReturnType<typeof createMockedQuestionRepository>;
     };
     useCases: {
-      checkQuestionThemesExistence: ReturnType<typeof createMockedGetQuestionThemesByIdsOrThrowUseCase>;
+      getQuestionThemesByIdsOrThrow: ReturnType<typeof createMockedGetQuestionThemesByIdsOrThrowUseCase>;
     };
   };
 
@@ -35,10 +35,10 @@ describe("Create Question Use Case", () => {
         question: createMockedQuestionRepository(),
       },
       useCases: {
-        checkQuestionThemesExistence: createMockedGetQuestionThemesByIdsOrThrowUseCase(),
+        getQuestionThemesByIdsOrThrow: createMockedGetQuestionThemesByIdsOrThrowUseCase(),
       },
     };
-    mocks.useCases.checkQuestionThemesExistence.getByIdsOrThrow.mockResolvedValue([
+    mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow.mockResolvedValue([
       createFakeQuestionTheme({ status: DEFAULT_QUESTION_THEME_STATUS }),
       createFakeQuestionTheme({ status: DEFAULT_QUESTION_THEME_STATUS }),
     ]);
@@ -48,7 +48,7 @@ describe("Create Question Use Case", () => {
         CreateQuestionUseCase,
         {
           provide: GetQuestionThemesByIdsOrThrowUseCase,
-          useValue: mocks.useCases.checkQuestionThemesExistence,
+          useValue: mocks.useCases.getQuestionThemesByIdsOrThrow,
         },
         {
           provide: QUESTION_REPOSITORY_TOKEN,
@@ -97,13 +97,13 @@ describe("Create Question Use Case", () => {
   });
 
   describe("checkQuestionIsCreatable", () => {
-    it("should call checkQuestionThemesExistenceUseCase.getByIdsOrThrow with theme ids when called.", async() => {
+    it("should call getQuestionThemesByIdsOrThrow.getByIdsOrThrow with theme ids when called.", async() => {
       const command = createFakeQuestionCreationCommand();
       const expectedThemeIds = new Set(command.payload.themes.map(themeAssignment => themeAssignment.themeId));
 
       await createQuestionUseCase["checkQuestionIsCreatable"](command);
 
-      expect(mocks.useCases.checkQuestionThemesExistence.getByIdsOrThrow).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
+      expect(mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
     });
 
     it("should not throw when all referenced themes exist and are not archived.", async() => {
@@ -115,7 +115,7 @@ describe("Create Question Use Case", () => {
     it("should throw ReferencedQuestionThemeArchivedError when some referenced theme is archived.", async() => {
       const command = createFakeQuestionCreationCommand();
       const archivedThemeId = command.payload.themes[0].themeId;
-      mocks.useCases.checkQuestionThemesExistence.getByIdsOrThrow.mockResolvedValueOnce([
+      mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow.mockResolvedValueOnce([
         createFakeQuestionTheme({
           id:
           archivedThemeId,
