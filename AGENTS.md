@@ -24,41 +24,42 @@
 12. [DTO and validation patterns](#dto-and-validation-patterns)
 13. [Repository pattern](#repository-pattern)
 14. [Error handling patterns](#error-handling-patterns)
-15. [API Design and REST conventions](#api-design-and-rest-conventions)
-16. [Authentication and Security Patterns](#authentication-and-security-patterns)
-17. [Dependency Injection and Provider Patterns](#dependency-injection-and-provider-patterns)
-18. [Import and Export Conventions](#import-and-export-conventions)
-19. [Performance and Scalability Considerations](#performance-and-scalability-considerations)
+15. [Domain Patterns](#domain-patterns)
+16. [API Design and REST conventions](#api-design-and-rest-conventions)
+17. [Authentication and Security Patterns](#authentication-and-security-patterns)
+18. [Dependency Injection and Provider Patterns](#dependency-injection-and-provider-patterns)
+19. [Import and Export Conventions](#import-and-export-conventions)
+20. [Performance and Scalability Considerations](#performance-and-scalability-considerations)
 
 ### Testing and Quality
-20. [Testing conventions](#testing-conventions)
-21. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid)
-22. [Mutation testing (Stryker)](#mutation-testing-stryker)
-23. [Acceptance tests](#acceptance-tests)
-24. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement)
+21. [Testing conventions](#testing-conventions)
+22. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid)
+23. [Mutation testing (Stryker)](#mutation-testing-stryker)
+24. [Acceptance tests](#acceptance-tests)
+25. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement)
 
 ### Anti-Patterns and Best Practices
-25. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid)
-26. [Industry Best Practices Compliance](#industry-best-practices-compliance)
+26. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid)
+27. [Industry Best Practices Compliance](#industry-best-practices-compliance)
 
 ### Operational Guides
-27. [Common scripts](#common-scripts)
-28. [Linting, commits and release automation](#linting-commits-and-release-automation)
-29. [CI/CD Workflows](#cicd-workflows)
-30. [Docker](#docker)
-31. [Minimal local setup for a developer/agent](#minimal-local-setup-for-a-developeragent)
-32. [Environment variables](#environment-variables)
+28. [Common scripts](#common-scripts)
+29. [Linting, commits and release automation](#linting-commits-and-release-automation)
+30. [CI/CD Workflows](#cicd-workflows)
+31. [Docker](#docker)
+32. [Minimal local setup for a developer/agent](#minimal-local-setup-for-a-developeragent)
+33. [Environment variables](#environment-variables)
 
 ### Reference
-33. [General rules and small reminders](#general-rules-and-small-reminders)
-34. [Examples](#examples)
-35. [Security and sensitive data](#security-and-sensitive-data)
-36. [Conventions and coding style](#conventions-and-coding-style)
-37. [What an agent must do before committing any change](#what-an-agent-must-do-before-committing-any-change)
-38. [Examples of small tasks an agent may be asked to do](#examples-of-small-tasks-an-agent-may-be-asked-to-do)
-39. [Notes and warnings](#notes-and-warnings)
-40. [Contact and maintainers](#contact-and-maintainers)
-41. [Contributing](#contributing)
+34. [General rules and small reminders](#general-rules-and-small-reminders)
+35. [Examples](#examples)
+36. [Security and sensitive data](#security-and-sensitive-data)
+37. [Conventions and coding style](#conventions-and-coding-style)
+38. [What an agent must do before committing any change](#what-an-agent-must-do-before-committing-any-change)
+39. [Examples of small tasks an agent may be asked to do](#examples-of-small-tasks-an-agent-may-be-asked-to-do)
+40. [Notes and warnings](#notes-and-warnings)
+41. [Contact and maintainers](#contact-and-maintainers)
+42. [Contributing](#contributing)
 
 ---
 
@@ -170,10 +171,17 @@ src/contexts/<context-name>/
         │   ├── repositories/         # Repository interface (port) + token
         │   ├── contracts/            # Data contracts for modifications/operations
         │   ├── commands/             # Command types that wrap contracts with IDs
-        │   └── errors/               # Domain-specific errors
+        │   ├── errors/               # Domain-specific errors
+        │   ├── predicates/           # Boolean validators for domain logic
+        │   ├── policies/             # Business rule enforcement
+        │   └── helpers/              # Utility functions for domain logic
         ├── application/
         │   ├── use-cases/            # Business logic operations
         │   ├── dto/                  # Zod-based DTOs for API
+        │   │   └── shared/           # Shared DTO components and validators
+        │   │       └── zod/
+        │   │           ├── refinements/  # Custom Zod refinement validators
+        │   │           └── validators/   # Shared validation logic
         │   └── mappers/              # Entity-to-DTO mappers
         └── infrastructure/
             ├── http/
@@ -182,6 +190,7 @@ src/contexts/<context-name>/
                 └── mongoose/
                     ├── schema/       # Mongoose schema definitions
                     ├── repository/   # Repository implementation (adapter)
+                    │   └── pipelines/    # MongoDB aggregation pipeline helpers
                     ├── mappers/      # Document-to-entity mappers
                     ├── types/        # Mongoose-specific types
                     └── constants/    # Collection names, etc.
@@ -348,6 +357,10 @@ Use the NestJS-style filename pattern: `<name>.<type>.ts` where `<type>` indicat
 | `mappers`     | Data transformation functions               | `question-theme.dto.mappers.ts`             |
 | `contracts`   | Domain modification contracts               | `question-theme.contracts.ts`               |
 | `commands`    | Domain command types                        | `question-theme.commands.ts`                |
+| `predicates`  | Boolean validators for domain logic         | `question-theme-status.predicates.ts`       |
+| `policies`    | Business rule enforcement                   | `question-creation.policies.ts`             |
+| `refinement`  | Custom Zod refinement validators            | `question-author.dto.zod.refinement.ts`     |
+| `pipeline`    | MongoDB aggregation pipeline helpers        | `question.mongoose.repository.pipeline.ts`  |
 | `pipe`        | NestJS pipe                                 | `mongo-id.pipe.ts`                          |
 | `guard`       | NestJS guard                                | `auth.guard.ts`                             |
 | `interceptor` | NestJS interceptor                          | `logging.interceptor.ts`                    |
@@ -375,7 +388,12 @@ Use the NestJS-style filename pattern: `<name>.<type>.ts` where `<type>` indicat
 - **Domain errors**: Place in `domain/errors/` as `<entity>.errors.ts`.
 - **Contracts**: Place in `domain/contracts/` as `<entity>.contracts.ts` — define data shapes for modifications/operations.
 - **Commands**: Place in `domain/commands/` as `<entity>.commands.ts` — wrap contracts with identifiers.
+- **Predicates**: Place in `domain/predicates/` as `<entity>.predicates.ts` — boolean validators for domain logic (e.g., `isQuestionThemeArchived`).
+- **Policies**: Place in `domain/policies/` as `<action>.policies.ts` — business rule enforcement (e.g., `question-creation.policies.ts` validates business rules before creating a question).
+- **Domain helpers**: Place in `domain/helpers/` as `<entity>.helpers.ts` — utility functions for domain operations.
 - **Use cases**: Place each use case in its own folder under `application/use-cases/<use-case-name>/`.
+- **Shared DTOs**: Place shared DTO components in `application/dto/shared/` with Zod refinements in `application/dto/shared/zod/refinements/` and validators in `application/dto/shared/zod/validators/`.
+- **Repository pipelines**: Place MongoDB aggregation pipelines in `infrastructure/persistence/mongoose/repository/pipelines/` as `<entity>.mongoose.repository.pipeline.ts`.
 
 ### Tests
 
@@ -419,16 +437,26 @@ src/contexts/<context>/modules/<feature>/
 │   │   └── <feature>.contracts.ts         # Modification contracts
 │   ├── commands/                          # (if needed)
 │   │   └── <feature>.commands.ts          # Command types
-│   └── errors/
-│       ├── <feature>.errors.ts            # Domain error classes
-│       └── <feature>.errors.spec.ts       # Error tests
+│   ├── errors/
+│   │   ├── <feature>.errors.ts            # Domain error classes
+│   │   └── <feature>.errors.spec.ts       # Error tests
+│   ├── predicates/                        # (if needed)
+│   │   └── <concept>.predicates.ts        # Boolean validators
+│   ├── policies/                          # (if needed)
+│   │   └── <action>.policies.ts           # Business rule enforcement
+│   └── helpers/                           # (if needed)
+│       └── <concept>.helpers.ts           # Domain utility functions
 ├── application/
 │   ├── use-cases/
 │   │   └── <action>-<feature>/
 │   │       ├── <action>-<feature>.use-case.ts
 │   │       └── <action>-<feature>.use-case.spec.ts
 │   ├── dto/
-│   │   └── <feature>.dto.ts               # Zod-based DTO
+│   │   ├── <feature>.dto.ts               # Zod-based DTO
+│   │   └── shared/                        # (if needed)
+│   │       └── zod/
+│   │           ├── refinements/           # Custom Zod refinements
+│   │           └── validators/            # Shared validation logic
 │   └── mappers/
 │       ├── <feature>.dto.mappers.ts
 │       └── <feature>.dto.mappers.spec.ts
@@ -447,7 +475,9 @@ src/contexts/<context>/modules/<feature>/
             │   └── <feature>.mongoose.schema.ts
             ├── repository/
             │   ├── <feature>.mongoose.repository.ts
-            │   └── <feature>.mongoose.repository.spec.ts
+            │   ├── <feature>.mongoose.repository.spec.ts
+            │   └── pipelines/             # (if needed)
+            │       └── <feature>.mongoose.repository.pipeline.ts
             ├── mappers/
             │   ├── <feature>.mongoose.mappers.ts
             │   └── <feature>.mongoose.mappers.spec.ts
@@ -703,6 +733,101 @@ domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => Http
 ```
 
 This ensures consistent error responses and proper HTTP status codes without cluttering domain or application layers with HTTP concerns.
+
+## Domain Patterns
+
+This section documents domain-layer patterns used in the codebase for organizing business logic.
+
+### Predicates
+
+**Purpose**: Boolean validators for domain logic that encapsulate simple yes/no questions about domain state.
+
+**Location**: `domain/predicates/`
+
+**Naming**: `<entity-or-concept>.predicates.ts`
+
+**Example**:
+```typescript
+// domain/predicates/question-theme-status.predicates.ts
+import type { QuestionThemeStatus } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.types";
+
+function isQuestionThemeArchived(status: QuestionThemeStatus): boolean {
+  return status === "archived";
+}
+
+function isQuestionThemeActive(status: QuestionThemeStatus): boolean {
+  return status === "active";
+}
+
+export { isQuestionThemeArchived, isQuestionThemeActive };
+```
+
+**Usage**: Use predicates in use cases, policies, and other domain logic to make business rules explicit and testable.
+
+### Policies
+
+**Purpose**: Encapsulate complex business rules that determine whether a domain operation is allowed. Policies combine multiple conditions and throw domain errors when rules are violated.
+
+**Location**: `domain/policies/`
+
+**Naming**: `<action-or-operation>.policies.ts`
+
+**Example**:
+```typescript
+// domain/policies/question-creation.policies.ts
+import { QuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { isQuestionThemeArchived } from "@question/modules/question-theme/domain/predicates/question-theme-status.predicates";
+import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
+
+function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void {
+  if (isQuestionThemeArchived(theme.status)) {
+    throw new QuestionThemeArchivedError(theme.id);
+  }
+}
+
+export { ensureQuestionThemeIsNotArchivedForCreation };
+```
+
+**Usage**: Call policy functions in use cases before performing operations. Policies should throw domain errors when business rules are violated.
+
+### Domain Helpers
+
+**Purpose**: Utility functions that perform domain-specific transformations or calculations. Unlike predicates (which return boolean) or policies (which validate), helpers perform operations on domain objects.
+
+**Location**: `domain/helpers/`
+
+**Naming**: `<entity-or-concept>.helpers.ts`
+
+**When to use**:
+- Transforming domain values
+- Computing derived values
+- Building domain objects from raw data
+- Any domain operation that doesn't fit predicates or policies
+
+**Example**:
+```typescript
+// domain/helpers/question-theme-status.helpers.ts
+import type { QuestionThemeStatus } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.types";
+import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+
+function normalizeQuestionThemeStatus(status: string): QuestionThemeStatus {
+  const normalized = status.toLowerCase();
+  if (!QUESTION_THEME_STATUSES.includes(normalized as QuestionThemeStatus)) {
+    throw new Error(`Invalid question theme status: ${status}`);
+  }
+  return normalized as QuestionThemeStatus;
+}
+
+export { normalizeQuestionThemeStatus };
+```
+
+### Guidelines for Domain Patterns
+
+1. **Keep domain layer pure**: Predicates, policies, and helpers must not depend on infrastructure (no HTTP, no database, no external services).
+2. **Single responsibility**: Each function should do one thing well.
+3. **Test thoroughly**: Write unit tests for all predicates, policies, and helpers with edge cases.
+4. **Compose policies from predicates**: Policies should use predicates to build complex business rules.
+5. **Use descriptive names**: Function names should clearly express intent (e.g., `isQuestionThemeArchived`, `ensureQuestionThemeIsNotArchivedForCreation`).
 
 ## General rules and small reminders
 
