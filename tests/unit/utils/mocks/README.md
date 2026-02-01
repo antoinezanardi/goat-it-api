@@ -85,7 +85,7 @@ Best Practices
 
 1. Mock the public port used by the unit under test (for controllers -> use-cases, for use-cases -> repository tokens). Avoid mocking internal implementation unless you are writing repository unit tests.
 2. Keep mocks deterministic in their defaults but always allow overrides for edge cases.
-3. Make tests explicit about the behaviour they expect: use overrides in the test rather than re-mocking inside the test body when possible.
+3. Make tests explicit about the behavior they expect: use overrides in the test rather than re-mocking inside the test body when possible.
 4. Use `vi.fn()` with typed generic to keep the mock signature strictly typed (helps TypeScript and IDEs).
 5. Always respect the return type of each method in the mock to avoid type mismatches.
 
@@ -99,7 +99,7 @@ Anti-patterns to Avoid
 PR Checklist when touching mocks
 -------------------------------
 
-1. Ensure any behavioural changes are covered by unit tests that use the mocks.
+1. Ensure any behavioral changes are covered by unit tests that use the mocks.
 2. Keep the `createMockedX(overrides?)` pattern. If you need a different API, update this README first and explain the reasoning in the PR description.
 3. Run linters and unit tests locally: `pnpm run lint` and `pnpm run test:unit:cov`.
 4. Run type checking and the build: `pnpm run typecheck` and `pnpm run build`.

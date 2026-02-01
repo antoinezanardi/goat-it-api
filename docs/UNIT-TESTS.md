@@ -1,4 +1,4 @@
-Unit Tests Guide (unit-level)
+# Unit Tests Guide (unit-level)
 
 This document points to `tests/unit/README.md` that contains the detailed "How To" and repository-specific examples. It briefly describes where unit tests live and the coverage/mutation expectations.
 

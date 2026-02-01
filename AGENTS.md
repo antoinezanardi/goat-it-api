@@ -1789,14 +1789,6 @@ const MY_DTO = z.strictObject({
 ❌ **Never** expose implementation details in module exports  
 ❌ **Never** import from `src/contexts/<other-context>` (contexts should be independent)  
 
-### Test anti-patterns summary
-
-❌ **Never** test private methods directly  
-❌ **Never** use real database in unit tests  
-❌ **Never** share test state between tests  
-❌ **Never** test implementation details (focus on behavior)  
-❌ **Never** skip tests or use `.only()` in commits  
-
 ## Industry Best Practices Compliance
 
 This section validates the codebase against current industry standards.

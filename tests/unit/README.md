@@ -37,7 +37,7 @@ Test config
 Mutation tests
 --------------
 
-- Purpose: ensure tests detect and fail when code is changed in a way that alters behaviour. This guards against false positives in tests.
+- Purpose: ensure tests detect and fail when code is changed in a way that alters behavior. This guards against false positives in tests.
 - Tool: Stryker (config: `configs/stryker/stryker.config.mjs`). The project aims for a `100%` mutation score in CI; local incremental runs are supported and recorded under `tests/mutation/incremental/`.
 - Commands: `pnpm run test:mutation` (incremental), `pnpm run test:mutation:force` (full run).
 - Note: mutation testing is CPU intensive; run locally only when necessary and commit any updated incremental state files if produced.
@@ -49,8 +49,8 @@ General rules
 -------------
 
 - Keep tests colocated: `src/.../<unit>.spec.ts`.
-- One assertion per `it` block. If you need multiple verifications, create multiple `it` tests describing each expected behaviour.
-- Test names: follow the pattern `should <expected behaviour> when <condition>.` (example: `it("should return all question themes when called.", ...)`).
+- One assertion per `it` block. If you need multiple verifications, create multiple `it` tests describing each expected behavior.
+- Test names: follow the pattern `should <expected behavior> when <condition>.` (example: `it("should return all question themes when called.", ...)`).
 - Use path aliases for imports; follow repository import order conventions.
 - Use faketories (`@faketories/...`) to build test data and `@mocks/...` factories for dependency mocks. Never use manual mock objects inline. See [Mocks & Faketories (where and how)](#mocks--faketories-where-and-how) for details.
 - Prefer existing mock/faketory factory functions. If none fit, add new mocks or factories under `tests/unit/utils/mocks/` or `tests/shared/utils/faketories/` mirroring the source path.
@@ -284,7 +284,7 @@ Repository tests (persistence adapters)
       },
     } as const;
 
-    beforeEach(async () => {
+    beforeEach(async() => {
       const module = await Test.createTestingModule({
         providers: [
           QuestionThemeMongooseRepository,
@@ -494,7 +494,7 @@ describe("Date Helpers", () => {
         input: new Date("2024-06-05T08:09:07Z"),
         expected: "2024-06-05",
       },
-    ])("$test", (input, expected) => {
+    ])("$test", ({ input, expected }) => {
       expect(formatDate(input)).toBe(expected);
     });
   });
