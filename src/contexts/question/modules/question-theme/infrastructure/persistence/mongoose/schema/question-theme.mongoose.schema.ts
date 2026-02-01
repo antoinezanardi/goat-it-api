@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
+import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
+import { LOCALIZED_TEXT_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-text.mongoose.schema";
+import { LOCALIZED_TEXTS_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-texts.mongoose.schema";
 
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question/modules/question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
@@ -23,21 +25,21 @@ class QuestionThemeMongooseSchema {
 
   @Prop({
     required: true,
-    type: Object,
+    type: LOCALIZED_TEXT_MONGOOSE_SCHEMA,
   })
-  public label!: LocalizedText;
+  public label!: Partial<LocalizedText>;
 
   @Prop({
     required: true,
-    type: Object,
+    type: LOCALIZED_TEXTS_MONGOOSE_SCHEMA,
   })
-  public aliases!: LocalizedTexts;
+  public aliases!: Partial<LocalizedTexts>;
 
   @Prop({
     required: true,
-    type: Object,
+    type: LOCALIZED_TEXT_MONGOOSE_SCHEMA,
   })
-  public description!: LocalizedText;
+  public description!: Partial<LocalizedText>;
 
   @Prop({
     required: true,

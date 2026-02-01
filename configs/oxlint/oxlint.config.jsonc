@@ -1364,17 +1364,18 @@
         "import/unambiguous": "off"
       }
     },
-    // ---- Override for Cucumber steps and hooks files -----
+    // ---- Override for Cucumber steps and hooks files and helpers -----
     {
       "files": [
         "**/tests/acceptance/features/**/*-steps.ts",
-        "**/tests/acceptance/support/hooks.ts"
+        "**/tests/acceptance/support/hooks.ts",
+        "**/tests/acceptance/support/helpers/**/*.helpers.ts"
       ],
       "rules": {
         "no-console": [
           "error",
           {
-            "allow": ["info"]
+            "allow": ["info", "error"]
           }
         ],
         "new-cap": [

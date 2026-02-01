@@ -24,6 +24,8 @@ class GoatItWorld extends World {
 
   public payload: Record<string, unknown> = {};
 
+  public lastPayload: Record<string, unknown> = {};
+
   private readonly fetchInstance: $Fetch;
 
   public constructor(options: IWorldOptions) {
@@ -32,8 +34,9 @@ class GoatItWorld extends World {
     this.fetchInstance = ofetch.create({
       baseURL: APP_BASE_URL,
       onRequest: () => {
-        this.payload = {};
         this.lastFetchResponse = undefined;
+        this.lastPayload = { ...this.payload };
+        this.payload = {};
       },
       onResponse: ({ response }) => {
         this.lastFetchResponse = response;

@@ -1,9 +1,10 @@
 # Docker Compose configuration for MongoDB service used in acceptance tests
+# This configuration is linked to "docker:acceptance-tests:*" scripts in the root package.json
 
 services:
   mongo:
     container_name: "mongo-acceptance-tests"
-    image: mongo:8.2.3
+    image: mongo:8.2.4
     environment:
       MONGO_INITDB_DATABASE: goat-it-api-acceptance-tests
     ports:

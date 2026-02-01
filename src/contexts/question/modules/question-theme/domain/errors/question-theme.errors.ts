@@ -1,3 +1,5 @@
+import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+
 class QuestionThemeNotFoundError extends Error {
   public constructor(questionThemeId: string) {
     super(`Question theme with id ${questionThemeId} not found`);
@@ -7,7 +9,7 @@ class QuestionThemeNotFoundError extends Error {
 
 class QuestionThemeAlreadyArchivedError extends Error {
   public constructor(questionThemeId: string) {
-    super(`Question theme with id ${questionThemeId} already has status 'archived'`);
+    super(`Question theme with id ${questionThemeId} already has status '${QUESTION_THEME_STATUS_ARCHIVED}'`);
     this.name = "QuestionThemeAlreadyArchivedError";
   }
 }
@@ -19,8 +21,16 @@ class QuestionThemeSlugAlreadyExistsError extends Error {
   }
 }
 
+class ReferencedQuestionThemeArchivedError extends Error {
+  public constructor(questionThemeId: string) {
+    super(`Referenced question theme with id ${questionThemeId} is archived`);
+    this.name = "ReferencedQuestionThemeArchivedError";
+  }
+}
+
 export {
   QuestionThemeNotFoundError,
   QuestionThemeAlreadyArchivedError,
   QuestionThemeSlugAlreadyExistsError,
+  ReferencedQuestionThemeArchivedError,
 };

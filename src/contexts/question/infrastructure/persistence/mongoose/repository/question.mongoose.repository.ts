@@ -1,8 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types } from "mongoose";
+import { Model, Types, UpdateQuery } from "mongoose";
 
-import { createQuestionFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
+import { createQuestionMongooseInsertPayloadFromContract, createQuestionFromAggregate, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
@@ -30,5 +33,36 @@ export class QuestionMongooseRepository implements QuestionRepository {
       return undefined;
     }
     return createQuestionFromAggregate(questions[0]);
+  }
+
+  public async create(questionCreationContract: QuestionCreationContract): Promise<Question | undefined> {
+    const questionCreationDocument = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
+    const createdQuestionDocument = await this.questionModel.create(questionCreationDocument);
+
+    return this.findById(createdQuestionDocument._id.toString());
+  }
+
+  public async archive(id: string): Promise<Question | undefined> {
+    const update: UpdateQuery<QuestionMongooseDocument> = {
+      status: QUESTION_STATUS_ARCHIVED,
+    };
+    const archivedQuestionDocument = await this.questionModel.findByIdAndUpdate(id, update, { new: true });
+    if (!archivedQuestionDocument) {
+      return undefined;
+    }
+    return this.findById(archivedQuestionDocument._id.toString());
+  }
+
+  public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
+    const update: UpdateQuery<QuestionMongooseDocument> = {
+      $push: {
+        themes: createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract),
+      },
+    };
+    const updatedQuestionDocument = await this.questionModel.findByIdAndUpdate(questionId, update, { new: true });
+    if (!updatedQuestionDocument) {
+      return undefined;
+    }
+    return this.findById(updatedQuestionDocument._id.toString());
   }
 }

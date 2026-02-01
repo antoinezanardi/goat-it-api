@@ -1,0 +1,18 @@
+meta {
+  name: Get App Metadata
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

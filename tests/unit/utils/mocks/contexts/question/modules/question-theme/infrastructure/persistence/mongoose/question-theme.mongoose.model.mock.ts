@@ -1,6 +1,6 @@
 import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
-import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 
 import type { Mock } from "vitest";
 
@@ -14,7 +14,7 @@ type QuestionThemeMongooseModelStub = {
 
 type MockedQuestionThemeMongooseModel = { [K in keyof QuestionThemeMongooseModelStub]: Mock<QuestionThemeMongooseModelStub[K]> };
 
-function createMockedQuestionThemeMongooseModel(): MockedQuestionThemeMongooseModel {
+function createMockedQuestionThemeMongooseModel(overrides: Partial<MockedQuestionThemeMongooseModel> = {}): MockedQuestionThemeMongooseModel {
   return {
     find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockResolvedValue([
       createFakeQuestionThemeDocument(),
@@ -25,6 +25,7 @@ function createMockedQuestionThemeMongooseModel(): MockedQuestionThemeMongooseMo
     findById: vi.fn<QuestionThemeMongooseModelStub["findById"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     create: vi.fn<QuestionThemeMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     findByIdAndUpdate: vi.fn<QuestionThemeMongooseModelStub["findByIdAndUpdate"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
+    ...overrides,
   };
 }
 

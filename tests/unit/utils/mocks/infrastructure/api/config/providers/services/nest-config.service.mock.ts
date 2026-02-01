@@ -12,11 +12,12 @@ type MockedNestConfigService = {
   [K in keyof NestConfigServiceStub]: Mock<NestConfigServiceStub[K]>;
 };
 
-function createMockedNestConfigService(appEnv: Partial<AppEnv> = {}): MockedNestConfigService {
+function createMockedNestConfigService(appEnv: Partial<AppEnv> = {}, overrides: Partial<MockedNestConfigService> = {}): MockedNestConfigService {
   const fakeAppEnv = createFakeAppEnv(appEnv);
 
   return {
     getOrThrow: vi.fn<NestConfigServiceStub["getOrThrow"]>((key: keyof AppEnv) => fakeAppEnv[key]),
+    ...overrides,
   };
 }
 

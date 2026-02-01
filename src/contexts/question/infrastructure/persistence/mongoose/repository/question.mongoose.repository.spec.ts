@@ -2,19 +2,26 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
-import { createQuestionFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
+import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
+import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
+import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
+import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
 
+import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
+import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { Question } from "@question/domain/entities/question.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
@@ -28,6 +35,8 @@ describe("Question Mongoose Repository", () => {
     mappers: {
       question: {
         createQuestionFromAggregate: Mock;
+        createQuestionMongooseInsertPayloadFromContract: Mock;
+        createQuestionThemeAssignmentMongooseInsertPayloadFromContract: Mock;
       };
     };
   };
@@ -40,6 +49,8 @@ describe("Question Mongoose Repository", () => {
       mappers: {
         question: {
           createQuestionFromAggregate: vi.mocked(createQuestionFromAggregate),
+          createQuestionMongooseInsertPayloadFromContract: vi.mocked(createQuestionMongooseInsertPayloadFromContract),
+          createQuestionThemeAssignmentMongooseInsertPayloadFromContract: vi.mocked(createQuestionThemeAssignmentMongooseInsertPayloadFromContract),
         },
       },
     };
@@ -138,6 +149,132 @@ describe("Question Mongoose Repository", () => {
       await repositories.question.findById(questionId);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.create, () => {
+    it("should call model.create with mapped when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const expectedInsertPayload = createFakeQuestionMongooseInsertPayload();
+      mocks.mappers.question.createQuestionMongooseInsertPayloadFromContract.mockReturnValueOnce(expectedInsertPayload);
+      await repositories.question.create(questionCreationContract);
+
+      expect(mocks.models.question.create).toHaveBeenCalledExactlyOnceWith(expectedInsertPayload);
+    });
+
+    it("should call findById with created id when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.create.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      await repositories.question.create(questionCreationContract);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionCreationContract = createFakeQuestionCreationContract();
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.create.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actualQuestion = await repositories.question.create(questionCreationContract);
+
+      expect(actualQuestion).toStrictEqual(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.archive, () => {
+    it("should call model.findByIdAndUpdate with archived status when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000010";
+      const expectedUpdate: UpdateQuery<QuestionMongooseDocument> = { status: QUESTION_STATUS_ARCHIVED };
+
+      await repositories.question.archive(questionId);
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+    });
+
+    it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
+      const questionId = "618c1f4b3a2f000000000011";
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(null);
+
+      const actual = await repositories.question.archive(questionId);
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("should call findById with the document id when model returns a document.", async() => {
+      const questionId = "618c1f4b3a2f000000000012";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.archive(questionId);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000013";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.archive(questionId);
+
+      expect(actual).toStrictEqual(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.assignTheme, () => {
+    it("should call model.findByIdAndUpdate with push update when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000020";
+      const contract = createFakeQuestionThemeAssignmentCreationContract();
+      const expectedInsert = createFakeQuestionThemeAssignmentMongooseInsertPayload();
+      mocks.mappers.question.createQuestionThemeAssignmentMongooseInsertPayloadFromContract.mockReturnValueOnce(expectedInsert);
+
+      await repositories.question.assignTheme(questionId, contract);
+
+      const expectedUpdate = { $push: { themes: expectedInsert } } as const;
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+    });
+
+    it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
+      const questionId = "618c1f4b3a2f000000000021";
+      const contract = createFakeQuestionThemeAssignmentCreationContract();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(null);
+
+      const actual = await repositories.question.assignTheme(questionId, contract);
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("should call findById with the document id when model returns a document.", async() => {
+      const questionId = "618c1f4b3a2f000000000022";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000023";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
+
+      expect(actual).toStrictEqual(expectedQuestion);
     });
   });
 });

@@ -1,0 +1,17 @@
+meta {
+  name: play
+}
+
+headers {
+  Accept-Language: {{locale}}
+}
+
+auth {
+  mode: apikey
+}
+
+auth:apikey {
+  key: goat-it-api-key
+  value: {{gameApiKey}}
+  placement: header
+}

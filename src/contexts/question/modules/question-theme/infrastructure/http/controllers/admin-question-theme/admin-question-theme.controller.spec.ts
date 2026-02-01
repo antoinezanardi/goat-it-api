@@ -8,7 +8,7 @@ import { createQuestionThemeModificationCommandFromDto } from "@question/modules
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
-import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { AdminQuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
@@ -16,7 +16,7 @@ import { AdminQuestionThemeController } from "@question/modules/question-theme/i
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/modify-question-theme.use-case.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
-import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
+import { createMockedFindQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-themes.use-case.mock";
 import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/archive-question-theme.use-case.mock";
 
@@ -37,7 +37,7 @@ describe("Admin Question Theme Controller", () => {
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
     useCases: {
-      findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
+      findQuestionThemes: ReturnType<typeof createMockedFindQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
       createQuestionTheme: ReturnType<typeof createMockedCreateQuestionThemeUseCase>;
       modifyQuestionTheme: ReturnType<typeof createMockedModifyQuestionThemeUseCase>;
@@ -56,7 +56,7 @@ describe("Admin Question Theme Controller", () => {
         appConfig: createMockedAppConfigService(),
       },
       useCases: {
-        findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
+        findQuestionThemes: createMockedFindQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
         createQuestionTheme: createMockedCreateQuestionThemeUseCase(),
         modifyQuestionTheme: createMockedModifyQuestionThemeUseCase(),
@@ -76,8 +76,8 @@ describe("Admin Question Theme Controller", () => {
           useValue: mocks.services.appConfig,
         },
         {
-          provide: FindAllQuestionThemesUseCase,
-          useValue: mocks.useCases.findAllQuestionThemes,
+          provide: FindQuestionThemesUseCase,
+          useValue: mocks.useCases.findQuestionThemes,
         },
         {
           provide: FindQuestionThemeByIdUseCase,
@@ -101,11 +101,11 @@ describe("Admin Question Theme Controller", () => {
     adminQuestionThemeController = testingModule.get<AdminQuestionThemeController>(AdminQuestionThemeController);
   });
 
-  describe(AdminQuestionThemeController.prototype.findAllQuestionThemes, () => {
+  describe(AdminQuestionThemeController.prototype.findQuestionThemes, () => {
     it("should list all question themes when called.", async() => {
-      await adminQuestionThemeController.findAllQuestionThemes();
+      await adminQuestionThemeController.findQuestionThemes();
 
-      expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should map every question theme to admin dto when called.", async() => {
@@ -114,7 +114,7 @@ describe("Admin Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      await adminQuestionThemeController.findAllQuestionThemes();
+      await adminQuestionThemeController.findQuestionThemes();
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);
     });
@@ -125,8 +125,8 @@ describe("Admin Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);
-      await adminQuestionThemeController.findAllQuestionThemes();
+      mocks.useCases.findQuestionThemes.list.mockResolvedValueOnce(questionThemes);
+      await adminQuestionThemeController.findQuestionThemes();
 
       expect(mocks.mappers.createAdminQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0]);
     });

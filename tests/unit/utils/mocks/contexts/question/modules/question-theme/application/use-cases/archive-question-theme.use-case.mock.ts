@@ -10,9 +10,10 @@ type ArchiveQuestionThemeUseCaseStub = {
 
 type MockedArchiveQuestionThemeUseCase = { [K in keyof ArchiveQuestionThemeUseCaseStub]: Mock<ArchiveQuestionThemeUseCaseStub[K]> };
 
-function createMockedArchiveQuestionThemeUseCase(): MockedArchiveQuestionThemeUseCase {
+function createMockedArchiveQuestionThemeUseCase(overrides: Partial<MockedArchiveQuestionThemeUseCase> = {}): MockedArchiveQuestionThemeUseCase {
   return {
     archive: vi.fn<ArchiveQuestionThemeUseCaseStub["archive"]>().mockResolvedValue(createFakeQuestionTheme({ status: "archived" })),
+    ...overrides,
   };
 }
 

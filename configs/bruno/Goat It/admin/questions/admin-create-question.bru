@@ -1,0 +1,63 @@
+meta {
+  name: Create Question
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/admin/questions
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "themes": [
+      {
+        "themeId": "{{questionThemeId}}",
+        "isPrimary": true,
+        "isHint": false
+      }
+    ],
+    "content": {
+      "statement": {
+        "en": "Who directed the film 'Pulp Fiction'?",
+        "fr": "Qui a réalisé le film 'Pulp Fiction' ?"
+      },
+      "answer": {
+        "en": "Quentin Tarantino",
+        "fr": "Quentin Tarantino"
+      },
+      "context": {
+        "en": "Pulp Fiction, released in 1994, is a landmark film directed by Quentin Tarantino that helped popularize non-linear storytelling in modern cinema.",
+        "fr": "Pulp Fiction, sorti en 1994, est un film emblématique réalisé par Quentin Tarantino qui a contribué à populariser la narration non linéaire au cinéma moderne."
+      },
+      "trivia": {
+        "en": [
+          "Pulp Fiction won the Palme d'Or at the 1994 Cannes Film Festival.",
+          "Quentin Tarantino co-wrote the screenplay with Roger Avary."
+        ],
+        "fr": [
+          "Pulp Fiction a remporté la Palme d'Or au Festival de Cannes 1994.",
+          "Quentin Tarantino a co-écrit le scénario avec Roger Avary."
+        ]
+      }
+    },
+    "cognitiveDifficulty": "easy",
+    "author": {
+      "role": "admin",
+      "name": "Antoine ZANARDI"
+    },
+    "sourceUrls": [
+      "https://en.wikipedia.org/wiki/Pulp_Fiction",
+      "https://en.wikipedia.org/wiki/Quentin_Tarantino"
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

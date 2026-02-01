@@ -17,8 +17,8 @@ const QUESTION_AUTHOR_DTO = z.strictObject({
     .optional()
     .describe("Question author's name, if applicable")
     .meta({ example: "TriviaMaster3000" }),
-}).describe("Question's author")
-  .refine(isGameIdSetOnGameRole, { error: "Game ID must be set if and only if the author role is 'game'." });
+}).refine(isGameIdSetOnGameRole, { error: "Game ID must be set if and only if the author role is 'game'." })
+  .describe("Question's author");
 
 class QuestionAuthorDto extends createZodDto(QUESTION_AUTHOR_DTO) {}
 

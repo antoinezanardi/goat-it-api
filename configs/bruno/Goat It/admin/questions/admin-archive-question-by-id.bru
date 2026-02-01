@@ -1,0 +1,26 @@
+meta {
+  name: Archive Question By Id
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/admin/questions/:id/archive
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: {{questionId}}
+}
+
+body:json {
+  {}
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

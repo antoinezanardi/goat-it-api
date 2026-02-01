@@ -11,7 +11,7 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
@@ -20,7 +20,7 @@ import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.
 @Controller(ControllerPrefixes.QUESTION_THEMES)
 export class QuestionThemeController {
   public constructor(
-    private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
+    private readonly findQuestionThemesUseCase: FindQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
   ) {}
 
@@ -34,8 +34,8 @@ export class QuestionThemeController {
     status: HttpStatus.OK,
     type: [QuestionThemeDto],
   })
-  public async findAllQuestionThemes(@Localization() localization: LocalizationOptions): Promise<QuestionThemeDto[]> {
-    const questionThemes = await this.findAllQuestionThemesUseCase.list();
+  public async findQuestionThemes(@Localization() localization: LocalizationOptions): Promise<QuestionThemeDto[]> {
+    const questionThemes = await this.findQuestionThemesUseCase.list();
 
     return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
   }

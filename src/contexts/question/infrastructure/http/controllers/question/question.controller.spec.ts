@@ -3,13 +3,13 @@ import { Test } from "@nestjs/testing";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { FindAllQuestionsUseCase } from "@question/application/use-cases/find-all-questions/find-all-questions.use-case";
+import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
-import { createMockedFindAllQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-all-questions.use-case.mock";
+import { createMockedFindQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-questions.use-case.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
@@ -25,7 +25,7 @@ describe("Question Controller", () => {
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
     useCases: {
-      findAllQuestions: ReturnType<typeof createMockedFindAllQuestionsUseCase>;
+      findQuestions: ReturnType<typeof createMockedFindQuestionsUseCase>;
       findQuestionById: ReturnType<typeof createMockedFindQuestionByIdUseCase>;
     };
     mappers: {
@@ -39,7 +39,7 @@ describe("Question Controller", () => {
         appConfig: createMockedAppConfigService(),
       },
       useCases: {
-        findAllQuestions: createMockedFindAllQuestionsUseCase(),
+        findQuestions: createMockedFindQuestionsUseCase(),
         findQuestionById: createMockedFindQuestionByIdUseCase(),
       },
       mappers: {
@@ -55,8 +55,8 @@ describe("Question Controller", () => {
           useValue: mocks.services.appConfig,
         },
         {
-          provide: FindAllQuestionsUseCase,
-          useValue: mocks.useCases.findAllQuestions,
+          provide: FindQuestionsUseCase,
+          useValue: mocks.useCases.findQuestions,
         },
         {
           provide: FindQuestionByIdUseCase,
@@ -68,12 +68,12 @@ describe("Question Controller", () => {
     questionController = testingModule.get<QuestionController>(QuestionController);
   });
 
-  describe(QuestionController.prototype.findAllQuestions, () => {
+  describe(QuestionController.prototype.findQuestions, () => {
     it("should list all questions when called.", async() => {
       const localization = createFakeLocalizationOptions();
-      await questionController.findAllQuestions(localization);
+      await questionController.findQuestions(localization);
 
-      expect(mocks.useCases.findAllQuestions.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should map every question to dto when called.", async() => {
@@ -84,7 +84,7 @@ describe("Question Controller", () => {
         createFakeQuestion(),
       ];
 
-      await questionController.findAllQuestions(localization);
+      await questionController.findQuestions(localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);
     });
@@ -96,9 +96,9 @@ describe("Question Controller", () => {
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-      mocks.useCases.findAllQuestions.list.mockResolvedValueOnce(questions);
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
 
-      await questionController.findAllQuestions(localization);
+      await questionController.findQuestions(localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0], localization);
     });

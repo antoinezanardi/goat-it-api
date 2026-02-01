@@ -1,4 +1,4 @@
-type PayloadScope = "question-theme";
+type PayloadScope = "question-theme" | "question" | "question-theme-assignment";
 
 type PayloadType = "creation";
 

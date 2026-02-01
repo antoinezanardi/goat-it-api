@@ -1,6 +1,7 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
-import { crush } from "radashi";
+
+import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -8,7 +9,7 @@ import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/in
 
 import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
-import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 
@@ -112,6 +113,47 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
+  describe(QuestionThemeMongooseRepository.prototype.findByIds, () => {
+    it("should find documents by ids from model when called.", async() => {
+      const questionThemeIds: Set<string> = new Set(["question-theme-id-1", "question-theme-id-2"]);
+      await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith({ _id: { $in: [...questionThemeIds] } });
+    });
+
+    it("should map and return question themes when called.", async() => {
+      const questionThemeIds: Set<string> = new Set(["question-theme-id-1", "question-theme-id-2"]);
+      const foundQuestionThemeDocuments = [
+        createFakeQuestionThemeDocument(),
+        createFakeQuestionThemeDocument(),
+      ];
+      mocks.models.questionTheme.find.mockResolvedValue(foundQuestionThemeDocuments);
+      await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(foundQuestionThemeDocuments.length);
+    });
+
+    it("should return mapped question themes from model when called.", async() => {
+      const questionThemeIds: Set<string> = new Set([
+        "question-theme-id-1",
+        "question-theme-id-2",
+        "question-theme-id-3",
+      ]);
+      const expectedQuestionThemes = [
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+      ];
+      vi.mocked(createQuestionThemeFromDocument)
+        .mockReturnValueOnce(expectedQuestionThemes[0])
+        .mockReturnValueOnce(expectedQuestionThemes[1])
+        .mockReturnValueOnce(expectedQuestionThemes[2]);
+      const actualQuestionThemes = await repositories.questionTheme.findByIds(questionThemeIds);
+
+      expect(actualQuestionThemes).toStrictEqual<QuestionTheme[]>(expectedQuestionThemes);
+    });
+  });
+
   describe(QuestionThemeMongooseRepository.prototype.findBySlug, () => {
     it("should find document by slug from model when called.", async() => {
       const questionThemeSlug = "question-theme-slug";
@@ -172,7 +214,7 @@ describe("Question Theme Mongoose Repository", () => {
       const questionThemeId = "question-theme-id";
       const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
       const updateQuery = {
-        $set: crush(questionThemeModificationContract),
+        $set: getCrushedDataForMongoPatchUpdate(questionThemeModificationContract),
       };
       await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
 

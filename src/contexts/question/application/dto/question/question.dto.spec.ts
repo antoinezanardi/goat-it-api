@@ -5,6 +5,7 @@ import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validator
 import type { QuestionDto } from "@question/application/dto/question/question.dto";
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
 
+import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
 import { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
 
 describe("Question DTO Specs", () => {
@@ -56,6 +57,18 @@ describe("Question DTO Specs", () => {
       };
 
       expect(metadata).toStrictEqual(expectedMetadata);
+    });
+
+    it("should throw zod error when themes exceed maximum items.", () => {
+      const themes = [
+        createFakeQuestionThemeAssignmentDto(),
+        createFakeQuestionThemeAssignmentDto(),
+        createFakeQuestionThemeAssignmentDto(),
+        createFakeQuestionThemeAssignmentDto(),
+      ];
+      const dtoWithTooManyThemes = Object.assign(validQuestionDto, { themes });
+
+      expect(() => QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrowError(ZodError);
     });
   });
 

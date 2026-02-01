@@ -15,7 +15,7 @@ const APP_ENV_SCHEMA = z.object({
     .default(DEFAULT_ENV_SERVER_PORT),
   CORS_ORIGIN: z.stringFormat("cors", validateCorsOrigin)
     .default(DEFAULT_ENV_CORS_ORIGIN),
-  MONGODB_HOST: z.ipv4()
+  MONGODB_HOST: z.hostname()
     .default(DEFAULT_ENV_MONGODB_HOST),
   MONGODB_PORT: z.coerce.number()
     .min(MIN_PORT_NUMBER)

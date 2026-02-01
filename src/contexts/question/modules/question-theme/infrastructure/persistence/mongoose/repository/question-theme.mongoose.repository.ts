@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
-import { crush } from "radashi";
+
+import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
-import { ARCHIVED_QUESTION_THEME_STATUS } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
@@ -31,6 +32,14 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
+  public async findByIds(ids: Set<string>): Promise<QuestionTheme[]> {
+    const questionThemeDocuments = await this.questionThemeModel.find({
+      _id: { $in: [...ids] },
+    });
+
+    return questionThemeDocuments.map(createQuestionThemeFromDocument);
+  }
+
   public async findBySlug(slug: string): Promise<QuestionTheme | undefined> {
     const questionThemeDocument = await this.questionThemeModel.findOne({
       slug,
@@ -48,7 +57,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   }
 
   public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
-    const questionThemeUpdateData = crush(questionThemeModificationContract);
+    const questionThemeUpdateData = getCrushedDataForMongoPatchUpdate(questionThemeModificationContract);
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
@@ -61,7 +70,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
 
   public async archive(id: string): Promise<QuestionTheme | undefined> {
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
-      status: ARCHIVED_QUESTION_THEME_STATUS,
+      status: QUESTION_THEME_STATUS_ARCHIVED,
     };
     const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
     if (!archivedQuestionThemeDocument) {

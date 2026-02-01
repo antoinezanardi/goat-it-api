@@ -1,0 +1,72 @@
+name: Deploy via SSH 🚀
+description: Connects to a remote server over SSH and executes an update script. Designed to be reused for staging and production deployments.
+author: Antoine ZANARDI
+
+inputs:
+  ssh-private-key:
+    description: Private SSH key used to authenticate to the remote server (pass as a secret)
+    required: true
+  ssh-user:
+    description: SSH user to connect as (e.g. ubuntu)
+    required: true
+  ssh-server-ip:
+    description: IP address or hostname of the target server
+    required: true
+  update-script-full-path:
+    description: Absolute path of the update script to run on the remote server
+    required: true
+  strict-host-key-checking:
+    description: Whether to enable StrictHostKeyChecking for SSH ("yes" or "no")
+    required: false
+    default: "no"
+  known-hosts:
+    description: (Optional) Known hosts content to write into ~/.ssh/known_hosts. If set, it will be written before connecting.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Create .ssh directory
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        chmod 700 ~/.ssh
+
+    - name: Add provided known hosts (if any)
+      if: ${{ inputs.known-hosts != '' }}
+      shell: bash
+      run: |
+        echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/known_hosts
+
+    - name: Start ssh-agent and add key
+      id: ssh-setup
+      shell: bash
+      run: |
+        eval "$(ssh-agent -s)"
+        echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
+
+    - name: Deploy script over SSH
+      shell: bash
+      run: |
+        if [[ "${{ inputs.strict-host-key-checking }}" == "no" ]]; then
+          SSH_OPTIONS="-o StrictHostKeyChecking=no"
+        else
+          SSH_OPTIONS=""
+        fi
+
+        ssh $SSH_OPTIONS ${{ inputs.ssh-user }}@${{ inputs.ssh-server-ip }} << EOF
+          ${{ inputs.update-script-full-path }}
+        EOF
+
+    - name: Cleanup SSH key material
+      if: always()
+      shell: bash
+      run: |
+        rm -f ~/.ssh/id_rsa
+        if [ -n "$SSH_AGENT_PID" ]; then
+          ssh-agent -k || true
+        fi

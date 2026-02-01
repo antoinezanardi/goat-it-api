@@ -3,7 +3,7 @@ import type { QuestionMongooseSchema } from "@question/infrastructure/persistenc
 import type { HydratedDocument, Model } from "mongoose";
 
 import type { QuestionThemeMongooseSchemaShape } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-import type { MongooseCollectionSchemaBase } from "@shared/infrastructure/persistence/mongoose/mongoose.types";
+import type { MongooseCollectionSchemaBase } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
 
 type QuestionMongooseDocument = HydratedDocument<QuestionMongooseSchema>;
 
@@ -25,9 +25,15 @@ type QuestionAggregate = Omit<
   themes: QuestionThemeAssignmentAggregate[];
 };
 
+type QuestionMongooseInsertPayload = Parameters<Model<QuestionMongooseDocument>["create"]>[0];
+
+type QuestionThemeAssignmentMongooseInsertPayload = QuestionMongooseDocument["themes"][number];
+
 export type {
   QuestionMongooseDocument,
   QuestionAggregatePipeline,
   QuestionThemeAssignmentAggregate,
   QuestionAggregate,
+  QuestionMongooseInsertPayload,
+  QuestionThemeAssignmentMongooseInsertPayload,
 };

@@ -101,8 +101,25 @@ describe("Question DTO Zod Validators", () => {
         expected: false,
       },
       {
+        test: "should return false when array exceeds maximum items",
+        value: [
+          "https://example.com/source1",
+          "https://example.com/source2",
+          "https://example.com/source3",
+          "https://example.com/source4",
+          "https://example.com/source5",
+          "https://example.com/source6",
+        ],
+        expected: false,
+      },
+      {
         test: "should return false when array contains an invalid URL",
         value: ["https://example.com/source1", "invalid-url"],
+        expected: false,
+      },
+      {
+        test: "should return false when array contains duplicate URLs",
+        value: ["https://example.com/source1", "https://example.com/source1"],
         expected: false,
       },
     ])("$test", ({ value, expected }) => {
@@ -119,6 +136,14 @@ describe("Question DTO Zod Validators", () => {
       };
 
       expect(schema.meta()).toStrictEqual(expectedMeta);
+    });
+
+    it("should have the correct refinement message for uniqueness when duplicates are present.", () => {
+      const schema = zQuestionSourceUrls();
+      const notUniqueTestValue = ["https://example.com/source1", "https://example.com/source1"];
+      const result = schema.safeParse(notUniqueTestValue);
+
+      expect(result.error?.issues[0].message).toBe("Source URLs must be unique");
     });
   });
 });

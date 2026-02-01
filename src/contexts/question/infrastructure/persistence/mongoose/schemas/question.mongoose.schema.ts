@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/mongoose.constants";
+import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
+import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
+import { QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS } from "@question/domain/value-objects/question-source-urls/question-source-urls.constants";
 import { QUESTION_REJECTION_MONGOOSE_SCHEMA, QuestionRejectionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
 import { QUESTION_THEME_ASSIGNMENT_MONGOOSE_SCHEMA, QuestionThemeAssignmentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
 import { QUESTION_AUTHOR_MONGOOSE_SCHEMA, QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
@@ -21,7 +23,8 @@ class QuestionMongooseSchema {
   @Prop({
     required: true,
     type: [QUESTION_THEME_ASSIGNMENT_MONGOOSE_SCHEMA],
-    minItems: 1,
+    minItems: QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS,
+    maxItems: QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS,
   })
   public themes!: QuestionThemeAssignmentMongooseSchema[];
 
@@ -54,7 +57,8 @@ class QuestionMongooseSchema {
   @Prop({
     required: true,
     type: [String],
-    minItems: 1,
+    minItems: QUESTION_SOURCE_URLS_MIN_ITEMS,
+    maxItems: QUESTION_SOURCE_URLS_MAX_ITEMS,
   })
   public sourceUrls!: string[];
 

@@ -37,7 +37,7 @@ Feature: Create Question Theme As Admin
       | de     | Ein Thema, das eine breite Palette von allgemeinen Wissensthemen abdeckt.   |
       | pt     | Um tema que abrange uma ampla gama de tópicos de conhecimento geral.        |
 
-  Scenario: Creating a question theme in Spanish Locale with trimmed values
+  Scenario: Creating a question theme in Spanish locale with trimmed values
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
       | path           | type   | value                                            |

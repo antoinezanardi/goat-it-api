@@ -340,6 +340,14 @@ describe("Localization Zod Validators", () => {
         },
         expected: false,
       },
+      {
+        test: "should return false when localized texts are an indexed object instead of an array.",
+        value: {
+          en: { 0: "Hello", 1: "Hi" },
+          fr: ["Bonjour", "Salut"],
+        },
+        expected: false,
+      },
     ])("$test", ({ value, expected }) => {
       const schema = zLocalizedTexts();
       const result = schema.safeParse(value);

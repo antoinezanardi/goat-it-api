@@ -4,13 +4,13 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
-import { createMockedFindAllQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-all-question-themes.use-case.mock";
+import { createMockedFindQuestionThemesUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/find-question-themes.use-case.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
@@ -27,7 +27,7 @@ describe("Question Theme Controller", () => {
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
     useCases: {
-      findAllQuestionThemes: ReturnType<typeof createMockedFindAllQuestionThemesUseCase>;
+      findQuestionThemes: ReturnType<typeof createMockedFindQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
     };
     mappers: {
@@ -41,7 +41,7 @@ describe("Question Theme Controller", () => {
         appConfig: createMockedAppConfigService(),
       },
       useCases: {
-        findAllQuestionThemes: createMockedFindAllQuestionThemesUseCase(),
+        findQuestionThemes: createMockedFindQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
       },
       mappers: {
@@ -56,8 +56,8 @@ describe("Question Theme Controller", () => {
           useValue: mocks.services.appConfig,
         },
         {
-          provide: FindAllQuestionThemesUseCase,
-          useValue: mocks.useCases.findAllQuestionThemes,
+          provide: FindQuestionThemesUseCase,
+          useValue: mocks.useCases.findQuestionThemes,
         },
         {
           provide: FindQuestionThemeByIdUseCase,
@@ -69,12 +69,12 @@ describe("Question Theme Controller", () => {
     questionThemeController = testingModule.get<QuestionThemeController>(QuestionThemeController);
   });
 
-  describe(QuestionThemeController.prototype.findAllQuestionThemes, () => {
+  describe(QuestionThemeController.prototype.findQuestionThemes, () => {
     it("should list all question themes when called.", async() => {
       const localization = createFakeLocalizationOptions();
-      await questionThemeController.findAllQuestionThemes(localization);
+      await questionThemeController.findQuestionThemes(localization);
 
-      expect(mocks.useCases.findAllQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should map every question theme to dto when called.", async() => {
@@ -84,7 +84,7 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      await questionThemeController.findAllQuestionThemes(localization);
+      await questionThemeController.findQuestionThemes(localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);
     });
@@ -96,8 +96,8 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      mocks.useCases.findAllQuestionThemes.list.mockResolvedValueOnce(questionThemes);
-      await questionThemeController.findAllQuestionThemes(localization);
+      mocks.useCases.findQuestionThemes.list.mockResolvedValueOnce(questionThemes);
+      await questionThemeController.findQuestionThemes(localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);
     });

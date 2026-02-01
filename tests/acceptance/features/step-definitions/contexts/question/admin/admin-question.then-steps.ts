@@ -128,6 +128,10 @@ Then(/^the response should contain an admin question among them with id "(?<id>[
 Then(/^the response should contain the following admin question:$/u, function(this: GoatItWorld, questionDataTable: DataTable): void {
   const question = this.expectLastResponseJson<AdminQuestionDto>(ADMIN_QUESTION_DTO);
   const expectedQuestion = validateDataTableAndGetFirstRow(questionDataTable, QUESTION_DATATABLE_ROW_SCHEMA);
+  if (expectedQuestion.id === "<SET>") {
+    expect(question.id).toBeDefined();
+    expectedQuestion.id = question.id;
+  }
 
   expectAdminQuestionDtoToMatch(question, expectedQuestion);
 });

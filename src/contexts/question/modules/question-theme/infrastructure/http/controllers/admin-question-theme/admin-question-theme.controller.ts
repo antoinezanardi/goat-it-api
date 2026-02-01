@@ -17,14 +17,14 @@ import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/app
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import { FindAllQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-all-question-themes/find-all-question-themes.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
 export class AdminQuestionThemeController {
   public constructor(
-    private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
+    private readonly findQuestionThemesUseCase: FindQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly createQuestionThemeUseCase: CreateQuestionThemeUseCase,
     private readonly modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase,
@@ -44,8 +44,8 @@ export class AdminQuestionThemeController {
     status: HttpStatus.OK,
     type: [AdminQuestionThemeDto],
   })
-  public async findAllQuestionThemes(): Promise<AdminQuestionThemeDto[]> {
-    const questionThemes = await this.findAllQuestionThemesUseCase.list();
+  public async findQuestionThemes(): Promise<AdminQuestionThemeDto[]> {
+    const questionThemes = await this.findQuestionThemesUseCase.list();
 
     return questionThemes.map(questionTheme => createAdminQuestionThemeDtoFromEntity(questionTheme));
   }

@@ -1,7 +1,13 @@
-import { AfterAll, Before, BeforeAll, setWorldConstructor } from "@cucumber/cucumber";
+import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from "@cucumber/cucumber";
 
-import { buildAppForAcceptanceTests, killAppProcess, loadEnvTestConfig, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup.helpers";
+import { buildAppForAcceptanceTests } from "@acceptance-support/helpers/setup/build.helpers";
+import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
+import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
+import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
+import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
+
+import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 
 import type { AcceptanceHooksProcesses } from "@acceptance-support/types/hooks.types";
 import { GoatItWorld } from "@acceptance-support/types/world.types";
@@ -19,7 +25,9 @@ BeforeAll(async function() {
   }
   await connectToTestDatabase();
 
-  processes.app = await serveAppForAcceptanceTests();
+  const { process: appProcess, appLogs } = await serveAppForAcceptanceTests();
+  processes.app = appProcess;
+  processes.appLogs = appLogs;
 });
 
 Before(async function(this: GoatItWorld) {
@@ -28,6 +36,20 @@ Before(async function(this: GoatItWorld) {
     throw new Error("The application process was not initialized before the scenario.");
   }
   this.appProcess = processes.app;
+});
+
+After(async function(this: GoatItWorld, scenario: ITestCaseHookParameter): Promise<void> {
+  const status = scenario.result?.status;
+
+  if (status !== Status.FAILED) {
+    return;
+  }
+
+  if (processes.appLogs) {
+    await flushAndPrintLogTail(processes.appLogs, scenario);
+  }
+
+  printDebugOnScenarioFailure(this, scenario);
 });
 
 AfterAll(async function() {
