@@ -1,7 +1,7 @@
 # AGENTS.md
 
-**Last Updated**: 2025-01-20  
-**Document Version**: 2.0 (Enhanced with industry best practices)
+**Last Updated**: 2026-02-01  
+**Document Version**: 2.1 (Updated with missing domain patterns and improved structure)
 
 ## Table of Contents
 
