@@ -141,60 +141,31 @@ This consolidated section presents the authoritative rules an agent (automated o
 
 ## High-level architecture
 
-This project follows a **Hexagonal Architecture** (Ports and Adapters) combined with **Domain-Driven Design (DDD)** principles, organized by bounded contexts.
+This project follows **Hexagonal Architecture** (Ports and Adapters) combined with **Domain-Driven Design (DDD)** principles, organized by bounded contexts.
 
-### Core architectural layers
+**For complete architectural details, patterns, and workflows, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).**
 
-1. **Domain Layer** (`domain/`): Contains business entities, value objects, repository interfaces (ports), and domain-specific errors. This layer has no external dependencies.
-2. **Application Layer** (`application/`): Contains use cases, DTOs, and mappers. Orchestrates domain logic and defines the application's behavior.
-3. **Infrastructure Layer** (`infrastructure/`): Contains concrete implementations of ports (adapters) — HTTP controllers, database repositories, external services. This layer implements interfaces defined in the domain.
+### Quick summary
+
+- **Domain Layer** (`domain/`): Business entities, value objects, repository interfaces (ports), domain errors, predicates, policies, and helpers. No external dependencies.
+- **Application Layer** (`application/`): Use cases, DTOs, and mappers. Orchestrates domain logic.
+- **Infrastructure Layer** (`infrastructure/`): Concrete implementations (HTTP controllers, database repositories, external services).
+
+### Domain patterns
+
+The domain layer uses specific patterns to organize business logic:
+
+- **Predicates** (`domain/predicates/`): Boolean validators for domain state (e.g., `isQuestionThemeArchived`)
+- **Policies** (`domain/policies/`): Business rule enforcement that throws domain errors when violated
+- **Helpers** (`domain/helpers/`): Pure utility functions for domain transformations
+
+See the [Domain Patterns](#domain-patterns) section below for detailed examples, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#domain-patterns) for complete guidelines.
 
 ### Entry points
 
-- **Entry point**: `src/main.ts` — imports and calls the bootstrap function from `src/infrastructure/api/server/server.ts`.
-- **Server setup**: `src/infrastructure/api/server/server.ts` — builds a Nest application using `AppModule`, uses `FastifyAdapter`, enables shutdown hooks, binds to env variables, sets up Swagger documentation, applies global exception filters, and logs the listen URL.
-- **Application module**: `src/app/app.module.ts` — central wiring for infrastructure modules (`config`, `database`, `health`, `logging`) and bounded context modules.
-
-### Bounded contexts' structure
-
-The project organizes domain logic into bounded contexts under `src/contexts/`:
-
-```
-src/contexts/<context-name>/
-├── <context-name>.module.ts          # Context root module
-└── modules/
-    └── <feature-name>/
-        ├── <feature-name>.module.ts  # Feature module (wires all layers)
-        ├── domain/
-        │   ├── entities/             # Domain entities and their types
-        │   ├── value-objects/        # Domain value objects (types and constants)
-        │   ├── repositories/         # Repository interface (port) + token
-        │   ├── contracts/            # Data contracts for modifications/operations
-        │   ├── commands/             # Command types that wrap contracts with IDs
-        │   ├── errors/               # Domain-specific errors
-        │   ├── predicates/           # Boolean validators for domain logic
-        │   ├── policies/             # Business rule enforcement
-        │   └── helpers/              # Utility functions for domain logic
-        ├── application/
-        │   ├── use-cases/            # Business logic operations
-        │   ├── dto/                  # Zod-based DTOs for API
-        │   │   └── shared/           # Shared DTO components and validators
-        │   │       └── zod/
-        │   │           ├── refinements/  # Custom Zod refinement validators
-        │   │           └── validators/   # Shared validation logic
-        │   └── mappers/              # Entity-to-DTO mappers
-        └── infrastructure/
-            ├── http/
-            │   └── controllers/      # NestJS HTTP controllers (can be nested)
-            └── persistence/
-                └── mongoose/
-                    ├── schema/       # Mongoose schema definitions
-                    ├── repository/   # Repository implementation (adapter)
-                    │   └── pipelines/    # MongoDB aggregation pipeline helpers
-                    ├── mappers/      # Document-to-entity mappers
-                    ├── types/        # Mongoose-specific types
-                    └── constants/    # Collection names, etc.
-```
+- **Entry point**: `src/main.ts` — imports and calls the bootstrap function
+- **Server setup**: `src/infrastructure/api/server/server.ts` — NestJS with Fastify, Swagger, global filters
+- **Application module**: `src/app/app.module.ts` — root module importing infrastructure and context modules
 
 ## Key design decisions
 
@@ -522,6 +493,8 @@ src/contexts/<context>/modules/<feature>/
 
 This project uses **Zod** with **nestjs-zod** for runtime validation and automatic OpenAPI schema generation.
 
+**For complete validation and DTO architecture details, see [docs/ARCHITECTURE.md#validation-dtos-and-openapi](docs/ARCHITECTURE.md#validation-dtos-and-openapi).**
+
 ### Creating a DTO
 
 ```typescript
@@ -592,6 +565,8 @@ const MY_DTO = z.strictObject({
 These validators are used consistently across DTOs to ensure validation is uniform and follows project standards.
 
 ## Repository pattern
+
+**For complete dependency injection and repository pattern details, see [docs/ARCHITECTURE.md#dependency-injection--repository-pattern](docs/ARCHITECTURE.md#dependency-injection--repository-pattern).**
 
 ### Defining the repository interface (port)
 
@@ -737,6 +712,8 @@ This ensures consistent error responses and proper HTTP status codes without clu
 ## Domain Patterns
 
 This section documents domain-layer patterns used in the codebase for organizing business logic.
+
+**For architectural context and complete guidelines, see [docs/ARCHITECTURE.md#domain-patterns](docs/ARCHITECTURE.md#domain-patterns).**
 
 ### Predicates
 
@@ -2003,6 +1980,20 @@ pnpm run start:dev
 # Start in debug mode
 pnpm run start:debug
 ```
+
+### Testing the API manually
+
+The repository includes a Bruno collection for testing API endpoints manually. Bruno is a fast, git-friendly API client.
+
+**Bruno collection location**: `configs/bruno/Goat It`
+
+**Setup**: 
+1. Install Bruno from [usebruno.com](https://www.usebruno.com/)
+2. Open the collection: `configs/bruno/Goat It`
+3. Configure environment variables (API keys, base URL)
+4. Test endpoints interactively
+
+For detailed setup instructions and best practices, see [docs/BRUNO.md](docs/BRUNO.md).
 
 ### Running tests
 

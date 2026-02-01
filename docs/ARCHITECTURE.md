@@ -9,6 +9,7 @@ This document explains the high-level architecture, key patterns, module layout 
 - [Layers and responsibilities](#layers-and-responsibilities)
 - [Mappers](#mappers)
 - [Bounded contexts and module layout](#bounded-contexts-and-module-layout)
+- [Domain Patterns](#domain-patterns)
 - [Data flow (request → response)](#data-flow-request--response)
 - [Dependency Injection & repository pattern](#dependency-injection--repository-pattern)
 - [Validation, DTOs and OpenAPI](#validation-dtos-and-openapi)
@@ -83,6 +84,73 @@ Mappers are small, focused functions responsible for converting between differen
 - Each feature: `modules/<feature>/` with the 3 layers above.
 - Feature module pattern: `<feature>.<type>.ts` (e.g. `question-theme.module.ts`).
 - Module wiring: register Mongoose schemas using `MongooseModule.forFeature(...)` and provide use-cases and repository providers with injection tokens.
+
+## Domain Patterns
+
+The domain layer uses several patterns to organize business logic effectively:
+
+### Predicates
+
+**Purpose**: Boolean functions that encapsulate simple yes/no questions about domain state.
+
+**Location**: `domain/predicates/`
+
+**Example**:
+```typescript
+// domain/predicates/question-theme-status.predicates.ts
+function isQuestionThemeArchived(status: QuestionThemeStatus): boolean {
+  return status === "archived";
+}
+```
+
+**When to use**: Use predicates for simple state checks that express business concepts. They make code more readable and testable.
+
+### Policies
+
+**Purpose**: Functions that enforce complex business rules by combining multiple conditions. They throw domain errors when rules are violated.
+
+**Location**: `domain/policies/`
+
+**Example**:
+```typescript
+// domain/policies/question-creation.policies.ts
+function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void {
+  if (isQuestionThemeArchived(theme.status)) {
+    throw new QuestionThemeArchivedError(theme.id);
+  }
+}
+```
+
+**When to use**: Use policies to validate operations before they happen. Call them in use cases before performing state changes.
+
+### Domain Helpers
+
+**Purpose**: Pure functions that perform domain-specific transformations or calculations.
+
+**Location**: `domain/helpers/`
+
+**Example**:
+```typescript
+// domain/helpers/question-theme-status.helpers.ts
+function normalizeQuestionThemeStatus(status: string): QuestionThemeStatus {
+  const normalized = status.toLowerCase();
+  if (!QUESTION_THEME_STATUSES.includes(normalized as QuestionThemeStatus)) {
+    throw new Error(`Invalid question theme status: ${status}`);
+  }
+  return normalized as QuestionThemeStatus;
+}
+```
+
+**When to use**: Use helpers for transformations, computations, or building domain objects from raw data.
+
+### Guidelines
+
+1. **Keep domain pure**: Predicates, policies, and helpers must not depend on infrastructure (no HTTP, no database).
+2. **Single responsibility**: Each function should do one thing well.
+3. **Compose policies from predicates**: Build complex rules by combining simple predicates.
+4. **Test thoroughly**: Write unit tests for all domain logic with edge cases.
+
+For detailed examples and complete documentation, see the [Domain Patterns section in AGENTS.md](../AGENTS.md#domain-patterns).
 
 ## Data flow (request → response)
 
