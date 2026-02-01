@@ -1,8 +1,6 @@
-Faketories (Test Data Factories)
-================================
+# Faketories (Test Data Factories)
 
-Short pointer
--------------
+## Short pointer
 
 The primary faketories documentation lives with the code for easier maintenance:
 
