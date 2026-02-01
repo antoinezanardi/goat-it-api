@@ -6,6 +6,7 @@
 ## Table of Contents
 
 ### Core Documentation
+
 1. [Purpose](#purpose)
 2. [Agent guidelines](#agent-guidelines)
 3. [Project summary](#project-summary)
@@ -13,6 +14,7 @@
 5. [Key design decisions](#key-design-decisions)
 
 ### Project Structure and Organization
+
 6. [Important files and locations](#important-files-and-locations)
 7. [Path aliases](#path-aliases)
 8. [Project Directory Structure](#project-directory-structure)
@@ -21,6 +23,7 @@
 11. [Config and tooling files](#config-and-tooling-files)
 
 ### Development Patterns and Conventions
+
 12. [DTO and validation patterns](#dto-and-validation-patterns)
 13. [Repository pattern](#repository-pattern)
 14. [Error handling patterns](#error-handling-patterns)
@@ -32,6 +35,7 @@
 20. [Performance and Scalability Considerations](#performance-and-scalability-considerations)
 
 ### Testing and Quality
+
 21. [Testing conventions](#testing-conventions)
 22. [Testing Anti-Patterns to Avoid](#testing-anti-patterns-to-avoid)
 23. [Mutation testing (Stryker)](#mutation-testing-stryker)
@@ -39,10 +43,12 @@
 25. [Code Quality and Style Enforcement](#code-quality-and-style-enforcement)
 
 ### Anti-Patterns and Best Practices
+
 26. [Common Pitfalls and Anti-Patterns to Avoid](#common-pitfalls-and-anti-patterns-to-avoid)
 27. [Industry Best Practices Compliance](#industry-best-practices-compliance)
 
 ### Operational Guides
+
 28. [Common scripts](#common-scripts)
 29. [Linting, commits and release automation](#linting-commits-and-release-automation)
 30. [CI/CD Workflows](#cicd-workflows)
@@ -51,6 +57,7 @@
 33. [Environment variables](#environment-variables)
 
 ### Reference
+
 34. [General rules and small reminders](#general-rules-and-small-reminders)
 35. [Examples](#examples)
 36. [Security and sensitive data](#security-and-sensitive-data)
@@ -143,23 +150,13 @@ This consolidated section presents the authoritative rules an agent (automated o
 
 This project follows **Hexagonal Architecture** (Ports and Adapters) combined with **Domain-Driven Design (DDD)** principles, organized by bounded contexts.
 
-**For complete architectural details, patterns, and workflows, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).**
-
 ### Quick summary
 
 - **Domain Layer** (`domain/`): Business entities, value objects, repository interfaces (ports), domain errors, predicates, policies, and helpers. No external dependencies.
 - **Application Layer** (`application/`): Use cases, DTOs, and mappers. Orchestrates domain logic.
 - **Infrastructure Layer** (`infrastructure/`): Concrete implementations (HTTP controllers, database repositories, external services).
 
-### Domain patterns
-
-The domain layer uses specific patterns to organize business logic:
-
-- **Predicates** (`domain/predicates/`): Boolean validators for domain state (e.g., `isQuestionThemeArchived`)
-- **Policies** (`domain/policies/`): Business rule enforcement that throws domain errors when violated
-- **Helpers** (`domain/helpers/`): Pure utility functions for domain transformations
-
-See the [Domain Patterns](#domain-patterns) section below for detailed examples, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#domain-patterns) for complete guidelines.
+**For complete architectural details, patterns, and workflows, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).**
 
 ### Entry points
 
@@ -724,6 +721,7 @@ This section documents domain-layer patterns used in the codebase for organizing
 **Naming**: `<entity-or-concept>.predicates.ts`
 
 **Example**:
+
 ```typescript
 // domain/predicates/question-theme-status.predicates.ts
 import type { QuestionThemeStatus } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.types";
@@ -750,6 +748,7 @@ export { isQuestionThemeArchived, isQuestionThemeActive };
 **Naming**: `<action-or-operation>.policies.ts`
 
 **Example**:
+
 ```typescript
 // domain/policies/question-creation.policies.ts
 import { QuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
@@ -776,12 +775,14 @@ export { ensureQuestionThemeIsNotArchivedForCreation };
 **Naming**: `<entity-or-concept>.helpers.ts`
 
 **When to use**:
+
 - Transforming domain values
 - Computing derived values
 - Building domain objects from raw data
 - Any domain operation that doesn't fit predicates or policies
 
 **Example**:
+
 ```typescript
 // domain/helpers/question-theme-status.helpers.ts
 import type { QuestionThemeStatus } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.types";
@@ -1358,16 +1359,21 @@ This section documents the actual REST API patterns and conventions used in the 
   - Endpoint prefix: `/admin/<feature-name>` (e.g., `/admin/question-themes`)
 
 Example from codebase:
+
 ```typescript
 // Public controller
 @GameAuth()
 @Controller(ControllerPrefixes.QUESTION_THEMES)
-export class QuestionThemeController { ... }
+export class QuestionThemeController {
+...
+}
 
 // Admin controller
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
-export class AdminQuestionThemeController { ... }
+export class AdminQuestionThemeController {
+...
+}
 ```
 
 ### HTTP method conventions
@@ -1383,34 +1389,42 @@ The project follows RESTful conventions:
 ### Response documentation
 
 All endpoints must use:
+
 - `@ApiOperation()` — Swagger documentation with tags, summary, description
 - `@ZodResponse()` — Response schema with HTTP status code
 
 Example:
+
 ```typescript
-@Get()
-@ApiOperation({
+@Get() @ApiOperation({
   tags: [SwaggerTags.QUESTION_THEMES],
   summary: "Get all question themes",
   description: "Returns a list of all active question themes.",
-})
-@ZodResponse({
+}) @ZodResponse({
   status: HttpStatus.OK,
   type: [QuestionThemeDto],
-})
-public async findAll(): Promise<QuestionThemeDto[]> { ... }
+}) public async
+findAll()
+:
+Promise < QuestionThemeDto[] > { ... }
 ```
 
 ### Path parameter validation
 
 Use `MongoIdPipe` for MongoDB ObjectId validation in path parameters:
+
 ```typescript
-public async findById(@Param("id", MongoIdPipe) id: string): Promise<QuestionThemeDto> { ... }
+public async
+findById(@Param("id", MongoIdPipe)
+id: string
+):
+Promise < QuestionThemeDto > { ... }
 ```
 
 ### Controller responsibilities
 
 Controllers must:
+
 - Validate inputs (automatic via Zod DTOs)
 - Call use cases with domain commands
 - Map entities to DTOs before returning
@@ -1418,14 +1432,19 @@ Controllers must:
 - **Never** directly access repositories
 
 Example pattern:
+
 ```typescript
-public async create(@Body() dto: QuestionThemeCreationDto): Promise<QuestionThemeDto> {
+public async
+create(@Body()
+dto: QuestionThemeCreationDto
+):
+Promise < QuestionThemeDto > {
   // 1. Map DTO to domain command
   const command = createQuestionThemeCreationCommandFromDto(dto);
-  
+
   // 2. Call use case
   const entity = await this.createUseCase.create(command);
-  
+
   // 3. Map entity to DTO
   return createQuestionThemeDtoFromEntity(entity);
 }
@@ -1445,6 +1464,7 @@ The project uses a **two-tier API key system** with HMAC-SHA256 hashing:
 ### Security implementation details
 
 **HMAC-SHA256 hashing with timing-safe comparison**:
+
 ```typescript
 // Hash API key using HMAC-SHA256
 function hashApiKey(apiKey: string, hmacKey: string): string {
@@ -1462,6 +1482,7 @@ Location: `src/infrastructure/api/auth/helpers/auth.helpers.ts`
 ### API key configuration
 
 API keys are configured via environment variables:
+
 - `ADMIN_API_KEY` — Admin API key (minimum 24 characters)
 - `GAME_API_KEY` — Game API key (minimum 24 characters)
 - `API_KEY_HMAC_SECRET` — HMAC secret for hashing
@@ -1471,10 +1492,12 @@ Keys are validated and hashed at application startup in `AppConfigService`.
 ### Authentication guards
 
 Two guards implement API key validation:
+
 - `AdminApiKeyGuard` — For admin endpoints
 - `GameApiKeyGuard` — For game endpoints
 
 Both guards:
+
 1. Extract API key from `goat-it-api-key` header
 2. Validate using timing-safe comparison
 3. Throw `UnauthorizedException` on failure
@@ -1482,14 +1505,20 @@ Both guards:
 ### Applying authentication
 
 Use decorators at controller class level:
+
 ```typescript
+
 @AdminAuth()  // For admin endpoints
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
-export class AdminQuestionThemeController { ... }
+export class AdminQuestionThemeController {
+...
+}
 
 @GameAuth()  // For game endpoints
 @Controller(ControllerPrefixes.QUESTIONS)
-export class QuestionController { ... }
+export class QuestionController {
+...
+}
 ```
 
 ### Security best practices followed
@@ -1498,7 +1527,7 @@ export class QuestionController { ... }
 ✅ **HMAC-SHA256** — Industry-standard hashing for API keys  
 ✅ **Minimum key length** — 24 characters enforced  
 ✅ **Separation of concerns** — Game vs Admin API keys  
-✅ **Environment-based configuration** — No hardcoded secrets  
+✅ **Environment-based configuration** — No hardcoded secrets
 
 ### What NOT to do (security anti-patterns)
 
@@ -1506,7 +1535,7 @@ export class QuestionController { ... }
 ❌ **Never** store plaintext API keys in code or configs  
 ❌ **Never** use simple hashing (MD5, SHA1) for API keys  
 ❌ **Never** skip validation for "development" environments  
-❌ **Never** log API keys (even hashed)  
+❌ **Never** log API keys (even hashed)
 
 ## Dependency Injection and Provider Patterns
 
@@ -1521,10 +1550,8 @@ export const QUESTION_THEME_REPOSITORY_TOKEN = Symbol("QuestionThemeRepository")
 // 2. Inject in use case
 @Injectable()
 export class CreateQuestionThemeUseCase {
-  public constructor(
-    @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
-    private readonly questionThemeRepository: QuestionThemeRepository
-  ) {}
+  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN) private readonly questionThemeRepository: QuestionThemeRepository) {
+  }
 }
 
 // 3. Provide in module
@@ -1537,19 +1564,20 @@ export class CreateQuestionThemeUseCase {
     },
   ],
 })
-export class QuestionThemeModule {}
+export class QuestionThemeModule {
+}
 ```
 
 ### Use case dependency injection
 
 Use cases are injected directly without tokens (NestJS handles class tokens automatically):
+
 ```typescript
+
 @Controller(ControllerPrefixes.QUESTION_THEMES)
 export class QuestionThemeController {
-  public constructor(
-    private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase,
-    private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
-  ) {}
+  public constructor(private readonly findAllQuestionThemesUseCase: FindAllQuestionThemesUseCase, private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,) {
+  }
 }
 ```
 
@@ -1561,10 +1589,12 @@ export class QuestionThemeController {
 ### Injection token rules
 
 **MUST use Symbol tokens for**:
+
 - Repository interfaces (prevents naming collisions)
 - Any interface-based injection
 
 **CAN use class tokens for**:
+
 - Use cases
 - Services
 - Any concrete class
@@ -1581,6 +1611,7 @@ The project enforces a specific import order:
 4. Type-only imports (grouped separately)
 
 Example:
+
 ```typescript
 import { timingSafeEqual, createHmac } from "node:crypto";
 
@@ -1597,9 +1628,13 @@ import type { AppConfigService } from "@src/infrastructure/api/config/providers/
 ### Export conventions
 
 **Named exports only** (no default exports):
+
 ```typescript
 // ✅ Correct
-export class CreateQuestionThemeUseCase { ... }
+export class CreateQuestionThemeUseCase {
+...
+}
+
 export { QUESTION_THEME_REPOSITORY_TOKEN };
 
 // ❌ Incorrect
@@ -1609,6 +1644,7 @@ export default CreateQuestionThemeUseCase;
 ### Path alias usage
 
 **Always use path aliases** instead of relative imports:
+
 ```typescript
 // ✅ Correct
 import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
@@ -1620,6 +1656,7 @@ import { QuestionTheme } from "../../../domain/entities/question-theme.types";
 ### Type-only imports
 
 Use `import type` for types to improve tree-shaking:
+
 ```typescript
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import type { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
@@ -1630,11 +1667,19 @@ import type { QuestionThemeRepository } from "@question/modules/question-theme/d
 ### Database query optimization
 
 **Aggregation pipelines** for complex queries:
+
 ```typescript
 // Example: Question repository uses aggregation for efficient filtering
 export const QUESTION_MONGOOSE_REPOSITORY_PIPELINE = [
   { $match: { status: "active" } },
-  { $lookup: { from: "questionthemes", localField: "themeId", foreignField: "_id", as: "theme" } },
+  {
+    $lookup: {
+      from: "questionthemes",
+      localField: "themeId",
+      foreignField: "_id",
+      as: "theme"
+    }
+  },
   { $unwind: "$theme" },
 ];
 ```
@@ -1644,15 +1689,22 @@ Location: `src/contexts/question/infrastructure/persistence/mongoose/repository/
 ### Lazy DTO mapping
 
 DTOs are mapped **only when needed** (in controllers, not in repositories):
+
 ```typescript
 // ✅ Correct: Repository returns domain entities
-public async findAll(): Promise<QuestionTheme[]> {
+public async
+findAll()
+:
+Promise < QuestionTheme[] > {
   const documents = await this.model.find();
   return documents.map(mapDocumentToEntity);
 }
 
 // ✅ Correct: Controller maps entities to DTOs
-public async findAll(): Promise<QuestionThemeDto[]> {
+public async
+findAll()
+:
+Promise < QuestionThemeDto[] > {
   const themes = await this.findAllUseCase.list();
   return themes.map(theme => createQuestionThemeDtoFromEntity(theme));
 }
@@ -1661,6 +1713,7 @@ public async findAll(): Promise<QuestionThemeDto[]> {
 ### Async/Await consistency
 
 All repository operations and use cases use `async/await` consistently:
+
 - No callback-based APIs
 - Promises properly awaited
 - Errors naturally propagate to global exception filter
@@ -1668,10 +1721,15 @@ All repository operations and use cases use `async/await` consistently:
 ### Localization caching
 
 Locale is extracted once per request via middleware:
+
 ```typescript
 // LocalizationMiddleware processes locale from Accept-Language header
 // Stores in request object for reuse
-request.localization = { locale, languageCode, countryCode };
+request.localization = {
+  locale,
+  languageCode,
+  countryCode
+};
 ```
 
 ### What NOT to do (performance anti-patterns)
@@ -1679,7 +1737,7 @@ request.localization = { locale, languageCode, countryCode };
 ❌ **Never** perform N+1 queries (use aggregation or populate)  
 ❌ **Never** map to DTOs in repositories  
 ❌ **Never** perform synchronous operations in request handlers  
-❌ **Never** block the event loop with heavy computations  
+❌ **Never** block the event loop with heavy computations
 
 ## Testing Anti-Patterns to Avoid
 
@@ -1691,7 +1749,7 @@ Based on the codebase analysis, the following testing anti-patterns have been id
 
 ```typescript
 // ❌ Incorrect: Multiple assertions
-it("should create and return question theme.", async() => {
+it("should create and return question theme.", async () => {
   const result = await useCase.create(command);
   expect(result).toBeDefined();
   expect(result.slug).toBe(command.payload.slug);
@@ -1699,18 +1757,18 @@ it("should create and return question theme.", async() => {
 });
 
 // ✅ Correct: Single assertion per test
-it("should create question theme when called.", async() => {
+it("should create question theme when called.", async () => {
   await useCase.create(command);
-  
+
   expect(mocks.repositories.questionTheme.create).toHaveBeenCalledExactlyOnceWith(command.payload);
 });
 
-it("should return created question theme when called.", async() => {
+it("should return created question theme when called.", async () => {
   const expected = createFakeQuestionTheme();
   mocks.repositories.questionTheme.create.mockResolvedValueOnce(expected);
-  
+
   const result = await useCase.create(command);
-  
+
   expect(result).toStrictEqual(expected);
 });
 ```
@@ -1721,13 +1779,18 @@ Test labels must follow the pattern: `"should <expected behavior> when <conditio
 
 ```typescript
 // ✅ Correct
-it("should throw error when question theme slug already exists.", async() => { ... });
-it("should create question theme when called.", async() => { ... });
-it("should return all active question themes when called.", async() => { ... });
+it("should throw error when question theme slug already exists.", async () => { ...
+});
+it("should create question theme when called.", async () => { ...
+});
+it("should return all active question themes when called.", async () => { ...
+});
 
 // ❌ Incorrect
-it("tests the create method", async() => { ... });
-it("should work correctly", async() => { ... });
+it("tests the create method", async () => { ...
+});
+it("should work correctly", async () => { ...
+});
 ```
 
 ### Mock setup anti-patterns
@@ -1735,7 +1798,7 @@ it("should work correctly", async() => { ... });
 ❌ **Never** mock the system under test  
 ❌ **Never** share mocks between test suites  
 ❌ **Never** forget to reset mocks (handled automatically by Vitest config)  
-❌ **Never** use real services in unit tests  
+❌ **Never** use real services in unit tests
 
 ## Code Quality and Style Enforcement
 
@@ -1751,6 +1814,7 @@ Run order: `pnpm run lint` → runs Oxlint first, then ESLint
 ### ESLint configuration structure
 
 ESLint uses **flat-config** with modular rule files:
+
 - `configs/eslint/flat-configs/eslint-global.flat-config.ts` — Global rules
 - `configs/eslint/flat-configs/eslint-typescript.flat-config.ts` — TypeScript rules
 - `configs/eslint/flat-configs/eslint-stylistic.flat-config.ts` — Formatting rules
@@ -1760,6 +1824,7 @@ ESLint uses **flat-config** with modular rule files:
 ### Formatting approach
 
 **No Prettier** — ESLint's stylistic plugin handles formatting:
+
 - Indentation: 2 spaces
 - Quotes: Double quotes
 - Semicolons: Required
@@ -1768,6 +1833,7 @@ ESLint uses **flat-config** with modular rule files:
 ### Type checking
 
 The project uses **tsgo** (native TypeScript preview) instead of standard `tsc`:
+
 ```bash
 pnpm run typecheck  # Runs: tsgo -b --clean && tsgo -b --noEmit
 ```
@@ -1775,12 +1841,14 @@ pnpm run typecheck  # Runs: tsgo -b --clean && tsgo -b --noEmit
 ### Coverage requirements
 
 **100% coverage enforced** for:
+
 - Statements
 - Branches
 - Functions
 - Lines
 
 Excluded from coverage:
+
 - `*.module.ts` — NestJS modules (wiring only)
 - `*.schema.ts` — Mongoose schemas
 - `*.constants.ts` — Constant definitions
@@ -1792,6 +1860,7 @@ Excluded from coverage:
 ### When to disable rules
 
 Only disable lint rules when:
+
 1. There's a legitimate technical reason (document with comment)
 2. TypeScript limitations require it (e.g., type assertions)
 3. Generated code that can't be changed
@@ -1812,20 +1881,23 @@ const data: any = fetchData();
 
 ❌ **Never** import infrastructure code in domain layer  
 ❌ **Never** throw HTTP exceptions in domain (use domain errors)  
-❌ **Never** use NestJS decorators in domain layer  
+❌ **Never** use NestJS decorators in domain layer
 
 ```typescript
 // ❌ Incorrect: Domain depends on infrastructure
 import { NotFoundException } from "@nestjs/common";
+
 throw new NotFoundException("Theme not found");
 
 // ✅ Correct: Domain uses domain errors
 export class QuestionThemeNotFoundError extends Error {
   public name = "QuestionThemeNotFoundError";
+
   public constructor(themeId: string) {
     super(`Question theme with id ${themeId} not found`);
   }
 }
+
 throw new QuestionThemeNotFoundError(id);
 ```
 
@@ -1833,28 +1905,32 @@ throw new QuestionThemeNotFoundError(id);
 
 ❌ **Never** call repositories directly from controllers  
 ❌ **Never** return DTOs from repositories (return entities)  
-❌ **Never** perform business logic in repositories  
+❌ **Never** perform business logic in repositories
 
 ```typescript
 // ❌ Incorrect: Controller calls repository directly
 @Controller(ControllerPrefixes.QUESTION_THEMES)
 export class QuestionThemeController {
-  public constructor(
-    @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
-    private readonly repository: QuestionThemeRepository
-  ) {}
-  
+  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN) private readonly repository: QuestionThemeRepository) {
+  }
+
   public async findAll() {
     return this.repository.findAll();  // ❌ Bypasses use case
   }
 }
 
 // ✅ Correct: Controller calls use case
-public constructor(
-  private readonly findAllUseCase: FindAllQuestionThemesUseCase
-) {}
+public
+constructor(private
+readonly
+findAllUseCase: FindAllQuestionThemesUseCase
+)
+{
+}
 
-public async findAll() {
+public async
+findAll()
+{
   return this.findAllUseCase.list();  // ✅ Uses use case
 }
 ```
@@ -1863,13 +1939,13 @@ public async findAll() {
 
 ❌ **Never** inject controllers into use cases  
 ❌ **Never** inject HTTP-related services into use cases  
-❌ **Never** handle HTTP concerns (status codes, headers) in use cases  
+❌ **Never** handle HTTP concerns (status codes, headers) in use cases
 
 ### DTO and validation anti-patterns
 
 ❌ **Never** use Zod schemas without `z.strictObject()` (allows extra properties)  
 ❌ **Never** skip `.describe()` for DTO properties (needed for OpenAPI)  
-❌ **Never** forget `.meta({ example })` for better API documentation  
+❌ **Never** forget `.meta({ example })` for better API documentation
 
 ```typescript
 // ❌ Incorrect: Missing strict validation
@@ -1889,7 +1965,7 @@ const MY_DTO = z.strictObject({
 
 ❌ **Never** create circular dependencies between modules  
 ❌ **Never** expose implementation details in module exports  
-❌ **Never** import from `src/contexts/<other-context>` (contexts should be independent)  
+❌ **Never** import from `src/contexts/<other-context>` (contexts should be independent)
 
 ## Industry Best Practices Compliance
 
@@ -1987,7 +2063,8 @@ The repository includes a Bruno collection for testing API endpoints manually. B
 
 **Bruno collection location**: `configs/bruno/Goat It`
 
-**Setup**: 
+**Setup**:
+
 1. Install Bruno from [usebruno.com](https://www.usebruno.com/)
 2. Open the collection: `configs/bruno/Goat It`
 3. Configure environment variables (API keys, base URL)
