@@ -37,7 +37,7 @@ export class AssignThemeToQuestionUseCase {
 
     const existingThemeAssignment = findQuestionThemeAssignmentInQuestionByThemeId(question, questionTheme.id);
     if (existingThemeAssignment) {
-      throw new QuestionThemeAssignmentAlreadyExistsError(questionId, questionTheme.id);
+      throw new QuestionThemeAssignmentAlreadyExistsError(questionTheme.id, questionId);
     }
     if (isQuestionThemeArchived(questionTheme)) {
       throw new ReferencedQuestionThemeArchivedError(questionTheme.id);

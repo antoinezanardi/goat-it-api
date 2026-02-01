@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
+import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
@@ -235,6 +236,11 @@ describe("Global Exception Filter", () => {
         test: "should map domain error to http exception and send it when called with QuestionThemeSlugAlreadyExistsError.",
         exception: new QuestionThemeSlugAlreadyExistsError("question-theme-slug"),
         expectedSentException: new ConflictException("Question theme with slug question-theme-slug already exists"),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with QuestionThemeAssignmentAlreadyExistsError.",
+        exception: new QuestionThemeAssignmentAlreadyExistsError("question-theme-id", "question-id"),
+        expectedSentException: new ConflictException("Question theme assignment with id question-theme-id already exists in question with id question-id"),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",
