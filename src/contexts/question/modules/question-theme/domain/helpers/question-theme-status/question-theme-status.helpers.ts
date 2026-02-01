@@ -1,9 +1,9 @@
-import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+import { isQuestionThemeArchived } from "@question/modules/question-theme/domain/predicates/question-theme-status/question-theme-status.predicates";
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 function findArchivedQuestionTheme(themes: QuestionTheme[]): QuestionTheme | undefined {
-  return themes.find(theme => theme.status === QUESTION_THEME_STATUS_ARCHIVED);
+  return themes.find(isQuestionThemeArchived);
 }
 
 export {

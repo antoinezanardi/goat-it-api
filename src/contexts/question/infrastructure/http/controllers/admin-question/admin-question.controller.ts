@@ -8,6 +8,9 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
+import { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
@@ -25,6 +28,7 @@ export class AdminQuestionController {
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
     private readonly createQuestionUseCase: CreateQuestionUseCase,
     private readonly archiveQuestionUseCase: ArchiveQuestionUseCase,
+    private readonly assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase,
   ) {}
 
   @Get()
@@ -102,5 +106,28 @@ export class AdminQuestionController {
     const archivedQuestion = await this.archiveQuestionUseCase.archive(id);
 
     return createAdminQuestionDtoFromEntity(archivedQuestion);
+  }
+
+  @Post("/:id/themes")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Assign a theme to a question",
+    description: `Assign a specific theme to a question by its unique identifier. Returns the updated question with detailed structure for backend administration.`,
+  })
+  @ZodResponse({
+    status: HttpStatus.CREATED,
+    type: AdminQuestionDto,
+  })
+  public async assignThemeToQuestion(
+    @Param("id", MongoIdPipe) id: string,
+    @Body() questionThemeAssignmentCreationDto: QuestionThemeAssignmentCreationDto,
+  ): Promise<AdminQuestionDto> {
+    const questionThemeAssignmentCreationCommand = createQuestionThemeAssignmentCreationCommandFromDto(id, questionThemeAssignmentCreationDto);
+    const updatedQuestion = await this.assignThemeToQuestionUseCase.assign(questionThemeAssignmentCreationCommand);
+
+    return createAdminQuestionDtoFromEntity(updatedQuestion);
   }
 }

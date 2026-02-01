@@ -5,6 +5,7 @@ import { ArgumentsHost, BadRequestException, Catch, ConflictException, Exception
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
 
+import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
@@ -17,6 +18,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [ReferencedQuestionThemeArchivedError.name]: error => new BadRequestException(error.message),
     [QuestionAlreadyArchivedError.name]: error => new BadRequestException(error.message),
     [QuestionThemeSlugAlreadyExistsError.name]: error => new ConflictException(error.message),
+    [QuestionThemeAssignmentAlreadyExistsError.name]: error => new ConflictException(error.message),
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);
