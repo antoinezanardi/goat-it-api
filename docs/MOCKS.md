@@ -1,8 +1,6 @@
-Unit Test Mocks
-================
+# Unit Test Mocks
 
-Short pointer
--------------
+## Short pointer
 
 The primary mocks documentation lives with the code for easier maintenance:
 

@@ -1,8 +1,6 @@
-Unit Tests — Guidelines
-=======================
+# Unit Tests — Guidelines
 
-Table of contents
------------------
+## Table of Contents
 
 - [Purpose & Location](#purpose--location)
 - [Test config](#test-config)
@@ -19,14 +17,12 @@ Table of contents
   - [Mocking modules vs instances](#mocking-modules-vs-instances)
   - [Assertion style and helpers](#assertion-style-and-helpers)
 
-Purpose & Location
-------------------
+## Purpose & Location
 
 - Purpose: describe how unit tests are configured and how to write them so they match repository conventions and pass quality gates.
 - Location: unit tests live next to implementation files under `src/` as `*.spec.ts`. Test helpers, mocks and faketories live under `tests/` (see `tests/unit/` and `tests/shared/utils/faketories/`).
 
-Test config
-------------------
+## Test config
 
 - Test runner: Vitest (globals enabled). Config: `configs/vitest/vitest.config.ts`.
 - Coverage: V8 provider; coverage thresholds enforced at `100%` for statements, branches, functions and lines. Run: `pnpm run test:unit:cov`. Some files are excluded from coverage, see `configs/vitest/vitest.config.ts` for details.
@@ -34,19 +30,16 @@ Test config
 - Global setup / mocks: `tests/unit/setup/mocks.setup.ts` contains global test setup used by Vitest.
 - Path aliases: tests use project aliases (examples: `@faketories/*`, `@mocks/*`, `@question/*`). Aliases are configured in SWC/TypeScript/Vitest configs.
 
-Mutation tests
---------------
+## Mutation tests
 
 - Purpose: ensure tests detect and fail when code is changed in a way that alters behavior. This guards against false positives in tests.
 - Tool: Stryker (config: `configs/stryker/stryker.config.mjs`). The project aims for a `100%` mutation score in CI; local incremental runs are supported and recorded under `tests/mutation/incremental/`.
 - Commands: `pnpm run test:mutation` (incremental), `pnpm run test:mutation:force` (full run).
 - Note: mutation testing is CPU intensive; run locally only when necessary and commit any updated incremental state files if produced.
 
-How To: write tests per file type
---------------------------------
+## How To: write tests per file type
 
-General rules
--------------
+### General rules
 
 - Keep tests colocated: `src/.../<unit>.spec.ts`.
 - One assertion per `it` block. If you need multiple verifications, create multiple `it` tests describing each expected behavior.
@@ -67,8 +60,7 @@ General rules
 - Always use `toStrictEqual<T>(expected)` for value equality assertions to get type hinting and strict shape checks.
 - Private methods must be tested too, via `ClassName["privateMethodName"](...)` syntax.
 
-Controller tests
-----------------
+### Controller tests
 
 - Purpose: verify the HTTP layer wiring only — routing, DTO validation usage, response mapping and that controllers call the correct use-cases with the expected arguments.
 - What to mock: all collaborators (use-cases, mappers, services). Do not call real repositories or start Nest application. Inject mocks via Nest `useValue` providers in unit tests.
@@ -131,8 +123,7 @@ describe("Health Controller", () => {
   - `src/contexts/question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller.spec.ts`
   - `src/contexts/question/infrastructure/http/controllers/admin-question/admin-question.controller.spec.ts`
 
-Use-case tests (application layer) or Services
-----------------------------------
+### Use-case tests (application layer) or Services
 
 - Purpose: validate business orchestration, domain rules and interactions with repository ports. Use cases are the heart of application tests.
 - What to mock: repository ports (injected via symbol tokens), domain helpers that are pure functions, and any external services. Use mocks from `@mocks/...` factories.
@@ -253,8 +244,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
   - `src/contexts/question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case.spec.ts`
   - `src/contexts/question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case.spec.ts`
 
-Repository tests (persistence adapters)
---------------------------------------
+### Repository tests (persistence adapters)
 
 - Purpose: test adapter logic that translates between persistence (Mongoose documents) and domain entities and ensures queries/updates are performed as expected.
 - Test style: prefer unit tests that mock the `Model` methods (`find`, `findOne`, `create`, `updateOne`, `aggregate`) using `vi.fn()` and returning fake documents. For heavier integration-like checks, use small fixture documents from faketories but avoid running a real DB in unit tests.
@@ -340,8 +330,7 @@ Repository tests (persistence adapters)
   - `src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.spec.ts`
   - `src/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
 
-DTOs and Zod validators
--------------------------------
+### DTOs and Zod validators
 
 - Purpose: validate DTO schemas (Zod) and small transformer/mappers that feed the HTTP edge. Tests are pure, fast and colocated with DTO code — no Nest wiring.
 
@@ -465,8 +454,7 @@ Notes:
 - Prefer `DTO.parse` for positive tests and `safeParse` when you need to inspect `error` details.
 - Keep each `it` focused to one assertion — split coverage into multiple `it` lines when needed.
 
-Helpers and utilities (pure functions)
---------------------------------
+### Helpers and utilities (pure functions)
 
 - Purpose: fast, isolated unit tests for pure helpers (formatters, small transformers, date helpers, mapper helpers, policies, predicates).
 - What to test: all branches, edge cases and boundary values. Use `it.each` for parametrized inputs→outputs where appropriate.
@@ -503,8 +491,7 @@ describe("Date Helpers", () => {
 
 - Reference: `src/shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers.spec.ts`
 
-Errors (domain & infra)
-------------------------
+### Errors (domain & infra)
 
 - Purpose: ensure custom error classes expose the expected `name` and message and are distinguishable in the global filter.
 - What to test: constructor message formatting, `name` property and instanceof checks where applicable.
@@ -532,8 +519,7 @@ describe("Question Errors", () => {
 
 - Reference: `src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.spec.ts`
 
-Mocks & Faketories (where and how)
-----------------------------------
+### Mocks & Faketories (where and how)
 
 - Mocks live in `tests/unit/utils/mocks/` and mirror source paths. Use factory functions like `createMockedFindQuestionThemesUseCase()` returning `vi.fn()`-based fields.
 - Faketories live in `tests/shared/utils/faketories/` and produce domain entities, DTOs and mongoose documents using `@faker-js/faker`.
@@ -541,14 +527,12 @@ Mocks & Faketories (where and how)
 - You can refer to the [Faketories documentation](../../docs/FAKETORIES.md) for detailed guidance on creating and organizing faketories.
 - You can refer to the [Mocks documentation](../../docs/MOCKS.md) for detailed guidance on creating and organizing mocks.
 
-Mocking modules vs instances
----------------------------
+### Mocking modules vs instances
 
 - Module-level pure functions (mappers/helpers): mock with `vi.mock(import("..."))` at top of spec and use `vi.mocked()` to access typed mocks.
 - Instance collaborators (use-cases/repositories/services): create mock factories and inject via Nest `useValue` providers.
 
-Assertion style and helpers
--------------------------
+### Assertion style and helpers
 
 - One assertion per `it` block.
 - Use the repository's helper matchers when present (e.g. `toHaveBeenCalledExactlyOnceWith()`).
