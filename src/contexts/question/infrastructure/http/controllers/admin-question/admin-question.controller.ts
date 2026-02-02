@@ -133,7 +133,7 @@ export class AdminQuestionController {
     return createAdminQuestionDtoFromEntity(updatedQuestion);
   }
 
-  @Delete()
+  @Delete("/:id/themes/:themeId")
   @ApiOperation({
     tags: [
       SwaggerTags.ADMIN,
@@ -148,7 +148,7 @@ export class AdminQuestionController {
   })
   public async removeThemeFromQuestion(
     @Param("id", MongoIdPipe) questionId: string,
-    @Body("themeId", MongoIdPipe) themeId: string,
+    @Param("themeId", MongoIdPipe) themeId: string,
   ): Promise<AdminQuestionDto> {
     const updatedQuestion = await this.removeThemeFromQuestionUseCase.remove({
       questionId,

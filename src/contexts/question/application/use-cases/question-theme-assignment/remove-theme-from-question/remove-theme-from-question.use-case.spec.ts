@@ -77,6 +77,30 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       await expect(useCase.remove(command)).rejects.toThrowError(expectedError);
     });
 
+    it("should call repository remove method when called.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q3",
+        themeId: "theme-1",
+      });
+      const question = createFakeQuestion({
+        themes: [
+          createFakeQuestionThemeAssignment({
+            theme: createFakeQuestionTheme({ id: "theme-1" }),
+          }),
+          createFakeQuestionThemeAssignment({
+            theme: createFakeQuestionTheme({ id: "theme-2" }),
+          }),
+        ],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
+      const updated = createFakeQuestion();
+      vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(updated);
+
+      await useCase.remove(command);
+
+      expect(mocks.repositories.question.removeTheme).toHaveBeenCalledExactlyOnceWith(command.questionId, command.themeId);
+    });
+
     it("should return updated question when repository succeeds.", async() => {
       const command = createFakeQuestionThemeAssignmentRemovalCommand({
         questionId: "q3",
@@ -106,7 +130,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
     it("should throw QuestionMinimumThemesError when question has minimum themes.", async() => {
       const command = createFakeQuestionThemeAssignmentRemovalCommand({
         questionId: "q1",
-        themeId: "t1",
+        themeId: "existing-theme",
       });
       const question = createFakeQuestion({
         themes: [
@@ -117,6 +141,20 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       });
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
       const expectedError = new QuestionMinimumThemesError(command.questionId);
+
+      await expect(useCase["checkThemeIsRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
+    });
+
+    it("should throw QuestionThemeAssignmentAbsentError when question has no themes.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q0",
+        themeId: "missing-theme",
+      });
+      const question = createFakeQuestion({
+        themes: [],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
+      const expectedError = new QuestionThemeAssignmentAbsentError(command.themeId, command.questionId);
 
       await expect(useCase["checkThemeIsRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
     });

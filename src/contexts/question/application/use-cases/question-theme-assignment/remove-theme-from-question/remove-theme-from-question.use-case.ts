@@ -30,11 +30,12 @@ export class RemoveThemeFromQuestionUseCase {
 
   private async checkThemeIsRemovableFromQuestion(questionId: string, themeId: string): Promise<void> {
     const question = await this.findQuestionByIdUseCase.getById(questionId);
-    if (question.themes.length === QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS) {
-      throw new QuestionMinimumThemesError(questionId);
-    }
     if (!findQuestionThemeAssignmentInQuestionByThemeId(question, themeId)) {
       throw new QuestionThemeAssignmentAbsentError(themeId, questionId);
+    }
+
+    if (question.themes.length <= QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS) {
+      throw new QuestionMinimumThemesError(questionId);
     }
   }
 }
