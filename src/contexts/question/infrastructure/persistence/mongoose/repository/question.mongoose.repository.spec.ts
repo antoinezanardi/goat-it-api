@@ -194,7 +194,7 @@ describe("Question Mongoose Repository", () => {
 
       await repositories.question.archive(questionId);
 
-      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate);
     });
 
     it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
@@ -206,7 +206,7 @@ describe("Question Mongoose Repository", () => {
       expect(actual).toBeUndefined();
     });
 
-    it("should call findById with the document id when model returns a document.", async() => {
+    it("should call findById with the question id when called.", async() => {
       const questionId = "618c1f4b3a2f000000000012";
       const createdDocument = createFakeQuestionDocument();
       mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
@@ -214,7 +214,7 @@ describe("Question Mongoose Repository", () => {
 
       await repositories.question.archive(questionId);
 
-      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
     });
 
     it("should return the question returned by findById when called.", async() => {
@@ -241,7 +241,7 @@ describe("Question Mongoose Repository", () => {
 
       const expectedUpdate = { $push: { themes: expectedInsert } };
 
-      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate);
     });
 
     it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
@@ -254,7 +254,7 @@ describe("Question Mongoose Repository", () => {
       expect(actual).toBeUndefined();
     });
 
-    it("should call findById with the document id when model returns a document.", async() => {
+    it("should call findById with the question id when called.", async() => {
       const questionId = "618c1f4b3a2f000000000022";
       const createdDocument = createFakeQuestionDocument();
       mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
@@ -262,7 +262,7 @@ describe("Question Mongoose Repository", () => {
 
       await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
 
-      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
     });
 
     it("should return the question returned by findById when called.", async() => {
@@ -287,7 +287,7 @@ describe("Question Mongoose Repository", () => {
 
       const expectedUpdate = { $pull: { themes: { themeId: new Types.ObjectId(themeId) } } };
 
-      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate);
     });
 
     it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
@@ -300,7 +300,7 @@ describe("Question Mongoose Repository", () => {
       expect(actual).toBeUndefined();
     });
 
-    it("should call findById with the document id when model returns a document.", async() => {
+    it("should call findById with the question id when called.", async() => {
       const questionId = "618c1f4b3a2f000000000034";
       const themeId = "618c1f4b3a2f000000000035";
       const createdDocument = createFakeQuestionDocument();
@@ -309,7 +309,7 @@ describe("Question Mongoose Repository", () => {
 
       await repositories.question.removeTheme(questionId, themeId);
 
-      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
     });
 
     it("should return the question returned by findById when called.", async() => {

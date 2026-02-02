@@ -126,7 +126,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
     });
   });
 
-  describe("checkThemeIsRemovableFromQuestion", () => {
+  describe("throwIfThemeNotRemovableFromQuestion", () => {
     it("should throw QuestionMinimumThemesError when question has minimum themes.", async() => {
       const command = createFakeQuestionThemeAssignmentRemovalCommand({
         questionId: "q1",
@@ -142,7 +142,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
       const expectedError = new QuestionMinimumThemesError(command.questionId);
 
-      await expect(useCase["checkThemeIsRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
+      await expect(useCase["throwIfThemeNotRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
     });
 
     it("should throw QuestionThemeAssignmentAbsentError when question has no themes.", async() => {
@@ -156,7 +156,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
       const expectedError = new QuestionThemeAssignmentAbsentError(command.themeId, command.questionId);
 
-      await expect(useCase["checkThemeIsRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
+      await expect(useCase["throwIfThemeNotRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
     });
 
     it("should throw QuestionThemeAssignmentAbsentError when theme not assigned.", async() => {
@@ -177,7 +177,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
       const expectedError = new QuestionThemeAssignmentAbsentError(command.themeId, command.questionId);
 
-      await expect(useCase["checkThemeIsRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
+      await expect(useCase["throwIfThemeNotRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrowError(expectedError);
     });
   });
 });

@@ -18,7 +18,7 @@ export class CreateQuestionUseCase {
   ) {}
 
   public async create(questionCreateCommand: QuestionCreationCommand): Promise<Question> {
-    await this.checkQuestionIsCreatable(questionCreateCommand);
+    await this.throwIfQuestionNotCreatable(questionCreateCommand);
     const question = await this.questionRepository.create(questionCreateCommand.payload);
     if (!question) {
       throw new QuestionCreationError();
@@ -26,7 +26,7 @@ export class CreateQuestionUseCase {
     return question;
   }
 
-  private async checkQuestionIsCreatable(questionCreateCommand: QuestionCreationCommand): Promise<void> {
+  private async throwIfQuestionNotCreatable(questionCreateCommand: QuestionCreationCommand): Promise<void> {
     const themeIds = new Set(questionCreateCommand.payload.themes.map(themeAssignment => themeAssignment.themeId));
 
     const questionThemes = await this.getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(themeIds);

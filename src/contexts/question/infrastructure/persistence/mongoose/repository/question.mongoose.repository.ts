@@ -46,11 +46,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     const update: UpdateQuery<QuestionMongooseDocument> = {
       status: QUESTION_STATUS_ARCHIVED,
     };
-    const archivedQuestionDocument = await this.questionModel.findByIdAndUpdate(id, update, { new: true });
-    if (!archivedQuestionDocument) {
-      return undefined;
-    }
-    return this.findById(archivedQuestionDocument._id.toString());
+    await this.questionModel.findByIdAndUpdate(id, update);
+
+    return this.findById(id);
   }
 
   public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
@@ -59,11 +57,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
         themes: createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract),
       },
     };
-    const updatedQuestionDocument = await this.questionModel.findByIdAndUpdate(questionId, update, { new: true });
-    if (!updatedQuestionDocument) {
-      return undefined;
-    }
-    return this.findById(updatedQuestionDocument._id.toString());
+    await this.questionModel.findByIdAndUpdate(questionId, update);
+
+    return this.findById(questionId);
   }
 
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
@@ -72,10 +68,8 @@ export class QuestionMongooseRepository implements QuestionRepository {
         themes: { themeId: new Types.ObjectId(themeId) },
       },
     };
-    const updatedQuestionDocument = await this.questionModel.findByIdAndUpdate(questionId, update, { new: true });
-    if (!updatedQuestionDocument) {
-      return undefined;
-    }
-    return this.findById(updatedQuestionDocument._id.toString());
+    await this.questionModel.findByIdAndUpdate(questionId, update);
+
+    return this.findById(questionId);
   }
 }
