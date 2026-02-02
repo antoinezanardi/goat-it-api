@@ -1,4 +1,5 @@
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 
 class QuestionNotFoundError extends Error {
   public constructor(questionId: string) {
@@ -21,8 +22,16 @@ class QuestionAlreadyArchivedError extends Error {
   }
 }
 
+class QuestionMinimumThemesError extends Error {
+  public constructor(questionId: string) {
+    super(`Question with id ${questionId} must have at least ${QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS} theme assigned`);
+    this.name = "QuestionMinimumThemesError";
+  }
+}
+
 export {
   QuestionNotFoundError,
   QuestionCreationError,
   QuestionAlreadyArchivedError,
+  QuestionMinimumThemesError,
 };

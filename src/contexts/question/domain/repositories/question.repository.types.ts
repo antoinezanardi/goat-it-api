@@ -9,6 +9,7 @@ type QuestionRepository = {
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
   archive: (id: string) => Promise<Question | undefined>;
   assignTheme: (questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract) => Promise<Question | undefined>;
+  removeTheme: (questionId: string, themeId: string) => Promise<Question | undefined>;
 };
 
 export type { QuestionRepository };

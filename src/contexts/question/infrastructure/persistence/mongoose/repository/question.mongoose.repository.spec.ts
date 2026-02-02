@@ -239,7 +239,7 @@ describe("Question Mongoose Repository", () => {
 
       await repositories.question.assignTheme(questionId, contract);
 
-      const expectedUpdate = { $push: { themes: expectedInsert } } as const;
+      const expectedUpdate = { $push: { themes: expectedInsert } };
 
       expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
     });
@@ -274,7 +274,55 @@ describe("Question Mongoose Repository", () => {
 
       const actual = await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
 
-      expect(actual).toStrictEqual(expectedQuestion);
+      expect(actual).toStrictEqual<Question>(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.removeTheme, () => {
+    it("should call model.findByIdAndUpdate with pull update when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000030";
+      const themeId = "618c1f4b3a2f000000000031";
+
+      await repositories.question.removeTheme(questionId, themeId);
+
+      const expectedUpdate = { $pull: { themes: { themeId: new Types.ObjectId(themeId) } } };
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, { new: true });
+    });
+
+    it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
+      const questionId = "618c1f4b3a2f000000000032";
+      const themeId = "618c1f4b3a2f000000000033";
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(null);
+
+      const actual = await repositories.question.removeTheme(questionId, themeId);
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("should call findById with the document id when model returns a document.", async() => {
+      const questionId = "618c1f4b3a2f000000000034";
+      const themeId = "618c1f4b3a2f000000000035";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.removeTheme(questionId, themeId);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(createdDocument._id.toString());
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000036";
+      const themeId = "618c1f4b3a2f000000000037";
+      const createdDocument = createFakeQuestionDocument();
+      mocks.models.question.findByIdAndUpdate.mockResolvedValueOnce(createdDocument);
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.removeTheme(questionId, themeId);
+
+      expect(actual).toStrictEqual<Question>(expectedQuestion);
     });
   });
 });
