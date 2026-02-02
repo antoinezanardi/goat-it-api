@@ -14,9 +14,10 @@ Quick workflow
 
 1. Identify the source file and the colocated spec path (replace `.ts` with `.spec.ts`).
 2. Read `tests/unit/README.md` and find an existing spec that matches the file type (controller/use-case/repository/dto/helper). Follow its structure exactly.
-3. Create or open the spec file and add small focused `it` tests — one assertion per `it` and one behavior per test.
-4. Use existing faketories (`@faketories/...`) and mocks (`@mocks/...`) where possible; add them under `tests/shared/utils/faketories/` or `tests/unit/utils/mocks/` only when necessary.
-5. Run the local checks: `pnpm run test:unit:cov`, `pnpm run typecheck`, `pnpm run lint`. Fix until green.
+3. Read some existing tests of the same type before writing or completing any test, it's always worth to read the referenced test files in `tests/unit/README.md` again before starting to write or complete any test as they contain many important details and examples.
+4. Create or open the spec file and add small focused `it` tests — one assertion per `it` and one behavior per test.
+5. Use existing faketories (`@faketories/...`) and mocks (`@mocks/...`) where possible; add them under `tests/shared/utils/faketories/` or `tests/unit/utils/mocks/` only when necessary.
+6. Run the local checks: `pnpm run test:unit:cov`, `pnpm run typecheck`, `pnpm run lint`. Fix until green.
 
 What this command does NOT replace
 
@@ -29,6 +30,7 @@ Practical tips (short)
 - Mock external collaborators (use-cases, repositories, Mongoose `Model` methods) and inject via Nest testing module when required.
 - For pure functions/validators, prefer direct calls and `it.each` for multiple input→output cases.
 - Name tests: `should <expected behavior> when <condition>.`.
+- ALWAYS read `tests/unit/README.md` before writing or completing any test.
 
 Reference
 

@@ -65,4 +65,17 @@ export class QuestionMongooseRepository implements QuestionRepository {
     }
     return this.findById(updatedQuestionDocument._id.toString());
   }
+
+  public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
+    const update: UpdateQuery<QuestionMongooseDocument> = {
+      $pull: {
+        themes: { themeId: new Types.ObjectId(themeId) },
+      },
+    };
+    const updatedQuestionDocument = await this.questionModel.findByIdAndUpdate(questionId, update, { new: true });
+    if (!updatedQuestionDocument) {
+      return undefined;
+    }
+    return this.findById(updatedQuestionDocument._id.toString());
+  }
 }

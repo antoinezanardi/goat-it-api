@@ -28,6 +28,19 @@ Feature: Assign Theme To Question As Admin
       | de     | Geschichte |
       | pt     | História   |
 
+  Scenario: Trying to assign a theme with empty payload
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin assigns the theme with an empty request payload to the question with id "a1b2c3d4e5f6012345678901"
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+
+    And the failed request's response should contain the following validation details:
+      | code         | message                                             | expected | path      |
+      | invalid_type | Invalid input: expected string, received undefined  | string   | themeId   |
+      | invalid_type | Invalid input: expected boolean, received undefined | boolean  | isPrimary |
+      | invalid_type | Invalid input: expected boolean, received undefined | boolean  | isHint    |
+
   Scenario: Trying to assign a theme to a non-existing question
     Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question-theme-assignment", type "creation" and name "primaryHistory"
