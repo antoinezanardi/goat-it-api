@@ -113,7 +113,7 @@ describe("Assign Theme To Question Use Case", () => {
     });
   });
 
-  describe("checkThemeIsAssignableToQuestion", () => {
+  describe("throwIfThemeNotAssignableToQuestion", () => {
     it("should throw QuestionThemeAssignmentAlreadyExistsError when theme already assigned.", async() => {
       const command = createFakeQuestionThemeAssignmentCreationCommand({
         questionId: "q-1",
@@ -125,7 +125,7 @@ describe("Assign Theme To Question Use Case", () => {
       mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: command.payload.themeId }));
       const expectedError = new QuestionThemeAssignmentAlreadyExistsError(command.payload.themeId, command.questionId);
 
-      await expect(async() => assignThemeToQuestionUseCase["checkThemeIsAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrowError(expectedError);
+      await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrowError(expectedError);
     });
 
     it("should throw ReferencedQuestionThemeArchivedError when theme is archived.", async() => {
@@ -139,7 +139,7 @@ describe("Assign Theme To Question Use Case", () => {
       }));
       const expectedError = new ReferencedQuestionThemeArchivedError(command.payload.themeId);
 
-      await expect(async() => assignThemeToQuestionUseCase["checkThemeIsAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrowError(expectedError);
+      await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrowError(expectedError);
     });
   });
 });

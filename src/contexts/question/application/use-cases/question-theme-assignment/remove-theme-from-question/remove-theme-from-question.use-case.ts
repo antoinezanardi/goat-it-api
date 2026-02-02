@@ -20,7 +20,7 @@ export class RemoveThemeFromQuestionUseCase {
 
   public async remove(questionAssignmentRemovalCommand: QuestionThemeAssignmentRemovalCommand): Promise<Question> {
     const { questionId, themeId } = questionAssignmentRemovalCommand;
-    await this.checkThemeIsRemovableFromQuestion(questionId, themeId);
+    await this.throwIfThemeNotRemovableFromQuestion(questionId, themeId);
     const updatedQuestion = await this.questionRepository.removeTheme(questionId, themeId);
     if (!updatedQuestion) {
       throw new QuestionThemeAssignmentRemovalError(themeId, questionId);
@@ -28,7 +28,7 @@ export class RemoveThemeFromQuestionUseCase {
     return updatedQuestion;
   }
 
-  private async checkThemeIsRemovableFromQuestion(questionId: string, themeId: string): Promise<void> {
+  private async throwIfThemeNotRemovableFromQuestion(questionId: string, themeId: string): Promise<void> {
     const question = await this.findQuestionByIdUseCase.getById(questionId);
     if (!findQuestionThemeAssignmentInQuestionByThemeId(question, themeId)) {
       throw new QuestionThemeAssignmentAbsentError(themeId, questionId);
