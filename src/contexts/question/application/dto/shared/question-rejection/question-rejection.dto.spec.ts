@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
-import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
+import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.schema";
 
 import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
 

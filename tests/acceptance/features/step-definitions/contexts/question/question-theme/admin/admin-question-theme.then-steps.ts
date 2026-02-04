@@ -3,7 +3,7 @@ import { expect } from "expect";
 import { z } from "zod";
 
 import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
+import { ADMIN_QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.schema";
 
 import { findQuestionThemeBySlugOrThrow } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/helpers/question-theme.steps.helpers";
 import { expectAdminQuestionThemeDtoToMatch } from "@acceptance-features/step-definitions/contexts/question/question-theme/admin/helpers/admin-question-theme.steps.helpers";

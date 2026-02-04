@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
 import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto";
-import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto";
+import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.schema";
 
 import { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
 

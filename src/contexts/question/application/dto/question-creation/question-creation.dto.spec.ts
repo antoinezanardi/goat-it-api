@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
-import { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto";
+import { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.schema";
 
 import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
 import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto/question-creation/question-creation.dto.faketory";

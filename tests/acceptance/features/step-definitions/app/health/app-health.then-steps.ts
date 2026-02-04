@@ -2,7 +2,7 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
 import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
-import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
+import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.schema";
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";

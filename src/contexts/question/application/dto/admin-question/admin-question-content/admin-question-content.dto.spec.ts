@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto";
-import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto";
+import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.schema";
 
 import { createFakeAdminQuestionContentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-content/admin-question-content.dto.faketory";
 

@@ -1,5 +1,5 @@
 import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
-import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
+import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.schema";
 
 import { createFakeAppHealthDto } from "@faketories/infrastructure/api/health/health.faketory";
 

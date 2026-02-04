@@ -1,6 +1,6 @@
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
 import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto";
-import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto";
+import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.schema";
 
 import { createFakeAppHealthDetailsDto } from "@faketories/infrastructure/api/health/health.faketory";
 
