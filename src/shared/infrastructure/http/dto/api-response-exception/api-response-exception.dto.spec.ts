@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
-import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.schema";
 
 import { createFakeApiResponseExceptionDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
 

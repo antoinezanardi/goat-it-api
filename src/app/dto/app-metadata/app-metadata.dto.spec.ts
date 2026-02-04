@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
 import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto";
-import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto";
+import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.schema";
 
 import { createFakeAppMetadata } from "@faketories/app/app.faketory";
 
