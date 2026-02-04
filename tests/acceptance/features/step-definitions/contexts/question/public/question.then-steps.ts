@@ -2,8 +2,8 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { z } from "zod";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
-import { QUESTION_DTO } from "@question/application/dto/question/question.schema";
+import type { QuestionDto } from "@src/contexts/question/application/dto/question/question.dto.shape";
+import { QUESTION_DTO } from "@src/contexts/question/application/dto/question/question.dto.shape";
 
 import { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 import { expectQuestionThemeAssignmentsDtoToMatch, expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/public/helpers/question.steps.helpers";

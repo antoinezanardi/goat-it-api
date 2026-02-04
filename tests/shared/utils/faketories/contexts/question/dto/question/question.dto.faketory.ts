@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 

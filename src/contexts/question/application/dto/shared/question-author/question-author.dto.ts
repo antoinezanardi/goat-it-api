@@ -1,7 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 
-import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.schema";
+import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
-class QuestionAuthorDto extends createZodDto(QUESTION_AUTHOR_DTO) {}
+class QuestionAuthorNestZodDto extends createZodDto(QUESTION_AUTHOR_DTO) {}
 
-export { QuestionAuthorDto };
+export { QuestionAuthorNestZodDto };

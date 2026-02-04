@@ -1,7 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 
-import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.schema";
+import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
-class AppHealthDto extends createZodDto(APP_HEALTH_DTO) {}
+class AppHealthNestZodDto extends createZodDto(APP_HEALTH_DTO) {}
 
-export { AppHealthDto };
+export { AppHealthNestZodDto };

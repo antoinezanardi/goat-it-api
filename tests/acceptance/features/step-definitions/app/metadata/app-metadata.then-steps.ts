@@ -1,7 +1,7 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.schema";
+import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 import type { AppMetadata } from "@app/types/app.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";

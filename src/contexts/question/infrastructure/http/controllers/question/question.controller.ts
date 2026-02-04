@@ -9,10 +9,11 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
-import { QuestionDto } from "@question/application/dto/question/question.dto";
+import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -32,7 +33,7 @@ export class QuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: [QuestionDto],
+    type: [QuestionNestZodDto],
   })
   public async findQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
     const questions = await this.findQuestionsUseCase.list();
@@ -48,7 +49,7 @@ export class QuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: QuestionDto,
+    type: QuestionNestZodDto,
   })
   public async findQuestionById(
     @Param("id", MongoIdPipe) id: string,

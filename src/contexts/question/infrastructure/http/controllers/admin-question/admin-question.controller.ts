@@ -8,16 +8,17 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { QuestionCreationNestZodDto } from "@question/application/dto/question-creation/question-creation.dto";
+import { QuestionThemeAssignmentCreationNestZodDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
-import { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
-import { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
+import { AdminQuestionNestZodDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 
@@ -44,7 +45,7 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: [AdminQuestionDto],
+    type: [AdminQuestionNestZodDto],
   })
   public async findQuestions(): Promise<AdminQuestionDto[]> {
     const questions = await this.findQuestionsUseCase.list();
@@ -63,7 +64,7 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionDto,
+    type: AdminQuestionNestZodDto,
   })
   public async findQuestionById(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionDto> {
     const question = await this.findQuestionByIdUseCase.getById(id);
@@ -82,9 +83,9 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.CREATED,
-    type: AdminQuestionDto,
+    type: AdminQuestionNestZodDto,
   })
-  public async createQuestion(@Body() questionCreationDto: QuestionCreationDto): Promise<AdminQuestionDto> {
+  public async createQuestion(@Body() questionCreationDto: QuestionCreationNestZodDto): Promise<AdminQuestionDto> {
     const questionCreationCommand = createQuestionCreationCommandFromDto(questionCreationDto);
     const question = await this.createQuestionUseCase.create(questionCreationCommand);
 
@@ -102,7 +103,7 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionDto,
+    type: AdminQuestionNestZodDto,
   })
   public async archiveQuestion(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionDto> {
     const archivedQuestion = await this.archiveQuestionUseCase.archive(id);
@@ -121,11 +122,11 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.CREATED,
-    type: AdminQuestionDto,
+    type: AdminQuestionNestZodDto,
   })
   public async assignThemeToQuestion(
     @Param("id", MongoIdPipe) questionId: string,
-    @Body() questionThemeAssignmentCreationDto: QuestionThemeAssignmentCreationDto,
+    @Body() questionThemeAssignmentCreationDto: QuestionThemeAssignmentCreationNestZodDto,
   ): Promise<AdminQuestionDto> {
     const questionThemeAssignmentCreationCommand = createQuestionThemeAssignmentCreationCommandFromDto(questionId, questionThemeAssignmentCreationDto);
     const updatedQuestion = await this.assignThemeToQuestionUseCase.assign(questionThemeAssignmentCreationCommand);
@@ -144,7 +145,7 @@ export class AdminQuestionController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionDto,
+    type: AdminQuestionNestZodDto,
   })
   public async removeThemeFromQuestion(
     @Param("id", MongoIdPipe) questionId: string,
