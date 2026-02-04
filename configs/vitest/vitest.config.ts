@@ -32,6 +32,8 @@ export default defineConfig({
         "src/**/*.types.ts",
         "src/**/*.commands.ts",
         "src/**/*.contracts.ts",
+        "src/**/*.dto.ts",
+        "src/**/*.schema.ts",
       ],
       reportsDirectory: "tests/unit/coverage",
       reporter: [
