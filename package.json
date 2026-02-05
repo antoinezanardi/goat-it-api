@@ -158,7 +158,7 @@
     "@nestjs/core": "^11.1.13",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-fastify": "^11.1.13",
-    "@nestjs/swagger": "^11.2.5",
+    "@nestjs/swagger": "^11.2.6",
     "@nestjs/terminus": "^11.0.0",
     "axios": "^1.13.4",
     "cross-env": "^10.1.0",
