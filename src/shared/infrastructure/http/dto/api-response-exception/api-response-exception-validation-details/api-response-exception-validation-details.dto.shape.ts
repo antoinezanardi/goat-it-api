@@ -7,7 +7,7 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
   message: z.string()
     .describe("Validation error message")
     .meta({ example: "Expected type string but received type number" }),
-  path: z.array(z.union([z.string(), z.number(), z.symbol()]))
+  path: z.array(z.union([z.string(), z.number()]))
     .describe("Path to the invalid property")
     .meta({ example: ["user", "age"] }),
   expected: z.string()

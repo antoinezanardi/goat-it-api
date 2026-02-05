@@ -5,7 +5,7 @@ import { QUESTION_THEME_CREATION_DTO } from "@question/modules/question-theme/ap
 
 import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 
-describe("Question Theme Creation Dto", () => {
+describe("Question Theme Creation Dto Shape", () => {
   let validQuestionThemeCreationDto: QuestionThemeCreationDto;
 
   beforeEach(() => {
