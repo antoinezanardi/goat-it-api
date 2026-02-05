@@ -21,7 +21,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
       description: "Question's theme assignment",
     };
 
-    expect(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.meta()).toStrictEqual(expectedMetadata);
+    expect(ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
   });
 
   describe("theme", () => {
@@ -37,7 +37,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
         description: "Question assigned theme",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -54,7 +54,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
         description: "Indicates if the assigned theme is the primary theme for the question",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -71,7 +71,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
         description: "Indicates if the assigned theme is a hint for the question's answer",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

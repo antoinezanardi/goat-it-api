@@ -33,7 +33,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: "type_error",
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -54,7 +54,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: "Expected type string but received type number",
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -81,7 +81,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: ["user", "age"],
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -102,7 +102,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: "string",
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -123,7 +123,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: "number",
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -144,7 +144,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: "email",
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -165,7 +165,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: String.raw`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`,
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -186,7 +186,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: 1,
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -207,7 +207,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: 255,
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -228,7 +228,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: true,
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -255,7 +255,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: ["unexpectedKey1", "unexpectedKey2"],
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -282,7 +282,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
         example: ["unexpectedValue1", "unexpectedValue2"],
       };
 
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

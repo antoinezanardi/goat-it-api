@@ -183,7 +183,7 @@ describe("Question Mongoose Repository", () => {
 
       const actualQuestion = await repositories.question.create(questionCreationContract);
 
-      expect(actualQuestion).toStrictEqual(expectedQuestion);
+      expect(actualQuestion).toStrictEqual<Question>(expectedQuestion);
     });
   });
 
@@ -226,7 +226,7 @@ describe("Question Mongoose Repository", () => {
 
       const actual = await repositories.question.archive(questionId);
 
-      expect(actual).toStrictEqual(expectedQuestion);
+      expect(actual).toStrictEqual<Question>(expectedQuestion);
     });
   });
 

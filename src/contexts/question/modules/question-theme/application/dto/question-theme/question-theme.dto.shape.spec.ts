@@ -33,7 +33,7 @@ describe("Question Theme DTO Shape", () => {
         example: "60af924f4f1a2563f8e8b456",
       };
 
-      expect(QUESTION_THEME_DTO.shape.id.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.id.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -54,7 +54,7 @@ describe("Question Theme DTO Shape", () => {
         example: "general-knowledge",
       };
 
-      expect(QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -75,7 +75,7 @@ describe("Question Theme DTO Shape", () => {
         example: "History",
       };
 
-      expect(QUESTION_THEME_DTO.shape.label.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.label.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -102,7 +102,7 @@ describe("Question Theme DTO Shape", () => {
         example: ["Historical Events", "Past", "Future"],
       };
 
-      expect(QUESTION_THEME_DTO.shape.aliases.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.aliases.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -123,7 +123,7 @@ describe("Question Theme DTO Shape", () => {
         example: "Questions related to historical events and timelines.",
       };
 
-      expect(QUESTION_THEME_DTO.shape.description.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.description.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -144,7 +144,7 @@ describe("Question Theme DTO Shape", () => {
         example: "active",
       };
 
-      expect(QUESTION_THEME_DTO.shape.status.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.status.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -165,7 +165,7 @@ describe("Question Theme DTO Shape", () => {
         example: "2026-04-14T00:00:00.000Z",
       };
 
-      expect(QUESTION_THEME_DTO.shape.createdAt.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.createdAt.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -186,7 +186,7 @@ describe("Question Theme DTO Shape", () => {
         example: "2026-04-14T00:00:00.000Z",
       };
 
-      expect(QUESTION_THEME_DTO.shape.updatedAt.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.updatedAt.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

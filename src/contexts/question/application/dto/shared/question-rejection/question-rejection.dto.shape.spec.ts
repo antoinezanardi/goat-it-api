@@ -21,7 +21,7 @@ describe("Question Rejection DTO Shape", () => {
       description: "Question rejection details",
     };
 
-    expect(QUESTION_REJECTION_DTO.meta()).toStrictEqual(expectedMetadata);
+    expect(QUESTION_REJECTION_DTO.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
   });
 
   describe("type", () => {
@@ -73,7 +73,7 @@ describe("Question Rejection DTO Shape", () => {
         example: "inappropriate-content",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -98,7 +98,7 @@ describe("Question Rejection DTO Shape", () => {
         example: "The question is too ambiguous.",
       };
 
-      expect(QUESTION_REJECTION_DTO.shape.comment.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_REJECTION_DTO.shape.comment.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

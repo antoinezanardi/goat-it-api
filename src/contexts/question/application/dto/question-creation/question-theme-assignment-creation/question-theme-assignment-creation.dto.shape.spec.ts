@@ -30,7 +30,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
         example: "60af924f4f1a2563f8e8b456",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -47,7 +47,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
         description: "Indicates if the assigned theme is the primary theme for the question. Only one primary theme is allowed per question",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -64,7 +64,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
         description: "Indicates if the assigned theme is a hint for the question's answer",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

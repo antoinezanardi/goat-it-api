@@ -11,7 +11,7 @@ import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, creat
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
-import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv, AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 vi.mock(import("@src/infrastructure/api/auth/helpers/auth.helpers"));
 
@@ -166,7 +166,7 @@ describe("App Config Service", () => {
 
   describe("authenticationConfig", () => {
     it("should return authentication config from env when called.", () => {
-      expect(services.appConfig.authenticationConfig).toStrictEqual({
+      expect(services.appConfig.authenticationConfig).toStrictEqual<AuthenticationConfigFromEnv>({
         admin: {
           apiKeyValidator: expect.any(Function) as () => boolean,
         },

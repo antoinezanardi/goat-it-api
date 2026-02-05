@@ -31,7 +31,7 @@ describe("Question Author Creation DTO Shape", () => {
         example: "admin",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -49,7 +49,7 @@ describe("Question Author Creation DTO Shape", () => {
         example: "TriviaMaster3000",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
     it("should throw zod error when name is too short.", () => {

@@ -29,7 +29,7 @@ describe("Question Content Creation DTO Shape", () => {
         description: "Question statement",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -46,7 +46,7 @@ describe("Question Content Creation DTO Shape", () => {
         description: "Question answer",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -63,7 +63,7 @@ describe("Question Content Creation DTO Shape", () => {
         description: "Additional context for the question",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -80,7 +80,7 @@ describe("Question Content Creation DTO Shape", () => {
         description: "Interesting trivia related to the question",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

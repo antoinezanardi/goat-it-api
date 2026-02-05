@@ -33,7 +33,7 @@ describe("Question Theme Creation Dto Shape", () => {
         example: "general-knowledge",
       };
 
-      expect(QUESTION_THEME_CREATION_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_THEME_CREATION_DTO.shape.slug.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
