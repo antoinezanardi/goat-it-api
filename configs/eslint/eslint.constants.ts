@@ -80,6 +80,7 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
 const ESLINT_IGNORES = [
   "dist/**/*",
   "node_modules/**/*",
+  "packages/**/*",
   "tests/unit/coverage/**/*",
   "tests/mutation/**/*",
   "tests/acceptance/reports/**/*",

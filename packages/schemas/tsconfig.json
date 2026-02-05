@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@app-question/*": ["../../src/contexts/question/*"],
+      "@app-question-theme/*": ["../../src/contexts/question/modules/question-theme/*"],
+      "@app-shared/*": ["../../src/shared/*"],
+    }
+  },
+  "include": ["src"]
+}
