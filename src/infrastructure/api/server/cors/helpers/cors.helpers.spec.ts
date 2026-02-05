@@ -38,7 +38,7 @@ describe("Cors Helpers", () => {
       expect(corsConfig.credentials).toBeFalsy();
     });
 
-    it("should set allowed methods and headers to default values when called.", () => {
+    it("should set allowed methods to default values when called.", () => {
       const corsConfigFromEnv = createFakeCorsConfigFromEnv();
       const corsConfig = createCorsConfig(corsConfigFromEnv);
 
