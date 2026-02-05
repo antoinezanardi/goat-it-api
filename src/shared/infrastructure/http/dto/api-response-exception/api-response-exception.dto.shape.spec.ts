@@ -33,7 +33,7 @@ describe("Api Response Exception DTO Shape", () => {
         example: 400,
       };
 
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.statusCode.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -54,7 +54,7 @@ describe("Api Response Exception DTO Shape", () => {
         example: "The request could not be understood by the server due to malformed syntax.",
       };
 
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.message.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.message.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -75,7 +75,7 @@ describe("Api Response Exception DTO Shape", () => {
         example: "Bad Request",
       };
 
-      expect(API_RESPONSE_EXCEPTION_DTO.shape.error.meta()).toStrictEqual(expectedMetadata);
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.error.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 

@@ -36,7 +36,7 @@ describe("Question Content DTO Shape", () => {
         example: "What is the capital of France?",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -60,7 +60,7 @@ describe("Question Content DTO Shape", () => {
         example: "The capital of France is Paris.",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -84,7 +84,7 @@ describe("Question Content DTO Shape", () => {
         example: "France is a country in Western Europe.",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -108,7 +108,7 @@ describe("Question Content DTO Shape", () => {
         example: ["Paris is known as the 'City of Light'.", "The Eiffel Tower is located in Paris."],
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

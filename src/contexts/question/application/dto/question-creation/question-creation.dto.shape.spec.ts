@@ -53,7 +53,7 @@ describe("Question Creation DTO Shape", () => {
         description: "Question's themes",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
     it("should throw zod error when themes have non-unique themeIds.", () => {
@@ -155,7 +155,7 @@ describe("Question Creation DTO Shape", () => {
         description: "Question's content",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -172,7 +172,7 @@ describe("Question Creation DTO Shape", () => {
         description: "Question's cognitive difficulty level",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -189,7 +189,7 @@ describe("Question Creation DTO Shape", () => {
         description: "Question's author",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -214,7 +214,7 @@ describe("Question Creation DTO Shape", () => {
         example: ["https://example.com/source1", "https://example.com/source2"],
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

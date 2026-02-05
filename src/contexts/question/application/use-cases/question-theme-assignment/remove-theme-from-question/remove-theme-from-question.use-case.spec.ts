@@ -16,7 +16,7 @@ import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketori
 
 import type { Question } from "@question/domain/entities/question.types";
 
-describe(RemoveThemeFromQuestionUseCase, () => {
+describe("Remove Theme From Question Use Case", () => {
   let useCase: RemoveThemeFromQuestionUseCase;
   let mocks: {
     repositories: {

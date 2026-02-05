@@ -56,7 +56,7 @@ describe("Question Author DTO Shape", () => {
         example: "admin",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -79,7 +79,7 @@ describe("Question Author DTO Shape", () => {
         description: "Game's unique identifier, if the author is a game",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -102,7 +102,7 @@ describe("Question Author DTO Shape", () => {
         example: "TriviaMaster3000",
       };
 
-      expect(QUESTION_AUTHOR_DTO.shape.name.meta()).toStrictEqual(expectedMetadata);
+      expect(QUESTION_AUTHOR_DTO.shape.name.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 

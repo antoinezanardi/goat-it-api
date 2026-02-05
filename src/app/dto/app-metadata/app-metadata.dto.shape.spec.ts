@@ -39,7 +39,7 @@ describe("App Metadata DTO Shape", () => {
         example: "Goat It",
       };
 
-      expect(APP_METADATA_DTO.shape.name.meta()).toStrictEqual(expectedMetadata);
+      expect(APP_METADATA_DTO.shape.name.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -116,7 +116,7 @@ describe("App Metadata DTO Shape", () => {
         example: "1.8.0",
       };
 
-      expect(APP_METADATA_DTO.shape.version.meta()).toStrictEqual(expectedMetadata);
+      expect(APP_METADATA_DTO.shape.version.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -143,7 +143,7 @@ describe("App Metadata DTO Shape", () => {
         example: "An AI-powered question and answer platform.",
       };
 
-      expect(APP_METADATA_DTO.shape.description.meta()).toStrictEqual(expectedMetadata);
+      expect(APP_METADATA_DTO.shape.description.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -170,7 +170,7 @@ describe("App Metadata DTO Shape", () => {
         example: "goat-it-api",
       };
 
-      expect(APP_METADATA_DTO.shape.packageName.meta()).toStrictEqual(expectedMetadata);
+      expect(APP_METADATA_DTO.shape.packageName.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

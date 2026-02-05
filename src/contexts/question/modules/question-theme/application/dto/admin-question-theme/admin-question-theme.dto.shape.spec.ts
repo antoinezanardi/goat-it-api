@@ -33,7 +33,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: "60af924f4f1a2563f8e8b456",
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.id.meta()).toStrictEqual(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.id.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -54,7 +54,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: "general-knowledge",
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.slug.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -111,7 +111,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: "active",
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.status.meta()).toStrictEqual(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.status.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -132,7 +132,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: "2026-04-14T00:00:00.000Z",
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.createdAt.meta()).toStrictEqual(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.createdAt.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -153,7 +153,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: "2026-04-14T00:00:00.000Z",
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.updatedAt.meta()).toStrictEqual(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.updatedAt.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

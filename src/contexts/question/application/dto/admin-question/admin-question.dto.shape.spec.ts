@@ -33,7 +33,7 @@ describe("Admin Question DTO Shape", () => {
         example: "60af924f4f1a2563f8e8b456",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -56,7 +56,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's themes",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
     it("should throw zod error when themes exceed maximum items.", () => {
@@ -85,7 +85,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's content",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -102,7 +102,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's cognitive difficulty level",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -119,7 +119,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's author",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -136,7 +136,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's status",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -159,7 +159,7 @@ describe("Admin Question DTO Shape", () => {
         description: "Question's rejection details, if applicable",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -183,7 +183,7 @@ describe("Admin Question DTO Shape", () => {
         example: ISO_DATE_TIME_EXAMPLE,
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
     it("should have correct metadata for updatedAt when accessed.", () => {
@@ -193,7 +193,7 @@ describe("Admin Question DTO Shape", () => {
         example: ISO_DATE_TIME_EXAMPLE,
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

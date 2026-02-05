@@ -135,7 +135,7 @@ describe("Question DTO Zod Validators", () => {
         example: ["https://example.com/source1", "https://example.com/source2"],
       };
 
-      expect(schema.meta()).toStrictEqual(expectedMeta);
+      expect(schema.meta()).toStrictEqual<Record<string, unknown>>(expectedMeta);
     });
 
     it("should have the correct refinement message for uniqueness when duplicates are present.", () => {

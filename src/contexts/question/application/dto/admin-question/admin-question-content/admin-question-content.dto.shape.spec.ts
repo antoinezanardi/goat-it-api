@@ -35,7 +35,7 @@ describe("Admin Question Content DTO Shape", () => {
         description: "Question statement in supported locales",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -58,7 +58,7 @@ describe("Admin Question Content DTO Shape", () => {
         description: "Question answer in supported locales",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -81,7 +81,7 @@ describe("Admin Question Content DTO Shape", () => {
         description: "Additional context for the question in supported locales",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -104,7 +104,7 @@ describe("Admin Question Content DTO Shape", () => {
         description: "Interesting trivia related to the question in supported locales",
       };
 
-      expect(metadata).toStrictEqual(expectedMetadata);
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

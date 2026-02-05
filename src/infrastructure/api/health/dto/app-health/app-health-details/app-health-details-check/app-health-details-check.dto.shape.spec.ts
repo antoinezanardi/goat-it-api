@@ -31,7 +31,7 @@ describe("App Health Details Check DTO Shape", () => {
         example: "Database connection failed.",
       };
 
-      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.message.meta()).toStrictEqual(expectedMetadata);
+      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.message.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });
