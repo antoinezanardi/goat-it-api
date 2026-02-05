@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto";
-import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto";
+import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
+import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
 
 import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
 
-describe("Question Content DTO Specs", () => {
+describe("Question Content DTO Shape", () => {
   let validQuestionContentDto: QuestionContentDto;
 
   beforeEach(() => {

@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
 
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
-import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto";
-import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto";
+import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto.shape";
+import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
 import { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
 
-describe("Question Author DTO Specs", () => {
+describe("Question Author DTO Shape", () => {
   let validQuestionAuthorDto: QuestionAuthorDto;
 
   beforeEach(() => {

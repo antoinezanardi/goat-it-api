@@ -1,4 +1,4 @@
-import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 import type { QuestionThemeModificationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
 function createQuestionThemeModificationCommandFromDto(questionThemeId: string, questionThemeModificationDto: QuestionThemeModificationDto): QuestionThemeModificationCommand {

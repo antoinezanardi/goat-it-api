@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto";
-import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto";
+import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
+import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
 
 import { createFakeAdminQuestionContentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-content/admin-question-content.dto.faketory";
 
-describe("Admin Question Content DTO Specs", () => {
+describe("Admin Question Content DTO Shape", () => {
   let validAdminQuestionContentDto: AdminQuestionContentDto;
 
   beforeEach(() => {

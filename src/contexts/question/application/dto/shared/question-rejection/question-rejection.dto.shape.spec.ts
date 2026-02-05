@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
-import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto";
+import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
+import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 
 import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
 
-describe("Question Rejection DTO Specs", () => {
+describe("Question Rejection DTO Shape", () => {
   let validQuestionRejectionDto: QuestionRejectionDto;
 
   beforeEach(() => {

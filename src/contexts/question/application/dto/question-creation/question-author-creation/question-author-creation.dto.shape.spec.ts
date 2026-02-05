@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
 
 import { QUESTION_AUTHOR_NAME_MAX_LENGTH } from "@question/domain/value-objects/question-author/question-author.constants";
-import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto";
-import { QUESTION_AUTHOR_CREATION_DTO } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto";
+import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
+import { QUESTION_AUTHOR_CREATION_DTO } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 
 import { createFakeQuestionAuthorCreationDto } from "@faketories/contexts/question/dto/question-creation/question-author-creation/question-author-creation.dto.faketory";
 
-describe("Question Author Creation DTO Specs", () => {
+describe("Question Author Creation DTO Shape", () => {
   let validDto: QuestionAuthorCreationDto;
 
   beforeEach(() => {

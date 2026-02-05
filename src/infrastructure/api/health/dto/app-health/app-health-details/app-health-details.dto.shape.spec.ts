@@ -1,10 +1,10 @@
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
-import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto";
-import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto";
+import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto.shape";
+import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto.shape";
 
 import { createFakeAppHealthDetailsDto } from "@faketories/infrastructure/api/health/health.faketory";
 
-describe("App Health Details Dto", () => {
+describe("App Health Details DTO Shape", () => {
   let validAppHealthDetailsDto: AppHealthDetailsDto;
 
   beforeEach(() => {

@@ -1,13 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
-import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
-import { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto";
+import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
+import { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto.shape";
 
 import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
 import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto/question-creation/question-creation.dto.faketory";
 
-describe("Question Creation DTO Specs", () => {
+describe("Question Creation DTO Shape", () => {
   let validDto: QuestionCreationDto;
 
   beforeEach(() => {

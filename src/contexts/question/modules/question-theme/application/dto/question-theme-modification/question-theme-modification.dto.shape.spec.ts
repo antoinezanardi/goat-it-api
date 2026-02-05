@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
-import { QUESTION_THEME_MODIFICATION_DTO } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
+import { QUESTION_THEME_MODIFICATION_DTO } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 
 import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
 
-describe("Question Theme Modification Dto", () => {
+describe("Question Theme Modification DTO Shape", () => {
   let validQuestionThemeModificationDto: QuestionThemeModificationDto;
 
   beforeEach(() => {

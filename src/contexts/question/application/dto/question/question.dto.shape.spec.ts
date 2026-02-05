@@ -2,13 +2,13 @@ import { ZodError } from "zod";
 
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
-import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
+import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
 import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
 import { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
 
-describe("Question DTO Specs", () => {
+describe("Question DTO Shape", () => {
   let validQuestionDto: QuestionDto;
 
   beforeEach(() => {

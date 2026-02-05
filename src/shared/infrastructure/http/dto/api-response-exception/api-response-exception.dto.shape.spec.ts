@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
-import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
+import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { createFakeApiResponseExceptionDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
 
-describe("Api Response Exception Dto", () => {
+describe("Api Response Exception DTO Shape", () => {
   let validApiResponseExceptionDto: ApiResponseExceptionDto;
 
   beforeEach(() => {

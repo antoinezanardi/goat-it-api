@@ -1,9 +1,9 @@
 import { faker } from "@faker-js/faker";
 
 import { DOCS_ENDPOINT_HEALTH_KEY, HEALTH_DETAILS_STATUS_ENUM, HEALTH_STATUS_ENUM, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
-import type { AppHealthDetailsCheckDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details-check/app-health-details-check.dto";
-import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto";
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
+import type { AppHealthDetailsCheckDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details-check/app-health-details-check.dto.shape";
+import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto.shape";
+import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
 import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
 

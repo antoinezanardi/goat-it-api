@@ -1,9 +1,9 @@
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
-import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
+import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
+import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
 import { createFakeAppHealthDto } from "@faketories/infrastructure/api/health/health.faketory";
 
-describe("App Health Dto", () => {
+describe("App Health DTO Shape", () => {
   let validAppHealthDto: AppHealthDto;
 
   beforeEach(() => {
