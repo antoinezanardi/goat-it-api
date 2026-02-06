@@ -28,19 +28,18 @@
     "LICENSE",
     "README.md"
   ],
-  "types": "dist/question/index.d.mts",
   "exports": {
     "./question": {
-      "import": "./dist/question/index.mjs",
-      "types": "./dist/question/index.d.mts"
+      "types": "./dist/question/index.d.mts",
+      "import": "./dist/question/index.mjs"
     },
     "./question-theme": {
-      "import": "./dist/question-theme/index.mjs",
-      "types": "./dist/question-theme/index.d.mts"
+      "types": "./dist/question-theme/index.d.mts",
+      "import": "./dist/question-theme/index.mjs"
     },
     "./shared/locale": {
-      "import": "./dist/shared/locale/index.mjs",
-      "types": "./dist/shared/locale/index.d.mts"
+      "types": "./dist/shared/locale/index.d.mts",
+      "import": "./dist/shared/locale/index.mjs"
     }
   },
   "dependencies": {

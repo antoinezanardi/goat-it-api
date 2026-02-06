@@ -8,7 +8,10 @@ This package is a small, framework‑agnostic collection of DTO shapes, value‑
 
 - Package: `@goat-it/schemas`
 - Built output: `dist/`
-- Entrypoints exported: `./question`, `./question-theme`, `./shared/locale`
+- Entry points exported:
+  - `./question`
+  - `./question-theme`
+  - `./shared/locale`
 - Peer dependency: `zod` (match workspace version)
 
 ## 🔧 Usage
@@ -28,4 +31,4 @@ import { LOCALES } from "@goat-it/schemas/shared/locale";
 
 ## ©️ License
 
-MIT — see the repository root `LICENSE` file.
+MIT — See [LICENSE](LICENSE) for details.

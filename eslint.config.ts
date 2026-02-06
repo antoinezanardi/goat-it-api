@@ -1,6 +1,5 @@
 import oxlint from "eslint-plugin-oxlint";
 
-import { ESLINT_SCHEMAS_PACKAGES_FILES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-schemas-package-files.flat-config";
 import { ESLINT_FIXTURES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-fixtures.flat-config";
 import { ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests-mocks.flat-config";
 import { ESLINT_DECORATORS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-decorators.flat-config";
@@ -40,7 +39,6 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG,
   ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG,
   ESLINT_FIXTURES_FLAT_CONFIG,
-  ESLINT_SCHEMAS_PACKAGES_FILES_FLAT_CONFIG,
   // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   ...oxlint.buildFromOxlintConfigFile("./configs/oxlint/oxlint.config.jsonc") as Linter.Config[],
 ];

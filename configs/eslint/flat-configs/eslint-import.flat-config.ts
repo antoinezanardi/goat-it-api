@@ -21,10 +21,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     },
     "import/resolver": {
       typescript: {
-        project: [
-          "./configs/typescript/tsconfig.eslint.json",
-          "./packages/schemas/tsconfig.json",
-        ],
+        project: ["./configs/typescript/tsconfig.eslint.json"],
         alwaysTryTypes: true,
       },
       node: true,
