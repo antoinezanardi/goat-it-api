@@ -18,3 +18,11 @@ runs:
     - name: Verify build was successful ✅
       shell: bash
       run: test -f dist/main.js
+
+    - name: Save build artifacts 💎
+      uses: actions/upload-artifact@v6
+      if: always()
+      with:
+        name: schemas-package-build
+        path: dist
+        retention-days: 2

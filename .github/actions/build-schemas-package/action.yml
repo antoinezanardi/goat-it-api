@@ -20,6 +20,4 @@ runs:
       shell: bash
       run: pnpm --filter @goat-it/schemas pack
 
-    - name: (Optional) Publish dry-run 🔎
-      shell: bash
-      run: pnpm --filter @goat-it/schemas publish --dry-run
+    - name: Artifact
