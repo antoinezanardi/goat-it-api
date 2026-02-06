@@ -3,7 +3,6 @@
   "type": "module",
   "version": "0.0.1",
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
-  "main": "index.js",
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
@@ -23,6 +22,26 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "types": "dist/question/index.d.mts",
+  "exports": {
+    "./question": {
+      "import": "./dist/question/index.mjs",
+      "types": "./dist/question/index.d.mts"
+    },
+    "./question-theme": {
+      "import": "./dist/question-theme/index.mjs",
+      "types": "./dist/question-theme/index.d.mts"
+    },
+    "./shared/locale": {
+      "import": "./dist/shared/locale/index.mjs",
+      "types": "./dist/shared/locale/index.d.mts"
+    }
   },
   "dependencies": {
     "type-fest": "^5.4.3",
