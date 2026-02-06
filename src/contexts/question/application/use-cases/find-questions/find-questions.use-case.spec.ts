@@ -7,6 +7,8 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
+import type { Question } from "@question/domain/entities/question.types";
+
 describe("Find Questions Use Case", () => {
   let findQuestionsUseCase: FindQuestionsUseCase;
   let mocks: {
@@ -51,7 +53,7 @@ describe("Find Questions Use Case", () => {
 
       const actualQuestions = await findQuestionsUseCase.list();
 
-      expect(actualQuestions).toStrictEqual(expectedQuestions);
+      expect(actualQuestions).toStrictEqual<Question[]>(expectedQuestions);
     });
   });
 });

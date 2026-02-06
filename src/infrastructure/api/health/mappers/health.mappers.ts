@@ -1,5 +1,5 @@
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
+import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
 import type { HealthCheckResult } from "@nestjs/terminus";
 

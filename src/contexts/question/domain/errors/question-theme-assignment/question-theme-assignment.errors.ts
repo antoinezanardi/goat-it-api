@@ -5,6 +5,13 @@ class QuestionThemeAssignmentAlreadyExistsError extends Error {
   }
 }
 
+class QuestionThemeAssignmentAbsentError extends Error {
+  public constructor(questionThemeId: string, questionId: string) {
+    super(`Question theme with id ${questionThemeId} is not assigned to question with id ${questionId}`);
+    this.name = "QuestionThemeAssignmentAbsentError";
+  }
+}
+
 class QuestionThemeAssignmentCreationError extends Error {
   public constructor(questionThemeId: string, questionId: string) {
     super(`Question theme with id ${questionThemeId} could not be assigned in question with id ${questionId}`);
@@ -12,7 +19,16 @@ class QuestionThemeAssignmentCreationError extends Error {
   }
 }
 
+class QuestionThemeAssignmentRemovalError extends Error {
+  public constructor(questionThemeId: string, questionId: string) {
+    super(`Question theme with id ${questionThemeId} could not be removed from question with id ${questionId}`);
+    this.name = "QuestionThemeAssignmentRemovalError";
+  }
+}
+
 export {
   QuestionThemeAssignmentAlreadyExistsError,
+  QuestionThemeAssignmentAbsentError,
   QuestionThemeAssignmentCreationError,
+  QuestionThemeAssignmentRemovalError,
 };

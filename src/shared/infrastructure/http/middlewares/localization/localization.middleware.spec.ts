@@ -56,11 +56,11 @@ describe("Localization Middleware", () => {
           locale: fallbackLocale,
           fallbackLocale,
         }),
-      };
+      } as { localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
       const localizationMiddlewareStub = LocalizationMiddleware as unknown as { useFallbackLocale: (...parameters: unknown[]) => void };
       localizationMiddlewareStub.useFallbackLocale(request, fallbackLocale, next);
 
-      expect(request).toStrictEqual(expectedRequest);
+      expect(request).toStrictEqual<typeof expectedRequest>(expectedRequest);
     });
 
     it("should call next function when called.", () => {
@@ -88,10 +88,10 @@ describe("Localization Middleware", () => {
           locale: "en",
           fallbackLocale: "en",
         }),
-      };
+      } as { headers: Record<string, string>; localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
       localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);
 
-      expect(requestRaw).toStrictEqual(expectedRequestRaw);
+      expect(requestRaw).toStrictEqual<typeof expectedRequestRaw>(expectedRequestRaw);
     });
 
     it("should set localization options with parsed locale when header locale is valid.", () => {
@@ -109,10 +109,10 @@ describe("Localization Middleware", () => {
           locale: "fr",
           fallbackLocale: "en",
         }),
-      };
+      } as { headers: Record<string, string>; localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
       localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);
 
-      expect(requestRaw).toStrictEqual(expectedRequestRaw);
+      expect(requestRaw).toStrictEqual<typeof expectedRequestRaw>(expectedRequestRaw);
     });
 
     it("should call next function when header locale is valid.", () => {

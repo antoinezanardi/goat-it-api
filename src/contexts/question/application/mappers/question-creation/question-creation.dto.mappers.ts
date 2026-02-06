@@ -1,7 +1,7 @@
-import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto";
-import type { QuestionContentCreationDto } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto";
-import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto";
-import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
+import type { QuestionContentCreationDto } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
+import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
+import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import type { QuestionCreationCommand } from "@question/domain/commands/question.commands";
 import type { QuestionAuthorCreationContract } from "@question/domain/contracts/question-author/question-author.contracts";
 import type { QuestionContentCreationContract } from "@question/domain/contracts/question-content/question-content.contracts";

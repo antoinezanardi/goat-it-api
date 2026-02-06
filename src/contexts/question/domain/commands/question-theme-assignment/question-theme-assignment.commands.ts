@@ -5,6 +5,12 @@ type QuestionThemeAssignmentCreationCommand = {
   payload: QuestionThemeAssignmentCreationContract;
 };
 
+type QuestionThemeAssignmentRemovalCommand = {
+  questionId: string;
+  themeId: string;
+};
+
 export type {
   QuestionThemeAssignmentCreationCommand,
+  QuestionThemeAssignmentRemovalCommand,
 };

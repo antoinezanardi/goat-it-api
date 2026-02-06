@@ -23,7 +23,7 @@ export class AssignThemeToQuestionUseCase {
 
   public async assign(questionThemeAssignmentCreationCommand: QuestionThemeAssignmentCreationCommand): Promise<Question> {
     const { questionId, payload: questionThemeAssignmentPayload } = questionThemeAssignmentCreationCommand;
-    await this.checkThemeIsAssignableToQuestion(questionThemeAssignmentPayload, questionId);
+    await this.throwIfThemeNotAssignableToQuestion(questionThemeAssignmentPayload, questionId);
     const updatedQuestion = await this.questionRepository.assignTheme(questionId, questionThemeAssignmentPayload);
     if (!updatedQuestion) {
       throw new QuestionThemeAssignmentCreationError(questionThemeAssignmentPayload.themeId, questionId);
@@ -31,7 +31,7 @@ export class AssignThemeToQuestionUseCase {
     return updatedQuestion;
   }
 
-  private async checkThemeIsAssignableToQuestion(questionThemeAssignmentContract: QuestionThemeAssignmentCreationContract, questionId: string): Promise<void> {
+  private async throwIfThemeNotAssignableToQuestion(questionThemeAssignmentContract: QuestionThemeAssignmentCreationContract, questionId: string): Promise<void> {
     const question = await this.findQuestionByIdUseCase.getById(questionId);
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(questionThemeAssignmentContract.themeId);
 

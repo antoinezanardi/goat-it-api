@@ -97,6 +97,19 @@ jobs:
       - name: Build application ✨
         uses: ./.github/actions/build
 
+  build-schemas-package:
+    name: Build @goat-it/schemas 📚
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v6
+
+      - name: Build @goat-it/schemas 📚
+        uses: ./.github/actions/build-schemas-package
+
   lint-codebase:
     name: Lint Codebase 🔍
     runs-on: ubuntu-latest

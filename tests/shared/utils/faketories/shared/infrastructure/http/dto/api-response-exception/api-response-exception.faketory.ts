@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
-import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto";
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto";
+import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
+import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 
 function createFakeApiResponseExceptionValidationDetailsDto(overrides: Partial<ApiResponseExceptionValidationDetailsDto> = {}): ApiResponseExceptionValidationDetailsDto {
   return {

@@ -1036,6 +1036,13 @@
               "Query"
             ]
           }
+        ],
+        "import/max-dependencies": [
+          "error",
+          {
+            "max": 30,
+            "ignoreTypeImports": true
+          }
         ]
       }
     },

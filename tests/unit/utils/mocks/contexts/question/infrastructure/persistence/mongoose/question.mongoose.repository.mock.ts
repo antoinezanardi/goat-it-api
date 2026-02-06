@@ -13,6 +13,7 @@ type QuestionRepositoryStub = {
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
   archive: (id: string) => Promise<Question | undefined>;
   assignTheme: (questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract) => Promise<Question | undefined>;
+  removeTheme: (questionId: string, themeId: string) => Promise<Question | undefined>;
 };
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };
@@ -28,6 +29,7 @@ function createMockedQuestionRepository(overrides: Partial<MockedQuestionReposit
     create: vi.fn<QuestionRepositoryStub["create"]>().mockResolvedValue(createFakeQuestion()),
     archive: vi.fn<QuestionRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestion()),
     assignTheme: vi.fn<QuestionRepositoryStub["assignTheme"]>().mockResolvedValue(createFakeQuestion()),
+    removeTheme: vi.fn<QuestionRepositoryStub["removeTheme"]>().mockResolvedValue(createFakeQuestion()),
     ...overrides,
   };
 }

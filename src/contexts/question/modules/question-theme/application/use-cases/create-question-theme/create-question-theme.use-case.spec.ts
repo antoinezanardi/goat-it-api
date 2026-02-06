@@ -40,13 +40,13 @@ describe("Create Question Theme Use Case", () => {
 
   describe(CreateQuestionThemeUseCase.prototype.create, () => {
     let localMocks: {
-      throwIfQuestionThemeSlugAlreadyExists: Mock;
+      throwIfQuestionThemeNotCreatable: Mock;
     };
 
     beforeEach(() => {
-      const createQuestionThemeUseCaseStub = createQuestionThemeUseCase as unknown as { throwIfQuestionThemeSlugAlreadyExists: () => void };
+      const createQuestionThemeUseCaseStub = createQuestionThemeUseCase as unknown as { throwIfQuestionThemeNotCreatable: () => void };
       localMocks = {
-        throwIfQuestionThemeSlugAlreadyExists: vi.spyOn(createQuestionThemeUseCaseStub, "throwIfQuestionThemeSlugAlreadyExists").mockResolvedValue(),
+        throwIfQuestionThemeNotCreatable: vi.spyOn(createQuestionThemeUseCaseStub, "throwIfQuestionThemeNotCreatable").mockResolvedValue(),
       };
     });
 
@@ -54,7 +54,7 @@ describe("Create Question Theme Use Case", () => {
       const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       await createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
-      expect(localMocks.throwIfQuestionThemeSlugAlreadyExists).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand);
+      expect(localMocks.throwIfQuestionThemeNotCreatable).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand);
     });
 
     it("should create a question theme from repository when called.", async() => {
@@ -65,20 +65,20 @@ describe("Create Question Theme Use Case", () => {
     });
   });
 
-  describe("throwIfQuestionThemeSlugAlreadyExists", () => {
+  describe("throwIfQuestionThemeNotCreatable", () => {
     it("should throw an error when question theme slug already exists.", async() => {
       const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(createFakeQuestionTheme());
       const expectedError = new QuestionThemeSlugAlreadyExistsError(questionThemeCreationCommand.payload.slug);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeCreationCommand)).rejects.toThrowError(expectedError);
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).rejects.toThrowError(expectedError);
     });
 
     it("should not throw an error when question theme slug does not exist.", async() => {
       const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(undefined);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeSlugAlreadyExists"](questionThemeCreationCommand)).resolves.not.toThrowError();
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).resolves.not.toThrowError();
     });
   });
 });

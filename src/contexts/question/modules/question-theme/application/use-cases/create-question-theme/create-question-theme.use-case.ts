@@ -14,12 +14,12 @@ export class CreateQuestionThemeUseCase {
 
   public async create(questionThemeCreationCommand: QuestionThemeCreationCommand): Promise<QuestionTheme> {
     const { payload } = questionThemeCreationCommand;
-    await this.throwIfQuestionThemeSlugAlreadyExists(questionThemeCreationCommand);
+    await this.throwIfQuestionThemeNotCreatable(questionThemeCreationCommand);
 
     return this.questionThemeRepository.create(payload);
   }
 
-  private async throwIfQuestionThemeSlugAlreadyExists(questionThemeCreationCommand: QuestionThemeCreationCommand): Promise<void> {
+  private async throwIfQuestionThemeNotCreatable(questionThemeCreationCommand: QuestionThemeCreationCommand): Promise<void> {
     const { payload } = questionThemeCreationCommand;
     const questionTheme = await this.questionThemeRepository.findBySlug(payload.slug);
     if (questionTheme) {
