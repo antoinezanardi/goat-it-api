@@ -25,5 +25,5 @@ runs:
       if: always()
       with:
         name: schemas-package-build
-        path: dist
+        path: packages/schemas/dist
         retention-days: 2
