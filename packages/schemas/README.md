@@ -19,7 +19,13 @@ This package is a small, framework‑agnostic collection of DTO shapes, value‑
 Import the package (example):
 
 ```ts
-import { QuestionDto } from "@goat-it/schemas/question";
+// Importing types
+import type { QuestionDto } from "@goat-it/schemas/question";
+
+// Importing Zod schemas
+import { QUESTION_THEME_CREATION_DTO } from "@goat-it/schemas/question-theme";
+
+// Importing constants
 import { LOCALES } from "@goat-it/schemas/shared/locale";
 ```
 
