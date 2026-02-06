@@ -1,0 +1,29 @@
+name: Build Schemas ✨
+description: Builds and validates the @goat-it/schemas package (build, pack and basic checks)
+author: Antoine ZANARDI
+
+runs:
+  using: composite
+  steps:
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Build @goat-it/schemas 📚
+      shell: bash
+      run: pnpm --filter @goat-it/schemas run build
+
+    - name: Verify build artifacts ✅
+      shell: bash
+      run: test -d packages/schemas/dist
+
+    - name: Pack package (sanity check) 📦
+      shell: bash
+      run: pnpm --filter @goat-it/schemas pack
+
+    - name: Save build artifacts 💎
+      uses: actions/upload-artifact@v6
+      if: always()
+      with:
+        name: schemas-package-build
+        path: packages/schemas/dist
+        retention-days: 2

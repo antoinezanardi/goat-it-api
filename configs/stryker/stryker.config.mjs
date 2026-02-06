@@ -41,6 +41,7 @@ export default {
     "pnpm-lock.yaml",
     "sonar-project.properties",
     "README.md",
+    "packages",
   ],
   vitest: {
     configFile: "configs/vitest/vitest.config.ts",

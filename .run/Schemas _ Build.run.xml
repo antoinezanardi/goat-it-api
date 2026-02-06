@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TypeCheck" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/package.json" />
+  <configuration default="false" name="Schemas &gt; Build" type="js.build_tools.npm" folderName="@goat-it/schemas">
+    <package-json value="$PROJECT_DIR$/packages/schemas/package.json" />
     <command value="run" />
     <scripts>
-      <script value="typecheck" />
+      <script value="build" />
     </scripts>
     <node-interpreter value="project" />
     <envs />
