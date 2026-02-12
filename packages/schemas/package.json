@@ -10,7 +10,7 @@
   },
   "author": "Antoine ZANARDI",
   "license": "MIT",
-  "packageManager": "pnpm@10.29.2",
+  "packageManager": "pnpm@10.29.3",
   "devDependencies": {
     "tsdown": "^0.20.3",
     "typescript": "^5.9.3",
