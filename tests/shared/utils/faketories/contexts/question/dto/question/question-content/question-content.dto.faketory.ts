@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto";
+import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
 
 function createFakeQuestionContentDto(questionContentDto: Partial<QuestionContentDto> = {}): QuestionContentDto {
   return {

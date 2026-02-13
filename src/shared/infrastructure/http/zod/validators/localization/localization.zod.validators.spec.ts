@@ -16,7 +16,7 @@ describe("Localization Zod Validators", () => {
       };
       const entries = createZLocaleEntries(entryFactory);
 
-      expect(entries).toStrictEqual(expectedEntries);
+      expect(entries).toStrictEqual<Record<Locale, string>>(expectedEntries);
     });
   });
 
@@ -97,7 +97,7 @@ describe("Localization Zod Validators", () => {
         example: `Beispieltext auf Deutsch.`,
       };
 
-      expect(schema.meta()).toStrictEqual(expectedMetadata);
+      expect(schema.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
     it("should trim the localized text entry when parsing.", () => {
@@ -191,7 +191,7 @@ describe("Localization Zod Validators", () => {
       const value = ["  Hello World  ", "  Hi There  "];
       const result = schema.parse(value);
 
-      expect(result).toStrictEqual(["Hello World", "Hi There"]);
+      expect(result).toStrictEqual<string[]>(["Hello World", "Hi There"]);
     });
 
     it("should have correct metadata for the locale when called.", () => {
@@ -202,7 +202,7 @@ describe("Localization Zod Validators", () => {
         example: [`Testo di esempio in italiano.`],
       };
 
-      expect(schema.meta()).toStrictEqual(expectedMetadata);
+      expect(schema.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -369,7 +369,7 @@ describe("Localization Zod Validators", () => {
       };
       const result = schema.parse(value);
 
-      expect(result).toStrictEqual({
+      expect(result).toStrictEqual<Record<string, string[]>>({
         en: ["Hello World", "Hi There"],
         fr: ["Bonjour le monde", "Salut là-bas"],
       });

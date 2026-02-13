@@ -1,0 +1,50 @@
+{
+  "name": "@goat-it/schemas",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "Shared types, constants and Zod schemas for the Goat It projects.",
+  "scripts": {
+    "dev": "tsdown --watch",
+    "build": "tsdown",
+    "prepublishOnly": "pnpm run build"
+  },
+  "author": "Antoine ZANARDI",
+  "license": "MIT",
+  "packageManager": "pnpm@10.29.3",
+  "devDependencies": {
+    "tsdown": "^0.20.3",
+    "typescript": "^5.9.3",
+    "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    "./question": {
+      "types": "./dist/question/index.d.mts",
+      "import": "./dist/question/index.mjs"
+    },
+    "./question-theme": {
+      "types": "./dist/question-theme/index.d.mts",
+      "import": "./dist/question-theme/index.mjs"
+    },
+    "./shared/locale": {
+      "types": "./dist/shared/locale/index.d.mts",
+      "import": "./dist/shared/locale/index.mjs"
+    }
+  },
+  "dependencies": {
+    "type-fest": "^5.4.4",
+    "validator": "^13.15.26"
+  },
+  "sideEffects": false
+}

@@ -2,15 +2,16 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
+import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
 import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
@@ -19,6 +20,7 @@ import { createMockedFindQuestionsUseCase } from "@mocks/contexts/question/appli
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedCreateQuestionUseCase } from "@mocks/contexts/question/application/use-cases/create-question.use-case.mock";
 import { createMockedAssignThemeToQuestionUseCase } from "@mocks/contexts/question/application/use-cases/question-theme-assignment/assign-theme-to-question.use-case.mock";
+import { createMockedRemoveThemeFromQuestionUseCase } from "@mocks/contexts/question/application/use-cases/question-theme-assignment/remove-theme-from-question.use-case.mock";
 
 import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
@@ -45,6 +47,7 @@ describe("Admin Question Controller", () => {
       createQuestion: ReturnType<typeof createMockedCreateQuestionUseCase>;
       archiveQuestion: ReturnType<typeof createMockedArchiveQuestionUseCase>;
       assignThemeToQuestion: ReturnType<typeof createMockedAssignThemeToQuestionUseCase>;
+      removeThemeFromQuestion: ReturnType<typeof createMockedRemoveThemeFromQuestionUseCase>;
     };
     mappers: {
       createAdminQuestionDtoFromEntity: Mock;
@@ -64,6 +67,7 @@ describe("Admin Question Controller", () => {
         createQuestion: createMockedCreateQuestionUseCase(),
         archiveQuestion: createMockedArchiveQuestionUseCase(),
         assignThemeToQuestion: createMockedAssignThemeToQuestionUseCase(),
+        removeThemeFromQuestion: createMockedRemoveThemeFromQuestionUseCase(),
       },
       mappers: {
         createAdminQuestionDtoFromEntity: vi.mocked(createAdminQuestionDtoFromEntity),
@@ -98,6 +102,10 @@ describe("Admin Question Controller", () => {
         {
           provide: AssignThemeToQuestionUseCase,
           useValue: mocks.useCases.assignThemeToQuestion,
+        },
+        {
+          provide: RemoveThemeFromQuestionUseCase,
+          useValue: mocks.useCases.removeThemeFromQuestion,
         },
       ],
     }).compile();
@@ -294,6 +302,42 @@ describe("Admin Question Controller", () => {
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
 
       const result = await adminQuestionController.assignThemeToQuestion(questionId, dto);
+
+      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+    });
+  });
+
+  describe(AdminQuestionController.prototype.removeThemeFromQuestion, () => {
+    it("should remove theme from question when called.", async() => {
+      const questionId = "q-r-1";
+      const themeId = "theme-1";
+
+      await adminQuestionController.removeThemeFromQuestion(questionId, themeId);
+
+      expect(mocks.useCases.removeThemeFromQuestion.remove).toHaveBeenCalledExactlyOnceWith({ questionId, themeId });
+    });
+
+    it("should map the updated question to admin dto when called.", async() => {
+      const questionId = "q-r-2";
+      const themeId = "theme-2";
+      const updatedQuestion = createFakeQuestion();
+      mocks.useCases.removeThemeFromQuestion.remove.mockResolvedValueOnce(updatedQuestion);
+
+      await adminQuestionController.removeThemeFromQuestion(questionId, themeId);
+
+      expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledExactlyOnceWith(updatedQuestion);
+    });
+
+    it("should return the mapped dto when called.", async() => {
+      const questionId = "q-r-3";
+      const themeId = "theme-3";
+      const updatedQuestion = createFakeQuestion();
+      const expectedDto = createFakeAdminQuestionDto();
+
+      mocks.useCases.removeThemeFromQuestion.remove.mockResolvedValueOnce(updatedQuestion);
+      mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
+
+      const result = await adminQuestionController.removeThemeFromQuestion(questionId, themeId);
 
       expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
     });

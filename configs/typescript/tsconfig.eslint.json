@@ -14,7 +14,7 @@
     "../../tests/unit/",
     "../../tests/acceptance/",
     "../../configs/",
-    "../../configs/**/*.json",
+    "../../configs/**/*.json"
   ],
   "exclude": [
     "../../node_modules",

@@ -4,7 +4,8 @@ import { ZodResponse } from "nestjs-zod";
 
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
-import { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto";
+import { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
+import { AppMetadataNestZodDto } from "@app/dto/app-metadata/app-metadata.dto";
 import { AppService } from "@app/providers/services/app.service";
 
 @Controller()
@@ -19,7 +20,7 @@ export class AppController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AppMetadataDto,
+    type: AppMetadataNestZodDto,
   })
   public getApiMetadata(): AppMetadataDto {
     return this.appService.getApiMeta();

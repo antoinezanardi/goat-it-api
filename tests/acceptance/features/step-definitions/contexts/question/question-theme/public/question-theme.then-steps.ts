@@ -2,8 +2,8 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { z } from "zod";
 
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
-import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
+import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 
 import { expectQuestionThemeDtoToMatch } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/helpers/question-theme.steps.helpers";
 import { QUESTION_THEME_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/datatables/question-theme.datatables.schemas";

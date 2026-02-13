@@ -9,7 +9,8 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
+import { QuestionThemeNestZodDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
@@ -32,7 +33,7 @@ export class QuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: [QuestionThemeDto],
+    type: [QuestionThemeNestZodDto],
   })
   public async findQuestionThemes(@Localization() localization: LocalizationOptions): Promise<QuestionThemeDto[]> {
     const questionThemes = await this.findQuestionThemesUseCase.list();
@@ -48,7 +49,7 @@ export class QuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: QuestionThemeDto,
+    type: QuestionThemeNestZodDto,
   })
   public async findQuestionThemeById(
     @Param("id", MongoIdPipe) id: string,

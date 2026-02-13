@@ -8,17 +8,18 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import { createQuestionThemeModificationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers";
-import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
-import { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import { AdminQuestionThemeNestZodDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
+import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+import { QuestionThemeCreationNestZodDto } from "@question/modules/question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
+import { QuestionThemeModificationNestZodDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
-import { QuestionThemeCreationDto } from "@question/modules/question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
-import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
-import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
-import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
+import { createQuestionThemeModificationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers";
 import { createAdminQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
+import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
+import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
+import { ModifyQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
@@ -42,7 +43,7 @@ export class AdminQuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: [AdminQuestionThemeDto],
+    type: [AdminQuestionThemeNestZodDto],
   })
   public async findQuestionThemes(): Promise<AdminQuestionThemeDto[]> {
     const questionThemes = await this.findQuestionThemesUseCase.list();
@@ -61,7 +62,7 @@ export class AdminQuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionThemeDto,
+    type: AdminQuestionThemeNestZodDto,
   })
   public async findQuestionThemeById(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionThemeDto> {
     const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
@@ -80,9 +81,9 @@ export class AdminQuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.CREATED,
-    type: AdminQuestionThemeDto,
+    type: AdminQuestionThemeNestZodDto,
   })
-  public async createQuestionTheme(@Body() questionThemeCreationDto: QuestionThemeCreationDto): Promise<AdminQuestionThemeDto> {
+  public async createQuestionTheme(@Body() questionThemeCreationDto: QuestionThemeCreationNestZodDto): Promise<AdminQuestionThemeDto> {
     const questionThemeCreationCommand = createQuestionThemeCreationCommandFromDto(questionThemeCreationDto);
     const createdQuestionTheme = await this.createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
@@ -100,11 +101,11 @@ export class AdminQuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionThemeDto,
+    type: AdminQuestionThemeNestZodDto,
   })
   public async patchQuestionTheme(
     @Param("id", MongoIdPipe) id: string,
-    @Body() questionThemeModificationDto: QuestionThemeModificationDto,
+    @Body() questionThemeModificationDto: QuestionThemeModificationNestZodDto,
   ): Promise<AdminQuestionThemeDto> {
     const questionThemeModificationCommand = createQuestionThemeModificationCommandFromDto(id, questionThemeModificationDto);
     const modifiedQuestionTheme = await this.modifyQuestionThemeUseCase.modify(questionThemeModificationCommand);
@@ -123,7 +124,7 @@ export class AdminQuestionThemeController {
   })
   @ZodResponse({
     status: HttpStatus.OK,
-    type: AdminQuestionThemeDto,
+    type: AdminQuestionThemeNestZodDto,
   })
   public async archiveQuestionTheme(@Param("id", MongoIdPipe) id: string): Promise<AdminQuestionThemeDto> {
     const archivedQuestionTheme = await this.archiveQuestionThemeUseCase.archive(id);

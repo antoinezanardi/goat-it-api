@@ -20,6 +20,7 @@ type MongooseDocumentStub<T> = Omit<
   | "inspect"
   | "toObject"
   | "toJSON"
+  | "toBSON"
   | "equals"
   | "compare"
   | "increment"
