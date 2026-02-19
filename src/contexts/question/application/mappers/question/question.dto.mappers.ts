@@ -1,11 +1,11 @@
 import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts } from "@shared/application/mappers/localization/localization.mappers";
 
-import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto";
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
+import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
-import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto";
-import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto";
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
+import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
+import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 
 import type { QuestionThemeAssignment } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.types";
 import type { Question } from "@question/domain/entities/question.types";
@@ -37,6 +37,7 @@ function createQuestionDtoFromEntity(question: Question, localizationOptions: Lo
     id: question.id,
     themes: question.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
     content: createQuestionContentDtoFromEntity(question.content, localizationOptions),
+    category: question.category,
     cognitiveDifficulty: question.cognitiveDifficulty,
     author: question.author,
     status: question.status,
@@ -60,6 +61,7 @@ function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto 
     id: question.id,
     themes: question.themes.map(themeAssignment => createAdminQuestionThemeAssignmentDtoFromEntity(themeAssignment)),
     content: question.content,
+    category: question.category,
     cognitiveDifficulty: question.cognitiveDifficulty,
     author: question.author,
     rejection: question.rejection,

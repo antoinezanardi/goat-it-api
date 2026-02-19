@@ -4,6 +4,7 @@ import { zCoerceOptionalBoolean, zCoerceOptionalString, zCoerceOptionalStringArr
 
 const QUESTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   id: z.string(),
+  category: z.string(),
   cognitiveDifficulty: z.string(),
   status: z.string(),
   sourceUrls: zCoerceOptionalStringArray(),

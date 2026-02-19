@@ -14,7 +14,7 @@ export class ModifyQuestionThemeUseCase {
 
   public async modify(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<QuestionTheme> {
     const { questionThemeId, payload } = questionThemeModificationCommand;
-    await this.throwIfQuestionThemeNewSlugAlreadyExists(questionThemeModificationCommand);
+    await this.throwIfQuestionThemeNotModifiable(questionThemeModificationCommand);
     const modifiedQuestionTheme = await this.questionThemeRepository.modify(questionThemeId, payload);
     if (!modifiedQuestionTheme) {
       throw new QuestionThemeNotFoundError(questionThemeId);
@@ -22,7 +22,7 @@ export class ModifyQuestionThemeUseCase {
     return modifiedQuestionTheme;
   }
 
-  private async throwIfQuestionThemeNewSlugAlreadyExists(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<void> {
+  private async throwIfQuestionThemeNotModifiable(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<void> {
     const { questionThemeId, payload } = questionThemeModificationCommand;
     if (payload.slug === undefined) {
       return;

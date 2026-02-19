@@ -5,42 +5,44 @@ import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors
 
 import type { CorsConfig } from "@src/infrastructure/api/server/cors/types/cors.types";
 
-describe(createCorsConfig, () => {
-  it("should return default CORS config when called.", () => {
-    const corsConfigFromEnv = createFakeCorsConfigFromEnv({
-      origin: "*",
+describe("Cors Helpers", () => {
+  describe(createCorsConfig, () => {
+    it("should return default CORS config when called.", () => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+        origin: "*",
+      });
+      const corsConfig = createCorsConfig(corsConfigFromEnv);
+      const expectedCorsConfig = createFakeCorsConfig({
+        origin: "*",
+        credentials: false,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+      });
+
+      expect(corsConfig).toStrictEqual<CorsConfig>(expectedCorsConfig);
     });
-    const corsConfig = createCorsConfig(corsConfigFromEnv);
-    const expectedCorsConfig = createFakeCorsConfig({
-      origin: "*",
-      credentials: false,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+
+    it("should use origin from configuration when provided.", () => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+        origin: "https://example.com",
+      });
+      const corsConfig = createCorsConfig(corsConfigFromEnv);
+
+      expect(corsConfig.origin).toBe("https://example.com");
     });
 
-    expect(corsConfig).toStrictEqual<CorsConfig>(expectedCorsConfig);
-  });
+    it("should set credentials to false when called.", () => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+      const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-  it("should use origin from configuration when provided.", () => {
-    const corsConfigFromEnv = createFakeCorsConfigFromEnv({
-      origin: "https://example.com",
+      expect(corsConfig.credentials).toBeFalsy();
     });
-    const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-    expect(corsConfig.origin).toBe("https://example.com");
-  });
+    it("should set allowed methods to default values when called.", () => {
+      const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+      const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-  it("should set credentials to false when called.", () => {
-    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
-    const corsConfig = createCorsConfig(corsConfigFromEnv);
-
-    expect(corsConfig.credentials).toBeFalsy();
-  });
-
-  it("should set allowed methods and headers to default values when called.", () => {
-    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
-    const corsConfig = createCorsConfig(corsConfigFromEnv);
-
-    expect(corsConfig.methods).toStrictEqual<string[]>(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
+      expect(corsConfig.methods).toStrictEqual<string[]>(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
+    });
   });
 });

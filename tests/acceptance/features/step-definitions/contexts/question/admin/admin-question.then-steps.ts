@@ -4,8 +4,8 @@ import { z } from "zod";
 
 import { isValidLocale } from "@shared/domain/value-objects/locale/helpers/locale.helpers";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
-import { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
+import { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto.shape";
 
 import { expectQuestionAuthorDtoToMatch, expectQuestionRejectionDtoToMatch } from "@acceptance-features/step-definitions/contexts/question/public/helpers/question.steps.helpers";
 import { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";

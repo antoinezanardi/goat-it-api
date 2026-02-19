@@ -1,7 +1,7 @@
 import { expect } from "expect";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 
 import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 
@@ -17,6 +17,7 @@ function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T
 
 function expectQuestionDtoToMatch(questionDto: QuestionDto, expectedQuestionDto: z.infer<typeof QUESTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.id).toBe(expectedQuestionDto.id);
+  expect(questionDto.category).toBe(expectedQuestionDto.category);
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
   expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);

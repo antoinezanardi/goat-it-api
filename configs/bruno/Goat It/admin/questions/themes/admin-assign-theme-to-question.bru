@@ -1,0 +1,30 @@
+meta {
+  name: Assign Theme To Question
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/admin/questions/:id/themes
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: {{questionId}}
+}
+
+body:json {
+  {
+    "themeId": "{{questionThemeId}}",
+    "isPrimary": false,
+    "isHint": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

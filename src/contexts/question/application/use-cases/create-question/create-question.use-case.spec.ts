@@ -87,21 +87,21 @@ describe("Create Question Use Case", () => {
       expect(actual).toStrictEqual<Question>(expected);
     });
 
-    it("should call checkQuestionIsCreatable with command when called.", async() => {
+    it("should call throwIfQuestionNotCreatable with command when called.", async() => {
       const command = createFakeQuestionCreationCommand();
-      const checkQuestionIsCreatableSpy = vi.spyOn(createQuestionUseCase as unknown as { checkQuestionIsCreatable: () => Promise<void> }, "checkQuestionIsCreatable");
+      const throwIfQuestionNotCreatableSpy = vi.spyOn(createQuestionUseCase as unknown as { throwIfQuestionNotCreatable: () => Promise<void> }, "throwIfQuestionNotCreatable");
       await createQuestionUseCase.create(command);
 
-      expect(checkQuestionIsCreatableSpy).toHaveBeenCalledExactlyOnceWith(command);
+      expect(throwIfQuestionNotCreatableSpy).toHaveBeenCalledExactlyOnceWith(command);
     });
   });
 
-  describe("checkQuestionIsCreatable", () => {
+  describe("throwIfQuestionNotCreatable", () => {
     it("should call getQuestionThemesByIdsOrThrow.getByIdsOrThrow with theme ids when called.", async() => {
       const command = createFakeQuestionCreationCommand();
       const expectedThemeIds = new Set(command.payload.themes.map(themeAssignment => themeAssignment.themeId));
 
-      await createQuestionUseCase["checkQuestionIsCreatable"](command);
+      await createQuestionUseCase["throwIfQuestionNotCreatable"](command);
 
       expect(mocks.useCases.getQuestionThemesByIdsOrThrow.getByIdsOrThrow).toHaveBeenCalledExactlyOnceWith(expectedThemeIds);
     });
@@ -109,7 +109,7 @@ describe("Create Question Use Case", () => {
     it("should not throw when all referenced themes exist and are not archived.", async() => {
       const command = createFakeQuestionCreationCommand();
 
-      await expect(createQuestionUseCase["checkQuestionIsCreatable"](command)).resolves.not.toThrowError();
+      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).resolves.not.toThrowError();
     });
 
     it("should throw ReferencedQuestionThemeArchivedError when some referenced theme is archived.", async() => {
@@ -124,7 +124,7 @@ describe("Create Question Use Case", () => {
       ]);
       const expectedError = new ReferencedQuestionThemeArchivedError(archivedThemeId);
 
-      await expect(createQuestionUseCase["checkQuestionIsCreatable"](command)).rejects.toThrowError(expectedError);
+      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).rejects.toThrowError(expectedError);
     });
   });
 });

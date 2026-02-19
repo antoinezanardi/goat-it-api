@@ -11,8 +11,8 @@ Feature: Create Question as Admin
     When the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | cognitiveDifficulty | status | sourceUrls                                                                                         |
-      | <SET> | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
 
     And the response should contain the following question statement for the admin question:
       | locale | statement                        |
@@ -110,8 +110,8 @@ Feature: Create Question as Admin
     When the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | cognitiveDifficulty | status  | sourceUrls                                                                                         |
-      | <SET> | medium              | pending | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+      | id    | category | cognitiveDifficulty | status  | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | pending | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
     And the response should contain the following author for the admin question:
       | role | name      | gameId |
       | ai   | GoatItGPT |        |
@@ -373,12 +373,13 @@ Feature: Create Question as Admin
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
-      | code          | message                                                  | expected | path                | values           |
-      | invalid_type  | Invalid input: expected array, received undefined        | array    | themes              |                  |
-      | invalid_type  | Invalid input: expected object, received undefined       | object   | content             |                  |
-      | invalid_value | Invalid option: expected one of "easy"\|"medium"\|"hard" |          | cognitiveDifficulty | easy,medium,hard |
-      | invalid_type  | Invalid input: expected object, received undefined       | object   | author              |                  |
-      | invalid_type  | Invalid input: expected array, received undefined        | array    | sourceUrls          |                  |
+      | code          | message                                                                      | expected | path                | values                            |
+      | invalid_value | Invalid option: expected one of "trivia"\|"lexicon"\|"riddle"\|"explanation" |          | category            | trivia,lexicon,riddle,explanation |
+      | invalid_type  | Invalid input: expected array, received undefined                            | array    | themes              |                                   |
+      | invalid_type  | Invalid input: expected object, received undefined                           | object   | content             |                                   |
+      | invalid_value | Invalid option: expected one of "easy"\|"medium"\|"hard"                     |          | cognitiveDifficulty | easy,medium,hard                  |
+      | invalid_type  | Invalid input: expected object, received undefined                           | object   | author              |                                   |
+      | invalid_type  | Invalid input: expected array, received undefined                            | array    | sourceUrls          |                                   |
 
   Scenario: Trying to create a question without themes
     Given the database is populated with question themes fixture set with name "five-question-themes"

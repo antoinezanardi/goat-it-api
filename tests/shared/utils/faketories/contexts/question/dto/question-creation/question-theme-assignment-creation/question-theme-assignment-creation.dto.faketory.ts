@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 
 function createFakeQuestionThemeAssignmentCreationDto(assign: Partial<QuestionThemeAssignmentCreationDto> = {}): QuestionThemeAssignmentCreationDto {
   return {

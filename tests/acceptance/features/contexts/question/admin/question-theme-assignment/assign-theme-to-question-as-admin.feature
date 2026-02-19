@@ -11,8 +11,8 @@ Feature: Assign Theme To Question As Admin
     When the admin assigns the theme with the request payload to the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id                       | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |
@@ -27,6 +27,19 @@ Feature: Assign Theme To Question As Admin
       | es     | Historia   |
       | de     | Geschichte |
       | pt     | História   |
+
+  Scenario: Trying to assign a theme with empty payload
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin assigns the theme with an empty request payload to the question with id "a1b2c3d4e5f6012345678901"
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+
+    And the failed request's response should contain the following validation details:
+      | code         | message                                             | expected | path      |
+      | invalid_type | Invalid input: expected string, received undefined  | string   | themeId   |
+      | invalid_type | Invalid input: expected boolean, received undefined | boolean  | isPrimary |
+      | invalid_type | Invalid input: expected boolean, received undefined | boolean  | isHint    |
 
   Scenario: Trying to assign a theme to a non-existing question
     Given the database is populated with question themes fixture set with name "five-question-themes"

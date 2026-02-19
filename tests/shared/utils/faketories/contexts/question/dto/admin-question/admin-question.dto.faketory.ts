@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 
 import { createFakeAdminQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.faketory";
 import { createFakeAdminQuestionContentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-content/admin-question-content.dto.faketory";
@@ -12,6 +13,7 @@ import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dt
 function createFakeAdminQuestionDto(adminQuestionDto: Partial<AdminQuestionDto> = {}): AdminQuestionDto {
   return {
     id: faker.database.mongodbObjectId(),
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeAdminQuestionThemeAssignmentDto()],
     content: createFakeAdminQuestionContentDto(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),

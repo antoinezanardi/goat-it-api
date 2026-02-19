@@ -500,7 +500,7 @@ describe("Date Helpers", () => {
  ```ts
 import { QuestionNotFoundError } from "./question.errors";
 
-describe("Question Errors", () => {
+describe("Question Domain Errors", () => {
   describe(QuestionNotFoundError, () => {
     it("should set name when instantiated.", () => {
       const error = new QuestionNotFoundError("123");

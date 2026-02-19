@@ -180,10 +180,26 @@ const providers = [
 
 ## Validation, DTOs and OpenAPI
 
-- All response DTOs use Zod with `z.strictObject(...)` and `.describe()` for properties to enable `nestjs-zod` OpenAPI generation.
-- Request DTOs use `z.object(...)` where the code intentionally allows additional properties; controllers map only allowed fields to domain commands.
-- Shared Zod validators live under `src/shared/infrastructure/http/zod/validators/`.
-- Controllers use `@ZodResponse()` to document response types.
+This project standardizes DTOs into a small, predictable two-file pattern so every DTO looks and behaves the same across the codebase.
+
+- File layout (must follow):
+  - `<name>.dto.shape.ts` — exports the Zod schema (use `z.strictObject(...)` for response shapes), an inferred TypeScript type (`z.infer<typeof ...>`), and any schema-level helpers.
+  - `<name>.dto.ts` — exports a Nest-compatible DTO class created with `createZodDto(...)` (used by controllers and Nest pipes).
+
+- Example (question DTO):
+  - `src/contexts/question/application/dto/question/question.dto.shape.ts` exports `QUESTION_DTO` and `type QuestionDto = z.infer<typeof QUESTION_DTO>`.
+  - `src/contexts/question/application/dto/question/question.dto.ts` exports a `QuestionNestZodDto` class created with `createZodDto(QUESTION_DTO)`.
+
+- Rules and rationale:
+  1. Response DTO shapes must use `z.strictObject(...)` and include `.describe()` and `.meta({ example })` where appropriate to enable consistent OpenAPI generation via `nestjs-zod`.
+  2. Keep validation logic (Zod validators, refinements) inside the `.shape.ts` file or shared validator modules under `src/shared/infrastructure/http/zod/validators/` and import them into shapes. Examples: `zIsoDateTime()`, `zMongoId()`, shared sub-shapes like `QUESTION_AUTHOR_DTO`.
+  3. The `.dto.ts` file is intentionally tiny — it only wraps the Zod schema into a Nest DTO with `createZodDto(...)`. This keeps controllers and Nest metadata consistent while keeping schema logic in a single place.
+  4. Use nested shape imports for composition (e.g., `QUESTION_CONTENT_DTO`, `QUESTION_THEME_ASSIGNMENT_DTO`) instead of redefining sub-schemas.
+  5. For request DTOs that intentionally allow extra properties, use a non-strict Zod shape (document this choice) but still follow the two-file pattern.
+
+- Usage in controllers: import the Nest Zod DTO class for validation and use the shape (or the inferred type) for OpenAPI response documentation with `@ZodResponse()` where appropriate.
+
+Shared Zod validators live under `src/shared/infrastructure/http/zod/validators/`.
 
 ## Testing strategy and quality gates
 

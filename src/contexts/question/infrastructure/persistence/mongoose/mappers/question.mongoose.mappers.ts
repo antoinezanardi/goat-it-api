@@ -41,6 +41,7 @@ function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregat
     id: questionMongooseAggregate._id.toString(),
     themes: questionMongooseAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
     content: questionMongooseAggregate.content,
+    category: questionMongooseAggregate.category,
     cognitiveDifficulty: questionMongooseAggregate.cognitiveDifficulty,
     author: createQuestionAuthorFromAggregate(questionMongooseAggregate),
     status: questionMongooseAggregate.status,

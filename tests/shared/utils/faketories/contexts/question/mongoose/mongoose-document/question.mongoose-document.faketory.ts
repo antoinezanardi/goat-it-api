@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 
+import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 
@@ -25,6 +26,7 @@ function createFakeQuestionDocument(questionDocument: Partial<QuestionMongooseDo
   return {
     _id: createFakeObjectId(documentId),
     id: documentId,
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeQuestionThemeAssignmentDocument()],
     content: createFakeQuestionContentAggregate(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),

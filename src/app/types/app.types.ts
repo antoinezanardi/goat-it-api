@@ -1,4 +1,4 @@
-import type { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto";
+import type { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 import type { z } from "zod";
 
