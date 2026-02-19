@@ -1,5 +1,7 @@
 export { QUESTION_COGNITIVE_DIFFICULTIES } from "@app-question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 
+export { QUESTION_CATEGORIES } from "@app-question/domain/value-objects/question-category/question-category.constants";
+
 export { QUESTION_STATUSES } from "@app-question/domain/value-objects/question-status/question-status.constants";
 
 export { QUESTION_AUTHOR_ROLES } from "@app-question/domain/value-objects/question-author/question-author.constants";
@@ -17,6 +19,8 @@ export { QUESTION_DTO } from "@app-question/application/dto/question/question.dt
 export { ADMIN_QUESTION_DTO } from "@app-question/application/dto/admin-question/admin-question.dto.shape";
 
 export type { QuestionCognitiveDifficulty } from "@app-question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
+
+export type { QuestionCategory } from "@app-question/domain/value-objects/question-category/question-category.types";
 
 export type { QuestionStatus } from "@app-question/domain/value-objects/question-status/question-status.types";
 

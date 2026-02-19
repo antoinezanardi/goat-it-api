@@ -20,6 +20,7 @@ function findQuestionByIdOrThrow<T extends Pick<AdminQuestionDto, "id">>(questio
 
 function expectAdminQuestionDtoToMatch(questionDto: AdminQuestionDto, expectedQuestionDto: z.infer<typeof QUESTION_DATATABLE_ROW_SCHEMA>): void {
   expect(questionDto.id).toBe(expectedQuestionDto.id);
+  expect(questionDto.category).toBe(expectedQuestionDto.category);
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
   expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);

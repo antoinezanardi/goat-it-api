@@ -35,6 +35,7 @@ function createQuestionContentCreationContractFromDto(questionContentDto: Questi
 function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): QuestionCreationCommand {
   return {
     payload: {
+      category: dto.category,
       themes: dto.themes.map(createQuestionThemeAssignmentCreationContractFromDto),
       content: createQuestionContentCreationContractFromDto(dto.content),
       cognitiveDifficulty: dto.cognitiveDifficulty,

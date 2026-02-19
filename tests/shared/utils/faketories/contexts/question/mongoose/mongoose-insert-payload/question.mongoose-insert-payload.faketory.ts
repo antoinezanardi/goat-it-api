@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 
 import { createFakeQuestionAuthorAggregate, createFakeQuestionContentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
@@ -20,6 +21,7 @@ QuestionThemeAssignmentMongooseInsertPayload {
 
 function createFakeQuestionMongooseInsertPayload(override: Partial<QuestionMongooseInsertPayload> = {}): QuestionMongooseInsertPayload {
   return {
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeQuestionThemeAssignmentMongooseInsertPayload()],
     content: createFakeQuestionContentAggregate(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),

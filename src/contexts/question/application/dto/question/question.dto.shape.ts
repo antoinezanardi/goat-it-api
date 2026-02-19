@@ -5,13 +5,14 @@ import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validato
 import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 import { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
-import { zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionSourceUrls, zQuestionStatus } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
 const QUESTION_DTO = z.strictObject({
   id: zMongoId()
     .describe("Question's unique identifier"),
+  category: zQuestionCategory(),
   themes: z.array(QUESTION_THEME_ASSIGNMENT_DTO)
     .min(QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS)
     .max(QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS)

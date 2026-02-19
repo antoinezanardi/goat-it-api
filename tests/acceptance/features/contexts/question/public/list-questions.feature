@@ -11,12 +11,12 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
       | statement                                              | answer           | context                                                                                                           |
@@ -97,12 +97,12 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
       | statement                                              | answer           | context                                                                                                           |
@@ -183,12 +183,12 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
       | statement                                         | answer           | context                                                                                                                   |
@@ -269,9 +269,9 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 2 questions
     And the response should contain the following questions:
-      | id                       | cognitiveDifficulty | status  | sourceUrls                                              |
-      | aa11bb22cc33dd44ee55ff01 | medium              | active  | https://en.wikipedia.org/wiki/Vertigo_(film)            |
-      | bb22cc33dd44ee55ff660102 | hard                | pending | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon |
+      | id                       | category | cognitiveDifficulty | status  | sourceUrls                                              |
+      | aa11bb22cc33dd44ee55ff01 | riddle   | medium              | active  | https://en.wikipedia.org/wiki/Vertigo_(film)            |
+      | bb22cc33dd44ee55ff660102 | trivia   | hard                | pending | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon |
 
     And the response should contain a question among them with id "aa11bb22cc33dd44ee55ff01" and the following content:
       | statement                                             | answer           | context                                                                                                  |

@@ -1,4 +1,5 @@
 import type { QuestionAuthor } from "@question/domain/value-objects/question-author/question-author.types";
+import type { QuestionCategory } from "@question/domain/value-objects/question-category/question-category.types";
 import type { QuestionCognitiveDifficulty } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
 import type { QuestionContent } from "@question/domain/value-objects/question-content/question-content.types";
 import type { QuestionRejection } from "@question/domain/value-objects/question-rejection/question-rejection.types";
@@ -7,6 +8,7 @@ import type { QuestionThemeAssignment } from "@question/domain/value-objects/que
 
 type Question = {
   id: string;
+  category: QuestionCategory;
   themes: QuestionThemeAssignment[];
   content: QuestionContent;
   cognitiveDifficulty: QuestionCognitiveDifficulty;

@@ -100,6 +100,7 @@ describe("Question Mongoose Mappers", () => {
         id: questionAggregate._id.toString(),
         themes: questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
         content: questionAggregate.content,
+        category: questionAggregate.category,
         cognitiveDifficulty: questionAggregate.cognitiveDifficulty,
         author: createQuestionAuthorFromAggregate(questionAggregate),
         status: questionAggregate.status,

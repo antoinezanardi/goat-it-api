@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 
 import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
 import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
@@ -12,6 +13,7 @@ import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dt
 function createFakeQuestionDto(questionDto: Partial<QuestionDto> = {}): QuestionDto {
   return {
     id: faker.database.mongodbObjectId(),
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeQuestionThemeAssignmentDto()],
     content: createFakeQuestionContentDto(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
