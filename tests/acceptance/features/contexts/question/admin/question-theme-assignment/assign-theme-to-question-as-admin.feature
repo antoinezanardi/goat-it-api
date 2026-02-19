@@ -11,8 +11,8 @@ Feature: Assign Theme To Question As Admin
     When the admin assigns the theme with the request payload to the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id                       | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |

@@ -10,8 +10,8 @@ Feature: Archive Question As Admin
     When the admin archives the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | cognitiveDifficulty | status   | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | medium              | archived | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status   | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | archived | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
   Scenario: Trying to archive a question when provided id is invalid
     Given the database is populated with questions fixture set with name "five-questions"

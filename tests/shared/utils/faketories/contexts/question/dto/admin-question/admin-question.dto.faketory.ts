@@ -13,10 +13,10 @@ import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dt
 function createFakeAdminQuestionDto(adminQuestionDto: Partial<AdminQuestionDto> = {}): AdminQuestionDto {
   return {
     id: faker.database.mongodbObjectId(),
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeAdminQuestionThemeAssignmentDto()],
     content: createFakeAdminQuestionContentDto(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
-    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     author: createFakeQuestionAuthorDto(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.datatype.boolean() ? createFakeQuestionRejectionDto() : undefined,

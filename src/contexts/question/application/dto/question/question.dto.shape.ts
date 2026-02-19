@@ -12,12 +12,12 @@ import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-a
 const QUESTION_DTO = z.strictObject({
   id: zMongoId()
     .describe("Question's unique identifier"),
+  category: zQuestionCategory(),
   themes: z.array(QUESTION_THEME_ASSIGNMENT_DTO)
     .min(QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS)
     .max(QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS)
     .describe("Question's themes"),
   content: QUESTION_CONTENT_DTO,
-  category: zQuestionCategory(),
   cognitiveDifficulty: zQuestionCognitiveDifficulty(),
   author: QUESTION_AUTHOR_DTO,
   status: zQuestionStatus(),

@@ -20,6 +20,8 @@ export { ADMIN_QUESTION_DTO } from "@app-question/application/dto/admin-question
 
 export type { QuestionCognitiveDifficulty } from "@app-question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
 
+export type { QuestionCategory } from "@app-question/domain/value-objects/question-category/question-category.types";
+
 export type { QuestionStatus } from "@app-question/domain/value-objects/question-status/question-status.types";
 
 export type { QuestionAuthorRole } from "@app-question/domain/value-objects/question-author/question-author.types";
