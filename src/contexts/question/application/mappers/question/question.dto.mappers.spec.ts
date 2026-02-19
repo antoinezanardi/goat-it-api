@@ -75,6 +75,7 @@ describe("Question DTO Mappers", () => {
       });
       const expectedQuestionDto = createFakeQuestionDto({
         id: questionEntity.id,
+        category: questionEntity.category,
         themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
         content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
         cognitiveDifficulty: questionEntity.cognitiveDifficulty,
@@ -96,6 +97,7 @@ describe("Question DTO Mappers", () => {
       });
       const expectedQuestionDto = createFakeQuestionDto({
         id: questionEntity.id,
+        category: questionEntity.category,
         themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
         content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
         cognitiveDifficulty: questionEntity.cognitiveDifficulty,
@@ -133,6 +135,7 @@ describe("Question DTO Mappers", () => {
       });
       const expectedAdminQuestionDto = createFakeAdminQuestionDto({
         id: questionEntity.id,
+        category: questionEntity.category,
         themes: questionEntity.themes.map(themeAssignment => createAdminQuestionThemeAssignmentDtoFromEntity(themeAssignment)),
         content: questionEntity.content,
         cognitiveDifficulty: questionEntity.cognitiveDifficulty,

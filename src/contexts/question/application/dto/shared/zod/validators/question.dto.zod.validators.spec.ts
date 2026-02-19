@@ -1,4 +1,4 @@
-import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionSourceUrls } from "./question.dto.zod.validators";
+import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls } from "./question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionCognitiveDifficulty, () => {
@@ -81,6 +81,50 @@ describe("Question DTO Zod Validators", () => {
       const schema = zQuestionStatus();
 
       expect(schema.description).toBe("Question's status");
+    });
+  });
+
+  describe(zQuestionCategory, () => {
+    it.each<{
+      test: string;
+      value: string;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when category is 'trivia'",
+        value: "trivia",
+        expected: true,
+      },
+      {
+        test: "should return true when category is 'lexicon'",
+        value: "lexicon",
+        expected: true,
+      },
+      {
+        test: "should return true when category is 'riddle'",
+        value: "riddle",
+        expected: true,
+      },
+      {
+        test: "should return true when category is 'explanation'",
+        value: "explanation",
+        expected: true,
+      },
+      {
+        test: "should return false when category is 'unknown'",
+        value: "unknown",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionCategory().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionCategory();
+
+      expect(schema.description).toBe("Question's category");
     });
   });
 

@@ -7,6 +7,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 import { FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY, FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 
 const COMPLETE_QUESTION_CREATION_PAYLOAD = Object.freeze(createFakeQuestionCreationDto({
+  category: "trivia",
   themes: [
     createFakeQuestionThemeAssignmentCreationDto({
       themeId: FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id.toString(),

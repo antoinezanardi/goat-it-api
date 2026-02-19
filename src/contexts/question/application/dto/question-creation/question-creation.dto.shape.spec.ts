@@ -217,4 +217,21 @@ describe("Question Creation DTO Shape", () => {
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
+
+  describe("category", () => {
+    it("should throw zod error when category is invalid.", () => {
+      const invalid = Object.assign(validDto, { category: "invalid" });
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = QUESTION_CREATION_DTO.shape.category.meta();
+      const expectedMetadata = {
+        description: "Question's category",
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
 });

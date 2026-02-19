@@ -76,6 +76,7 @@ describe("Question Creation Dto Mappers", () => {
 
       const expected = createFakeQuestionCreationCommand({
         payload: {
+          category: dto.category,
           themes: dto.themes.map(theme => ({
             themeId: theme.themeId,
             isPrimary: theme.isPrimary,

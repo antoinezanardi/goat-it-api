@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import { QUESTION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/question-rejection/question-rejection.constants";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 
@@ -63,6 +64,7 @@ function createFakeQuestionRejection(questionRejection: Partial<QuestionRejectio
 function createFakeQuestion(question: Partial<Question> = {}): Question {
   return {
     id: faker.database.mongodbObjectId(),
+    category: faker.helpers.arrayElement(QUESTION_CATEGORIES),
     themes: [createFakeQuestionThemeAssignment(), createFakeQuestionThemeAssignment()],
     content: createFakeQuestionContent(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),

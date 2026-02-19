@@ -1,5 +1,7 @@
 export { QUESTION_COGNITIVE_DIFFICULTIES } from "@app-question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 
+export { QUESTION_CATEGORIES } from "@app-question/domain/value-objects/question-category/question-category.constants";
+
 export { QUESTION_STATUSES } from "@app-question/domain/value-objects/question-status/question-status.constants";
 
 export { QUESTION_AUTHOR_ROLES } from "@app-question/domain/value-objects/question-author/question-author.constants";
