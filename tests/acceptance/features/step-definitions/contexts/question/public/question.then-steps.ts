@@ -16,7 +16,7 @@ import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionsCount>\d+) questions$/u, function(this: GoatItWorld, countAsString: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
-  const questionsCount = Number.parseInt(countAsString);
+  const questionsCount = Number.parseInt(countAsString, 10);
 
   expect(questions).toHaveLength(questionsCount);
 });

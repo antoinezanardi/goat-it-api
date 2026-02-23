@@ -16,7 +16,7 @@ import type { DataTable } from "@cucumber/cucumber";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/u, function(this: GoatItWorld, statusCode: string): void {
-  const expectedStatus = Number.parseInt(statusCode);
+  const expectedStatus = Number.parseInt(statusCode, 10);
   if (!SUCCESS_HTTP_STATUSES.includes(expectedStatus)) {
     throw new Error(`The expected status code ${expectedStatus} is not a success status code.`);
   }
@@ -24,7 +24,7 @@ Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/
 });
 
 Then(/^the request should have failed with status code (?<statusCode>\d{3}) and the response should contain the following error:$/u, function(this: GoatItWorld, statusCode: string, errorDataTable: DataTable): void {
-  const expectedStatus = Number.parseInt(statusCode);
+  const expectedStatus = Number.parseInt(statusCode, 10);
   if (SUCCESS_HTTP_STATUSES.includes(expectedStatus)) {
     throw new Error(`The expected status code ${expectedStatus} is a success status code.`);
   }
