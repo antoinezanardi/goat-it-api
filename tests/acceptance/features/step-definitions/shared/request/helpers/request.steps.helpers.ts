@@ -1,5 +1,5 @@
 function tryParseOverriddenPayloadIntegerValue(payloadValue: string): number {
-  const parsedInteger = Number.parseInt(payloadValue);
+  const parsedInteger = Number.parseInt(payloadValue, 10);
   if (Number.isNaN(parsedInteger)) {
     throw new TypeError(`Failed to parse overridden payload value as integer: ${payloadValue}`);
   }
