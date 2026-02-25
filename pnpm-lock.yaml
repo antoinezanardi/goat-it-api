@@ -54,8 +54,8 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1(@nestjs/common@11.1.14(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.6(@fastify/static@9.0.0)(@nestjs/common@11.1.14(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.14(@nestjs/common@11.1.14(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.3.6)
       radashi:
-        specifier: ^12.7.1
-        version: 12.7.1
+        specifier: ^12.7.2
+        version: 12.7.2
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -5507,8 +5507,8 @@ packages:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
 
-  radashi@12.7.1:
-    resolution: {integrity: sha512-rwxcGY3oKMQJ+ojhS4MlxyVWqdXPVJSxg3ZjXDYYz26DYRuAAs+7XBM406/GYzPEBbjSJqdKfHDpBRfjWn34RQ==}
+  radashi@12.7.2:
+    resolution: {integrity: sha512-BfoN4XJll34ok3rCHjVlRypymJvD3cE+M3UATC8519wUgHl1/AXt2dEEIFv5865gO6t0ENAU6qEOqjr/NcIRyQ==}
     engines: {node: '>=16.0.0'}
 
   radix3@1.1.2:
@@ -11996,7 +11996,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  radashi@12.7.1: {}
+  radashi@12.7.2: {}
 
   radix3@1.1.2: {}
 
