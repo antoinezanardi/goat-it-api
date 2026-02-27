@@ -89,7 +89,7 @@ jobs:
           echo "${{ steps.build.outputs.digest }}" > "/tmp/digests/${{ matrix.tag }}/${{ env.PLATFORM_DIR }}-digest.txt"
 
       - name: Upload digest artifact 📦
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: docker-digest-${{ matrix.tag }}-${{ env.PLATFORM_DIR }}
           path: /tmp/digests/${{ matrix.tag }}/${{ env.PLATFORM_DIR }}-digest.txt
@@ -108,7 +108,7 @@ jobs:
       url: ${{ inputs.environment-url }}
     steps:
       - name: Download digests 📩
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: docker-digest-${{ matrix.tag }}-*
           path: /tmp/digests/${{ matrix.tag }}
