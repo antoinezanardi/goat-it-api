@@ -12,6 +12,8 @@
       "@app-question/*": ["../../src/contexts/question/*"],
       "@app-question-theme/*": ["../../src/contexts/question/modules/question-theme/*"],
       "@app-shared/*": ["../../src/shared/*"],
+      "@shared/*": ["../../src/shared/*"],
+      "@question/*": ["../../src/contexts/question/*"]
     }
   },
   "include": ["src"]

@@ -5,7 +5,8 @@
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
   "scripts": {
     "dev": "tsdown --watch",
-    "build": "tsdown",
+    "build": "tsdown && pnpm run check:dts",
+    "check:dts": "! grep -rn ': any' dist/ --include='*.d.mts'",
     "prepublishOnly": "pnpm run build"
   },
   "author": "Antoine ZANARDI",
