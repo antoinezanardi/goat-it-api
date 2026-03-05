@@ -42,8 +42,8 @@ importers:
         specifier: ^10.1.0
         version: 10.1.0
       fastify:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.8.1
+        version: 5.8.1
       mongoose:
         specifier: ^9.2.4
         version: 9.2.4
@@ -4142,8 +4142,8 @@ packages:
   fastify@5.7.4:
     resolution: {integrity: sha512-e6l5NsRdaEP8rdD8VR0ErJASeyaRbzXYpmkrpr2SuvuMq6Si3lvsaVy5C+7gLanEkvjpMDzBXWE5HPeb/hgTxA==}
 
-  fastify@5.8.0:
-    resolution: {integrity: sha512-bgkzPUOuzkM83AvR03UzCDC+Xunv0z2UMNyv3D5OkM1oTDVR7SLaVD0xgDgI8WS/n+QBo3ab4Thuyr+Ym6b3pQ==}
+  fastify@5.8.1:
+    resolution: {integrity: sha512-y0kicFvvn7CYWoPOVLOcvn4YyKQz03DIY7UxmyOy21/J8eXm09R+tmb+tVDBW5h+pja30cHI5dqUcSlvY86V2A==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -10933,7 +10933,7 @@ snapshots:
       semver: 7.7.4
       toad-cache: 3.7.0
 
-  fastify@5.8.0:
+  fastify@5.8.1:
     dependencies:
       '@fastify/ajv-compiler': 4.0.5
       '@fastify/error': 4.2.0
