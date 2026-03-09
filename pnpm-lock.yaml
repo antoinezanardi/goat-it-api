@@ -216,9 +216,6 @@ importers:
       type-fest:
         specifier: ^5.4.4
         version: 5.4.4
-      validator:
-        specifier: ^13.15.26
-        version: 13.15.26
     devDependencies:
       '@arethetypeswrong/core':
         specifier: ^0.18.2
@@ -6649,10 +6646,6 @@ packages:
   validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
-  validator@13.15.26:
-    resolution: {integrity: sha512-spH26xU080ydGggxRyR1Yhcbgx+j3y5jbNXk/8L+iRvdIEQ4uTRH2Sgf2dokud6Q4oAtsbNvJ1Ft+9xmm6IZcA==}
-    engines: {node: '>= 0.10'}
 
   verror@1.10.1:
     resolution: {integrity: sha512-veufcmxri4e3XSrT0xwfUR7kguIkaxBeosDg00yDWhk49wdwkSUrvvsm7nc75e1PUyvIeZj6nS8VQRYz2/S4Xg==}
@@ -13479,8 +13472,6 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   validate-npm-package-name@5.0.1: {}
-
-  validator@13.15.26: {}
 
   verror@1.10.1:
     dependencies:

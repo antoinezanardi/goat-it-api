@@ -19,7 +19,7 @@ export default defineConfig({
   },
   attw: {
     enabled: true,
-    profile: "esm-only"
+    profile: "esm-only",
   },
   clean: true,
   dts: true,

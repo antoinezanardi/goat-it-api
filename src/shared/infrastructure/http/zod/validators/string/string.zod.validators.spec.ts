@@ -132,6 +132,11 @@ describe("String Zod Validators", () => {
         expected: false,
       },
       {
+        test: "should return false when MongoDB ObjectId is uppercase.",
+        value: "507F1F77BCF86CD799439011",
+        expected: false,
+      },
+      {
         test: "should return false when MongoDB ObjectId is empty.",
         value: "",
         expected: false,

@@ -1,6 +1,6 @@
 const SLUG_REGEX = /^[\da-z]+(?:-[\da-z]+)*$/u;
 
-const MONGO_ID_REGEX = /^[\da-f]{24}$/iu;
+const MONGO_ID_REGEX = /^[\da-f]{24}$/u;
 
 const SLUG_MIN_LENGTH = 3;
 
