@@ -56,3 +56,7 @@ tests/acceptance/logs
 
 # Stryker temp files
 .stryker-tmp
+
+# Opencode
+tui.json
+opencode.json.tui-migration.bak
