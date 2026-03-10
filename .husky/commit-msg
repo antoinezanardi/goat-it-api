@@ -1,1 +1,1 @@
-npx commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"
+pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"

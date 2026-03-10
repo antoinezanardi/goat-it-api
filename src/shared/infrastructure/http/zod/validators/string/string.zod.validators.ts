@@ -1,7 +1,6 @@
-import { isMongoId } from "validator";
 import { z } from "zod";
 
-import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE, MONGO_ID_REGEX, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 import type { $ZodCustomParams } from "zod/v4/core";
 import type { ZodString, ZodISODateTime } from "zod";
@@ -21,10 +20,11 @@ function zSlug(options: Partial<$ZodCustomParams> = {}): ZodString {
 function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
   return z.string()
     .trim()
-    .refine(isMongoId, {
+    .regex(MONGO_ID_REGEX, {
       error: "Invalid ObjectId value",
       ...options,
     })
+    .toLowerCase()
     .meta({ example: "60af924f4f1a2563f8e8b456" });
 }
 
