@@ -14,7 +14,13 @@ export default defineConfig({
     "@question": path.resolve(import.meta.dirname, "../../src/contexts/question"),
   },
   format: ["esm"],
-  skipNodeModulesBundle: true,
+  deps: {
+    skipNodeModulesBundle: true,
+  },
+  attw: {
+    enabled: true,
+    profile: "esm-only",
+  },
   clean: true,
   dts: true,
   unbundle: true,

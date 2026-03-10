@@ -18,7 +18,7 @@ import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionThemesCount>\d+) admin question themes$/u, function(this: GoatItWorld, countAsString: string): void {
   const questionThemes = this.expectLastResponseJson<AdminQuestionThemeDto[]>(z.array(ADMIN_QUESTION_THEME_DTO));
-  const questionThemesCount = Number.parseInt(countAsString);
+  const questionThemesCount = Number.parseInt(countAsString, 10);
 
   expect(questionThemes).toHaveLength(questionThemesCount);
 });
