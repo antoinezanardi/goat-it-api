@@ -132,9 +132,9 @@ describe("String Zod Validators", () => {
         expected: false,
       },
       {
-        test: "should return false when MongoDB ObjectId is uppercase.",
+        test: "should return true when MongoDB ObjectId is uppercase.",
         value: "507F1F77BCF86CD799439011",
-        expected: false,
+        expected: true,
       },
       {
         test: "should return false when MongoDB ObjectId is empty.",
@@ -166,6 +166,13 @@ describe("String Zod Validators", () => {
     it("should trim spaces from the MongoDB ObjectId value when parsing.", () => {
       const schema = zMongoId();
       const result = schema.parse("  507f1f77bcf86cd799439011  ");
+
+      expect(result).toBe("507f1f77bcf86cd799439011");
+    });
+
+    it("should convert MongoDB ObjectId value to lowercase when parsing.", () => {
+      const schema = zMongoId();
+      const result = schema.parse("507F1F77BCF86CD799439011");
 
       expect(result).toBe("507f1f77bcf86cd799439011");
     });

@@ -24,6 +24,7 @@ function zMongoId(options: Partial<$ZodCustomParams> = {}): ZodString {
       error: "Invalid ObjectId value",
       ...options,
     })
+    .toLowerCase()
     .meta({ example: "60af924f4f1a2563f8e8b456" });
 }
 
