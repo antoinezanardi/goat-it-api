@@ -5,9 +5,11 @@ on:
     branches:
       - develop
       - main
+    paths:
+      - 'packages/schemas/**'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -70,4 +72,4 @@ jobs:
         if: steps.check-version.outputs.exists == 'false'
         shell: bash
         working-directory: packages/schemas
-        run: pnpm publish --tag "${{ steps.compute-version.outputs.dist-tag }}" --no-git-checks --access public
+        run: pnpm publish --tag "${{ steps.compute-version.outputs.dist-tag }}" --no-git-checks --access public --provenance
