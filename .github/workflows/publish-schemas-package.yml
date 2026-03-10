@@ -1,0 +1,73 @@
+name: 📦 Publish @goat-it/schemas Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  check-and-publish:
+    name: Check and publish @goat-it/schemas 📦
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repository 📡
+        uses: actions/checkout@v6
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+      - name: Compute version and dist-tag 🔢
+        id: compute-version
+        shell: bash
+        run: |
+          BASE_VERSION=$(node -p "require('./packages/schemas/package.json').version")
+          if [ "${{ github.ref_name }}" = "develop" ]; then
+            echo "version=${BASE_VERSION}-beta" >> "$GITHUB_OUTPUT"
+            echo "dist-tag=beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${BASE_VERSION}" >> "$GITHUB_OUTPUT"
+            echo "dist-tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check if version already exists on npm 🔍
+        id: check-version
+        shell: bash
+        run: |
+          if npm view "@goat-it/schemas@${{ steps.compute-version.outputs.version }}" version --json 2>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip publication (version already published) ⏭️
+        if: steps.check-version.outputs.exists == 'true'
+        shell: bash
+        run: echo "Version ${{ steps.compute-version.outputs.version }} already exists on npm – skipping publication."
+
+      - name: Setup Node.js for npm publish 🔧
+        if: steps.check-version.outputs.exists == 'false'
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: configs/node/.node-version
+          registry-url: https://registry.npmjs.org
+
+      - name: Patch package.json version 🔧
+        if: steps.check-version.outputs.exists == 'false'
+        shell: bash
+        working-directory: packages/schemas
+        run: npm version "${{ steps.compute-version.outputs.version }}" --no-git-tag-version
+
+      - name: Publish @goat-it/schemas to npm 🚀
+        if: steps.check-version.outputs.exists == 'false'
+        shell: bash
+        working-directory: packages/schemas
+        run: pnpm publish --tag "${{ steps.compute-version.outputs.dist-tag }}" --no-git-checks --access public
