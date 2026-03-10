@@ -11,6 +11,11 @@
   },
   "author": "Antoine ZANARDI",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antoinezanardi/goat-it-api",
+    "directory": "packages/schemas"
+  },
   "packageManager": "pnpm@10.31.0",
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",
