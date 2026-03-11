@@ -62,11 +62,11 @@ jobs:
           node-version-file: configs/node/.node-version
           registry-url: https://registry.npmjs.org
 
-      - name: Patch package.json version 🔧
+      - name: Patch package.json version if necessary 🔧
         if: steps.check-version.outputs.exists == 'false'
         shell: bash
         working-directory: packages/schemas
-        run: npm version "${{ steps.compute-version.outputs.version }}" --no-git-tag-version
+        run: npm version "${{ steps.compute-version.outputs.version }}" --no-git-tag-version --allow-same-version
 
       - name: Publish @goat-it/schemas to npm 🚀
         if: steps.check-version.outputs.exists == 'false'
