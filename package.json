@@ -163,7 +163,7 @@
     "cross-env": "^10.1.0",
     "fastify": "^5.8.2",
     "mongoose": "^9.3.0",
-    "nestjs-pino": "^4.6.0",
+    "nestjs-pino": "^4.6.1",
     "nestjs-zod": "^5.1.1",
     "radashi": "^12.7.2",
     "reflect-metadata": "^0.2.2",
