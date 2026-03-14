@@ -66,7 +66,7 @@ describe("Modify Question Theme Use Case", () => {
       });
       const expectedError = new QuestionThemeNotFoundError(id);
 
-      await expect(modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand)).rejects.toThrowError(expectedError);
+      await expect(modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand)).rejects.toThrow(expectedError);
     });
 
     it("should return the updated question theme from repository when called.", async() => {
@@ -122,7 +122,7 @@ describe("Modify Question Theme Use Case", () => {
       });
       const expectedError = new QuestionThemeSlugAlreadyExistsError(existingSlug);
 
-      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).rejects.toThrowError(expectedError);
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).rejects.toThrow(expectedError);
     });
 
     it("should not throw an error when no other question theme with same slug exists.", async() => {
@@ -135,7 +135,7 @@ describe("Modify Question Theme Use Case", () => {
         payload,
       });
 
-      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).resolves.not.toThrowError();
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).resolves.not.toThrow();
     });
 
     it("should not throw an error when the question theme with same slug is the one being updated.", async() => {
@@ -149,7 +149,7 @@ describe("Modify Question Theme Use Case", () => {
         payload,
       });
 
-      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).resolves.not.toThrowError();
+      await expect(modifyQuestionThemeUseCase["throwIfQuestionThemeNotModifiable"](modifyQuestionThemeCommand)).resolves.not.toThrow();
     });
   });
 });

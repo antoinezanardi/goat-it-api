@@ -13,20 +13,20 @@ describe("Question Content DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionContentDto is provided.", () => {
-    expect(() => QUESTION_CONTENT_DTO.parse(validQuestionContentDto)).not.toThrowError();
+    expect(() => QUESTION_CONTENT_DTO.parse(validQuestionContentDto)).not.toThrow();
   });
 
   describe("statement", () => {
     it("should throw zod error when statement is missing.", () => {
       const dtoWithoutStatement = Object.assign(validQuestionContentDto, { statement: undefined });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutStatement)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutStatement)).toThrow(ZodError);
     });
 
     it("should throw zod error when statement is invalid.", () => {
       const dtoWithInvalidStatement = Object.assign(validQuestionContentDto, { statement: 123 });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidStatement)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidStatement)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -44,13 +44,13 @@ describe("Question Content DTO Shape", () => {
     it("should throw zod error when answer is missing.", () => {
       const dtoWithoutAnswer = Object.assign(validQuestionContentDto, { answer: undefined });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutAnswer)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutAnswer)).toThrow(ZodError);
     });
 
     it("should throw zod error when answer is invalid.", () => {
       const dtoWithInvalidAnswer = Object.assign(validQuestionContentDto, { answer: 456 });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidAnswer)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidAnswer)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -68,13 +68,13 @@ describe("Question Content DTO Shape", () => {
     it("should throw zod error when context is invalid.", () => {
       const dtoWithInvalidContext = Object.assign(validQuestionContentDto, { context: 123 });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidContext)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidContext)).toThrow(ZodError);
     });
 
     it("should pass validation when context is omitted.", () => {
       const dtoWithoutContext = createFakeQuestionContentDto({ context: undefined });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutContext)).not.toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutContext)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -92,13 +92,13 @@ describe("Question Content DTO Shape", () => {
     it("should throw zod error when trivia is invalid.", () => {
       const dtoWithInvalidTrivia = Object.assign(validQuestionContentDto, { trivia: 789 });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidTrivia)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidTrivia)).toThrow(ZodError);
     });
 
     it("should pass validation when trivia is omitted.", () => {
       const dtoWithoutTrivia = createFakeQuestionContentDto({ trivia: undefined });
 
-      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutTrivia)).not.toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutTrivia)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {

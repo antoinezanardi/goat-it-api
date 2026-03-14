@@ -14,14 +14,14 @@ describe("Question Author Creation DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionAuthorCreationDto is provided.", () => {
-    expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(validDto)).not.toThrowError();
+    expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
   describe("role", () => {
     it("should throw zod error when role is invalid.", () => {
       const invalid = Object.assign(validDto, { role: "invalid" });
 
-      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -39,7 +39,7 @@ describe("Question Author Creation DTO Shape", () => {
     it("should throw zod error when name is not a string.", () => {
       const invalid = Object.assign(validDto, { name: 123 });
 
-      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -55,14 +55,14 @@ describe("Question Author Creation DTO Shape", () => {
     it("should throw zod error when name is too short.", () => {
       const invalid = Object.assign(validDto, { name: "A" });
 
-      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should throw zod error when name is too long.", () => {
       const longName = "A".repeat(QUESTION_AUTHOR_NAME_MAX_LENGTH + 1);
       const invalid = Object.assign(validDto, { name: longName });
 
-      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should trim whitespace from name before validation when parsed.", () => {

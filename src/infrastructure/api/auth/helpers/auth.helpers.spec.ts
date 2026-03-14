@@ -35,7 +35,7 @@ describe("Auth Helpers", () => {
       const hashedApiKey = hashApiKey(apiKey, hmacKey);
       const apiKeyValidator = createApiKeyValidator(hashedApiKey, hmacKey);
 
-      expect(() => apiKeyValidator(apiKey)).not.toThrowError();
+      expect(() => apiKeyValidator(apiKey)).not.toThrow();
     });
 
     it("should throw InvalidApiKeyError when the provided API key is invalid.", () => {
@@ -44,7 +44,7 @@ describe("Auth Helpers", () => {
       const hashedApiKey = hashApiKey(apiKey, hmacKey);
       const apiKeyValidator = createApiKeyValidator(hashedApiKey, hmacKey);
 
-      expect(() => apiKeyValidator("invalid-api-key")).toThrowError(InvalidApiKeyError);
+      expect(() => apiKeyValidator("invalid-api-key")).toThrow(InvalidApiKeyError);
     });
   });
 
@@ -52,7 +52,7 @@ describe("Auth Helpers", () => {
     it("should throw MissingApiKeyError when received API key is not a string.", () => {
       const expectedError = new MissingApiKeyError();
 
-      expect(() => validateReceivedApiKey("hashed-api-key", 12_345, "test-hmac")).toThrowError(expectedError);
+      expect(() => validateReceivedApiKey("hashed-api-key", 12_345, "test-hmac")).toThrow(expectedError);
     });
 
     it("should throw InvalidApiKeyError when received API key is invalid because not same length.", () => {
@@ -61,7 +61,7 @@ describe("Auth Helpers", () => {
       const hmacKey = "test-hmac";
       const hashedValidApiKey = hashApiKey(validApiKey, hmacKey);
 
-      expect(() => validateReceivedApiKey(hashedValidApiKey, "short", hmacKey)).toThrowError(expectedError);
+      expect(() => validateReceivedApiKey(hashedValidApiKey, "short", hmacKey)).toThrow(expectedError);
     });
 
     it("should throw InvalidApiKeyError when received API key is invalid because content does not match.", () => {
@@ -69,7 +69,7 @@ describe("Auth Helpers", () => {
       const hmacKey = "test-hmac";
       const hashedValidApiKey = "hashed-api-key-for-comparison";
 
-      expect(() => validateReceivedApiKey(hashedValidApiKey, "invalid-key-2", hmacKey)).toThrowError(expectedError);
+      expect(() => validateReceivedApiKey(hashedValidApiKey, "invalid-key-2", hmacKey)).toThrow(expectedError);
     });
 
     it("should not throw an error when received API key is valid.", () => {
@@ -77,7 +77,7 @@ describe("Auth Helpers", () => {
       const hmacKey = "test-hmac";
       const hashedValidApiKey = hashApiKey(validApiKey, hmacKey);
 
-      expect(() => validateReceivedApiKey(hashedValidApiKey, validApiKey, hmacKey)).not.toThrowError();
+      expect(() => validateReceivedApiKey(hashedValidApiKey, validApiKey, hmacKey)).not.toThrow();
     });
   });
 
@@ -134,7 +134,7 @@ describe("Auth Helpers", () => {
       } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Invalid API key");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin")).toThrowError(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin")).toThrow(expectedError);
     });
 
     it("should throw UnauthorizedException with generic message when API key is invalid for game auth type and error is not type Error.", () => {
@@ -155,7 +155,7 @@ describe("Auth Helpers", () => {
       } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Unauthorized");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game")).toThrowError(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game")).toThrow(expectedError);
     });
   });
 });

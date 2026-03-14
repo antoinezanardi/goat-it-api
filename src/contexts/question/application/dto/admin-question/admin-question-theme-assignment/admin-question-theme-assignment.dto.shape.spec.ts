@@ -13,7 +13,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
   });
 
   it("should pass validation when a valid AdminQuestionThemeAssignmentDto is provided.", () => {
-    expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(validAdminQuestionThemeAssignmentDto)).not.toThrowError();
+    expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(validAdminQuestionThemeAssignmentDto)).not.toThrow();
   });
 
   it("should have correct metadata when accessing the metadata.", () => {
@@ -28,7 +28,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
     it("should throw zod error when theme is invalid.", () => {
       const dtoWithInvalidTheme = Object.assign(validAdminQuestionThemeAssignmentDto, { theme: "invalid" });
 
-      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidTheme)).toThrowError(ZodError);
+      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidTheme)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -45,7 +45,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
     it("should throw a zod error when assigned a non-boolean value.", () => {
       const dtoWithInvalidIsPrimary = Object.assign(validAdminQuestionThemeAssignmentDto, { isPrimary: "invalid" });
 
-      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsPrimary)).toThrowError(ZodError);
+      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsPrimary)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -62,7 +62,7 @@ describe("Admin Question Theme Assignment DTO Shape", () => {
     it("should throw a zod error when assigned a non-boolean value.", () => {
       const dtoWithInvalidIsHint = Object.assign(validAdminQuestionThemeAssignmentDto, { isHint: "invalid" });
 
-      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsHint)).toThrowError(ZodError);
+      expect(() => ADMIN_QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsHint)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {

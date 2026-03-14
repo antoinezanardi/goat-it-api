@@ -13,7 +13,7 @@ describe("Question Theme Assignment DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionThemeAssignmentDto is provided.", () => {
-    expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(validQuestionThemeAssignmentDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(validQuestionThemeAssignmentDto)).not.toThrow();
   });
 
   it("should have correct metadata when accessing the metadata.", () => {
@@ -28,7 +28,7 @@ describe("Question Theme Assignment DTO Shape", () => {
     it("should throw zod error when theme is invalid.", () => {
       const dtoWithInvalidTheme = Object.assign(validQuestionThemeAssignmentDto, { theme: "invalid" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidTheme)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidTheme)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -45,7 +45,7 @@ describe("Question Theme Assignment DTO Shape", () => {
     it("should throw a zod error when assigned a non-boolean value.", () => {
       const dtoWithInvalidIsPrimary = Object.assign(validQuestionThemeAssignmentDto, { isPrimary: "invalid" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsPrimary)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsPrimary)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -62,7 +62,7 @@ describe("Question Theme Assignment DTO Shape", () => {
     it("should throw a zod error when assigned a non-boolean value.", () => {
       const dtoWithInvalidIsHint = Object.assign(validQuestionThemeAssignmentDto, { isHint: "invalid" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsHint)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(dtoWithInvalidIsHint)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
