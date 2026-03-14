@@ -51,7 +51,7 @@ describe("Mongo Id Pipe", () => {
       const pipe = new MongoIdPipe();
       const error = new BadRequestException(errorMessage);
 
-      expect(() => pipe.transform(value)).toThrowError(error);
+      expect(() => pipe.transform(value)).toThrow(error);
     });
   });
 });

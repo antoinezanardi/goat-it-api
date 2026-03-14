@@ -56,7 +56,7 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.archive.mockResolvedValueOnce(undefined);
       const expectedError = new QuestionThemeNotFoundError(questionThemeId);
 
-      await expect(archiveQuestionThemeUseCase.archive(questionThemeId)).rejects.toThrowError(expectedError);
+      await expect(archiveQuestionThemeUseCase.archive(questionThemeId)).rejects.toThrow(expectedError);
     });
 
     it("should return the archived question theme when called.", async() => {
@@ -78,7 +78,7 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValueOnce(undefined);
       const expectedError = new QuestionThemeNotFoundError(questionThemeId);
 
-      await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrowError(expectedError);
+      await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrow(expectedError);
     });
 
     it("should throw an error when question theme to archive is already archived.", async() => {
@@ -90,7 +90,7 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValueOnce(foundQuestionTheme);
       const expectedError = new QuestionThemeAlreadyArchivedError(questionThemeId);
 
-      await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrowError(expectedError);
+      await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).rejects.toThrow(expectedError);
     });
 
     it("should not throw any error when question theme to archive is found and active.", async() => {

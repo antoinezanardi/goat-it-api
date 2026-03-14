@@ -48,7 +48,7 @@ describe("Find Question Theme By Id Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValue(undefined);
       const expectedError = new QuestionThemeNotFoundError("123");
 
-      await expect(async() => findQuestionThemeByIdUseCase.getById("123")).rejects.toThrowError(expectedError);
+      await expect(async() => findQuestionThemeByIdUseCase.getById("123")).rejects.toThrow(expectedError);
     });
 
     it("should return the question theme when found.", async() => {

@@ -13,14 +13,14 @@ describe("Question Theme DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => QUESTION_THEME_DTO.parse(validQuestionThemeDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_DTO.parse(validQuestionThemeDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { id: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -41,7 +41,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { slug: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -62,7 +62,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { label: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -83,13 +83,13 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-array value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { aliases: "not-an-array" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are not strings.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { aliases: ["a", 2, "c"] });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -110,7 +110,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { description: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -131,7 +131,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned an invalid enum value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { status: "unknown" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -152,7 +152,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { createdAt: "not-a-date" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -173,7 +173,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { updatedAt: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {

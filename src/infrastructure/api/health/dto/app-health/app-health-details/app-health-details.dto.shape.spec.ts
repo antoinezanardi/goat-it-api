@@ -12,7 +12,7 @@ describe("App Health Details DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => APP_HEALTH_DETAILS_DTO.parse(validAppHealthDetailsDto)).not.toThrowError();
+    expect(() => APP_HEALTH_DETAILS_DTO.parse(validAppHealthDetailsDto)).not.toThrow();
   });
 
   describe(MONGOOSE_HEALTH_KEY, () => {

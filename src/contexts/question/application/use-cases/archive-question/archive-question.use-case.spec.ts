@@ -47,7 +47,7 @@ describe("Archive Question Use Case", () => {
       const id = "question-id-2";
       mocks.repositories.question.archive.mockResolvedValueOnce(undefined);
 
-      await expect(archiveQuestionUseCase.archive(id)).rejects.toThrowError(new QuestionNotFoundError(id));
+      await expect(archiveQuestionUseCase.archive(id)).rejects.toThrow(new QuestionNotFoundError(id));
     });
 
     it("should return archived question when called.", async() => {
@@ -66,7 +66,7 @@ describe("Archive Question Use Case", () => {
       const id = "non-existent-question-id";
       mocks.repositories.question.findById.mockResolvedValueOnce(undefined);
 
-      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrowError(new QuestionNotFoundError(id));
+      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrow(new QuestionNotFoundError(id));
     });
 
     it("should throw QuestionAlreadyArchivedError when question is already archived.", async() => {
@@ -74,14 +74,14 @@ describe("Archive Question Use Case", () => {
       mocks.repositories.question.findById.mockResolvedValueOnce(createFakeQuestion({ id, status: "archived" }));
       const expectedError = new QuestionAlreadyArchivedError(id);
 
-      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrowError(expectedError);
+      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).rejects.toThrow(expectedError);
     });
 
     it("should not throw any error when question is archivable.", async() => {
       const id = "active-question-id";
       mocks.repositories.question.findById.mockResolvedValueOnce(createFakeQuestion({ id, status: "active" }));
 
-      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).resolves.not.toThrowError();
+      await expect(archiveQuestionUseCase["throwIfQuestionNotArchivable"](id)).resolves.not.toThrow();
     });
   });
 });
