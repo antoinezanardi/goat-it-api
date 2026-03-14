@@ -71,14 +71,14 @@ describe("Create Question Theme Use Case", () => {
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(createFakeQuestionTheme());
       const expectedError = new QuestionThemeSlugAlreadyExistsError(questionThemeCreationCommand.payload.slug);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).rejects.toThrowError(expectedError);
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).rejects.toThrow(expectedError);
     });
 
     it("should not throw an error when question theme slug does not exist.", async() => {
       const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
       mocks.repositories.questionTheme.findBySlug.mockResolvedValueOnce(undefined);
 
-      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).resolves.not.toThrowError();
+      await expect(createQuestionThemeUseCase["throwIfQuestionThemeNotCreatable"](questionThemeCreationCommand)).resolves.not.toThrow();
     });
   });
 });

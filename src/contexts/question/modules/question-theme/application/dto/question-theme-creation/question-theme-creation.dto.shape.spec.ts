@@ -13,14 +13,14 @@ describe("Question Theme Creation Dto Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => QUESTION_THEME_CREATION_DTO.parse(validQuestionThemeCreationDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_CREATION_DTO.parse(validQuestionThemeCreationDto)).not.toThrow();
   });
 
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeCreationDto, { slug: 123 });
 
-      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -41,7 +41,7 @@ describe("Question Theme Creation Dto Shape", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
       const invalidDto = Object.assign(validQuestionThemeCreationDto, { label: "not-localized" });
 
-      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -53,7 +53,7 @@ describe("Question Theme Creation Dto Shape", () => {
     it("should throw a zod error when assigned a non-object localized texts.", () => {
       const invalidDto = Object.assign(validQuestionThemeCreationDto, { aliases: "not-localized" });
 
-      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -65,7 +65,7 @@ describe("Question Theme Creation Dto Shape", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
       const invalidDto = Object.assign(validQuestionThemeCreationDto, { description: 456 });
 
-      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {

@@ -13,14 +13,14 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionThemeAssignmentCreationDto is provided.", () => {
-    expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(validDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
   describe("themeId", () => {
     it("should throw zod error when themeId is invalid.", () => {
       const invalid = Object.assign(validDto, { themeId: "not-an-id" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -38,7 +38,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
     it("should throw zod error when isPrimary is invalid.", () => {
       const invalid = Object.assign(validDto, { isPrimary: "not-boolean" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -55,7 +55,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
     it("should throw zod error when isHint is invalid.", () => {
       const invalid = Object.assign(validDto, { isHint: "not-boolean" });
 
-      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {

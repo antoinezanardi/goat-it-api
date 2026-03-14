@@ -14,7 +14,7 @@ describe("Question Author DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionAuthorDto is provided.", () => {
-    expect(() => QUESTION_AUTHOR_DTO.parse(validQuestionAuthorDto)).not.toThrowError();
+    expect(() => QUESTION_AUTHOR_DTO.parse(validQuestionAuthorDto)).not.toThrow();
   });
 
   describe("role", () => {
@@ -64,13 +64,13 @@ describe("Question Author DTO Shape", () => {
     it("should throw a zod error when assigned an invalid mongo id.", () => {
       const invalidDto = Object.assign(validQuestionAuthorDto, { gameId: "invalid-id" });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when gameId is omitted.", () => {
       const dtoWithoutGameId = createFakeQuestionAuthorDto({ gameId: undefined });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutGameId)).not.toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutGameId)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -87,13 +87,13 @@ describe("Question Author DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionAuthorDto, { name: 123 });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when name is omitted.", () => {
       const dtoWithoutName = createFakeQuestionAuthorDto({ name: undefined });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutName)).not.toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutName)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -110,19 +110,19 @@ describe("Question Author DTO Shape", () => {
     it("should throw a zod error when role is 'game' and gameId is not set.", () => {
       const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when role is not 'game' and gameId is set.", () => {
       const invalidDto = Object.assign(validQuestionAuthorDto, { role: "admin", gameId: "64b64c4f2f9b2567e4d8b123" });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when role is 'game' and gameId is set.", () => {
       const validDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: "64b64c4f2f9b2567e4d8b123" });
 
-      expect(() => QUESTION_AUTHOR_DTO.parse(validDto)).not.toThrowError();
+      expect(() => QUESTION_AUTHOR_DTO.parse(validDto)).not.toThrow();
     });
 
     it("should set error message correctly when validation fails.", () => {

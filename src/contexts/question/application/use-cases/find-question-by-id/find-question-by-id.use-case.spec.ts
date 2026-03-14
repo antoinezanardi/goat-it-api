@@ -48,7 +48,7 @@ describe("Find Question By Id Use Case", () => {
       mocks.repositories.question.findById.mockResolvedValue(undefined);
       const expectedError = new QuestionNotFoundError("123");
 
-      await expect(async() => findQuestionByIdUseCase.getById("123")).rejects.toThrowError(expectedError);
+      await expect(async() => findQuestionByIdUseCase.getById("123")).rejects.toThrow(expectedError);
     });
 
     it("should return the question when found.", async() => {

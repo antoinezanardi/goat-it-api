@@ -16,14 +16,14 @@ describe("Question DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
-    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrowError();
+    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
       const dtoWithInvalidId = Object.assign(validQuestionDto, { id: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -41,13 +41,13 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when themes is empty.", () => {
       const dtoWithEmptyThemes = Object.assign(validQuestionDto, { themes: [] });
 
-      expect(() => QUESTION_DTO.parse(dtoWithEmptyThemes)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithEmptyThemes)).toThrow(ZodError);
     });
 
     it("should throw zod error when themes is invalid.", () => {
       const dtoWithInvalidThemes = Object.assign(validQuestionDto, { themes: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidThemes)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidThemes)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -68,7 +68,7 @@ describe("Question DTO Shape", () => {
       ];
       const dtoWithTooManyThemes = Object.assign(validQuestionDto, { themes });
 
-      expect(() => QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrow(ZodError);
     });
   });
 
@@ -76,7 +76,7 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when content is invalid.", () => {
       const dtoWithInvalidContent = Object.assign(validQuestionDto, { content: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidContent)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidContent)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -93,7 +93,7 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when cognitiveDifficulty is invalid.", () => {
       const dtoWithInvalidCognitiveDifficulty = Object.assign(validQuestionDto, { cognitiveDifficulty: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidCognitiveDifficulty)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidCognitiveDifficulty)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -110,7 +110,7 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when author is invalid.", () => {
       const dtoWithInvalidAuthor = Object.assign(validQuestionDto, { author: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidAuthor)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidAuthor)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -127,7 +127,7 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when status is invalid.", () => {
       const dtoWithInvalidStatus = Object.assign(validQuestionDto, { status: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidStatus)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidStatus)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -144,13 +144,13 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when rejection is invalid.", () => {
       const dtoWithInvalidRejection = Object.assign(validQuestionDto, { rejection: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidRejection)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidRejection)).toThrow(ZodError);
     });
 
     it("should pass validation when rejection is omitted.", () => {
       const dtoWithoutRejection = createFakeQuestionDto({ rejection: undefined });
 
-      expect(() => QUESTION_DTO.parse(dtoWithoutRejection)).not.toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithoutRejection)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -167,7 +167,7 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when sourceUrls is invalid.", () => {
       const dtoWithInvalidSourceUrls = Object.assign(validQuestionDto, { sourceUrls: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -188,13 +188,13 @@ describe("Question DTO Shape", () => {
     it("should throw zod error when createdAt is invalid.", () => {
       const dtoWithInvalidCreatedAt = Object.assign(validQuestionDto, { createdAt: "not-a-date" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrow(ZodError);
     });
 
     it("should throw zod error when updatedAt is invalid.", () => {
       const dtoWithInvalidUpdatedAt = Object.assign(validQuestionDto, { updatedAt: "not-a-date" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidUpdatedAt)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidUpdatedAt)).toThrow(ZodError);
     });
 
     it("should have correct metadata for createdAt when accessed.", () => {

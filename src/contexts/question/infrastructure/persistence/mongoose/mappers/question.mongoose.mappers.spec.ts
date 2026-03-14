@@ -64,7 +64,7 @@ describe("Question Mongoose Mappers", () => {
       questionAggregate.author.gameId = undefined;
       const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
 
-      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrowError(expectedError);
+      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
     });
 
     it("should throw an error when role is 'game' and gameId is not in the author object.", () => {
@@ -75,7 +75,7 @@ describe("Question Mongoose Mappers", () => {
       };
       const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
 
-      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrowError(expectedError);
+      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
     });
   });
 

@@ -13,7 +13,7 @@ describe("Question Rejection DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionRejectionDto is provided.", () => {
-    expect(() => QUESTION_REJECTION_DTO.parse(validQuestionRejectionDto)).not.toThrowError();
+    expect(() => QUESTION_REJECTION_DTO.parse(validQuestionRejectionDto)).not.toThrow();
   });
 
   it("should have correct metadata when accessing the metadata.", () => {
@@ -81,7 +81,7 @@ describe("Question Rejection DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionRejectionDto, { comment: 123 });
 
-      expect(() => QUESTION_REJECTION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_REJECTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when comment is omitted.", () => {
@@ -89,7 +89,7 @@ describe("Question Rejection DTO Shape", () => {
         comment: undefined,
       });
 
-      expect(() => QUESTION_REJECTION_DTO.parse(dtoWithoutComment)).not.toThrowError(ZodError);
+      expect(() => QUESTION_REJECTION_DTO.parse(dtoWithoutComment)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
