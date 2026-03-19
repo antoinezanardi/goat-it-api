@@ -94,6 +94,7 @@ const foo = createFakeFoo({ id: "60af924f4f1a2563f8e8b456" });
 5. All fields populated with `@faker-js/faker` values
 6. Factory is pure — no DB calls, no network, no side effects
 7. Run checks:
+
    ```bash
    pnpm run lint && pnpm run typecheck && pnpm run test:unit:cov
    ```

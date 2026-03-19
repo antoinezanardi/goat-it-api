@@ -54,14 +54,14 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 ## Stack
 
-- **Runtime**: Node.js >=25.8.1
+- **Runtime**: Node.js – see `configs/node/.node-version` for the exact version
 - **Framework**: NestJS 11 + Fastify 5
-- **Language**: TypeScript 5 (strict mode, `target: ES2021`, `module: ESNext`)
+- **Language**: TypeScript (strict mode, `target: ES2021`, `module: ESNext`)
 - **Database**: MongoDB via Mongoose
 - **Validation**: Zod + nestjs-zod
-- **Package manager**: pnpm 10 (never use npm or yarn)
+- **Package manager**: pnpm (never use npm or yarn) – see `package.json` for exact version
 - **Test runner**: Vitest 4 + SWC (unit), Cucumber (acceptance), Stryker (mutation)
-- **Linters**: oxlint + ESLint (flat config), both must pass
+- **Linters**: all configured linters must pass — see `package.json` scripts and linter config files for the authoritative setup
 
 ---
 

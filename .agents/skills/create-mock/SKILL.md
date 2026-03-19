@@ -21,7 +21,9 @@ disable-model-invocation: true
 
 Base folder: `tests/unit/utils/mocks/`
 
-Mirror the **source** path exactly:
+Mirror the **source** path, replacing the layer segment with `mocks` and the file type with the mock category:
+
+For repository ports, use the established repository-mock location pattern shown below:
 
 | Source location                                                    | Mock location                                                                                               |
 |--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
@@ -41,7 +43,9 @@ import type { FooRepository } from "@question/domain/repositories/foo.repository
 
 // 1. Stub type — mirrors the port interface exactly
 type FooRepositoryStub = {
-  findAll: () => Promise<Foo[]>; findById: (id: string) => Promise<Foo | undefined>; create: (payload: FooCreationPayload) => Promise<Foo | undefined>;
+  findAll: () => Promise<Foo[]>; 
+  findById: (id: string) => Promise<Foo | undefined>; 
+  create: (payload: FooCreationPayload) => Promise<Foo | undefined>;
 };
 
 // 2. Mocked type — each method wrapped in Vitest Mock<>
@@ -52,7 +56,8 @@ function createMockedFooRepository(overrides: Partial<MockedFooRepository> = {})
   return {
     findAll: vi.fn<FooRepositoryStub["findAll"]>().mockResolvedValue([]),
     findById: vi.fn<FooRepositoryStub["findById"]>().mockResolvedValue(undefined),
-    create: vi.fn<FooRepositoryStub["create"]>().mockResolvedValue(undefined), ...overrides,
+    create: vi.fn<FooRepositoryStub["create"]>().mockResolvedValue(undefined), 
+    ...overrides,
   };
 }
 
