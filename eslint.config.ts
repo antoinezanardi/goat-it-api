@@ -39,7 +39,7 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   ESLINT_CUCUMBER_STEPS_AND_HOOKS_FLAT_CONFIG,
   ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG,
   ESLINT_FIXTURES_FLAT_CONFIG,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+   
   ...oxlint.buildFromOxlintConfigFile("./configs/oxlint/oxlint.config.jsonc") as Linter.Config[],
 ];
 
