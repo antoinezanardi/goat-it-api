@@ -7,6 +7,9 @@
     "tests/mutation/**/*",
     "tests/acceptance/reports/**/*"
   ],
+  "options": {
+    "typeAware": true
+  },
   "plugins": [
     "eslint",
     "typescript",
@@ -1343,7 +1346,8 @@
     {
       "files": [
         "eslint.config.ts",
-        "**/configs/**/*.{js,mjs,ts}"
+        "**/configs/**/*.{js,mjs,ts}",
+        "**/packages/schemas/tsdown.config.ts"
       ],
       "rules": {
         "import/no-default-export": "off",

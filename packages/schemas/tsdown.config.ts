@@ -1,8 +1,5 @@
-import path from "node:path";
-
 import { defineConfig } from "tsdown";
 
-// oxlint-disable-next-line import/no-default-export
 export default defineConfig({
   entry: [
     "./src/shared/locale/index.ts",
@@ -10,8 +7,8 @@ export default defineConfig({
     "./src/question-theme/index.ts",
   ],
   alias: {
-    "@shared": path.resolve(import.meta.dirname, "../../src/shared"),
-    "@question": path.resolve(import.meta.dirname, "../../src/contexts/question"),
+    "@shared": new URL("../../src/shared", import.meta.url).pathname,
+    "@question": new URL("../../src/contexts/question", import.meta.url).pathname,
   },
   format: ["esm"],
   deps: {
