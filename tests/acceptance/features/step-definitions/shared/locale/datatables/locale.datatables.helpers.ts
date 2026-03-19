@@ -21,7 +21,7 @@ import type { ZLocalizedDataTableRowSchema } from "@acceptance-features/step-def
  */
 function createZLocalizedDataTableRowSchema<TField extends string>(localizedField: TField): ZLocalizedDataTableRowSchema<TField> {
   // This is acceptable because we are dynamically creating the schema based on the provided field name.
-   
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   return z.strictObject({
     locale: z.enum(LOCALES),
     [localizedField]: z.string(),

@@ -1352,7 +1352,8 @@
       "rules": {
         "import/no-default-export": "off",
         "import/no-internal-modules": "off",
-        "import/no-anonymous-default-export": "off"
+        "import/no-anonymous-default-export": "off",
+        "typescript/no-unsafe-type-assertion": "off"
       }
     },
     // ---- Override for faketory (unit tests) files -----
