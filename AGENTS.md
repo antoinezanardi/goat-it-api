@@ -58,56 +58,11 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 The `auto-learn` skill enables AI agents to learn from corrections and automatically update documentation.
 
-It must be loaded at the start of every agentic workflow to enable real-time learning.
+It must be explicitly invoked at the start of an agent session by calling `skill({ name: "auto-learn" })` in the prompt configuration (see `build-with-autolearn` and `plan-with-autolearn` prompts as examples of this pattern).
 
-#### How it works
+For OpenCode agents, the skill is configured to run at session start via agent prompt instructions.
 
-1. **AI generates output** that violates a rule or misses guidance
-2. **User provides a correction** (e.g., "This violates the no-switch rule. Fix it.")
-3. **AI auto-detects the correction** using keyword matching (keywords: "violates", "wrong", "required", "missing", "anti-pattern", etc.)
-4. **AI searches docs** in `.agents/skills/*.SKILL.md`, `docs/*.md`, and `tests/*/README.md`
-5. **If guidance found** → AI confirms learning: "✅ Found it in tests/unit/README.md. I'll remember this."
-6. **If guidance NOT found** → AI prompts user: "Should I add this lesson to [file]? (y/n)"
-7. **If user approves** → AI edits the file, shows diff
-
-#### Explicit doc updates
-
-Users can also explicitly invoke `/update-docs` to teach AI a lesson without running a skill first:
-
-```
-/update-docs
-
-Me: What lesson should I document?
-You: Mappers must be pure with no side effects
-Me: I found the Mappers section in docs/ARCHITECTURE.md. Should I add this constraint? (y/n)
-```
-
-#### Correction detection keywords
-
-AI detects corrections when user message contains:
-
-- **Negation**: "don't", "no", "never", "forbidden", "can't"
-- **Requirement**: "should", "must", "required", "needs", "missing"
-- **Rule violation**: "violates", "breaks", "incorrect", "wrong", "bad"
-- **Anti-pattern**: "anti-pattern", "wrong approach", "bad practice"
-- **Missing guidance**: "where's", "where is", "why didn't", "forgot"
-- **Contradiction**: "contradicts", "conflicts with", "doesn't match"
-
-If uncertain, AI asks: "Is this a correction I should learn from? (y/n)"
-
-#### Safety guarantees
-
-- **Always shows diff before committing** — User sees exact changes
-- **Requires explicit approval** — User must confirm "y" to proceed
-- **Never auto-commits** — All edits require human confirmation
-- **Git-based rollback** — `git revert <commit>` if needed
-- **No hallucination** — Only adds guidance from real corrections or explicit `/update-docs` requests
-
-#### Reference
-
-- Full workflow: `.agents/skills/auto-learn/SKILL.md`
-- OpenCode wrapper: `.opencode/skills/auto-learn/SKILL.md`
-- Command: `/update-docs`
+> **Full reference**: `.agents/skills/auto-learn/SKILL.md` — canonical source for workflow, doc file selection logic, and anti-patterns.
 
 ---
 
