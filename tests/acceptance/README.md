@@ -50,7 +50,7 @@ Feature files live under `tests/acceptance/features/`. Support code (hooks, worl
 
 ## Directory Layout
 
-```
+```text
 tests/acceptance/
   features/
     app/                             # App-level features (health, docs, metadata)
@@ -621,12 +621,12 @@ If the scenario sends a request body:
 
 If the feature uses steps not yet implemented:
 
-- **Given steps**: add to `step-definitions/<context>/<audience>/<domain>.<given-steps>.ts`.
+- **Given steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.given-steps.ts` (use the `*.given-steps.ts` filename glob so multiple files may coexist).
   - For DB setup: call `loadFixture(world, domain, name)`.
-- **When steps**: add to `step-definitions/<context>/<audience>/<domain>.<when-steps>.ts`.
+- **When steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.when-steps.ts`.
   - Build fetch options via `createFetchOptions({ apiKey, method, body })`.
   - Call `this.fetchAndStoreResponse(endpoint, fetchOptions)`.
-- **Then steps**: add to `step-definitions/<context>/<audience>/<domain>.<then-steps>.ts`.
+- **Then steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.then-steps.ts`.
   - Parse response with `this.expectLastResponseJson<T>(ZOD_SCHEMA)`.
   - Assert with `expect(actual).toStrictEqual(expected)` or a helper from `helpers/`.
 
