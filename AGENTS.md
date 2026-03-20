@@ -58,7 +58,9 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 The `auto-learn` skill enables AI agents to learn from corrections and automatically update documentation.
 
-It's loaded automatically at startup of agents sessions.
+It must be explicitly invoked at the start of an agent session by calling `skill({ name: "auto-learn" })` in the prompt configuration (see `build-with-autolearn` and `plan-with-autolearn` prompts as examples of this pattern).
+
+For OpenCode agents, the skill is automatically invoked when the agent session starts.
 
 > **Full reference**: `.agents/skills/auto-learn/SKILL.md` — canonical source for workflow, doc file selection logic, and anti-patterns.
 
