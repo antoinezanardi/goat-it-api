@@ -41,6 +41,7 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 | Skill             | Slash command      | Purpose                                                                                                                                             |
 |-------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `auto-learn`            | `/update-docs`           | Detect corrections to AI output, search docs for related guidance, and prompt user to update docs if gaps are found                                  |
 | `create-faketory`       | `/create-faketory`       | Scaffold a faketory (test data factory) for an entity, DTO, command or Mongoose document                                                            |
 | `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port                                                                              |
 | `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions                                                                              |
@@ -52,6 +53,59 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 1. Run `/create-skill <name and description>` — the `create-skill` skill handles the full workflow.
 2. Or follow the steps in `.agents/skills/create-skill/SKILL.md` manually.
+
+### AI Self-Learning via Auto-Learn
+
+The `auto-learn` skill enables AI agents to learn from corrections and automatically update documentation.
+
+#### How it works
+
+1. **AI generates output** that violates a rule or misses guidance
+2. **User provides a correction** (e.g., "This violates the no-switch rule. Fix it.")
+3. **AI auto-detects the correction** using keyword matching (keywords: "violates", "wrong", "required", "missing", "anti-pattern", etc.)
+4. **AI searches docs** in `.agents/skills/*.SKILL.md`, `docs/*.md`, and `tests/*/README.md`
+5. **If guidance found** → AI confirms learning: "✅ Found it in tests/unit/README.md. I'll remember this."
+6. **If guidance NOT found** → AI prompts user: "Should I add this lesson to [file]? (y/n)"
+7. **If user approves** → AI edits the file, shows diff, commits with message: `docs: add [lesson] guidance (from [skill] correction)`
+
+#### Explicit doc updates
+
+Users can also explicitly invoke `/update-docs` to teach AI a lesson without running a skill first:
+
+```
+/update-docs
+
+Me: What lesson should I document?
+You: Mappers must be pure with no side effects
+Me: I found the Mappers section in docs/ARCHITECTURE.md. Should I add this constraint? (y/n)
+```
+
+#### Correction detection keywords
+
+AI detects corrections when user message contains:
+
+- **Negation**: "don't", "no", "never", "forbidden", "can't"
+- **Requirement**: "should", "must", "required", "needs", "missing"
+- **Rule violation**: "violates", "breaks", "incorrect", "wrong", "bad"
+- **Anti-pattern**: "anti-pattern", "wrong approach", "bad practice"
+- **Missing guidance**: "where's", "where is", "why didn't", "forgot"
+- **Contradiction**: "contradicts", "conflicts with", "doesn't match"
+
+If uncertain, AI asks: "Is this a correction I should learn from? (y/n)"
+
+#### Safety guarantees
+
+- **Always shows diff before committing** — User sees exact changes
+- **Requires explicit approval** — User must confirm "y" to proceed
+- **Never auto-commits** — All edits require human confirmation
+- **Git-based rollback** — `git revert <commit>` if needed
+- **No hallucination** — Only adds guidance from real corrections or explicit `/update-docs` requests
+
+#### Reference
+
+- Full workflow: `.agents/skills/auto-learn/SKILL.md`
+- OpenCode wrapper: `.opencode/skills/auto-learn/SKILL.md`
+- Command: `/update-docs`
 
 ---
 
