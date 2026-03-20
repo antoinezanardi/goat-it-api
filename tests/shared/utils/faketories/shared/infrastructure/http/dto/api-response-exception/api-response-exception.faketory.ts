@@ -18,11 +18,11 @@ function createFakeApiResponseExceptionDto(overrides: Partial<ApiResponseExcepti
     statusCode: faker.number.int({ min: 400, max: 599 }),
     message: faker.lorem.sentence(),
     error: "Bad Request",
-    validationDetails: faker.datatype.boolean() ? [
+    validationDetails: faker.helpers.maybe(() => [
       createFakeApiResponseExceptionValidationDetailsDto(),
       createFakeApiResponseExceptionValidationDetailsDto(),
       createFakeApiResponseExceptionValidationDetailsDto(),
-    ] : undefined,
+    ]),
     ...overrides,
   };
 }

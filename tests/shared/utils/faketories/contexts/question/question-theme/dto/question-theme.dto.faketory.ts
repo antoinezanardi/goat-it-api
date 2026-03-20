@@ -51,10 +51,10 @@ function createFakeQuestionThemeCreationDto(creationDto: Partial<QuestionThemeCr
 
 function createFakeQuestionThemeModificationDto(modificationDto: Partial<QuestionThemeModificationDto> = {}): QuestionThemeModificationDto {
   return {
-    slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
-    label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
-    description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
+    slug: faker.helpers.maybe(faker.lorem.slug),
+    label: faker.helpers.maybe(createFakeLocalizedText),
+    aliases: faker.helpers.maybe(createFakeLocalizedTexts),
+    description: faker.helpers.maybe(createFakeLocalizedText),
     color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     ...modificationDto,
   };
