@@ -20,12 +20,29 @@ describe("Question Theme Dto Mappers", () => {
         label: questionTheme.label.en,
         aliases: questionTheme.aliases.en,
         description: questionTheme.description.en,
+        color: questionTheme.color,
         status: questionTheme.status,
         createdAt: questionTheme.createdAt.toISOString(),
         updatedAt: questionTheme.updatedAt.toISOString(),
       });
 
       expect(questionThemeDto).toStrictEqual<QuestionThemeDto>(expectedQuestionThemeDto);
+    });
+
+    it("should map entity.color to DTO.color when present.", () => {
+      const questionTheme = createFakeQuestionTheme({ color: "#FF5733" });
+      const localizationOptions = createFakeLocalizationOptions({ locale: "en" });
+      const questionThemeDto = createQuestionThemeDtoFromEntity(questionTheme, localizationOptions);
+
+      expect(questionThemeDto.color).toBe("#FF5733");
+    });
+
+    it("should handle entity mapping when color is not present.", () => {
+      const questionTheme = createFakeQuestionTheme({ color: undefined });
+      const localizationOptions = createFakeLocalizationOptions({ locale: "en" });
+      const questionThemeDto = createQuestionThemeDtoFromEntity(questionTheme, localizationOptions);
+
+      expect(questionThemeDto.color).toBeUndefined();
     });
   });
 
@@ -39,12 +56,27 @@ describe("Question Theme Dto Mappers", () => {
         label: questionTheme.label,
         aliases: questionTheme.aliases,
         description: questionTheme.description,
+        color: questionTheme.color,
         status: questionTheme.status,
         createdAt: questionTheme.createdAt.toISOString(),
         updatedAt: questionTheme.updatedAt.toISOString(),
       });
 
       expect(adminQuestionThemeDto).toStrictEqual<AdminQuestionThemeDto>(expectedAdminQuestionThemeDto);
+    });
+
+    it("should map entity.color to admin DTO.color when present.", () => {
+      const questionTheme = createFakeQuestionTheme({ color: "#FF5733" });
+      const adminQuestionThemeDto = createAdminQuestionThemeDtoFromEntity(questionTheme);
+
+      expect(adminQuestionThemeDto.color).toBe("#FF5733");
+    });
+
+    it("should handle entity mapping when color is not present.", () => {
+      const questionTheme = createFakeQuestionTheme({ color: undefined });
+      const adminQuestionThemeDto = createAdminQuestionThemeDtoFromEntity(questionTheme);
+
+      expect(adminQuestionThemeDto.color).toBeUndefined();
     });
   });
 });

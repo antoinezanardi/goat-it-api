@@ -19,6 +19,7 @@ describe("Question Theme Modification Dto Mappers", () => {
           label: questionThemeModificationDto.label,
           aliases: questionThemeModificationDto.aliases,
           description: questionThemeModificationDto.description,
+          color: questionThemeModificationDto.color,
         },
       });
       const result = createQuestionThemeModificationCommandFromDto(questionThemeId, questionThemeModificationDto);

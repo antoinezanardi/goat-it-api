@@ -3,8 +3,9 @@ import { z } from "zod";
 import { createZLocalizedDataTableRowSchema } from "@acceptance-features/step-definitions/shared/locale/datatables/locale.datatables.helpers";
 
 const ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA = z.strictObject({
-  slug: z.string(),
-  status: z.string(),
+  slug: z.string().optional(),
+  status: z.string().optional(),
+  color: z.string().optional(),
 });
 
 const ADMIN_QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("label");

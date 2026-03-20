@@ -16,6 +16,30 @@ Feature: Modify Question Theme As Admin
       | slug        | status |
       | video-games | active |
 
+  Scenario: Modifying a question theme with valid color
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path  | type   | value   |
+      | color | string | #FF5733 |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following admin question theme:
+      | color   |
+      | #FF5733 |
+
+  Scenario: Trying to modify a question theme with invalid hex color (no # prefix)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path  | type   | value  |
+      | color | string | FF5733 |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message                                                                       | format | path  | origin | pattern             |
+      | invalid_format | Invalid hex color; must be 6 hexadecimal digits with # prefix (e.g., #FF5733) | regex  | color | string | /^#[\dA-Fa-f]{6}$/u |
+
   Scenario: Modifying a question theme with empty payload returns the same question theme
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with an empty payload
@@ -88,7 +112,7 @@ Feature: Modify Question Theme As Admin
   Scenario: Modifying the portuguese aliases of a question theme to more than two existing associated aliases
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the request payload is overridden with the following values:
-      | path       | type  | value                                   |
+      | path       | type  | value                                    |
       | aliases.pt | array | ["Músicas", "Canções Populares", "Hits"] |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
@@ -99,13 +123,13 @@ Feature: Modify Question Theme As Admin
   Scenario: Modifying the italian aliases of a question theme to only one associated alias rather than the two existing ones
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the request payload is overridden with the following values:
-      | path       | type  | value      |
+      | path       | type  | value       |
       | aliases.it | array | ["Canzoni"] |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following localized aliases for the admin question theme:
-      | locale | aliases  |
-      | it     | Canzoni  |
+      | locale | aliases |
+      | it     | Canzoni |
 
   Scenario: Trying to modify a question theme when provided id is invalid
     Given the database is populated with question themes fixture set with name "five-question-themes"
