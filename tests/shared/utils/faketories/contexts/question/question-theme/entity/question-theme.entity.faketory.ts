@@ -6,6 +6,8 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
+const HEX_COLORS = ["#FF5733", "#33FF57", "#3357FF", "#FF33F5", "#33FFF5", "#F5FF33"];
+
 function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): QuestionTheme {
   return {
     id: faker.database.mongodbObjectId(),
@@ -13,6 +15,7 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
+    color: faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),

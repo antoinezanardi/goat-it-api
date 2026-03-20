@@ -60,6 +60,30 @@ Feature: Create Question Theme As Admin
       | locale | description                                 |
       | es     | Un tema que abarca una amplia gama de temas |
 
+  Scenario: Creating a question theme with valid color
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path  | type   | value   |
+      | color | string | #FF5733 |
+    And the admin creates a new question theme with the request payload
+    Then the request should have succeeded with status code 201
+    And the response should contain the following admin question theme:
+      | color   |
+      | #FF5733 |
+
+  Scenario: Trying to create a question theme with invalid hex color (no # prefix)
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path  | type   | value  |
+      | color | string | FF5733 |
+    And the admin creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message                                                                       | format | path  | origin | pattern             |
+      | invalid_format | Invalid hex color; must be 6 hexadecimal digits with # prefix (e.g., #FF5733) | regex  | color | string | /^#[\dA-Fa-f]{6}$/u |
+
   Scenario: Trying to create a question theme with missing required fields
     When the admin creates a new question theme with an empty payload
     Then the request should have failed with status code 400 and the response should contain the following error:

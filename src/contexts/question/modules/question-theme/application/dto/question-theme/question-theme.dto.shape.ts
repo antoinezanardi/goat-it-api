@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zHexColor, zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_THEME_SLUG_EXAMPLE } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
 import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
@@ -20,6 +20,10 @@ const QUESTION_THEME_DTO = z.strictObject({
   description: z.string()
     .describe("Question Theme's translated description")
     .meta({ example: "Questions related to historical events and timelines." }),
+  color: zHexColor()
+    .optional()
+    .describe("Question Theme's hex color")
+    .meta({ example: "#FF5733" }),
   status: z.enum(QUESTION_THEME_STATUSES)
     .describe("Question Theme's status")
     .meta({ example: QUESTION_THEME_STATUSES[0] }),

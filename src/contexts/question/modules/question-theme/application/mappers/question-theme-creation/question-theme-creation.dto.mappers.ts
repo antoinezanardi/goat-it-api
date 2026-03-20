@@ -8,6 +8,7 @@ function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: Que
       label: questionThemeCreationDto.label,
       aliases: questionThemeCreationDto.aliases,
       description: questionThemeCreationDto.description,
+      color: questionThemeCreationDto.color,
       status: "active",
     },
   };
