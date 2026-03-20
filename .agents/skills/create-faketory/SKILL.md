@@ -56,7 +56,8 @@ function createFakeFoo(overrides: Partial<Foo> = {}): Foo {
     name: faker.lorem.words(2),
     context: faker.helpers.maybe(faker.lorem.sentence),   // optional field
     createdAt: faker.date.past(),
-    updatedAt: faker.date.recent(), ...overrides,
+    updatedAt: faker.date.recent(),
+    ...overrides,
   };
 }
 

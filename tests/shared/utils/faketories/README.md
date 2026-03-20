@@ -126,16 +126,14 @@ fields that are always required, use `faker.datatype.boolean()` directly:
 ### Arrays
 
 ```ts
-// Fixed-size unique arrays
-sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2), // Pick a random subset from an explicit set
-  methods
-:
-faker.helpers.arrayElements([
-  "GET",
-  "POST",
-  "PUT",
-  "DELETE"
-]),
+  // Fixed-size unique arrays
+  sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2), // Pick a random subset from an explicit set
+  methods: faker.helpers.arrayElements([
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE"
+  ]),
 ```
 
 ### Dates
