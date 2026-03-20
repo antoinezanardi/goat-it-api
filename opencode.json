@@ -1,4 +1,12 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true
+  "autoupdate": true,
+  "agent": {
+    "build": {
+      "prompt": "{file:./.opencode/prompts/build-with-autolearn.txt}"
+    },
+    "plan": {
+      "prompt": "{file:./.opencode/prompts/plan-with-autolearn.txt}"
+    }
+  }
 }
