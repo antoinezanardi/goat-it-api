@@ -5,6 +5,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 const FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("8ef21e4eb04eb0fa5a469d87"),
   slug: "cinema",
+  color: "#33A1FF",
   label: createFakeLocalizedText({
     fr: "Cinéma",
     en: "Cinema",
@@ -35,6 +36,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY = createFakeQuestionThemeDocumen
 const FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("ddb03d94cae8df38d28e5adc"),
   slug: "music",
+  color: "#FA2333",
   label: createFakeLocalizedText({
     fr: "Musique",
     en: "Music",
@@ -65,6 +67,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY = createFakeQuestionThemeDocument
 const FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("dbb0664ad4797c6cc79d5aee"),
   slug: "sports",
+  color: undefined,
   label: createFakeLocalizedText({
     fr: "Sport",
     en: "Sports",
@@ -95,6 +98,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY = createFakeQuestionThemeDocumen
 const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
   slug: "science",
+  color: undefined,
   label: createFakeLocalizedText({
     fr: "Science",
     en: "Science",
@@ -125,6 +129,7 @@ const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocume
 const FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
   slug: "history",
+  color: "#FF5733",
   label: createFakeLocalizedText({
     fr: "Histoire",
     en: "History",

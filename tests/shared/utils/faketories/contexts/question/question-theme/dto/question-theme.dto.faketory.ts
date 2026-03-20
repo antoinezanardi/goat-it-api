@@ -8,8 +8,6 @@ import { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/domain
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-const HEX_COLORS = ["#FF5733", "#33FF57", "#3357FF", "#FF33F5", "#33FFF5", "#F5FF33"];
-
 function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> = {}): QuestionThemeDto {
   return {
     id: faker.database.mongodbObjectId(),
@@ -17,7 +15,7 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
     label: faker.word.sample(),
     aliases: [faker.word.sample(), faker.word.sample(), faker.word.sample()],
     description: faker.word.sample(),
-    color: faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(["active", "archived"]),
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),
@@ -32,7 +30,7 @@ function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQue
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
-    color: faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),
@@ -46,7 +44,7 @@ function createFakeQuestionThemeCreationDto(creationDto: Partial<QuestionThemeCr
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
-    color: faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     ...creationDto,
   };
 }
@@ -57,7 +55,7 @@ function createFakeQuestionThemeModificationDto(modificationDto: Partial<Questio
     label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
     aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
     description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    color: faker.datatype.boolean() ? faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }) : undefined,
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     ...modificationDto,
   };
 }

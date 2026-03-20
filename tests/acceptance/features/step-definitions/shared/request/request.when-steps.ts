@@ -16,12 +16,13 @@ import type { GoatItWorld } from "@acceptance-support/types/world.types";
  * @param this - The GoatItWorld context.
  * @param overridesDataTable - The data table containing the override values.
  * @example
- * | path                 | type    | value                    |
- * | user.name            | string  | John Doe                 |
- * | user.age             | number  | 30                       |
- * | isActive             | boolean | true                     |
- * | tags                 | array   | ["tag1", "tag2", "tag3"] |
- * | socialMedias[0].url  | string  | "https://example.com"    |
+ * | path                 | type      | value                    |
+ * | user.name            | string    | John Doe                 |
+ * | user.age             | number    | 30                       |
+ * | isActive             | boolean   | true                     |
+ * | tags                 | array     | ["tag1", "tag2", "tag3"] |
+ * | socialMedias[0].url  | string    | "https://example.com"    |
+ * | optional             | undefined  |                          |
  * @returns void
  *
  */

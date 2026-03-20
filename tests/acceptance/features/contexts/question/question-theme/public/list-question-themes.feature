@@ -11,12 +11,12 @@ Feature: List Question Themes
     Then the request should have succeeded with status code 200
     And the response should contain 5 question themes
     And the response should contain the following question themes:
-      | slug    | label   | aliases              | description                                           | status   |
-      | cinema  | Cinema  | Movies, Films        | Theme about cinema and movies.                        | active   |
-      | music   | Music   | Songs, Tunes         | Theme about music, artists and music genres.          | active   |
-      | sports  | Sports  | Football, Games      | Theme about sports, competitions and athletes.        | archived |
-      | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. | active   |
-      | history | History | Past, Chronology     | Theme about historical events, figures and periods.   | active   |
+      | slug    | label   | aliases              | description                                           | color   | status   |
+      | cinema  | Cinema  | Movies, Films        | Theme about cinema and movies.                        | #33A1FF | active   |
+      | music   | Music   | Songs, Tunes         | Theme about music, artists and music genres.          | #FA2333 | active   |
+      | sports  | Sports  | Football, Games      | Theme about sports, competitions and athletes.        |         | archived |
+      | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. |         | active   |
+      | history | History | Past, Chronology     | Theme about historical events, figures and periods.   | #FF5733 | active   |
 
   Scenario: Listing all question themes in wildcard locale
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -24,12 +24,12 @@ Feature: List Question Themes
     Then the request should have succeeded with status code 200
     And the response should contain 5 question themes
     And the response should contain the following question themes:
-      | slug    | label   | aliases              | description                                           | status   |
-      | cinema  | Cinema  | Movies, Films        | Theme about cinema and movies.                        | active   |
-      | music   | Music   | Songs, Tunes         | Theme about music, artists and music genres.          | active   |
-      | sports  | Sports  | Football, Games      | Theme about sports, competitions and athletes.        | archived |
-      | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. | active   |
-      | history | History | Past, Chronology     | Theme about historical events, figures and periods.   | active   |
+      | slug    | label   | aliases              | description                                           | color   | status   |
+      | cinema  | Cinema  | Movies, Films        | Theme about cinema and movies.                        | #33A1FF | active   |
+      | music   | Music   | Songs, Tunes         | Theme about music, artists and music genres.          | #FA2333 | active   |
+      | sports  | Sports  | Football, Games      | Theme about sports, competitions and athletes.        |         | archived |
+      | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. |         | active   |
+      | history | History | Past, Chronology     | Theme about historical events, figures and periods.   | #FF5733 | active   |
 
   Scenario: Listing all question themes in French locale
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -37,12 +37,12 @@ Feature: List Question Themes
     Then the request should have succeeded with status code 200
     And the response should contain 5 question themes
     And the response should contain the following question themes:
-      | slug    | label    | aliases                | description                                                    | status   |
-      | cinema  | Cinéma   | Films, Ciné            | Thème concernant le cinéma et les films.                       | active   |
-      | music   | Musique  | Chanson, Son           | Thème lié à la musique, aux artistes et aux genres musicaux.   | active   |
-      | sports  | Sport    | Football, Jeux         | Thème concernant les sports, compétitions et athlètes.         | archived |
-      | science | Science  | Technologie, Recherche | Thème couvrant les sciences, découvertes et innovations.       | active   |
-      | history | Histoire | Passé, Chronologie     | Thème sur les événements historiques, personnages et périodes. | active   |
+      | slug    | label    | aliases                | description                                                    | color   | status   |
+      | cinema  | Cinéma   | Films, Ciné            | Thème concernant le cinéma et les films.                       | #33A1FF | active   |
+      | music   | Musique  | Chanson, Son           | Thème lié à la musique, aux artistes et aux genres musicaux.   | #FA2333 | active   |
+      | sports  | Sport    | Football, Jeux         | Thème concernant les sports, compétitions et athlètes.         |         | archived |
+      | science | Science  | Technologie, Recherche | Thème couvrant les sciences, découvertes et innovations.       |         | active   |
+      | history | Histoire | Passé, Chronologie     | Thème sur les événements historiques, personnages et périodes. | #FF5733 | active   |
 
   Scenario: Listing all question themes in French locale with fallback to default because of missing translation
     Given the database is populated with question themes fixture set with name "two-english-only-question-themes"
@@ -50,9 +50,9 @@ Feature: List Question Themes
     Then the request should have succeeded with status code 200
     And the response should contain 2 question themes
     And the response should contain the following question themes:
-      | slug   | label  | aliases       | description                                  | status |
-      | cinema | Cinema | Movies, Films | Theme about cinema and movies.               | active |
-      | music  | Music  | Songs, Tunes  | Theme about music, artists and music genres. | active |
+      | slug   | label  | aliases       | description                                  | color   | status |
+      | cinema | Cinema | Movies, Films | Theme about cinema and movies.               | #33A1FF | active |
+      | music  | Music  | Songs, Tunes  | Theme about music, artists and music genres. |         | active |
 
   Scenario: Listing all question themes when none exist
     When the client retrieves all question themes

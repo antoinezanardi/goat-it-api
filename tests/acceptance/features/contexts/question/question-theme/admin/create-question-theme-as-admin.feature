@@ -10,8 +10,8 @@ Feature: Create Question Theme As Admin
     When the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question theme:
-      | slug              | status |
-      | general-knowledge | active |
+      | slug              | status | color   |
+      | general-knowledge | active | #FF5733 |
     And the response should contain the following localized labels for the admin question theme:
       | locale | label                |
       | en     | General knowledge    |
@@ -48,8 +48,8 @@ Feature: Create Question Theme As Admin
     When the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question theme:
-      | slug              | status |
-      | general-knowledge | active |
+      | slug              | status | color   |
+      | general-knowledge | active | #FF5733 |
     And the response should contain the following localized labels for the admin question theme:
       | locale | label           |
       | es     | Cultura general |
@@ -60,16 +60,16 @@ Feature: Create Question Theme As Admin
       | locale | description                                 |
       | es     | Un tema que abarca una amplia gama de temas |
 
-  Scenario: Creating a question theme with valid color
+  Scenario: Creating a question theme with only required fields
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the request payload is overridden with the following values:
-      | path  | type   | value   |
-      | color | string | #FF5733 |
-    And the admin creates a new question theme with the request payload
+      | path  | type      | value |
+      | color | undefined |       |
+    When the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question theme:
-      | color   |
-      | #FF5733 |
+      | slug              | status |
+      | general-knowledge | active |
 
   Scenario: Trying to create a question theme with invalid hex color (no # prefix)
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"

@@ -7,8 +7,6 @@ import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-const HEX_COLORS = ["#FF5733", "#33FF57", "#3357FF", "#FF33F5", "#33FFF5", "#F5FF33"];
-
 function createFakeQuestionThemeDocument(questionThemeDocument: Partial<QuestionThemeMongooseDocumentStub> = {}): QuestionThemeMongooseDocumentStub {
   const documentId = questionThemeDocument._id?.toString() ?? faker.database.mongodbObjectId();
 
@@ -19,7 +17,7 @@ function createFakeQuestionThemeDocument(questionThemeDocument: Partial<Question
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
-    color: faker.helpers.maybe(() => faker.helpers.arrayElement(HEX_COLORS), { probability: 0.7 }),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
