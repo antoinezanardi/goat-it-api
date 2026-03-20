@@ -7,17 +7,17 @@
 
 In-depth guides live under `docs/` and `tests/`:
 
-| File                                      | Purpose                                                                                 |
-|-------------------------------------------|-----------------------------------------------------------------------------------------|
-| `docs/ARCHITECTURE.md`                    | Hexagonal architecture, layers, data flow, DI patterns, branching/commit rules          |
-| `docs/FAKETORIES.md`                      | Pointer to `tests/shared/utils/faketories/README.md`                                    |
-| `docs/MOCKS.md`                           | Pointer to `tests/unit/utils/mocks/README.md`                                           |
-| `docs/UNIT-TESTS.md`                      | Pointer to `tests/unit/README.md`                                                       |
-| `docs/ACCEPTANCE-TESTS.md`               | Pointer to `tests/acceptance/README.md`                                                 |
-| `docs/BRUNO.md`                           | Bruno API collection setup (`configs/bruno/Goat It/`)                                   |
-| `tests/unit/README.md`                    | Full writing guide per file type (controllers, use-cases, repos, DTOs, helpers, errors) |
-| `tests/unit/utils/mocks/README.md`        | Mock factory conventions and anti-patterns                                              |
-| `tests/shared/utils/faketories/README.md` | Faketory conventions, organization and anti-patterns                                    |
+| File                                      | Purpose                                                                                   |
+|-------------------------------------------|-------------------------------------------------------------------------------------------|
+| `docs/ARCHITECTURE.md`                    | Hexagonal architecture, layers, data flow, DI patterns, branching/commit rules            |
+| `docs/FAKETORIES.md`                      | Pointer to `tests/shared/utils/faketories/README.md`                                      |
+| `docs/MOCKS.md`                           | Pointer to `tests/unit/utils/mocks/README.md`                                             |
+| `docs/UNIT-TESTS.md`                      | Pointer to `tests/unit/README.md`                                                         |
+| `docs/ACCEPTANCE-TESTS.md`                | Pointer to `tests/acceptance/README.md`                                                   |
+| `docs/BRUNO.md`                           | Bruno API collection setup (`configs/bruno/Goat It/`)                                     |
+| `tests/unit/README.md`                    | Full writing guide per file type (controllers, use-cases, repos, DTOs, helpers, errors)   |
+| `tests/unit/utils/mocks/README.md`        | Mock factory conventions and anti-patterns                                                |
+| `tests/shared/utils/faketories/README.md` | Faketory conventions, organization and anti-patterns                                      |
 | `tests/acceptance/README.md`              | Acceptance test guide (Cucumber, fixtures, payloads, step definitions, DataTable helpers) |
 
 ---
@@ -39,13 +39,13 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 ### Available skills
 
-| Skill             | Slash command      | Purpose                                                                                                                                             |
-|-------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `auto-learn`            | `/update-docs`           | Detect corrections to AI output, search docs for related guidance, and prompt user to update docs if gaps are found                                  |
+| Skill                   | Slash command            | Purpose                                                                                                                                             |
+|-------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `auto-learn`            | `/update-docs`           | Detect corrections to AI output, search docs for related guidance, and prompt user to update docs if gaps are found                                 |
 | `create-faketory`       | `/create-faketory`       | Scaffold a faketory (test data factory) for an entity, DTO, command or Mongoose document                                                            |
 | `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port                                                                              |
 | `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions                                                                              |
-| `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario for any feature or endpoint                                                                    |
+| `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario for any feature or endpoint                                                                   |
 | `create-skill`          | `/create-skill`          | Scaffold a new agent skill following repository conventions                                                                                         |
 | `challenge-plan`        | `/challenge-plan`        | Challenge a new feature idea by exploring the codebase, proposing evidence-backed answers, and producing a zero-ambiguity implementation-ready plan |
 
@@ -58,6 +58,8 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 The `auto-learn` skill enables AI agents to learn from corrections and automatically update documentation.
 
+It must be loaded at the start of every agentic workflow to enable real-time learning.
+
 #### How it works
 
 1. **AI generates output** that violates a rule or misses guidance
@@ -66,7 +68,7 @@ The `auto-learn` skill enables AI agents to learn from corrections and automatic
 4. **AI searches docs** in `.agents/skills/*.SKILL.md`, `docs/*.md`, and `tests/*/README.md`
 5. **If guidance found** → AI confirms learning: "✅ Found it in tests/unit/README.md. I'll remember this."
 6. **If guidance NOT found** → AI prompts user: "Should I add this lesson to [file]? (y/n)"
-7. **If user approves** → AI edits the file, shows diff, commits with message: `docs: add [lesson] guidance (from [skill] correction)`
+7. **If user approves** → AI edits the file, shows diff
 
 #### Explicit doc updates
 
