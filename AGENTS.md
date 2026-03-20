@@ -60,7 +60,7 @@ The `auto-learn` skill enables AI agents to learn from corrections and automatic
 
 It must be explicitly invoked at the start of an agent session by calling `skill({ name: "auto-learn" })` in the prompt configuration (see `build-with-autolearn` and `plan-with-autolearn` prompts as examples of this pattern).
 
-For OpenCode agents, the skill is automatically invoked when the agent session starts.
+For OpenCode agents, the skill is configured to run at session start via agent prompt instructions.
 
 > **Full reference**: `.agents/skills/auto-learn/SKILL.md` — canonical source for workflow, doc file selection logic, and anti-patterns.
 
