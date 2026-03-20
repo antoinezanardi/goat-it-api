@@ -13,10 +13,12 @@ In-depth guides live under `docs/` and `tests/`:
 | `docs/FAKETORIES.md`                      | Pointer to `tests/shared/utils/faketories/README.md`                                    |
 | `docs/MOCKS.md`                           | Pointer to `tests/unit/utils/mocks/README.md`                                           |
 | `docs/UNIT-TESTS.md`                      | Pointer to `tests/unit/README.md`                                                       |
+| `docs/ACCEPTANCE-TESTS.md`               | Pointer to `tests/acceptance/README.md`                                                 |
 | `docs/BRUNO.md`                           | Bruno API collection setup (`configs/bruno/Goat It/`)                                   |
 | `tests/unit/README.md`                    | Full writing guide per file type (controllers, use-cases, repos, DTOs, helpers, errors) |
 | `tests/unit/utils/mocks/README.md`        | Mock factory conventions and anti-patterns                                              |
 | `tests/shared/utils/faketories/README.md` | Faketory conventions, organization and anti-patterns                                    |
+| `tests/acceptance/README.md`              | Acceptance test guide (Cucumber, fixtures, payloads, step definitions, DataTable helpers) |
 
 ---
 
@@ -39,11 +41,12 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 | Skill             | Slash command      | Purpose                                                                                                                                             |
 |-------------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `create-faketory` | `/create-faketory` | Scaffold a faketory (test data factory) for an entity, DTO, command or Mongoose document                                                            |
-| `create-mock`     | `/create-mock`     | Scaffold a typed Vitest mock factory for a repository or use-case port                                                                              |
-| `write-unit-test` | `/write-unit-test` | Write or complete a unit test file following 100%-coverage conventions                                                                              |
-| `create-skill`    | `/create-skill`    | Scaffold a new agent skill following repository conventions                                                                                         |
-| `challenge-plan`  | `/challenge-plan`  | Challenge a new feature idea by exploring the codebase, proposing evidence-backed answers, and producing a zero-ambiguity implementation-ready plan |
+| `create-faketory`       | `/create-faketory`       | Scaffold a faketory (test data factory) for an entity, DTO, command or Mongoose document                                                            |
+| `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port                                                                              |
+| `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions                                                                              |
+| `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario for any feature or endpoint                                                                    |
+| `create-skill`          | `/create-skill`          | Scaffold a new agent skill following repository conventions                                                                                         |
+| `challenge-plan`        | `/challenge-plan`        | Challenge a new feature idea by exploring the codebase, proposing evidence-backed answers, and producing a zero-ambiguity implementation-ready plan |
 
 ### Adding a new skill
 
