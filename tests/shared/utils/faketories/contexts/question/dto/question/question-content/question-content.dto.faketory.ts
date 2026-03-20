@@ -6,8 +6,8 @@ function createFakeQuestionContentDto(questionContentDto: Partial<QuestionConten
   return {
     statement: faker.lorem.sentence(),
     answer: faker.lorem.sentence(),
-    context: faker.datatype.boolean() ? faker.lorem.sentence() : undefined,
-    trivia: faker.datatype.boolean() ? [faker.lorem.sentence(), faker.lorem.sentence()] : undefined,
+    context: faker.helpers.maybe(faker.lorem.sentence),
+    trivia: faker.helpers.maybe(() => [faker.lorem.sentence(), faker.lorem.sentence()]),
     ...questionContentDto,
   };
 }

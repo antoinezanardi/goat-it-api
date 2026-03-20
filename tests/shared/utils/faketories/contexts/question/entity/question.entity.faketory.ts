@@ -38,7 +38,7 @@ function createFakeQuestionAuthor(questionAuthor: Partial<QuestionAuthor> = {}):
   const role = questionAuthor.role ?? faker.helpers.arrayElement(QUESTION_AUTHOR_ROLES);
   const providedName = questionAuthor.name;
   const providedGameId = "gameId" in questionAuthor ? questionAuthor.gameId : undefined;
-  const fakeName = faker.datatype.boolean() ? faker.person.fullName() : undefined;
+  const fakeName = faker.helpers.maybe(faker.person.fullName);
 
   if (role === "game") {
     return {
@@ -56,7 +56,7 @@ function createFakeQuestionAuthor(questionAuthor: Partial<QuestionAuthor> = {}):
 function createFakeQuestionRejection(questionRejection: Partial<QuestionRejection> = {}): QuestionRejection {
   return {
     type: faker.helpers.arrayElement(QUESTION_REJECTION_TYPES),
-    comment: faker.datatype.boolean() ? faker.lorem.sentence() : undefined,
+    comment: faker.helpers.maybe(faker.lorem.sentence),
     ...questionRejection,
   };
 }
@@ -70,7 +70,7 @@ function createFakeQuestion(question: Partial<Question> = {}): Question {
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthor(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
-    rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
+    rejection: faker.helpers.maybe(createFakeQuestionRejection),
     sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
     createdAt: faker.date.past(),
     updatedAt: faker.date.recent(),

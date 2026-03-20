@@ -25,8 +25,8 @@ function createFakeQuestionContentAggregate(questionContentAggregate: Partial<Qu
   return {
     statement: createFakeLocalizedText(),
     answer: createFakeLocalizedText(),
-    context: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    trivia: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
+    context: faker.helpers.maybe(createFakeLocalizedText),
+    trivia: faker.helpers.maybe(createFakeLocalizedTexts),
     ...questionContentAggregate,
   };
 }
@@ -50,7 +50,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
-    rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
+    rejection: faker.helpers.maybe(createFakeQuestionRejection),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     ...questionAggregate,

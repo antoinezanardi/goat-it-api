@@ -19,7 +19,7 @@ function createFakeQuestionDto(questionDto: Partial<QuestionDto> = {}): Question
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthorDto(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
-    rejection: faker.datatype.boolean() ? createFakeQuestionRejectionDto() : undefined,
+    rejection: faker.helpers.maybe(createFakeQuestionRejectionDto),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     createdAt: faker.date.anytime().toISOString(),
     updatedAt: faker.date.anytime().toISOString(),

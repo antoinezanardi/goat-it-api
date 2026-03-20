@@ -8,8 +8,8 @@ function createFakeAdminQuestionContentDto(adminQuestionContentDto: Partial<Admi
   return {
     statement: createFakeLocalizedText(),
     answer: createFakeLocalizedText(),
-    context: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    trivia: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
+    context: faker.helpers.maybe(createFakeLocalizedText),
+    trivia: faker.helpers.maybe(createFakeLocalizedTexts),
     ...adminQuestionContentDto,
   };
 }
