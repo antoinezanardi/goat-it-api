@@ -120,8 +120,34 @@ pnpm test:mutation:force # Full mutation run (clears incremental cache)
 ### Quality gate (what CI runs)
 
 ```bash
-pnpm lint && pnpm typecheck && pnpm test:unit:cov
+pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
 ```
+
+### Agent Workflow Guardrails
+
+**Agents MUST follow these rules:**
+
+1. **NEVER auto-commit** — Under no circumstances should an agent create a git commit without explicit user request in the conversation.
+
+2. **Quality gate is part of "Definition of Done"** — When applicable to the work (e.g., after writing features, fixes, tests):
+   ```bash
+   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
+   ```
+   - Run these checks before considering the work complete
+   - Report results (pass/fail) explicitly to the user
+   - **If any step fails, the agent MUST attempt to resolve the issue:**
+     - Review error output and identify root cause
+     - Apply fixes (e.g., reformat code, fix type errors, update tests)
+     - Re-run the failing step to confirm resolution
+     - Only escalate to the user if the issue cannot be resolved automatically
+   - Work is only "done" when all quality gates pass (if applicable)
+
+3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
+   - Before committing, show the diff and proposed commit message
+   - Wait for confirmation
+   - Never assume silence is approval
+
+**Rationale**: Code integrity depends on intentional CI verification. User agency over git history is non-negotiable.
 
 ---
 
