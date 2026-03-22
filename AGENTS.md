@@ -143,7 +143,7 @@ pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnp
     - Re-run the failing step to confirm resolution
     - Only escalate to the user if the issue cannot be resolved automatically
   - Work is only "done" when all quality gates pass (if applicable)
-  - Mutation tests are not required for every change but should be run manually by the user before merging significant changes
+  - Mutation tests must not be run by the agent but should be run manually by the user before merging significant changes. Warn the user to run mutation tests before committing
 
 3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
   - Before committing, show the diff and proposed commit message
