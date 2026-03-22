@@ -120,7 +120,7 @@ pnpm test:mutation:force # Full mutation run (clears incremental cache)
 ### Quality gate (what CI runs)
 
 ```bash
-pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
+pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
 ```
 
 ### Agent Workflow Guardrails
@@ -130,9 +130,11 @@ pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
 1. **NEVER auto-commit** — Under no circumstances should an agent create a git commit without explicit user request in the conversation.
 
 2. **Quality gate is part of "Definition of Done"** — When applicable to the work (e.g., after writing features, fixes, tests):
+
    ```bash
-   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
+   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
    ```
+
    - Run these checks before considering the work complete
    - Report results (pass/fail) explicitly to the user
    - **If any step fails, the agent MUST attempt to resolve the issue:**
