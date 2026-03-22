@@ -120,8 +120,37 @@ pnpm test:mutation:force # Full mutation run (clears incremental cache)
 ### Quality gate (what CI runs)
 
 ```bash
-pnpm lint && pnpm typecheck && pnpm test:unit:cov
+pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
 ```
+
+### Agent Workflow Guardrails
+
+**Agents MUST follow these rules:**
+
+1. **NEVER auto-commit** — Under no circumstances should an agent create a git commit without explicit user request in the conversation.
+
+2. **Quality gate is part of "Definition of Done"** — When applicable to the work (e.g., after writing features, fixes, tests):
+
+   ```bash
+   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
+   ```
+
+  - Run these checks before considering the work complete
+  - Report results (pass/fail) explicitly to the user
+  - **If any step fails, the agent MUST attempt to resolve the issue:**
+    - Review error output and identify root cause
+    - Apply fixes (e.g., reformat code, fix type errors, update tests)
+    - Re-run the failing step to confirm resolution
+    - Only escalate to the user if the issue cannot be resolved automatically
+  - For agents, work is only "done" when all of the above quality gate commands pass (if applicable)
+  - Mutation testing is a separate verification step run in CI and/or manually by the user; it is **not** part of the agent's quality gate commands
+  - Agents must **not** run mutation tests; instead, they must remind the user to run/verify mutation tests (or wait for CI) before merging significant changes
+3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
+  - Before committing, show the diff and proposed commit message
+  - Wait for confirmation
+  - Never assume silence is approval
+
+**Rationale**: Code integrity depends on intentional CI verification. User agency over git history is non-negotiable.
 
 ---
 
@@ -257,9 +286,14 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 ## Testing
 
-> Full per-file-type writing guide: `tests/unit/README.md`
+> Full per-file-type writing guide for unit tests: `tests/unit/README.md`
+> Mock factory conventions: `tests/unit/utils/mocks/README.md`
+> Faketory conventions: `tests/shared/utils/faketories/README.md`
+> Acceptance test guide: `tests/acceptance/README.md`
 
 ### Unit tests
+
+> Full guide: `tests/unit/README.md`
 
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`)
 - **100% coverage is required** — all branches, lines, functions (enforced by `thresholds: { 100: true }`)
@@ -267,33 +301,6 @@ No relative imports (`../` or `./`) — always use path aliases.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; use `it.each` for parametrized input→output cases
 - Private methods tested via `ClassName["privateMethod"](...)` syntax
-
-### Test structure pattern
-
-```typescript
-describe("Foo Service", () => {
-  let service: FooService;
-  let mocks: { repositories: { foo: ReturnType<typeof createMockedFooRepository> } };
-
-  beforeEach(async () => {
-    mocks = { repositories: { foo: createMockedFooRepository() } };
-    const module = await Test.createTestingModule({ providers: [...] }).compile();
-    service = module.get(FooService);
-  });
-
-  describe(FooService.prototype.someMethod, () => {
-    it("should do X when Y.", async () => {
-      //...
-    });
-  });
-});
-```
-
-- `describe` inner blocks reference the method directly: `describe(MyClass.prototype.myMethod, ...)`
-- Test descriptions follow pattern: `"should <verb> when <condition>."`
-- Use `toStrictEqual<ExpectedType>(value)` for typed equality assertions
-- Use `toHaveBeenCalledExactlyOnceWith` when verifying single calls
-- Use `await expect(promise).rejects.toThrow(exactErrorInstance)` for error assertions
 
 ### Mocks (`@mocks/*`)
 
