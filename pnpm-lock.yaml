@@ -51,8 +51,8 @@ importers:
         specifier: ^4.6.1
         version: 4.6.1(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@10.5.0)(pino@10.1.0)(rxjs@7.8.2)
       nestjs-zod:
-        specifier: ^5.1.1
-        version: 5.1.1(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.6(@fastify/static@9.0.0)(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.3.6)
+        specifier: ^5.2.1
+        version: 5.2.1(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.6(@fastify/static@9.0.0)(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.3.6)
       radashi:
         specifier: ^12.7.2
         version: 12.7.2
@@ -5273,8 +5273,8 @@ packages:
       pino-http: ^6.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
       rxjs: ^7.1.0
 
-  nestjs-zod@5.1.1:
-    resolution: {integrity: sha512-pXa9Jrdip7iedKvGxJTvvCFVRCoIcNENPCsHjpCefPH3PcFejRgkZkUcr3TYITRyxnUk7Zy5OsLpirZGLYBfBQ==}
+  nestjs-zod@5.2.1:
+    resolution: {integrity: sha512-pGfOsLVcXJKB6vdh59YMN9o3hvaOKFISo1EU9IUCMGl5yb0JsvY6A0ZnNnTmwb8zs7o1cWwC8GeVrawvnL8/rw==}
     peerDependencies:
       '@nestjs/common': ^10.0.0 || ^11.0.0
       '@nestjs/swagger': ^7.4.2 || ^8.0.0 || ^11.0.0
@@ -12034,7 +12034,7 @@ snapshots:
       pino-http: 10.5.0
       rxjs: 7.8.2
 
-  nestjs-zod@5.1.1(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.6(@fastify/static@9.0.0)(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.3.6):
+  nestjs-zod@5.2.1(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/swagger@11.2.6(@fastify/static@9.0.0)(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.17(@nestjs/common@11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2))(rxjs@7.8.2)(zod@4.3.6):
     dependencies:
       '@nestjs/common': 11.1.17(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       deepmerge: 4.3.1
