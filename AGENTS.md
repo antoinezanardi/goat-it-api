@@ -142,9 +142,9 @@ pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnp
     - Apply fixes (e.g., reformat code, fix type errors, update tests)
     - Re-run the failing step to confirm resolution
     - Only escalate to the user if the issue cannot be resolved automatically
-  - Work is only "done" when all quality gates pass (if applicable)
-  - Mutation tests must not be run by the agent but should be run manually by the user before merging significant changes. Warn the user to run mutation tests before committing
-
+  - For agents, work is only "done" when all of the above quality gate commands pass (if applicable)
+  - Mutation testing is a separate verification step run in CI and/or manually by the user; it is **not** part of the agent's quality gate commands
+  - Agents must **not** run mutation tests; instead, they must remind the user to run/verify mutation tests (or wait for CI) before merging significant changes
 3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
   - Before committing, show the diff and proposed commit message
   - Wait for confirmation
