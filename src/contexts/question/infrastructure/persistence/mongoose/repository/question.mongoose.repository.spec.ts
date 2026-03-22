@@ -325,4 +325,43 @@ describe("Question Mongoose Repository", () => {
       expect(actual).toStrictEqual<Question>(expectedQuestion);
     });
   });
+
+  describe(QuestionMongooseRepository.prototype.countLiveByThemeId, () => {
+    it("should return count of live questions when referencing a theme.", async() => {
+      const themeId = "618c1f4b3a2f000000000038";
+      const expectedCount = 2;
+      mocks.models.question.countDocuments.mockResolvedValueOnce(expectedCount);
+
+      const actual = await repositories.question.countLiveByThemeId(themeId);
+
+      expect(actual).toBe(expectedCount);
+    });
+
+    it("should return 0 when no live questions reference the theme.", async() => {
+      const themeId = "618c1f4b3a2f000000000039";
+      mocks.models.question.countDocuments.mockResolvedValueOnce(0);
+
+      const actual = await repositories.question.countLiveByThemeId(themeId);
+
+      expect(actual).toBe(0);
+    });
+
+    it("should call countDocuments with correct query parameters when called.", async() => {
+      const themeId = "618c1f4b3a2f00000000003a";
+      mocks.models.question.countDocuments.mockResolvedValueOnce(0);
+
+      await repositories.question.countLiveByThemeId(themeId);
+
+      expect(mocks.models.question.countDocuments).toHaveBeenCalledExactlyOnceWith({
+        themes: {
+          $elemMatch: {
+            themeId: new Types.ObjectId(themeId),
+          },
+        },
+        status: {
+          $in: ["pending", "active"],
+        },
+      });
+    });
+  });
 });

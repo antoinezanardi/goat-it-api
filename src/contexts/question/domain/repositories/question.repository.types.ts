@@ -10,6 +10,7 @@ type QuestionRepository = {
   archive: (id: string) => Promise<Question | undefined>;
   assignTheme: (questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract) => Promise<Question | undefined>;
   removeTheme: (questionId: string, themeId: string) => Promise<Question | undefined>;
+  countLiveByThemeId: (themeId: string) => Promise<number>;
 };
 
 export type { QuestionRepository };

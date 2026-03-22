@@ -1,10 +1,12 @@
 import { Test } from "@nestjs/testing";
 
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question/modules/question-theme/domain/repositories/question-theme.repository.constants";
+import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
@@ -15,6 +17,7 @@ describe("Archive Question Theme Use Case", () => {
   let mocks: {
     repositories: {
       questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;
+      question: ReturnType<typeof createMockedQuestionRepository>;
     };
   };
 
@@ -22,6 +25,7 @@ describe("Archive Question Theme Use Case", () => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
+        question: createMockedQuestionRepository(),
       },
     };
     const testingModule = await Test.createTestingModule({
@@ -30,6 +34,10 @@ describe("Archive Question Theme Use Case", () => {
         {
           provide: QUESTION_THEME_REPOSITORY_TOKEN,
           useValue: mocks.repositories.questionTheme,
+        },
+        {
+          provide: QUESTION_REPOSITORY_TOKEN,
+          useValue: mocks.repositories.question,
         },
       ],
     }).compile();
@@ -42,6 +50,7 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValue(createFakeQuestionTheme({
         status: "active",
       }));
+      mocks.repositories.question.countLiveByThemeId.mockResolvedValue(0);
     });
 
     it("should archive a question theme from repository when called.", async() => {
@@ -102,6 +111,23 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValueOnce(foundQuestionTheme);
 
       await expect(archiveQuestionThemeUseCase["throwIfQuestionThemeNotArchivable"](questionThemeId)).resolves.toBeUndefined();
+    });
+  });
+
+  describe("throwIfLiveQuestionsReferenceTheme", () => {
+    it("should not throw when theme has no live questions referencing it.", async() => {
+      const questionThemeId = "question-theme-id-1";
+      mocks.repositories.question.countLiveByThemeId.mockResolvedValueOnce(0);
+
+      await expect(archiveQuestionThemeUseCase["throwIfLiveQuestionsReferenceTheme"](questionThemeId)).resolves.toBeUndefined();
+    });
+
+    it("should throw QuestionThemeReferencedByLiveQuestionsError when live questions reference the theme.", async() => {
+      const questionThemeId = "question-theme-id-1";
+      mocks.repositories.question.countLiveByThemeId.mockResolvedValueOnce(3);
+      const expectedError = new QuestionThemeReferencedByLiveQuestionsError(questionThemeId, 3);
+
+      await expect(archiveQuestionThemeUseCase["throwIfLiveQuestionsReferenceTheme"](questionThemeId)).rejects.toThrow(expectedError);
     });
   });
 });

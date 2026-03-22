@@ -1,4 +1,4 @@
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 describe("Question Theme Errors", () => {
   describe(QuestionThemeNotFoundError, () => {
@@ -54,6 +54,20 @@ describe("Question Theme Errors", () => {
       const error = new ReferencedQuestionThemeArchivedError("themeId");
 
       expect(error.message).toBe("Referenced question theme with id themeId is archived");
+    });
+  });
+
+  describe(QuestionThemeReferencedByLiveQuestionsError, () => {
+    it("should have name QuestionThemeReferencedByLiveQuestionsError when created.", () => {
+      const error = new QuestionThemeReferencedByLiveQuestionsError("themeId", 3);
+
+      expect(error.name).toBe("QuestionThemeReferencedByLiveQuestionsError");
+    });
+
+    it("should have message with theme id and live question count when created.", () => {
+      const error = new QuestionThemeReferencedByLiveQuestionsError("themeId", 3);
+
+      expect(error.message).toBe("Question theme with id themeId is referenced by 3 live question(s) and cannot be archived");
     });
   });
 });
