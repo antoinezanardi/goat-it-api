@@ -1,7 +1,6 @@
-import { beforeAll } from "vitest";
+import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
-import { mockNestCommon } from "@mocks/shared/nest/nest.mock";
-
-beforeAll(() => {
-  mockNestCommon();
-});
+vi.mock("@nestjs/common", async importActual => ({
+  ...await importActual(),
+  Logger: vi.fn<() => ReturnType<typeof getMockedLoggerInstance>>(getMockedLoggerInstance),
+}));
