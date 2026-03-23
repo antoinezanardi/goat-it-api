@@ -7,20 +7,10 @@ const mockedLogger = vi.hoisted(() => ({
   fatal: vi.fn<(message: unknown, trace?: string, ...optionalParameters: unknown[]) => void>(),
 }));
 
-function mockNestCommon(): void {
-  vi.mock("@nestjs/common", async importActual => ({
-    ...await importActual(),
-    Logger: vi.fn<() => typeof mockedLogger>(function logger() {
-      return mockedLogger;
-    }),
-  }));
-}
-
 function getMockedLoggerInstance(): typeof mockedLogger {
   return mockedLogger;
 }
 
 export {
-  mockNestCommon,
   getMockedLoggerInstance,
 };
