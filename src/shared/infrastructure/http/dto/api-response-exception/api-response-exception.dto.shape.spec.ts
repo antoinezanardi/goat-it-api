@@ -90,4 +90,25 @@ describe("Api Response Exception DTO Shape", () => {
       expect(API_RESPONSE_EXCEPTION_DTO.shape.validationDetails.description).toBe("List of validation errors, when requested DTO validation fails");
     });
   });
+
+  describe("errorCode", () => {
+    it("should throw a zod error when assigned a non-string value.", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionDto, { errorCode: 123 });
+
+      expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.errorCode.description).toBe("Machine-readable error code for frontend mapping and localization");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Machine-readable error code for frontend mapping and localization",
+        example: "question-theme-referenced-by-live-questions",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_DTO.shape.errorCode.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
 });

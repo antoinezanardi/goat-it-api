@@ -24,29 +24,29 @@ Feature: Archive Question Theme As Admin
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin archives the question theme with id "3ece5c485ddc36118b9fbd5c"
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                                   |
-      | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found |
+      | error     | statusCode | message                                                   | errorCode                |
+      | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found | question-theme-not-found |
 
   Scenario: Trying to archive an already archived question theme
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin archives the question theme with id "dbb0664ad4797c6cc79d5aee"
     Then the request should have failed with status code 400 and the response should contain the following error:
-      | error       | statusCode | message                                                                       |
-      | Bad Request | 400        | Question theme with id dbb0664ad4797c6cc79d5aee already has status 'archived' |
+      | error       | statusCode | message                                                                       | errorCode                       |
+      | Bad Request | 400        | Question theme with id dbb0664ad4797c6cc79d5aee already has status 'archived' | question-theme-already-archived |
 
   Scenario: Trying to archive a question theme that is referenced by an active question
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin archives the question theme with id "8ef21e4eb04eb0fa5a469d87"
     Then the request should have failed with status code 409 and the response should contain the following error:
-      | error    | statusCode | message                                                                                                    |
-      | Conflict | 409        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is referenced by 1 live question(s) and cannot be archived |
+      | error    | statusCode | message                                                                                                    | errorCode                                   |
+      | Conflict | 409        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is referenced by 1 live question(s) and cannot be archived | question-theme-referenced-by-live-questions |
 
   Scenario: Trying to archive a question theme that is referenced by a pending question
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin archives the question theme with id "ddb03d94cae8df38d28e5adc"
     Then the request should have failed with status code 409 and the response should contain the following error:
-      | error    | statusCode | message                                                                                                    |
-      | Conflict | 409        | Question theme with id ddb03d94cae8df38d28e5adc is referenced by 1 live question(s) and cannot be archived |
+      | error    | statusCode | message                                                                                                    | errorCode                                   |
+      | Conflict | 409        | Question theme with id ddb03d94cae8df38d28e5adc is referenced by 1 live question(s) and cannot be archived | question-theme-referenced-by-live-questions |
 
   Scenario: Archiving a question theme that is only referenced by non-live questions
     Given the database is populated with questions fixture set with name "five-questions"

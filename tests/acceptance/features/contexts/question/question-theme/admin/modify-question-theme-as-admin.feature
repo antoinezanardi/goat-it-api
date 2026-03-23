@@ -148,8 +148,8 @@ Feature: Modify Question Theme As Admin
       | slug | string | video-games |
     And the admin modifies the question theme with id "3ece5c485ddc36118b9fbd5c" with the request payload
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                                   |
-      | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found |
+      | error     | statusCode | message                                                   | errorCode                |
+      | Not Found | 404        | Question theme with id 3ece5c485ddc36118b9fbd5c not found | question-theme-not-found |
 
   Scenario: Trying to modify a question theme with an empty slug
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -185,8 +185,8 @@ Feature: Modify Question Theme As Admin
       | slug | string | history |
     And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload
     Then the request should have failed with status code 409 and the response should contain the following error:
-      | error    | statusCode | message                                         |
-      | Conflict | 409        | Question theme with slug history already exists |
+      | error    | statusCode | message                                         | errorCode                          |
+      | Conflict | 409        | Question theme with slug history already exists | question-theme-slug-already-exists |
 
   Scenario: Trying to modify a question theme with a too short slug
     Given the database is populated with question themes fixture set with name "five-question-themes"

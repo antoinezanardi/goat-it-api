@@ -44,6 +44,7 @@
 - Keep tests colocated: `src/.../<unit>.spec.ts`.
 - One assertion per `it` block. If you need multiple verifications, create multiple `it` tests describing each expected behavior.
 - Test names: follow the pattern `should <expected behavior> when <condition>.` (example: `it("should return all question themes when called.", ...)`).
+  - This pattern also applies to test names in `it.each` cases.
 - Use path aliases for imports; follow repository import order conventions.
 - Use faketories (`@faketories/...`) to build test data and `@mocks/...` factories for dependency mocks. Never use manual mock objects inline. See [Mocks & Faketories (where and how)](#mocks--faketories-where-and-how) for details.
 - Prefer existing mock/faketory factory functions. If none fit, add new mocks or factories under `tests/unit/utils/mocks/` or `tests/shared/utils/faketories/` mirroring the source path.

@@ -311,8 +311,8 @@ Feature: Create Question Theme As Admin
     And the request payload is set from scope "question-theme", type "creation" and name "complete"
     And the admin creates a new question theme with the request payload
     Then the request should have failed with status code 409 and the response should contain the following error:
-      | error    | statusCode | message                                                   |
-      | Conflict | 409        | Question theme with slug general-knowledge already exists |
+      | error    | statusCode | message                                                   | errorCode                          |
+      | Conflict | 409        | Question theme with slug general-knowledge already exists | question-theme-slug-already-exists |
 
   Scenario: Trying to create a question theme without API key
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"

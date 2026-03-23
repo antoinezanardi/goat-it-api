@@ -1,23 +1,19 @@
 import { ServerResponse } from "node:http";
 
+import { BadRequestException, ForbiddenException, HttpException, HttpStatus, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { ZodValidationException } from "nestjs-zod";
-import { BadRequestException, ConflictException, ForbiddenException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
-import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
-import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
-import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeReferencedByLiveQuestionsError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
 import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
 
-import type { HttpException } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
 
 describe("Global Exception Filter", () => {
@@ -211,52 +207,102 @@ describe("Global Exception Filter", () => {
       {
         test: "should map domain error to http exception and send it when called with known QuestionThemeNotFoundError.",
         exception: new QuestionThemeNotFoundError("question-theme-id"),
-        expectedSentException: new NotFoundException("Question theme with id question-theme-id not found"),
+        expectedSentException: new HttpException({
+          error: "Not Found",
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Question theme with id question-theme-id not found",
+          errorCode: "question-theme-not-found",
+        }, HttpStatus.NOT_FOUND),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionNotFoundError.",
         exception: new QuestionNotFoundError("question-id"),
-        expectedSentException: new NotFoundException("Question with id question-id not found"),
+        expectedSentException: new HttpException({
+          error: "Not Found",
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Question with id question-id not found",
+          errorCode: "question-not-found",
+        }, HttpStatus.NOT_FOUND),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeAssignmentAbsentError.",
         exception: new QuestionThemeAssignmentAbsentError("question-theme-id", "question-id"),
-        expectedSentException: new NotFoundException("Question theme with id question-theme-id is not assigned to question with id question-id"),
+        expectedSentException: new HttpException({
+          error: "Not Found",
+          statusCode: HttpStatus.NOT_FOUND,
+          message: "Question theme with id question-theme-id is not assigned to question with id question-id",
+          errorCode: "question-theme-assignment-absent",
+        }, HttpStatus.NOT_FOUND),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeAlreadyArchivedError.",
         exception: new QuestionThemeAlreadyArchivedError("question-theme-id"),
-        expectedSentException: new BadRequestException(`Question theme with id question-theme-id already has status '${QUESTION_THEME_STATUS_ARCHIVED}'`),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Question theme with id question-theme-id already has status 'archived'",
+          errorCode: "question-theme-already-archived",
+        }, HttpStatus.BAD_REQUEST),
       },
       {
         test: "should map domain error to http exception and send it when called with ReferencedQuestionThemeArchivedError.",
         exception: new ReferencedQuestionThemeArchivedError("question-theme-id"),
-        expectedSentException: new BadRequestException("Referenced question theme with id question-theme-id is archived"),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Referenced question theme with id question-theme-id is archived",
+          errorCode: "referenced-question-theme-archived",
+        }, HttpStatus.BAD_REQUEST),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionAlreadyArchivedError.",
         exception: new QuestionAlreadyArchivedError("question-id"),
-        expectedSentException: new BadRequestException(`Question with id question-id already has status '${QUESTION_STATUS_ARCHIVED}'`),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Question with id question-id already has status 'archived'",
+          errorCode: "question-already-archived",
+        }, HttpStatus.BAD_REQUEST),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionMinimumThemesError.",
         exception: new QuestionMinimumThemesError("question-id"),
-        expectedSentException: new BadRequestException(`Question with id question-id must have at least ${QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS} theme assigned`),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Question with id question-id must have at least 1 theme assigned",
+          errorCode: "question-minimum-themes",
+        }, HttpStatus.BAD_REQUEST),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeSlugAlreadyExistsError.",
         exception: new QuestionThemeSlugAlreadyExistsError("question-theme-slug"),
-        expectedSentException: new ConflictException("Question theme with slug question-theme-slug already exists"),
+        expectedSentException: new HttpException({
+          error: "Conflict",
+          statusCode: HttpStatus.CONFLICT,
+          message: "Question theme with slug question-theme-slug already exists",
+          errorCode: "question-theme-slug-already-exists",
+        }, HttpStatus.CONFLICT),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeAssignmentAlreadyExistsError.",
         exception: new QuestionThemeAssignmentAlreadyExistsError("question-theme-id", "question-id"),
-        expectedSentException: new ConflictException("Question theme assignment with id question-theme-id already exists in question with id question-id"),
+        expectedSentException: new HttpException({
+          error: "Conflict",
+          statusCode: HttpStatus.CONFLICT,
+          message: "Question theme assignment with id question-theme-id already exists in question with id question-id",
+          errorCode: "question-theme-assignment-already-exists",
+        }, HttpStatus.CONFLICT),
       },
       {
         test: "should map domain error to http exception and send it when called with QuestionThemeReferencedByLiveQuestionsError.",
         exception: new QuestionThemeReferencedByLiveQuestionsError("question-theme-id", 5),
-        expectedSentException: new ConflictException("Question theme with id question-theme-id is referenced by 5 live question(s) and cannot be archived"),
+        expectedSentException: new HttpException({
+          error: "Conflict",
+          statusCode: HttpStatus.CONFLICT,
+          message: "Question theme with id question-theme-id is referenced by 5 live question(s) and cannot be archived",
+          errorCode: "question-theme-referenced-by-live-questions",
+        }, HttpStatus.CONFLICT),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",
@@ -273,8 +319,6 @@ describe("Global Exception Filter", () => {
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
 
-      // Disabling lint rule which confuses promise catch method call with global exception filter own catch method.
-      // oxlint-disable-next-line valid-params prefer-await-to-then
       globalExceptionFilter.catch(exception, localMocks.filters.globalException.host);
 
       expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedSentException, mocks.filters.globalException.fastifyReply);

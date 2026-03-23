@@ -15,6 +15,10 @@ const API_RESPONSE_EXCEPTION_DTO = z.strictObject({
   validationDetails: z.array(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO)
     .optional()
     .describe("List of validation errors, when requested DTO validation fails"),
+  errorCode: z.string()
+    .optional()
+    .describe("Machine-readable error code for frontend mapping and localization")
+    .meta({ example: "question-theme-referenced-by-live-questions" }),
 });
 
 export type ApiResponseExceptionDto = z.infer<typeof API_RESPONSE_EXCEPTION_DTO>;
