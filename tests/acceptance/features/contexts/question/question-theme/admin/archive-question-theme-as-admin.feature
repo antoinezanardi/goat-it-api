@@ -34,6 +34,28 @@ Feature: Archive Question Theme As Admin
       | error       | statusCode | message                                                                       |
       | Bad Request | 400        | Question theme with id dbb0664ad4797c6cc79d5aee already has status 'archived' |
 
+  Scenario: Trying to archive a question theme that is referenced by an active question
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin archives the question theme with id "8ef21e4eb04eb0fa5a469d87"
+    Then the request should have failed with status code 409 and the response should contain the following error:
+      | error    | statusCode | message                                                                                                    |
+      | Conflict | 409        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is referenced by 1 live question(s) and cannot be archived |
+
+  Scenario: Trying to archive a question theme that is referenced by a pending question
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin archives the question theme with id "ddb03d94cae8df38d28e5adc"
+    Then the request should have failed with status code 409 and the response should contain the following error:
+      | error    | statusCode | message                                                                                                    |
+      | Conflict | 409        | Question theme with id ddb03d94cae8df38d28e5adc is referenced by 1 live question(s) and cannot be archived |
+
+  Scenario: Archiving a question theme that is only referenced by non-live questions
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin archives the question theme with id "9adeceb41db80ab7ec49b457"
+    Then the request should have succeeded with status code 200
+    And the response should contain the following admin question theme:
+      | slug    | status   |
+      | science | archived |
+
   Scenario: Trying to archive a question theme without API key
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin archives the question theme with id "ddb03d94cae8df38d28e5adc" without an API key
@@ -41,26 +63,9 @@ Feature: Archive Question Theme As Admin
       | error        | statusCode | message                    |
       | Unauthorized | 401        | Missing API key in headers |
 
-   Scenario: Trying to archive a question theme with invalid API key
-     Given the database is populated with question themes fixture set with name "five-question-themes"
-     When the admin archives the question theme with id "ddb03d94cae8df38d28e5adc" with an invalid API key
-     Then the request should have failed with status code 401 and the response should contain the following error:
-       | error        | statusCode | message         |
-       | Unauthorized | 401        | Invalid API key |
-
-   Scenario: Trying to archive a question theme that is referenced by live questions
-     Given the database is populated with question themes fixture set with name "five-question-themes"
-     And the database is populated with questions fixture set with name "five-questions"
-     When the admin archives the question theme with id "8ef21e4eb04ebfa5a469d87"
-     Then the request should have failed with status code 409 and the response should contain the following error:
-       | error    | statusCode | message                                                                                             |
-       | Conflict | 409        | Question theme with id 8ef21e4eb04ebfa5a469d87 is referenced by 1 live question(s) and cannot be archived |
-
-   Scenario: Archiving a question theme that is only referenced by non-live questions
-     Given the database is populated with question themes fixture set with name "five-question-themes"
-     And the database is populated with questions fixture set with name "five-questions"
-     When the admin archives the question theme with id "9adeceb41db80ab7ec49b457"
-     Then the request should have succeeded with status code 200
-     And the response should contain the following admin question theme:
-       | slug    | status   |
-       | science | archived |
+  Scenario: Trying to archive a question theme with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin archives the question theme with id "ddb03d94cae8df38d28e5adc" with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |
