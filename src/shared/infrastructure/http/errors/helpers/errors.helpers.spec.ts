@@ -1,4 +1,4 @@
-import { getDerivedErrorCodeFromClassName } from "./errors.helpers";
+import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 
 describe("Error Helpers", () => {
   describe(getDerivedErrorCodeFromClassName, () => {
