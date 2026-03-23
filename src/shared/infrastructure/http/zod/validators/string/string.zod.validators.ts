@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ISO_DATE_TIME_EXAMPLE, MONGO_ID_REGEX, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { HEX_COLOR_REGEX, HEX_COLOR_EXAMPLE, ISO_DATE_TIME_EXAMPLE, MONGO_ID_REGEX, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH, SLUG_REGEX } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 import type { $ZodCustomParams } from "zod/v4/core";
 import type { ZodString, ZodISODateTime } from "zod";
@@ -36,8 +36,20 @@ function zIsoDateTime(options: Partial<$ZodCustomParams> = {}): ZodISODateTime {
     .meta({ example: ISO_DATE_TIME_EXAMPLE });
 }
 
+function zHexColor(options: Partial<$ZodCustomParams> = {}): ZodString {
+  return z.string()
+    .trim()
+    .regex(HEX_COLOR_REGEX, {
+      error: "Invalid hex color; must be 6 hexadecimal digits with # prefix (e.g., #FF5733)",
+      ...options,
+    })
+    .toUpperCase()
+    .meta({ example: HEX_COLOR_EXAMPLE });
+}
+
 export {
   zSlug,
   zMongoId,
   zIsoDateTime,
+  zHexColor,
 };

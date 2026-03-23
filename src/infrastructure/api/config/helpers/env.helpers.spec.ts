@@ -460,7 +460,7 @@ describe("Env Validation", () => {
         ...config,
       };
 
-      expect(() => validate(fullConfig)).toThrowError(errorMessage);
+      expect(() => validate(fullConfig)).toThrow(errorMessage);
     });
   });
 

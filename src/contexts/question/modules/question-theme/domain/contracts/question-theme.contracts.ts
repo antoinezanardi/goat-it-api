@@ -7,6 +7,7 @@ type QuestionThemeCreationContract = {
   label: Partial<LocalizedText>;
   aliases: Partial<LocalizedTexts>;
   description: Partial<LocalizedText>;
+  color?: string;
   status: typeof DEFAULT_QUESTION_THEME_STATUS;
 };
 
@@ -15,6 +16,7 @@ type QuestionThemeModificationContract = {
   label?: Partial<LocalizedText>;
   aliases?: Partial<LocalizedTexts>;
   description?: Partial<LocalizedText>;
+  color?: string;
 };
 
 export type {

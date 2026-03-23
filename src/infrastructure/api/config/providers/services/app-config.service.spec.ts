@@ -84,7 +84,7 @@ describe("App Config Service", () => {
         throw new Error("SERVER_HOST is not defined");
       });
 
-      expect(() => services.appConfig.serverConfig).toThrowError("SERVER_HOST is not defined");
+      expect(() => services.appConfig.serverConfig).toThrow("SERVER_HOST is not defined");
     });
   });
 
@@ -122,7 +122,7 @@ describe("App Config Service", () => {
         throw new Error("CORS_ORIGIN is not defined");
       });
 
-      expect(() => services.appConfig.corsConfig).toThrowError("CORS_ORIGIN is not defined");
+      expect(() => services.appConfig.corsConfig).toThrow("CORS_ORIGIN is not defined");
     });
   });
 
@@ -142,7 +142,7 @@ describe("App Config Service", () => {
         throw new Error("MONGODB_HOST is not defined");
       });
 
-      expect(() => services.appConfig.mongoDbConfig).toThrowError("MONGODB_HOST is not defined");
+      expect(() => services.appConfig.mongoDbConfig).toThrow("MONGODB_HOST is not defined");
     });
   });
 
@@ -160,7 +160,7 @@ describe("App Config Service", () => {
         throw new Error("FALLBACK_LOCALE is not defined");
       });
 
-      expect(() => services.appConfig.localizationConfig).toThrowError("FALLBACK_LOCALE is not defined");
+      expect(() => services.appConfig.localizationConfig).toThrow("FALLBACK_LOCALE is not defined");
     });
   });
 
@@ -183,7 +183,7 @@ describe("App Config Service", () => {
         throw new Error("API_KEY_HMAC_SECRET is not defined");
       });
 
-      expect(() => services.appConfig["computeAuthenticationConfigCache"]()).toThrowError("API_KEY_HMAC_SECRET is not defined");
+      expect(() => services.appConfig["computeAuthenticationConfigCache"]()).toThrow("API_KEY_HMAC_SECRET is not defined");
     });
 
     it("should call hashApiKey for adminApiKey when config service is created.", () => {

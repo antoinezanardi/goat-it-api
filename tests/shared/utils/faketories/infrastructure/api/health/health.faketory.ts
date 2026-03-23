@@ -32,7 +32,7 @@ function createFakeHealthCheckResult(healthCheckResult: Partial<HealthCheckResul
 function createFakeAppHealthDetailsCheckDto(appHealthDetailsCheckDto: Partial<AppHealthDetailsCheckDto> = {}): AppHealthDetailsCheckDto {
   return {
     status: faker.helpers.arrayElement(HEALTH_DETAILS_STATUS_ENUM),
-    message: faker.datatype.boolean() ? faker.lorem.sentence() : undefined,
+    message: faker.helpers.maybe(() => faker.lorem.sentence()),
     ...appHealthDetailsCheckDto,
   };
 }

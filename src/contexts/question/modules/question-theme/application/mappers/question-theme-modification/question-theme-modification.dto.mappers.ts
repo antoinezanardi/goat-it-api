@@ -9,6 +9,7 @@ function createQuestionThemeModificationCommandFromDto(questionThemeId: string, 
       label: questionThemeModificationDto.label,
       aliases: questionThemeModificationDto.aliases,
       description: questionThemeModificationDto.description,
+      color: questionThemeModificationDto.color,
     },
   };
 }

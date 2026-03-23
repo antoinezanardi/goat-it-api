@@ -44,6 +44,7 @@
 - Keep tests colocated: `src/.../<unit>.spec.ts`.
 - One assertion per `it` block. If you need multiple verifications, create multiple `it` tests describing each expected behavior.
 - Test names: follow the pattern `should <expected behavior> when <condition>.` (example: `it("should return all question themes when called.", ...)`).
+  - This pattern also applies to test names in `it.each` cases.
 - Use path aliases for imports; follow repository import order conventions.
 - Use faketories (`@faketories/...`) to build test data and `@mocks/...` factories for dependency mocks. Never use manual mock objects inline. See [Mocks & Faketories (where and how)](#mocks--faketories-where-and-how) for details.
 - Prefer existing mock/faketory factory functions. If none fit, add new mocks or factories under `tests/unit/utils/mocks/` or `tests/shared/utils/faketories/` mirroring the source path.
@@ -55,7 +56,7 @@
   - Each error branch (throwing) separately
   - Boundary conditions (e.g., empty arrays, null/undefined inputs).
 - When a method is quite simple and the assertions are only on its output, you must use `it.each([...])` to parametrize multiple input→output cases instead of writing multiple `it` blocks.
-- When a test that asserts an error is thrown, use `await expect(promise).rejects.toThrowError(...)` syntax. The exact error instance should be asserted, not just the message.
+- When a test that asserts an error is thrown, use `await expect(promise).rejects.toThrow(...)` syntax. The exact error instance should be asserted, not just the message.
 - Test deterministic inputs→outputs and edge cases. Keep tests small and focused.
 - Always use `toStrictEqual<T>(expected)` for value equality assertions to get type hinting and strict shape checks.
 - Private methods must be tested too, via `ClassName["privateMethodName"](...)` syntax.
@@ -225,7 +226,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
       expect(() => {
         GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
-      }).toThrowError(expectedError);
+      }).toThrow(expectedError);
     });
 
     it("should not throw any error when all ids are found.", () => {
@@ -234,7 +235,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
       expect(() => {
         GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
-      }).not.toThrowError();
+      }).not.toThrow();
     });
   });
 });
@@ -338,7 +339,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
   - Cover every DTO field with at least one positive (accepts) and one negative (rejects) test.
   - Use faketories (e.g. `createFakeQuestionDto`, `createFakeAdminQuestionDto`) to produce valid examples and make minimal per-test modifications for negative cases.
   - Prefer `DTO.parse(valid)` or `expect(() => DTO.parse(valid)).not.toThrow()` for positive tests; use `safeParse` when you need to inspect `success` / `error` details.
-  - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrowError(ZodError)`) and inspect `parsed.error.errors` when necessary.
+  - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrow(ZodError)`) and inspect `parsed.error.errors` when necessary.
   - Assert Zod metadata (`.meta()`) and property metadata (`DTO.shape.field.meta()`) exactly with `toStrictEqual` so OpenAPI generation expectations are maintained.
   - For refinements and small validators (slugs, mongo ids, ISO datetimes) use `it.each` to enumerate valid/invalid inputs and assert `schema.safeParse(value).success`.
 
@@ -361,14 +362,14 @@ describe("Question DTO Specs", () => {
   });
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
-    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrowError();
+    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
       const dtoWithInvalidId = Object.assign({}, validQuestionDto, { id: "invalid" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -387,7 +388,7 @@ describe("Question DTO Specs", () => {
     it("should throw zod error when createdAt is invalid.", () => {
       const dtoWithInvalidCreatedAt = Object.assign({}, validQuestionDto, { createdAt: "not-a-date" });
 
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrowError(ZodError);
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrow(ZodError);
     });
 
     it("should have correct metadata for createdAt when accessed.", () => {

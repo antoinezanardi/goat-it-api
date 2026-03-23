@@ -7,6 +7,7 @@ type QuestionTheme = {
   label: Partial<LocalizedText>;
   aliases: Partial<LocalizedTexts>;
   description: Partial<LocalizedText>;
+  color?: string;
   status: QuestionThemeStatus;
   createdAt: Date;
   updatedAt: Date;

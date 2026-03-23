@@ -33,15 +33,17 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
     error: requestError.error,
     message: requestError.message,
     statusCode: requestError.statusCode,
+    errorCode: requestError.errorCode,
   };
   if (requestError.validationDetails !== undefined) {
     expectedError.validationDetails = expect.any(Array);
   }
 
   const { _data: errorData, status: errorStatusCode } = this.lastFetchResponse ?? {};
+  const expectedErrorWithoutUndefinedFields = shake(expectedError);
 
   expect(errorStatusCode).toBe(expectedStatus);
-  expect(errorData).toStrictEqual(expectedError);
+  expect(errorData).toStrictEqual(expectedErrorWithoutUndefinedFields);
 });
 
 Then(/^the failed request's response should contain the following validation details:$/u, function(this: GoatItWorld, validationDetailsDataTable: DataTable): void {

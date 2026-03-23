@@ -19,6 +19,7 @@ function expectQuestionThemeDtoToMatch(questionThemeDto: QuestionThemeDto, expec
   expect(questionThemeDto.label).toBe(expectedQuestionThemeDto.label);
   expect(questionThemeDto.aliases).toStrictEqual(expectedQuestionThemeDto.aliases);
   expect(questionThemeDto.description).toBe(expectedQuestionThemeDto.description);
+  expect(questionThemeDto.color).toBe(expectedQuestionThemeDto.color);
   expect(questionThemeDto.status).toBe(expectedQuestionThemeDto.status);
 }
 

@@ -5,22 +5,25 @@ import { ArgumentsHost, BadRequestException, Catch, ConflictException, Exception
 import { FastifyReply } from "fastify";
 import { ZodError } from "zod";
 
+import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
+
 import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-  private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, (error: Error) => HttpException>> = {
-    [QuestionThemeNotFoundError.name]: error => new NotFoundException(error.message),
-    [QuestionNotFoundError.name]: error => new NotFoundException(error.message),
-    [QuestionThemeAssignmentAbsentError.name]: error => new NotFoundException(error.message),
-    [QuestionThemeAlreadyArchivedError.name]: error => new BadRequestException(error.message),
-    [ReferencedQuestionThemeArchivedError.name]: error => new BadRequestException(error.message),
-    [QuestionAlreadyArchivedError.name]: error => new BadRequestException(error.message),
-    [QuestionMinimumThemesError.name]: error => new BadRequestException(error.message),
-    [QuestionThemeSlugAlreadyExistsError.name]: error => new ConflictException(error.message),
-    [QuestionThemeAssignmentAlreadyExistsError.name]: error => new ConflictException(error.message),
+  private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, new () => HttpException>> = {
+    [QuestionThemeNotFoundError.name]: NotFoundException,
+    [QuestionNotFoundError.name]: NotFoundException,
+    [QuestionThemeAssignmentAbsentError.name]: NotFoundException,
+    [QuestionThemeAlreadyArchivedError.name]: BadRequestException,
+    [ReferencedQuestionThemeArchivedError.name]: BadRequestException,
+    [QuestionAlreadyArchivedError.name]: BadRequestException,
+    [QuestionMinimumThemesError.name]: BadRequestException,
+    [QuestionThemeSlugAlreadyExistsError.name]: ConflictException,
+    [QuestionThemeAssignmentAlreadyExistsError.name]: ConflictException,
+    [QuestionThemeReferencedByLiveQuestionsError.name]: ConflictException,
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);
@@ -64,9 +67,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof Error) {
-      const httpExceptionFactory = GlobalExceptionFilter.domainErrorHttpExceptionFactories[exception.name];
-      if (httpExceptionFactory) {
-        GlobalExceptionFilter.sendNestHttpException(httpExceptionFactory(exception), response);
+      const DomainHttpExceptionFactory = GlobalExceptionFilter.domainErrorHttpExceptionFactories[exception.name];
+      if (DomainHttpExceptionFactory) {
+        const domainHttpException = new DomainHttpExceptionFactory();
+        const statusCode = domainHttpException.getStatus();
+        const httpException = new HttpException({
+          error: domainHttpException.message,
+          message: exception.message,
+          statusCode,
+          errorCode: getDerivedErrorCodeFromClassName(exception.constructor.name),
+        }, statusCode);
+
+        GlobalExceptionFilter.sendNestHttpException(httpException, response);
 
         return;
       }

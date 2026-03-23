@@ -15,6 +15,7 @@ function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> 
     label: faker.word.sample(),
     aliases: [faker.word.sample(), faker.word.sample(), faker.word.sample()],
     description: faker.word.sample(),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(["active", "archived"]),
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),
@@ -29,6 +30,7 @@ function createFakeAdminQuestionThemeDto(adminQuestionThemeDto: Partial<AdminQue
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     updatedAt: faker.date.anytime().toISOString(),
     createdAt: faker.date.anytime().toISOString(),
@@ -42,16 +44,18 @@ function createFakeQuestionThemeCreationDto(creationDto: Partial<QuestionThemeCr
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     ...creationDto,
   };
 }
 
 function createFakeQuestionThemeModificationDto(modificationDto: Partial<QuestionThemeModificationDto> = {}): QuestionThemeModificationDto {
   return {
-    slug: faker.datatype.boolean() ? faker.lorem.slug() : undefined,
-    label: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
-    aliases: faker.datatype.boolean() ? createFakeLocalizedTexts() : undefined,
-    description: faker.datatype.boolean() ? createFakeLocalizedText() : undefined,
+    slug: faker.helpers.maybe(faker.lorem.slug),
+    label: faker.helpers.maybe(createFakeLocalizedText),
+    aliases: faker.helpers.maybe(createFakeLocalizedTexts),
+    description: faker.helpers.maybe(createFakeLocalizedText),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     ...modificationDto,
   };
 }

@@ -6,7 +6,7 @@ import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/questio
 function createFakeQuestionRejectionDto(questionRejectionDto: Partial<QuestionRejectionDto> = {}): QuestionRejectionDto {
   return {
     type: faker.helpers.arrayElement(QUESTION_REJECTION_TYPES),
-    comment: faker.datatype.boolean() ? faker.lorem.sentence() : undefined,
+    comment: faker.helpers.maybe(faker.lorem.sentence),
     ...questionRejectionDto,
   };
 }

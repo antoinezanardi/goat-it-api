@@ -47,6 +47,7 @@ function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unk
     float: (): number => tryParseOverriddenPayloadFloatValue(payloadValue),
     boolean: (): boolean => tryParseOverriddenPayloadBooleanValue(payloadValue),
     array: (): unknown => tryParseOverriddenPayloadArrayValue(payloadValue),
+    undefined: (): undefined => undefined,
   };
 
   const parseValueMethod = parseValueMethods[type];

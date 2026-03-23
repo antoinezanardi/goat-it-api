@@ -74,7 +74,7 @@ describe("Create Question Use Case", () => {
       mocks.repositories.question.create.mockResolvedValueOnce(undefined);
       const expectedError = new QuestionCreationError();
 
-      await expect(createQuestionUseCase.create(command)).rejects.toThrowError(expectedError);
+      await expect(createQuestionUseCase.create(command)).rejects.toThrow(expectedError);
     });
 
     it("should return created question when repository returns one.", async() => {
@@ -109,7 +109,7 @@ describe("Create Question Use Case", () => {
     it("should not throw when all referenced themes exist and are not archived.", async() => {
       const command = createFakeQuestionCreationCommand();
 
-      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).resolves.not.toThrowError();
+      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).resolves.not.toThrow();
     });
 
     it("should throw ReferencedQuestionThemeArchivedError when some referenced theme is archived.", async() => {
@@ -124,7 +124,7 @@ describe("Create Question Use Case", () => {
       ]);
       const expectedError = new ReferencedQuestionThemeArchivedError(archivedThemeId);
 
-      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).rejects.toThrowError(expectedError);
+      await expect(createQuestionUseCase["throwIfQuestionNotCreatable"](command)).rejects.toThrow(expectedError);
     });
   });
 });

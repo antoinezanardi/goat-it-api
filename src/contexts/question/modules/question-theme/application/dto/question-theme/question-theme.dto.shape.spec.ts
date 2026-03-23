@@ -1,5 +1,7 @@
 import { ZodError } from "zod";
 
+import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 
@@ -13,14 +15,14 @@ describe("Question Theme DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => QUESTION_THEME_DTO.parse(validQuestionThemeDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_DTO.parse(validQuestionThemeDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { id: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -41,7 +43,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { slug: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -62,7 +64,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { label: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -83,13 +85,13 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-array value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { aliases: "not-an-array" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are not strings.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { aliases: ["a", 2, "c"] });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -110,7 +112,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { description: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -127,11 +129,44 @@ describe("Question Theme DTO Shape", () => {
     });
   });
 
+  describe("color", () => {
+    it("should pass validation when assigned valid hex color.", () => {
+      const dtoWithColor = { ...validQuestionThemeDto, color: "#FF5733" };
+
+      expect(() => QUESTION_THEME_DTO.parse(dtoWithColor)).not.toThrow();
+    });
+
+    it("should pass validation when color is omitted (optional).", () => {
+      const dtoWithoutColor = { ...validQuestionThemeDto, color: undefined };
+
+      expect(() => QUESTION_THEME_DTO.parse(dtoWithoutColor)).not.toThrow();
+    });
+
+    it("should throw a zod error when assigned invalid hex color format.", () => {
+      const invalidDto = { ...validQuestionThemeDto, color: "#GGG" };
+
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_THEME_DTO.shape.color.description).toBe("Question Theme's hex color");
+    });
+
+    it("should have the correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's hex color",
+        example: HEX_COLOR_EXAMPLE,
+      };
+
+      expect(QUESTION_THEME_DTO.shape.color.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
   describe("status", () => {
     it("should throw a zod error when assigned an invalid enum value.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { status: "unknown" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -152,7 +187,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { createdAt: "not-a-date" });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -173,7 +208,7 @@ describe("Question Theme DTO Shape", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
       const invalidDto = Object.assign(validQuestionThemeDto, { updatedAt: 123 });
 
-      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {

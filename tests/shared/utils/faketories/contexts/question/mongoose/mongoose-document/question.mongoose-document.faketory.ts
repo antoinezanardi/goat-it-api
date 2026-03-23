@@ -32,7 +32,7 @@ function createFakeQuestionDocument(questionDocument: Partial<QuestionMongooseDo
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
-    rejection: faker.datatype.boolean() ? createFakeQuestionRejection() : undefined,
+    rejection: faker.helpers.maybe(createFakeQuestionRejection),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),

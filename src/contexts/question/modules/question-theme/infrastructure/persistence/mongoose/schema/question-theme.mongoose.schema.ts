@@ -42,6 +42,11 @@ class QuestionThemeMongooseSchema {
   public description!: Partial<LocalizedText>;
 
   @Prop({
+    type: String,
+  })
+  public color?: string;
+
+  @Prop({
     required: true,
     type: String,
     enum: QUESTION_THEME_STATUSES,

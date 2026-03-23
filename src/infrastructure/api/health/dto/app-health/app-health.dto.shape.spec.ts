@@ -11,7 +11,7 @@ describe("App Health DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => APP_HEALTH_DTO.parse(validAppHealthDto)).not.toThrowError();
+    expect(() => APP_HEALTH_DTO.parse(validAppHealthDto)).not.toThrow();
   });
 
   describe("status", () => {

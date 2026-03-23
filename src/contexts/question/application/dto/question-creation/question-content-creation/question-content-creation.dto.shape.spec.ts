@@ -13,14 +13,14 @@ describe("Question Content Creation DTO Shape", () => {
   });
 
   it("should pass validation when a valid QuestionContentCreationDto is provided.", () => {
-    expect(() => QUESTION_CONTENT_CREATION_DTO.parse(validDto)).not.toThrowError();
+    expect(() => QUESTION_CONTENT_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
   describe("statement", () => {
     it("should throw zod error when statement is invalid.", () => {
       const invalid = Object.assign(validDto, { statement: "invalid" });
 
-      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -37,7 +37,7 @@ describe("Question Content Creation DTO Shape", () => {
     it("should throw zod error when answer is invalid.", () => {
       const invalid = Object.assign(validDto, { answer: "invalid" });
 
-      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -54,7 +54,7 @@ describe("Question Content Creation DTO Shape", () => {
     it("should pass validation when context is omitted.", () => {
       const dtoWithoutContext = createFakeQuestionContentCreationDto({ context: undefined });
 
-      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutContext)).not.toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutContext)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -71,7 +71,7 @@ describe("Question Content Creation DTO Shape", () => {
     it("should pass validation when trivia is omitted.", () => {
       const dtoWithoutTrivia = createFakeQuestionContentCreationDto({ trivia: undefined });
 
-      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutTrivia)).not.toThrowError(ZodError);
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutTrivia)).not.toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {

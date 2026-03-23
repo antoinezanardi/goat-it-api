@@ -10,8 +10,15 @@ function expectAdminQuestionThemeDtoToMatch(
   adminQuestionThemeDto: AdminQuestionThemeDto,
   expectedAdminQuestionThemeDto: z.infer<typeof ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA>,
 ): void {
-  expect(adminQuestionThemeDto.slug).toBe(expectedAdminQuestionThemeDto.slug);
-  expect(adminQuestionThemeDto.status).toBe(expectedAdminQuestionThemeDto.status);
+  if (expectedAdminQuestionThemeDto.slug !== undefined) {
+    expect(adminQuestionThemeDto.slug).toBe(expectedAdminQuestionThemeDto.slug);
+  }
+  if (expectedAdminQuestionThemeDto.status !== undefined) {
+    expect(adminQuestionThemeDto.status).toBe(expectedAdminQuestionThemeDto.status);
+  }
+  if (expectedAdminQuestionThemeDto.color !== undefined) {
+    expect(adminQuestionThemeDto.color).toBe(expectedAdminQuestionThemeDto.color);
+  }
 }
 
 export {

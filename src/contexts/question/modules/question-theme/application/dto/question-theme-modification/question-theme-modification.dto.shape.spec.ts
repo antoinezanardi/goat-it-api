@@ -1,5 +1,7 @@
 import { ZodError } from "zod";
 
+import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+
 import type { QuestionThemeModificationDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 import { QUESTION_THEME_MODIFICATION_DTO } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 
@@ -13,20 +15,20 @@ describe("Question Theme Modification DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validQuestionThemeModificationDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validQuestionThemeModificationDto)).not.toThrow();
   });
 
   it("should pass validation when assigned empty object.", () => {
     const validEmptyDto = {} as QuestionThemeModificationDto;
 
-    expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validEmptyDto)).not.toThrowError();
+    expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validEmptyDto)).not.toThrow();
   });
 
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validQuestionThemeModificationDto, { slug: 123 });
 
-      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -47,7 +49,7 @@ describe("Question Theme Modification DTO Shape", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
       const invalidDto = Object.assign(validQuestionThemeModificationDto, { label: "not-localized" });
 
-      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -59,7 +61,7 @@ describe("Question Theme Modification DTO Shape", () => {
     it("should throw a zod error when assigned a non-object localized texts.", () => {
       const invalidDto = Object.assign(validQuestionThemeModificationDto, { aliases: "not-localized" });
 
-      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -71,11 +73,44 @@ describe("Question Theme Modification DTO Shape", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
       const invalidDto = Object.assign(validQuestionThemeModificationDto, { description: 456 });
 
-      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_THEME_MODIFICATION_DTO.shape.description.description).toBe("Question Theme's translated description");
+    });
+  });
+
+  describe("color", () => {
+    it("should pass validation when assigned valid hex color.", () => {
+      const dtoWithColor = { ...validQuestionThemeModificationDto, color: "#00AA00" };
+
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(dtoWithColor)).not.toThrow();
+    });
+
+    it("should pass validation when color is omitted (optional).", () => {
+      const dtoWithoutColor = { color: undefined };
+
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(dtoWithoutColor)).not.toThrow();
+    });
+
+    it("should throw a zod error when assigned invalid hex color format.", () => {
+      const invalidDto = { color: "FF5733" };
+
+      expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_THEME_MODIFICATION_DTO.shape.color.description).toBe("Question Theme's hex color (6-digit with # prefix)");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const expectedMetadata = {
+        description: "Question Theme's hex color (6-digit with # prefix)",
+        example: HEX_COLOR_EXAMPLE,
+      };
+
+      expect(QUESTION_THEME_MODIFICATION_DTO.shape.color.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

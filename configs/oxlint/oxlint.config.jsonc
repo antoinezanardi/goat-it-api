@@ -7,6 +7,9 @@
     "tests/mutation/**/*",
     "tests/acceptance/reports/**/*"
   ],
+  "options": {
+    "typeAware": true
+  },
   "plugins": [
     "eslint",
     "typescript",
@@ -1343,12 +1346,14 @@
     {
       "files": [
         "eslint.config.ts",
-        "**/configs/**/*.{js,mjs,ts}"
+        "**/configs/**/*.{js,mjs,ts}",
+        "**/packages/schemas/tsdown.config.ts"
       ],
       "rules": {
         "import/no-default-export": "off",
         "import/no-internal-modules": "off",
-        "import/no-anonymous-default-export": "off"
+        "import/no-anonymous-default-export": "off",
+        "typescript/no-unsafe-type-assertion": "off"
       }
     },
     // ---- Override for faketory (unit tests) files -----
@@ -1359,7 +1364,8 @@
       "rules": {
         "no-magic-numbers": "off",
         "no-param-reassign": "off",
-        "typescript/no-magic-numbers": "off"
+        "typescript/no-magic-numbers": "off",
+        "typescript/unbound-method": "off"
       }
     },
     // ---- Override for declaration files -----

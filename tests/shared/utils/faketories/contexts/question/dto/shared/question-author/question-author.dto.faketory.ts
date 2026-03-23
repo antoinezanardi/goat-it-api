@@ -14,7 +14,7 @@ function createFakeQuestionAuthorDto(questionAuthorDto: Partial<QuestionAuthorDt
   }
   return {
     role,
-    name: faker.datatype.boolean() ? faker.internet.username() : undefined,
+    name: faker.helpers.maybe(faker.internet.username),
     ...questionAuthorDto,
   };
 }

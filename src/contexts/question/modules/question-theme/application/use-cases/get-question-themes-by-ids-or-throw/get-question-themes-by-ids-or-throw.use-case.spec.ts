@@ -98,7 +98,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
       expect(() => {
         GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
-      }).toThrowError(expectedError);
+      }).toThrow(expectedError);
     });
 
     it("should not throw any error when all ids are found.", () => {
@@ -107,7 +107,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
       expect(() => {
         GetQuestionThemesByIdsOrThrowUseCase["throwErrorForMissingQuestionThemeIds"](requestedIds, foundIds);
-      }).not.toThrowError();
+      }).not.toThrow();
     });
   });
 });

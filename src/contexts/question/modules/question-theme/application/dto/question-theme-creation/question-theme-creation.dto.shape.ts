@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { zLocalizedText, zLocalizedTexts } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
-import { zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zHexColor, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_THEME_SLUG_EXAMPLE } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
 
@@ -15,6 +15,10 @@ const QUESTION_THEME_CREATION_DTO = z.object({
     .describe("Question Theme's translated aliases. Help to find the theme with different keywords"),
   description: zLocalizedText()
     .describe("Question Theme's translated description"),
+  color: zHexColor()
+    .optional()
+    .describe("Question Theme's hex color (6-digit with # prefix)")
+    .meta({ example: "#FF5733" }),
 });
 
 export type QuestionThemeCreationDto = z.infer<typeof QUESTION_THEME_CREATION_DTO>;

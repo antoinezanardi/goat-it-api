@@ -3,6 +3,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 
 const COMPLETE_QUESTION_THEME_CREATION_PAYLOAD = Object.freeze(createFakeQuestionThemeCreationDto({
   slug: "general-knowledge",
+  color: "#FF5733",
   label: createFakeLocalizedText({
     en: "General knowledge",
     fr: "Culture générale",

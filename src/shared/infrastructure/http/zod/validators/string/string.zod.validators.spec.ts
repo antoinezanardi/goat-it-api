@@ -1,5 +1,5 @@
-import { zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
-import { ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { zHexColor, zIsoDateTime, zMongoId, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { HEX_COLOR_EXAMPLE, ISO_DATE_TIME_EXAMPLE, SLUG_MAX_LENGTH, SLUG_MIN_LENGTH } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -233,6 +233,106 @@ describe("String Zod Validators", () => {
       const metadata = schema.meta();
 
       expect(metadata).toHaveProperty("example", ISO_DATE_TIME_EXAMPLE);
+    });
+  });
+
+  describe(zHexColor, () => {
+    it.each<{
+      test: string;
+      value: string;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when hex color is valid with uppercase.",
+        value: "#FF5733",
+        expected: true,
+      },
+      {
+        test: "should return true when hex color is valid with lowercase (auto-uppercase).",
+        value: "#ff5733",
+        expected: true,
+      },
+      {
+        test: "should return true when hex color is valid with mixed case.",
+        value: "#Ff5733",
+        expected: true,
+      },
+      {
+        test: "should return true when hex color is valid even with spaces around.",
+        value: "  #FF5733  ",
+        expected: true,
+      },
+      {
+        test: "should return false when hex color is missing # prefix.",
+        value: "FF5733",
+        expected: false,
+      },
+      {
+        test: "should return false when hex color is 3-digit shorthand.",
+        value: "#ABC",
+        expected: false,
+      },
+      {
+        test: "should return false when hex color is 8-digit RGBA.",
+        value: "#FF5733FF",
+        expected: false,
+      },
+      {
+        test: "should return false when hex color has invalid characters.",
+        value: "#GG5733",
+        expected: false,
+      },
+      {
+        test: "should return false when hex color is empty.",
+        value: "",
+        expected: false,
+      },
+      {
+        test: "should return false when hex color is only # symbol.",
+        value: "#",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const schema = zHexColor();
+      const result = schema.safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should default error message when hex color is invalid.", () => {
+      const schema = zHexColor();
+      const result = schema.safeParse("#GGGGGG");
+
+      expect(result.error?.issues[0].message).toBe("Invalid hex color; must be 6 hexadecimal digits with # prefix (e.g., #FF5733)");
+    });
+
+    it("should allow custom error message when hex color is invalid.", () => {
+      const customMessage = "Custom error: Not a valid hex color";
+      const schema = zHexColor({ error: customMessage });
+      const result = schema.safeParse("invalid-color");
+
+      expect(result.error?.issues[0].message).toBe(customMessage);
+    });
+
+    it("should trim spaces from the hex color value when parsing.", () => {
+      const schema = zHexColor();
+      const result = schema.parse("  #ff5733  ");
+
+      expect(result).toBe("#FF5733");
+    });
+
+    it("should convert hex color to uppercase when parsing.", () => {
+      const schema = zHexColor();
+      const result = schema.parse("#ff5733");
+
+      expect(result).toBe("#FF5733");
+    });
+
+    it("should have correct example metadata when accessing the metadata.", () => {
+      const schema = zHexColor();
+      const metadata = schema.meta();
+
+      expect(metadata).toHaveProperty("example", HEX_COLOR_EXAMPLE);
     });
   });
 });

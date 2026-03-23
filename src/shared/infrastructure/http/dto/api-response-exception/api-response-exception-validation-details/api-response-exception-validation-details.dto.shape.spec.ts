@@ -13,14 +13,14 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
   });
 
   it("should pass validation when assigned valid values.", () => {
-    expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validApiResponseExceptionValidationDetailsDto)).not.toThrowError();
+    expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validApiResponseExceptionValidationDetailsDto)).not.toThrow();
   });
 
   describe("code", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { code: 123 });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -41,7 +41,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { message: 456 });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -62,13 +62,13 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-array value.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { path: "not-an-array" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are of invalid types.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { path: ["valid", { obj: true }] });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -89,7 +89,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { expected: 789 });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -110,7 +110,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { origin: 123 });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -131,7 +131,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { format: true });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -152,7 +152,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-string value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { pattern: 123 });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -173,7 +173,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-number value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { minimum: "NaN" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -194,7 +194,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-number value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { maximum: "NaN" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -215,7 +215,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-boolean value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { inclusive: "true" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -236,13 +236,13 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-array value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { keys: "not-an-array" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are not strings.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { keys: ["a", 2] });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
@@ -263,13 +263,13 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should throw a zod error when assigned a non-array value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: "not-an-array" });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are not strings.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: ["a", 2] });
 
-      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrowError(ZodError);
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {

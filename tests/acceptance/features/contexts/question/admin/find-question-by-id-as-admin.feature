@@ -100,8 +100,8 @@ Feature: Find Question by ID as Admin
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin retrieves the question with id "3ece5c485ddc36118b9fbd5c"
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                             |
-      | Not Found | 404        | Question with id 3ece5c485ddc36118b9fbd5c not found |
+      | error     | statusCode | message                                             | errorCode          |
+      | Not Found | 404        | Question with id 3ece5c485ddc36118b9fbd5c not found | question-not-found |
 
   Scenario: Trying to find an admin question without API key
     Given the database is populated with questions fixture set with name "five-questions"

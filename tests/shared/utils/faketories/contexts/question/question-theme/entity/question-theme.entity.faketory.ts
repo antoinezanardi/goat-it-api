@@ -13,6 +13,7 @@ function createFakeQuestionTheme(questionTheme: Partial<QuestionTheme> = {}): Qu
     label: createFakeLocalizedText(),
     aliases: createFakeLocalizedTexts(),
     description: createFakeLocalizedText(),
+    color: faker.helpers.maybe(() => faker.color.rgb({ casing: "upper" })),
     status: faker.helpers.arrayElement(QUESTION_THEME_STATUSES),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
