@@ -446,8 +446,8 @@ Feature: Create Question as Admin
       | themes[0].themeId | string | dbb0664ad4797c6cc79d5aee |
     And the admin creates a new question with the request payload
     Then the request should have failed with status code 400 and the response should contain the following error:
-      | error       | statusCode | message                                                                |
-      | Bad Request | 400        | Referenced question theme with id dbb0664ad4797c6cc79d5aee is archived |
+      | error       | statusCode | message                                                                | errorCode                          |
+      | Bad Request | 400        | Referenced question theme with id dbb0664ad4797c6cc79d5aee is archived | referenced-question-theme-archived |
 
   Scenario: Trying to create a question with unknown theme ID
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -457,8 +457,8 @@ Feature: Create Question as Admin
       | themes[0].themeId | string | aaa921ed56ba7de91c2aa57f |
     And the admin creates a new question with the request payload
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                                   |
-      | Not Found | 404        | Question theme with id aaa921ed56ba7de91c2aa57f not found |
+      | error     | statusCode | message                                                   | errorCode                |
+      | Not Found | 404        | Question theme with id aaa921ed56ba7de91c2aa57f not found | question-theme-not-found |
 
   Scenario: Trying to create a question without source URLs
     Given the database is populated with question themes fixture set with name "five-question-themes"

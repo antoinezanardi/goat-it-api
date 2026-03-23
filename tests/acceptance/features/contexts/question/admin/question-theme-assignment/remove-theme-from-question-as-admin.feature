@@ -30,15 +30,15 @@ Feature: Remove Theme From Question As Admin
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin removes the theme with id "8ef21e4eb04eb0fa5a469d87" from the question with id "d4e5f6a7b8c9012345678904"
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                                                                                      |
-      | Not Found | 404        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is not assigned to question with id d4e5f6a7b8c9012345678904 |
+      | error     | statusCode | message                                                                                                      | errorCode                        |
+      | Not Found | 404        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is not assigned to question with id d4e5f6a7b8c9012345678904 | question-theme-assignment-absent |
 
   Scenario: Trying to remove a theme when question only has one theme
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin removes the theme with id "8ef21e4eb04eb0fa5a469d87" from the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have failed with status code 400 and the response should contain the following error:
-      | error       | statusCode | message                                                                       |
-      | Bad Request | 400        | Question with id a1b2c3d4e5f6012345678901 must have at least 1 theme assigned |
+      | error       | statusCode | message                                                                       | errorCode               |
+      | Bad Request | 400        | Question with id a1b2c3d4e5f6012345678901 must have at least 1 theme assigned | question-minimum-themes |
 
   Scenario: Trying to remove a theme without API key
     Given the database is populated with questions fixture set with name "five-questions"

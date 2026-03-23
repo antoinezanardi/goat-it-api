@@ -46,8 +46,8 @@ Feature: Assign Theme To Question As Admin
     And the request payload is set from scope "question-theme-assignment", type "creation" and name "primaryHistory"
     When the admin assigns the theme with the request payload to the question with id "3ece5c485ddc36118b9fbd5c"
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                             |
-      | Not Found | 404        | Question with id 3ece5c485ddc36118b9fbd5c not found |
+      | error     | statusCode | message                                             | errorCode          |
+      | Not Found | 404        | Question with id 3ece5c485ddc36118b9fbd5c not found | question-not-found |
 
   Scenario: Trying to assign a non-existing theme to a question
     Given the database is populated with questions fixture set with name "five-questions"
@@ -57,8 +57,8 @@ Feature: Assign Theme To Question As Admin
       | themeId | string | 60f7c2b8e1d2f70012345678 |
     And the admin assigns the theme with the request payload to the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have failed with status code 404 and the response should contain the following error:
-      | error     | statusCode | message                                                   |
-      | Not Found | 404        | Question theme with id 60f7c2b8e1d2f70012345678 not found |
+      | error     | statusCode | message                                                   | errorCode                |
+      | Not Found | 404        | Question theme with id 60f7c2b8e1d2f70012345678 not found | question-theme-not-found |
 
   Scenario: Trying to assign an archived theme to a question
     Given the database is populated with questions fixture set with name "five-questions"
@@ -68,8 +68,8 @@ Feature: Assign Theme To Question As Admin
       | themeId | string | dbb0664ad4797c6cc79d5aee |
     And the admin assigns the theme with the request payload to the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have failed with status code 400 and the response should contain the following error:
-      | error       | statusCode | message                                                                |
-      | Bad Request | 400        | Referenced question theme with id dbb0664ad4797c6cc79d5aee is archived |
+      | error       | statusCode | message                                                                | errorCode                          |
+      | Bad Request | 400        | Referenced question theme with id dbb0664ad4797c6cc79d5aee is archived | referenced-question-theme-archived |
 
   Scenario: Trying to assign a theme without API key
     Given the database is populated with questions fixture set with name "five-questions"
@@ -87,8 +87,8 @@ Feature: Assign Theme To Question As Admin
       | themeId | string | 8ef21e4eb04eb0fa5a469d87 |
     And the admin assigns the theme with the request payload to the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have failed with status code 409 and the response should contain the following error:
-      | error    | statusCode | message                                                                                                                |
-      | Conflict | 409        | Question theme assignment with id 8ef21e4eb04eb0fa5a469d87 already exists in question with id a1b2c3d4e5f6012345678901 |
+      | error    | statusCode | message                                                                                                                | errorCode                                |
+      | Conflict | 409        | Question theme assignment with id 8ef21e4eb04eb0fa5a469d87 already exists in question with id a1b2c3d4e5f6012345678901 | question-theme-assignment-already-exists |
 
   Scenario: Trying to assign a theme with invalid API key
     Given the database is populated with questions fixture set with name "five-questions"

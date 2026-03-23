@@ -23,6 +23,7 @@ function createFakeApiResponseExceptionDto(overrides: Partial<ApiResponseExcepti
       createFakeApiResponseExceptionValidationDetailsDto(),
       createFakeApiResponseExceptionValidationDetailsDto(),
     ]),
+    errorCode: faker.helpers.maybe(() => faker.hacker.phrase().toLowerCase().replaceAll(/\s+/gu, "-").slice(0, 40)),
     ...overrides,
   };
 }

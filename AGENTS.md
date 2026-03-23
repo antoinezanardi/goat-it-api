@@ -242,6 +242,8 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - No enums — use `as const` objects with exported constant arrays instead
 - No `switch`/`case` — use polymorphism, object maps, or conditional chains
 - Boolean variables/properties must be prefixed: `is`, `has`, `can`, `should`, `was`, `were`, `are`, `does`, `did`, `must`
+- Never wrap primitive types in type aliases. Use the primitive directly. Type aliases should represent domain entities, value objects, or unions—not `string`, `number`, or `boolean`.
+- Reserve type aliases for complex domain concepts: `type User = { id: string; name: string; }` or `type Result<T> = Success<T> | Failure`
 
 ### Naming conventions
 
@@ -263,6 +265,12 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 Always use `node:` protocol for built-in modules (e.g., `import path from "node:path"`).
 No default exports — only named exports (`import/no-default-export`).
 No relative imports (`../` or `./`) — always use path aliases.
+
+### Export Pattern
+
+- Do NOT use inline `export function` or `export const` syntax — always declare first, export at the end.
+
+- **Classes**: May use inline `export class` since only one class per file is allowed.
 
 ### DTOs
 

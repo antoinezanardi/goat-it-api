@@ -13,6 +13,7 @@ const REQUEST_ERROR_ROW_SCHEMA = z.strictObject({
   message: z.string(),
   statusCode: z.coerce.number(),
   validationDetails: zCoerceOptionalString(),
+  errorCode: zCoerceOptionalString(),
 });
 
 const REQUEST_VALIDATION_DETAILS_ROW_SCHEMA = z.strictObject({
