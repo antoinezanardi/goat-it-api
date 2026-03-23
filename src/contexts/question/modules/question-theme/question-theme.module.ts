@@ -1,6 +1,9 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
+import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { ArchiveQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
@@ -20,6 +23,10 @@ import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@qu
         name: QuestionThemeMongooseSchema.name,
         schema: QUESTION_THEME_MONGOOSE_SCHEMA,
       },
+      {
+        name: QuestionMongooseSchema.name,
+        schema: QUESTION_MONGOOSE_SCHEMA,
+      },
     ]),
   ],
   controllers: [
@@ -36,6 +43,10 @@ import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@qu
     {
       provide: QUESTION_THEME_REPOSITORY_TOKEN,
       useClass: QuestionThemeMongooseRepository,
+    },
+    {
+      provide: QUESTION_REPOSITORY_TOKEN,
+      useClass: QuestionMongooseRepository,
     },
   ],
   exports: [

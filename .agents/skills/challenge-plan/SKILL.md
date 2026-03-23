@@ -178,19 +178,24 @@ For each field in every DTO, propose the Zod rule. Search existing DTO shapes fo
 
 **Unit tests** — For every new use-case and controller, list:
 
+Always check for `.agents/skills/write-unit-test/SKILL.md` skill and `tests/unit/README.md` official doc for test structure and patterns.
+
 - The success path (what the happy flow asserts)
 - Every failure path (one `it` block per domain error or edge case)
 - The mock return value that triggers each path
 
 **Acceptance tests** — If the feature includes a new HTTP endpoint or changes an existing endpoint's behavior:
 
+**If the feature is backend-only with no HTTP endpoint change**, skip acceptance tests and note in the plan: *"Acceptance tests not applicable — domain-only feature."*
+
+Always check for `.agents/skills/write-acceptance-test/SKILL.md` skill and `tests/acceptance/README.md` official doc section "How To: Add a New Acceptance Test" for the complete workflow and file structure.
+
 - Propose 1–3 acceptance test scenarios (Gherkin `.feature` format) that verify end-to-end behavior
+- **Use the write-acceptance-test skill patterns:** Gherkin must follow fixture-set loading, payload referencing, and step-definition conventions.
 - Identify required fixtures (pre-existing database state needed for each scenario)
 - Identify required payloads (request bodies or parameters referenced in scenarios)
 - Identify required step definitions (Given/When/Then steps that must be implemented or reused)
 - Reference existing acceptance test patterns in `tests/acceptance/README.md` for naming and structure
-
-See `tests/acceptance/README.md` section "How To: Add a New Acceptance Test" for the complete workflow and file structure.
 
 Acceptance criteria for Dimension 4:
 

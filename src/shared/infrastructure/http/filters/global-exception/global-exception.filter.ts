@@ -7,7 +7,7 @@ import { ZodError } from "zod";
 
 import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -21,6 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [QuestionMinimumThemesError.name]: error => new BadRequestException(error.message),
     [QuestionThemeSlugAlreadyExistsError.name]: error => new ConflictException(error.message),
     [QuestionThemeAssignmentAlreadyExistsError.name]: error => new ConflictException(error.message),
+    [QuestionThemeReferencedByLiveQuestionsError.name]: error => new ConflictException(error.message),
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);

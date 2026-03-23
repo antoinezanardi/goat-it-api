@@ -6,7 +6,7 @@ import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromCon
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/value-objects/question-status/question-status.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -323,6 +323,45 @@ describe("Question Mongoose Repository", () => {
       const actual = await repositories.question.removeTheme(questionId, themeId);
 
       expect(actual).toStrictEqual<Question>(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.countLiveByThemeId, () => {
+    it("should return count of live questions when referencing a theme.", async() => {
+      const themeId = "618c1f4b3a2f000000000038";
+      const expectedCount = 2;
+      mocks.models.question.countDocuments.mockResolvedValueOnce(expectedCount);
+
+      const actual = await repositories.question.countLiveByThemeId(themeId);
+
+      expect(actual).toBe(expectedCount);
+    });
+
+    it("should return 0 when no live questions reference the theme.", async() => {
+      const themeId = "618c1f4b3a2f000000000039";
+      mocks.models.question.countDocuments.mockResolvedValueOnce(0);
+
+      const actual = await repositories.question.countLiveByThemeId(themeId);
+
+      expect(actual).toBe(0);
+    });
+
+    it("should call countDocuments with correct query parameters when called.", async() => {
+      const themeId = "618c1f4b3a2f00000000003a";
+      mocks.models.question.countDocuments.mockResolvedValueOnce(0);
+
+      await repositories.question.countLiveByThemeId(themeId);
+
+      expect(mocks.models.question.countDocuments).toHaveBeenCalledExactlyOnceWith({
+        themes: {
+          $elemMatch: {
+            themeId: new Types.ObjectId(themeId),
+          },
+        },
+        status: {
+          $in: [QUESTION_STATUS_PENDING, QUESTION_STATUS_ACTIVE],
+        },
+      });
     });
   });
 });

@@ -11,7 +11,7 @@ import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExist
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
+import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
@@ -252,6 +252,11 @@ describe("Global Exception Filter", () => {
         test: "should map domain error to http exception and send it when called with QuestionThemeAssignmentAlreadyExistsError.",
         exception: new QuestionThemeAssignmentAlreadyExistsError("question-theme-id", "question-id"),
         expectedSentException: new ConflictException("Question theme assignment with id question-theme-id already exists in question with id question-id"),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with QuestionThemeReferencedByLiveQuestionsError.",
+        exception: new QuestionThemeReferencedByLiveQuestionsError("question-theme-id", 5),
+        expectedSentException: new ConflictException("Question theme with id question-theme-id is referenced by 5 live question(s) and cannot be archived"),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",

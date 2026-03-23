@@ -3,15 +3,15 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
 import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
-import { createQuestionMongooseInsertPayloadFromContract, createQuestionFromAggregate, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/value-objects/question-status/question-status.constants";
+import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
-import { Question } from "@question/domain/entities/question.types";
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionMongooseDocument, QuestionAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import { Question } from "@question/domain/entities/question.types";
+import { QuestionAggregate, QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
@@ -71,5 +71,21 @@ export class QuestionMongooseRepository implements QuestionRepository {
     await this.questionModel.findByIdAndUpdate(questionId, update);
 
     return this.findById(questionId);
+  }
+
+  public async countLiveByThemeId(themeId: string): Promise<number> {
+    return this.questionModel.countDocuments({
+      themes: {
+        $elemMatch: {
+          themeId: new Types.ObjectId(themeId),
+        },
+      },
+      status: {
+        $in: [
+          QUESTION_STATUS_PENDING,
+          QUESTION_STATUS_ACTIVE,
+        ],
+      },
+    });
   }
 }
