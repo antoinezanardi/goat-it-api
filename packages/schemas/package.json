@@ -19,7 +19,7 @@
   "packageManager": "pnpm@10.33.0",
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",
-    "tsdown": "^0.21.4",
+    "tsdown": "^0.21.5",
     "typescript": "^5.9.3",
     "zod": "^4.3.6"
   },
