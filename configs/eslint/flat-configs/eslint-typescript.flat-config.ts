@@ -1,3 +1,4 @@
+// eslint-disable-next-line import-x/default
 import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";
 
@@ -8,10 +9,10 @@ import type { Linter } from "eslint";
 const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   name: "typescript",
   files: ["**/*.ts"],
-   
+
   plugins: { "@typescript-eslint": TypeScriptPlugin as unknown as Linter },
   languageOptions: {
-     
+
     parser: TypescriptParser as Linter.Parser,
     parserOptions: {
       ecmaVersion: "latest",
