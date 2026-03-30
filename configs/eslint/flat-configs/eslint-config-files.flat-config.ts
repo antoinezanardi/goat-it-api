@@ -10,9 +10,9 @@ const ESLINT_CONFIG_FILES_FLAT_CONFIG: Linter.Config = {
   languageOptions: { globals: { CustomMatchers: "readonly" } },
   rules: {
     "@typescript-eslint/no-restricted-imports": "off",
-    "import/no-default-export": "off",
-    "import/no-internal-modules": "off",
-    "import/no-anonymous-default-export": "off",
+    "import-x/no-default-export": "off",
+    "import-x/no-internal-modules": "off",
+    "import-x/no-anonymous-default-export": "off",
   },
 } as const;
 
