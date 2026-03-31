@@ -542,20 +542,77 @@ Feature: Create Question as Admin
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
       | code    | message                                          | path        | origin | maximum | inclusive |
-      | too_big | Too big: expected string to have <=30 characters | author.name | string | 30      | true      |
+       | too_big | Too big: expected string to have <=30 characters | author.name | string | 30      | true      |
 
-  Scenario: Trying to create a question without API key
-    Given the database is populated with question themes fixture set with name "five-question-themes"
-    And the request payload is set from scope "question", type "creation" and name "complete"
-    When the admin creates a new question with the request payload but without an API key
-    Then the request should have failed with status code 401 and the response should contain the following error:
-      | error        | statusCode | message                    |
-      | Unauthorized | 401        | Missing API key in headers |
+    Scenario: Trying to create a question with empty localized statement
+      Given the database is populated with question themes fixture set with name "five-question-themes"
+      And the request payload is set from scope "question", type "creation" and name "complete"
+      When the request payload is overridden with the following values:
+        | path                    | type      | value |
+        | content.statement.en    | undefined |       |
+        | content.statement.fr    | undefined |       |
+        | content.statement.es    | undefined |       |
+        | content.statement.de    | undefined |       |
+        | content.statement.it    | undefined |       |
+        | content.statement.pt    | undefined |       |
+      And the admin creates a new question with the request payload
+      Then the request should have failed with status code 400 and the response should contain the following error:
+        | error       | statusCode | message                 | validationDetails |
+        | Bad Request | 400        | Invalid request payload | <SET>             |
+      And the failed request's response should contain the following validation details:
+        | code   | message                              | path            |
+        | custom | At least one locale must be provided | content.statement |
 
-  Scenario: Trying to create a question with invalid API key
-    Given the database is populated with question themes fixture set with name "five-question-themes"
-    And the request payload is set from scope "question", type "creation" and name "complete"
-    When the admin creates a new question with the request payload but with an invalid API key
-    Then the request should have failed with status code 401 and the response should contain the following error:
-      | error        | statusCode | message         |
-      | Unauthorized | 401        | Invalid API key |
+    Scenario: Trying to create a question with empty localized answer
+      Given the database is populated with question themes fixture set with name "five-question-themes"
+      And the request payload is set from scope "question", type "creation" and name "complete"
+      When the request payload is overridden with the following values:
+        | path                 | type      | value |
+        | content.answer.en    | undefined |       |
+        | content.answer.fr    | undefined |       |
+        | content.answer.es    | undefined |       |
+        | content.answer.de    | undefined |       |
+        | content.answer.it    | undefined |       |
+        | content.answer.pt    | undefined |       |
+      And the admin creates a new question with the request payload
+      Then the request should have failed with status code 400 and the response should contain the following error:
+        | error       | statusCode | message                 | validationDetails |
+        | Bad Request | 400        | Invalid request payload | <SET>             |
+      And the failed request's response should contain the following validation details:
+        | code   | message                              | path          |
+        | custom | At least one locale must be provided | content.answer |
+
+    Scenario: Trying to create a question with empty localized trivia
+      Given the database is populated with question themes fixture set with name "five-question-themes"
+      And the request payload is set from scope "question", type "creation" and name "complete"
+      When the request payload is overridden with the following values:
+        | path                 | type      | value |
+        | content.trivia.en    | undefined |       |
+        | content.trivia.fr    | undefined |       |
+        | content.trivia.es    | undefined |       |
+        | content.trivia.de    | undefined |       |
+        | content.trivia.it    | undefined |       |
+        | content.trivia.pt    | undefined |       |
+      And the admin creates a new question with the request payload
+      Then the request should have failed with status code 400 and the response should contain the following error:
+        | error       | statusCode | message                 | validationDetails |
+        | Bad Request | 400        | Invalid request payload | <SET>             |
+      And the failed request's response should contain the following validation details:
+        | code   | message                              | path          |
+        | custom | At least one locale must be provided | content.trivia |
+
+   Scenario: Trying to create a question without API key
+     Given the database is populated with question themes fixture set with name "five-question-themes"
+     And the request payload is set from scope "question", type "creation" and name "complete"
+     When the admin creates a new question with the request payload but without an API key
+     Then the request should have failed with status code 401 and the response should contain the following error:
+       | error        | statusCode | message                    |
+       | Unauthorized | 401        | Missing API key in headers |
+
+    Scenario: Trying to create a question with invalid API key
+      Given the database is populated with question themes fixture set with name "five-question-themes"
+      And the request payload is set from scope "question", type "creation" and name "complete"
+      When the admin creates a new question with the request payload but with an invalid API key
+      Then the request should have failed with status code 401 and the response should contain the following error:
+        | error        | statusCode | message         |
+        | Unauthorized | 401        | Invalid API key |

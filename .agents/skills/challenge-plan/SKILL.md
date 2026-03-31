@@ -10,6 +10,7 @@ disable-model-invocation: true
 - **Propose concrete answers** to each question based on codebase evidence, then ask the user to validate, correct, or extend the proposal
 - Challenge vague or contradictory answers and push for specifics until every decision is unambiguous
 - Produce a **zero-ambiguity Structured Plan** that a developer or AI agent can pick up and implement immediately without needing any additional information
+- When validated by the user, right before the implementation, the final plan is saved to `.agents/plans/`
 
 ## When to use me
 
@@ -381,6 +382,8 @@ POST /foo (FooController.create)
 8. "Open Questions / Blockers" section is either empty or lists only non-blocking items
 9. Plan validated against `docs/ARCHITECTURE.md` for layer correctness
 10. Plan validated against `AGENTS.md` for naming, import, and constraint rules
+11. Plan validated against `tests/unit/README.md` for test structure and coverage patterns
+12. Plan validated against `tests/acceptance/README.md` for acceptance test structure and conventions
 
 ---
 
