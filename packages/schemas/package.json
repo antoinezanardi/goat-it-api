@@ -1,7 +1,7 @@
 {
   "name": "@goat-it/schemas",
   "type": "module",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
   "scripts": {
     "dev": "tsdown --watch",
@@ -47,6 +47,14 @@
     "./shared/locale": {
       "types": "./dist/shared/locale/index.d.mts",
       "import": "./dist/shared/locale/index.mjs"
+    },
+    "./shared/error": {
+      "types": "./dist/shared/error/index.d.mts",
+      "import": "./dist/shared/error/index.mjs"
+    },
+    "./shared/constants": {
+      "types": "./dist/shared/constants/index.d.mts",
+      "import": "./dist/shared/constants/index.mjs"
     }
   },
   "dependencies": {
