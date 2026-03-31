@@ -12,6 +12,8 @@ This package is a small, framework‑agnostic collection of DTO shapes, value‑
   - `./question`
   - `./question-theme`
   - `./shared/locale`
+  - `./shared/error`
+  - `./shared/constants`
 - Peer dependency: `zod` (match workspace version)
 
 ## 🔧 Usage
@@ -25,8 +27,18 @@ import type { QuestionDto } from "@goat-it/schemas/question";
 // Importing Zod schemas
 import { QUESTION_THEME_CREATION_DTO } from "@goat-it/schemas/question-theme";
 
-// Importing constants
+// Importing locale constants
 import { LOCALES } from "@goat-it/schemas/shared/locale";
+
+// Importing error DTOs and types
+import { API_RESPONSE_EXCEPTION_DTO } from "@goat-it/schemas/shared/error";
+import type { ApiResponseExceptionDto } from "@goat-it/schemas/shared/error";
+
+// Importing shared constants
+import { LOCALIZED_TEXT_ENTRY_MAX_LENGTH, SLUG_MIN_LENGTH } from "@goat-it/schemas/shared/constants";
+
+// Importing question-specific constants
+import { QUESTION_AUTHOR_NAME_MIN_LENGTH, QUESTION_STATUS_PENDING } from "@goat-it/schemas/question";
 ```
 
 ## 📝 Notes
