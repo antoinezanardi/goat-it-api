@@ -1,4 +1,8 @@
-export { QUESTION_THEME_STATUSES } from "@app-question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+export {
+  QUESTION_THEME_STATUSES,
+  DEFAULT_QUESTION_THEME_STATUS,
+  QUESTION_THEME_STATUS_ARCHIVED,
+} from "@app-question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 
 export { QUESTION_THEME_CREATION_DTO } from "@app-question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 

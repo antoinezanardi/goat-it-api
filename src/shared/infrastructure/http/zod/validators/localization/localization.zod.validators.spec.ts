@@ -1,8 +1,37 @@
-import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
+import { zLocalizedText, zLocalizedTextEntry, zLocalizedTextsEntry, zLocalizedTexts, createZLocaleEntries, hasAtLeastOneLocaleValue } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
+import { LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE } from "@shared/infrastructure/http/zod/validators/localization/constants/localization.zod.validators.constants";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 describe("Localization Zod Validators", () => {
+  describe(hasAtLeastOneLocaleValue, () => {
+    it.each<{
+      test: string;
+      object: Record<string, unknown>;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when at least one locale value is defined.",
+        object: { en: "Hello", fr: undefined },
+        expected: true,
+      },
+      {
+        test: "should return false when all locale values are undefined.",
+        object: { en: undefined, fr: undefined },
+        expected: false,
+      },
+      {
+        test: "should return true when multiple locale values are defined.",
+        object: { en: "Hello", fr: "Bonjour" },
+        expected: true,
+      },
+    ])("$test", ({ object, expected }) => {
+      const hasLocaleValue = hasAtLeastOneLocaleValue(object);
+
+      expect(hasLocaleValue).toBe(expected);
+    });
+  });
+
   describe(createZLocaleEntries, () => {
     it("should create locale entries correctly when called.", () => {
       const entryFactory = (locale: Locale): string => `Label in ${locale}`;
@@ -245,9 +274,9 @@ describe("Localization Zod Validators", () => {
         expected: false,
       },
       {
-        test: "should return true when localized text object is empty.",
+        test: "should return false when localized text object is empty.",
         value: {},
-        expected: true,
+        expected: false,
       },
       {
         test: "should return false when localized text object is not an object.",
@@ -273,6 +302,13 @@ describe("Localization Zod Validators", () => {
       const schema = zLocalizedText();
 
       expect(schema.description).toBe("Localized text object with translations for multiple languages");
+    });
+
+    it("should provide correct error message when all locales are undefined.", () => {
+      const schema = zLocalizedText();
+      const result = schema.safeParse({});
+
+      expect(result.error?.issues[0].message).toBe(LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE);
     });
   });
 
@@ -323,9 +359,9 @@ describe("Localization Zod Validators", () => {
         expected: false,
       },
       {
-        test: "should return true when localized texts object is empty.",
+        test: "should return false when localized texts object is empty.",
         value: {},
-        expected: true,
+        expected: false,
       },
       {
         test: "should return false when localized texts object is not an object.",
@@ -359,6 +395,13 @@ describe("Localization Zod Validators", () => {
       const schema = zLocalizedTexts();
 
       expect(schema.description).toBe("Localized texts object with translations for multiple languages");
+    });
+
+    it("should provide correct error message when all locales are undefined.", () => {
+      const schema = zLocalizedTexts();
+      const result = schema.safeParse({});
+
+      expect(result.error?.issues[0].message).toBe(LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE);
     });
 
     it("should trim each localized text entry when parsing.", () => {

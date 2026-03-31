@@ -11,9 +11,9 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "no-magic-numbers": "off",
     "@typescript-eslint/no-unsafe-type-assertion": "off",
     "@typescript-eslint/unbound-method": "off",
-    "import/no-namespace": "off",
-    "import/no-internal-modules": "off",
-    "import/max-dependencies": [
+    "import-x/no-namespace": "off",
+    "import-x/no-internal-modules": "off",
+    "import-x/max-dependencies": [
       "error",
       {
         max: 40,

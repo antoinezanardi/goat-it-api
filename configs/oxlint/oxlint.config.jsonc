@@ -55,7 +55,6 @@
     "no-constructor-return": "error",
     "no-control-regex": "error",
     "no-debugger": "error",
-    "no-dupe-args": "error",
     "no-dupe-class-members": "error",
     "no-dupe-else-if": "error",
     "no-dupe-keys": "error",
@@ -89,16 +88,13 @@
     "no-unexpected-multiline": "error",
     "no-unmodified-loop-condition": "error",
     "no-unreachable": "error",
-    "no-unreachable-loop": "error",
     "no-unsafe-finally": "error",
     "no-unsafe-negation": "error",
     "no-unsafe-optional-chaining": "error",
     "no-unused-private-class-members": "error",
     "no-unused-vars": "error",
     "no-use-before-define": "error",
-    "no-useless-assignment": "error",
     "no-useless-backreference": "error",
-    "require-atomic-updates": "off",
     "use-isnan": "error",
     "valid-typeof": "error",
     // ---- ESLint Rules -----
@@ -109,14 +105,6 @@
       "as-needed"
     ],
     "block-scoped-var": "error",
-    "camelcase": [
-      "error",
-      {
-        "allow": [
-          "npm_package_version"
-        ]
-      }
-    ],
     "capitalized-comments": [
       "error",
       "always"
@@ -124,14 +112,12 @@
     "class-methods-use-this": "error",
     "complexity": "error",
     "consistent-return": "off",
-    "consistent-this": "error",
     "curly": "error",
     "default-case": "error",
     "default-case-last": "error",
     "default-param-last": "error",
     "dot-notation": "error",
     "eqeqeq": "error",
-    "func-name-matching": "off",
     "func-names": "error",
     "func-style": [
       "error",
@@ -142,7 +128,6 @@
     ],
     "grouped-accessor-pairs": "error",
     "guard-for-in": "error",
-    "id-denylist": "off",
     "id-length": [
       "error",
       {
@@ -156,9 +141,7 @@
         ]
       }
     ],
-    "id-match": "off",
     "init-declarations": "off",
-    "logical-assignment-operators": "error",
     "max-classes-per-file": "error",
     "max-depth": "off",
     "max-lines": "off",
@@ -206,10 +189,8 @@
         ]
       }
     ],
-    "no-implicit-globals": "error",
     "no-implied-eval": "error",
     "no-inline-comments": "error",
-    "no-invalid-this": "error",
     "no-iterator": "error",
     "no-label-var": "error",
     "no-labels": "error",
@@ -237,8 +218,6 @@
     "no-new-wrappers": "error",
     "no-nonoctal-decimal-escape": "error",
     "no-object-constructor": "error",
-    "no-octal": "error",
-    "no-octal-escape": "error",
     "no-param-reassign": [
       "error",
       {
@@ -251,16 +230,8 @@
     "no-proto": "error",
     "no-redeclare": "error",
     "no-regex-spaces": "error",
-    "no-restricted-exports": "off",
     "no-restricted-globals": "off",
     "no-restricted-imports": "off",
-    "no-restricted-properties": "off",
-    "no-restricted-syntax": [
-      "error",
-      "SwitchStatement",
-      "SwitchCase",
-      "DoWhileStatement"
-    ],
     "no-return-assign": "error",
     "no-script-url": "error",
     "no-sequences": "error",
@@ -268,16 +239,7 @@
     "no-shadow-restricted-names": "error",
     "no-ternary": "off",
     "no-throw-literal": "error",
-    "no-undef-init": "error",
     "no-undefined": "off",
-    "no-underscore-dangle": [
-      "error",
-      {
-        "allow": [
-          "_id"
-        ]
-      }
-    ],
     "no-unneeded-ternary": "error",
     "no-unused-expressions": "error",
     "no-unused-labels": "error",
@@ -299,25 +261,17 @@
     ],
     "no-warning-comments": "off",
     "no-with": "error",
-    "object-shorthand": "error",
-    "one-var": [
-      "error",
-      "never"
-    ],
     "operator-assignment": [
       "error",
       "always"
     ],
-    "prefer-arrow-callback": "error",
     "prefer-const": "error",
     "prefer-destructuring": "off",
     "prefer-exponentiation-operator": "error",
-    "prefer-named-capture-group": "error",
     "prefer-numeric-literals": "error",
     "prefer-object-has-own": "error",
     "prefer-object-spread": "error",
     "prefer-promise-reject-errors": "error",
-    "prefer-regex-literals": "error",
     "prefer-rest-params": "error",
     "prefer-spread": "error",
     "prefer-template": "error",
@@ -327,12 +281,10 @@
       "as-needed"
     ],
     "require-await": "off",
-    "require-unicode-regexp": "error",
     "require-yield": "error",
     "sort-imports": "off",
     "sort-keys": "off",
     "sort-vars": "off",
-    "strict": "off",
     "symbol-description": "error",
     "vars-on-top": "error",
     "yoda": "error",
@@ -340,11 +292,9 @@
     // - Layout & Formatting (https://eslint.org/docs/rules/#layout-formatting)
     "unicode-bom": "error",
     // ---- Unicorn Rules -----
-    "unicorn/better-regex": "error",
     "unicorn/catch-error-name": "error",
     "unicorn/consistent-assert": "error",
     "unicorn/consistent-date-clone": "error",
-    "unicorn/consistent-destructuring": "error",
     "unicorn/consistent-empty-array-spread": "error",
     "unicorn/consistent-existence-index-check": "error",
     "unicorn/consistent-function-scoping": "error",
@@ -352,12 +302,6 @@
     "unicorn/empty-brace-spaces": "error",
     "unicorn/error-message": "error",
     "unicorn/escape-case": "error",
-    "unicorn/expiring-todo-comments": [
-      "error",
-      {
-        "allowWarningComments": false
-      }
-    ],
     "unicorn/explicit-length-check": "error",
     "unicorn/filename-case": [
       "error",
@@ -366,7 +310,6 @@
         "multipleFileExtensions": false
       }
     ],
-    "unicorn/import-style": "error",
     "unicorn/new-for-builtins": "error",
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
@@ -382,16 +325,13 @@
     "unicorn/no-console-spaces": "error",
     "unicorn/no-document-cookie": "error",
     "unicorn/no-empty-file": "error",
-    "unicorn/no-for-loop": "error",
     "unicorn/no-hex-escape": "error",
     "unicorn/no-immediate-mutation": "error",
     "unicorn/no-instanceof-builtins": "error",
     "unicorn/no-invalid-fetch-options": "error",
     "unicorn/no-invalid-remove-event-listener": "error",
-    "unicorn/no-keyword-prefix": "error",
     "unicorn/no-lonely-if": "error",
     "unicorn/no-magic-array-flat-depth": "error",
-    "unicorn/no-named-default": "error",
     "unicorn/no-negated-condition": "error",
     "unicorn/no-negation-in-equality-check": "error",
     "unicorn/no-nested-ternary": "error",
@@ -408,11 +348,9 @@
     "unicorn/no-unnecessary-array-flat-depth": "error",
     "unicorn/no-unnecessary-array-splice-count": "error",
     "unicorn/no-unnecessary-await": "error",
-    "unicorn/no-unnecessary-polyfills": "error",
     "unicorn/no-unnecessary-slice-end": "error",
     "unicorn/no-unreadable-array-destructuring": "error",
     "unicorn/no-unreadable-iife": "error",
-    "unicorn/no-unused-properties": "error",
     "unicorn/no-useless-collection-argument": "error",
     "unicorn/no-useless-error-capture-stack-trace": "error",
     "unicorn/no-useless-fallback-in-spread": "error",
@@ -430,7 +368,7 @@
     "unicorn/prefer-array-flat-map": "error",
     "unicorn/prefer-array-index-of": "error",
     "unicorn/prefer-array-some": "error",
-    "unicorn/prefer-at": "error",
+    "unicorn/prefer-at": "off",
     "unicorn/prefer-bigint-literals": "error",
     "unicorn/prefer-blob-reading-methods": "error",
     "unicorn/prefer-class-fields": "error",
@@ -443,11 +381,8 @@
     "unicorn/prefer-dom-node-remove": "error",
     "unicorn/prefer-dom-node-text-content": "error",
     "unicorn/prefer-event-target": "off",
-    "unicorn/prefer-export-from": "error",
     "unicorn/prefer-global-this": "error",
-    "unicorn/prefer-import-meta-properties": "error",
     "unicorn/prefer-includes": "error",
-    "unicorn/prefer-json-parse-buffer": "error",
     "unicorn/prefer-keyboard-event-key": "error",
     "unicorn/prefer-logical-operator-over-ternary": "error",
     "unicorn/prefer-math-min-max": "error",
@@ -468,7 +403,6 @@
     "unicorn/prefer-response-static-json": "error",
     "unicorn/prefer-set-has": "error",
     "unicorn/prefer-set-size": "error",
-    "unicorn/prefer-single-call": "error",
     "unicorn/prefer-spread": "error",
     "unicorn/prefer-string-raw": "error",
     "unicorn/prefer-string-replace-all": "error",
@@ -476,76 +410,46 @@
     "unicorn/prefer-string-starts-ends-with": "error",
     "unicorn/prefer-string-trim-start-end": "error",
     "unicorn/prefer-structured-clone": "error",
-    "unicorn/prefer-switch": "off",
     "unicorn/prefer-ternary": "error",
     "unicorn/prefer-top-level-await": "error",
     "unicorn/prefer-type-error": "error",
-    "unicorn/prevent-abbreviations": [
-      "error",
-      {
-        "allowList": {
-          "docs": true
-        }
-      }
-    ],
     "unicorn/relative-url-style": "error",
     "unicorn/require-array-join-separator": "error",
     "unicorn/require-module-attributes": "error",
     "unicorn/require-module-specifiers": "error",
     "unicorn/require-number-to-fixed-digits-argument": "error",
     "unicorn/require-post-message-target-origin": "error",
-    "unicorn/string-content": "off",
     "unicorn/switch-case-braces": "error",
-    "unicorn/template-indent": "error",
     "unicorn/text-encoding-identifier-case": "error",
     "unicorn/throw-new-error": "error",
     // ---- Import Rules -----
     // ---- ESLint Import Rules -----
     // - Helpful warnings (https://github.com/import-js/eslint-plugin-import#helpful-warnings)
     "import/export": "error",
-    "import/no-deprecated": "error",
     "import/no-empty-named-blocks": "error",
-    "import/no-extraneous-dependencies": [
-      "error",
-      {
-        "peerDependencies": false
-      }
-    ],
     "import/no-mutable-exports": "error",
     "import/no-named-as-default": "error",
     "import/no-named-as-default-member": "error",
-    "import/no-unused-modules": "error",
     // - Module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
     "import/no-amd": "error",
     "import/no-commonjs": "error",
-    "import/no-import-module-exports": "error",
     "import/no-nodejs-modules": "off",
     "import/unambiguous": "error",
     // - Static analysis (https://github.com/import-js/eslint-plugin-import#static-analysis)
     "import/default": "error",
-    "import/enforce-node-protocol-usage": [
-      "error",
-      "always"
-    ],
     "import/named": "off",
     "import/namespace": "error",
     "import/no-absolute-path": "error",
     "import/no-cycle": "error",
     "import/no-dynamic-require": "error",
-    "import/no-internal-modules": "off",
-    "import/no-relative-packages": "error",
     "import/no-relative-parent-imports": "off",
-    "import/no-restricted-paths": "error",
     "import/no-self-import": "error",
-    "import/no-unresolved": "error",
-    "import/no-useless-path-segments": "error",
     "import/no-webpack-loader-syntax": "error",
     // - Style guide (https://github.com/import-js/eslint-plugin-import#style-guide)
     "import/consistent-type-specifier-style": [
       "error",
       "prefer-top-level"
     ],
-    "import/dynamic-import-chunkname": "off",
     "import/exports-last": "error",
     "import/extensions": "off",
     "import/first": "error",
@@ -557,7 +461,6 @@
         "ignoreTypeImports": true
       }
     ],
-    "import/newline-after-import": "error",
     "import/no-anonymous-default-export": "error",
     "import/no-default-export": "error",
     "import/no-duplicates": "error",
@@ -573,88 +476,6 @@
       }
     ],
     "import/prefer-default-export": "off",
-    "import/order": [
-      "error",
-      {
-        "warnOnUnassignedImports": true,
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "type"
-        ],
-        "pathGroups": [
-          {
-            "pattern": "**/*.types",
-            "group": "type",
-            "position": "after"
-          },
-          {
-            "pattern": "@package-json",
-            "group": "parent",
-            "position": "before"
-          },
-          {
-            "pattern": "@src/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@app/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@shared/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@configs/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@question/**",
-            "group": "parent",
-            "position": "after"
-          },
-          {
-            "pattern": "@unit-tests/**",
-            "group": "sibling",
-            "position": "after"
-          },
-          {
-            "pattern": "@mocks/**",
-            "group": "sibling",
-            "position": "after"
-          },
-          {
-            "pattern": "@faketories/**",
-            "group": "sibling",
-            "position": "after"
-          },
-          {
-            "pattern": "@acceptance-tests/**",
-            "group": "sibling",
-            "position": "after"
-          },
-          {
-            "pattern": "@acceptance-features/**",
-            "group": "sibling",
-            "position": "after"
-          },
-          {
-            "pattern": "@acceptance-support/**",
-            "group": "sibling",
-            "position": "after"
-          }
-        ],
-        "newlines-between": "always"
-      }
-    ],
     // ---- OXC Rules -----
     "oxc/bad-array-method-on-arguments": "error",
     "oxc/bad-char-at-comparison": "error",
@@ -737,7 +558,6 @@
           }
         ],
         "typescript/explicit-function-return-type": "error",
-        "typescript/explicit-member-accessibility": "error",
         "typescript/explicit-module-boundary-types": "error",
         "typescript/init-declarations": "error",
         "typescript/max-params": [
@@ -745,86 +565,6 @@
           {
             "max": 8
           }
-        ],
-        "typescript/member-ordering": "error",
-        "typescript/method-signature-style": "error",
-        "typescript/naming-convention": [
-          "error",
-          [
-            {
-              "selector": [
-                "enumMember"
-              ],
-              "format": [
-                "UPPER_CASE"
-              ]
-            },
-            {
-              "selector": [
-                "class",
-                "interface",
-                "typeParameter",
-                "enum"
-              ],
-              "format": [
-                "PascalCase"
-              ]
-            },
-            {
-              "selector": [
-                "function",
-                "classProperty",
-                "classMethod",
-                "accessor"
-              ],
-              "format": [
-                "camelCase"
-              ],
-              "leadingUnderscore": "allow"
-            },
-            {
-              "selector": [
-                "variable",
-                "classProperty"
-              ],
-              "types": [
-                "boolean"
-              ],
-              "format": [
-                "PascalCase"
-              ],
-              "prefix": [
-                "is",
-                "should",
-                "has",
-                "can",
-                "did",
-                "will"
-              ]
-            },
-            {
-              "selector": [
-                "variable"
-              ],
-              "modifiers": [
-                "exported"
-              ],
-              "format": [
-                "UPPER_CASE"
-              ]
-            },
-            {
-              "selector": [
-                "objectLiteralProperty"
-              ],
-              "modifiers": [
-                "exported"
-              ],
-              "format": [
-                "UPPER_CASE"
-              ]
-            }
-          ]
         ],
         "typescript/no-array-constructor": "error",
         "typescript/no-array-delete": "error",
@@ -856,7 +596,6 @@
             "ignoreProperties": true
           }
         ],
-        "typescript/no-invalid-this": "error",
         "typescript/no-invalid-void-type": "error",
         "typescript/no-loop-func": "error",
         "typescript/no-magic-numbers": [
@@ -956,13 +695,6 @@
           }
         ],
         "typescript/prefer-as-const": "error",
-        "typescript/prefer-destructuring": [
-          "error",
-          {
-            "array": false,
-            "object": true
-          }
-        ],
         "typescript/prefer-enum-initializers": "error",
         "typescript/prefer-find": "error",
         "typescript/prefer-for-of": "error",
@@ -1218,7 +950,6 @@
         "no-magic-numbers": "off",
         "new-cap": "off",
         "import/no-namespace": "off",
-        "import/no-internal-modules": "off",
         "import/max-dependencies": [
           "error",
           {
@@ -1230,7 +961,6 @@
         "typescript/unbound-method": "off",
         "typescript/init-declarations": "off",
         "typescript/no-magic-numbers": "off",
-        "typescript/prefer-destructuring": "off",
         "unicorn/no-useless-undefined": [
           "error",
           {
@@ -1282,13 +1012,6 @@
         "jest/no-test-prefixes": "error",
         "jest/no-test-return-statement": "error",
         "vitest/no-unneeded-async-expect-function": "error",
-        "vitest/padding-around-after-all-blocks": "error",
-        "vitest/padding-around-after-each-blocks": "error",
-        "vitest/padding-around-all": "error",
-        "vitest/padding-around-before-all-blocks": "error",
-        "vitest/padding-around-before-each-blocks": "error",
-        "vitest/padding-around-describe-blocks": "error",
-        "vitest/padding-around-expect-groups": "error",
         "jest/padding-around-test-blocks": "error",
         "vitest/prefer-called-exactly-once-with": "error",
         "vitest/prefer-called-once": "error",
@@ -1298,17 +1021,14 @@
         "vitest/prefer-describe-function-title": "error",
         "jest/prefer-each": "error",
         "jest/prefer-equality-matcher": "error",
-        "vitest/prefer-expect-assertions": "off",
         "vitest/prefer-expect-type-of": "error",
         "jest/prefer-expect-resolves": "error",
         "jest/prefer-hooks-in-order": "error",
         "jest/prefer-hooks-on-top": "error",
         "vitest/prefer-import-in-mock": "error",
-        "vitest/prefer-importing-vitest-globals": "off",
         "jest/prefer-lowercase-title": "off",
         "jest/prefer-mock-promise-shorthand": "error",
         "vitest/prefer-mock-return-shorthand": "error",
-        "vitest/prefer-snapshot-hint": "error",
         "jest/prefer-spy-on": "error",
         "vitest/prefer-strict-boolean-matchers": "off",
         "jest/prefer-strict-equal": "error",
@@ -1320,14 +1040,12 @@
         "vitest/prefer-to-have-been-called-times": "error",
         "jest/prefer-to-have-length": "error",
         "jest/prefer-todo": "error",
-        "vitest/prefer-vi-mocked": "error",
         "jest/require-hook": "error",
         "vitest/require-local-test-context-for-concurrent-snapshots": "error",
         "vitest/require-mock-type-parameters": "error",
         "jest/require-to-throw-message": "error",
         "jest/require-top-level-describe": "error",
         "jest/valid-describe-callback": "error",
-        "vitest/valid-expect-in-promise": "error",
         "jest/valid-expect": "error",
         "jest/valid-title": "off",
         "vitest/valid-title": [
@@ -1351,7 +1069,6 @@
       ],
       "rules": {
         "import/no-default-export": "off",
-        "import/no-internal-modules": "off",
         "import/no-anonymous-default-export": "off",
         "typescript/no-unsafe-type-assertion": "off"
       }
@@ -1412,7 +1129,6 @@
             "allowArrowFunctions": false
           }
         ],
-        "prefer-arrow-callback": "off",
         "func-names": [
           "error",
           "never"

@@ -93,7 +93,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/prefer-array-flat-map": "error",
     "unicorn/prefer-array-index-of": "error",
     "unicorn/prefer-array-some": "error",
-    "unicorn/prefer-at": "error",
+    "unicorn/prefer-at": "off",
     "unicorn/prefer-bigint-literals": "error",
     "unicorn/prefer-blob-reading-methods": "error",
     "unicorn/prefer-class-fields": "error",

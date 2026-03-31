@@ -4,7 +4,7 @@ const ESLINT_TYPESCRIPT_DECLARATION_CONFIG: Linter.Config = {
   name: "typescript-declaration",
   files: ["**/*.d.ts"],
   rules: {
-    "import/unambiguous": "off",
+    "import-x/unambiguous": "off",
   },
 } as const;
 
