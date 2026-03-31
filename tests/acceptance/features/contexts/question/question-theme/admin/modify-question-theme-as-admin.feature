@@ -380,12 +380,12 @@ Feature: Modify Question Theme As Admin
       | error        | statusCode | message                    |
       | Unauthorized | 401        | Missing API key in headers |
 
-    Scenario: Trying to modify a question theme with invalid API key
-      Given the database is populated with question themes fixture set with name "five-question-themes"
-      When the request payload is overridden with the following values:
-        | path | type   | value       |
-        | slug | string | video-games |
-      And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload with an invalid API key
-      Then the request should have failed with status code 401 and the response should contain the following error:
-        | error        | statusCode | message         |
-        | Unauthorized | 401        | Invalid API key |
+  Scenario: Trying to modify a question theme with invalid API key
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the request payload is overridden with the following values:
+      | path | type   | value       |
+      | slug | string | video-games |
+    And the admin modifies the question theme with id "ddb03d94cae8df38d28e5adc" with the request payload with an invalid API key
+    Then the request should have failed with status code 401 and the response should contain the following error:
+      | error        | statusCode | message         |
+      | Unauthorized | 401        | Invalid API key |

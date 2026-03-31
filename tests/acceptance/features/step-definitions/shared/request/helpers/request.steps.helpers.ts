@@ -59,7 +59,7 @@ function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unk
 }
 
 function normalizePathForOverride(path: string): string {
-  return path.replaceAll(/\[(?<index>\d+)\]/gu, ".$1");
+  return path.replaceAll(/\[(?<index>\d+)\]/gu, ".$<index>");
 }
 
 /**
@@ -67,33 +67,24 @@ function normalizePathForOverride(path: string): string {
  * Handles array indices like "themes[1].isPrimary" by converting them to "themes.1.isPrimary".
  * Unlike radashi's construct, this function preserves undefined values in the nested structure.
  */
-
 function reconstructPayloadWithUndefined(flatObject: Record<string, unknown>): Record<string, unknown> {
   const result: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(flatObject)) {
-    const normalizedKey = normalizePathForOverride(key);
-    const parts = normalizedKey.split(".");
+    const parts = normalizePathForOverride(key).split(".");
+    const leafPart = parts[parts.length - 1];
 
     let current = result;
-
-    for (let index = 0; index < parts.length - 1; index++) {
-      const part = parts[index];
-      const nextPart = parts[index + 1];
-      const isNextPartIndex = !Number.isNaN(Number(nextPart));
-
+    for (const [index, part] of parts.slice(0, -1).entries()) {
+      const isNextPartIndex = !Number.isNaN(Number(parts[index + 1]));
       if (!(part in current)) {
         current[part] = isNextPartIndex ? [] : {};
       }
-
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       current = current[part] as Record<string, unknown>;
     }
 
-    const lastIndex = parts.length - 1;
-    const lastPart = parts[lastIndex];
-
-    current[lastPart] = value;
+    current[leafPart] = value;
   }
   return result;
 }
