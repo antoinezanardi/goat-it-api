@@ -2,11 +2,15 @@ export { QUESTION_COGNITIVE_DIFFICULTIES } from "@app-question/domain/value-obje
 
 export { QUESTION_CATEGORIES } from "@app-question/domain/value-objects/question-category/question-category.constants";
 
-export { QUESTION_STATUSES } from "@app-question/domain/value-objects/question-status/question-status.constants";
+export { QUESTION_STATUSES, QUESTION_STATUS_PENDING, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_REJECTED, QUESTION_CREATION_STATUSES } from "@app-question/domain/value-objects/question-status/question-status.constants";
 
-export { QUESTION_AUTHOR_ROLES } from "@app-question/domain/value-objects/question-author/question-author.constants";
+export { QUESTION_AUTHOR_ROLES, QUESTION_AUTHOR_NAME_MIN_LENGTH, QUESTION_AUTHOR_NAME_MAX_LENGTH, QUESTION_CREATION_AUTHOR_ROLES } from "@app-question/domain/value-objects/question-author/question-author.constants";
 
 export { QUESTION_REJECTION_TYPES } from "@app-question/domain/value-objects/question-rejection/question-rejection.constants";
+
+export { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS } from "@app-question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
+
+export { QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_SOURCE_URLS_MAX_ITEMS } from "@app-question/domain/value-objects/question-source-urls/question-source-urls.constants";
 
 export { QUESTION_CREATION_DTO } from "@app-question/application/dto/question-creation/question-creation.dto.shape";
 

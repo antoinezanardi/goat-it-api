@@ -3,6 +3,8 @@ import { defineConfig } from "tsdown";
 export default defineConfig({
   entry: [
     "./src/shared/locale/index.ts",
+    "./src/shared/error/index.ts",
+    "./src/shared/constants/index.ts",
     "./src/question/index.ts",
     "./src/question-theme/index.ts",
   ],
