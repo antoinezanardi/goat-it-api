@@ -18,7 +18,8 @@ import type { GoatItWorld } from "@acceptance-support/types/world.types";
  * @example
  * | path                 | type          | value                    |
  * | user.name            | string        | John Doe                 |
- * | user.age             | number        | 30                       |
+ * | user.age             | integer       | 30                       |
+ * | user.weight          | float          | 80.5                     |
  * | isActive             | boolean       | true                     |
  * | tags                 | array         | ["tag1", "tag2", "tag3"] |
  * | socialMedias[0].url  | string        | "https://example.com"    |
