@@ -1,11 +1,15 @@
 import { z } from "zod";
 
 import { LOCALE_LABELS } from "@shared/domain/value-objects/locale/locale.constants";
-import { LOCALE_EXAMPLES, LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH } from "@shared/infrastructure/http/zod/validators/localization/constants/localization.zod.validators.constants";
+import { LOCALE_EXAMPLES, LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH, LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE } from "@shared/infrastructure/http/zod/validators/localization/constants/localization.zod.validators.constants";
 
 import type { ZodObject, ZodString, ZodOptional, ZodArray } from "zod";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+
+function hasAtLeastOneLocaleValue(object: Record<string, unknown>): boolean {
+  return Object.values(object).some(value => value !== undefined);
+}
 
 function createZLocaleEntries<T>(entryFactory: (locale: Locale) => T): Record<Locale, T> {
   return {
@@ -52,18 +56,27 @@ function zLocalizedText(): ZodObject<Record<Locale, ZodOptional<ZodString>>> {
   const localeEntries: Record<Locale, ZodOptional<ZodString>> = createZLocaleEntries(zLocalizedTextEntry);
 
   return z.strictObject(localeEntries)
-    .describe("Localized text object with translations for multiple languages");
+    .describe("Localized text object with translations for multiple languages")
+    .refine(
+      object => hasAtLeastOneLocaleValue(object),
+      { message: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
+    );
 }
 
 function zLocalizedTexts(): ZodObject<Record<Locale, ZodOptional<ZodArray<ZodString>>>> {
   const localeEntries: Record<Locale, ZodOptional<ZodArray<ZodString>>> = createZLocaleEntries(zLocalizedTextsEntry);
 
   return z.strictObject(localeEntries)
-    .describe("Localized texts object with translations for multiple languages");
+    .describe("Localized texts object with translations for multiple languages")
+    .refine(
+      object => hasAtLeastOneLocaleValue(object),
+      { message: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
+    );
 }
 
 export {
   createZLocaleEntries,
+  hasAtLeastOneLocaleValue,
   zLocalizedTextEntry,
   zLocalizedTextsEntry,
   zLocalizedText,

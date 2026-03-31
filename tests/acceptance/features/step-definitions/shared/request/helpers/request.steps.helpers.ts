@@ -58,4 +58,39 @@ function tryParseOverriddenPayloadValue(type: string, payloadValue: string): unk
   throw new Error(`Unsupported payload override type: ${type}. Please use one of the supported types: ${Object.keys(parseValueMethods).join(", ")}`);
 }
 
-export { tryParseOverriddenPayloadValue };
+function normalizePathForOverride(path: string): string {
+  return path.replaceAll(/\[(?<index>\d+)\]/gu, ".$<index>");
+}
+
+/**
+ * Reconstructs a nested object from flat dot-notation keys, preserving undefined values.
+ * Handles array indices like "themes[1].isPrimary" by converting them to "themes.1.isPrimary".
+ * Unlike radashi's construct, this function preserves undefined values in the nested structure.
+ */
+function reconstructPayloadWithUndefined(flatObject: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(flatObject)) {
+    const parts = normalizePathForOverride(key).split(".");
+    const leafPart = parts[parts.length - 1];
+
+    let current = result;
+    for (const [index, part] of parts.slice(0, -1).entries()) {
+      const isNextPartIndex = !Number.isNaN(Number(parts[index + 1]));
+      if (!(part in current)) {
+        current[part] = isNextPartIndex ? [] : {};
+      }
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+      current = current[part] as Record<string, unknown>;
+    }
+
+    current[leafPart] = value;
+  }
+  return result;
+}
+
+export {
+  tryParseOverriddenPayloadValue,
+  normalizePathForOverride,
+  reconstructPayloadWithUndefined,
+};

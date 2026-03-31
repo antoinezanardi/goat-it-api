@@ -314,6 +314,60 @@ Feature: Create Question Theme As Admin
       | error    | statusCode | message                                                   | errorCode                          |
       | Conflict | 409        | Question theme with slug general-knowledge already exists | question-theme-slug-already-exists |
 
+  Scenario: Trying to create a question theme with empty localized label
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path     | type      | value |
+      | label.en | undefined |       |
+      | label.fr | undefined |       |
+      | label.es | undefined |       |
+      | label.de | undefined |       |
+      | label.it | undefined |       |
+      | label.pt | undefined |       |
+    And the admin creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code   | message                              | path  |
+      | custom | At least one locale must be provided | label |
+
+  Scenario: Trying to create a question theme with empty localized aliases
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path       | type      | value |
+      | aliases.en | undefined |       |
+      | aliases.fr | undefined |       |
+      | aliases.es | undefined |       |
+      | aliases.de | undefined |       |
+      | aliases.it | undefined |       |
+      | aliases.pt | undefined |       |
+    And the admin creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code   | message                              | path    |
+      | custom | At least one locale must be provided | aliases |
+
+  Scenario: Trying to create a question theme with empty localized description
+    Given the request payload is set from scope "question-theme", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type      | value |
+      | description.en | undefined |       |
+      | description.fr | undefined |       |
+      | description.es | undefined |       |
+      | description.de | undefined |       |
+      | description.it | undefined |       |
+      | description.pt | undefined |       |
+    And the admin creates a new question theme with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code   | message                              | path        |
+      | custom | At least one locale must be provided | description |
+
   Scenario: Trying to create a question theme without API key
     Given the request payload is set from scope "question-theme", type "creation" and name "complete"
     When the admin creates a new question theme with the request payload but without an API key
@@ -327,4 +381,3 @@ Feature: Create Question Theme As Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
-

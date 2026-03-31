@@ -17,10 +17,13 @@ const LOCALE_EXAMPLES: Record<Locale, string> = {
   pt: "Texto de exemplo em português.",
 } as const;
 
+const LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE = "At least one locale must be provided";
+
 export {
   LOCALIZED_TEXT_ENTRY_MIN_LENGTH,
   LOCALIZED_TEXT_ENTRY_MAX_LENGTH,
   LOCALIZED_TEXTS_MIN_LENGTH,
   LOCALIZED_TEXTS_MAX_LENGTH,
   LOCALE_EXAMPLES,
+  LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE,
 };

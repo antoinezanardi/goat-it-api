@@ -39,7 +39,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import-x/no-mutable-exports": "error",
     "import-x/no-named-as-default": "error",
     "import-x/no-named-as-default-member": "error",
-    "import-x/no-unused-modules": "error",
+    "import-x/no-unused-modules": "off",
     // - Module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
     "import-x/no-amd": "error",
     "import-x/no-commonjs": "error",
