@@ -16,8 +16,6 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question/question-
 
 import type { TestingModule } from "@nestjs/testing";
 
-import type { Question } from "@question/domain/entities/question.types";
-
 describe("Create Question Use Case", () => {
   let createQuestionUseCase: CreateQuestionUseCase;
   let mocks: {
@@ -84,7 +82,7 @@ describe("Create Question Use Case", () => {
 
       const actual = await createQuestionUseCase.create(command);
 
-      expect(actual).toStrictEqual<Question>(expected);
+      expect(actual).toStrictEqual(expected);
     });
 
     it("should call throwIfQuestionNotCreatable with command when called.", async() => {

@@ -8,8 +8,6 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/mo
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
 describe("Get Question Themes By Ids Or Throw Use Case", () => {
   let getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase;
   let mocks: {
@@ -86,7 +84,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
       vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
       const foundThemes = await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
 
-      expect(foundThemes).toStrictEqual<QuestionTheme[]>(themes);
+      expect(foundThemes).toStrictEqual(themes);
     });
   });
 

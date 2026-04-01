@@ -1,5 +1,4 @@
 import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
-import type { QuestionThemeCreationCommand } from "@question/modules/question-theme/domain/commands/question-theme.commands";
 
 import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question/question-theme/dto/question-theme.dto.faketory";
@@ -20,7 +19,7 @@ describe("Question Theme Creation Dto Mappers", () => {
         },
       });
 
-      expect(questionThemeCreationCommand).toStrictEqual<QuestionThemeCreationCommand>(expectedQuestionThemeCreationCommand);
+      expect(questionThemeCreationCommand).toStrictEqual(expectedQuestionThemeCreationCommand);
     });
   });
 });

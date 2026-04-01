@@ -11,11 +11,6 @@ import { createFakeObjectId } from "@faketories/infrastructure/database/database
 import { createFakeQuestionAggregate, createFakeQuestionAuthorAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestion, createFakeQuestionAuthor, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-import type { QuestionMongooseInsertPayload, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
-import type { Question } from "@question/domain/entities/question.types";
-import type { QuestionAuthor } from "@question/domain/value-objects/question-author/question-author.types";
-import type { QuestionThemeAssignment } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.types";
-
 describe("Question Mongoose Mappers", () => {
   describe(createQuestionAuthorFromAggregate, () => {
     it("should correctly map a question author when role is 'ai'.", () => {
@@ -32,7 +27,7 @@ describe("Question Mongoose Mappers", () => {
 
       const result = createQuestionAuthorFromAggregate(questionAggregate);
 
-      expect(result).toStrictEqual<QuestionAuthor>(expectedQuestionAuthor);
+      expect(result).toStrictEqual(expectedQuestionAuthor);
     });
 
     it("should correctly map a question author when role is 'game' and gameId is provided.", () => {
@@ -51,7 +46,7 @@ describe("Question Mongoose Mappers", () => {
       });
       const result = createQuestionAuthorFromAggregate(questionAggregate);
 
-      expect(result).toStrictEqual<QuestionAuthor>(expectedQuestionAuthor);
+      expect(result).toStrictEqual(expectedQuestionAuthor);
     });
 
     it("should throw an error when role is 'game' and gameId is missing.", () => {
@@ -89,7 +84,7 @@ describe("Question Mongoose Mappers", () => {
       });
       const result = createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate);
 
-      expect(result).toStrictEqual<QuestionThemeAssignment>(expectedQuestionThemeAssignment);
+      expect(result).toStrictEqual(expectedQuestionThemeAssignment);
     });
   });
 
@@ -111,7 +106,7 @@ describe("Question Mongoose Mappers", () => {
       });
       const result = createQuestionFromAggregate(questionAggregate);
 
-      expect(result).toStrictEqual<Question>(expectedQuestion);
+      expect(result).toStrictEqual(expectedQuestion);
     });
   });
 
@@ -125,7 +120,7 @@ describe("Question Mongoose Mappers", () => {
       });
       const result = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
 
-      expect(result).toStrictEqual<QuestionThemeAssignmentMongooseInsertPayload>(expectedMongooseInsertPayload);
+      expect(result).toStrictEqual(expectedMongooseInsertPayload);
     });
   });
 
@@ -140,7 +135,7 @@ describe("Question Mongoose Mappers", () => {
 
       const result = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
 
-      expect(result).toStrictEqual<QuestionMongooseInsertPayload>(expectedMongooseInsertPayload);
+      expect(result).toStrictEqual(expectedMongooseInsertPayload);
     });
   });
 });

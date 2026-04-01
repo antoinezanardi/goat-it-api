@@ -11,7 +11,7 @@ import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, creat
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
-import type { CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv, AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 vi.mock(import("@src/infrastructure/api/auth/helpers/auth.helpers"));
 
@@ -76,7 +76,7 @@ describe("App Config Service", () => {
         port: 8080,
       });
 
-      expect(services.appConfig.serverConfig).toStrictEqual<ServerConfigFromEnv>(expectedServerConfig);
+      expect(services.appConfig.serverConfig).toStrictEqual(expectedServerConfig);
     });
 
     it("should throw error when one of the required env vars is not defined.", () => {
@@ -114,7 +114,7 @@ describe("App Config Service", () => {
         origin: "everywhere",
       });
 
-      expect(services.appConfig.corsConfig).toStrictEqual<CorsConfigFromEnv>(expectedCorsConfig);
+      expect(services.appConfig.corsConfig).toStrictEqual(expectedCorsConfig);
     });
 
     it("should throw error when one of the required env vars is not defined.", () => {
@@ -134,7 +134,7 @@ describe("App Config Service", () => {
         database: "goat-it-test",
       });
 
-      expect(services.appConfig.mongoDbConfig).toStrictEqual<MongoDatabaseConfigFromEnv>(mongoDatabaseConfig);
+      expect(services.appConfig.mongoDbConfig).toStrictEqual(mongoDatabaseConfig);
     });
 
     it("should throw error when one of the required env vars is not defined.", () => {
@@ -152,7 +152,7 @@ describe("App Config Service", () => {
         fallbackLocale: "en",
       });
 
-      expect(services.appConfig.localizationConfig).toStrictEqual<LocalizationConfigFromEnv>(localizationConfig);
+      expect(services.appConfig.localizationConfig).toStrictEqual(localizationConfig);
     });
 
     it("should throw error when one of the required env vars is not defined.", () => {

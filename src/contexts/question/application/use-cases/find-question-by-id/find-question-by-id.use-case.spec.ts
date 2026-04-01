@@ -8,8 +8,6 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-import type { Question } from "@question/domain/entities/question.types";
-
 describe("Find Question By Id Use Case", () => {
   let findQuestionByIdUseCase: FindQuestionByIdUseCase;
   let mocks: {
@@ -56,7 +54,7 @@ describe("Find Question By Id Use Case", () => {
       mocks.repositories.question.findById.mockResolvedValue(questionDocument);
       const actualQuestion = await findQuestionByIdUseCase.getById("123");
 
-      expect(actualQuestion).toStrictEqual<Question>(questionDocument);
+      expect(actualQuestion).toStrictEqual(questionDocument);
     });
   });
 });

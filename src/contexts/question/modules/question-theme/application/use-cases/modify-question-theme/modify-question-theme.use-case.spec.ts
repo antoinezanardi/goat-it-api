@@ -10,8 +10,6 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question/question-
 import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
 import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question/question-theme/commands/question-theme.commands.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
 describe("Modify Question Theme Use Case", () => {
   let modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase;
   let mocks: {
@@ -80,7 +78,7 @@ describe("Modify Question Theme Use Case", () => {
       });
       const result = await modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand);
 
-      expect(result).toStrictEqual<QuestionTheme>(expectedUpdatedQuestionTheme);
+      expect(result).toStrictEqual(expectedUpdatedQuestionTheme);
     });
   });
 

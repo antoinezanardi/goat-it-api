@@ -58,7 +58,7 @@
 - When a method is quite simple and the assertions are only on its output, you must use `it.each([...])` to parametrize multiple input→output cases instead of writing multiple `it` blocks.
 - When a test that asserts an error is thrown, use `await expect(promise).rejects.toThrow(...)` syntax. The exact error instance should be asserted, not just the message.
 - Test deterministic inputs→outputs and edge cases. Keep tests small and focused.
-- Always use `toStrictEqual<T>(expected)` for value equality assertions to get type hinting and strict shape checks.
+- Always use `toStrictEqual(expected)` for value equality assertions to get type hinting and strict shape checks. If the type can't be automatically inferred, use `toStrictEqual<T>(expected)`. 
 - Private methods must be tested too, via `ClassName["privateMethodName"](...)` syntax.
 
 ### Controller tests
@@ -114,7 +114,7 @@ describe("Health Controller", () => {
       mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);
       const actualHealthCheckResult = await healthController.check();
 
-      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);
+      expect(actualHealthCheckResult).toStrictEqual(expectedHealthCheckResult);
     });
   });
 });
@@ -214,7 +214,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
       vi.mocked(mocks.repositories.questionTheme.findByIds).mockResolvedValueOnce(themes);
       const foundThemes = await getQuestionThemesByIdsOrThrowUseCase.getByIdsOrThrow(ids);
 
-      expect(foundThemes).toStrictEqual<QuestionTheme[]>(themes);
+      expect(foundThemes).toStrictEqual(themes);
     });
   });
 
@@ -321,7 +321,7 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
         const result = await repository.findById(doc._id.toString());
 
-        expect(result).toStrictEqual<QuestionTheme>(entity);
+        expect(result).toStrictEqual(entity);
       });
     });
   });
@@ -537,4 +537,4 @@ describe("Question Domain Errors", () => {
 
 - One assertion per `it` block.
 - Use the repository's helper matchers when present (e.g. `toHaveBeenCalledExactlyOnceWith()`).
-- For value equality use `toStrictEqual<T>(expected)` to include type hinting.
+- For value equality use `toStrictEqual(expected)` to include type hinting. Use `toStrictEqual<T>(expected)` when the type can't be automatically inferred.

@@ -3,7 +3,6 @@ import { createQuestionThemeFromDocument } from "@question/modules/question-them
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import type { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 
 describe("Question Theme Mongoose Mappers", () => {
@@ -23,7 +22,7 @@ describe("Question Theme Mongoose Mappers", () => {
       });
       const result = createQuestionThemeFromDocument(questionThemeDocument as unknown as QuestionThemeMongooseDocument);
 
-      expect(result).toStrictEqual<QuestionTheme>(expectedQuestionTheme);
+      expect(result).toStrictEqual(expectedQuestionTheme);
     });
 
     it("should map document.color to entity.color when present.", () => {

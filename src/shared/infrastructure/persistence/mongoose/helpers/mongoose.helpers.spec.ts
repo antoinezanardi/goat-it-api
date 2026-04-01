@@ -126,7 +126,7 @@ describe("Mongoose Helpers", () => {
     ])("$test", ({ input, expected }) => {
       const result = getCrushedDataForMongoPatchUpdate(input);
 
-      expect(result).toStrictEqual<Record<string, unknown>>(expected);
+      expect(result).toStrictEqual(expected);
     });
   });
 });
