@@ -8,8 +8,6 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-import type { Question } from "@question/domain/entities/question.types";
-
 describe("Archive Question Use Case", () => {
   let archiveQuestionUseCase: ArchiveQuestionUseCase;
   let mocks: { repositories: { question: ReturnType<typeof createMockedQuestionRepository> } };
@@ -57,7 +55,7 @@ describe("Archive Question Use Case", () => {
 
       const result = await archiveQuestionUseCase.archive(id);
 
-      expect(result).toStrictEqual<Question>(archived);
+      expect(result).toStrictEqual(archived);
     });
   });
 

@@ -14,8 +14,6 @@ import { createFakeQuestionThemeAssignmentRemovalCommand } from "@faketories/con
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-import type { Question } from "@question/domain/entities/question.types";
-
 describe("Remove Theme From Question Use Case", () => {
   let useCase: RemoveThemeFromQuestionUseCase;
   let mocks: {
@@ -122,7 +120,7 @@ describe("Remove Theme From Question Use Case", () => {
 
       const result = await useCase.remove(command);
 
-      expect(result).toStrictEqual<Question>(updated);
+      expect(result).toStrictEqual(updated);
     });
   });
 

@@ -18,7 +18,7 @@ describe("QuestionThemeStatus Predicates", () => {
 
       const result = findArchivedQuestionTheme(themes);
 
-      expect(result).toStrictEqual<QuestionTheme>(themes[1]);
+      expect(result).toStrictEqual(themes[1]);
     });
 
     it("should return undefined when none of the themes are archived.", () => {

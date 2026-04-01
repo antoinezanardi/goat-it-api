@@ -2,7 +2,6 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
@@ -132,7 +131,7 @@ describe("Question Theme Controller", () => {
       mocks.mappers.createQuestionThemeDtoFromEntity.mockReturnValueOnce(expectedDto);
       const result = await questionThemeController.findQuestionThemeById(questionThemeId, localization);
 
-      expect(result).toStrictEqual<QuestionThemeDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 });

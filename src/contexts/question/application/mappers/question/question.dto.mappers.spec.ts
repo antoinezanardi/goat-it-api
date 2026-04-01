@@ -1,8 +1,3 @@
-import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
-import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
-import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
-import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { createAdminQuestionDtoFromEntity, createAdminQuestionThemeAssignmentDtoFromEntity, createQuestionContentDtoFromEntity, createQuestionDtoFromEntity, createQuestionThemeAssignmentDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 
@@ -30,7 +25,7 @@ describe("Question DTO Mappers", () => {
         trivia: undefined,
       });
 
-      expect(createQuestionContentDtoFromEntity(questionContent, localizationOptions)).toStrictEqual<QuestionContentDto>(expectedQuestionContentDto);
+      expect(createQuestionContentDtoFromEntity(questionContent, localizationOptions)).toStrictEqual(expectedQuestionContentDto);
     });
 
     it("should map a Question Content entity with context and trivia to a Question Content DTO when called.", () => {
@@ -47,7 +42,7 @@ describe("Question DTO Mappers", () => {
         trivia: questionContent.trivia?.fr,
       });
 
-      expect(createQuestionContentDtoFromEntity(questionContent, localizationOptions)).toStrictEqual<QuestionContentDto>(expectedQuestionContentDto);
+      expect(createQuestionContentDtoFromEntity(questionContent, localizationOptions)).toStrictEqual(expectedQuestionContentDto);
     });
   });
 
@@ -62,7 +57,7 @@ describe("Question DTO Mappers", () => {
       });
       const result = createQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment, localizationOptions);
 
-      expect(result).toStrictEqual<QuestionThemeAssignmentDto>(expectedQuestionThemeAssignmentDto);
+      expect(result).toStrictEqual(expectedQuestionThemeAssignmentDto);
     });
   });
 
@@ -87,7 +82,7 @@ describe("Question DTO Mappers", () => {
         updatedAt: questionEntity.updatedAt.toISOString(),
       });
 
-      expect(createQuestionDtoFromEntity(questionEntity, localizationOptions)).toStrictEqual<QuestionDto>(expectedQuestionDto);
+      expect(createQuestionDtoFromEntity(questionEntity, localizationOptions)).toStrictEqual(expectedQuestionDto);
     });
 
     it("should map a Question entity without rejection to a Question DTO when called.", () => {
@@ -109,7 +104,7 @@ describe("Question DTO Mappers", () => {
         updatedAt: questionEntity.updatedAt.toISOString(),
       });
 
-      expect(createQuestionDtoFromEntity(questionEntity, localizationOptions)).toStrictEqual<QuestionDto>(expectedQuestionDto);
+      expect(createQuestionDtoFromEntity(questionEntity, localizationOptions)).toStrictEqual(expectedQuestionDto);
     });
   });
 
@@ -123,7 +118,7 @@ describe("Question DTO Mappers", () => {
       });
       const result = createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment);
 
-      expect(result).toStrictEqual<AdminQuestionThemeAssignmentDto>(expectedAdminQuestionThemeAssignmentDto);
+      expect(result).toStrictEqual(expectedAdminQuestionThemeAssignmentDto);
     });
   });
 
@@ -147,7 +142,7 @@ describe("Question DTO Mappers", () => {
         updatedAt: questionEntity.updatedAt.toISOString(),
       });
 
-      expect(createAdminQuestionDtoFromEntity(questionEntity)).toStrictEqual<AdminQuestionDto>(expectedAdminQuestionDto);
+      expect(createAdminQuestionDtoFromEntity(questionEntity)).toStrictEqual(expectedAdminQuestionDto);
     });
   });
 });

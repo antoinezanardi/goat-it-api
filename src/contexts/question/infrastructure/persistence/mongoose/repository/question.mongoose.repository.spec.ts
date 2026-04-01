@@ -22,7 +22,6 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
-import type { Question } from "@question/domain/entities/question.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
 
@@ -110,7 +109,7 @@ describe("Question Mongoose Repository", () => {
 
       const actualQuestions = await repositories.question.findAll();
 
-      expect(actualQuestions).toStrictEqual<Question[]>(expectedQuestions);
+      expect(actualQuestions).toStrictEqual(expectedQuestions);
     });
   });
 
@@ -183,7 +182,7 @@ describe("Question Mongoose Repository", () => {
 
       const actualQuestion = await repositories.question.create(questionCreationContract);
 
-      expect(actualQuestion).toStrictEqual<Question>(expectedQuestion);
+      expect(actualQuestion).toStrictEqual(expectedQuestion);
     });
   });
 
@@ -226,7 +225,7 @@ describe("Question Mongoose Repository", () => {
 
       const actual = await repositories.question.archive(questionId);
 
-      expect(actual).toStrictEqual<Question>(expectedQuestion);
+      expect(actual).toStrictEqual(expectedQuestion);
     });
   });
 
@@ -274,7 +273,7 @@ describe("Question Mongoose Repository", () => {
 
       const actual = await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
 
-      expect(actual).toStrictEqual<Question>(expectedQuestion);
+      expect(actual).toStrictEqual(expectedQuestion);
     });
   });
 
@@ -322,7 +321,7 @@ describe("Question Mongoose Repository", () => {
 
       const actual = await repositories.question.removeTheme(questionId, themeId);
 
-      expect(actual).toStrictEqual<Question>(expectedQuestion);
+      expect(actual).toStrictEqual(expectedQuestion);
     });
   });
 

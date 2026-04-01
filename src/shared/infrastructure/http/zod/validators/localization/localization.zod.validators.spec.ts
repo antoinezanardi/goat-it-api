@@ -45,7 +45,7 @@ describe("Localization Zod Validators", () => {
       };
       const entries = createZLocaleEntries(entryFactory);
 
-      expect(entries).toStrictEqual<Record<Locale, string>>(expectedEntries);
+      expect(entries).toStrictEqual(expectedEntries);
     });
   });
 
@@ -220,7 +220,7 @@ describe("Localization Zod Validators", () => {
       const value = ["  Hello World  ", "  Hi There  "];
       const result = schema.parse(value);
 
-      expect(result).toStrictEqual<string[]>(["Hello World", "Hi There"]);
+      expect(result).toStrictEqual(["Hello World", "Hi There"]);
     });
 
     it("should have correct metadata for the locale when called.", () => {

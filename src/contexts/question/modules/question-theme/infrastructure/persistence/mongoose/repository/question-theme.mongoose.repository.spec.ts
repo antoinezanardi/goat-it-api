@@ -16,8 +16,6 @@ import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModific
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
 vi.mock(import("@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 
 describe("Question Theme Mongoose Repository", () => {
@@ -83,7 +81,7 @@ describe("Question Theme Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestionThemes[2]);
       const actualQuestionThemes = await repositories.questionTheme.findAll();
 
-      expect(actualQuestionThemes).toStrictEqual<QuestionTheme[]>(expectedQuestionThemes);
+      expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
     });
   });
 
@@ -150,7 +148,7 @@ describe("Question Theme Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestionThemes[2]);
       const actualQuestionThemes = await repositories.questionTheme.findByIds(questionThemeIds);
 
-      expect(actualQuestionThemes).toStrictEqual<QuestionTheme[]>(expectedQuestionThemes);
+      expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
     });
   });
 
@@ -205,7 +203,7 @@ describe("Question Theme Mongoose Repository", () => {
       mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(createdQuestionTheme);
       const actualQuestionTheme = await repositories.questionTheme.create(questionThemeCreationContract);
 
-      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(createdQuestionTheme);
+      expect(actualQuestionTheme).toStrictEqual(createdQuestionTheme);
     });
   });
 
@@ -244,7 +242,7 @@ describe("Question Theme Mongoose Repository", () => {
       mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(modifiedQuestionTheme);
       const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
 
-      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(modifiedQuestionTheme);
+      expect(actualQuestionTheme).toStrictEqual(modifiedQuestionTheme);
     });
 
     it("should return undefined when document to modify is not found.", async() => {
@@ -273,7 +271,7 @@ describe("Question Theme Mongoose Repository", () => {
       mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(updatedQuestionTheme);
       const actualQuestionTheme = await repositories.questionTheme.archive(questionThemeId);
 
-      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(updatedQuestionTheme);
+      expect(actualQuestionTheme).toStrictEqual(updatedQuestionTheme);
     });
 
     it("should return undefined when document to archive is not found.", async() => {

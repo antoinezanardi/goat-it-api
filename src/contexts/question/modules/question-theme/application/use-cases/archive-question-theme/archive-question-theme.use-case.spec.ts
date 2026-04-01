@@ -10,8 +10,6 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
 describe("Archive Question Theme Use Case", () => {
   let archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase;
   let mocks: {
@@ -77,7 +75,7 @@ describe("Archive Question Theme Use Case", () => {
       mocks.repositories.questionTheme.archive.mockResolvedValueOnce(archivedQuestionTheme);
       const result = await archiveQuestionThemeUseCase.archive(questionThemeId);
 
-      expect(result).toStrictEqual<QuestionTheme>(archivedQuestionTheme);
+      expect(result).toStrictEqual(archivedQuestionTheme);
     });
   });
 

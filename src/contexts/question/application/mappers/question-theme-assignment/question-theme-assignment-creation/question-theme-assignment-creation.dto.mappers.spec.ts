@@ -1,5 +1,4 @@
 import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
-import type { QuestionThemeAssignmentCreationCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment.commands";
 
 import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
@@ -15,7 +14,7 @@ describe("Question Theme Assignment Creation DTO Mappers", () => {
         payload: createFakeQuestionThemeAssignmentCreationContract(dto),
       });
 
-      expect(command).toStrictEqual<QuestionThemeAssignmentCreationCommand>(expectedCommand);
+      expect(command).toStrictEqual(expectedCommand);
     });
   });
 });

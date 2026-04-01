@@ -3,8 +3,6 @@ import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/co
 import { createFakeCorsConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
-import type { CorsConfig } from "@src/infrastructure/api/server/cors/types/cors.types";
-
 describe("Cors Helpers", () => {
   describe(createCorsConfig, () => {
     it("should return default CORS config when called.", () => {
@@ -19,7 +17,7 @@ describe("Cors Helpers", () => {
         allowedHeaders: ["Content-Type", "Authorization"],
       });
 
-      expect(corsConfig).toStrictEqual<CorsConfig>(expectedCorsConfig);
+      expect(corsConfig).toStrictEqual(expectedCorsConfig);
     });
 
     it("should use origin from configuration when provided.", () => {
@@ -42,7 +40,7 @@ describe("Cors Helpers", () => {
       const corsConfigFromEnv = createFakeCorsConfigFromEnv();
       const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-      expect(corsConfig.methods).toStrictEqual<string[]>(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
+      expect(corsConfig.methods).toStrictEqual(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
     });
   });
 });

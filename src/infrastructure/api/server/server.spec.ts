@@ -195,7 +195,7 @@ describe("Server", () => {
         useStaticAssets: expect.any(Function) as () => void,
       };
 
-      expect(app).toStrictEqual<typeof expectedApp>(expectedApp);
+      expect(app).toStrictEqual(expectedApp);
     });
   });
 });

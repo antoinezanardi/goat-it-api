@@ -50,7 +50,7 @@ describe("Env Validation", () => {
         GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should return parsed env with all defaults when config only has optional fields missing.", () => {
@@ -58,7 +58,7 @@ describe("Env Validation", () => {
         ...minimalValidEnv,
       };
 
-      expect(validate(config)).toStrictEqual<AppEnv>(defaultEnv);
+      expect(validate(config)).toStrictEqual(defaultEnv);
     });
 
     it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
@@ -71,7 +71,7 @@ describe("Env Validation", () => {
         SERVER_PORT: 8080,
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
@@ -84,7 +84,7 @@ describe("Env Validation", () => {
         SERVER_PORT: 9000,
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a non-default valid IPv4 for when MONGODB_HOST is an override.", () => {
@@ -97,7 +97,7 @@ describe("Env Validation", () => {
         MONGODB_HOST: "192.168.0.10",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a non-default valid hostname for when MONGODB_HOST is an override.", () => {
@@ -110,7 +110,7 @@ describe("Env Validation", () => {
         MONGODB_HOST: "mongo.example.com",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a non-default docker hostname for when MONGODB_HOST is an override.", () => {
@@ -123,7 +123,7 @@ describe("Env Validation", () => {
         MONGODB_HOST: "mongodb",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
@@ -136,7 +136,7 @@ describe("Env Validation", () => {
         CORS_ORIGIN: "https://example.com",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a valid MONGODB_PORT when it is an override.", () => {
@@ -149,7 +149,7 @@ describe("Env Validation", () => {
         MONGODB_PORT: 28_017,
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
@@ -162,7 +162,7 @@ describe("Env Validation", () => {
         MONGODB_DATABASE: "my-database-1",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
@@ -175,7 +175,7 @@ describe("Env Validation", () => {
         FALLBACK_LOCALE: "es",
       });
 
-      expect(validate(config)).toStrictEqual<AppEnv>(expectedConfig);
+      expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
     it("should return parsed env when config contains additional properties.", () => {
@@ -184,7 +184,7 @@ describe("Env Validation", () => {
         EXTRA_FIELD: "should be ignored",
       };
 
-      expect(validate(config)).toStrictEqual<AppEnv>(defaultEnv);
+      expect(validate(config)).toStrictEqual(defaultEnv);
     });
 
     it.each<{

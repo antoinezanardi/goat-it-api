@@ -2,7 +2,6 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
@@ -157,7 +156,7 @@ describe("Admin Question Controller", () => {
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDtos[0]).mockReturnValueOnce(expectedDtos[1]);
       const result = await adminQuestionController.findQuestions();
 
-      expect(result).toStrictEqual<AdminQuestionDto[]>(expectedDtos);
+      expect(result).toStrictEqual(expectedDtos);
     });
   });
 
@@ -187,7 +186,7 @@ describe("Admin Question Controller", () => {
 
       const result = await adminQuestionController.findQuestionById(questionId);
 
-      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 
@@ -226,7 +225,7 @@ describe("Admin Question Controller", () => {
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
       const result = await adminQuestionController.createQuestion(questionCreationDto);
 
-      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 
@@ -256,7 +255,7 @@ describe("Admin Question Controller", () => {
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDto);
       const result = await adminQuestionController.archiveQuestion(questionId);
 
-      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 
@@ -303,7 +302,7 @@ describe("Admin Question Controller", () => {
 
       const result = await adminQuestionController.assignThemeToQuestion(questionId, dto);
 
-      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 
@@ -339,7 +338,7 @@ describe("Admin Question Controller", () => {
 
       const result = await adminQuestionController.removeThemeFromQuestion(questionId, themeId);
 
-      expect(result).toStrictEqual<AdminQuestionDto>(expectedDto);
+      expect(result).toStrictEqual(expectedDto);
     });
   });
 });
