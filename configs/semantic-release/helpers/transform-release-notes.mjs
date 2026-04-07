@@ -101,10 +101,12 @@ function removeDepsLinesAndCleanSections(lines) {
   return filtered;
 }
 
+const SECOND_TO_LAST_OFFSET = 2;
+
 function hasConsecutiveTrailingBlanks(lines) {
   return lines.length > 1 &&
     lines[lines.length - 1].trim() === "" &&
-    lines[lines.length - 1 - 1].trim() === "";
+    lines[lines.length - SECOND_TO_LAST_OFFSET].trim() === "";
 }
 
 function normalizeTrailingBlankLines(lines) {
@@ -119,8 +121,8 @@ function normalizeTrailingBlankLines(lines) {
 }
 
 function transformReleaseNotes(notes) {
-  if (!notes || typeof notes !== "string") {
-    return notes ?? "";
+  if (typeof notes !== "string") {
+    return "";
   }
 
   const lines = notes.split("\n");
