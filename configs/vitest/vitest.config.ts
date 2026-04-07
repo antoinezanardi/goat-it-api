@@ -19,7 +19,7 @@ export default defineConfig({
     mockReset: true,
     restoreMocks: true,
     root: rootDirectory,
-    include: ["src/**/*.spec.ts"],
+    include: ["src/**/*.spec.ts", "configs/semantic-release/**/*.spec.mjs"],
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],

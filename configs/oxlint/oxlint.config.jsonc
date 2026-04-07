@@ -1073,6 +1073,18 @@
         "typescript/no-unsafe-type-assertion": "off"
       }
     },
+    // ---- Override for config test files -----
+    {
+      "files": [
+        "**/configs/**/*.spec.mjs"
+      ],
+      "rules": {
+        "max-lines-per-function": "off",
+        "no-magic-numbers": "off",
+        "unicorn/no-null": "off",
+        "unicorn/no-useless-undefined": "off"
+      }
+    },
     // ---- Override for faketory (unit tests) files -----
     {
       "files": [

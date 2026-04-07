@@ -93,6 +93,9 @@ importers:
       '@semantic-release/git':
         specifier: ^10.0.1
         version: 10.0.1(semantic-release@25.0.3(typescript@6.0.2))
+      '@semantic-release/release-notes-generator':
+        specifier: ^14.1.0
+        version: 14.1.0(semantic-release@25.0.3(typescript@6.0.2))
       '@stryker-mutator/core':
         specifier: ^9.6.0
         version: 9.6.0(@types/node@24.12.2)
@@ -3546,10 +3549,6 @@ packages:
     resolution: {integrity: sha512-oIXISMynqSqm241k6kcQ5UwttDILMK4BiurCfGEREw6+X9jkkpEe5T9FZaApyLGGOnFuyMWZpdolTXMtvEJ08Q==}
     engines: {node: '>=18'}
 
-  conventional-changelog-angular@8.1.0:
-    resolution: {integrity: sha512-GGf2Nipn1RUCAktxuVauVr1e3r8QrLP/B0lEUsFktmGqc3ddbQkhoJZHJctVU829U1c6mTSWftrVOCHaL85Q3w==}
-    engines: {node: '>=18'}
-
   conventional-changelog-angular@8.2.0:
     resolution: {integrity: sha512-4YB1zEXqB17oBI8yRsAs1T+ZhbdsOgJqkl6Trz+GXt/eKf1e4jnA0oW+sOd9BEENzEViuNW0DNoFFjSf3CeC5Q==}
     engines: {node: '>=18'}
@@ -3566,11 +3565,6 @@ packages:
   conventional-commits-filter@5.0.0:
     resolution: {integrity: sha512-tQMagCOC59EVgNZcC5zl7XqO30Wki9i9J3acbUvkaosCT6JX3EeFwJD7Qqp4MCikRnzS18WXV3BLIQ66ytu6+Q==}
     engines: {node: '>=18'}
-
-  conventional-commits-parser@6.2.1:
-    resolution: {integrity: sha512-20pyHgnO40rvfI0NGF/xiEoFMkXDtkF8FwHvk5BokoFoCuTQRI8vrNCNFWUOfuolKJMm1tPCHc8GgYEtr1XRNA==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   conventional-commits-parser@6.3.0:
     resolution: {integrity: sha512-RfOq/Cqy9xV9bOA8N+ZH6DlrDR+5S3Mi0B5kACEjESpE+AviIpAptx9a9cFpWCCvgRtWT+0BbUw+e1BZfts9jg==}
@@ -8838,10 +8832,10 @@ snapshots:
 
   '@semantic-release/commit-analyzer@13.0.1(semantic-release@25.0.3(typescript@6.0.2))':
     dependencies:
-      conventional-changelog-angular: 8.1.0
+      conventional-changelog-angular: 8.2.0
       conventional-changelog-writer: 8.2.0
       conventional-commits-filter: 5.0.0
-      conventional-commits-parser: 6.2.1
+      conventional-commits-parser: 6.3.0
       debug: 4.4.3(supports-color@8.1.1)
       import-from-esm: 2.0.0
       lodash-es: 4.17.21
@@ -8911,10 +8905,10 @@ snapshots:
 
   '@semantic-release/release-notes-generator@14.1.0(semantic-release@25.0.3(typescript@6.0.2))':
     dependencies:
-      conventional-changelog-angular: 8.1.0
+      conventional-changelog-angular: 8.2.0
       conventional-changelog-writer: 8.2.0
       conventional-commits-filter: 5.0.0
-      conventional-commits-parser: 6.2.1
+      conventional-commits-parser: 6.3.0
       debug: 4.4.3(supports-color@8.1.1)
       get-stream: 7.0.1
       import-from-esm: 2.0.0
@@ -10137,10 +10131,6 @@ snapshots:
 
   content-disposition@1.0.1: {}
 
-  conventional-changelog-angular@8.1.0:
-    dependencies:
-      compare-func: 2.0.0
-
   conventional-changelog-angular@8.2.0:
     dependencies:
       compare-func: 2.0.0
@@ -10157,10 +10147,6 @@ snapshots:
       semver: 7.7.4
 
   conventional-commits-filter@5.0.0: {}
-
-  conventional-commits-parser@6.2.1:
-    dependencies:
-      meow: 13.2.0
 
   conventional-commits-parser@6.3.0:
     dependencies:
