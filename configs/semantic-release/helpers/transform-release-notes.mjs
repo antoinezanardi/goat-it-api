@@ -55,7 +55,7 @@ function buildDependencyTable(dependencies) {
     UPGRADED_DEPS_SECTION_TITLE,
     "",
     "| Package | Version |",
-    "| --- | --- |",
+    "| :---: | :---: |",
   ];
 
   for (const dep of dependencies) {
