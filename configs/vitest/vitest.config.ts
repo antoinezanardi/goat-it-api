@@ -8,7 +8,7 @@ import SwcConfig from "../swc/swc.config.json";
 import type { JscConfig } from "@swc/core";
 
 const rootDirectory = path.resolve(import.meta.dirname, "../..");
- 
+
 const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 
 export default defineConfig({

@@ -59,7 +59,7 @@ export default {
       },
     ],
     [
-      "@semantic-release/release-notes-generator",
+      "./configs/semantic-release/plugins/release-notes-with-deps-table.plugin.mjs",
       {
         preset: "conventionalcommits",
         presetConfig: {
