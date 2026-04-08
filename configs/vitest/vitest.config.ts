@@ -8,7 +8,7 @@ import SwcConfig from "../swc/swc.config.json";
 import type { JscConfig } from "@swc/core";
 
 const rootDirectory = path.resolve(import.meta.dirname, "../..");
- 
+
 const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 
 export default defineConfig({
@@ -19,7 +19,7 @@ export default defineConfig({
     mockReset: true,
     restoreMocks: true,
     root: rootDirectory,
-    include: ["src/**/*.spec.ts", "configs/semantic-release/**/*.spec.mjs"],
+    include: ["src/**/*.spec.ts"],
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
