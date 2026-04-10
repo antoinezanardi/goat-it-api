@@ -30,39 +30,42 @@ Reusable agent workflows are encoded as **skills** — self-contained `SKILL.md`
 
 ```
 .agents/skills/<name>/SKILL.md   # canonical — single source of truth
-.opencode/skills/<name>/SKILL.md # thin wrapper; points to .agents/skills/<name>/SKILL.md
 .opencode/commands/<name>.md     # slash-command entry point with $ARGUMENTS wiring
 ```
 
 `.agents/skills/` is the authoritative location, discovered by both OpenCode and Claude Code.
-`.opencode/skills/` contains only thin 3–5 line wrappers that say "load the canonical skill".
 
-### Available skills
+### Skills with slash commands
 
-| Skill                   | Slash command            | Purpose                                                                                                                                             |
-|-------------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `auto-learn`            | `/update-docs`           | Detect corrections to AI output, search docs for related guidance, and prompt user to update docs if gaps are found                                 |
-| `create-faketory`       | `/create-faketory`       | Scaffold a faketory (test data factory) for an entity, DTO, command or Mongoose document                                                            |
-| `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port                                                                              |
-| `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions                                                                              |
-| `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario for any feature or endpoint                                                                   |
-| `create-skill`          | `/create-skill`          | Scaffold a new agent skill following repository conventions                                                                                         |
-| `challenge-plan`        | `/challenge-plan`        | Challenge a new feature idea by exploring the codebase, proposing evidence-backed answers, and producing a zero-ambiguity implementation-ready plan |
+These skills have OpenCode slash commands wired up in `.opencode/commands/`:
 
-### Adding a new skill
+| Skill                   | Slash command            | Purpose                                                                |
+|-------------------------|--------------------------|------------------------------------------------------------------------|
+| `brainstorming`         | `/brainstorming`         | Explore intent, requirements and design before any creative/impl work  |
+| `create-faketory`       | `/create-faketory`       | Scaffold a faketory for an entity, DTO, command or Mongoose document   |
+| `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port |
+| `executing-plans`       | `/executing-plans`       | Execute a written implementation plan with review checkpoints          |
+| `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario                  |
+| `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions |
+| `writing-plans`         | `/writing-plans`         | Create a comprehensive implementation plan from a spec or requirements |
+| `writing-skills`        | `/writing-skills`        | Create, edit, or verify an agent skill                                 |
 
-1. Run `/create-skill <name and description>` — the `create-skill` skill handles the full workflow.
-2. Or follow the steps in `.agents/skills/create-skill/SKILL.md` manually.
+### Additional skills (no slash command)
 
-### AI Self-Learning via Auto-Learn
+These skills live in `.agents/skills/` and are loaded via the `skill` tool by name:
 
-The `auto-learn` skill enables AI agents to learn from corrections and automatically update documentation.
-
-It must be explicitly invoked at the start of an agent session by calling `skill({ name: "auto-learn" })` in the prompt configuration (see `build-with-autolearn` and `plan-with-autolearn` prompts as examples of this pattern).
-
-For OpenCode agents, the skill is configured to run at session start via agent prompt instructions.
-
-> **Full reference**: `.agents/skills/auto-learn/SKILL.md` — canonical source for workflow, doc file selection logic, and anti-patterns.
+| Skill                            | Purpose                                                        |
+|----------------------------------|----------------------------------------------------------------|
+| `dispatching-parallel-agents`    | Coordinate 2+ independent tasks without shared state           |
+| `finishing-a-development-branch` | Guide completion of dev work — merge, PR, or cleanup           |
+| `receiving-code-review`          | Process code review feedback with technical rigor              |
+| `requesting-code-review`         | Verify work meets requirements before merging                  |
+| `subagent-driven-development`    | Execute implementation plans with independent subagent tasks   |
+| `systematic-debugging`           | Structured debugging before proposing fixes                    |
+| `test-driven-development`        | Red-green-refactor workflow before writing implementation code |
+| `using-git-worktrees`            | Create isolated git worktrees for feature work                 |
+| `using-superpowers`              | Session bootstrap — skill discovery and invocation rules       |
+| `verification-before-completion` | Run verification commands before claiming work is done         |
 
 ---
 
@@ -70,7 +73,7 @@ For OpenCode agents, the skill is configured to run at session start via agent p
 
 - **Runtime**: Node.js – see `configs/node/.node-version` for the exact version
 - **Framework**: NestJS 11 + Fastify 5
-- **Language**: TypeScript (strict mode, `target: ES2021`, `module: ESNext`)
+- **Language**: TypeScript (strict mode, `target: ES2021`, `module: preserve`)
 - **Database**: MongoDB via Mongoose
 - **Validation**: Zod + nestjs-zod
 - **Package manager**: pnpm (never use npm or yarn) – see `package.json` for exact version
@@ -85,7 +88,7 @@ For OpenCode agents, the skill is configured to run at session start via agent p
 
 ```bash
 pnpm build               # nest build
-pnpm typecheck           # tsgo -b --noEmit (faster native TS compiler)
+pnpm typecheck           # tsgo -b --clean && tsgo -b --noEmit (native TS compiler)
 ```
 
 ### Lint
@@ -135,20 +138,22 @@ pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnp
    pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
    ```
 
-  - Run these checks before considering the work complete
-  - Report results (pass/fail) explicitly to the user
-  - **If any step fails, the agent MUST attempt to resolve the issue:**
-    - Review error output and identify root cause
-    - Apply fixes (e.g., reformat code, fix type errors, update tests)
-    - Re-run the failing step to confirm resolution
-    - Only escalate to the user if the issue cannot be resolved automatically
-  - For agents, work is only "done" when all of the above quality gate commands pass (if applicable)
-  - Mutation testing is a separate verification step run in CI and/or manually by the user; it is **not** part of the agent's quality gate commands
-  - Agents must **not** run mutation tests; instead, they must remind the user to run/verify mutation tests (or wait for CI) before merging significant changes
+- Run these checks before considering the work complete
+- Report results (pass/fail) explicitly to the user
+- **If any step fails, the agent MUST attempt to resolve the issue:**
+  - Review error output and identify root cause
+  - Apply fixes (e.g., reformat code, fix type errors, update tests)
+  - Re-run the failing step to confirm resolution
+  - Only escalate to the user if the issue cannot be resolved automatically
+- For agents, work is only "done" when all of the above quality gate commands pass (if applicable)
+- Mutation testing is a separate verification step run in CI and/or manually by the user; it is **not** part of the agent's quality gate commands
+- Agents must **not** run mutation tests; instead, they must remind the user to run/verify mutation tests (or wait for CI) before merging significant changes
+
 3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
-  - Before committing, show the diff and proposed commit message
-  - Wait for confirmation
-  - Never assume silence is approval
+
+- Before committing, show the diff and proposed commit message
+- Wait for confirmation
+- Never assume silence is approval
 
 **Rationale**: Code integrity depends on intentional CI verification. User agency over git history is non-negotiable.
 
@@ -203,18 +208,23 @@ Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters) l
 
 Use path aliases everywhere — no relative `../` or `./` imports are permitted.
 
-| Alias             | Resolves to                       |
-|-------------------|-----------------------------------|
-| `@src/*`          | `src/*`                           |
-| `@app/*`          | `src/app/*`                       |
-| `@shared/*`       | `src/shared/*`                    |
-| `@question/*`     | `src/contexts/question/*`         |
-| `@mocks/*`        | `tests/unit/utils/mocks/*`        |
-| `@faketories/*`   | `tests/shared/utils/faketories/*` |
-| `@test-helpers/*` | `tests/shared/utils/helpers/*`    |
-| `@configs/*`      | `configs/*`                       |
+| Alias                    | Resolves to                       | Registered in         |
+|--------------------------|-----------------------------------|-----------------------|
+| `@package-json`          | `package.json`                    | tsconfig, vitest      |
+| `@src/*`                 | `src/*`                           | tsconfig, swc, vitest |
+| `@app/*`                 | `src/app/*`                       | tsconfig, swc, vitest |
+| `@shared/*`              | `src/shared/*`                    | tsconfig, swc, vitest |
+| `@configs/*`             | `configs/*`                       | tsconfig, swc, vitest |
+| `@question/*`            | `src/contexts/question/*`         | tsconfig, swc, vitest |
+| `@unit-tests/*`          | `tests/unit/*`                    | tsconfig, vitest      |
+| `@mocks/*`               | `tests/unit/utils/mocks/*`        | tsconfig, vitest      |
+| `@faketories/*`          | `tests/shared/utils/faketories/*` | tsconfig, vitest      |
+| `@test-helpers/*`        | `tests/shared/utils/helpers/*`    | tsconfig, vitest      |
+| `@acceptance-tests/*`    | `tests/acceptance/*`              | tsconfig only         |
+| `@acceptance-features/*` | `tests/acceptance/features/*`     | tsconfig only         |
+| `@acceptance-support/*`  | `tests/acceptance/support/*`      | tsconfig only         |
 
-When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json`, and `configs/vitest/vitest.config.ts`.
+When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json`, and `configs/vitest/vitest.config.ts`. Acceptance-only aliases only need tsconfig registration.
 
 ---
 
@@ -305,7 +315,7 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`)
 - **100% coverage is required** — all branches, lines, functions (enforced by `thresholds: { 100: true }`)
-- Excluded from coverage: `*.module.ts`, `*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`
+- Excluded from coverage: `*.module.ts`, `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; use `it.each` for parametrized input→output cases
 - Private methods tested via `ClassName["privateMethod"](...)` syntax
