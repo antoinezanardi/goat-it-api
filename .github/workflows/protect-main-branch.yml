@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Comment and fail if PR source branch is not 'develop' ❌
         if: ${{ github.event.pull_request.head.ref != 'develop' }}
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
