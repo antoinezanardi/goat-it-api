@@ -62,3 +62,38 @@ When(/^the admin removes the theme with id "(?<themeId>[^"]+)" from the question
   });
   await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
 });
+
+When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    method: "PATCH",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+});
+
+When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with an empty request payload on the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    method: "PATCH",
+    body: {},
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+});
+
+When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    method: "PATCH",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+});
+
+When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: "invalid-api-key",
+    method: "PATCH",
+    body: this.payload,
+  });
+  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+});

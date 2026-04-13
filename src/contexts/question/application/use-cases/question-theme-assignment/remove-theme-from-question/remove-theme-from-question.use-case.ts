@@ -5,6 +5,7 @@ import { QuestionThemeAssignmentRemovalCommand } from "@question/domain/commands
 import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question.errors";
 import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/helpers/question-theme-assignment/question-theme-assignment.helpers";
+import { ensureQuestionPrimaryThemeAssignmentIsNotRemovable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 
@@ -33,6 +34,7 @@ export class RemoveThemeFromQuestionUseCase {
     if (!findQuestionThemeAssignmentInQuestionByThemeId(question, themeId)) {
       throw new QuestionThemeAssignmentAbsentError(themeId, questionId);
     }
+    ensureQuestionPrimaryThemeAssignmentIsNotRemovable(question, themeId);
 
     if (question.themes.length <= QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS) {
       throw new QuestionMinimumThemesError(questionId);

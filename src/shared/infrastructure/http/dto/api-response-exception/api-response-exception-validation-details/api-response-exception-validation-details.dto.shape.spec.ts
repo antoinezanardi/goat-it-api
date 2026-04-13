@@ -266,19 +266,19 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
       expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should throw a zod error when array items are not strings.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: ["a", 2] });
+    it("should throw a zod error when array items are not valid types.", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: ["a", { invalid: true }] });
 
       expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.description).toBe("List unrecognized values when applicable");
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.description).toBe("List of expected values when applicable");
     });
 
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
-        description: "List unrecognized values when applicable",
+        description: "List of expected values when applicable",
         example: ["unexpectedValue1", "unexpectedValue2"],
       };
 

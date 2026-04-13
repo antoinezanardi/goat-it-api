@@ -263,6 +263,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - **Functions, class methods, class properties, accessors**: `camelCase`
 - **Files and directories**: `kebab-case`
 - **Test files**: `<name>.spec.ts` co-located with the source file
+- **CRUD operation verbs**: Use `Create` for new resources, `Modify` (not `Update`) for partial patches, `Archive` for soft-deletes, `Find` for retrieval, `Remove` for detaching associations. This applies to use cases, commands, contracts, DTOs and mappers (e.g., `ModifyQuestionThemeUseCase`, `QuestionThemeModificationCommand`).
 
 ### Imports order (enforced by `import/order`)
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -10,10 +10,13 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 
 import { QuestionCreationNestZodDto } from "@question/application/dto/question-creation/question-creation.dto";
 import { QuestionThemeAssignmentCreationNestZodDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import { QuestionThemeAssignmentModificationNestZodDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto";
 import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
+import { createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
+import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
@@ -32,6 +35,7 @@ export class AdminQuestionController {
     private readonly archiveQuestionUseCase: ArchiveQuestionUseCase,
     private readonly assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase,
     private readonly removeThemeFromQuestionUseCase: RemoveThemeFromQuestionUseCase,
+    private readonly modifyQuestionThemeAssignmentUseCase: ModifyQuestionThemeAssignmentUseCase,
   ) {}
 
   @Get()
@@ -155,6 +159,30 @@ export class AdminQuestionController {
       questionId,
       themeId,
     });
+
+    return createAdminQuestionDtoFromEntity(updatedQuestion);
+  }
+
+  @Patch("/:id/themes/:themeId")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Modify a theme assignment on a question",
+    description: `Modify a specific theme assignment on a question. Can change isPrimary and isHint flags. Setting isPrimary to true will automatically demote the current primary theme.`,
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionNestZodDto,
+  })
+  public async modifyQuestionThemeAssignment(
+    @Param("id", MongoIdPipe) questionId: string,
+    @Param("themeId", MongoIdPipe) themeId: string,
+    @Body() questionThemeAssignmentModificationDto: QuestionThemeAssignmentModificationNestZodDto,
+  ): Promise<AdminQuestionDto> {
+    const command = createQuestionThemeAssignmentModificationCommandFromDto(questionId, themeId, questionThemeAssignmentModificationDto);
+    const updatedQuestion = await this.modifyQuestionThemeAssignmentUseCase.modify(command);
 
     return createAdminQuestionDtoFromEntity(updatedQuestion);
   }

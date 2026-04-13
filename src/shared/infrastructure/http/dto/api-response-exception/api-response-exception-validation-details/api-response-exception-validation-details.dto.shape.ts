@@ -42,9 +42,9 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
     .optional()
     .describe("List unrecognized keys when applicable")
     .meta({ example: ["unexpectedKey1", "unexpectedKey2"] }),
-  values: z.array(z.string())
+  values: z.array(z.union([z.string(), z.number(), z.boolean()]))
     .optional()
-    .describe("List unrecognized values when applicable")
+    .describe("List of expected values when applicable")
     .meta({ example: ["unexpectedValue1", "unexpectedValue2"] }),
 });
 

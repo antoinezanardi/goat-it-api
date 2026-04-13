@@ -232,7 +232,7 @@ describe("Question Mongoose Repository", () => {
   describe(QuestionMongooseRepository.prototype.assignTheme, () => {
     it("should call model.findByIdAndUpdate with push update when called.", async() => {
       const questionId = "618c1f4b3a2f000000000020";
-      const contract = createFakeQuestionThemeAssignmentCreationContract();
+      const contract = createFakeQuestionThemeAssignmentCreationContract({ isPrimary: false });
       const expectedInsert = createFakeQuestionThemeAssignmentMongooseInsertPayload();
       mocks.mappers.question.createQuestionThemeAssignmentMongooseInsertPayloadFromContract.mockReturnValueOnce(expectedInsert);
 
@@ -241,6 +241,32 @@ describe("Question Mongoose Repository", () => {
       const expectedUpdate = { $push: { themes: expectedInsert } };
 
       expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate);
+    });
+
+    it("should call model.bulkWrite with demotion and push when contract has isPrimary true.", async() => {
+      const questionId = "618c1f4b3a2f000000000050";
+      const contract = createFakeQuestionThemeAssignmentCreationContract({ isPrimary: true });
+      const expectedInsert = createFakeQuestionThemeAssignmentMongooseInsertPayload();
+      mocks.mappers.question.createQuestionThemeAssignmentMongooseInsertPayloadFromContract.mockReturnValueOnce(expectedInsert);
+
+      await repositories.question.assignTheme(questionId, contract);
+
+      const expectedBulkOps = [
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $set: { "themes.$[].isPrimary": false } },
+          },
+        },
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $push: { themes: expectedInsert } },
+          },
+        },
+      ];
+
+      expect(mocks.models.question.bulkWrite).toHaveBeenCalledExactlyOnceWith(expectedBulkOps);
     });
 
     it("should return undefined when model.findByIdAndUpdate returns null.", async() => {
@@ -320,6 +346,121 @@ describe("Question Mongoose Repository", () => {
       vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
 
       const actual = await repositories.question.removeTheme(questionId, themeId);
+
+      expect(actual).toStrictEqual(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.modifyThemeAssignment, () => {
+    it("should call model.findByIdAndUpdate with set update for isHint when contract has isHint.", async() => {
+      const questionId = "618c1f4b3a2f000000000040";
+      const themeId = "618c1f4b3a2f000000000041";
+      const contract = { isHint: true };
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, contract);
+
+      const expectedUpdate = {
+        $set: { "themes.$[elem].isHint": true },
+      };
+      const expectedOptions = {
+        arrayFilters: [{ "elem.themeId": new Types.ObjectId(themeId) }],
+      };
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate, expectedOptions);
+    });
+
+    it("should not call model.findByIdAndUpdate when contract has no fields.", async() => {
+      const questionId = "618c1f4b3a2f000000000060";
+      const themeId = "618c1f4b3a2f000000000061";
+      const contract = {};
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, contract);
+
+      expect(mocks.models.question.findByIdAndUpdate).not.toHaveBeenCalled();
+    });
+
+    it("should call model.bulkWrite with demotion and promotion when contract has isPrimary true.", async() => {
+      const questionId = "618c1f4b3a2f000000000042";
+      const themeId = "618c1f4b3a2f000000000043";
+      const contract = { isPrimary: true as const };
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, contract);
+
+      const expectedBulkOps = [
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $set: { "themes.$[].isPrimary": false } },
+          },
+        },
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $set: { "themes.$[elem].isPrimary": true } },
+            arrayFilters: [{ "elem.themeId": new Types.ObjectId(themeId) }],
+          },
+        },
+      ];
+
+      expect(mocks.models.question.bulkWrite).toHaveBeenCalledExactlyOnceWith(expectedBulkOps);
+    });
+
+    it("should not include isHint in bulkWrite set fields when contract has isPrimary true but isHint is undefined.", async() => {
+      const questionId = "618c1f4b3a2f000000000051";
+      const themeId = "618c1f4b3a2f000000000052";
+      const contract = { isPrimary: true as const };
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, contract);
+
+      const actualBulkOps = mocks.models.question.bulkWrite.mock.calls[0][0] as Record<string, unknown>[];
+      const promotionOp = actualBulkOps[1] as { updateOne: { update: { $set: Record<string, unknown> } } };
+
+      expect(promotionOp.updateOne.update.$set).not.toHaveProperty("themes.$[elem].isHint");
+    });
+
+    it("should call model.bulkWrite with demotion, promotion and isHint when contract has both fields.", async() => {
+      const questionId = "618c1f4b3a2f000000000044";
+      const themeId = "618c1f4b3a2f000000000045";
+      const contract = { isPrimary: true as const, isHint: false };
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, contract);
+
+      const expectedBulkOps = [
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $set: { "themes.$[].isPrimary": false } },
+          },
+        },
+        {
+          updateOne: {
+            filter: { _id: new Types.ObjectId(questionId) },
+            update: { $set: { "themes.$[elem].isPrimary": true, "themes.$[elem].isHint": false } },
+            arrayFilters: [{ "elem.themeId": new Types.ObjectId(themeId) }],
+          },
+        },
+      ];
+
+      expect(mocks.models.question.bulkWrite).toHaveBeenCalledExactlyOnceWith(expectedBulkOps);
+    });
+
+    it("should call findById with the question id when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000046";
+      const themeId = "618c1f4b3a2f000000000047";
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.modifyThemeAssignment(questionId, themeId, { isHint: true });
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000048";
+      const themeId = "618c1f4b3a2f000000000049";
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.modifyThemeAssignment(questionId, themeId, { isHint: true });
 
       expect(actual).toStrictEqual(expectedQuestion);
     });

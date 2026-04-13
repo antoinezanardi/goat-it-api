@@ -2,11 +2,11 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { shake } from "radashi";
 
-import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
 import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
+import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 import { SUCCESS_HTTP_STATUSES } from "@acceptance-support/constants/http.constants";
@@ -57,24 +57,7 @@ Then(/^the failed request's response should contain the following validation det
 
   for (const [index, validationDetailsEntry] of dataTableRows.entries()) {
     const actualValidationDetailsEntry = actualValidationDetails[index];
-    const expectedValidationDetails: ApiResponseExceptionValidationDetailsDto = {
-      code: validationDetailsEntry.code,
-      message: validationDetailsEntry.message,
-      path: validationDetailsEntry.path.split(".").map(segment => {
-        const trimmedValue = segment.trim();
-
-        return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
-      }).filter(value => value !== ""),
-      expected: validationDetailsEntry.expected,
-      origin: validationDetailsEntry.origin,
-      format: validationDetailsEntry.format,
-      pattern: validationDetailsEntry.pattern,
-      minimum: validationDetailsEntry.minimum,
-      maximum: validationDetailsEntry.maximum,
-      inclusive: validationDetailsEntry.inclusive,
-      keys: validationDetailsEntry.keys === undefined ? undefined : validationDetailsEntry.keys.split(",").map(key => key.trim()).filter(Boolean),
-      values: validationDetailsEntry.values === undefined ? undefined : validationDetailsEntry.values.split(",").map(value => value.trim()).filter(Boolean),
-    };
+    const expectedValidationDetails = mapDataTableRowToValidationDetails(validationDetailsEntry);
     const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
 
     expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetailsWithoutUndefinedFields);
