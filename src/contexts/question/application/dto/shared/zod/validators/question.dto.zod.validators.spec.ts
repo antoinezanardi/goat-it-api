@@ -1,4 +1,4 @@
-import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "./question.dto.zod.validators";
+import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionCognitiveDifficulty, () => {
