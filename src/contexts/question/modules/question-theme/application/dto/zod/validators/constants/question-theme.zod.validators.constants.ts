@@ -1,5 +1,14 @@
 const QUESTION_THEME_SLUG_EXAMPLE = "general-knowledge";
 
+const QUESTION_THEME_LABEL_EXAMPLE = "History";
+
+const QUESTION_THEME_ALIASES_EXAMPLE = ["Historical Events", "Past", "Future"];
+
+const QUESTION_THEME_DESCRIPTION_EXAMPLE = "Questions related to historical events and timelines.";
+
 export {
   QUESTION_THEME_SLUG_EXAMPLE,
+  QUESTION_THEME_LABEL_EXAMPLE,
+  QUESTION_THEME_ALIASES_EXAMPLE,
+  QUESTION_THEME_DESCRIPTION_EXAMPLE,
 };

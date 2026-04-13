@@ -237,7 +237,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - **Semicolons**: always required
 - **Trailing commas**: always on multiline
 - **Max line length**: 180 characters
-- **Max lines per function**: 30 (excluding comments/blanks)
+- **Max lines per function**: 30 (excluding comments/blanks) — does **not** apply to test files (`*.spec.ts`)
 - **No final newline** (except `.yml`, `.sh`, `.env*`, `.json`, `.md`)
 - **EOL**: LF
 
@@ -284,7 +284,7 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 ### DTOs
 
-- Zod schema in `*.dto.shape.ts`: export the `z.object(...)` const (named `FOO_DTO`) and the inferred `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })` on fields to drive OpenAPI output.
+- Zod schema in `*.dto.shape.ts`: export the `z.object(...)` const (named `FOO_DTO`) and the inferred `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })` on fields to drive OpenAPI output. Boolean fields only require `.describe()` — `.meta({ example })` is not needed for booleans.
 - nestjs-zod wrapper in `*.dto.ts`: `class FooNestZodDto extends createZodDto(FOO_DTO) {}` — intentionally tiny.
 - DTO shape tests in `*.dto.shape.spec.ts`. Cover every field with at least one positive and one negative test.
 - Shared Zod validators live in `src/shared/infrastructure/http/zod/validators/`.

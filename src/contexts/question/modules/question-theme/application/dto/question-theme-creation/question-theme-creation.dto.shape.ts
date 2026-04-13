@@ -1,24 +1,20 @@
 import { z } from "zod";
 
-import { zLocalizedText, zLocalizedTexts } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
-import { zHexColor, zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
-
-import { QUESTION_THEME_SLUG_EXAMPLE } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
+import {
+  zQuestionThemeSlug,
+  zQuestionThemeLocalizedLabel,
+  zQuestionThemeLocalizedAliases,
+  zQuestionThemeLocalizedDescription,
+  zQuestionThemeColor,
+} from "@question/modules/question-theme/application/dto/zod/validators/question-theme.dto.zod.validators";
 
 const QUESTION_THEME_CREATION_DTO = z.object({
-  slug: zSlug()
-    .describe("Question Theme's unique slug in kebab-case")
-    .meta({ example: QUESTION_THEME_SLUG_EXAMPLE }),
-  label: zLocalizedText()
-    .describe("Question Theme's translated label"),
-  aliases: zLocalizedTexts()
-    .describe("Question Theme's translated aliases. Help to find the theme with different keywords"),
-  description: zLocalizedText()
-    .describe("Question Theme's translated description"),
-  color: zHexColor()
-    .optional()
-    .describe("Question Theme's hex color (6-digit with # prefix)")
-    .meta({ example: "#FF5733" }),
+  slug: zQuestionThemeSlug(),
+  label: zQuestionThemeLocalizedLabel(),
+  aliases: zQuestionThemeLocalizedAliases(),
+  description: zQuestionThemeLocalizedDescription(),
+  color: zQuestionThemeColor()
+    .optional(),
 });
 
 export type QuestionThemeCreationDto = z.infer<typeof QUESTION_THEME_CREATION_DTO>;

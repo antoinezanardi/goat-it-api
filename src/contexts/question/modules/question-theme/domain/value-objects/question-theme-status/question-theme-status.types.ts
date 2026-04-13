@@ -2,6 +2,13 @@ import type { QUESTION_THEME_STATUSES } from "@question/modules/question-theme/d
 
 import type { TupleToUnion } from "type-fest";
 
+import type { TupleToEnum } from "@shared/types/enum.types";
+
 type QuestionThemeStatus = TupleToUnion<typeof QUESTION_THEME_STATUSES>;
 
-export type { QuestionThemeStatus };
+type QuestionThemeStatusEnum = TupleToEnum<typeof QUESTION_THEME_STATUSES>;
+
+export type {
+  QuestionThemeStatus,
+  QuestionThemeStatusEnum,
+};
