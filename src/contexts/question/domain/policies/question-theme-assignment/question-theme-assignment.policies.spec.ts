@@ -1,11 +1,11 @@
 import { QuestionPrimaryThemeAssignmentNotRemovableError, QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
-import { ensureQuestionPrimaryThemeAssignmentIsNotRemovable, ensureQuestionThemeAssignmentIsModifiable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
+import { ensureQuestionThemeAssignmentIsRemovable, ensureQuestionThemeAssignmentIsModifiable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
 
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
 describe("Question Theme Assignment Policies", () => {
-  describe(ensureQuestionPrimaryThemeAssignmentIsNotRemovable, () => {
+  describe(ensureQuestionThemeAssignmentIsRemovable, () => {
     it("should not throw when the theme assignment is not primary.", () => {
       const question = createFakeQuestion({
         themes: [
@@ -14,7 +14,7 @@ describe("Question Theme Assignment Policies", () => {
         ],
       });
 
-      expect(() => ensureQuestionPrimaryThemeAssignmentIsNotRemovable(question, "theme-1")).not.toThrow();
+      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).not.toThrow();
     });
 
     it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when the theme assignment is primary.", () => {
@@ -25,7 +25,7 @@ describe("Question Theme Assignment Policies", () => {
         ],
       });
 
-      expect(() => ensureQuestionPrimaryThemeAssignmentIsNotRemovable(question, "theme-1")).toThrow(QuestionPrimaryThemeAssignmentNotRemovableError);
+      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).toThrow(QuestionPrimaryThemeAssignmentNotRemovableError);
     });
   });
 

@@ -2,21 +2,23 @@ import { ZodError } from "zod";
 
 import { QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 
+import { createFakeQuestionThemeAssignmentModificationDto } from "@faketories/contexts/question/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.faketory";
+
 describe("Question Theme Assignment Modification DTO Shape", () => {
   it("should pass validation when a valid QuestionThemeAssignmentModificationDto is provided.", () => {
-    const validDto = { isPrimary: true as const, isHint: true };
+    const validDto = createFakeQuestionThemeAssignmentModificationDto();
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(validDto)).not.toThrow();
   });
 
   it("should pass validation when only isPrimary is provided.", () => {
-    const dto = { isPrimary: true as const };
+    const dto = createFakeQuestionThemeAssignmentModificationDto({ isPrimary: true });
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });
 
   it("should pass validation when only isHint is provided.", () => {
-    const dto = { isHint: false };
+    const dto = createFakeQuestionThemeAssignmentModificationDto({ isHint: false });
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });

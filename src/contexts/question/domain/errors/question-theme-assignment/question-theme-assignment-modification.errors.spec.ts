@@ -1,4 +1,4 @@
-import { QuestionThemeAssignmentModificationError } from "./question-theme-assignment-modification.errors";
+import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment-modification.errors";
 
 describe("Question Theme Assignment Modification Errors", () => {
   describe(QuestionThemeAssignmentModificationError, () => {

@@ -45,7 +45,7 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
   values: z.array(z.union([z.string(), z.number(), z.boolean()]))
     .optional()
     .describe("List of expected values when applicable")
-    .meta({ example: ["unexpectedValue1", "unexpectedValue2"] }),
+    .meta({ example: ["expectedValue1", "expectedValue2"] }),
 });
 
 export type ApiResponseExceptionValidationDetailsDto = z.infer<typeof API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO>;

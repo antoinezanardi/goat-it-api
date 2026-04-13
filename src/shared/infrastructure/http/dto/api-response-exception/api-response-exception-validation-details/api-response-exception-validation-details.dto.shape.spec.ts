@@ -279,7 +279,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     it("should have correct metadata when accessing the meta.", () => {
       const expectedMetadata = {
         description: "List of expected values when applicable",
-        example: ["unexpectedValue1", "unexpectedValue2"],
+        example: ["expectedValue1", "expectedValue2"],
       };
 
       expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);

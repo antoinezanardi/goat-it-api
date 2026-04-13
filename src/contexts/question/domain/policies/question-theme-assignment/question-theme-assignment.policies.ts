@@ -3,7 +3,7 @@ import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain
 
 import type { Question } from "@question/domain/entities/question.types";
 
-function ensureQuestionPrimaryThemeAssignmentIsNotRemovable(question: Question, themeId: string): void {
+function ensureQuestionThemeAssignmentIsRemovable(question: Question, themeId: string): void {
   const assignment = findQuestionThemeAssignmentInQuestionByThemeId(question, themeId);
   if (assignment?.isPrimary === true) {
     throw new QuestionPrimaryThemeAssignmentNotRemovableError(themeId, question.id);
@@ -18,6 +18,6 @@ function ensureQuestionThemeAssignmentIsModifiable(question: Question, themeId: 
 }
 
 export {
-  ensureQuestionPrimaryThemeAssignmentIsNotRemovable,
+  ensureQuestionThemeAssignmentIsRemovable,
   ensureQuestionThemeAssignmentIsModifiable,
 };
