@@ -1,5 +1,44 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.16.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.15.0...v1.16.0) (2026-03-31)
+
+### 🚀 Features
+
+* **constants:** add new constants for error handling and localization in schema package ([#621](https://github.com/antoinezanardi/goat-it-api/issues/621)) ([ec0f69a](https://github.com/antoinezanardi/goat-it-api/commit/ec0f69a1cad728250e227d5e8643f9abc0291eeb))
+* **validation:** add localized text validation for empty locales ([#618](https://github.com/antoinezanardi/goat-it-api/issues/618)) ([36b82f2](https://github.com/antoinezanardi/goat-it-api/commit/36b82f2ce6e3d606aaa553048d5b32f3c3dcd287))
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency axios to ^1.14.0 ([#611](https://github.com/antoinezanardi/goat-it-api/issues/611)) ([266d0b5](https://github.com/antoinezanardi/goat-it-api/commit/266d0b51744d740c7f9e02bcffec176e0ae9abab))
+* **deps:** update dependency mongoose to ^9.3.2 ([#595](https://github.com/antoinezanardi/goat-it-api/issues/595)) ([e82d923](https://github.com/antoinezanardi/goat-it-api/commit/e82d92329791ab4713e457e1a50676deef65df0a))
+* **deps:** update dependency mongoose to ^9.3.3 ([#606](https://github.com/antoinezanardi/goat-it-api/issues/606)) ([41330fd](https://github.com/antoinezanardi/goat-it-api/commit/41330fd5baee99cafb477ab0dd1d02e8a1e51346))
+
+### 🧹 Chore
+
+* **deps:** update dependency @faker-js/faker to ^10.4.0 ([#598](https://github.com/antoinezanardi/goat-it-api/issues/598)) ([a294273](https://github.com/antoinezanardi/goat-it-api/commit/a294273b83d1c947c0b67db32ee214fc47e5ab49))
+* **deps:** update dependency @typescript/native-preview to v7.0.0-dev.20260331.1 ([#599](https://github.com/antoinezanardi/goat-it-api/issues/599)) ([4003b4a](https://github.com/antoinezanardi/goat-it-api/commit/4003b4a1cd5fa7dc6092a33187fd81d8171b122c))
+* **deps:** update dependency @vitest/eslint-plugin to ^1.6.14 ([#620](https://github.com/antoinezanardi/goat-it-api/issues/620)) ([b631e07](https://github.com/antoinezanardi/goat-it-api/commit/b631e072abf7d04edaee9d8fbb10bbe69e72dd6c))
+* **deps:** update dependency conventional-changelog-conventionalcommits to ^9.3.1 ([#614](https://github.com/antoinezanardi/goat-it-api/issues/614)) ([beee1dd](https://github.com/antoinezanardi/goat-it-api/commit/beee1dd8747ca39365898b3bc962458d30408c46))
+* **deps:** update dependency eslint to v10 ([#484](https://github.com/antoinezanardi/goat-it-api/issues/484)) ([13bfa62](https://github.com/antoinezanardi/goat-it-api/commit/13bfa62026e410edd7728c01dbce1fbad2130f68))
+* **deps:** update dependency eslint-plugin-unicorn to v64 ([#612](https://github.com/antoinezanardi/goat-it-api/issues/612)) ([20b1141](https://github.com/antoinezanardi/goat-it-api/commit/20b11412a4098693dc5229a9090fb754daa38dd6))
+* **deps:** update dependency oxlint-tsgolint to ^0.17.2 ([#597](https://github.com/antoinezanardi/goat-it-api/issues/597)) ([2cd8404](https://github.com/antoinezanardi/goat-it-api/commit/2cd840411fa9e16bc57de720b875a4f1b8d645a5))
+* **deps:** update dependency oxlint-tsgolint to ^0.17.3 ([#600](https://github.com/antoinezanardi/goat-it-api/issues/600)) ([ddd1f9f](https://github.com/antoinezanardi/goat-it-api/commit/ddd1f9f5b0d9d9bca866f35309078c6c981a85eb))
+* **deps:** update dependency oxlint-tsgolint to ^0.18.0 ([#605](https://github.com/antoinezanardi/goat-it-api/issues/605)) ([fc2bf63](https://github.com/antoinezanardi/goat-it-api/commit/fc2bf63f73fc5c45013923681eb4982b7a052eb6))
+* **deps:** update dependency oxlint-tsgolint to ^0.18.1 ([#610](https://github.com/antoinezanardi/goat-it-api/issues/610)) ([4e90f41](https://github.com/antoinezanardi/goat-it-api/commit/4e90f41dbaade84b9d5f29315750facc18559cd3))
+* **deps:** update dependency tsdown to ^0.21.5 ([#604](https://github.com/antoinezanardi/goat-it-api/issues/604)) ([374984e](https://github.com/antoinezanardi/goat-it-api/commit/374984e163f1f2b4e9948accc6b43cf4efa7e433))
+* **deps:** update dependency tsdown to ^0.21.6 ([#609](https://github.com/antoinezanardi/goat-it-api/issues/609)) ([176c3b1](https://github.com/antoinezanardi/goat-it-api/commit/176c3b13cd9df91545530c6305758ddc48cd8151))
+* **deps:** update dependency tsdown to ^0.21.7 ([#613](https://github.com/antoinezanardi/goat-it-api/issues/613)) ([3a3cb0a](https://github.com/antoinezanardi/goat-it-api/commit/3a3cb0ad1b02c6685f41423f1984973080b22249))
+* **deps:** update dependency typescript to v6 ([#594](https://github.com/antoinezanardi/goat-it-api/issues/594)) ([fb93149](https://github.com/antoinezanardi/goat-it-api/commit/fb93149fac50a6916d9da81dd10d2a761848a3f1))
+* **deps:** update nest monorepo ([#617](https://github.com/antoinezanardi/goat-it-api/issues/617)) ([3735d24](https://github.com/antoinezanardi/goat-it-api/commit/3735d24bb44db21c278920b521524e5d0916cb5f))
+* **deps:** update node.js to v25.8.2 ([#603](https://github.com/antoinezanardi/goat-it-api/issues/603)) ([c4c0cb2](https://github.com/antoinezanardi/goat-it-api/commit/c4c0cb2cb8d3cf81902c1ddbcd22d814f1c4f0ba))
+* **deps:** update node.js to v25.8.2 ([#607](https://github.com/antoinezanardi/goat-it-api/issues/607)) ([63d5b9d](https://github.com/antoinezanardi/goat-it-api/commit/63d5b9d418a070714a71c6df145516d794abf75f))
+* **deps:** update oxlint monorepo to v1.57.0 ([#601](https://github.com/antoinezanardi/goat-it-api/issues/601)) ([92336fa](https://github.com/antoinezanardi/goat-it-api/commit/92336fa331f5cf71e1857b4e1f774af681a7928d))
+* **deps:** update oxlint monorepo to v1.58.0 ([#619](https://github.com/antoinezanardi/goat-it-api/issues/619)) ([e770f59](https://github.com/antoinezanardi/goat-it-api/commit/e770f59e22f3b8885f3fb53811817f412b6b55e6))
+* **deps:** update pnpm to v10.33.0 ([#602](https://github.com/antoinezanardi/goat-it-api/issues/602)) ([bdeda45](https://github.com/antoinezanardi/goat-it-api/commit/bdeda459b68ce50c1c09bf8f695fb12145333530))
+* **deps:** update typescript-eslint monorepo to ^8.57.2 ([#593](https://github.com/antoinezanardi/goat-it-api/issues/593)) ([5cb31d1](https://github.com/antoinezanardi/goat-it-api/commit/5cb31d15a0c846e149d13b85311e923bc26c932b))
+* **deps:** update typescript-eslint monorepo to ^8.58.0 ([#615](https://github.com/antoinezanardi/goat-it-api/issues/615)) ([0e980ca](https://github.com/antoinezanardi/goat-it-api/commit/0e980cae8792c7185251e9f737ff9741102f1ff4))
+* **deps:** update vitest monorepo to ^4.1.2 ([#608](https://github.com/antoinezanardi/goat-it-api/issues/608)) ([4a576a1](https://github.com/antoinezanardi/goat-it-api/commit/4a576a1892fd7116a7bf83b9e72c343b1405cc2d))
+
 ## [1.15.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.14.0...v1.15.0) (2026-03-23)
 
 ### 🚀 Features
