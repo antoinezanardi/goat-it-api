@@ -1,4 +1,4 @@
-import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls } from "./question.dto.zod.validators";
+import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "./question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionCognitiveDifficulty, () => {
@@ -188,6 +188,93 @@ describe("Question DTO Zod Validators", () => {
       const result = schema.safeParse(notUniqueTestValue);
 
       expect(result.error?.issues[0].message).toBe("Source URLs must be unique");
+    });
+  });
+
+  describe(zQuestionId, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a valid MongoDB ObjectId is provided",
+        value: "60af924f4f1a2563f8e8b456",
+        expected: true,
+      },
+      {
+        test: "should return false when an invalid ObjectId is provided",
+        value: "not-a-valid-id",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionId().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionId();
+
+      expect(schema.description).toBe("Question's unique identifier");
+    });
+  });
+
+  describe(zQuestionCreatedAt, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a valid ISO datetime is provided",
+        value: "2026-04-14T00:00:00.000Z",
+        expected: true,
+      },
+      {
+        test: "should return false when an invalid datetime is provided",
+        value: "not-a-date",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionCreatedAt().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionCreatedAt();
+
+      expect(schema.description).toBe("Question's creation date");
+    });
+  });
+
+  describe(zQuestionUpdatedAt, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a valid ISO datetime is provided",
+        value: "2026-04-14T00:00:00.000Z",
+        expected: true,
+      },
+      {
+        test: "should return false when an invalid datetime is provided",
+        value: "not-a-date",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionUpdatedAt().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionUpdatedAt();
+
+      expect(schema.description).toBe("Question's last update date");
     });
   });
 });

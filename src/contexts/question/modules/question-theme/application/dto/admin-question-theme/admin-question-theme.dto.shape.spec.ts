@@ -68,7 +68,7 @@ describe("Admin Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(ADMIN_QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's label in supported locales");
+      expect(ADMIN_QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's label");
     });
   });
 
@@ -80,7 +80,7 @@ describe("Admin Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(ADMIN_QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's aliases in supported locales. Help to find the theme with different keywords");
+      expect(ADMIN_QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's aliases");
     });
   });
 
@@ -92,7 +92,7 @@ describe("Admin Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(ADMIN_QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's description in supported locales");
+      expect(ADMIN_QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's description");
     });
   });
 
@@ -116,7 +116,7 @@ describe("Admin Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(ADMIN_QUESTION_THEME_DTO.shape.color.description).toBe("Question Theme's hex color");
+      expect(ADMIN_QUESTION_THEME_DTO.shape.color.unwrap().description).toBe("Question Theme's hex color");
     });
 
     it("should have the correct metadata when accessing the metadata.", () => {
@@ -125,7 +125,7 @@ describe("Admin Question Theme DTO Shape", () => {
         example: HEX_COLOR_EXAMPLE,
       };
 
-      expect(ADMIN_QUESTION_THEME_DTO.shape.color.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+      expect(ADMIN_QUESTION_THEME_DTO.shape.color.unwrap().meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 

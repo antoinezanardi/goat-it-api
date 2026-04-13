@@ -2,6 +2,7 @@ import { ZodError } from "zod";
 
 import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
+import { QUESTION_THEME_ALIASES_EXAMPLE, QUESTION_THEME_DESCRIPTION_EXAMPLE, QUESTION_THEME_LABEL_EXAMPLE } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
 import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { QUESTION_THEME_DTO } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 
@@ -68,13 +69,13 @@ describe("Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's translated label");
+      expect(QUESTION_THEME_DTO.shape.label.description).toBe("Question Theme's label");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated label",
-        example: "History",
+        description: "Question Theme's label",
+        example: QUESTION_THEME_LABEL_EXAMPLE,
       };
 
       expect(QUESTION_THEME_DTO.shape.label.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -95,13 +96,13 @@ describe("Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords");
+      expect(QUESTION_THEME_DTO.shape.aliases.description).toBe("Question Theme's aliases");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated aliases. Help to find the theme with different keywords",
-        example: ["Historical Events", "Past", "Future"],
+        description: "Question Theme's aliases",
+        example: QUESTION_THEME_ALIASES_EXAMPLE,
       };
 
       expect(QUESTION_THEME_DTO.shape.aliases.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -116,13 +117,13 @@ describe("Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's translated description");
+      expect(QUESTION_THEME_DTO.shape.description.description).toBe("Question Theme's description");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's translated description",
-        example: "Questions related to historical events and timelines.",
+        description: "Question Theme's description",
+        example: QUESTION_THEME_DESCRIPTION_EXAMPLE,
       };
 
       expect(QUESTION_THEME_DTO.shape.description.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -149,7 +150,7 @@ describe("Question Theme DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_DTO.shape.color.description).toBe("Question Theme's hex color");
+      expect(QUESTION_THEME_DTO.shape.color.unwrap().description).toBe("Question Theme's hex color");
     });
 
     it("should have the correct metadata when accessing the metadata.", () => {
@@ -158,7 +159,7 @@ describe("Question Theme DTO Shape", () => {
         example: HEX_COLOR_EXAMPLE,
       };
 
-      expect(QUESTION_THEME_DTO.shape.color.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+      expect(QUESTION_THEME_DTO.shape.color.unwrap().meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
