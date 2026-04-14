@@ -74,7 +74,7 @@ describe("Database Service", () => {
         onConnectionCreate: expect.any(Function) as (connection: Connection) => Connection,
       };
 
-      expect(options).toStrictEqual<MongooseModuleOptions>(expectedOptions);
+      expect(options).toStrictEqual(expectedOptions);
     });
 
     it("should return the connection from onConnectionCreate option when called.", () => {
@@ -82,7 +82,7 @@ describe("Database Service", () => {
       const mockedConnection = new EventEmitter() as unknown as Connection;
       const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);
 
-      expect(connection).toStrictEqual<Connection>(mockedConnection);
+      expect(connection).toStrictEqual(mockedConnection);
     });
   });
 
@@ -109,7 +109,7 @@ describe("Database Service", () => {
       const fakeConnection = new EventEmitter() as unknown as Connection;
       const connection = services.database["onMongooseConnectionCreate"](fakeConnection);
 
-      expect(connection).toStrictEqual<Connection>(fakeConnection);
+      expect(connection).toStrictEqual(fakeConnection);
     });
   });
 });

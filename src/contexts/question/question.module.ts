@@ -6,6 +6,7 @@ import { CreateQuestionUseCase } from "@question/application/use-cases/create-qu
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
+import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
@@ -35,6 +36,7 @@ import { QuestionThemeModule } from "@question/modules/question-theme/question-t
     ArchiveQuestionUseCase,
     AssignThemeToQuestionUseCase,
     RemoveThemeFromQuestionUseCase,
+    ModifyQuestionThemeAssignmentUseCase,
     {
       provide: QUESTION_REPOSITORY_TOKEN,
       useClass: QuestionMongooseRepository,

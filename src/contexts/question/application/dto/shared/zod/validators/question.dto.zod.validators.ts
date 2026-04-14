@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
+import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
 import { QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS } from "@question/domain/value-objects/question-source-urls/question-source-urls.constants";
 import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
 import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
 
-import type { ZodEnum, ZodURL, ZodArray } from "zod";
+import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime } from "zod";
 
 import type { QuestionCategoryEnum } from "@question/domain/value-objects/question-category/question-category.types";
 import type { QuestionStatusEnum } from "@question/domain/value-objects/question-status/question-status.types";
@@ -37,9 +38,27 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 
+function zQuestionId(): ZodString {
+  return zMongoId()
+    .describe("Question's unique identifier");
+}
+
+function zQuestionCreatedAt(): ZodISODateTime {
+  return zIsoDateTime()
+    .describe("Question's creation date");
+}
+
+function zQuestionUpdatedAt(): ZodISODateTime {
+  return zIsoDateTime()
+    .describe("Question's last update date");
+}
+
 export {
   zQuestionCognitiveDifficulty,
   zQuestionStatus,
   zQuestionCategory,
   zQuestionSourceUrls,
+  zQuestionId,
+  zQuestionCreatedAt,
+  zQuestionUpdatedAt,
 };

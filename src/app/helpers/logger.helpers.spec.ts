@@ -18,7 +18,7 @@ describe("Logger Helpers", () => {
         },
       };
 
-      expect(config).toStrictEqual<PinoParameters>(expectedConfig);
+      expect(config).toStrictEqual(expectedConfig);
     });
 
     it("should return logger development configuration when env is not production.", () => {
@@ -30,7 +30,7 @@ describe("Logger Helpers", () => {
         },
       };
 
-      expect(config).toStrictEqual<PinoParameters>(expectedConfig);
+      expect(config).toStrictEqual(expectedConfig);
     });
   });
 });

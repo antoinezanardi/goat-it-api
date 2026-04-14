@@ -33,12 +33,19 @@ Feature: Remove Theme From Question As Admin
       | error     | statusCode | message                                                                                                      | errorCode                        |
       | Not Found | 404        | Question theme with id 8ef21e4eb04eb0fa5a469d87 is not assigned to question with id d4e5f6a7b8c9012345678904 | question-theme-assignment-absent |
 
-  Scenario: Trying to remove a theme when question only has one theme
+  Scenario: Trying to remove a theme when question only has one theme which is primary
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin removes the theme with id "8ef21e4eb04eb0fa5a469d87" from the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have failed with status code 400 and the response should contain the following error:
-      | error       | statusCode | message                                                                       | errorCode               |
-      | Bad Request | 400        | Question with id a1b2c3d4e5f6012345678901 must have at least 1 theme assigned | question-minimum-themes |
+      | error       | statusCode | message                                                                                                                                            | errorCode                                       |
+      | Bad Request | 400        | Primary question theme with id 8ef21e4eb04eb0fa5a469d87 cannot be removed from question with id a1b2c3d4e5f6012345678901. Switch primary to another theme first | question-primary-theme-assignment-not-removable |
+
+  Scenario: Trying to remove the primary theme from a question
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the admin removes the theme with id "cddb37b90e4f6b7ec27bc1ee" from the question with id "d4e5f6a7b8c9012345678904"
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                                                                                                                                          | errorCode                                        |
+      | Bad Request | 400        | Primary question theme with id cddb37b90e4f6b7ec27bc1ee cannot be removed from question with id d4e5f6a7b8c9012345678904. Switch primary to another theme first | question-primary-theme-assignment-not-removable |
 
   Scenario: Trying to remove a theme without API key
     Given the database is populated with questions fixture set with name "five-questions"

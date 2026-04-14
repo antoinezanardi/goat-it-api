@@ -19,8 +19,6 @@ import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/co
 
 import type { TestingModule } from "@nestjs/testing";
 
-import type { Question } from "@question/domain/entities/question.types";
-
 describe("Assign Theme To Question Use Case", () => {
   let assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase;
   let mocks: {
@@ -109,7 +107,7 @@ describe("Assign Theme To Question Use Case", () => {
 
       const result = await assignThemeToQuestionUseCase.assign(command);
 
-      expect(result).toStrictEqual<Question>(updatedQuestion);
+      expect(result).toStrictEqual(updatedQuestion);
     });
   });
 

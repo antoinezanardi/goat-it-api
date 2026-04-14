@@ -2,6 +2,12 @@ import { ZodError } from "zod";
 
 import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
+import {
+  QUESTION_STATEMENT_EXAMPLE,
+  QUESTION_ANSWER_EXAMPLE,
+  QUESTION_CONTEXT_EXAMPLE,
+  QUESTION_TRIVIA_EXAMPLE,
+} from "@question/application/dto/shared/zod/validators/question-content/constants/question-content.zod.validators.constants";
 
 import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
 
@@ -32,8 +38,8 @@ describe("Question Content DTO Shape", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.statement.meta();
       const expectedMetadata = {
-        description: "Question translated statement",
-        example: "What is the capital of France?",
+        description: "Question's statement",
+        example: QUESTION_STATEMENT_EXAMPLE,
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -56,8 +62,8 @@ describe("Question Content DTO Shape", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_DTO.shape.answer.meta();
       const expectedMetadata = {
-        description: "Question translated answer",
-        example: "The capital of France is Paris.",
+        description: "Question's answer",
+        example: QUESTION_ANSWER_EXAMPLE,
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -78,10 +84,10 @@ describe("Question Content DTO Shape", () => {
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = QUESTION_CONTENT_DTO.shape.context.meta();
+      const metadata = QUESTION_CONTENT_DTO.shape.context.unwrap().meta();
       const expectedMetadata = {
-        description: "Additional translated context for the question",
-        example: "France is a country in Western Europe.",
+        description: "Additional context for the question",
+        example: QUESTION_CONTEXT_EXAMPLE,
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -102,10 +108,10 @@ describe("Question Content DTO Shape", () => {
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = QUESTION_CONTENT_DTO.shape.trivia.meta();
+      const metadata = QUESTION_CONTENT_DTO.shape.trivia.unwrap().meta();
       const expectedMetadata = {
-        description: "Interesting translated trivia related to the question",
-        example: ["Paris is known as the 'City of Light'.", "The Eiffel Tower is located in Paris."],
+        description: "Interesting trivia related to the question",
+        example: QUESTION_TRIVIA_EXAMPLE,
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);

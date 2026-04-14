@@ -1,18 +1,19 @@
 import { z } from "zod";
 
-import { zLocalizedText, zLocalizedTexts } from "@shared/infrastructure/http/zod/validators/localization/localization.zod.validators";
+import {
+  zQuestionLocalizedStatement,
+  zQuestionLocalizedAnswer,
+  zQuestionLocalizedContext,
+  zQuestionLocalizedTrivia,
+} from "@question/application/dto/shared/zod/validators/question-content/question-content.dto.zod.validators";
 
 const ADMIN_QUESTION_CONTENT_DTO = z.strictObject({
-  statement: zLocalizedText()
-    .describe("Question statement in supported locales"),
-  answer: zLocalizedText()
-    .describe("Question answer in supported locales"),
-  context: zLocalizedText()
-    .optional()
-    .describe("Additional context for the question in supported locales"),
-  trivia: zLocalizedTexts()
-    .optional()
-    .describe("Interesting trivia related to the question in supported locales"),
+  statement: zQuestionLocalizedStatement(),
+  answer: zQuestionLocalizedAnswer(),
+  context: zQuestionLocalizedContext()
+    .optional(),
+  trivia: zQuestionLocalizedTrivia()
+    .optional(),
 }).describe("Question's content");
 
 export type AdminQuestionContentDto = z.infer<typeof ADMIN_QUESTION_CONTENT_DTO>;

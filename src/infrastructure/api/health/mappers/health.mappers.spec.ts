@@ -1,5 +1,4 @@
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 import { createAppHealthDtoFromHealthCheckResult } from "@src/infrastructure/api/health/mappers/health.mappers";
 
 import { createFakeAppHealthDto, createFakeHealthCheckResult } from "@faketories/infrastructure/api/health/health.faketory";
@@ -17,7 +16,7 @@ describe("Health Mappers", () => {
         },
       });
 
-      expect(appHealthDto).toStrictEqual<AppHealthDto>(expectedAppHealthDto);
+      expect(appHealthDto).toStrictEqual(expectedAppHealthDto);
     });
   });
 });

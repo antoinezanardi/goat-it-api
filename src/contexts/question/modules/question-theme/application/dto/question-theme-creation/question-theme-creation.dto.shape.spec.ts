@@ -47,7 +47,7 @@ describe("Question Theme Creation Dto Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_CREATION_DTO.shape.label.description).toBe("Question Theme's translated label");
+      expect(QUESTION_THEME_CREATION_DTO.shape.label.description).toBe("Question Theme's label");
     });
   });
 
@@ -59,7 +59,7 @@ describe("Question Theme Creation Dto Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_CREATION_DTO.shape.aliases.description).toBe("Question Theme's translated aliases. Help to find the theme with different keywords");
+      expect(QUESTION_THEME_CREATION_DTO.shape.aliases.description).toBe("Question Theme's aliases");
     });
   });
 
@@ -71,7 +71,7 @@ describe("Question Theme Creation Dto Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_CREATION_DTO.shape.description.description).toBe("Question Theme's translated description");
+      expect(QUESTION_THEME_CREATION_DTO.shape.description.description).toBe("Question Theme's description");
     });
   });
 
@@ -95,16 +95,16 @@ describe("Question Theme Creation Dto Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_THEME_CREATION_DTO.shape.color.description).toBe("Question Theme's hex color (6-digit with # prefix)");
+      expect(QUESTION_THEME_CREATION_DTO.shape.color.unwrap().description).toBe("Question Theme's hex color");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const expectedMetadata = {
-        description: "Question Theme's hex color (6-digit with # prefix)",
+        description: "Question Theme's hex color",
         example: HEX_COLOR_EXAMPLE,
       };
 
-      expect(QUESTION_THEME_CREATION_DTO.shape.color.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+      expect(QUESTION_THEME_CREATION_DTO.shape.color.unwrap().meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { isObject } from "radashi";
+import { isObject, mapKeys, shake } from "radashi";
 
 function crushDataObjectEntry(entry: [string, unknown], parentKey: string, result: Record<string, unknown>): Record<string, unknown> {
   const [key, value] = entry;
@@ -39,6 +39,26 @@ function getCrushedDataForMongoPatchUpdate(data: Record<string, unknown>): Recor
   return crushDataRecursively(data);
 }
 
+/**
+ * Builds a flat `$set`-ready object for updating fields within a MongoDB array element matched by an array filter.
+ *
+ * 1. Strips `undefined` values (via `shake`) so only explicitly provided fields are included.
+ * 2. Prefixes every remaining key with the given `arrayPath` (e.g. `"themes.$[elem]"`) to form valid MongoDB dot-notation paths.
+ *
+ * Useful when a modification contract has optional fields and only the defined ones should be written to the matched array element.
+ *
+ * @example
+ * // contract = { isPrimary: true, isHint: undefined }
+ * // arrayPath = "themes.$[elem]"
+ * // → { "themes.$[elem].isPrimary": true }
+ * @param data - The object whose defined keys will become `$set` fields.
+ * @param arrayPath - The MongoDB array element path prefix (e.g. `"themes.$[elem]"`).
+ */
+function getDefinedFieldsForMongoArrayElementUpdate(data: Record<string, unknown>, arrayPath: string): Record<string, unknown> {
+  return mapKeys(shake(data), key => `${arrayPath}.${key}`);
+}
+
 export {
   getCrushedDataForMongoPatchUpdate,
+  getDefinedFieldsForMongoArrayElementUpdate,
 };

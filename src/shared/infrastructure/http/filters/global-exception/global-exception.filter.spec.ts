@@ -6,7 +6,7 @@ import { ZodError } from "zod";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
-import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
+import { QuestionPrimaryThemeAssignmentNotRemovableError, QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeReferencedByLiveQuestionsError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
@@ -272,6 +272,16 @@ describe("Global Exception Filter", () => {
           statusCode: HttpStatus.BAD_REQUEST,
           message: "Question with id question-id must have at least 1 theme assigned",
           errorCode: "question-minimum-themes",
+        }, HttpStatus.BAD_REQUEST),
+      },
+      {
+        test: "should map domain error to http exception and send it when called with QuestionPrimaryThemeAssignmentNotRemovableError.",
+        exception: new QuestionPrimaryThemeAssignmentNotRemovableError("question-theme-id", "question-id"),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Primary question theme with id question-theme-id cannot be removed from question with id question-id. Switch primary to another theme first",
+          errorCode: "question-primary-theme-assignment-not-removable",
         }, HttpStatus.BAD_REQUEST),
       },
       {

@@ -8,8 +8,6 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/mo
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
 describe("Find Question Theme By Id Use Case", () => {
   let findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase;
   let mocks: {
@@ -56,7 +54,7 @@ describe("Find Question Theme By Id Use Case", () => {
       mocks.repositories.questionTheme.findById.mockResolvedValue(questionThemeDocument);
       const actualQuestionTheme = await findQuestionThemeByIdUseCase.getById("123");
 
-      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(questionThemeDocument);
+      expect(actualQuestionTheme).toStrictEqual(questionThemeDocument);
     });
   });
 });

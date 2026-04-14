@@ -1,5 +1,3 @@
-import type { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
-import type { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
@@ -26,7 +24,7 @@ describe("Question Theme Dto Mappers", () => {
         updatedAt: questionTheme.updatedAt.toISOString(),
       });
 
-      expect(questionThemeDto).toStrictEqual<QuestionThemeDto>(expectedQuestionThemeDto);
+      expect(questionThemeDto).toStrictEqual(expectedQuestionThemeDto);
     });
 
     it("should map entity.color to DTO.color when present.", () => {
@@ -62,7 +60,7 @@ describe("Question Theme Dto Mappers", () => {
         updatedAt: questionTheme.updatedAt.toISOString(),
       });
 
-      expect(adminQuestionThemeDto).toStrictEqual<AdminQuestionThemeDto>(expectedAdminQuestionThemeDto);
+      expect(adminQuestionThemeDto).toStrictEqual(expectedAdminQuestionThemeDto);
     });
 
     it("should map entity.color to admin DTO.color when present.", () => {

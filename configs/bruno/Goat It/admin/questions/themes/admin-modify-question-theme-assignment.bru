@@ -1,0 +1,30 @@
+meta {
+  name: Modify Question Theme Assignment
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/admin/questions/:id/themes/:themeId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  themeId: {{questionThemeId}}
+  id: {{questionId}}
+}
+
+body:json {
+  {
+    "isPrimary": true,
+    "isHint": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

@@ -2,9 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { QuestionThemeAssignmentRemovalCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment.commands";
-import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
+import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question.errors";
-import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/helpers/question-theme-assignment/question-theme-assignment.helpers";
+import { ensureQuestionThemeAssignmentIsRemovable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
 
@@ -30,9 +30,7 @@ export class RemoveThemeFromQuestionUseCase {
 
   private async throwIfThemeNotRemovableFromQuestion(questionId: string, themeId: string): Promise<void> {
     const question = await this.findQuestionByIdUseCase.getById(questionId);
-    if (!findQuestionThemeAssignmentInQuestionByThemeId(question, themeId)) {
-      throw new QuestionThemeAssignmentAbsentError(themeId, questionId);
-    }
+    ensureQuestionThemeAssignmentIsRemovable(question, themeId);
 
     if (question.themes.length <= QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS) {
       throw new QuestionMinimumThemesError(questionId);

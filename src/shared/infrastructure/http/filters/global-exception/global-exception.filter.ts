@@ -8,7 +8,7 @@ import { ZodError } from "zod";
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 
 import { QuestionAlreadyArchivedError, QuestionMinimumThemesError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
-import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
+import { QuestionPrimaryThemeAssignmentNotRemovableError, QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionThemeAlreadyArchivedError, QuestionThemeNotFoundError, QuestionThemeSlugAlreadyExistsError, ReferencedQuestionThemeArchivedError, QuestionThemeReferencedByLiveQuestionsError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
 
 @Catch()
@@ -21,6 +21,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [ReferencedQuestionThemeArchivedError.name]: BadRequestException,
     [QuestionAlreadyArchivedError.name]: BadRequestException,
     [QuestionMinimumThemesError.name]: BadRequestException,
+    [QuestionPrimaryThemeAssignmentNotRemovableError.name]: BadRequestException,
     [QuestionThemeSlugAlreadyExistsError.name]: ConflictException,
     [QuestionThemeAssignmentAlreadyExistsError.name]: ConflictException,
     [QuestionThemeReferencedByLiveQuestionsError.name]: ConflictException,

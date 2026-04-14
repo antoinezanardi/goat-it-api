@@ -2,8 +2,6 @@ import { Test } from "@nestjs/testing";
 
 import { AppService } from "@app/providers/services/app.service";
 
-import type { AppMetadata } from "@app/types/app.types";
-
 vi.mock(import("@package-json"), async importOriginal => ({
   default: {
     ...await importOriginal(),
@@ -24,7 +22,7 @@ describe("App Service", () => {
 
   describe("getApiMeta", () => {
     it("should return Api metadata when called.", () => {
-      expect(services.app.getApiMeta()).toStrictEqual<AppMetadata>({
+      expect(services.app.getApiMeta()).toStrictEqual({
         packageName: "goat-it-api",
         name: "Goat It API",
         description: "API for Goat It application.",

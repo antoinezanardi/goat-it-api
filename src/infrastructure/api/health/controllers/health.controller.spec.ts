@@ -51,7 +51,7 @@ describe("Health Controller", () => {
       mocks.services.health.checkAppHealth.mockResolvedValue(expectedHealthCheckResult);
       const actualHealthCheckResult = await healthController.check();
 
-      expect(actualHealthCheckResult).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);
+      expect(actualHealthCheckResult).toStrictEqual(expectedHealthCheckResult);
     });
   });
 });

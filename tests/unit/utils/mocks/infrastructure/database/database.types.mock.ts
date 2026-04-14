@@ -60,6 +60,7 @@ type MongooseDocumentStub<T> = Omit<
   | "$model"
   | "deleteOne"
   | "directModifiedPaths"
+  | "$getChanges"
   | "$getPopulatedDocs"
   | "$restoreModifiedPathsSnapshot"
   | "$inc"

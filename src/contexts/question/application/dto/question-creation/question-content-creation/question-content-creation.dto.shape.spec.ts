@@ -26,7 +26,7 @@ describe("Question Content Creation DTO Shape", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_CREATION_DTO.shape.statement.meta();
       const expectedMetadata = {
-        description: "Question statement",
+        description: "Question's statement",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -43,7 +43,7 @@ describe("Question Content Creation DTO Shape", () => {
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = QUESTION_CONTENT_CREATION_DTO.shape.answer.meta();
       const expectedMetadata = {
-        description: "Question answer",
+        description: "Question's answer",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
@@ -58,7 +58,7 @@ describe("Question Content Creation DTO Shape", () => {
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = QUESTION_CONTENT_CREATION_DTO.shape.context.meta();
+      const metadata = QUESTION_CONTENT_CREATION_DTO.shape.context.unwrap().meta();
       const expectedMetadata = {
         description: "Additional context for the question",
       };
@@ -75,7 +75,7 @@ describe("Question Content Creation DTO Shape", () => {
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = QUESTION_CONTENT_CREATION_DTO.shape.trivia.meta();
+      const metadata = QUESTION_CONTENT_CREATION_DTO.shape.trivia.unwrap().meta();
       const expectedMetadata = {
         description: "Interesting trivia related to the question",
       };

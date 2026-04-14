@@ -1,7 +1,3 @@
-import type { QuestionCreationCommand } from "@question/domain/commands/question.commands";
-import type { QuestionAuthorCreationContract } from "@question/domain/contracts/question-author/question-author.contracts";
-import type { QuestionContentCreationContract } from "@question/domain/contracts/question-content/question-content.contracts";
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import { computeQuestionStatusFromAuthorRole } from "@question/domain/policies/question-creation/question-creation.policies";
 import {
   createQuestionContentCreationContractFromDto,
@@ -32,7 +28,7 @@ describe("Question Creation Dto Mappers", () => {
         isHint: dto.isHint,
       });
 
-      expect(result).toStrictEqual<QuestionThemeAssignmentCreationContract>(expected);
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -47,7 +43,7 @@ describe("Question Creation Dto Mappers", () => {
         name: dto.name,
       });
 
-      expect(result).toStrictEqual<QuestionAuthorCreationContract>(expected);
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -64,7 +60,7 @@ describe("Question Creation Dto Mappers", () => {
         trivia: dto.trivia,
       });
 
-      expect(result).toStrictEqual<QuestionContentCreationContract>(expected);
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -98,7 +94,7 @@ describe("Question Creation Dto Mappers", () => {
         },
       });
 
-      expect(command).toStrictEqual<QuestionCreationCommand>(expected);
+      expect(command).toStrictEqual(expected);
     });
   });
 });

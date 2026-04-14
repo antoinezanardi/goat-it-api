@@ -1,3 +1,13 @@
+import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
+
+import type { REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
+
+import { coerceStringToPrimitive } from "@acceptance-support/helpers/datatable.helpers";
+
+import type { z } from "zod";
+
+type ValidationDetailsRow = z.infer<typeof REQUEST_VALIDATION_DETAILS_ROW_SCHEMA>;
+
 function tryParseOverriddenPayloadIntegerValue(payloadValue: string): number {
   const parsedInteger = Number.parseInt(payloadValue, 10);
   if (Number.isNaN(parsedInteger)) {
@@ -89,7 +99,29 @@ function reconstructPayloadWithUndefined(flatObject: Record<string, unknown>): R
   return result;
 }
 
+function mapDataTableRowToValidationDetails(row: ValidationDetailsRow): ApiResponseExceptionValidationDetailsDto {
+  return {
+    code: row.code,
+    message: row.message,
+    path: row.path.split(".").map(segment => {
+      const trimmedValue = segment.trim();
+
+      return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
+    }).filter(value => value !== ""),
+    expected: row.expected,
+    origin: row.origin,
+    format: row.format,
+    pattern: row.pattern,
+    minimum: row.minimum,
+    maximum: row.maximum,
+    inclusive: row.inclusive,
+    keys: row.keys === undefined ? undefined : row.keys.split(",").map(key => key.trim()).filter(Boolean),
+    values: row.values === undefined ? undefined : row.values.split(",").map(value => coerceStringToPrimitive(value.trim())).filter(value => value !== ""),
+  };
+}
+
 export {
+  mapDataTableRowToValidationDetails,
   tryParseOverriddenPayloadValue,
   normalizePathForOverride,
   reconstructPayloadWithUndefined,

@@ -77,7 +77,7 @@ describe("Localization Mappers", () => {
 
       const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);
 
-      expect(result).toStrictEqual<string[]>(["Bonjour", "Monde"]);
+      expect(result).toStrictEqual(["Bonjour", "Monde"]);
     });
 
     it("should return the translated texts for the fallback locale when the desired locale is not available.", () => {
@@ -92,7 +92,7 @@ describe("Localization Mappers", () => {
 
       const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);
 
-      expect(result).toStrictEqual<string[]>(["Hello", "World"]);
+      expect(result).toStrictEqual(["Hello", "World"]);
     });
 
     it("should return a warning message array when neither the desired nor the fallback locale is available.", () => {
@@ -107,7 +107,7 @@ describe("Localization Mappers", () => {
 
       const result = createTranslationsFromLocalizedTexts(localizedTexts, localizationOptions);
 
-      expect(result).toStrictEqual<string[]>(["⚠️ No Translation found for desired locale (fr) and fallback locale (en)"]);
+      expect(result).toStrictEqual(["⚠️ No Translation found for desired locale (fr) and fallback locale (en)"]);
     });
   });
 });
