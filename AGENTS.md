@@ -116,7 +116,7 @@ pnpm test:unit --reporter=verbose -t "Create Question Use Case"
 
 ```bash
 pnpm test:acceptance     # Cucumber e2e (requires running Docker services)
-pnpm test:mutation       # Stryker mutation testing (slow, CI only)
+pnpm test:mutation       # Stryker mutation testing (slow)
 pnpm test:mutation:force # Full mutation run (clears incremental cache)
 ```
 
@@ -212,7 +212,7 @@ Each item below has a **condition** (when it applies), an **action** (what to do
 
 - **Condition**: New entity, DTO, command, contract, or Mongoose document type created
 - **Action**: Create corresponding faketory under `tests/shared/utils/faketories/` following conventions:
-  - Naming: `createFake<ConceptName>(overrides?: Partial<T> = {}): T`
+  - Naming: `createFake<ConceptName>(overrides: Partial<T> = {}): T`
   - Use `@faker-js/faker` for realistic values
   - Spread `overrides` last
   - Use `faker.helpers.maybe(...)` for optional fields
@@ -223,7 +223,8 @@ Each item below has a **condition** (when it applies), an **action** (what to do
 
 - **Condition**: New repository port or use case created
 - **Action**: Create corresponding mock factory under `tests/unit/utils/mocks/` following conventions:
-  - Naming: `createMocked<What>(overrides?: Partial<Mocked<What>> = {}): Mocked<What>`
+  - Naming: `createMocked<What>(overrides: Partial<Mocked<What>> = {}): Mocked<What>`
+  - Define a concrete `MockedWhat` mapped type: `type MockedWhat = { [K in keyof WhatStub]: Mock<WhatStub[K]> }`
   - Return `vi.fn()`-typed objects matching the port interface
   - Mirror source path under the mock directory structure
 - **Verification**: Mock exists and is importable via `@mocks/*`
@@ -421,7 +422,7 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 > Full guide: `tests/unit/utils/mocks/README.md`
 
-- Named `createMocked<What>(overrides?: Partial<MockedWhat> = {})`, return `vi.fn()`-based typed objects
+- Named `createMocked<What>(overrides: Partial<MockedWhat> = {})`, return `vi.fn()`-based typed objects
 - Mock at the port level (repository interface / use-case interface), not internal Mongoose details
 - Inject via Nest `useValue` providers in `createTestingModule`
 
@@ -429,7 +430,7 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 > Full guide: `tests/shared/utils/faketories/README.md`
 
-- Named `createFake<EntityName>(overrides?: Partial<T> = {})`, spread overrides last
+- Named `createFake<EntityName>(overrides: Partial<T> = {})`, spread overrides last
 - Use `@faker-js/faker` for realistic randomized values; randomize optional fields to surface brittle tests
 - Organized by layer: `entity/`, `dto/`, `mongoose/`, `commands/`, `contracts/`
 - Factories must be pure — no DB calls, no network, no side effects
