@@ -1,5 +1,55 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.17.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.16.0...v1.17.0) (2026-04-14)
+
+### 🚀 Features
+
+* **changelog:** enhance release notes generation and formatting ([#644](https://github.com/antoinezanardi/goat-it-api/issues/644)) ([b862e2b](https://github.com/antoinezanardi/goat-it-api/commit/b862e2b3c2decb053e090ee7fd63d838b3adbce8))
+* **question-theme-assignment:** add modification functionality and error handling ([#659](https://github.com/antoinezanardi/goat-it-api/issues/659)) ([9522a0c](https://github.com/antoinezanardi/goat-it-api/commit/9522a0cd999f2ddd461f7dd7a4a5929d504d2cf0))
+* **release:** group dependency upgrades into a dedicated table in changelogs ([#642](https://github.com/antoinezanardi/goat-it-api/issues/642)) ([e5a34a6](https://github.com/antoinezanardi/goat-it-api/commit/e5a34a6788fcb65e4ab047bceca54b7116966543)), closes [#624](https://github.com/antoinezanardi/goat-it-api/issues/624) [#624](https://github.com/antoinezanardi/goat-it-api/issues/624)
+
+### 📖 Docs
+
+* **agents:** enhance Definition of Done checklist for clarity ([#663](https://github.com/antoinezanardi/goat-it-api/issues/663)) ([5d3f529](https://github.com/antoinezanardi/goat-it-api/commit/5d3f529e48d0fedb3a0ced41cd58188ec888edd6))
+
+### 🔩 Refactor
+
+* **dto:** improve question theme and content DTOs with new validators ([#657](https://github.com/antoinezanardi/goat-it-api/issues/657)) ([d012892](https://github.com/antoinezanardi/goat-it-api/commit/d012892d1ab9440df20031e349d62d0209c53ada))
+
+### 🧹 Chore
+
+* **docs:** add new skill documentation for writing and brainstorming ([#651](https://github.com/antoinezanardi/goat-it-api/issues/651)) ([e5cdc6e](https://github.com/antoinezanardi/goat-it-api/commit/e5cdc6e427772c7bb55a1e35b0c1256490865637))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@fastify/static` | `^9.1.0` |
+| `@nestjs/swagger` | `^11.2.7` |
+| `axios` | `^1.15.0` |
+| `mongoose` | `^9.4.1` |
+| `nestjs-zod` | `^5.3.0` |
+| `nest monorepo` | `^11.1.19` |
+| `actions/github-script action` | `v9` |
+| `@cucumber/cucumber` | `^12.8.1` |
+| `@swc/cli` | `^0.8.1` |
+| `@swc/core` | `^1.15.24` |
+| `@types/node` | `^24.12.2` |
+| `@typescript/native-preview` | `v7.0.0-dev.20260414.1` |
+| `@vitest/eslint-plugin` | `^1.6.15` |
+| `dotenv` | `^17.4.2` |
+| `eslint` | `^10.2.0` |
+| `eslint-plugin-oxlint` | `v1.60.0` |
+| `oxlint` | `^1.60.0` |
+| `oxlint-tsgolint` | `^0.20.0` |
+| `tsdown` | `^0.21.8` |
+| `node.js` | `v25.9.0` |
+| `pnpm/action-setup action` | `v6` |
+| `sonarsource/sonarqube-scan-action action` | `v7.1.0` |
+| `stryker-js monorepo` | `^9.6.1` |
+| `typescript-eslint monorepo` | `^8.58.2` |
+| `vitest monorepo` | `^4.1.4` |
+
 ## [1.16.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.15.0...v1.16.0) (2026-03-31)
 
 ### 🚀 Features
