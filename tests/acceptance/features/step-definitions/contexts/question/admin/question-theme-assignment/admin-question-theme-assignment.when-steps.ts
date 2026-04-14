@@ -1,99 +1,51 @@
 import { When } from "@cucumber/cucumber";
 
+import { sendDeleteThemeAssignment, sendPatchThemeAssignment, sendPostThemeAssignment } from "@acceptance-features/step-definitions/contexts/question/admin/question-theme-assignment/helpers/admin-question-theme-assignment.steps.helpers";
+
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
-import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 When(/^the admin assigns the theme with the request payload to the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    method: "POST",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes`, fetchOptions);
+  await sendPostThemeAssignment(this, questionId, { apiKey: APP_ADMIN_API_KEY, body: this.payload });
 });
 
 When(/^the admin assigns the theme with an empty request payload to the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    method: "POST",
-    body: {},
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes`, fetchOptions);
+  await sendPostThemeAssignment(this, questionId, { apiKey: APP_ADMIN_API_KEY, body: {} });
 });
 
 When(/^the admin assigns the theme with the request payload to the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    method: "POST",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes`, fetchOptions);
+  await sendPostThemeAssignment(this, questionId, { body: this.payload });
 });
 
 When(/^the admin assigns the theme with the request payload to the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: "invalid-api-key",
-    method: "POST",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes`, fetchOptions);
+  await sendPostThemeAssignment(this, questionId, { apiKey: "invalid-api-key", body: this.payload });
 });
 
 When(/^the admin removes the theme with id "(?<themeId>[^"]+)" from the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    method: "DELETE",
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendDeleteThemeAssignment(this, themeId, questionId, { apiKey: APP_ADMIN_API_KEY });
 });
 
 When(/^the admin removes the theme with id "(?<themeId>[^"]+)" from the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    method: "DELETE",
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendDeleteThemeAssignment(this, themeId, questionId);
 });
 
 When(/^the admin removes the theme with id "(?<themeId>[^"]+)" from the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: "invalid-api-key",
-    method: "DELETE",
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendDeleteThemeAssignment(this, themeId, questionId, { apiKey: "invalid-api-key" });
 });
 
 When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    method: "PATCH",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendPatchThemeAssignment(this, themeId, questionId, { apiKey: APP_ADMIN_API_KEY, body: this.payload });
 });
 
 When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with an empty request payload on the question with id "(?<questionId>[^"]+)"$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    method: "PATCH",
-    body: {},
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendPatchThemeAssignment(this, themeId, questionId, { apiKey: APP_ADMIN_API_KEY, body: {} });
 });
 
 When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)" without an API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    method: "PATCH",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendPatchThemeAssignment(this, themeId, questionId, { body: this.payload });
 });
 
 When(/^the admin modifies the theme assignment with id "(?<themeId>[^"]+)" with the request payload on the question with id "(?<questionId>[^"]+)" with an invalid API key$/u, async function(this: GoatItWorld, themeId: string, questionId: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: "invalid-api-key",
-    method: "PATCH",
-    body: this.payload,
-  });
-  await this.fetchAndStoreResponse(`/admin/questions/${questionId}/themes/${themeId}`, fetchOptions);
+  await sendPatchThemeAssignment(this, themeId, questionId, { apiKey: "invalid-api-key", body: this.payload });
 });

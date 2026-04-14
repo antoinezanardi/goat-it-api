@@ -5,7 +5,10 @@ import type { Question } from "@question/domain/entities/question.types";
 
 function ensureQuestionThemeAssignmentIsRemovable(question: Question, themeId: string): void {
   const assignment = findQuestionThemeAssignmentInQuestionByThemeId(question, themeId);
-  if (assignment?.isPrimary === true) {
+  if (!assignment) {
+    throw new QuestionThemeAssignmentAbsentError(themeId, question.id);
+  }
+  if (assignment.isPrimary) {
     throw new QuestionPrimaryThemeAssignmentNotRemovableError(themeId, question.id);
   }
 }

@@ -12,13 +12,13 @@ describe("Question Theme Assignment Modification DTO Shape", () => {
   });
 
   it("should pass validation when only isPrimary is provided.", () => {
-    const dto = createFakeQuestionThemeAssignmentModificationDto({ isPrimary: true });
+    const dto = createFakeQuestionThemeAssignmentModificationDto({ isPrimary: true, isHint: undefined });
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });
 
   it("should pass validation when only isHint is provided.", () => {
-    const dto = createFakeQuestionThemeAssignmentModificationDto({ isHint: false });
+    const dto = createFakeQuestionThemeAssignmentModificationDto({ isHint: false, isPrimary: undefined });
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });

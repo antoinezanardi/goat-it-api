@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
+import { getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+
 import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/value-objects/question-status/question-status.constants";
@@ -12,7 +14,7 @@ import { QuestionThemeAssignmentModificationContract } from "@question/domain/co
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import { Question } from "@question/domain/entities/question.types";
-import { QuestionAggregate, QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
@@ -56,25 +58,28 @@ export class QuestionMongooseRepository implements QuestionRepository {
     const insertPayload = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
 
     if (questionThemeAssignmentCreationContract.isPrimary) {
-      await this.questionModel.bulkWrite([
-        {
-          updateOne: {
-            filter: { _id: new Types.ObjectId(questionId) },
-            update: { $set: { "themes.$[].isPrimary": false } },
-          },
-        },
-        {
-          updateOne: {
-            filter: { _id: new Types.ObjectId(questionId) },
-            update: { $push: { themes: insertPayload } },
-          },
-        },
-      ]);
-    } else {
-      const update: UpdateQuery<QuestionMongooseDocument> = {
-        $push: { themes: insertPayload },
-      };
-      await this.questionModel.findByIdAndUpdate(questionId, update);
+      await this.assignNewPrimaryTheme(questionId, insertPayload);
+
+      return this.findById(questionId);
+    }
+    const update: UpdateQuery<QuestionMongooseDocument> = {
+      $push: { themes: insertPayload },
+    };
+    await this.questionModel.findByIdAndUpdate(questionId, update);
+
+    return this.findById(questionId);
+  }
+
+  public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
+    if (contract.isPrimary) {
+      await this.promoteToPrimaryThemeAssignment(questionId, themeId, contract);
+
+      return this.findById(questionId);
+    }
+    const setFields = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
+    if (Object.keys(setFields).length > 0) {
+      const themeObjectId = new Types.ObjectId(themeId);
+      await this.questionModel.findByIdAndUpdate(questionId, { $set: setFields }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
     }
     return this.findById(questionId);
   }
@@ -86,12 +91,6 @@ export class QuestionMongooseRepository implements QuestionRepository {
       },
     };
     await this.questionModel.findByIdAndUpdate(questionId, update);
-
-    return this.findById(questionId);
-  }
-
-  public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
-    await (contract.isPrimary ? this.promoteToPrimaryThemeAssignment(questionId, themeId, contract) : this.updateThemeAssignmentFields(questionId, themeId, contract));
 
     return this.findById(questionId);
   }
@@ -112,13 +111,27 @@ export class QuestionMongooseRepository implements QuestionRepository {
     });
   }
 
+  private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {
+    await this.questionModel.bulkWrite([
+      {
+        updateOne: {
+          filter: { _id: new Types.ObjectId(questionId) },
+          update: { $set: { "themes.$[].isPrimary": false } },
+        },
+      },
+      {
+        updateOne: {
+          filter: { _id: new Types.ObjectId(questionId) },
+          update: { $push: { themes: insertPayload } },
+        },
+      },
+    ]);
+  }
+
   private async promoteToPrimaryThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<void> {
     const themeObjectId = new Types.ObjectId(themeId);
     const questionObjectId = new Types.ObjectId(questionId);
-    const targetSetFields: Record<string, unknown> = { "themes.$[elem].isPrimary": true };
-    if (contract.isHint !== undefined) {
-      targetSetFields["themes.$[elem].isHint"] = contract.isHint;
-    }
+    const targetSetFields = getDefinedFieldsForMongoArrayElementUpdate({ ...contract, isPrimary: true }, "themes.$[elem]");
     await this.questionModel.bulkWrite([
       {
         updateOne: {
@@ -134,17 +147,5 @@ export class QuestionMongooseRepository implements QuestionRepository {
         },
       },
     ]);
-  }
-
-  private async updateThemeAssignmentFields(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<void> {
-    const setFields: Record<string, unknown> = {};
-    if (contract.isHint !== undefined) {
-      setFields["themes.$[elem].isHint"] = contract.isHint;
-    }
-    if (Object.keys(setFields).length === 0) {
-      return;
-    }
-    const themeObjectId = new Types.ObjectId(themeId);
-    await this.questionModel.findByIdAndUpdate(questionId, { $set: setFields }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
   }
 }

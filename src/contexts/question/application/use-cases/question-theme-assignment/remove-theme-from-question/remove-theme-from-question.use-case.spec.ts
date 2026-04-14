@@ -160,6 +160,7 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "missing-theme",
       });
       const question = createFakeQuestion({
+        id: "q0",
         themes: [],
       });
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
@@ -174,6 +175,7 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "missing-theme",
       });
       const question = createFakeQuestion({
+        id: "q2",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "existing-theme" }),

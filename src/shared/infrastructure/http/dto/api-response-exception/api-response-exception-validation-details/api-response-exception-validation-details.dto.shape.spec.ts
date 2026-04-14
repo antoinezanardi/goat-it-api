@@ -65,6 +65,16 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
       expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
+    it.each<{ test: string; items: (string | number)[] }>([
+      { test: "should pass validation when array contains string items.", items: ["user", "address"] },
+      { test: "should pass validation when array contains number items.", items: [0, 1] },
+      { test: "should pass validation when array contains mixed string and number items.", items: ["user", 0, "name"] },
+    ])("$test", ({ items }) => {
+      const validDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { path: items });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validDto)).not.toThrow();
+    });
+
     it("should throw a zod error when array items are of invalid types.", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { path: ["valid", { obj: true }] });
 
@@ -264,6 +274,17 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: "not-an-array" });
 
       expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it.each<{ test: string; items: (string | number | boolean)[] }>([
+      { test: "should pass validation when array contains string items.", items: ["value1", "value2"] },
+      { test: "should pass validation when array contains number items.", items: [1, 2] },
+      { test: "should pass validation when array contains boolean items.", items: [true, false] },
+      { test: "should pass validation when array contains mixed string, number and boolean items.", items: ["value1", 1, true] },
+    ])("$test", ({ items }) => {
+      const validDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { values: items });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validDto)).not.toThrow();
     });
 
     it("should throw a zod error when array items are not valid types.", () => {

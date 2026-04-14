@@ -4,7 +4,7 @@ import type { QuestionThemeAssignmentModificationContract } from "@question/doma
 
 function createFakeQuestionThemeAssignmentModificationContract(overrides: Partial<QuestionThemeAssignmentModificationContract> = {}): QuestionThemeAssignmentModificationContract {
   return {
-    isPrimary: faker.helpers.maybe(() => true as const),
+    isPrimary: faker.helpers.maybe(() => true),
     isHint: faker.helpers.maybe(faker.datatype.boolean),
     ...overrides,
   };

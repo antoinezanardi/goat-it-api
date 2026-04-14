@@ -17,6 +17,14 @@ describe("Question Theme Assignment Policies", () => {
       expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).not.toThrow();
     });
 
+    it("should throw QuestionThemeAssignmentAbsentError when the theme is not assigned to the question.", () => {
+      const question = createFakeQuestion({
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false })],
+      });
+
+      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
+    });
+
     it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when the theme assignment is primary.", () => {
       const question = createFakeQuestion({
         themes: [

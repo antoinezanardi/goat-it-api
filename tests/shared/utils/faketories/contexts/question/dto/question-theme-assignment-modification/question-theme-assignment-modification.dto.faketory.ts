@@ -4,7 +4,7 @@ import type { QuestionThemeAssignmentModificationDto } from "@question/applicati
 
 function createFakeQuestionThemeAssignmentModificationDto(overrides: Partial<QuestionThemeAssignmentModificationDto> = {}): QuestionThemeAssignmentModificationDto {
   return {
-    isPrimary: faker.helpers.maybe(() => true as const),
+    isPrimary: faker.helpers.maybe(() => true),
     isHint: faker.helpers.maybe(faker.datatype.boolean),
     ...overrides,
   };
