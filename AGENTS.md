@@ -132,30 +132,125 @@ pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnp
 
 1. **NEVER auto-commit** — Under no circumstances should an agent create a git commit without explicit user request in the conversation.
 
-2. **Quality gate is part of "Definition of Done"** — When applicable to the work (e.g., after writing features, fixes, tests):
-
-   ```bash
-   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance
-   ```
-
-- Run these checks before considering the work complete
-- Report results (pass/fail) explicitly to the user
-- **If any step fails, the agent MUST attempt to resolve the issue:**
-  - Review error output and identify root cause
-  - Apply fixes (e.g., reformat code, fix type errors, update tests)
-  - Re-run the failing step to confirm resolution
-  - Only escalate to the user if the issue cannot be resolved automatically
-- For agents, work is only "done" when all of the above quality gate commands pass (if applicable)
-- Mutation testing is a separate verification step run in CI and/or manually by the user; it is **not** part of the agent's quality gate commands
-- Agents must **not** run mutation tests; instead, they must remind the user to run/verify mutation tests (or wait for CI) before merging significant changes
-
-3. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
+2. **User explicitly requests commits** — Only create a commit when the user directly asks (e.g., "commit this", "create a commit with message X").
 
 - Before committing, show the diff and proposed commit message
 - Wait for confirmation
 - Never assume silence is approval
 
-**Rationale**: Code integrity depends on intentional CI verification. User agency over git history is non-negotiable.
+3. **Definition of Done (DOD)** — After completing all implementation work, the agent MUST evaluate the conditional DOD checklist below. This is a mandatory end-of-work verification pass.
+
+- Run the checklist **once at the end of all work**, not per-subtask
+- In subagent workflows, **only the parent/orchestrating agent** runs the DOD — subagents skip it entirely
+- For each item, check whether the condition is true based on what was changed, and if so, verify the action was completed
+- If any verification fails, the agent **must attempt to fix** the issue, re-run the failing step, and only escalate to the user if it cannot be resolved automatically
+- Report results (pass/fail) explicitly to the user
+- Work is only "done" when all applicable DOD items pass
+
+**Rationale**: Code integrity depends on intentional CI verification. User agency over git history is non-negotiable. The DOD ensures agents deliver complete, production-ready implementations.
+
+---
+
+### Definition of Done — Conditional Checklist
+
+Each item below has a **condition** (when it applies), an **action** (what to do), and a **verification** (how to confirm it's done). Evaluate all items at the end of implementation.
+
+#### 1. Quality Gate
+
+- **Condition**: Any code change (feature, fix, refactor)
+- **Action**: Run the full quality gate command:
+
+   ```bash
+   pnpm lint:fix && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
+   ```
+
+- Steps run left-to-right. If any step fails, fix the issue and re-run that step before proceeding to the next
+- Mutation testing runs **last** because it is the slowest step — fix all preceding failures first
+- **Verification**: All 5 steps pass
+
+#### 2. Bruno Collection Synchronization
+
+- **Condition**: Endpoint added, changed, or deleted (controller routes modified)
+- **Action**: Add, modify, or remove `.bru` request files in `configs/bruno/Goat It/`
+  - Follow naming convention: `<scope>-<verb>-<resource>[-by-id].bru` (e.g., `admin-create-question.bru`)
+  - Follow folder structure: `admin/`, `play/`, `public/` organized by resource
+  - Follow auth inheritance: `folder.bru` sets auth at folder level, individual requests use `auth: inherit`
+  - Include request body, path params, and `seq` ordering number matching existing patterns
+- **Verification**: Every endpoint in the codebase has a corresponding `.bru` request, and removed endpoints have no orphaned `.bru` files
+
+#### 3. Acceptance Test Scenarios
+
+- **Condition**: Feature added, changed, or removed that affects API behavior (new endpoint, changed response shape, new business rule, removed functionality)
+- **Action**: Write or update acceptance test scenarios covering:
+  - Happy path (success case)
+  - Key error cases: validation failures (missing fields, wrong types, boundary values), not-found, authentication errors
+  - Follow existing conventions: tags (`@<domain> @<feature-slug> @<audience>`), fixture sets, payloads, step definitions, DataTable schemas
+- **Verification**: `pnpm test:acceptance` passes; scenarios cover success and key failure modes
+
+#### 4. Schemas Package — Existing Export Modified
+
+- **Condition**: A DTO shape (`*.dto.shape.ts`) or domain constant that is **already re-exported** from `@goat-it/schemas` is modified
+- **Action**: Bump the **patch** version in `packages/schemas/package.json`
+- **Verification**: Version number in `packages/schemas/package.json` is higher than before the change
+
+#### 5. Schemas Package — New Export Candidate
+
+- **Condition**: New DTO shape, constant, or value-object type created
+- **Action**: **Ask the user** whether it should be exported from `@goat-it/schemas`. If yes:
+  - Add re-export in the relevant `packages/schemas/src/<domain>/index.ts` barrel file
+  - If a new sub-path is needed: add entry to `package.json` `exports` field + `tsdown.config.ts` `entry` array
+  - Bump the **patch** version in `packages/schemas/package.json`
+- **Verification**: If exported, the symbol is accessible via `@goat-it/schemas/<sub-path>`
+
+#### 6. GlobalExceptionFilter Error Registration
+
+- **Condition**: New domain error class created (under `domain/errors/`)
+- **Action**: Add mapping in `GlobalExceptionFilter`'s `domainErrorHttpExceptionFactories` static map at `src/shared/infrastructure/http/filters/global-exception/global-exception.filter.ts`
+- **Verification**: Error class name maps to the correct HTTP exception type (e.g., `BadRequestException`, `NotFoundException`)
+
+#### 7. Faketories for New Types
+
+- **Condition**: New entity, DTO, command, contract, or Mongoose document type created
+- **Action**: Create corresponding faketory under `tests/shared/utils/faketories/` following conventions:
+  - Naming: `createFake<ConceptName>(overrides?: Partial<T> = {}): T`
+  - Use `@faker-js/faker` for realistic values
+  - Spread `overrides` last
+  - Use `faker.helpers.maybe(...)` for optional fields
+  - Mirror source path under the appropriate layer folder (`entity/`, `dto/`, `mongoose/`, `commands/`, `contracts/`)
+- **Verification**: Faketory exists and is importable via `@faketories/*`
+
+#### 8. Mock Factories for New Ports
+
+- **Condition**: New repository port or use case created
+- **Action**: Create corresponding mock factory under `tests/unit/utils/mocks/` following conventions:
+  - Naming: `createMocked<What>(overrides?: Partial<Mocked<What>> = {}): Mocked<What>`
+  - Return `vi.fn()`-typed objects matching the port interface
+  - Mirror source path under the mock directory structure
+- **Verification**: Mock exists and is importable via `@mocks/*`
+
+#### 9. NestJS Module Registration
+
+- **Condition**: New controller, use case, or repository created
+- **Action**: Register in the appropriate NestJS module:
+  - Controllers → `controllers` array
+  - Use cases → `providers` array
+  - Repositories → `{ provide: TOKEN, useClass: Implementation }` in `providers`
+  - Cross-module use cases → also add to `exports` array
+  - New Mongoose schemas → `MongooseModule.forFeature(...)` in `imports`
+  - New bounded context module → import in `app.module.ts`
+- **Verification**: Application compiles and DI resolves at runtime (quality gate passes)
+
+#### 10. Acceptance Test Infrastructure for New Domains
+
+- **Condition**: New domain or MongoDB collection introduced that will be used in acceptance tests
+- **Action**: Update acceptance test infrastructure:
+  - Add Mongoose model to `GoatItWorld.models` in `tests/acceptance/support/types/world.types.ts`
+  - Add domain to `FixtureRegistry` type in `tests/acceptance/support/fixtures/types/fixture.types.ts`
+  - Add fixture sets to `FIXTURE_REGISTRY` in `tests/acceptance/support/fixtures/constants/fixture.constants.ts`
+  - Add inserter function to `FIXTURE_INSERTERS` in the same file
+  - Extend `PayloadScope` / `PayloadType` types if needed in `tests/acceptance/support/payloads/types/payload.types.ts`
+  - Register payloads in `PAYLOADS` constant in `tests/acceptance/support/payloads/constants/payload.constants.ts`
+- **Verification**: Acceptance test fixtures and payloads load without errors; `pnpm test:acceptance` passes
 
 ---
 
