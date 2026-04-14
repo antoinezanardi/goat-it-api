@@ -69,7 +69,26 @@ function validateDataTableAndGetFirstRow<T>(
   return validateDataTableAndGetRows(dataTable, schema)[0];
 }
 
+/**
+ * Coerces a string value to its proper JS primitive type. Returns booleans for "true"/"false", numbers for numeric strings, and the original string otherwise. Only used in acceptance tests.
+ */
+function coerceStringToPrimitive(value: string): string | number | boolean {
+  if (value === "") {
+    return value;
+  }
+  if (value === "true") {
+    return true;
+  }
+  if (value === "false") {
+    return false;
+  }
+  const asNumber = Number(value);
+
+  return Number.isNaN(asNumber) ? value : asNumber;
+}
+
 export {
+  coerceStringToPrimitive,
   zCoerceOptionalBoolean,
   zCoerceOptionalString,
   zCoerceOptionalNumber,

@@ -1,4 +1,5 @@
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
+import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
 import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
 
 import type { Question } from "@question/domain/entities/question.types";
@@ -10,6 +11,7 @@ type QuestionRepository = {
   archive: (id: string) => Promise<Question | undefined>;
   assignTheme: (questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract) => Promise<Question | undefined>;
   removeTheme: (questionId: string, themeId: string) => Promise<Question | undefined>;
+  modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
   countLiveByThemeId: (themeId: string) => Promise<number>;
 };
 

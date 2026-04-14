@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import { QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
+import { QuestionPrimaryThemeAssignmentNotRemovableError, QuestionThemeAssignmentAbsentError, QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question.errors";
 
 import { RemoveThemeFromQuestionUseCase } from "./remove-theme-from-question.use-case";
@@ -59,12 +59,15 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "theme-1",
       });
       const question = createFakeQuestion({
+        id: "q3",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-1" }),
+            isPrimary: false,
           }),
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-2" }),
+            isPrimary: false,
           }),
         ],
       });
@@ -81,12 +84,15 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "theme-1",
       });
       const question = createFakeQuestion({
+        id: "q3",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-1" }),
+            isPrimary: false,
           }),
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-2" }),
+            isPrimary: false,
           }),
         ],
       });
@@ -105,12 +111,15 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "theme-1",
       });
       const question = createFakeQuestion({
+        id: "q3",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-1" }),
+            isPrimary: false,
           }),
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "theme-2" }),
+            isPrimary: false,
           }),
         ],
       });
@@ -131,9 +140,11 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "existing-theme",
       });
       const question = createFakeQuestion({
+        id: "q1",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "existing-theme" }),
+            isPrimary: false,
           }),
         ],
       });
@@ -149,6 +160,7 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "missing-theme",
       });
       const question = createFakeQuestion({
+        id: "q0",
         themes: [],
       });
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
@@ -163,6 +175,7 @@ describe("Remove Theme From Question Use Case", () => {
         themeId: "missing-theme",
       });
       const question = createFakeQuestion({
+        id: "q2",
         themes: [
           createFakeQuestionThemeAssignment({
             theme: createFakeQuestionTheme({ id: "existing-theme" }),
@@ -174,6 +187,30 @@ describe("Remove Theme From Question Use Case", () => {
       });
       vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
       const expectedError = new QuestionThemeAssignmentAbsentError(command.themeId, command.questionId);
+
+      await expect(useCase["throwIfThemeNotRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when theme is primary.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q-primary",
+        themeId: "primary-theme",
+      });
+      const question = createFakeQuestion({
+        id: "q-primary",
+        themes: [
+          createFakeQuestionThemeAssignment({
+            theme: createFakeQuestionTheme({ id: "primary-theme" }),
+            isPrimary: true,
+          }),
+          createFakeQuestionThemeAssignment({
+            theme: createFakeQuestionTheme({ id: "other-theme" }),
+            isPrimary: false,
+          }),
+        ],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
+      const expectedError = new QuestionPrimaryThemeAssignmentNotRemovableError(command.themeId, command.questionId);
 
       await expect(useCase["throwIfThemeNotRemovableFromQuestion"](command.questionId, command.themeId)).rejects.toThrow(expectedError);
     });

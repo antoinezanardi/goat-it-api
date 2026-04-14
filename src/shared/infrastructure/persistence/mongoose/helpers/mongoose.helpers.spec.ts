@@ -1,4 +1,4 @@
-import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 describe("Mongoose Helpers", () => {
   describe(getCrushedDataForMongoPatchUpdate, () => {
@@ -125,6 +125,57 @@ describe("Mongoose Helpers", () => {
       },
     ])("$test", ({ input, expected }) => {
       const result = getCrushedDataForMongoPatchUpdate(input);
+
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe(getDefinedFieldsForMongoArrayElementUpdate, () => {
+    it.each<{
+      test: string;
+      data: Record<string, unknown>;
+      arrayPath: string;
+      expected: Record<string, unknown>;
+    }>([
+      {
+        test: "should prefix all defined keys with array path when all fields are defined.",
+        data: { isPrimary: true, isHint: false },
+        arrayPath: "themes.$[elem]",
+        expected: {
+          "themes.$[elem].isPrimary": true,
+          "themes.$[elem].isHint": false,
+        },
+      },
+      {
+        test: "should strip undefined values and prefix remaining keys when some fields are undefined.",
+        data: { isPrimary: true, isHint: undefined },
+        arrayPath: "themes.$[elem]",
+        expected: {
+          "themes.$[elem].isPrimary": true,
+        },
+      },
+      {
+        test: "should return an empty object when all fields are undefined.",
+        data: { isPrimary: undefined, isHint: undefined },
+        arrayPath: "themes.$[elem]",
+        expected: {},
+      },
+      {
+        test: "should return an empty object when given an empty object.",
+        data: {},
+        arrayPath: "themes.$[elem]",
+        expected: {},
+      },
+      {
+        test: "should handle a single defined field when called.",
+        data: { isHint: true },
+        arrayPath: "items.$[i]",
+        expected: {
+          "items.$[i].isHint": true,
+        },
+      },
+    ])("$test", ({ data, arrayPath, expected }) => {
+      const result = getDefinedFieldsForMongoArrayElementUpdate(data, arrayPath);
 
       expect(result).toStrictEqual(expected);
     });

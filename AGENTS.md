@@ -251,6 +251,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - Constructor injection parameters use `private readonly` shorthand
 - No enums — use `as const` objects with exported constant arrays instead
 - No `switch`/`case` — use polymorphism, object maps, or conditional chains
+- Ternaries are for **value assignment only** — never use a ternary to choose between function calls or side effects; use `if`/early-return instead
 - Boolean variables/properties must be prefixed: `is`, `has`, `can`, `should`, `was`, `were`, `are`, `does`, `did`, `must`
 - Never wrap primitive types in type aliases. Use the primitive directly. Type aliases should represent domain entities, value objects, or unions—not `string`, `number`, or `boolean`.
 - Reserve type aliases for complex domain concepts: `type User = { id: string; name: string; }` or `type Result<T> = Success<T> | Failure`
@@ -263,6 +264,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - **Functions, class methods, class properties, accessors**: `camelCase`
 - **Files and directories**: `kebab-case`
 - **Test files**: `<name>.spec.ts` co-located with the source file
+- **CRUD operation verbs**: Use `Create` for new resources, `Modify` (not `Update`) for partial patches, `Archive` for soft-deletes, `Find` for retrieval, `Remove` for detaching associations. This applies to use cases, commands, contracts, DTOs and mappers (e.g., `ModifyQuestionThemeUseCase`, `QuestionThemeModificationCommand`).
 
 ### Imports order (enforced by `import/order`)
 
