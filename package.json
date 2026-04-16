@@ -151,7 +151,7 @@
   },
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
-    "@fastify/static": "^9.1.0",
+    "@fastify/static": "^9.1.1",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.19",
     "@nestjs/config": "^4.0.4",
