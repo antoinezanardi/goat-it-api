@@ -73,8 +73,8 @@ importers:
         specifier: ^12.8.1
         version: 12.8.1
       '@eslint/config-inspector':
-        specifier: ^1.5.0
-        version: 1.5.0(eslint@10.2.1(jiti@2.6.1))
+        specifier: ^2.0.0
+        version: 2.0.0(eslint@10.2.1(jiti@2.6.1))
       '@faker-js/faker':
         specifier: ^10.4.0
         version: 10.4.0
@@ -1149,8 +1149,9 @@ packages:
     resolution: {integrity: sha512-eIJYKTCECbP/nsKaaruF6LW967mtbQbsw4JTtSVkUQc9MneSkbrgPJAbKl9nWr0ZeowV8BfsarBmPpBzGelA2w==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@eslint/config-inspector@1.5.0':
-    resolution: {integrity: sha512-YK/VdQ+pibx5pcCI2GPZVO6vFemf/pkB662HuFtc5AA4WLQ9upb3fAoZSjOAYoDJx58qGTDp6xq9ldd/vluNxQ==}
+  '@eslint/config-inspector@2.0.0':
+    resolution: {integrity: sha512-hiKajDjwP72AB52/l+qWBdCui/eVW+XFqpfQqspnnI0wyI9wN/DUNZT8SE+GNniOYKhxHc/qT2Esv/buz5ySOw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     hasBin: true
     peerDependencies:
       eslint: ^8.50.0 || ^9.0.0 || ^10.0.0
@@ -7771,7 +7772,7 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
 
-  '@eslint/config-inspector@1.5.0(eslint@10.2.1(jiti@2.6.1))':
+  '@eslint/config-inspector@2.0.0(eslint@10.2.1(jiti@2.6.1))':
     dependencies:
       ansis: 4.2.0
       bundle-require: 5.1.0(esbuild@0.27.3)
@@ -7780,7 +7781,7 @@ snapshots:
       esbuild: 0.27.3
       eslint: 10.2.1(jiti@2.6.1)
       h3: 1.15.5
-      tinyglobby: 0.2.15
+      tinyglobby: 0.2.16
       ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
