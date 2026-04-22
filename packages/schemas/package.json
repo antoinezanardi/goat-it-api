@@ -16,7 +16,7 @@
     "url": "https://github.com/antoinezanardi/goat-it-api",
     "directory": "packages/schemas"
   },
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@10.33.1",
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",
     "tsdown": "^0.21.9",
