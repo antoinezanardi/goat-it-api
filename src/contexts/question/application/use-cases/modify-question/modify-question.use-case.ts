@@ -8,7 +8,7 @@ import type { Question } from "@question/domain/entities/question.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()
-class ModifyQuestionUseCase {
+export class ModifyQuestionUseCase {
   public constructor(@Inject(QUESTION_REPOSITORY_TOKEN)
   private readonly questionRepository: QuestionRepository) {}
 
@@ -21,5 +21,3 @@ class ModifyQuestionUseCase {
     return modifiedQuestion;
   }
 }
-
-export { ModifyQuestionUseCase };

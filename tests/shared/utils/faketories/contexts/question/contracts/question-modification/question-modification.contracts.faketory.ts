@@ -20,7 +20,7 @@ function createFakeQuestionModificationContract(overrides: Partial<QuestionModif
   return {
     category: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_CATEGORIES)),
     cognitiveDifficulty: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)),
-    sourceUrls: faker.helpers.maybe(() => [faker.internet.url(), faker.internet.url()]),
+    sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     content: faker.helpers.maybe(createFakeQuestionContentModificationContract),
     ...overrides,
   };

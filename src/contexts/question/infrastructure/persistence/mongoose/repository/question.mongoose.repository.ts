@@ -86,7 +86,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
   }
 
   public async modify(id: string, contract: QuestionModificationContract): Promise<Question | undefined> {
-    const questionUpdateData = getCrushedDataForMongoPatchUpdate(contract as Record<string, unknown>);
+    const questionUpdateData = getCrushedDataForMongoPatchUpdate(contract);
     const updateQuery: UpdateQuery<QuestionMongooseDocument> = { $set: questionUpdateData };
     await this.questionModel.findByIdAndUpdate(id, updateQuery);
 
