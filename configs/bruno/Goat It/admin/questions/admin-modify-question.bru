@@ -1,0 +1,36 @@
+meta {
+  name: Modify Question
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/admin/questions/:id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  id: {{questionId}}
+}
+
+body:json {
+  {
+    "category": "trivia",
+    "cognitiveDifficulty": "medium",
+    "sourceUrls": ["https://example.com/source1"],
+    "content": {
+      "statement": {
+        "fr": "Quelle est la capitale de la France ?",
+        "en": "What is the capital of France?"
+      }
+    }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

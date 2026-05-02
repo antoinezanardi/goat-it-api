@@ -14,6 +14,7 @@ import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoo
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
+import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
 
@@ -463,6 +464,55 @@ describe("Question Mongoose Repository", () => {
       const actual = await repositories.question.modifyThemeAssignment(questionId, themeId, { isHint: true });
 
       expect(actual).toStrictEqual(expectedQuestion);
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.modify, () => {
+    it("should call model.findByIdAndUpdate with crushed data when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000070";
+      const contract = { category: "lexicon" as const, content: { statement: { fr: "Nouvelle question" } } };
+
+      await repositories.question.modify(questionId, contract);
+
+      const expectedUpdate = {
+        $set: {
+          "category": "lexicon",
+          "content.statement.fr": "Nouvelle question",
+        },
+      };
+
+      expect(mocks.models.question.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionId, expectedUpdate);
+    });
+
+    it("should call findById with the question id when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000071";
+      const contract = createFakeQuestionModificationContract();
+      const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
+
+      await repositories.question.modify(questionId, contract);
+
+      expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
+    });
+
+    it("should return the question returned by findById when called.", async() => {
+      const questionId = "618c1f4b3a2f000000000072";
+      const contract = createFakeQuestionModificationContract();
+      const expectedQuestion = createFakeQuestion();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
+
+      const actual = await repositories.question.modify(questionId, contract);
+
+      expect(actual).toStrictEqual(expectedQuestion);
+    });
+
+    it("should return undefined when findById returns undefined.", async() => {
+      const questionId = "618c1f4b3a2f000000000073";
+      const contract = createFakeQuestionModificationContract();
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(undefined);
+
+      const actual = await repositories.question.modify(questionId, contract);
+
+      expect(actual).toBeUndefined();
     });
   });
 
