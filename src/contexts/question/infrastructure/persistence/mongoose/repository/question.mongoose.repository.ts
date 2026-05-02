@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
@@ -11,6 +11,7 @@ import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromCon
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
+import { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import { Question } from "@question/domain/entities/question.types";
@@ -82,6 +83,14 @@ export class QuestionMongooseRepository implements QuestionRepository {
       await this.questionModel.findByIdAndUpdate(questionId, { $set: setFields }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
     }
     return this.findById(questionId);
+  }
+
+  public async modify(id: string, contract: QuestionModificationContract): Promise<Question | undefined> {
+    const questionUpdateData = getCrushedDataForMongoPatchUpdate(contract as Record<string, unknown>);
+    const updateQuery: UpdateQuery<QuestionMongooseDocument> = { $set: questionUpdateData };
+    await this.questionModel.findByIdAndUpdate(id, updateQuery);
+
+    return this.findById(id);
   }
 
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {

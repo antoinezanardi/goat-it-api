@@ -8,22 +8,25 @@ import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/sw
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { QuestionModificationNestZodDto } from "@question/application/dto/question-modification/question-modification.dto";
 import { QuestionCreationNestZodDto } from "@question/application/dto/question-creation/question-creation.dto";
 import { QuestionThemeAssignmentCreationNestZodDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
 import { QuestionThemeAssignmentModificationNestZodDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto";
-import { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
 import { createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
+import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
+import { createQuestionModificationCommandFromDto } from "@question/application/mappers/question-modification/question-modification.dto.mappers";
 import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { AdminQuestionNestZodDto } from "@question/application/dto/admin-question/admin-question.dto";
 import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
@@ -33,6 +36,7 @@ export class AdminQuestionController {
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
     private readonly createQuestionUseCase: CreateQuestionUseCase,
     private readonly archiveQuestionUseCase: ArchiveQuestionUseCase,
+    private readonly modifyQuestionUseCase: ModifyQuestionUseCase,
     private readonly assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase,
     private readonly removeThemeFromQuestionUseCase: RemoveThemeFromQuestionUseCase,
     private readonly modifyQuestionThemeAssignmentUseCase: ModifyQuestionThemeAssignmentUseCase,
@@ -94,6 +98,29 @@ export class AdminQuestionController {
     const question = await this.createQuestionUseCase.create(questionCreationCommand);
 
     return createAdminQuestionDtoFromEntity(question);
+  }
+
+  @Patch("/:id")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Modify a question",
+    description: "Partially modify a question's fields. Only provided fields are updated. Content fields support deep merge at the locale level.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: AdminQuestionNestZodDto,
+  })
+  public async modifyQuestion(
+    @Param("id", MongoIdPipe) id: string,
+    @Body() questionModificationDto: QuestionModificationNestZodDto,
+  ): Promise<AdminQuestionDto> {
+    const questionModificationCommand = createQuestionModificationCommandFromDto(id, questionModificationDto);
+    const modifiedQuestion = await this.modifyQuestionUseCase.modify(questionModificationCommand);
+
+    return createAdminQuestionDtoFromEntity(modifiedQuestion);
   }
 
   @Post("/:id/archive")
