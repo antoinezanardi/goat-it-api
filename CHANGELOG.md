@@ -1,5 +1,42 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.18.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.17.0...v1.18.0) (2026-05-04)
+
+### 🚀 Features
+
+* **question:** implement modify question use case and DTOs ([#712](https://github.com/antoinezanardi/goat-it-api/issues/712)) ([05b9e85](https://github.com/antoinezanardi/goat-it-api/commit/05b9e85acf19b997b304d5fc2e96f4ee76a12e60))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@fastify/static` | `^9.1.3` |
+| `@nestjs/swagger` | `^11.4.2` |
+| `axios` | `^1.16.0` |
+| `fastify` | `^5.8.5` |
+| `mongoose` | `^9.6.1` |
+| `type-fest` | `^5.6.0` |
+| `zod` | `^4.4.3` |
+| `commitlint monorepo` | `^20.5.3` |
+| `@cucumber/cucumber` | `^12.8.2` |
+| `@eslint/config-inspector` | `v2` |
+| `@nestjs/cli` | `^11.0.21` |
+| `@nestjs/schematics` | `^11.1.0` |
+| `@swc/core` | `^1.15.33` |
+| `@typescript/native-preview` | `v7.0.0-dev.20260503.1` |
+| `@vitest/eslint-plugin` | `^1.6.16` |
+| `commitlint` | `^20.5.2` |
+| `eslint` | `^10.3.0` |
+| `oxlint-tsgolint` | `^0.22.1` |
+| `tsdown` | `^0.21.9` |
+| `typescript` | `^6.0.3` |
+| `mongo docker tag` | `v8.2.7` |
+| `oxlint monorepo` | `v1.62.0` |
+| `pnpm` | `v10.33.2` |
+| `sonarsource/sonarqube-scan-action action` | `v8` |
+| `typescript-eslint monorepo` | `^8.59.1` |
+| `vitest monorepo` | `^4.1.5` |
+
 ## [1.17.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.16.0...v1.17.0) (2026-04-14)
 
 ### 🚀 Features
