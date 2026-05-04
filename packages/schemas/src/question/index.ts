@@ -40,6 +40,10 @@ export { QUESTION_DTO } from "@app-question/application/dto/question/question.dt
 
 export { ADMIN_QUESTION_DTO } from "@app-question/application/dto/admin-question/admin-question.dto.shape";
 
+export { QUESTION_MODIFICATION_DTO } from "@app-question/application/dto/question-modification/question-modification.dto.shape";
+
+export { QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO } from "@app-question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
+
 export type { QuestionCognitiveDifficulty } from "@app-question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
 
 export type { QuestionCategory } from "@app-question/domain/value-objects/question-category/question-category.types";
@@ -59,3 +63,7 @@ export type {
 export type { QuestionDto } from "@app-question/application/dto/question/question.dto.shape";
 
 export type { AdminQuestionDto } from "@app-question/application/dto/admin-question/admin-question.dto.shape";
+
+export type { QuestionModificationDto } from "@app-question/application/dto/question-modification/question-modification.dto.shape";
+
+export type { QuestionThemeAssignmentModificationDto } from "@app-question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
