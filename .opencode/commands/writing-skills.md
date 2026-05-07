@@ -1,6 +1,6 @@
 ---
 description: Create a new agent skill, edit an existing skill, or verify a skill works before deployment.
-agent: plan
+agent: build
 ---
 
 Load the `writing-skills` skill and follow its complete workflow for: $ARGUMENTS
