@@ -154,8 +154,8 @@ importers:
         specifier: ^4.16.2
         version: 4.16.2(@typescript-eslint/utils@8.59.2(eslint@10.3.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.3.0(jiti@2.7.0))
       eslint-plugin-oxlint:
-        specifier: 1.62.0
-        version: 1.62.0(oxlint@1.63.0(oxlint-tsgolint@0.22.1))
+        specifier: 1.63.0
+        version: 1.63.0(oxlint@1.63.0(oxlint-tsgolint@0.22.1))
       eslint-plugin-unicorn:
         specifier: ^64.0.0
         version: 64.0.0(eslint@10.3.0(jiti@2.7.0))
@@ -178,7 +178,7 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1
       oxlint:
-        specifier: ^1.62.0
+        specifier: ^1.63.0
         version: 1.63.0(oxlint-tsgolint@0.22.1)
       oxlint-tsgolint:
         specifier: ^0.22.1
@@ -3622,10 +3622,10 @@ packages:
       eslint-import-resolver-node:
         optional: true
 
-  eslint-plugin-oxlint@1.62.0:
-    resolution: {integrity: sha512-fJ1xrPPw7AwJPH+4rD10qaXbCQfMNa743WnwPwteXLFsUQ0qs9N1Zx8xGJvuWCwvciRJ19dwG+G460fLHrrPdw==}
+  eslint-plugin-oxlint@1.63.0:
+    resolution: {integrity: sha512-eqZ8pLk4Lz2HKqXC/BLceVzYP/cO0OHOAUBlLOau3Vk/I39mYbAFcmlAqJusTqEn2tgH/Nh/JUGKbCwf8k4DMA==}
     peerDependencies:
-      oxlint: ~1.62.0
+      oxlint: ~1.63.0
 
   eslint-plugin-unicorn@64.0.0:
     resolution: {integrity: sha512-rNZwalHh8i0UfPlhNwg5BTUO1CMdKNmjqe+TgzOTZnpKoi8VBgsW7u9qCHIdpxEzZ1uwrJrPF0uRb7l//K38gA==}
@@ -9692,7 +9692,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-oxlint@1.62.0(oxlint@1.63.0(oxlint-tsgolint@0.22.1)):
+  eslint-plugin-oxlint@1.63.0(oxlint@1.63.0(oxlint-tsgolint@0.22.1)):
     dependencies:
       jsonc-parser: 3.3.1
       oxlint: 1.63.0(oxlint-tsgolint@0.22.1)
