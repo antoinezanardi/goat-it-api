@@ -2,11 +2,9 @@ packages:
   - '.'
   - 'packages/schemas'
 
-ignoredBuiltDependencies:
-  - '@scarf/scarf'
-
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@swc/core'
-  - esbuild
-  - unrs-resolver
+allowBuilds:
+  '@nestjs/core': true
+  '@scarf/scarf': true
+  '@swc/core': true
+  esbuild: true
+  unrs-resolver: true
