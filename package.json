@@ -105,7 +105,7 @@
     "@faker-js/faker": "^10.4.0",
     "@nestjs/cli": "^11.0.21",
     "@nestjs/schematics": "^11.1.0",
-    "@nestjs/testing": "^11.1.22",
+    "@nestjs/testing": "^11.1.23",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^14.1.1",
