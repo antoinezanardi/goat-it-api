@@ -68,4 +68,4 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node --from=build /app/node_modules node_modules/
 COPY --chown=node:node --from=build /app/dist dist/
 
-CMD [ "pnpm", "run", "start:prod" ]
+CMD [ "node", "dist/main.js" ]

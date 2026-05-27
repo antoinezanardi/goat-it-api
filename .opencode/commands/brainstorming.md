@@ -1,6 +1,6 @@
 ---
 description: Explore user intent, requirements and design before any creative or implementation work through collaborative dialogue.
-agent: plan
+agent: build
 ---
 
 Load the `brainstorming` skill and follow its complete workflow to brainstorm and design: $ARGUMENTS

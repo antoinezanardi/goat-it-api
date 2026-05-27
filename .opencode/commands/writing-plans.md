@@ -1,6 +1,6 @@
 ---
 description: Create a comprehensive implementation plan from a spec or requirements, before touching code.
-agent: plan
+agent: build
 ---
 
 Load the `writing-plans` skill and follow its complete workflow to write the implementation plan for: $ARGUMENTS
