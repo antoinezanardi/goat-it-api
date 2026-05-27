@@ -118,7 +118,7 @@
     "@types/node": "^24.12.4",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
-    "@typescript/native-preview": "7.0.0-dev.20260521.1",
+    "@typescript/native-preview": "7.0.0-dev.20260527.1",
     "@vitest/coverage-v8": "^4.1.7",
     "@vitest/eslint-plugin": "^1.6.18",
     "commitlint": "^21.0.1",
