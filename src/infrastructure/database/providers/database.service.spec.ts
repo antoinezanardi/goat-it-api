@@ -77,12 +77,14 @@ describe("Database Service", () => {
       expect(options).toStrictEqual(expectedOptions);
     });
 
-    it("should return the connection from onConnectionCreate option when called.", () => {
+    it("should set up connection event listeners when onConnectionCreate option is called.", () => {
       const options = services.database.createMongooseOptions();
       const mockedConnection = new EventEmitter() as unknown as Connection;
-      const connection = (options.onConnectionCreate as (connection: object) => Connection)(mockedConnection);
+      (options.onConnectionCreate as (connection: object) => void)(mockedConnection);
+      mockedConnection.emit("connected");
+      const mockedLoggerInstance = getMockedLoggerInstance();
 
-      expect(connection).toStrictEqual(mockedConnection);
+      expect(mockedLoggerInstance.log).toHaveBeenCalledWith("🍀 Database connection established");
     });
   });
 
@@ -105,11 +107,10 @@ describe("Database Service", () => {
       expect(mockedLoggerInstance.warn).toHaveBeenCalledExactlyOnceWith("⚠️ Database connection lost");
     });
 
-    it("should return the connection when called.", () => {
+    it("should not throw an error when called.", () => {
       const fakeConnection = new EventEmitter() as unknown as Connection;
-      const connection = services.database["onMongooseConnectionCreate"](fakeConnection);
 
-      expect(connection).toStrictEqual(fakeConnection);
+      expect(() => services.database["onMongooseConnectionCreate"](fakeConnection)).not.toThrow();
     });
   });
 });

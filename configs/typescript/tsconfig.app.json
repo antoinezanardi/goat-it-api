@@ -15,6 +15,7 @@
     "removeComments": true,
     "rootDir": "../../src",
     "skipLibCheck": true,
+    "lib": ["ES2024"],
     "sourceMap": true,
     "strict": true,
     "strictBindCallApply": true,
