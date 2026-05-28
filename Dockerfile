@@ -1,4 +1,4 @@
-FROM node:25.9.0-alpine AS base
+FROM --platform=$BUILDPLATFORM node:25.9.0-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -31,7 +31,7 @@ COPY --chown=node:node src/ src/
 
 CMD [ "pnpm", "run", "start:dev" ]
 
-FROM base AS build
+FROM --platform=$BUILDPLATFORM base AS build
 
 RUN apk add --no-cache bash
 
@@ -56,16 +56,20 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM base AS production
+FROM node:25.9.0-alpine AS production
 
 USER node
 
 ENV NODE_ENV="production"
+ENV SERVER_PORT=3000
 
 WORKDIR /app
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node --from=build /app/node_modules node_modules/
 COPY --chown=node:node --from=build /app/dist dist/
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${SERVER_PORT}/health || exit 1
 
 CMD [ "node", "dist/main.js" ]
