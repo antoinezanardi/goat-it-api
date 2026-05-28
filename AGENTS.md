@@ -82,49 +82,55 @@ These skills live in `.agents/skills/` and are loaded via the `skill` tool by na
 
 ---
 
-## Commands
+## Build / Run / Lint / Test commands
 
-### Build & type-check
+- Package manager: `pnpm@11.1.2` (see `package.json` → `packageManager`).
+  - Unlike npm, `pnpm` does NOT require an extra `--` before flags. Pass arguments directly:
+    `pnpm test:unit -t "should create"` (correct) vs ~~`pnpm test:unit -- -t "should create"`~~ (unnecessary).
+- Node requirement: >=25.9.0 (see `package.json` → `engines.node`).
+- Build: `pnpm build` (nest build)
+- Typecheck: `pnpm typecheck` (tsgo -b --clean && tsgo -b --noEmit, native TS compiler)
 
-```bash
-pnpm build               # nest build
-pnpm typecheck           # tsgo -b --clean && tsgo -b --noEmit (native TS compiler)
-```
+- Linting (always run both linters):
+  - Full lint: `pnpm lint`         Full lint + fix: `pnpm lint:fix`
+  - ESLint only: `pnpm lint:eslint` / `pnpm lint:eslint:fix`
+  - Oxlint only: `pnpm lint:oxlint` / `pnpm lint:oxlint:fix`
 
-### Lint
+- Tests:
+  - Full unit run:   `pnpm test:unit`
+  - With coverage:   `pnpm test:unit:cov`
+  - Watch mode:      `pnpm test:unit:watch`
+  - Mutation (Stryker): `pnpm test:mutation` / `pnpm test:mutation:force`
+  - Acceptance (Cucumber): `pnpm test:acceptance` (requires running Docker services)
 
-```bash
-pnpm lint                # oxlint then eslint (read-only)
-pnpm lint:fix            # oxlint --fix then eslint --fix
-```
+Running a single unit test or file:
 
-### Unit tests
+- By filename:     `pnpm test:unit src/path/to/file.spec.ts`
+- By test name:    `pnpm test:unit --reporter=verbose -t "Create Question Use Case"`
+- Watch file:      `pnpm test:unit:watch src/path/to/file.spec.ts`
 
-```bash
-pnpm test:unit           # run all unit tests (no coverage)
-pnpm test:unit:cov       # run unit tests with coverage (must stay at 100%)
-pnpm test:unit:watch     # watch mode
+Running acceptance tests:
 
-# Run a SINGLE test file:
-pnpm test:unit src/path/to/file.spec.ts
+- Full run:                 `pnpm test:acceptance`
+- Skip build (fast iteration, if `dist/` is already up to date): `SKIP_BUILD=true pnpm test:acceptance`
+- Specific feature:         `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature`
+- Specific scenario (line): `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature:8`
+- By scenario name:         `pnpm test:acceptance --name "should create a question"`
+- By tag:                   `pnpm test:acceptance --tags "@question-theme"`
+- Multiple tags (OR):       `pnpm test:acceptance --tags "@question-theme or @question"`
+- Exclude tag:              `pnpm test:acceptance --tags "not @slow"`
+- By tag (AND):             `pnpm test:acceptance --tags "@question-theme and @admin"`
 
-# Run tests matching a name pattern:
-pnpm test:unit --reporter=verbose -t "Create Question Use Case"
-```
+**Mandatory quality gates** — agents MUST run all five commands below **in order**
+before considering any task complete. **Do NOT skip any gate**, even for "trivial" changes:
 
-### Other test suites
+1. `pnpm lint:fix`
+2. `pnpm typecheck`
+3. `pnpm test:unit:cov`
+4. `pnpm test:acceptance`
+5. `pnpm test:mutation`
 
-```bash
-pnpm test:acceptance     # Cucumber e2e (requires running Docker services)
-pnpm test:mutation       # Stryker mutation testing (slow)
-pnpm test:mutation:force # Full mutation run (clears incremental cache)
-```
-
-### Quality gate (what CI runs)
-
-```bash
-pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
-```
+If any gate fails, fix the issue and re-run from that gate onward until all five pass.
 
 ### Agent Workflow Guardrails
 

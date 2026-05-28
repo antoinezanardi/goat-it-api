@@ -1,4 +1,4 @@
-FROM node:25.9.0-alpine AS base
+FROM --platform=$BUILDPLATFORM node:25.9.0-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -31,7 +31,7 @@ COPY --chown=node:node src/ src/
 
 CMD [ "pnpm", "run", "start:dev" ]
 
-FROM base AS build
+FROM --platform=$BUILDPLATFORM base AS build
 
 RUN apk add --no-cache bash
 
@@ -56,7 +56,7 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM base AS production
+FROM node:25.9.0-alpine AS production
 
 USER node
 
