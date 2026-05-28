@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import { SORT_ORDERS } from "@shared/infrastructure/http/zod/constants/sort-order.constants";
-import { SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
+import { SORT_ORDERS } from "@shared/domain/constants/sort-order.constants";
+import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { FIND_QUESTION_THEMES_SORT_QUERY_DTO } from "@question/modules/question-theme/application/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto.shape";
 import { QUESTION_THEME_SORTABLE_FIELDS } from "@question/modules/question-theme/domain/constants/question-theme-sortable-fields.constants";
-import { QUESTION_THEME_SORT_BY_DESCRIPTION } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
+import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION } from "@question/modules/question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 import type { FindQuestionThemesSortQueryDto } from "@question/modules/question-theme/application/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto.shape";
 
 import { createFakeFindQuestionThemesSortQueryDto } from "@faketories/contexts/question/question-theme/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto.faketory";
@@ -50,7 +50,7 @@ describe("Find Question-Themes Sort Query DTO Shape", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = FIND_QUESTION_THEMES_SORT_QUERY_DTO.shape["sort-by"].meta();
-      const expectedMetadata = { description: QUESTION_THEME_SORT_BY_DESCRIPTION };
+      const expectedMetadata = { description: QUESTION_THEME_SORT_BY_DESCRIPTION, example: QUESTION_THEME_SORT_BY_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
@@ -79,7 +79,7 @@ describe("Find Question-Themes Sort Query DTO Shape", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = FIND_QUESTION_THEMES_SORT_QUERY_DTO.shape["sort-order"].meta();
-      const expectedMetadata = { description: SORT_ORDER_DESCRIPTION };
+      const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });

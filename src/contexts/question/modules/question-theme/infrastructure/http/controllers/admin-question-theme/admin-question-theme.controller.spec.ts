@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
 import { createQuestionThemeModificationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers";
@@ -34,7 +34,7 @@ import type { QuestionThemeSortableField } from "@question/modules/question-them
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers"));
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers"));
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme-modification/question-theme-modification.dto.mappers"));
-vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mapper"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Admin Question Theme Controller", () => {
   let adminQuestionThemeController: AdminQuestionThemeController;

@@ -57,9 +57,12 @@ Feature: Sort Questions
       | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
       | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
 
-  Scenario: Sorting questions with invalid sort-by field returns a bad request error
+  Scenario: Trying to sort questions with an invalid sort-by field
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves all questions sorted by "invalidField" in "asc" order
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                                                                          | path    | values                                              |
+      | invalid_value | Invalid option: expected one of "createdAt"\|"updatedAt"\|"category"\|"cognitiveDifficulty" | sort-by | createdAt, updatedAt, category, cognitiveDifficulty |

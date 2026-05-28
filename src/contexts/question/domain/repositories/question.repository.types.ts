@@ -2,14 +2,10 @@ import type { QuestionModificationContract } from "@question/domain/contracts/qu
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
 import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
-import type { ADMIN_QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question-sortable-fields.constants";
 
-import type { TupleToUnion } from "type-fest";
-
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
 import type { SortOptions } from "@shared/domain/types/sort.types";
 import type { Question } from "@question/domain/entities/question.types";
-
-type QuestionSortableField = TupleToUnion<typeof ADMIN_QUESTION_SORTABLE_FIELDS>;
 
 type QuestionRepository = {
   findAll: (sortOptions: SortOptions<QuestionSortableField>) => Promise<Question[]>;
@@ -23,4 +19,6 @@ type QuestionRepository = {
   countLiveByThemeId: (themeId: string) => Promise<number>;
 };
 
-export type { QuestionRepository, QuestionSortableField };
+export type { QuestionRepository };
+
+export { type QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";

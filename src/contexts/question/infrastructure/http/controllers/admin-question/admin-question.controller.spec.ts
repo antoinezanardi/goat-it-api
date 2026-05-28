@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
@@ -51,7 +51,7 @@ vi.mock(import("@question/application/mappers/question-creation/question-creatio
 vi.mock(import("@question/application/mappers/question-modification/question-modification.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers"));
-vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mapper"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Admin Question Controller", () => {
   let adminQuestionController: AdminQuestionController;

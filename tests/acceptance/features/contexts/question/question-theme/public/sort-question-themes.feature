@@ -44,9 +44,12 @@ Feature: Sort Question Themes
       | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. |         | active   |
       | sports  | Sports  | Football, Games      | Theme about sports, competitions and athletes.        |         | archived |
 
-  Scenario: Sorting question themes with invalid sort-by field returns a bad request error
+  Scenario: Trying to sort question themes with an invalid sort-by field
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client retrieves all question themes sorted by "invalidField" in "asc" order
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                                                          | path    | values                       |
+      | invalid_value | Invalid option: expected one of "createdAt"\|"updatedAt"\|"slug" | sort-by | createdAt, updatedAt, slug |

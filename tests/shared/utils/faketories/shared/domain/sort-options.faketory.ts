@@ -1,0 +1,15 @@
+import { faker } from "@faker-js/faker";
+
+import { SORT_ORDERS } from "@shared/domain/constants/sort-order.constants";
+
+import type { SortOptions } from "@shared/domain/types/sort.types";
+
+function createFakeSortOptions<T extends string>(sortableFields: readonly T[], overrides: Partial<SortOptions<T>> = {}): SortOptions<T> {
+  return {
+    sortBy: faker.helpers.arrayElement(sortableFields),
+    sortOrder: faker.helpers.arrayElement(SORT_ORDERS),
+    ...overrides,
+  };
+}
+
+export { createFakeSortOptions };

@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
@@ -23,7 +23,7 @@ import type { SortOptions } from "@shared/domain/types/sort.types";
 import type { QuestionSortableField } from "@question/domain/repositories/question.repository.types";
 
 vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
-vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mapper"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Question Controller", () => {
   let questionController: QuestionController;
@@ -104,7 +104,7 @@ describe("Question Controller", () => {
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
       await questionController.findQuestions(sortQueryDto, localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);

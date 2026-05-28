@@ -1,12 +1,8 @@
 import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
-import type { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question/modules/question-theme/domain/constants/question-theme-sortable-fields.constants";
 
-import type { TupleToUnion } from "type-fest";
-
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 import type { SortOptions } from "@shared/domain/types/sort.types";
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
-
-type QuestionThemeSortableField = TupleToUnion<typeof ADMIN_QUESTION_THEME_SORTABLE_FIELDS>;
 
 type QuestionThemeRepository = {
   findAll: (sortOptions: SortOptions<QuestionThemeSortableField>) => Promise<QuestionTheme[]>;
@@ -18,4 +14,6 @@ type QuestionThemeRepository = {
   archive: (id: string) => Promise<QuestionTheme | undefined>;
 };
 
-export type { QuestionThemeRepository, QuestionThemeSortableField };
+export type { QuestionThemeRepository };
+
+export { type QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";

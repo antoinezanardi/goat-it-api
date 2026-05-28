@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
 import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { getSortDirectionFromSortOrder } from "@shared/domain/helpers/sort.helpers";
 
 import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
 import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
@@ -23,7 +24,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
   public async findAll(sortOptions: SortOptions<QuestionSortableField>): Promise<Question[]> {
-    const sortDirection: 1 | -1 = sortOptions.sortOrder === "asc" ? 1 : -1;
+    const sortDirection = getSortDirectionFromSortOrder(sortOptions.sortOrder);
     const sortStage = { $sort: { [sortOptions.sortBy]: sortDirection, _id: sortDirection } };
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,

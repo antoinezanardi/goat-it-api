@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
-import { SORT_ORDERS } from "@shared/infrastructure/http/zod/constants/sort-order.constants";
-import { SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
+import { SORT_ORDERS } from "@shared/domain/constants/sort-order.constants";
+import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { ADMIN_FIND_QUESTIONS_SORT_QUERY_DTO } from "@question/application/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.shape";
 import { ADMIN_QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question-sortable-fields.constants";
-import { QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
+import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
 import type { AdminFindQuestionsSortQueryDto } from "@question/application/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.shape";
 
 import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.faketory";
@@ -44,7 +44,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_FIND_QUESTIONS_SORT_QUERY_DTO.shape["sort-by"].meta();
-      const expectedMetadata = { description: QUESTION_SORT_BY_DESCRIPTION };
+      const expectedMetadata = { description: QUESTION_SORT_BY_DESCRIPTION, example: QUESTION_SORT_BY_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
@@ -73,7 +73,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
 
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_FIND_QUESTIONS_SORT_QUERY_DTO.shape["sort-order"].meta();
-      const expectedMetadata = { description: SORT_ORDER_DESCRIPTION };
+      const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });

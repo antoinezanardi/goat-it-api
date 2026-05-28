@@ -2,7 +2,7 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
@@ -24,7 +24,7 @@ import type { SortOptions } from "@shared/domain/types/sort.types";
 import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
 
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers"));
-vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mapper"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Question Theme Controller", () => {
   let questionThemeController: QuestionThemeController;
@@ -104,6 +104,7 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
+      mocks.useCases.findQuestionThemes.list.mockResolvedValueOnce(questionThemes);
       await questionThemeController.findQuestionThemes(sortQueryDto, localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);

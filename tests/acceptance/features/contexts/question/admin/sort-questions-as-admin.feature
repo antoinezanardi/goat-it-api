@@ -44,9 +44,12 @@ Feature: Sort Questions as Admin
       | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
       | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
 
-  Scenario: Sorting admin questions with invalid sort-by field returns a bad request error
+  Scenario: Trying to sort admin questions with an invalid sort-by field
     Given the database is populated with questions fixture set with name "five-questions"
     When the admin retrieves all questions sorted by "invalidField" in "asc" order
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                                                                                      | path    | values                                                        |
+      | invalid_value | Invalid option: expected one of "createdAt"\|"updatedAt"\|"category"\|"cognitiveDifficulty"\|"status" | sort-by | createdAt, updatedAt, category, cognitiveDifficulty, status |

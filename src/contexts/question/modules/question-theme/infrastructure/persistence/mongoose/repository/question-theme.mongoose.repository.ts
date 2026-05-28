@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { getSortDirectionFromSortOrder } from "@shared/domain/helpers/sort.helpers";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
@@ -20,7 +21,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
   public async findAll(sortOptions: SortOptions<QuestionThemeSortableField>): Promise<QuestionTheme[]> {
-    const sortDirection: 1 | -1 = sortOptions.sortOrder === "asc" ? 1 : -1;
+    const sortDirection = getSortDirectionFromSortOrder(sortOptions.sortOrder);
     const sortCriteria: Record<string, 1 | -1> = { [sortOptions.sortBy]: sortDirection, _id: sortDirection };
     // oxlint-disable-next-line unicorn/no-array-sort -- .sort() is a Mongoose Query method, not Array.prototype.sort
     const questionThemeDocuments = await this.questionThemeModel.find().sort(sortCriteria);

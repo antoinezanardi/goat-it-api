@@ -5,7 +5,7 @@ import { ZodResponse } from "nestjs-zod";
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";

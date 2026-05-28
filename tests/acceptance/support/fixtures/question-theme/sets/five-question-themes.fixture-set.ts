@@ -6,8 +6,6 @@ const FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY = createFakeQuestionThemeDocumen
   _id: createFakeObjectId("8ef21e4eb04eb0fa5a469d87"),
   slug: "cinema",
   color: "#33A1FF",
-  createdAt: new Date("2024-05-01T00:00:00.000Z"),
-  updatedAt: new Date("2024-05-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     fr: "Cinéma",
     en: "Cinema",
@@ -33,14 +31,14 @@ const FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY = createFakeQuestionThemeDocumen
     de: "Thema über Kino und Filme.",
   }),
   status: "active",
+  createdAt: new Date("2024-05-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-05-01T00:00:00.000Z"),
 });
 
 const FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("ddb03d94cae8df38d28e5adc"),
   slug: "music",
   color: "#FA2333",
-  createdAt: new Date("2024-04-01T00:00:00.000Z"),
-  updatedAt: new Date("2024-04-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     fr: "Musique",
     en: "Music",
@@ -66,14 +64,14 @@ const FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY = createFakeQuestionThemeDocument
     de: "Thema über Musik, Künstler und Musikgenres.",
   }),
   status: "active",
+  createdAt: new Date("2024-04-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-04-01T00:00:00.000Z"),
 });
 
 const FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("dbb0664ad4797c6cc79d5aee"),
   slug: "sports",
   color: undefined,
-  createdAt: new Date("2024-03-01T00:00:00.000Z"),
-  updatedAt: new Date("2024-03-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     fr: "Sport",
     en: "Sports",
@@ -99,14 +97,14 @@ const FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY = createFakeQuestionThemeDocumen
     de: "Thema über Sport, Wettbewerbe und Athleten.",
   }),
   status: "archived",
+  createdAt: new Date("2024-03-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-03-01T00:00:00.000Z"),
 });
 
 const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("9adeceb41db80ab7ec49b457"),
   slug: "science",
   color: undefined,
-  createdAt: new Date("2024-02-01T00:00:00.000Z"),
-  updatedAt: new Date("2024-02-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     fr: "Science",
     en: "Science",
@@ -132,14 +130,14 @@ const FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY = createFakeQuestionThemeDocume
     de: "Thema, das Wissenschaften, Entdeckungen und Innovationen abdeckt.",
   }),
   status: "active",
+  createdAt: new Date("2024-02-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-02-01T00:00:00.000Z"),
 });
 
 const FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY = createFakeQuestionThemeDocument({
   _id: createFakeObjectId("cddb37b90e4f6b7ec27bc1ee"),
   slug: "history",
   color: "#FF5733",
-  createdAt: new Date("2024-01-01T00:00:00.000Z"),
-  updatedAt: new Date("2024-01-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     fr: "Histoire",
     en: "History",
@@ -165,6 +163,8 @@ const FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY = createFakeQuestionThemeDocume
     de: "Thema über historische Ereignisse, Persönlichkeiten und Epochen.",
   }),
   status: "active",
+  createdAt: new Date("2024-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-01-01T00:00:00.000Z"),
 });
 
 const FIVE_QUESTION_THEMES_FIXTURE_SET = [
