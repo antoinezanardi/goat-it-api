@@ -61,11 +61,15 @@ FROM node:25.9.0-alpine AS production
 USER node
 
 ENV NODE_ENV="production"
+ENV SERVER_PORT=3000
 
 WORKDIR /app
 
 COPY --chown=node:node package.json ./
 COPY --chown=node:node --from=build /app/node_modules node_modules/
 COPY --chown=node:node --from=build /app/dist dist/
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${SERVER_PORT}/health || exit 1
 
 CMD [ "node", "dist/main.js" ]
