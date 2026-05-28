@@ -27,7 +27,7 @@ export class DatabaseService implements MongooseOptionsFactory {
     };
   }
 
-  private onMongooseConnectionCreate(connection: Connection): Connection {
+  private onMongooseConnectionCreate(connection: Connection): void {
     connection.on("connected", () => {
       this.logger.log("🍀 Database connection established");
     });
@@ -35,7 +35,5 @@ export class DatabaseService implements MongooseOptionsFactory {
     connection.on("disconnected", () => {
       this.logger.warn("⚠️ Database connection lost");
     });
-
-    return connection;
   }
 }

@@ -75,6 +75,7 @@
     "lint:oxlint": "oxlint -c configs/oxlint/oxlint.config.jsonc",
     "lint:oxlint:fix": "oxlint -c configs/oxlint/oxlint.config.jsonc --fix --fix-suggestions",
     "lint:oxlint:staged:fix": "lint-staged -c configs/lint-staged/.lintstagedrc.oxlint.json",
+    "lint:oxlint:check-rules": "tsx scripts/check-oxlint-rules.ts",
     "test": "pnpm run test:unit:cov && pnpm run test:mutation && pnpm run test:acceptance",
     "test:unit": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts",
     "test:unit:watch": "cross-env NODE_ENV=test vitest --config configs/vitest/vitest.config.ts --watch",
