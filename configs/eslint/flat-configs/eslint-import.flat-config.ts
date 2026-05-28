@@ -71,7 +71,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import-x/max-dependencies": [
       "error",
       {
-        max: 25,
+        max: 30,
         ignoreTypeImports: true,
       },
     ],

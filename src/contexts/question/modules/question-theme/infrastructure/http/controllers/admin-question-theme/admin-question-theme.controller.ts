@@ -1,15 +1,17 @@
-import { Body, Controller, Get, HttpStatus, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
 import { AdminQuestionThemeNestZodDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { AdminQuestionThemeDto } from "@question/modules/question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+import { AdminFindQuestionThemesSortQueryNestZodDto } from "@question/modules/question-theme/application/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto";
 import { QuestionThemeCreationNestZodDto } from "@question/modules/question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
 import { QuestionThemeModificationNestZodDto } from "@question/modules/question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import { createQuestionThemeCreationCommandFromDto } from "@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers";
@@ -45,8 +47,9 @@ export class AdminQuestionThemeController {
     status: HttpStatus.OK,
     type: [AdminQuestionThemeNestZodDto],
   })
-  public async findQuestionThemes(): Promise<AdminQuestionThemeDto[]> {
-    const questionThemes = await this.findQuestionThemesUseCase.list();
+  public async findQuestionThemes(@Query() sortQueryDto: AdminFindQuestionThemesSortQueryNestZodDto): Promise<AdminQuestionThemeDto[]> {
+    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    const questionThemes = await this.findQuestionThemesUseCase.list(sortOptions);
 
     return questionThemes.map(questionTheme => createAdminQuestionThemeDtoFromEntity(questionTheme));
   }

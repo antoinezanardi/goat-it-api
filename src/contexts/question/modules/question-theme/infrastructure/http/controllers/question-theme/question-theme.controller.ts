@@ -1,16 +1,18 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
 import { QuestionThemeDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { QuestionThemeNestZodDto } from "@question/modules/question-theme/application/dto/question-theme/question-theme.dto";
+import { FindQuestionThemesSortQueryNestZodDto } from "@question/modules/question-theme/application/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto";
 import { createQuestionThemeDtoFromEntity } from "@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question/modules/question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
@@ -35,8 +37,12 @@ export class QuestionThemeController {
     status: HttpStatus.OK,
     type: [QuestionThemeNestZodDto],
   })
-  public async findQuestionThemes(@Localization() localization: LocalizationOptions): Promise<QuestionThemeDto[]> {
-    const questionThemes = await this.findQuestionThemesUseCase.list();
+  public async findQuestionThemes(
+    @Query() sortQueryDto: FindQuestionThemesSortQueryNestZodDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto[]> {
+    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    const questionThemes = await this.findQuestionThemesUseCase.list(sortOptions);
 
     return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
   }

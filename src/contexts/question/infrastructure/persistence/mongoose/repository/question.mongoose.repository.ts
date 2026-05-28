@@ -13,16 +13,22 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
 import { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
 
-import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
+import { QuestionRepository, QuestionSortableField } from "@question/domain/repositories/question.repository.types";
 import { Question } from "@question/domain/entities/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { SortOptions } from "@shared/domain/types/sort.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
-  public async findAll(): Promise<Question[]> {
-    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>(QUESTION_MONGOOSE_REPOSITORY_PIPELINE);
+  public async findAll(sortOptions: SortOptions<QuestionSortableField>): Promise<Question[]> {
+    const sortDirection: 1 | -1 = sortOptions.sortOrder === "asc" ? 1 : -1;
+    const sortStage = { $sort: { [sortOptions.sortBy]: sortDirection, _id: sortDirection } };
+    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
+      ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      sortStage,
+    ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
   }

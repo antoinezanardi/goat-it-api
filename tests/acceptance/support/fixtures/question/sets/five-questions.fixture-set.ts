@@ -10,6 +10,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("a1b2c3d4e5f6012345678901"),
     category: "riddle",
+    createdAt: new Date("2024-05-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-05-01T00:00:00.000Z"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY._id,
@@ -81,6 +83,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("b2c3d4e5f6a7012345678902"),
     category: "trivia",
+    createdAt: new Date("2024-04-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-04-01T00:00:00.000Z"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: FIVE_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY._id,
@@ -134,6 +138,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("c3d4e5f6a7b8012345678903"),
     category: "lexicon",
+    createdAt: new Date("2024-03-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-03-01T00:00:00.000Z"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: FIVE_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY._id,
@@ -174,6 +180,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("d4e5f6a7b8c9012345678904"),
     category: "explanation",
+    createdAt: new Date("2024-02-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-02-01T00:00:00.000Z"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id,
@@ -235,6 +243,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("efd39a4ac3bdfd03d2f8cdf1"),
     category: "trivia",
+    createdAt: new Date("2024-01-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-01-01T00:00:00.000Z"),
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id,

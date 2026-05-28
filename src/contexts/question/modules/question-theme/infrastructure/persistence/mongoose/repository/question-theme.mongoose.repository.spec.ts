@@ -1,20 +1,25 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
-import { createMockedQuestionThemeMongooseModel } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
+import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFindQuery } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/contexts/question/question-theme/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
+
+import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
 
 vi.mock(import("@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 
@@ -57,14 +62,35 @@ describe("Question Theme Mongoose Repository", () => {
   });
 
   describe(QuestionThemeMongooseRepository.prototype.findAll, () => {
+    let sortOptions: SortOptions<QuestionThemeSortableField>;
+
+    beforeEach(() => {
+      const sortQueryDto = createFakeAdminFindQuestionThemesSortQueryDto();
+      sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    });
+
     it("should find all documents from model when called.", async() => {
-      await repositories.questionTheme.findAll();
+      await repositories.questionTheme.findAll(sortOptions);
 
       expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith();
     });
 
+    it("should sort in ascending direction when sort order is asc.", async() => {
+      sortOptions = { ...sortOptions, sortOrder: "asc" };
+      await repositories.questionTheme.findAll(sortOptions);
+
+      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [sortOptions.sortBy]: 1, _id: 1 });
+    });
+
+    it("should sort in descending direction when sort order is desc.", async() => {
+      sortOptions = { ...sortOptions, sortOrder: "desc" };
+      await repositories.questionTheme.findAll(sortOptions);
+
+      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [sortOptions.sortBy]: -1, _id: -1 });
+    });
+
     it("should map and return question themes when called.", async() => {
-      const questionThemes = await repositories.questionTheme.findAll();
+      const questionThemes = await repositories.questionTheme.findAll(sortOptions);
 
       expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(questionThemes.length);
     });
@@ -79,7 +105,7 @@ describe("Question Theme Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestionThemes[0])
         .mockReturnValueOnce(expectedQuestionThemes[1])
         .mockReturnValueOnce(expectedQuestionThemes[2]);
-      const actualQuestionThemes = await repositories.questionTheme.findAll();
+      const actualQuestionThemes = await repositories.questionTheme.findAll(sortOptions);
 
       expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
     });
@@ -125,7 +151,7 @@ describe("Question Theme Mongoose Repository", () => {
         createFakeQuestionThemeDocument(),
         createFakeQuestionThemeDocument(),
       ];
-      mocks.models.questionTheme.find.mockResolvedValue(foundQuestionThemeDocuments);
+      mocks.models.questionTheme.find.mockReturnValue(createQuestionThemeMongooseFindQuery(foundQuestionThemeDocuments));
       await repositories.questionTheme.findByIds(questionThemeIds);
 
       expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(foundQuestionThemeDocuments.length);

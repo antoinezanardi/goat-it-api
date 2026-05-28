@@ -9,17 +9,21 @@ import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
-import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import { QuestionThemeRepository, QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
 import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
+import type { SortOptions } from "@shared/domain/types/sort.types";
 
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {
   public constructor(@InjectModel(QuestionThemeMongooseSchema.name)
   private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
-  public async findAll(): Promise<QuestionTheme[]> {
-    const questionThemeDocuments = await this.questionThemeModel.find();
+  public async findAll(sortOptions: SortOptions<QuestionThemeSortableField>): Promise<QuestionTheme[]> {
+    const sortDirection: 1 | -1 = sortOptions.sortOrder === "asc" ? 1 : -1;
+    const sortCriteria: Record<string, 1 | -1> = { [sortOptions.sortBy]: sortDirection, _id: sortDirection };
+    // oxlint-disable-next-line unicorn/no-array-sort -- .sort() is a Mongoose Query method, not Array.prototype.sort
+    const questionThemeDocuments = await this.questionThemeModel.find().sort(sortCriteria);
 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }

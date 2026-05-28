@@ -2,6 +2,8 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
+
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
@@ -17,11 +19,14 @@ import { createFakeQuestionCreationContract } from "@faketories/contexts/questio
 import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
+import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.faketory";
 
 import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
+import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { QuestionSortableField } from "@question/domain/repositories/question.repository.types";
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
@@ -69,14 +74,31 @@ describe("Question Mongoose Repository", () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findAll, () => {
-    it("should aggregate with pipeline when called.", async() => {
-      await repositories.question.findAll();
+    let sortOptions: SortOptions<QuestionSortableField>;
 
-      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(QUESTION_MONGOOSE_REPOSITORY_PIPELINE);
+    beforeEach(() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
+      sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    });
+
+    it("should aggregate with pipeline and ascending sort stage when sort order is asc.", async() => {
+      sortOptions = { ...sortOptions, sortOrder: "asc" };
+      await repositories.question.findAll(sortOptions);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, { $sort: { [sortOptions.sortBy]: 1, _id: 1 } }];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and descending sort stage when sort order is desc.", async() => {
+      sortOptions = { ...sortOptions, sortOrder: "desc" };
+      await repositories.question.findAll(sortOptions);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, { $sort: { [sortOptions.sortBy]: -1, _id: -1 } }];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
 
     it("should map and return questions when called.", async() => {
-      const questions = await repositories.question.findAll();
+      const questions = await repositories.question.findAll(sortOptions);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenCalledTimes(questions.length);
     });
@@ -87,7 +109,7 @@ describe("Question Mongoose Repository", () => {
         createFakeQuestionAggregate(),
       ];
       mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
-      await repositories.question.findAll();
+      await repositories.question.findAll(sortOptions);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(1, questionAggregates[0], 0, questionAggregates);
       // It's okay to disable this rule here because we want to explicitly test multiple calls to the mapper function.
@@ -108,7 +130,7 @@ describe("Question Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestions[1])
         .mockReturnValueOnce(expectedQuestions[2]);
 
-      const actualQuestions = await repositories.question.findAll();
+      const actualQuestions = await repositories.question.findAll(sortOptions);
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
     });

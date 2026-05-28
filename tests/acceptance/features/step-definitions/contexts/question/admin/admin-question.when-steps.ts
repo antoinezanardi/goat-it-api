@@ -14,6 +14,14 @@ When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, a
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
 
+When(/^the admin retrieves all questions sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query: { "sort-by": sortBy, "sort-order": sortOrder },
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
 When(/^the admin retrieves all questions without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);

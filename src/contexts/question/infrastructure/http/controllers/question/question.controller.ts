@@ -1,14 +1,16 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mapper";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { FindQuestionsSortQueryNestZodDto } from "@question/application/dto/find-questions-sort-query/find-questions-sort-query.dto";
 import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
@@ -35,8 +37,12 @@ export class QuestionController {
     status: HttpStatus.OK,
     type: [QuestionNestZodDto],
   })
-  public async findQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
-    const questions = await this.findQuestionsUseCase.list();
+  public async findQuestions(
+    @Query() sortQueryDto: FindQuestionsSortQueryNestZodDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionDto[]> {
+    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    const questions = await this.findQuestionsUseCase.list(sortOptions);
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }

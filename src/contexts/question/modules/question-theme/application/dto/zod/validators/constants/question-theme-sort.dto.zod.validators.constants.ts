@@ -1,0 +1,5 @@
+const QUESTION_THEME_SORT_BY_DESCRIPTION = "Field to sort question themes by";
+
+const QUESTION_THEME_SORT_BY_DEFAULT = "createdAt" as const;
+
+export { QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_BY_DEFAULT };
