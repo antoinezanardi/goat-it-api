@@ -13,10 +13,10 @@ Feature: List Question Themes as Admin
     And the response should contain the following admin question themes:
       | slug    | status   |
       | cinema  | active   |
-      | music   | active   |
-      | sports  | archived |
-      | science | active   |
       | history | active   |
+      | music   | active   |
+      | science | active   |
+      | sports  | archived |
     And the response should contain an admin question theme among them with slug "cinema" and the following localized labels:
       | locale | label  |
       | en     | Cinema |

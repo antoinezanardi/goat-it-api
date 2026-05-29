@@ -1,4 +1,7 @@
-import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate, getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+
+import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Mongoose Helpers", () => {
   describe(getCrushedDataForMongoPatchUpdate, () => {
@@ -178,6 +181,75 @@ describe("Mongoose Helpers", () => {
       const result = getDefinedFieldsForMongoArrayElementUpdate(data, arrayPath);
 
       expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe(getMongoSortDirectionFromSortOrder, () => {
+    it.each<{ sortOrder: SortOrder; expected: MongoSortDirection }>([
+      { sortOrder: "asc", expected: 1 },
+      { sortOrder: "desc", expected: -1 },
+    ])("should return $expected when sort order is $sortOrder.", ({ sortOrder, expected }) => {
+      const result = getMongoSortDirectionFromSortOrder(sortOrder);
+
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe(buildMongooseAggregationSortStages, () => {
+    describe("when sort field has no semantic order", () => {
+      it("should return a simple $sort stage with ascending direction when sort order is asc.", () => {
+        const sortOptions: SortOptions<"createdAt"> = { sortBy: "createdAt", sortOrder: "asc" };
+
+        const result = buildMongooseAggregationSortStages(sortOptions);
+
+        expect(result).toStrictEqual([{ $sort: { createdAt: 1, _id: 1 } }]);
+      });
+
+      it("should return a simple $sort stage with descending direction when sort order is desc.", () => {
+        const sortOptions: SortOptions<"createdAt"> = { sortBy: "createdAt", sortOrder: "desc" };
+
+        const result = buildMongooseAggregationSortStages(sortOptions);
+
+        expect(result).toStrictEqual([{ $sort: { createdAt: -1, _id: -1 } }]);
+      });
+    });
+
+    describe("when sort field has a semantic order", () => {
+      const semanticSortOrders = {
+        status: ["pending", "active", "rejected", "archived"] as const,
+      };
+
+      it("should return $addFields, $sort, and $unset stages with ascending direction when sort order is asc.", () => {
+        const sortOptions: SortOptions<"status"> = { sortBy: "status", sortOrder: "asc" };
+
+        const result = buildMongooseAggregationSortStages(sortOptions, semanticSortOrders);
+
+        expect(result).toStrictEqual([
+          { $addFields: { _sortPriority: { $indexOfArray: [["pending", "active", "rejected", "archived"], "$status"] } } },
+          { $sort: { _sortPriority: 1, _id: 1 } },
+          { $unset: "_sortPriority" },
+        ]);
+      });
+
+      it("should return $addFields, $sort, and $unset stages with descending direction when sort order is desc.", () => {
+        const sortOptions: SortOptions<"status"> = { sortBy: "status", sortOrder: "desc" };
+
+        const result = buildMongooseAggregationSortStages(sortOptions, semanticSortOrders);
+
+        expect(result).toStrictEqual([
+          { $addFields: { _sortPriority: { $indexOfArray: [["pending", "active", "rejected", "archived"], "$status"] } } },
+          { $sort: { _sortPriority: -1, _id: -1 } },
+          { $unset: "_sortPriority" },
+        ]);
+      });
+
+      it("should return a simple $sort stage when sort field is not in the semantic orders map.", () => {
+        const sortOptions: SortOptions<"createdAt" | "status"> = { sortBy: "createdAt", sortOrder: "asc" };
+
+        const result = buildMongooseAggregationSortStages(sortOptions, semanticSortOrders);
+
+        expect(result).toStrictEqual([{ $sort: { createdAt: 1, _id: 1 } }]);
+      });
     });
   });
 });

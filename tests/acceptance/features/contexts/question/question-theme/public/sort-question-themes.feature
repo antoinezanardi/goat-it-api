@@ -18,7 +18,7 @@ Feature: Sort Question Themes
       | music   | Music   | Songs, Tunes         | Theme about music, artists and music genres.          | #FA2333 | active   |
       | cinema  | Cinema  | Movies, Films        | Theme about cinema and movies.                        | #33A1FF | active   |
 
-  Scenario: Sorting question themes by createdAt in descending order (default behavior)
+  Scenario: Sorting question themes by createdAt in descending order
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client retrieves all question themes sorted by "createdAt" in "desc" order
     Then the request should have succeeded with status code 200
@@ -31,7 +31,7 @@ Feature: Sort Question Themes
       | science | Science | Technology, Research | Theme covering sciences, discoveries and innovations. |         | active   |
       | history | History | Past, Chronology     | Theme about historical events, figures and periods.   | #FF5733 | active   |
 
-  Scenario: Sorting question themes by slug in ascending order
+  Scenario: Sorting question themes by slug in ascending order (default behavior)
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the client retrieves all question themes sorted by "slug" in "asc" order
     Then the request should have succeeded with status code 200

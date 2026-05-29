@@ -67,8 +67,8 @@ Feature: List Questions
       | Washington is often called the 'Father of His Country'. |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following themes:
       | slug    | label   | description                                           | isPrimary | isHint |
-      | science | Science | Theme covering sciences, discoveries and innovations. | false     | true   |
       | history | History | Theme about historical events, figures and periods.   | true      | false  |
+      | science | Science | Theme covering sciences, discoveries and innovations. | false     | true   |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following author:
       | role | name       | gameId |
       | ai   | History AI |        |
@@ -153,8 +153,8 @@ Feature: List Questions
       | Washington is often called the 'Father of His Country'. |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following themes:
       | slug    | label   | description                                           | isPrimary | isHint |
-      | science | Science | Theme covering sciences, discoveries and innovations. | false     | true   |
       | history | History | Theme about historical events, figures and periods.   | true      | false  |
+      | science | Science | Theme covering sciences, discoveries and innovations. | false     | true   |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following author:
       | role | name       | gameId |
       | ai   | History AI |        |
@@ -239,8 +239,8 @@ Feature: List Questions
       | Washington è spesso chiamato il 'Padre della sua Nazione'. |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following themes:
       | slug    | label   | description                                          | isPrimary | isHint |
-      | science | Scienza | Argomento che copre scienze, scoperte e innovazioni. | false     | true   |
       | history | Storia  | Tema sugli eventi storici, personaggi e periodi.     | true      | false  |
+      | science | Scienza | Argomento che copre scienze, scoperte e innovazioni. | false     | true   |
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904" and the following author:
       | role | name       | gameId |
       | ai   | History AI |        |

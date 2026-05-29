@@ -2,9 +2,8 @@ import { ZodError } from "zod";
 
 import { ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO } from "@question-theme/application/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.shape";
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
-import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
+import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
-import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 
 import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.faketory";
@@ -41,12 +40,12 @@ describe("Admin Find Question-Themes Sort Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.parse(dtoWithInvalidField)).toThrow(ZodError);
     });
 
-    it("should use default value 'createdAt' when sort-by is not provided.", () => {
+    it("should use default value 'slug' when sort-by is not provided.", () => {
       const dtoWithoutSortBy = { "sort-order": "asc" };
 
       const result = ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.parse(dtoWithoutSortBy);
 
-      expect(result["sort-by"]).toBe("createdAt");
+      expect(result["sort-by"]).toBe("slug");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -70,17 +69,17 @@ describe("Admin Find Question-Themes Sort Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.parse(dtoWithInvalidSortOrder)).toThrow(ZodError);
     });
 
-    it("should use default value 'desc' when sort-order is not provided.", () => {
-      const dtoWithoutSortOrder = { "sort-by": "createdAt" };
+    it("should use default value 'asc' when sort-order is not provided.", () => {
+      const dtoWithoutSortOrder = { "sort-by": "slug" };
 
       const result = ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.parse(dtoWithoutSortOrder);
 
-      expect(result["sort-order"]).toBe("desc");
+      expect(result["sort-order"]).toBe("asc");
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
       const metadata = ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.shape["sort-order"].meta();
-      const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
+      const expectedMetadata = { description: QUESTION_THEME_SORT_ORDER_DESCRIPTION, example: QUESTION_THEME_SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
@@ -89,6 +88,6 @@ describe("Admin Find Question-Themes Sort Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<AdminFindQuestionThemesSortQueryDto>({ "sort-by": "createdAt", "sort-order": "desc" });
+    expect(result).toStrictEqual<AdminFindQuestionThemesSortQueryDto>({ "sort-by": "slug", "sort-order": "asc" });
   });
 });

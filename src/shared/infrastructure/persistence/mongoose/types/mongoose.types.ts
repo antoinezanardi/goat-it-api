@@ -9,6 +9,14 @@ type MongooseCollectionSchemaBase = {
   updatedAt: Date;
 };
 
+/**
+ * Maps sortable field names to their semantic sort order arrays.
+ * Fields not in this map use alphabetical/chronological MongoDB sort.
+ * Fields in this map use `$indexOfArray` for custom ordering.
+ */
+type SemanticSortOrders<T extends string> = Partial<Record<T, readonly string[]>>;
+
 export type {
   MongooseCollectionSchemaBase,
+  SemanticSortOrders,
 };

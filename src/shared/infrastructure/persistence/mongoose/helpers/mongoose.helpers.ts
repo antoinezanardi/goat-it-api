@@ -1,5 +1,10 @@
 import { isObject, mapKeys, shake } from "radashi";
 
+import type { PipelineStage } from "mongoose";
+
+import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
+import type { SemanticSortOrders } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
+
 function crushDataObjectEntry(entry: [string, unknown], parentKey: string, result: Record<string, unknown>): Record<string, unknown> {
   const [key, value] = entry;
   const path = parentKey ? `${parentKey}.${key}` : key;
@@ -58,7 +63,40 @@ function getDefinedFieldsForMongoArrayElementUpdate(data: Record<string, unknown
   return mapKeys(shake(data), key => `${arrayPath}.${key}`);
 }
 
+type MongoSortDirection = 1 | -1;
+
+function getMongoSortDirectionFromSortOrder(sortOrder: SortOrder): MongoSortDirection {
+  return sortOrder === "asc" ? 1 : -1;
+}
+
+/**
+ * Builds MongoDB aggregation pipeline stages for sorting.
+ * For semantic fields (defined in `semanticSortOrders`), uses `$indexOfArray` to compute sort priority.
+ * For regular fields, uses a simple `$sort` stage.
+ * Always includes `_id` as a tiebreaker.
+ */
+function buildMongooseAggregationSortStages<T extends string>(
+  sortOptions: SortOptions<T>,
+  semanticSortOrders: SemanticSortOrders<T> = {},
+): PipelineStage[] {
+  const direction = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
+  const semanticOrder = semanticSortOrders[sortOptions.sortBy];
+
+  if (semanticOrder !== undefined) {
+    return [
+      { $addFields: { _sortPriority: { $indexOfArray: [[...semanticOrder], `$${sortOptions.sortBy}`] } } },
+      { $sort: { _sortPriority: direction, _id: direction } },
+      { $unset: "_sortPriority" },
+    ];
+  }
+  return [{ $sort: { [sortOptions.sortBy]: direction, _id: direction } }];
+}
+
 export {
+  buildMongooseAggregationSortStages,
   getCrushedDataForMongoPatchUpdate,
   getDefinedFieldsForMongoArrayElementUpdate,
+  getMongoSortDirectionFromSortOrder,
 };
+
+export type { MongoSortDirection };

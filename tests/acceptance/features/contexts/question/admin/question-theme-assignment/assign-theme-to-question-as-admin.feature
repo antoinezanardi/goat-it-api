@@ -16,8 +16,8 @@ Feature: Assign Theme To Question As Admin
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |
-      | cinema  | false     | false  |
       | history | true      | false  |
+      | cinema  | false     | false  |
 
     And the response should contain the question theme with slug "history" for the admin question with the following label:
       | locale | label      |

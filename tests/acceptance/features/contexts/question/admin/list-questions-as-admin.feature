@@ -218,8 +218,8 @@ Feature: List Questions as Admin
       | Washington é frequentemente chamado de 'Pai de sua Pátria'. |
     And the response should contain an admin question among them with id "d4e5f6a7b8c9012345678904" and the following themes:
       | slug    | isPrimary | isHint |
-      | science | false     | true   |
       | history | true      | false  |
+      | science | false     | true   |
     And the response should contain an admin question among them with id "d4e5f6a7b8c9012345678904" and the question theme with slug "science" with the following label:
       | locale | label        |
       | en     | Science      |
