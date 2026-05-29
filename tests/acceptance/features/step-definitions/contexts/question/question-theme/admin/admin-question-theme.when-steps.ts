@@ -12,6 +12,14 @@ When(/^the admin retrieves all question themes$/u, async function(this: GoatItWo
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });
 
+When(/^the admin retrieves all question themes sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query: { "sort-by": sortBy, "sort-order": sortOrder },
+  });
+  await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
+});
+
 When(/^the admin retrieves all question themes without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);

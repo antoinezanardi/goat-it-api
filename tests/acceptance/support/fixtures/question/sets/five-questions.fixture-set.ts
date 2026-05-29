@@ -77,6 +77,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     rejection: undefined,
     sourceUrls: ["https://en.wikipedia.org/wiki/Psycho_(1960_film)"],
     status: "active",
+    createdAt: new Date("2024-05-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-05-01T00:00:00.000Z"),
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("b2c3d4e5f6a7012345678902"),
@@ -130,6 +132,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     rejection: undefined,
     sourceUrls: ["https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon"],
     status: "pending",
+    createdAt: new Date("2024-04-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-04-01T00:00:00.000Z"),
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("c3d4e5f6a7b8012345678903"),
@@ -170,6 +174,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     rejection: undefined,
     sourceUrls: ["https://en.wikipedia.org/wiki/2018_FIFA_World_Cup"],
     status: "active",
+    createdAt: new Date("2024-03-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-03-01T00:00:00.000Z"),
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("d4e5f6a7b8c9012345678904"),
@@ -231,6 +237,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     }),
     sourceUrls: ["https://en.wikipedia.org/wiki/George_Washington"],
     status: "rejected",
+    createdAt: new Date("2024-02-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-02-01T00:00:00.000Z"),
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("efd39a4ac3bdfd03d2f8cdf1"),
@@ -284,6 +292,8 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
     rejection: undefined,
     sourceUrls: ["https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science"],
     status: "archived",
+    createdAt: new Date("2024-01-01T00:00:00.000Z"),
+    updatedAt: new Date("2024-01-01T00:00:00.000Z"),
   }),
 ] as const satisfies ReturnType<typeof createFakeQuestionDocument>[];
 

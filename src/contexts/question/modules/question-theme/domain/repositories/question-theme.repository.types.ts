@@ -1,9 +1,11 @@
 import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 type QuestionThemeRepository = {
-  findAll: () => Promise<QuestionTheme[]>;
+  findAll: (sortOptions: SortOptions<QuestionThemeSortableField>) => Promise<QuestionTheme[]>;
   findById: (id: string) => Promise<QuestionTheme | undefined>;
   findByIds: (ids: Set<string>) => Promise<QuestionTheme[]>;
   findBySlug: (slug: string) => Promise<QuestionTheme | undefined>;

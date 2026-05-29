@@ -21,6 +21,7 @@ function createFetchOptions(options: AppFetchOptions = {}): FetchOptions {
     headers: createFetchHeaders(options),
     method: options.method,
     body: options.body ? JSON.stringify(options.body) : undefined,
+    query: options.query,
   };
 }
 

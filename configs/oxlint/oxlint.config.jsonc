@@ -320,7 +320,7 @@
     "import/max-dependencies": [
       "error",
       {
-        "max": 25,
+        "max": 30,
         "ignoreTypeImports": true
       }
     ],

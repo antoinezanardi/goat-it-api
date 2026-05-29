@@ -14,6 +14,14 @@ When(/^the client retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, 
   await this.fetchAndStoreResponse("/questions", fetchOptions);
 });
 
+When(/^the client retrieves all questions sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    query: { "sort-by": sortBy, "sort-order": sortOrder },
+  });
+  await this.fetchAndStoreResponse("/questions", fetchOptions);
+});
+
 When(/^the client retrieves all questions without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/questions", fetchOptions);

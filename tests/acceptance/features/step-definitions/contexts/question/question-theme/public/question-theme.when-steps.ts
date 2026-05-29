@@ -14,6 +14,14 @@ When(/^the client retrieves all question themes(?: in locale "(?<locale>[^"]+)")
   await this.fetchAndStoreResponse("/question-themes", fetchOptions);
 });
 
+When(/^the client retrieves all question themes sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    query: { "sort-by": sortBy, "sort-order": sortOrder },
+  });
+  await this.fetchAndStoreResponse("/question-themes", fetchOptions);
+});
+
 When(/^the client retrieves all question themes without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/question-themes", fetchOptions);

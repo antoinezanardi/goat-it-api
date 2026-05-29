@@ -3,10 +3,12 @@ import type { QuestionThemeAssignmentCreationContract } from "@question/domain/c
 import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
 import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
 
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 import type { Question } from "@question/domain/entities/question.types";
 
 type QuestionRepository = {
-  findAll: () => Promise<Question[]>;
+  findAll: (sortOptions: SortOptions<QuestionSortableField>) => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
   archive: (id: string) => Promise<Question | undefined>;

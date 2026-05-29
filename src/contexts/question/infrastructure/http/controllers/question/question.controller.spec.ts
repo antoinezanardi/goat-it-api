@@ -2,6 +2,8 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
@@ -13,10 +15,15 @@ import { createMockedFindQuestionsUseCase } from "@mocks/contexts/question/appli
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
+import { createFakeFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/find-questions-sort-query/find-questions-sort-query.dto.faketory";
 
 import type { Mock } from "vitest";
 
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+
 vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Question Controller", () => {
   let questionController: QuestionController;
@@ -30,6 +37,7 @@ describe("Question Controller", () => {
     };
     mappers: {
       createQuestionDtoFromEntity: Mock;
+      createSortOptionsFromSortQueryDto: Mock;
     };
   };
 
@@ -44,6 +52,7 @@ describe("Question Controller", () => {
       },
       mappers: {
         createQuestionDtoFromEntity: vi.mocked(createQuestionDtoFromEntity),
+        createSortOptionsFromSortQueryDto: vi.mocked(createSortOptionsFromSortQueryDto),
       },
     };
 
@@ -69,27 +78,40 @@ describe("Question Controller", () => {
   });
 
   describe(QuestionController.prototype.findQuestions, () => {
-    it("should list all questions when called.", async() => {
+    it("should create sort options from sort query dto when called.", async() => {
+      const sortQueryDto = createFakeFindQuestionsSortQueryDto();
       const localization = createFakeLocalizationOptions();
-      await questionController.findQuestions(localization);
+      await questionController.findQuestions(sortQueryDto, localization);
 
-      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.mappers.createSortOptionsFromSortQueryDto).toHaveBeenCalledExactlyOnceWith(sortQueryDto);
+    });
+
+    it("should list all questions with sort options when called.", async() => {
+      const sortQueryDto = createFakeFindQuestionsSortQueryDto();
+      const localization = createFakeLocalizationOptions();
+      const expectedSortOptions: SortOptions<QuestionSortableField> = { sortBy: "createdAt", sortOrder: "desc" };
+      mocks.mappers.createSortOptionsFromSortQueryDto.mockReturnValueOnce(expectedSortOptions);
+      await questionController.findQuestions(sortQueryDto, localization);
+
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expectedSortOptions);
     });
 
     it("should map every question to dto when called.", async() => {
+      const sortQueryDto = createFakeFindQuestionsSortQueryDto();
       const localization = createFakeLocalizationOptions();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
         createFakeQuestion(),
       ];
-
-      await questionController.findQuestions(localization);
+      mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
+      await questionController.findQuestions(sortQueryDto, localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);
     });
 
     it("should call the mapper with the correct parameters when called.", async() => {
+      const sortQueryDto = createFakeFindQuestionsSortQueryDto();
       const localization = createFakeLocalizationOptions();
       const questions = [
         createFakeQuestion(),
@@ -98,7 +120,7 @@ describe("Question Controller", () => {
       ];
       mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
 
-      await questionController.findQuestions(localization);
+      await questionController.findQuestions(sortQueryDto, localization);
 
       expect(mocks.mappers.createQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0], localization);
     });

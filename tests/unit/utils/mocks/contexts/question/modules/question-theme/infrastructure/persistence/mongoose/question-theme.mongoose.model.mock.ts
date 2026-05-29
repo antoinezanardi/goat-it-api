@@ -4,23 +4,44 @@ import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/q
 
 import type { Mock } from "vitest";
 
+type QuestionThemeMongooseFindQuery = Promise<QuestionThemeMongooseDocumentStub[]> & {
+  sort: Mock<(sortOptions: unknown) => Promise<QuestionThemeMongooseDocumentStub[]>>;
+};
+
 type QuestionThemeMongooseModelStub = {
-  find: () => Promise<QuestionThemeMongooseDocumentStub[]>;
+  find: (...arguments_: unknown[]) => QuestionThemeMongooseFindQuery;
   findOne: () => Promise<QuestionThemeMongooseDocumentStub | null>;
   findById: (id: string) => Promise<QuestionThemeMongooseDocumentStub | null>;
   create: () => Promise<QuestionThemeMongooseDocumentStub>;
   findByIdAndUpdate: (id: string, update: unknown, options?: unknown) => Promise<QuestionThemeMongooseDocumentStub | null>;
 };
 
-type MockedQuestionThemeMongooseModel = { [K in keyof QuestionThemeMongooseModelStub]: Mock<QuestionThemeMongooseModelStub[K]> };
+type MockedQuestionThemeMongooseModel = {
+  find: Mock<QuestionThemeMongooseModelStub["find"]>;
+  findQuery: QuestionThemeMongooseFindQuery;
+  findOne: Mock<QuestionThemeMongooseModelStub["findOne"]>;
+  findById: Mock<QuestionThemeMongooseModelStub["findById"]>;
+  create: Mock<QuestionThemeMongooseModelStub["create"]>;
+  findByIdAndUpdate: Mock<QuestionThemeMongooseModelStub["findByIdAndUpdate"]>;
+};
+
+function createQuestionThemeMongooseFindQuery(documents: QuestionThemeMongooseDocumentStub[]): QuestionThemeMongooseFindQuery {
+  const sortMock = vi.fn<(sortOptions: unknown) => Promise<QuestionThemeMongooseDocumentStub[]>>().mockResolvedValue(documents);
+
+  return Object.assign(Promise.resolve(documents), { sort: sortMock });
+}
 
 function createMockedQuestionThemeMongooseModel(overrides: Partial<MockedQuestionThemeMongooseModel> = {}): MockedQuestionThemeMongooseModel {
+  const defaultDocuments = [
+    createFakeQuestionThemeDocument(),
+    createFakeQuestionThemeDocument(),
+    createFakeQuestionThemeDocument(),
+  ];
+  const findQuery = overrides.findQuery ?? createQuestionThemeMongooseFindQuery(defaultDocuments);
+
   return {
-    find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockResolvedValue([
-      createFakeQuestionThemeDocument(),
-      createFakeQuestionThemeDocument(),
-      createFakeQuestionThemeDocument(),
-    ]),
+    find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockReturnValue(findQuery),
+    findQuery,
     findOne: vi.fn<QuestionThemeMongooseModelStub["findOne"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     findById: vi.fn<QuestionThemeMongooseModelStub["findById"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
     create: vi.fn<QuestionThemeMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionThemeDocument()),
@@ -29,4 +50,4 @@ function createMockedQuestionThemeMongooseModel(overrides: Partial<MockedQuestio
   };
 }
 
-export { createMockedQuestionThemeMongooseModel };
+export { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFindQuery };

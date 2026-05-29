@@ -386,6 +386,8 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 - **Classes**: May use inline `export class` since only one class per file is allowed.
 
+- **No type re-exports**: Never re-export types from a file that is not their original declaration. Import types from their canonical source (the file where they are defined). This prevents barrel-style indirection and keeps the dependency graph explicit.
+
 ### DTOs
 
 - Zod schema in `*.dto.shape.ts`: export the `z.object(...)` const (named `FOO_DTO`) and the inferred `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })` on fields to drive OpenAPI output. Boolean fields only require `.describe()` — `.meta({ example })` is not needed for booleans.

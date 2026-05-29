@@ -2,6 +2,8 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
@@ -37,14 +39,19 @@ import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contex
 import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
 import { createFakeQuestionThemeAssignmentModificationDto } from "@faketories/contexts/question/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.faketory";
 import { createFakeQuestionThemeAssignmentModificationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment-modification.commands.faketory";
+import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.faketory";
 
 import type { Mock } from "vitest";
+
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
 
 vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-creation/question-creation.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-modification/question-modification.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers"));
 vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers"));
+vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Admin Question Controller", () => {
   let adminQuestionController: AdminQuestionController;
@@ -68,6 +75,7 @@ describe("Admin Question Controller", () => {
       createQuestionModificationCommandFromDto: Mock;
       createQuestionThemeAssignmentCreationCommandFromDto: Mock;
       createQuestionThemeAssignmentModificationCommandFromDto: Mock;
+      createSortOptionsFromSortQueryDto: Mock;
     };
   };
 
@@ -92,6 +100,7 @@ describe("Admin Question Controller", () => {
         createQuestionModificationCommandFromDto: vi.mocked(createQuestionModificationCommandFromDto),
         createQuestionThemeAssignmentCreationCommandFromDto: vi.mocked(createQuestionThemeAssignmentCreationCommandFromDto),
         createQuestionThemeAssignmentModificationCommandFromDto: vi.mocked(createQuestionThemeAssignmentModificationCommandFromDto),
+        createSortOptionsFromSortQueryDto: vi.mocked(createSortOptionsFromSortQueryDto),
       },
     };
 
@@ -141,37 +150,50 @@ describe("Admin Question Controller", () => {
   });
 
   describe(AdminQuestionController.prototype.findQuestions, () => {
-    it("should list all questions when called.", async() => {
-      await adminQuestionController.findQuestions();
+    it("should create sort options from sort query dto when called.", async() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
+      await adminQuestionController.findQuestions(sortQueryDto);
 
-      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.mappers.createSortOptionsFromSortQueryDto).toHaveBeenCalledExactlyOnceWith(sortQueryDto);
+    });
+
+    it("should list all questions with sort options when called.", async() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
+      const expectedSortOptions: SortOptions<QuestionSortableField> = { sortBy: "createdAt", sortOrder: "desc" };
+      mocks.mappers.createSortOptionsFromSortQueryDto.mockReturnValueOnce(expectedSortOptions);
+      await adminQuestionController.findQuestions(sortQueryDto);
+
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expectedSortOptions);
     });
 
     it("should map every question to admin dto when called.", async() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
         createFakeQuestion(),
       ];
       mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findQuestions();
+      await adminQuestionController.findQuestions(sortQueryDto);
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);
     });
 
     it("should call the mapper with the correct parameters when called.", async() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
         createFakeQuestion(),
       ];
       mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findQuestions();
+      await adminQuestionController.findQuestions(sortQueryDto);
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0]);
     });
 
     it("should return the mapped dtos when called.", async() => {
+      const sortQueryDto = createFakeAdminFindQuestionsSortQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
@@ -182,7 +204,7 @@ describe("Admin Question Controller", () => {
         createFakeAdminQuestionDto(),
       ];
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDtos[0]).mockReturnValueOnce(expectedDtos[1]);
-      const result = await adminQuestionController.findQuestions();
+      const result = await adminQuestionController.findQuestions(sortQueryDto);
 
       expect(result).toStrictEqual(expectedDtos);
     });
