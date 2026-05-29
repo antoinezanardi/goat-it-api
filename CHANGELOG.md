@@ -1,5 +1,45 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.18.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.18.0...v1.18.1) (2026-05-27)
+
+### 🐛 Bug Fixes
+
+* **docker:** update CMD to run main.js directly for production ([47bcffd](https://github.com/antoinezanardi/goat-it-api/commit/47bcffd2de4bc33a9763f3606bd38b1107318aa4))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@nestjs/swagger` | `^11.4.4` |
+| `axios` | `^1.16.1` |
+| `mongoose` | `^9.6.2` |
+| `nestjs-zod` | `^5.4.0` |
+| `radashi` | `^12.9.1` |
+| `nest monorepo` | `^11.1.24` |
+| `commitlint monorepo` | `^21.0.1` |
+| `commitlint monorepo to v21 (major)` |  |
+| `@cucumber/cucumber` | `^12.9.0` |
+| `@eslint/config-inspector` | `v3` |
+| `@nestjs/testing` | `^11.1.23` |
+| `@semantic-release/release-notes-generator` | `^14.1.1` |
+| `@swc/core` | `^1.15.40` |
+| `@types/node` | `^24.12.4` |
+| `@typescript/native-preview` | `v7.0.0-dev.20260527.1` |
+| `@vitest/eslint-plugin` | `^1.6.18` |
+| `eslint` | `^10.4.0` |
+| `expect` | `^30.4.1` |
+| `jiti` | `^2.7.0` |
+| `lint-staged` | `v17` |
+| `oxlint-tsgolint` | `^0.23.0` |
+| `tsdown` | `^0.22.0` |
+| `tsx` | `^4.22.3` |
+| `mongo docker tag` | `v8.3.2` |
+| `oxlint monorepo` | `v1.67.0` |
+| `pnpm` | `v11.1.2` |
+| `sonarsource/sonarqube-scan-action action` | `v8.1` |
+| `typescript-eslint monorepo` | `^8.60.0` |
+| `vitest monorepo` | `^4.1.7` |
+
 ## [1.18.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.17.0...v1.18.0) (2026-05-04)
 
 ### 🚀 Features
