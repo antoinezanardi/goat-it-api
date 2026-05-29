@@ -28,8 +28,8 @@ import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/conte
 
 import type { Mock } from "vitest";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers"));
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme-creation/question-theme-creation.dto.mappers"));

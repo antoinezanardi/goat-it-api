@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { SORT_ORDERS } from "@shared/domain/constants/sort-order.constants";
+import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { ADMIN_FIND_QUESTION_THEMES_SORT_QUERY_DTO } from "@question/modules/question-theme/application/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.shape";

@@ -1,6 +1,6 @@
 import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 
 describe("Sort Query DTO Mapper", () => {
   describe(createSortOptionsFromSortQueryDto, () => {

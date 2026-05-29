@@ -18,8 +18,8 @@ import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/conte
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 
 vi.mock(import("@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 

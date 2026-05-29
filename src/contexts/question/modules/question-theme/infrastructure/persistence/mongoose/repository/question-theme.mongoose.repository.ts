@@ -3,17 +3,19 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import { getSortDirectionFromSortOrder } from "@shared/domain/helpers/sort.helpers";
+import { getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose-sort.helpers";
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose-sort.helpers";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
 import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
-import { QuestionThemeRepository, QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 import { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 import { QuestionThemeMongooseDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {
@@ -21,8 +23,8 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
   public async findAll(sortOptions: SortOptions<QuestionThemeSortableField>): Promise<QuestionTheme[]> {
-    const sortDirection = getSortDirectionFromSortOrder(sortOptions.sortOrder);
-    const sortCriteria: Record<string, 1 | -1> = { [sortOptions.sortBy]: sortDirection, _id: sortDirection };
+    const sortDirection = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
+    const sortCriteria: Record<string, MongoSortDirection> = { [sortOptions.sortBy]: sortDirection, _id: sortDirection };
     // oxlint-disable-next-line unicorn/no-array-sort -- .sort() is a Mongoose Query method, not Array.prototype.sort
     const questionThemeDocuments = await this.questionThemeModel.find().sort(sortCriteria);
 

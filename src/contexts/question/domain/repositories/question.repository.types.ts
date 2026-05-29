@@ -4,7 +4,7 @@ import type { QuestionThemeAssignmentModificationContract } from "@question/doma
 import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
 
 import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
-import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 import type { Question } from "@question/domain/entities/question.types";
 
 type QuestionRepository = {
@@ -20,5 +20,3 @@ type QuestionRepository = {
 };
 
 export type { QuestionRepository };
-
-export { type QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";

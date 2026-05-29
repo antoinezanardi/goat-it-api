@@ -1,7 +1,7 @@
 import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question/modules/question-theme/domain/contracts/question-theme.contracts";
 
 import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
-import type { SortOptions } from "@shared/domain/types/sort.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 import type { QuestionTheme } from "@question/modules/question-theme/domain/entities/question-theme.types";
 
 type QuestionThemeRepository = {
@@ -15,5 +15,3 @@ type QuestionThemeRepository = {
 };
 
 export type { QuestionThemeRepository };
-
-export { type QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";

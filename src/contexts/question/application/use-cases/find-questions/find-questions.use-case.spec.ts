@@ -10,8 +10,8 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.faketory";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionSortableField } from "@question/domain/repositories/question.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
 
 describe("Find Questions Use Case", () => {
   let findQuestionsUseCase: FindQuestionsUseCase;

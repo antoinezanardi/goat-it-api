@@ -9,8 +9,9 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question/mo
 
 import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/contexts/question/question-theme/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.faketory";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionThemeRepository, QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionThemeRepository } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 
 describe("Find Question Themes Use Case", () => {
   let findQuestionThemesUseCase: FindQuestionThemesUseCase;

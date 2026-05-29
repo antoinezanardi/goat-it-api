@@ -19,8 +19,8 @@ import { createFakeFindQuestionsSortQueryDto } from "@faketories/contexts/questi
 
 import type { Mock } from "vitest";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionSortableField } from "@question/domain/repositories/question.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
 
 vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));

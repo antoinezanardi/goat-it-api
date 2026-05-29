@@ -20,8 +20,8 @@ import { createFakeFindQuestionThemesSortQueryDto } from "@faketories/contexts/q
 
 import type { Mock } from "vitest";
 
-import type { SortOptions } from "@shared/domain/types/sort.types";
-import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/repositories/question-theme.repository.types";
+import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionThemeSortableField } from "@question/modules/question-theme/domain/types/question-theme-sortable-fields.types";
 
 vi.mock(import("@question/modules/question-theme/application/mappers/question-theme/question-theme.dto.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
