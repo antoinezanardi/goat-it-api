@@ -1,13 +1,9 @@
-import type { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
-import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
+import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
+import type { Question } from "@question/domain/types/question.entities";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 import type { Mock } from "vitest";
-
-import type { Question } from "@question/domain/entities/question.types";
 
 type QuestionRepositoryStub = {
   findAll: () => Promise<Question[]>;

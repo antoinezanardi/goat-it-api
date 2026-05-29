@@ -269,7 +269,26 @@ Each item below has a **condition** (when it applies), an **action** (what to do
 src/
   app/                  # App module, root controller, metadata
   contexts/
-    question/           # Bounded context: domain, application, infrastructure, modules/
+    question/           # Question bounded context (single aggregate)
+      domain/
+        constants/      # Domain constants (sortable fields, value-object values)
+        types/          # Type definitions (entities, commands, contracts, value-objects)
+        rules/          # Domain logic (predicates, policies, helpers — unified)
+        errors/         # Domain error classes (one folder per error)
+        repositories/   # Port interfaces + injection tokens
+      application/
+      infrastructure/
+      question.module.ts
+    question-theme/     # Question-Theme bounded context (single aggregate)
+      domain/
+        constants/
+        types/
+        rules/
+        errors/         # Domain error classes (one folder per error)
+        repositories/
+      application/
+      infrastructure/
+      question-theme.module.ts
   infrastructure/       # Cross-cutting API concerns (auth, health, config, database)
   shared/               # Shared domain, application, and infrastructure utilities
 
@@ -282,7 +301,7 @@ tests/
   mutation/             # Stryker incremental results (committed)
 ```
 
-Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters) layers:
+Each bounded context is a peer folder under `contexts/` with its own module. Each follows Clean Architecture / Hexagonal (Ports & Adapters) layers:
 
 - `domain/` — entities, value-objects, errors, commands, contracts, repository interfaces (ports)
 - `application/` — use-cases, DTOs (Zod shapes + nestjs-zod wrappers), mappers
@@ -292,9 +311,10 @@ Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters) l
 
 ### Domain patterns
 
-- **Predicates** (`domain/predicates/`): pure boolean functions for yes/no domain questions.
-- **Policies** (`domain/policies/`): enforce complex business rules; throw domain errors on violation; called by use-cases before state changes.
-- **Helpers** (`domain/helpers/`): pure transformation/computation functions.
+- **Rules** (`domain/rules/`): all domain logic in a single directory per aggregate, distinguished by naming convention:
+  - *Predicates* (`is*`, `has*`, `can*`): pure boolean functions for yes/no domain questions.
+  - *Policies* (`ensure*`): enforce complex business rules; throw domain errors on violation; called by use-cases before state changes.
+  - *Helpers* (descriptive names): pure transformation/computation functions.
 - **Mappers** (`application/mappers/`, `infrastructure/persistence/mongoose/mappers/`): convert between persistence documents ↔ domain entities ↔ DTOs. Keep them pure, explicit and side-effect-free.
 
 ### Repository pattern
@@ -318,6 +338,7 @@ Use path aliases everywhere — no relative `../` or `./` imports are permitted.
 | `@shared/*`              | `src/shared/*`                    | tsconfig, swc, vitest |
 | `@configs/*`             | `configs/*`                       | tsconfig, swc, vitest |
 | `@question/*`            | `src/contexts/question/*`         | tsconfig, swc, vitest |
+| `@question-theme/*`      | `src/contexts/question-theme/*`   | tsconfig, swc, vitest |
 | `@unit-tests/*`          | `tests/unit/*`                    | tsconfig, vitest      |
 | `@mocks/*`               | `tests/unit/utils/mocks/*`        | tsconfig, vitest      |
 | `@faketories/*`          | `tests/shared/utils/faketories/*` | tsconfig, vitest      |

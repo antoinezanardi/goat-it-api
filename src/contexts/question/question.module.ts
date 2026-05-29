@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { QuestionThemeModule } from "@question-theme/question-theme.module";
+
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
@@ -14,7 +16,6 @@ import { AdminQuestionController } from "@question/infrastructure/http/controlle
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QuestionThemeModule } from "@question/modules/question-theme/question-theme.module";
 
 @Module({
   imports: [

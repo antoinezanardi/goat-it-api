@@ -1,13 +1,12 @@
 import { Types } from "mongoose";
 
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
-import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
-import { createQuestionThemeFromDocument } from "@question/modules/question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
+import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 
-import type { Question } from "@question/domain/entities/question.types";
-import type { QuestionAuthor } from "@question/domain/value-objects/question-author/question-author.types";
-import type { QuestionThemeAssignment } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.types";
+import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
+import type { Question } from "@question/domain/types/question.entities";
+import type { QuestionAuthor, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
+
 import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate): QuestionAuthor {

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/question-rejection/question-rejection.constants";
+import { QUESTION_REJECTION_TYPES } from "@question/domain/constants/question.constants";
 
 const QUESTION_REJECTION_DTO = z.strictObject({
   type: z.enum(QUESTION_REJECTION_TYPES)

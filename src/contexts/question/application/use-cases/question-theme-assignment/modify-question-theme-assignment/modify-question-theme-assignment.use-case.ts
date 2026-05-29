@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment-modification.errors";
-import { ensureQuestionThemeAssignmentIsModifiable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
+import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment-modification/question-theme-assignment-modification.error";
+import { ensureQuestionThemeAssignmentIsModifiable } from "@question/domain/rules/question.rules";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import type { QuestionThemeAssignmentModificationCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment-modification.commands";
+import type { QuestionThemeAssignmentModificationCommand } from "@question/domain/types/question.commands";
+import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import type { Question } from "@question/domain/entities/question.types";
 
 @Injectable()
 export class ModifyQuestionThemeAssignmentUseCase {

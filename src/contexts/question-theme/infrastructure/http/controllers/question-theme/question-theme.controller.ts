@@ -1,0 +1,68 @@
+import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
+import { ApiOperation } from "@nestjs/swagger";
+import { ZodResponse } from "nestjs-zod";
+
+import { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import { QuestionThemeNestZodDto } from "@question-theme/application/dto/question-theme/question-theme.dto";
+import { FindQuestionThemesSortQueryNestZodDto } from "@question-theme/application/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto";
+import { createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
+import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+
+import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
+import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+
+import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
+import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
+import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
+
+import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
+
+@GameAuth()
+@Controller(ControllerPrefixes.QUESTION_THEMES)
+export class QuestionThemeController {
+  public constructor(
+    private readonly findQuestionThemesUseCase: FindQuestionThemesUseCase,
+    private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+  ) {}
+
+  @Get()
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Get all question themes",
+    description: "Get the list of all question themes available in the database in the desired localization.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: [QuestionThemeNestZodDto],
+  })
+  public async findQuestionThemes(
+    @Query() sortQueryDto: FindQuestionThemesSortQueryNestZodDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto[]> {
+    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+    const questionThemes = await this.findQuestionThemesUseCase.list(sortOptions);
+
+    return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
+  }
+
+  @Get("/:id")
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTION_THEMES],
+    summary: "Get question theme by ID",
+    description: "Get a specific question theme by its unique identifier in the desired localization.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeNestZodDto,
+  })
+  public async findQuestionThemeById(
+    @Param("id", MongoIdPipe) id: string,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionThemeDto> {
+    const questionTheme = await this.findQuestionThemeByIdUseCase.getById(id);
+
+    return createQuestionThemeDtoFromEntity(questionTheme, localization);
+  }
+}

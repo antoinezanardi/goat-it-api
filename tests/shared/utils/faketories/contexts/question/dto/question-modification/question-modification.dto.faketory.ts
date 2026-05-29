@@ -1,7 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 import type { QuestionContentModificationDto } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
 import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 

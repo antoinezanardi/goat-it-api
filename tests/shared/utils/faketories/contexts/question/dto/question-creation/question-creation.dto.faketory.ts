@@ -1,8 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
+import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 
 import { createFakeQuestionContentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-content-creation/question-content-creation.dto.faketory";
 import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";

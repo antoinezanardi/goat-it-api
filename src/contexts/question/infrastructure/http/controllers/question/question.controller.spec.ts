@@ -7,7 +7,7 @@ import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/s
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
-import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
+import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
@@ -20,9 +20,9 @@ import { createFakeFindQuestionsSortQueryDto } from "@faketories/contexts/questi
 import type { Mock } from "vitest";
 
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
-import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+import type { QuestionSortableField } from "@question/domain/types/question.types";
 
-vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
+vi.mock(import("@question/application/mappers/question.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Question Controller", () => {

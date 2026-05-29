@@ -1,11 +1,8 @@
-import type { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
-import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
+import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
+import type { Question } from "@question/domain/types/question.entities";
 
-import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+import type { QuestionSortableField } from "@question/domain/types/question.types";
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
-import type { Question } from "@question/domain/entities/question.types";
 
 type QuestionRepository = {
   findAll: (sortOptions: SortOptions<QuestionSortableField>) => Promise<Question[]>;

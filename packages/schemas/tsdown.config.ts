@@ -11,6 +11,7 @@ export default defineConfig({
   alias: {
     "@shared": new URL("../../src/shared", import.meta.url).pathname,
     "@question": new URL("../../src/contexts/question", import.meta.url).pathname,
+    "@question-theme": new URL("../../src/contexts/question-theme", import.meta.url).pathname,
   },
   format: ["esm"],
   deps: {

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
+import type { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 
 function createFakeQuestionThemeAssignmentCreationContract(assignment: Partial<QuestionThemeAssignmentCreationContract> = {}): QuestionThemeAssignmentCreationContract {
   return {

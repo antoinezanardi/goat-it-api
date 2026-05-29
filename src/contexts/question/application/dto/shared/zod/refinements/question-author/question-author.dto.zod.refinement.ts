@@ -1,4 +1,4 @@
-import type { QuestionAuthorRole } from "@question/domain/value-objects/question-author/question-author.types";
+import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
 type QuestionAuthorDtoZodRefinement = {
   role: QuestionAuthorRole;

@@ -13,7 +13,7 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 import { FindQuestionsSortQueryNestZodDto } from "@question/application/dto/find-questions-sort-query/find-questions-sort-query.dto";
 import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
+import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
 
