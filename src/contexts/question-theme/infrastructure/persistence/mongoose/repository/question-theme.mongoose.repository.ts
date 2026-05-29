@@ -8,9 +8,8 @@ import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
-import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose-sort.helpers";
-import { getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose-sort.helpers";
-import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { getCrushedDataForMongoPatchUpdate, getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";

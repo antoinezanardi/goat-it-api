@@ -5,6 +5,19 @@ Feature: Sort Question Themes as Admin
   As an admin API client
   I want to be able to sort question themes by various fields
 
+  Scenario: Sorting admin question themes by slug in ascending order (default behavior)
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the admin retrieves all question themes sorted by "slug" in "asc" order
+    Then the request should have succeeded with status code 200
+    And the response should contain 5 admin question themes
+    And the response should contain the following admin question themes:
+      | slug    | status   |
+      | cinema  | active   |
+      | history | active   |
+      | music   | active   |
+      | science | active   |
+      | sports  | archived |
+
   Scenario: Sorting admin question themes by createdAt in ascending order
     Given the database is populated with question themes fixture set with name "five-question-themes"
     When the admin retrieves all question themes sorted by "createdAt" in "asc" order

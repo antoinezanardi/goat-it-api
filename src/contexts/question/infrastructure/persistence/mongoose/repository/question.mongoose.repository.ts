@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import { getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose-sort.helpers";
+import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
+import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
@@ -22,11 +22,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
   public async findAll(sortOptions: SortOptions<QuestionSortableField>): Promise<Question[]> {
-    const sortDirection = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
-    const sortStage = { $sort: { [sortOptions.sortBy]: sortDirection, _id: sortDirection } };
+    const sortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
-      sortStage,
+      ...sortStages,
     ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);

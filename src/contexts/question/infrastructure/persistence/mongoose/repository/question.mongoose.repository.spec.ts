@@ -3,12 +3,14 @@ import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
 import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -82,17 +84,37 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and ascending sort stage when sort order is asc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "asc" };
+      sortOptions = { ...sortOptions, sortOrder: "asc", sortBy: "createdAt" };
       await repositories.question.findAll(sortOptions);
-      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, { $sort: { [sortOptions.sortBy]: 1, _id: 1 } }];
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
 
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
 
     it("should aggregate with pipeline and descending sort stage when sort order is desc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "desc" };
+      sortOptions = { ...sortOptions, sortOrder: "desc", sortBy: "category" };
       await repositories.question.findAll(sortOptions);
-      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, { $sort: { [sortOptions.sortBy]: -1, _id: -1 } }];
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages when sort field has a semantic order.", async() => {
+      sortOptions = { sortOrder: "asc", sortBy: "status" };
+      await repositories.question.findAll(sortOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages in descending order when sort field has a semantic order and direction is desc.", async() => {
+      sortOptions = { sortOrder: "desc", sortBy: "cognitiveDifficulty" };
+      await repositories.question.findAll(sortOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
 
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });

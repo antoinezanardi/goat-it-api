@@ -42,7 +42,7 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
       themes: {
         $sortArray: {
           input: "$themes",
-          sortBy: { "theme._id": 1 },
+          sortBy: { "isPrimary": -1, "theme.slug": 1 },
         },
       },
     },
