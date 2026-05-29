@@ -3,16 +3,10 @@ import { z } from "zod";
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
-import { QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS } from "@question/domain/value-objects/question-source-urls/question-source-urls.constants";
-import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
+import type { QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
 import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime } from "zod";
-
-import type { QuestionCategoryEnum } from "@question/domain/value-objects/question-category/question-category.types";
-import type { QuestionStatusEnum } from "@question/domain/value-objects/question-status/question-status.types";
-import type { QuestionCognitiveDifficultyEnum } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
 
 function zQuestionCognitiveDifficulty(): ZodEnum<QuestionCognitiveDifficultyEnum> {
   return z.enum(QUESTION_COGNITIVE_DIFFICULTIES)

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
+import type { QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 
 function createFakeQuestionThemeAssignmentModificationContract(overrides: Partial<QuestionThemeAssignmentModificationContract> = {}): QuestionThemeAssignmentModificationContract {
   return {

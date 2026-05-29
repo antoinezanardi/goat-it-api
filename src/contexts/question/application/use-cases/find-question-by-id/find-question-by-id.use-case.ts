@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { Question } from "@question/domain/types/question.entities";
 
-import { Question } from "@question/domain/entities/question.types";
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()

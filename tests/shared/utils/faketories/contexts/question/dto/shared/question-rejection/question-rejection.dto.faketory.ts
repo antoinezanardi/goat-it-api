@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
 import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
-import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/question-rejection/question-rejection.constants";
+import { QUESTION_REJECTION_TYPES } from "@question/domain/constants/question.constants";
 
 function createFakeQuestionRejectionDto(questionRejectionDto: Partial<QuestionRejectionDto> = {}): QuestionRejectionDto {
   return {

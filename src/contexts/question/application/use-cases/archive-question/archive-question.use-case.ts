@@ -1,10 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { QuestionAlreadyArchivedError, QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
+import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import { QUESTION_STATUS_ARCHIVED } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_STATUS_ARCHIVED } from "@question/domain/constants/question.constants";
+import { Question } from "@question/domain/types/question.entities";
 
-import { Question } from "@question/domain/entities/question.types";
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()

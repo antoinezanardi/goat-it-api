@@ -11,7 +11,7 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto.faketory";
 
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
-import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+import type { QuestionSortableField } from "@question/domain/types/question.types";
 
 describe("Find Questions Use Case", () => {
   let findQuestionsUseCase: FindQuestionsUseCase;

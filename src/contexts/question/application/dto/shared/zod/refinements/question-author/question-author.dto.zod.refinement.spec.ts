@@ -1,6 +1,5 @@
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
-
-import type { QuestionAuthorRole } from "@question/domain/value-objects/question-author/question-author.types";
+import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
 describe("Question Author Dto Zod Refinement", () => {
   describe(isGameIdSetOnGameRole, () => {

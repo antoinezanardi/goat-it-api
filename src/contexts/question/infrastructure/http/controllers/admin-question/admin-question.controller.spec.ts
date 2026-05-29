@@ -9,15 +9,12 @@ import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-qu
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
-import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
-import { createQuestionModificationCommandFromDto } from "@question/application/mappers/question-modification/question-modification.dto.mappers";
-import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
-import { createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers";
+import { createQuestionCreationCommandFromDto, createQuestionModificationCommandFromDto, createAdminQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
+import { createQuestionThemeAssignmentCreationCommandFromDto, createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
-import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
 import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
 import { createMockedModifyQuestionUseCase } from "@mocks/contexts/question/application/use-cases/modify-question.use-case.mock";
@@ -44,13 +41,10 @@ import { createFakeAdminFindQuestionsSortQueryDto } from "@faketories/contexts/q
 import type { Mock } from "vitest";
 
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
-import type { QuestionSortableField } from "@question/domain/types/question-sortable-fields.types";
+import type { QuestionSortableField } from "@question/domain/types/question.types";
 
-vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-creation/question-creation.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-modification/question-modification.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers"));
+vi.mock(import("@question/application/mappers/question.mappers"));
+vi.mock(import("@question/application/mappers/question-theme-assignment.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe("Admin Question Controller", () => {

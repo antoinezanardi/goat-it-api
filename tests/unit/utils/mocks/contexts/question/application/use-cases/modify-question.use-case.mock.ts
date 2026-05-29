@@ -1,10 +1,9 @@
-import type { QuestionModificationCommand } from "@question/domain/commands/question-modification.commands";
+import type { QuestionModificationCommand } from "@question/domain/types/question.commands";
+import type { Question } from "@question/domain/types/question.entities";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 import type { Mock } from "vitest";
-
-import type { Question } from "@question/domain/entities/question.types";
 
 type ModifyQuestionStub = {
   modify: (command: QuestionModificationCommand) => Promise<Question>;

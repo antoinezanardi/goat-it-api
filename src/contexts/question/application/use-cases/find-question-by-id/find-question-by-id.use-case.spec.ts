@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QuestionNotFoundError } from "@question/domain/errors/question.errors";
+import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";

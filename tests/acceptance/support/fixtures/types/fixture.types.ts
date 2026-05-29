@@ -1,5 +1,5 @@
 import type { QuestionMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
-import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
+import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 

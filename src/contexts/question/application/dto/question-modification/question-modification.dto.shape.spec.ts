@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { QUESTION_SOURCE_URLS_MAX_ITEMS } from "@question/domain/value-objects/question-source-urls/question-source-urls.constants";
+import { QUESTION_SOURCE_URLS_MAX_ITEMS } from "@question/domain/constants/question.constants";
 import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 import { QUESTION_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-modification.dto.shape";
 

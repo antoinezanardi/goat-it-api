@@ -1,19 +1,11 @@
 import { faker } from "@faker-js/faker";
 
-import { QUESTION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
-import { QUESTION_REJECTION_TYPES } from "@question/domain/value-objects/question-rejection/question-rejection.constants";
-import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_AUTHOR_ROLES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_CATEGORIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
+import type { Question } from "@question/domain/types/question.entities";
+import type { QuestionAuthor, QuestionContent, QuestionRejection, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
-
-import type { Question } from "@question/domain/entities/question.types";
-import type { QuestionAuthor } from "@question/domain/value-objects/question-author/question-author.types";
-import type { QuestionContent } from "@question/domain/value-objects/question-content/question-content.types";
-import type { QuestionRejection } from "@question/domain/value-objects/question-rejection/question-rejection.types";
-import type { QuestionThemeAssignment } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.types";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
 function createFakeQuestionThemeAssignment(questionThemeAssignment: Partial<QuestionThemeAssignment> = {}): QuestionThemeAssignment {
   return {

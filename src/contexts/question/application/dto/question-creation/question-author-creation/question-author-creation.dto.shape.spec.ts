@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { QUESTION_AUTHOR_NAME_MAX_LENGTH } from "@question/domain/value-objects/question-author/question-author.constants";
+import { QUESTION_AUTHOR_NAME_MAX_LENGTH } from "@question/domain/constants/question.constants";
 import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 import { QUESTION_AUTHOR_CREATION_DTO } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 

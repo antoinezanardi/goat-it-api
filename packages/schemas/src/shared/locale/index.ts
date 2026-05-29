@@ -1,3 +1,3 @@
-export { LOCALES } from "@app-shared/domain/value-objects/locale/locale.constants";
+export { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-export type { Locale, LocalizedText, LocalizedTexts } from "@app-shared/domain/value-objects/locale/locale.types";
+export type { Locale, LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";

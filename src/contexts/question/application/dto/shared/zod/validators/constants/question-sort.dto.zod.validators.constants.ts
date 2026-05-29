@@ -1,4 +1,4 @@
-import type { Question } from "@question/domain/entities/question.types";
+import type { Question } from "@question/domain/types/question.entities";
 
 const QUESTION_SORT_BY_DESCRIPTION = "Field to sort questions by";
 

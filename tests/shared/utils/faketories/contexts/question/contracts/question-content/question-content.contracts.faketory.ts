@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionContentCreationContract } from "@question/domain/contracts/question-content/question-content.contracts";
+import type { QuestionContentCreationContract } from "@question/domain/types/question.contracts";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 

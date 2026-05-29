@@ -4,7 +4,7 @@ import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { FIND_QUESTIONS_SORT_QUERY_DTO } from "@question/application/dto/find-questions-sort-query/find-questions-sort-query.dto.shape";
-import { QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question-sortable-fields.constants";
+import { QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
 import type { FindQuestionsSortQueryDto } from "@question/application/dto/find-questions-sort-query/find-questions-sort-query.dto.shape";
 
