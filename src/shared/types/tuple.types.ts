@@ -1,9 +1,10 @@
-import type { UnionToTuple } from "type-fest";
-
 /**
- * A readonly array type that enforces all members of a string union are present exactly once.
- * Uses `UnionToTuple` length check to prevent missing values and duplicates at compile time.
+ * A readonly tuple type that enforces all members of a string union are present exactly once.
+ * Generates a union of all valid permutations, preventing both missing values and duplicates at compile time.
  */
-type ExhaustiveTuple<Union extends string> = readonly Union[] & { length: UnionToTuple<Union>["length"] };
+type ExhaustiveTuple<Union extends string> =
+  [Union] extends [never] ?
+    readonly [] :
+    { [K in Union]: readonly [K, ...ExhaustiveTuple<Exclude<Union, K>>] }[Union];
 
 export type { ExhaustiveTuple };

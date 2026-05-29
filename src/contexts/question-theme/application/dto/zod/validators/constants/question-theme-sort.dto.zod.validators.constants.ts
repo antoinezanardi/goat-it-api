@@ -4,9 +4,9 @@ import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 const QUESTION_THEME_SORT_BY_DESCRIPTION = "Field to sort question themes by";
 
-const QUESTION_THEME_SORT_BY_DEFAULT = "slug" as const satisfies keyof QuestionTheme;
+const QUESTION_THEME_SORT_BY_DEFAULT = "slug" satisfies keyof QuestionTheme;
 
-const QUESTION_THEME_SORT_ORDER_DEFAULT = "asc" as const satisfies SortOrder;
+const QUESTION_THEME_SORT_ORDER_DEFAULT = "asc" satisfies SortOrder;
 
 const QUESTION_THEME_SORT_ORDER_DESCRIPTION = "Sort order direction for question themes";
 

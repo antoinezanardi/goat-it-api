@@ -84,7 +84,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and ascending sort stage when sort order is asc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "asc" };
+      sortOptions = { ...sortOptions, sortOrder: "asc", sortBy: "createdAt" };
       await repositories.question.findAll(sortOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -93,7 +93,25 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and descending sort stage when sort order is desc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "desc" };
+      sortOptions = { ...sortOptions, sortOrder: "desc", sortBy: "category" };
+      await repositories.question.findAll(sortOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages when sort field has a semantic order.", async() => {
+      sortOptions = { sortOrder: "asc", sortBy: "status" };
+      await repositories.question.findAll(sortOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages in descending order when sort field has a semantic order and direction is desc.", async() => {
+      sortOptions = { sortOrder: "desc", sortBy: "cognitiveDifficulty" };
       await repositories.question.findAll(sortOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
