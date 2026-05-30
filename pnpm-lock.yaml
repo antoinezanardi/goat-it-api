@@ -218,11 +218,11 @@ importers:
         version: 5.6.0
     devDependencies:
       '@arethetypeswrong/core':
-        specifier: ^0.18.2
-        version: 0.18.2
+        specifier: ^0.18.3
+        version: 0.18.3
       tsdown:
         specifier: ^0.22.1
-        version: 0.22.1(@arethetypeswrong/core@0.18.2)(@typescript/native-preview@7.0.0-dev.20260527.1)(tsx@4.22.3)(typescript@6.0.3)
+        version: 0.22.1(@arethetypeswrong/core@0.18.3)(@typescript/native-preview@7.0.0-dev.20260527.1)(tsx@4.22.3)(typescript@6.0.3)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -265,8 +265,8 @@ packages:
     resolution: {integrity: sha512-lnw+ZM1Io+cJAkReC0NPDjqObL8NtKzKIkdgEEKC8CUmkhurYhedbicN8Y8NYHgG1uLd2GozW3+/QqPRZaN+Lw==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0, npm: ^6.11.0 || ^7.5.6 || >=8.0.0, yarn: '>= 1.13.0'}
 
-  '@arethetypeswrong/core@0.18.2':
-    resolution: {integrity: sha512-GiwTmBFOU1/+UVNqqCGzFJYfBXEytUkiI+iRZ6Qx7KmUVtLm00sYySkfe203C9QtPG11yOz1ZaMek8dT/xnlgg==}
+  '@arethetypeswrong/core@0.18.3':
+    resolution: {integrity: sha512-sWBB/tdIktaT5xMq0Dz6CJyqcf6oMNdmiKiuPU1lWoJLTL6gjRSsksBuSgqot21hylkklBQY1wiSu+PkZhW7sw==}
     engines: {node: '>=20'}
 
   '@babel/code-frame@7.29.0':
@@ -3751,8 +3751,8 @@ packages:
       picomatch:
         optional: true
 
-  fflate@0.8.2:
-    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
 
   figures@2.0.0:
     resolution: {integrity: sha512-Oa2M9atig69ZkfwiApY8F2Yy+tzMbazyvqv21R0NsSC8floSOC09BbT1ITWAdoMGQvJ/aZnR1KMwdx9tvHnTNA==}
@@ -6284,14 +6284,14 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@arethetypeswrong/core@0.18.2':
+  '@arethetypeswrong/core@0.18.3':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
       '@loaderkit/resolve': 1.0.5
       cjs-module-lexer: 1.4.3
-      fflate: 0.8.2
+      fflate: 0.8.3
       lru-cache: 11.3.6
-      semver: 7.7.4
+      semver: 7.8.1
       typescript: 5.6.1-rc
       validate-npm-package-name: 5.0.1
 
@@ -8358,7 +8358,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.59.4
       debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.5
-      semver: 7.7.4
+      semver: 7.8.1
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -8373,7 +8373,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.60.0
       debug: 4.4.3(supports-color@8.1.1)
       minimatch: 10.2.5
-      semver: 7.7.4
+      semver: 7.8.1
       tinyglobby: 0.2.16
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
@@ -8921,7 +8921,7 @@ snapshots:
   binary-version-check@6.1.0:
     dependencies:
       binary-version: 7.1.0
-      semver: 7.7.4
+      semver: 7.8.1
       semver-truncate: 3.0.0
 
   binary-version@7.1.0:
@@ -9750,7 +9750,7 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
-  fflate@0.8.2: {}
+  fflate@0.8.3: {}
 
   figures@2.0.0:
     dependencies:
@@ -10503,7 +10503,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.1
 
   marked-terminal@7.3.0(marked@15.0.12):
     dependencies:
@@ -10684,13 +10684,13 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.7.4
+      semver: 7.8.1
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@8.0.0:
     dependencies:
       hosted-git-info: 9.0.3
-      semver: 7.7.4
+      semver: 7.8.1
       validate-npm-package-license: 3.0.4
 
   normalize-url@8.1.1: {}
@@ -11299,7 +11299,7 @@ snapshots:
 
   semver-truncate@3.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.1
 
   semver@6.3.1: {}
 
@@ -11670,7 +11670,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.22.1(@arethetypeswrong/core@0.18.2)(@typescript/native-preview@7.0.0-dev.20260527.1)(tsx@4.22.3)(typescript@6.0.3):
+  tsdown@0.22.1(@arethetypeswrong/core@0.18.3)(@typescript/native-preview@7.0.0-dev.20260527.1)(tsx@4.22.3)(typescript@6.0.3):
     dependencies:
       ansis: 4.3.0
       cac: 7.0.0
@@ -11688,7 +11688,7 @@ snapshots:
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
     optionalDependencies:
-      '@arethetypeswrong/core': 0.18.2
+      '@arethetypeswrong/core': 0.18.3
       tsx: 4.22.3
       typescript: 6.0.3
     transitivePeerDependencies:
