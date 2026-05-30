@@ -9,7 +9,7 @@ async function loadFixtureDependencies(
   loaded: Set<string>,
 ): Promise<void> {
   for (const [depDomain, depName] of dependencies) {
-    // This is acceptable here because we need to load each dependency sequentially and in order.
+    // Acceptable as dependencies must be loaded sequentially and in order
     // oxlint-disable-next-line no-await-in-loop
     await loadFixture(world, depDomain, depName, loaded);
   }
@@ -39,12 +39,12 @@ async function loadFixture<Domain extends FixtureDomain>(
   }
   loadedKeys.add(key);
 
-  // This is acceptable here because we ensure the types via the function signature.
+  // Acceptable as types are ensured via the function signature generics
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const fixture = FIXTURE_REGISTRY[domain][name] as FixtureDefinition<DomainFixtureData<Domain>>;
 
   if (fixture.dependencies) {
-    // This is acceptable here because we ensure the types via the function signature.
+    // Acceptable as types are ensured via the function signature generics
     // oxlint-disable-next-line typescript/no-unsafe-type-assertion
     const dependencies = fixture.dependencies as readonly FixtureReference<FixtureDomain>[];
     await loadFixtureDependencies(world, dependencies, loadedKeys);

@@ -4,7 +4,8 @@ function pickDefinedValues<T extends Record<string, unknown>>(object: T): Partia
   if (entries.length === 0) {
     return undefined;
   }
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- Object.fromEntries returns filtered subset of T entries
+  // Acceptable as Object.fromEntries returns filtered subset of T entries
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   return Object.fromEntries(entries) as Partial<T>;
 }
 
