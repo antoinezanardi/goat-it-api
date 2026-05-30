@@ -6,20 +6,18 @@ import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFindQuery } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
-import { createFakeAdminFindQuestionThemesSortQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
-import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
-import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 
@@ -62,35 +60,34 @@ describe("Question Theme Mongoose Repository", () => {
   });
 
   describe(QuestionThemeMongooseRepository.prototype.findAll, () => {
-    let sortOptions: SortOptions<QuestionThemeSortableField>;
+    let findAllOptions: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>;
 
     beforeEach(() => {
-      const sortQueryDto = createFakeAdminFindQuestionThemesSortQueryDto();
-      sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
+      findAllOptions = { sort: { sortBy: "createdAt", sortOrder: "asc" } };
     });
 
     it("should find all documents from model when called.", async() => {
-      await repositories.questionTheme.findAll(sortOptions);
+      await repositories.questionTheme.findAll(findAllOptions);
 
-      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith({});
     });
 
     it("should sort in ascending direction when sort order is asc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "asc" };
-      await repositories.questionTheme.findAll(sortOptions);
+      findAllOptions = { sort: { ...findAllOptions.sort, sortOrder: "asc" } };
+      await repositories.questionTheme.findAll(findAllOptions);
 
-      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [sortOptions.sortBy]: 1, _id: 1 });
+      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [findAllOptions.sort.sortBy]: 1, _id: 1 });
     });
 
     it("should sort in descending direction when sort order is desc.", async() => {
-      sortOptions = { ...sortOptions, sortOrder: "desc" };
-      await repositories.questionTheme.findAll(sortOptions);
+      findAllOptions = { sort: { ...findAllOptions.sort, sortOrder: "desc" } };
+      await repositories.questionTheme.findAll(findAllOptions);
 
-      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [sortOptions.sortBy]: -1, _id: -1 });
+      expect(mocks.models.questionTheme.findQuery.sort).toHaveBeenCalledExactlyOnceWith({ [findAllOptions.sort.sortBy]: -1, _id: -1 });
     });
 
     it("should map and return question themes when called.", async() => {
-      const questionThemes = await repositories.questionTheme.findAll(sortOptions);
+      const questionThemes = await repositories.questionTheme.findAll(findAllOptions);
 
       expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledTimes(questionThemes.length);
     });
@@ -105,7 +102,7 @@ describe("Question Theme Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestionThemes[0])
         .mockReturnValueOnce(expectedQuestionThemes[1])
         .mockReturnValueOnce(expectedQuestionThemes[2]);
-      const actualQuestionThemes = await repositories.questionTheme.findAll(sortOptions);
+      const actualQuestionThemes = await repositories.questionTheme.findAll(findAllOptions);
 
       expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
     });

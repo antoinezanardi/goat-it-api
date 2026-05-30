@@ -22,6 +22,17 @@ When(/^the client retrieves all questions sorted by "(?<sortBy>[^"]+)" in "(?<so
   await this.fetchAndStoreResponse("/questions", fetchOptions);
 });
 
+When(/^the client retrieves all questions with filter "(?<filterKey>[^"]+)" set to "(?<filterValue>[^"]+)"$/u, async function(this: GoatItWorld, filterKey: string, filterValue: string) {
+  const query: Record<string, string | string[]> = {
+    [filterKey]: filterKey === "theme-ids" ? [filterValue] : filterValue,
+  };
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    query,
+  });
+  await this.fetchAndStoreResponse("/questions", fetchOptions);
+});
+
 When(/^the client retrieves all questions without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/questions", fetchOptions);

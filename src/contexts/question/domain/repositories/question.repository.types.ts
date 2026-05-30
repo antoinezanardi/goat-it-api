@@ -1,11 +1,11 @@
 import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
 import type { Question } from "@question/domain/types/question.entities";
 
-import type { QuestionSortableField } from "@question/domain/types/question.types";
-import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 type QuestionRepository = {
-  findAll: (sortOptions: SortOptions<QuestionSortableField>) => Promise<Question[]>;
+  findAll: (options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>) => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
   archive: (id: string) => Promise<Question | undefined>;

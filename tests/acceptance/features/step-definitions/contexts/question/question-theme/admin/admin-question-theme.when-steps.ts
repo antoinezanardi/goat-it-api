@@ -20,6 +20,15 @@ When(/^the admin retrieves all question themes sorted by "(?<sortBy>[^"]+)" in "
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });
 
+When(/^the admin retrieves all question themes with filter "(?<filterKey>[^"]+)" set to "(?<filterValue>[^"]+)"$/u, async function(this: GoatItWorld, filterKey: string, filterValue: string) {
+  const query: Record<string, string> = { [filterKey]: filterValue };
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query,
+  });
+  await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
+});
+
 When(/^the admin retrieves all question themes without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);

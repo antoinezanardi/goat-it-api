@@ -4,7 +4,7 @@ import { ZodResponse } from "nestjs-zod";
 
 import { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
 import { QuestionThemeNestZodDto } from "@question-theme/application/dto/question-theme/question-theme.dto";
-import { FindQuestionThemesSortQueryNestZodDto } from "@question-theme/application/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto";
+import { FindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto";
 import { createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
@@ -38,11 +38,12 @@ export class QuestionThemeController {
     type: [QuestionThemeNestZodDto],
   })
   public async findQuestionThemes(
-    @Query() sortQueryDto: FindQuestionThemesSortQueryNestZodDto,
+    @Query() queryDto: FindQuestionThemesQueryNestZodDto,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto[]> {
-    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
-    const questionThemes = await this.findQuestionThemesUseCase.list(sortOptions);
+    const sortOptions = createSortOptionsFromSortQueryDto(queryDto);
+    const findAllOptions = { sort: sortOptions };
+    const questionThemes = await this.findQuestionThemesUseCase.list(findAllOptions);
 
     return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
   }

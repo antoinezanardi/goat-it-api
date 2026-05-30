@@ -3,10 +3,15 @@ import { z } from "zod";
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
-import { QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
-import type { QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
+import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
+import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
 import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime } from "zod";
+
+function zQuestionAuthorRole(): ZodEnum<QuestionAuthorRoleEnum> {
+  return z.enum(QUESTION_AUTHOR_ROLES)
+    .describe("Question author's role");
+}
 
 function zQuestionCognitiveDifficulty(): ZodEnum<QuestionCognitiveDifficultyEnum> {
   return z.enum(QUESTION_COGNITIVE_DIFFICULTIES)
@@ -48,6 +53,7 @@ function zQuestionUpdatedAt(): ZodISODateTime {
 }
 
 export {
+  zQuestionAuthorRole,
   zQuestionCognitiveDifficulty,
   zQuestionStatus,
   zQuestionCategory,

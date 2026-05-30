@@ -1,6 +1,45 @@
-import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
+  describe(zQuestionAuthorRole, () => {
+    it.each<{
+      test: string;
+      value: string;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when author role is 'admin'",
+        value: "admin",
+        expected: true,
+      },
+      {
+        test: "should return true when author role is 'game'",
+        value: "game",
+        expected: true,
+      },
+      {
+        test: "should return true when author role is 'ai'",
+        value: "ai",
+        expected: true,
+      },
+      {
+        test: "should return false when author role is 'unknown'",
+        value: "unknown",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionAuthorRole().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionAuthorRole();
+
+      expect(schema.description).toBe("Question author's role");
+    });
+  });
+
   describe(zQuestionCognitiveDifficulty, () => {
     it.each<{
       test: string;

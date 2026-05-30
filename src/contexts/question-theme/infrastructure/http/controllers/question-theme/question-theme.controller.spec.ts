@@ -16,7 +16,7 @@ import { createMockedFindQuestionThemesUseCase } from "@mocks/contexts/question-
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
-import { createFakeFindQuestionThemesSortQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-sort-query/find-question-themes-sort-query.dto.faketory";
+import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-query/find-question-themes-query.dto.faketory";
 
 import type { Mock } from "vitest";
 
@@ -79,25 +79,25 @@ describe("Question Theme Controller", () => {
 
   describe(QuestionThemeController.prototype.findQuestionThemes, () => {
     it("should create sort options from sort query dto when called.", async() => {
-      const sortQueryDto = createFakeFindQuestionThemesSortQueryDto();
+      const queryDto = createFakeFindQuestionThemesQueryDto();
       const localization = createFakeLocalizationOptions();
-      await questionThemeController.findQuestionThemes(sortQueryDto, localization);
+      await questionThemeController.findQuestionThemes(queryDto, localization);
 
-      expect(mocks.mappers.createSortOptionsFromSortQueryDto).toHaveBeenCalledExactlyOnceWith(sortQueryDto);
+      expect(mocks.mappers.createSortOptionsFromSortQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto);
     });
 
-    it("should list all question themes with sort options when called.", async() => {
-      const sortQueryDto = createFakeFindQuestionThemesSortQueryDto();
+    it("should list all question themes with find all options when called.", async() => {
+      const queryDto = createFakeFindQuestionThemesQueryDto();
       const localization = createFakeLocalizationOptions();
       const expectedSortOptions: SortOptions<QuestionThemeSortableField> = { sortBy: "createdAt", sortOrder: "desc" };
       mocks.mappers.createSortOptionsFromSortQueryDto.mockReturnValueOnce(expectedSortOptions);
-      await questionThemeController.findQuestionThemes(sortQueryDto, localization);
+      await questionThemeController.findQuestionThemes(queryDto, localization);
 
-      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith(expectedSortOptions);
+      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith({ sort: expectedSortOptions });
     });
 
     it("should map every question theme to dto when called.", async() => {
-      const sortQueryDto = createFakeFindQuestionThemesSortQueryDto();
+      const queryDto = createFakeFindQuestionThemesQueryDto();
       const localization = createFakeLocalizationOptions();
       const questionThemes = [
         createFakeQuestionTheme(),
@@ -105,13 +105,13 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
       ];
       mocks.useCases.findQuestionThemes.list.mockResolvedValueOnce(questionThemes);
-      await questionThemeController.findQuestionThemes(sortQueryDto, localization);
+      await questionThemeController.findQuestionThemes(queryDto, localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledTimes(questionThemes.length);
     });
 
     it("should call the mapper with the correct parameters when called.", async() => {
-      const sortQueryDto = createFakeFindQuestionThemesSortQueryDto();
+      const queryDto = createFakeFindQuestionThemesQueryDto();
       const localization = createFakeLocalizationOptions();
       const questionThemes = [
         createFakeQuestionTheme(),
@@ -119,7 +119,7 @@ describe("Question Theme Controller", () => {
         createFakeQuestionTheme(),
       ];
       mocks.useCases.findQuestionThemes.list.mockResolvedValueOnce(questionThemes);
-      await questionThemeController.findQuestionThemes(sortQueryDto, localization);
+      await questionThemeController.findQuestionThemes(queryDto, localization);
 
       expect(mocks.mappers.createQuestionThemeDtoFromEntity).toHaveBeenCalledWith(questionThemes[0], localization);
     });

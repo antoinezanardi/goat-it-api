@@ -4,6 +4,7 @@ import { Model, Types, UpdateQuery } from "mongoose";
 
 import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
+import { buildMongooseAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
@@ -13,17 +14,19 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionSortableField } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
-import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
-  public async findAll(sortOptions: SortOptions<QuestionSortableField>): Promise<Question[]> {
-    const sortStages = buildMongooseAggregationSortStages(sortOptions, QUESTION_SEMANTIC_SORT_ORDERS);
+  public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
+    const filterStages = buildMongooseAggregationFilterStages(options.filters);
+    const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
+      ...filterStages,
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ...sortStages,
     ]);

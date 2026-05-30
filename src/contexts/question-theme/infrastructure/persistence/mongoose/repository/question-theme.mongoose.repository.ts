@@ -7,25 +7,27 @@ import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
 
 import { getCrushedDataForMongoPatchUpdate, getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
-import { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
+import { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 import { QuestionThemeMongooseDocument } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {
   public constructor(@InjectModel(QuestionThemeMongooseSchema.name)
   private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
-  public async findAll(sortOptions: SortOptions<QuestionThemeSortableField>): Promise<QuestionTheme[]> {
-    const sortDirection = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
-    const sortCriteria: Record<string, MongoSortDirection> = { [sortOptions.sortBy]: sortDirection, _id: sortDirection };
+  public async findAll(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
+    const sortDirection = getMongoSortDirectionFromSortOrder(options.sort.sortOrder);
+    const sortCriteria: Record<string, MongoSortDirection> = { [options.sort.sortBy]: sortDirection, _id: sortDirection };
+    const filterQuery = buildQuestionThemeFilterQuery(options.filters);
     // oxlint-disable-next-line unicorn/no-array-sort -- .sort() is a Mongoose Query method, not Array.prototype.sort
-    const questionThemeDocuments = await this.questionThemeModel.find().sort(sortCriteria);
+    const questionThemeDocuments = await this.questionThemeModel.find(filterQuery).sort(sortCriteria);
 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }

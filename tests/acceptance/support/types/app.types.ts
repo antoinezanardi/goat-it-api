@@ -5,7 +5,7 @@ type AppFetchOptions = {
   apiKey?: string;
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: Record<string, unknown>;
-  query?: Record<string, string>;
+  query?: Record<string, string | string[]>;
 };
 
 export type { AppFetchOptions };

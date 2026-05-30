@@ -5,15 +5,16 @@ import { ZodResponse } from "nestjs-zod";
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { QuestionModificationNestZodDto } from "@question/application/dto/question-modification/question-modification.dto";
 import { QuestionCreationNestZodDto } from "@question/application/dto/question-creation/question-creation.dto";
 import { QuestionThemeAssignmentCreationNestZodDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
 import { QuestionThemeAssignmentModificationNestZodDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto";
-import { AdminFindQuestionsSortQueryNestZodDto } from "@question/application/dto/admin-find-questions-sort-query/admin-find-questions-sort-query.dto";
+import { AdminFindQuestionsQueryNestZodDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionThemeAssignmentCreationCommandFromDto, createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment.mappers";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
@@ -54,9 +55,9 @@ export class AdminQuestionController {
     status: HttpStatus.OK,
     type: [AdminQuestionNestZodDto],
   })
-  public async findQuestions(@Query() sortQueryDto: AdminFindQuestionsSortQueryNestZodDto): Promise<AdminQuestionDto[]> {
-    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
-    const questions = await this.findQuestionsUseCase.list(sortOptions);
+  public async findQuestions(@Query() queryDto: AdminFindQuestionsQueryNestZodDto): Promise<AdminQuestionDto[]> {
+    const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, createQuestionFilterOptionsFromQueryDto);
+    const questions = await this.findQuestionsUseCase.list(findAllOptions);
 
     return questions.map(question => createAdminQuestionDtoFromEntity(question));
   }

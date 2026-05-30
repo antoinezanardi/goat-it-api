@@ -22,6 +22,29 @@ When(/^the admin retrieves all questions sorted by "(?<sortBy>[^"]+)" in "(?<sor
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
 
+When(/^the admin retrieves all questions with filter "(?<filterKey>[^"]+)" set to "(?<filterValue>[^"]+)"$/u, async function(this: GoatItWorld, filterKey: string, filterValue: string) {
+  const query: Record<string, string | string[]> = {
+    [filterKey]: filterKey === "theme-ids" ? filterValue.split(",") : filterValue,
+  };
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query,
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
+When(/^the admin retrieves all questions with filters "(?<key1>[^"]+)" set to "(?<value1>[^"]+)" and "(?<key2>[^"]+)" set to "(?<value2>[^"]+)"$/u, async function(this: GoatItWorld, key1: string, value1: string, key2: string, value2: string) {
+  const query: Record<string, string | string[]> = {
+    [key1]: key1 === "theme-ids" ? value1.split(",") : value1,
+    [key2]: key2 === "theme-ids" ? value2.split(",") : value2,
+  };
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query,
+  });
+  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
+});
+
 When(/^the admin retrieves all questions without an API key$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions();
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
