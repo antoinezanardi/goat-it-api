@@ -4,6 +4,7 @@ import { Test } from "@nestjs/testing";
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
@@ -12,6 +13,7 @@ import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFind
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -63,13 +65,20 @@ describe("Question Theme Mongoose Repository", () => {
     let findAllOptions: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>;
 
     beforeEach(() => {
-      findAllOptions = { sort: { sortBy: "createdAt", sortOrder: "asc" } };
+      findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS);
     });
 
     it("should find all documents from model when called.", async() => {
       await repositories.questionTheme.findAll(findAllOptions);
 
       expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith({});
+    });
+
+    it("should find documents with filter query from model when filters are provided.", async() => {
+      findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS, { filters: { status: "active" } });
+      await repositories.questionTheme.findAll(findAllOptions);
+
+      expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith({ status: "active" });
     });
 
     it("should sort in ascending direction when sort order is asc.", async() => {

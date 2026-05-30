@@ -92,8 +92,15 @@ function buildMongooseAggregationSortStages<T extends string>(
   return [{ $sort: { [sortOptions.sortBy]: direction, _id: direction } }];
 }
 
+function buildMongooseSortCriteria<T extends string>(sortOptions: SortOptions<T>): Record<string, MongoSortDirection> {
+  const direction = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
+
+  return { [sortOptions.sortBy]: direction, _id: direction };
+}
+
 export {
   buildMongooseAggregationSortStages,
+  buildMongooseSortCriteria,
   getCrushedDataForMongoPatchUpdate,
   getDefinedFieldsForMongoArrayElementUpdate,
   getMongoSortDirectionFromSortOrder,

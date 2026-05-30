@@ -10,7 +10,7 @@ import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/
 
 import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
 
-describe("Admin Find Question-Themes Sort Query DTO Shape", () => {
+describe("Admin Find Question-Themes Query DTO Shape", () => {
   let validDto: AdminFindQuestionThemesQueryDto;
 
   beforeEach(() => {
@@ -104,11 +104,8 @@ describe("Admin Find Question-Themes Sort Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithoutStatus)).not.toThrow();
     });
 
-    it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.status.meta();
-      const expectedMetadata = { description: "Question theme's status" };
-
-      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    it("should have correct description when accessing the description.", () => {
+      expect(ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.status.unwrap().description).toBe("Question Theme's status");
     });
   });
 

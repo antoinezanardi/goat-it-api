@@ -1,10 +1,24 @@
 import { When } from "@cucumber/cucumber";
+import { z } from "zod";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
+import { validateDataTableAndGetFirstRow, zCoerceOptionalString, zCoerceOptionalStringArray } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
+
+import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+
+const QUESTION_QUERY_PARAMS_SCHEMA = z.object({
+  "sort-by": zCoerceOptionalString(),
+  "sort-order": zCoerceOptionalString(),
+  "status": zCoerceOptionalString(),
+  "category": zCoerceOptionalString(),
+  "cognitive-difficulty": zCoerceOptionalString(),
+  "author-role": zCoerceOptionalString(),
+  "theme-ids": zCoerceOptionalStringArray(),
+});
 
 When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
   const fetchOptions = createFetchOptions({
@@ -14,30 +28,14 @@ When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, a
   await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
 });
 
-When(/^the admin retrieves all questions sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    query: { "sort-by": sortBy, "sort-order": sortOrder },
-  });
-  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
-});
-
-When(/^the admin retrieves all questions with filter "(?<filterKey>[^"]+)" set to "(?<filterValue>[^"]+)"$/u, async function(this: GoatItWorld, filterKey: string, filterValue: string) {
-  const query: Record<string, string | string[]> = {
-    [filterKey]: filterKey === "theme-ids" ? filterValue.split(",") : filterValue,
-  };
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    query,
-  });
-  await this.fetchAndStoreResponse("/admin/questions", fetchOptions);
-});
-
-When(/^the admin retrieves all questions with filters "(?<key1>[^"]+)" set to "(?<value1>[^"]+)" and "(?<key2>[^"]+)" set to "(?<value2>[^"]+)"$/u, async function(this: GoatItWorld, key1: string, value1: string, key2: string, value2: string) {
-  const query: Record<string, string | string[]> = {
-    [key1]: key1 === "theme-ids" ? value1.split(",") : value1,
-    [key2]: key2 === "theme-ids" ? value2.split(",") : value2,
-  };
+When(/^the admin retrieves all questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, QUESTION_QUERY_PARAMS_SCHEMA);
+  const query: Record<string, string | string[]> = {};
+  for (const [key, value] of Object.entries(queryRow)) {
+    if (value !== undefined) {
+      query[key] = value;
+    }
+  }
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
     query,

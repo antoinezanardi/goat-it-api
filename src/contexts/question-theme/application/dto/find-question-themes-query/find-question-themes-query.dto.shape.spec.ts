@@ -10,7 +10,7 @@ import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/quest
 
 import type { FindQuestionThemesQueryDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";
 
-describe("Find Question-Themes Sort Query DTO Shape", () => {
+describe("Find Question-Themes Query DTO Shape", () => {
   let validDto: FindQuestionThemesQueryDto;
 
   beforeEach(() => {

@@ -179,12 +179,18 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutThemeIds)).not.toThrow();
     });
 
-    it("should have correct description on array when accessing the description.", () => {
-      expect(ADMIN_FIND_QUESTIONS_QUERY_DTO.shape["theme-ids"].description).toBe("List of theme IDs to filter questions by (OR logic)");
+    it("should pass validation when theme-ids is a single string value.", () => {
+      const dtoWithSingleThemeId = { ...validDto, "theme-ids": new Types.ObjectId().toString() };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithSingleThemeId);
+
+      expect(result["theme-ids"]).toStrictEqual([dtoWithSingleThemeId["theme-ids"]]);
     });
 
-    it("should have correct description on array element when accessing the description.", () => {
-      expect(ADMIN_FIND_QUESTIONS_QUERY_DTO.shape["theme-ids"].unwrap().element.description).toBe("Theme ID to filter questions by");
+    it("should throw zod error when theme-ids is an empty array.", () => {
+      const dtoWithEmptyThemeIds = { ...validDto, "theme-ids": [] };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithEmptyThemeIds)).toThrow(ZodError);
     });
   });
 

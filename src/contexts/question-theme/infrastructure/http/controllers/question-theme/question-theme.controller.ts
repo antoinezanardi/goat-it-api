@@ -42,8 +42,7 @@ export class QuestionThemeController {
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto[]> {
     const sortOptions = createSortOptionsFromSortQueryDto(queryDto);
-    const findAllOptions = { sort: sortOptions };
-    const questionThemes = await this.findQuestionThemesUseCase.list(findAllOptions);
+    const questionThemes = await this.findQuestionThemesUseCase.list({ sort: sortOptions });
 
     return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
   }

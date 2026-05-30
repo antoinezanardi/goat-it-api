@@ -6,7 +6,7 @@ import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validato
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
-import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime } from "zod";
+import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess } from "zod";
 
 function zQuestionAuthorRole(): ZodEnum<QuestionAuthorRoleEnum> {
   return z.enum(QUESTION_AUTHOR_ROLES)
@@ -37,6 +37,15 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 
+function zQuestionThemeIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
+  return z.preprocess(
+    (value: unknown) => (typeof value === "string" ? [value] : value),
+    z.array(zMongoId().describe("Theme ID to filter questions by")).min(1),
+  )
+    .optional()
+    .describe("List of theme IDs to filter questions by (OR logic)");
+}
+
 function zQuestionId(): ZodString {
   return zMongoId()
     .describe("Question's unique identifier");
@@ -58,6 +67,7 @@ export {
   zQuestionStatus,
   zQuestionCategory,
   zQuestionSourceUrls,
+  zQuestionThemeIdsFilter,
   zQuestionId,
   zQuestionCreatedAt,
   zQuestionUpdatedAt,

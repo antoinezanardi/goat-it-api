@@ -9,8 +9,7 @@ import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/pers
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
 
-import { getCrushedDataForMongoPatchUpdate, getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
 import { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
@@ -23,8 +22,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
   public async findAll(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
-    const sortDirection = getMongoSortDirectionFromSortOrder(options.sort.sortOrder);
-    const sortCriteria: Record<string, MongoSortDirection> = { [options.sort.sortBy]: sortDirection, _id: sortDirection };
+    const sortCriteria = buildMongooseSortCriteria(options.sort);
     const filterQuery = buildQuestionThemeFilterQuery(options.filters);
     // oxlint-disable-next-line unicorn/no-array-sort -- .sort() is a Mongoose Query method, not Array.prototype.sort
     const questionThemeDocuments = await this.questionThemeModel.find(filterQuery).sort(sortCriteria);

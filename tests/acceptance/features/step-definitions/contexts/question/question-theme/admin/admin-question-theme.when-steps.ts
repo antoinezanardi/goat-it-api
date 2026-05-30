@@ -1,9 +1,19 @@
 import { When } from "@cucumber/cucumber";
+import { z } from "zod";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
+import { validateDataTableAndGetFirstRow, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
+import type { DataTable } from "@cucumber/cucumber";
+
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
+
+const QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
+  "sort-by": zCoerceOptionalString(),
+  "sort-order": zCoerceOptionalString(),
+  "status": zCoerceOptionalString(),
+});
 
 When(/^the admin retrieves all question themes$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions({
@@ -12,16 +22,14 @@ When(/^the admin retrieves all question themes$/u, async function(this: GoatItWo
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });
 
-When(/^the admin retrieves all question themes sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    query: { "sort-by": sortBy, "sort-order": sortOrder },
-  });
-  await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
-});
-
-When(/^the admin retrieves all question themes with filter "(?<filterKey>[^"]+)" set to "(?<filterValue>[^"]+)"$/u, async function(this: GoatItWorld, filterKey: string, filterValue: string) {
-  const query: Record<string, string> = { [filterKey]: filterValue };
+When(/^the admin retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, QUESTION_THEME_QUERY_PARAMS_SCHEMA);
+  const query: Record<string, string> = {};
+  for (const [key, value] of Object.entries(queryRow)) {
+    if (value !== undefined) {
+      query[key] = value;
+    }
+  }
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
     query,

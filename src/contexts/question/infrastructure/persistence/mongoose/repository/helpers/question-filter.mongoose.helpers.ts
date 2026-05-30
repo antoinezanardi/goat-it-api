@@ -4,7 +4,7 @@ import type { PipelineStage } from "mongoose";
 
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
 
-function buildMongooseAggregationFilterStages(filters?: Partial<QuestionFilterOptions>): PipelineStage[] {
+function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOptions>): PipelineStage[] {
   if (!filters) {
     return [];
   }
@@ -33,4 +33,4 @@ function buildMongooseAggregationFilterStages(filters?: Partial<QuestionFilterOp
   return [{ $match: matchConditions }];
 }
 
-export { buildMongooseAggregationFilterStages };
+export { buildQuestionAggregationFilterStages };

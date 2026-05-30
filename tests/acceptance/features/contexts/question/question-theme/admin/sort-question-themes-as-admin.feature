@@ -7,7 +7,9 @@ Feature: Sort Question Themes as Admin
 
   Scenario: Sorting admin question themes by slug in ascending order (default behavior)
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the admin retrieves all question themes sorted by "slug" in "asc" order
+    When the admin retrieves all question themes with the following query:
+      | sort-by | sort-order |
+      | slug    | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin question themes
     And the response should contain the following admin question themes:
@@ -20,7 +22,9 @@ Feature: Sort Question Themes as Admin
 
   Scenario: Sorting admin question themes by createdAt in ascending order
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the admin retrieves all question themes sorted by "createdAt" in "asc" order
+    When the admin retrieves all question themes with the following query:
+      | sort-by   | sort-order |
+      | createdAt | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin question themes
     And the response should contain the following admin question themes:
@@ -33,7 +37,9 @@ Feature: Sort Question Themes as Admin
 
   Scenario: Sorting admin question themes by slug in descending order
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the admin retrieves all question themes sorted by "slug" in "desc" order
+    When the admin retrieves all question themes with the following query:
+      | sort-by | sort-order |
+      | slug    | desc       |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin question themes
     And the response should contain the following admin question themes:
@@ -46,7 +52,9 @@ Feature: Sort Question Themes as Admin
 
   Scenario: Sorting admin question themes by status in ascending order
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the admin retrieves all question themes sorted by "status" in "asc" order
+    When the admin retrieves all question themes with the following query:
+      | sort-by | sort-order |
+      | status  | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin question themes
     And the response should contain the following admin question themes:
@@ -59,7 +67,9 @@ Feature: Sort Question Themes as Admin
 
   Scenario: Trying to sort admin question themes with an invalid sort-by field
     Given the database is populated with question themes fixture set with name "five-question-themes"
-    When the admin retrieves all question themes sorted by "invalidField" in "asc" order
+    When the admin retrieves all question themes with the following query:
+      | sort-by      |
+      | invalidField |
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
