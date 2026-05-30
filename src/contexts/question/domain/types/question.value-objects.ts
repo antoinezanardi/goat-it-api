@@ -8,6 +8,8 @@ import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects
 
 type QuestionAuthorRole = TupleToUnion<typeof QUESTION_AUTHOR_ROLES>;
 
+type QuestionAuthorRoleEnum = TupleToEnum<typeof QUESTION_AUTHOR_ROLES>;
+
 type QuestionCreationAuthorRole = TupleToUnion<typeof QUESTION_CREATION_AUTHOR_ROLES>;
 
 type BaseQuestionAuthor<T extends QuestionAuthorRole> = {
@@ -64,6 +66,7 @@ type QuestionThemeAssignment = {
 
 export type {
   QuestionAuthorRole,
+  QuestionAuthorRoleEnum,
   QuestionCreationAuthorRole,
   QuestionAuthor,
   QuestionCategory,

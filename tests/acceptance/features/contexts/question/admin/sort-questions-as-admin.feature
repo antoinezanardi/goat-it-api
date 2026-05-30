@@ -7,7 +7,9 @@ Feature: Sort Questions as Admin
 
   Scenario: Sorting admin questions by createdAt in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the admin retrieves all questions sorted by "createdAt" in "asc" order
+    When the admin retrieves all questions with the following query:
+      | sort-by   | sort-order |
+      | createdAt | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin questions
     And the response should contain the following admin questions:
@@ -20,7 +22,9 @@ Feature: Sort Questions as Admin
 
   Scenario: Sorting admin questions by category in descending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the admin retrieves all questions sorted by "category" in "desc" order
+    When the admin retrieves all questions with the following query:
+      | sort-by  | sort-order |
+      | category | desc       |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin questions
     And the response should contain the following admin questions:
@@ -33,7 +37,9 @@ Feature: Sort Questions as Admin
 
   Scenario: Sorting admin questions by status in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the admin retrieves all questions sorted by "status" in "asc" order
+    When the admin retrieves all questions with the following query:
+      | sort-by | sort-order |
+      | status  | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin questions
     And the response should contain the following admin questions:
@@ -46,7 +52,9 @@ Feature: Sort Questions as Admin
 
   Scenario: Sorting admin questions by status in descending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the admin retrieves all questions sorted by "status" in "desc" order
+    When the admin retrieves all questions with the following query:
+      | sort-by | sort-order |
+      | status  | desc       |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin questions
     And the response should contain the following admin questions:
@@ -59,7 +67,9 @@ Feature: Sort Questions as Admin
 
   Scenario: Trying to sort admin questions with an invalid sort-by field
     Given the database is populated with questions fixture set with name "five-questions"
-    When the admin retrieves all questions sorted by "invalidField" in "asc" order
+    When the admin retrieves all questions with the following query:
+      | sort-by      |
+      | invalidField |
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |

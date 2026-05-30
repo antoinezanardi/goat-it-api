@@ -1,6 +1,45 @@
-import { zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
+  describe(zQuestionAuthorRole, () => {
+    it.each<{
+      test: string;
+      value: string;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when author role is 'admin'",
+        value: "admin",
+        expected: true,
+      },
+      {
+        test: "should return true when author role is 'game'",
+        value: "game",
+        expected: true,
+      },
+      {
+        test: "should return true when author role is 'ai'",
+        value: "ai",
+        expected: true,
+      },
+      {
+        test: "should return false when author role is 'unknown'",
+        value: "unknown",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionAuthorRole().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionAuthorRole();
+
+      expect(schema.description).toBe("Question author's role");
+    });
+  });
+
   describe(zQuestionCognitiveDifficulty, () => {
     it.each<{
       test: string;
@@ -188,6 +227,72 @@ describe("Question DTO Zod Validators", () => {
       const result = schema.safeParse(notUniqueTestValue);
 
       expect(result.error?.issues[0].message).toBe("Source URLs must be unique");
+    });
+  });
+
+  describe(zQuestionThemeIdsFilter, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when an array with a valid MongoDB ObjectId is provided",
+        value: ["60af924f4f1a2563f8e8b456"],
+        expected: true,
+      },
+      {
+        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided",
+        value: ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"],
+        expected: true,
+      },
+      {
+        test: "should return true when a single string MongoDB ObjectId is provided",
+        value: "60af924f4f1a2563f8e8b456",
+        expected: true,
+      },
+      {
+        test: "should return true when value is undefined",
+        value: undefined,
+        expected: true,
+      },
+      {
+        test: "should return false when an empty array is provided",
+        value: [],
+        expected: false,
+      },
+      {
+        test: "should return false when an array with an invalid ObjectId is provided",
+        value: ["not-a-valid-id"],
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionThemeIdsFilter().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should normalize a single string value to an array when parsed.", () => {
+      const result = zQuestionThemeIdsFilter().safeParse("60af924f4f1a2563f8e8b456");
+
+      expect(result.data).toStrictEqual(["60af924f4f1a2563f8e8b456"]);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionThemeIdsFilter();
+
+      expect(schema.description).toBe("List of theme IDs to filter questions by (OR logic)");
+    });
+
+    it("should have the correct inner element description when called.", () => {
+      const schema = zQuestionThemeIdsFilter();
+
+      type PreprocessDefinition = { _zod: { def: { out: { _zod: { def: { element: { description: string } } } } } } };
+
+      // oxlint-disable-next-line eslint/no-underscore-dangle
+      const innerElementDescription = (schema.unwrap() as PreprocessDefinition)._zod.def.out._zod.def.element.description;
+
+      expect(innerElementDescription).toBe("Theme ID to filter questions by");
     });
   });
 

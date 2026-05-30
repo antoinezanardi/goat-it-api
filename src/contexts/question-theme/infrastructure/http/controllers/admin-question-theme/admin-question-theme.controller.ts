@@ -4,7 +4,7 @@ import { ZodResponse } from "nestjs-zod";
 
 import { AdminQuestionThemeNestZodDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
 import { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
-import { AdminFindQuestionThemesSortQueryNestZodDto } from "@question-theme/application/dto/admin-find-question-themes-sort-query/admin-find-question-themes-sort-query.dto";
+import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
 import { QuestionThemeCreationNestZodDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
 import { QuestionThemeModificationNestZodDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
@@ -13,13 +13,14 @@ import { CreateQuestionThemeUseCase } from "@question-theme/application/use-case
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
+import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
 
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
 
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
@@ -45,9 +46,9 @@ export class AdminQuestionThemeController {
     status: HttpStatus.OK,
     type: [AdminQuestionThemeNestZodDto],
   })
-  public async findQuestionThemes(@Query() sortQueryDto: AdminFindQuestionThemesSortQueryNestZodDto): Promise<AdminQuestionThemeDto[]> {
-    const sortOptions = createSortOptionsFromSortQueryDto(sortQueryDto);
-    const questionThemes = await this.findQuestionThemesUseCase.list(sortOptions);
+  public async findQuestionThemes(@Query() queryDto: AdminFindQuestionThemesQueryNestZodDto): Promise<AdminQuestionThemeDto[]> {
+    const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, createAdminQuestionThemeFilterOptionsFromQueryDto);
+    const questionThemes = await this.findQuestionThemesUseCase.list(findAllOptions);
 
     return questionThemes.map(questionTheme => createAdminQuestionThemeDtoFromEntity(questionTheme));
   }

@@ -7,7 +7,9 @@ Feature: Sort Questions
 
   Scenario: Sorting questions by createdAt in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "createdAt" in "asc" order
+    When the client retrieves all questions with the following query:
+      | sort-by   | sort-order |
+      | createdAt | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
@@ -20,7 +22,9 @@ Feature: Sort Questions
 
   Scenario: Sorting questions by createdAt in descending order (default behavior)
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "createdAt" in "desc" order
+    When the client retrieves all questions with the following query:
+      | sort-by   | sort-order |
+      | createdAt | desc       |
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
@@ -33,7 +37,9 @@ Feature: Sort Questions
 
   Scenario: Sorting questions by category in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "category" in "asc" order
+    When the client retrieves all questions with the following query:
+      | sort-by  | sort-order |
+      | category | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
@@ -46,7 +52,9 @@ Feature: Sort Questions
 
   Scenario: Sorting questions by cognitiveDifficulty in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "cognitiveDifficulty" in "asc" order
+    When the client retrieves all questions with the following query:
+      | sort-by             | sort-order |
+      | cognitiveDifficulty | asc        |
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
@@ -59,7 +67,9 @@ Feature: Sort Questions
 
   Scenario: Sorting questions by cognitiveDifficulty in descending order
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "cognitiveDifficulty" in "desc" order
+    When the client retrieves all questions with the following query:
+      | sort-by             | sort-order |
+      | cognitiveDifficulty | desc       |
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
@@ -72,7 +82,9 @@ Feature: Sort Questions
 
   Scenario: Trying to sort questions with an invalid sort-by field
     Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves all questions sorted by "invalidField" in "asc" order
+    When the client retrieves all questions with the following query:
+      | sort-by      |
+      | invalidField |
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |

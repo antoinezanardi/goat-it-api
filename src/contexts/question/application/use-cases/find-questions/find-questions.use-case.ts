@@ -3,16 +3,16 @@ import { Inject, Injectable } from "@nestjs/common";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import type { Question } from "@question/domain/types/question.entities";
 
-import type { SortOptions } from "@shared/domain/types/sort/sort.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import type { QuestionSortableField } from "@question/domain/types/question.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 
 @Injectable()
 export class FindQuestionsUseCase {
   public constructor(@Inject(QUESTION_REPOSITORY_TOKEN)
   private readonly questionRepository: QuestionRepository) {}
 
-  public async list(sortOptions: SortOptions<QuestionSortableField>): Promise<Question[]> {
-    return this.questionRepository.findAll(sortOptions);
+  public async list(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
+    return this.questionRepository.findAll(options);
   }
 }
