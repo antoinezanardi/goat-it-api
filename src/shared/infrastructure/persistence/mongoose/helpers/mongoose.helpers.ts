@@ -10,7 +10,7 @@ function crushDataObjectEntry(entry: [string, unknown], parentKey: string, resul
   const path = parentKey ? `${parentKey}.${key}` : key;
 
   if (!isObject(value)) {
-    // This is acceptable since we are modifying the result object directly for recursion purposes
+    // Acceptable as modifying the result object directly for recursion purposes
     // oxlint-disable-next-line no-param-reassign
     result[path] = value;
 
@@ -18,7 +18,7 @@ function crushDataObjectEntry(entry: [string, unknown], parentKey: string, resul
   }
 
   if (Object.keys(value).length === 0) {
-    // This is acceptable since we are modifying the result object directly for recursion purposes
+    // Acceptable as modifying the result object directly for recursion purposes
     // oxlint-disable-next-line no-param-reassign
     result[path] = {};
   } else {

@@ -289,6 +289,7 @@ describe("Question DTO Zod Validators", () => {
 
       type PreprocessDefinition = { _zod: { def: { out: { _zod: { def: { element: { description: string } } } } } } };
 
+      // Acceptable as Zod internal _zod structure must be accessed to verify nested schema descriptions
       // oxlint-disable-next-line eslint/no-underscore-dangle
       const innerElementDescription = (schema.unwrap() as PreprocessDefinition)._zod.def.out._zod.def.element.description;
 

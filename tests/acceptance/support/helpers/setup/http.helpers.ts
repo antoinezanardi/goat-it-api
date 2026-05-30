@@ -39,6 +39,7 @@ async function getApiHealth(): Promise<number> {
 async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams): Promise<ChildProcessWithoutNullStreams> {
   for (let attempt = 1; attempt <= APP_HEALTH_RETRY_ATTEMPTS; attempt++) {
     try {
+      // Acceptable as health check retries must run sequentially with delay between attempts
       // oxlint-disable-next-line no-await-in-loop
       const status = await getApiHealth();
       if (status === APP_HEALTH_OK_STATUS) {
@@ -49,6 +50,7 @@ async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams
     }
 
     if (attempt < APP_HEALTH_RETRY_ATTEMPTS) {
+      // Acceptable as retry delay must await sequentially between health check attempts
       // oxlint-disable-next-line no-await-in-loop
       await new Promise<void>(resolve => {
         setTimeout(() => {

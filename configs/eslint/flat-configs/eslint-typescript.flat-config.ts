@@ -1,3 +1,4 @@
+// Acceptable as @typescript-eslint/parser only exposes a default export
 // eslint-disable-next-line import-x/default
 import TypescriptParser from "@typescript-eslint/parser";
 import TypeScriptPlugin from "@typescript-eslint/eslint-plugin";

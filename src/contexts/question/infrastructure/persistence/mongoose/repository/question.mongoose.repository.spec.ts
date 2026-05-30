@@ -131,8 +131,7 @@ describe("Question Mongoose Repository", () => {
       await repositories.question.findAll(findAllOptions);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(1, questionAggregates[0], 0, questionAggregates);
-      // It's okay to disable this rule here because we want to explicitly test multiple calls to the mapper function.
-      // Multiple tests would be redundant.
+      // Acceptable as testing multiple calls to the mapper function requires multiple expects in a single block
       // oxlint-disable-next-line max-expects
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(2, questionAggregates[1], 1, questionAggregates);
     });

@@ -427,6 +427,23 @@ No relative imports (`../` or `./`) — always use path aliases.
 - Magic numbers are forbidden — extract to named constants in `*.constants.ts` files
 - Numbers 0, 1, and -1 are allowed inline
 
+### Lint Rule Disabling
+
+Disabling lint rules is a **last resort** — exhaust refactoring, type narrowing, and helper extraction first.
+
+When a disable is genuinely needed, use the **two-line format**:
+
+```ts
+// Acceptable as <concise justification explaining WHY the disable is safe>
+// oxlint-disable-next-line <rule-name(s)>
+suppressedCode();
+```
+
+- **Never** use file-level or block-level disables (`/* oxlint-disable */`, `/* eslint-disable */`) without explicit approval
+- Multiple rules on one line are comma-separated: `// oxlint-disable-next-line rule-a, rule-b`
+- Rule names use oxlint namespacing (`typescript/no-...`, `unicorn/...`, `eslint/...`) — no `@` prefix
+- ESLint-specific rules use `eslint/` prefix: `// oxlint-disable-next-line eslint/no-underscore-dangle`
+
 ---
 
 ## Testing
