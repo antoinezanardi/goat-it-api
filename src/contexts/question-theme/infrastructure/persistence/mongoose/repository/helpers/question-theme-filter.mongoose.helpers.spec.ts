@@ -1,4 +1,7 @@
+import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
+
+import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
 
 describe("Build Question Theme Filter Query", () => {
   it("should return an empty object when called without arguments.", () => {
@@ -13,10 +16,7 @@ describe("Build Question Theme Filter Query", () => {
     expect(result).toStrictEqual({});
   });
 
-  it.each([
-    { status: "active" as const },
-    { status: "archived" as const },
-  ])("should return a query with status set to $status when status is $status.", ({ status }) => {
+  it.each(QUESTION_THEME_STATUSES.map((status: QuestionThemeStatus) => ({ status })))("should return a query with status set to $status when status is $status.", ({ status }) => {
     const result = buildQuestionThemeFilterQuery({ status });
 
     expect(result).toStrictEqual({ status });

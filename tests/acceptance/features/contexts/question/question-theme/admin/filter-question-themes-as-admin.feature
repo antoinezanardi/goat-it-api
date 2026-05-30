@@ -12,6 +12,12 @@ Feature: Filter Question Themes as Admin
       | active |
     Then the request should have succeeded with status code 200
     And the response should contain 4 admin question themes
+    And the response should contain the following admin question themes:
+      | slug    | status |
+      | cinema  | active |
+      | history | active |
+      | music   | active |
+      | science | active |
 
   Scenario: Filtering admin question themes by status "archived"
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -20,6 +26,9 @@ Feature: Filter Question Themes as Admin
       | archived |
     Then the request should have succeeded with status code 200
     And the response should contain 1 admin question themes
+    And the response should contain the following admin question themes:
+      | slug   | status   |
+      | sports | archived |
 
   Scenario: Filtering admin question themes with invalid status value
     Given the database is populated with question themes fixture set with name "five-question-themes"

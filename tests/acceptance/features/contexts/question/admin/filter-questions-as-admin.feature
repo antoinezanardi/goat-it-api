@@ -141,3 +141,6 @@ Feature: Filter Questions as Admin
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message                | path        | origin | format | pattern          |
+      | invalid_format | Invalid ObjectId value | theme-ids.0 | string | regex  | /^[\\da-f]{24}$/iu |

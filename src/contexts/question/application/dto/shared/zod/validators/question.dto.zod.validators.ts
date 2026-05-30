@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
+import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/array/array.zod.preprocessors";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
@@ -39,7 +40,7 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
 
 function zQuestionThemeIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
   return z.preprocess(
-    (value: unknown) => (typeof value === "string" ? [value] : value),
+    normalizeToArray,
     z.array(zMongoId().describe("Theme ID to filter questions by")).min(1),
   )
     .optional()

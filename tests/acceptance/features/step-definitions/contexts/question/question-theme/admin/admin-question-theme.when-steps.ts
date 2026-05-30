@@ -2,7 +2,7 @@ import { When } from "@cucumber/cucumber";
 import { z } from "zod";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
-import { validateDataTableAndGetFirstRow, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
+import { buildQueryFromRow, validateDataTableAndGetFirstRow, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
@@ -24,15 +24,9 @@ When(/^the admin retrieves all question themes$/u, async function(this: GoatItWo
 
 When(/^the admin retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
   const queryRow = validateDataTableAndGetFirstRow(queryDataTable, QUESTION_THEME_QUERY_PARAMS_SCHEMA);
-  const query: Record<string, string> = {};
-  for (const [key, value] of Object.entries(queryRow)) {
-    if (value !== undefined) {
-      query[key] = value;
-    }
-  }
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
-    query,
+    query: buildQueryFromRow(queryRow),
   });
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });
