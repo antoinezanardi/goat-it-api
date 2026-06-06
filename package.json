@@ -115,7 +115,7 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.40",
-    "@types/node": "^24.12.4",
+    "@types/node": "^24.13.1",
     "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.60.1",
     "@typescript/native-preview": "7.0.0-dev.20260527.1",
