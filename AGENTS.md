@@ -87,7 +87,7 @@ These skills live in `.agents/skills/` and are loaded via the `skill` tool by na
 - Package manager: `pnpm@11.1.2` (see `package.json` → `packageManager`).
   - Unlike npm, `pnpm` does NOT require an extra `--` before flags. Pass arguments directly:
     `pnpm test:unit -t "should create"` (correct) vs ~~`pnpm test:unit -- -t "should create"`~~ (unnecessary).
-- Node requirement: >=25.9.0 (see `package.json` → `engines.node`).
+- Node requirement: >=26.3.0 (see `package.json` → `engines.node`).
 - Build: `pnpm build` (nest build)
 - Typecheck: `pnpm typecheck` (tsgo -b --clean && tsgo -b --noEmit, native TS compiler)
 
