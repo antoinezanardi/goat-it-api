@@ -22,7 +22,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install project 📦
         uses: ./.github/actions/install-project
