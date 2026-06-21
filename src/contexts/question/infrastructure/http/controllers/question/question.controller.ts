@@ -1,17 +1,20 @@
-import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
+import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
+import { FindQuestionsQueryNestZodDto } from "@question/application/dto/find-questions-query/find-questions-query.dto";
 import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { createQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
+import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
 
@@ -35,8 +38,12 @@ export class QuestionController {
     status: HttpStatus.OK,
     type: [QuestionNestZodDto],
   })
-  public async findQuestions(@Localization() localization: LocalizationOptions): Promise<QuestionDto[]> {
-    const questions = await this.findQuestionsUseCase.list();
+  public async findQuestions(
+    @Query() queryDto: FindQuestionsQueryNestZodDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionDto[]> {
+    const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, createPublicQuestionFilterOptionsFromQueryDto);
+    const questions = await this.findQuestionsUseCase.list(findAllOptions);
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }

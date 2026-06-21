@@ -2,27 +2,34 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
-import { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/value-objects/question-status/question-status.constants";
+import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
+import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
+import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
-import { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
+import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { Question } from "@question/domain/entities/question.types";
+import { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
-  public async findAll(): Promise<Question[]> {
-    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>(QUESTION_MONGOOSE_REPOSITORY_PIPELINE);
+  public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
+    const filterStages = buildQuestionAggregationFilterStages(options.filters);
+    const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
+      ...filterStages,
+      ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ...sortStages,
+    ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
   }

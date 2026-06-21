@@ -2,8 +2,9 @@ import { World } from "@cucumber/cucumber";
 import { ofetch } from "ofetch";
 import { model } from "mongoose";
 
+import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+
 import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question/modules/question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 
 import { APP_BASE_URL } from "@acceptance-support/constants/app.constants";
 

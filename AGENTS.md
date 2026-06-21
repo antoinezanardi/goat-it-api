@@ -82,49 +82,55 @@ These skills live in `.agents/skills/` and are loaded via the `skill` tool by na
 
 ---
 
-## Commands
+## Build / Run / Lint / Test commands
 
-### Build & type-check
+- Package manager: `pnpm@11.1.2` (see `package.json` → `packageManager`).
+  - Unlike npm, `pnpm` does NOT require an extra `--` before flags. Pass arguments directly:
+    `pnpm test:unit -t "should create"` (correct) vs ~~`pnpm test:unit -- -t "should create"`~~ (unnecessary).
+- Node requirement: >=26.3.0 (see `package.json` → `engines.node`).
+- Build: `pnpm build` (nest build)
+- Typecheck: `pnpm typecheck` (tsgo -b --clean && tsgo -b --noEmit, native TS compiler)
 
-```bash
-pnpm build               # nest build
-pnpm typecheck           # tsgo -b --clean && tsgo -b --noEmit (native TS compiler)
-```
+- Linting (always run both linters):
+  - Full lint: `pnpm lint`         Full lint + fix: `pnpm lint:fix`
+  - ESLint only: `pnpm lint:eslint` / `pnpm lint:eslint:fix`
+  - Oxlint only: `pnpm lint:oxlint` / `pnpm lint:oxlint:fix`
 
-### Lint
+- Tests:
+  - Full unit run:   `pnpm test:unit`
+  - With coverage:   `pnpm test:unit:cov`
+  - Watch mode:      `pnpm test:unit:watch`
+  - Mutation (Stryker): `pnpm test:mutation` / `pnpm test:mutation:force`
+  - Acceptance (Cucumber): `pnpm test:acceptance` (requires running Docker services)
 
-```bash
-pnpm lint                # oxlint then eslint (read-only)
-pnpm lint:fix            # oxlint --fix then eslint --fix
-```
+Running a single unit test or file:
 
-### Unit tests
+- By filename:     `pnpm test:unit src/path/to/file.spec.ts`
+- By test name:    `pnpm test:unit --reporter=verbose -t "Create Question Use Case"`
+- Watch file:      `pnpm test:unit:watch src/path/to/file.spec.ts`
 
-```bash
-pnpm test:unit           # run all unit tests (no coverage)
-pnpm test:unit:cov       # run unit tests with coverage (must stay at 100%)
-pnpm test:unit:watch     # watch mode
+Running acceptance tests:
 
-# Run a SINGLE test file:
-pnpm test:unit src/path/to/file.spec.ts
+- Full run:                 `pnpm test:acceptance`
+- Skip build (fast iteration, if `dist/` is already up to date): `SKIP_BUILD=true pnpm test:acceptance`
+- Specific feature:         `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature`
+- Specific scenario (line): `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature:8`
+- By scenario name:         `pnpm test:acceptance --name "should create a question"`
+- By tag:                   `pnpm test:acceptance --tags "@question-theme"`
+- Multiple tags (OR):       `pnpm test:acceptance --tags "@question-theme or @question"`
+- Exclude tag:              `pnpm test:acceptance --tags "not @slow"`
+- By tag (AND):             `pnpm test:acceptance --tags "@question-theme and @admin"`
 
-# Run tests matching a name pattern:
-pnpm test:unit --reporter=verbose -t "Create Question Use Case"
-```
+**Mandatory quality gates** — agents MUST run all five commands below **in order**
+before considering any task complete. **Do NOT skip any gate**, even for "trivial" changes:
 
-### Other test suites
+1. `pnpm lint:fix`
+2. `pnpm typecheck`
+3. `pnpm test:unit:cov`
+4. `pnpm test:acceptance`
+5. `pnpm test:mutation`
 
-```bash
-pnpm test:acceptance     # Cucumber e2e (requires running Docker services)
-pnpm test:mutation       # Stryker mutation testing (slow)
-pnpm test:mutation:force # Full mutation run (clears incremental cache)
-```
-
-### Quality gate (what CI runs)
-
-```bash
-pnpm lint && pnpm typecheck && pnpm test:unit:cov && pnpm test:acceptance && pnpm test:mutation
-```
+If any gate fails, fix the issue and re-run from that gate onward until all five pass.
 
 ### Agent Workflow Guardrails
 
@@ -263,7 +269,26 @@ Each item below has a **condition** (when it applies), an **action** (what to do
 src/
   app/                  # App module, root controller, metadata
   contexts/
-    question/           # Bounded context: domain, application, infrastructure, modules/
+    question/           # Question bounded context (single aggregate)
+      domain/
+        constants/      # Domain constants (sortable fields, value-object values)
+        types/          # Type definitions (entities, commands, contracts, value-objects)
+        rules/          # Domain logic (predicates, policies, helpers — unified)
+        errors/         # Domain error classes (one folder per error)
+        repositories/   # Port interfaces + injection tokens
+      application/
+      infrastructure/
+      question.module.ts
+    question-theme/     # Question-Theme bounded context (single aggregate)
+      domain/
+        constants/
+        types/
+        rules/
+        errors/         # Domain error classes (one folder per error)
+        repositories/
+      application/
+      infrastructure/
+      question-theme.module.ts
   infrastructure/       # Cross-cutting API concerns (auth, health, config, database)
   shared/               # Shared domain, application, and infrastructure utilities
 
@@ -276,7 +301,7 @@ tests/
   mutation/             # Stryker incremental results (committed)
 ```
 
-Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters) layers:
+Each bounded context is a peer folder under `contexts/` with its own module. Each follows Clean Architecture / Hexagonal (Ports & Adapters) layers:
 
 - `domain/` — entities, value-objects, errors, commands, contracts, repository interfaces (ports)
 - `application/` — use-cases, DTOs (Zod shapes + nestjs-zod wrappers), mappers
@@ -286,9 +311,10 @@ Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters) l
 
 ### Domain patterns
 
-- **Predicates** (`domain/predicates/`): pure boolean functions for yes/no domain questions.
-- **Policies** (`domain/policies/`): enforce complex business rules; throw domain errors on violation; called by use-cases before state changes.
-- **Helpers** (`domain/helpers/`): pure transformation/computation functions.
+- **Rules** (`domain/rules/`): all domain logic in a single directory per aggregate, distinguished by naming convention:
+  - *Predicates* (`is*`, `has*`, `can*`): pure boolean functions for yes/no domain questions.
+  - *Policies* (`ensure*`): enforce complex business rules; throw domain errors on violation; called by use-cases before state changes.
+  - *Helpers* (descriptive names): pure transformation/computation functions.
 - **Mappers** (`application/mappers/`, `infrastructure/persistence/mongoose/mappers/`): convert between persistence documents ↔ domain entities ↔ DTOs. Keep them pure, explicit and side-effect-free.
 
 ### Repository pattern
@@ -312,6 +338,7 @@ Use path aliases everywhere — no relative `../` or `./` imports are permitted.
 | `@shared/*`              | `src/shared/*`                    | tsconfig, swc, vitest |
 | `@configs/*`             | `configs/*`                       | tsconfig, swc, vitest |
 | `@question/*`            | `src/contexts/question/*`         | tsconfig, swc, vitest |
+| `@question-theme/*`      | `src/contexts/question-theme/*`   | tsconfig, swc, vitest |
 | `@unit-tests/*`          | `tests/unit/*`                    | tsconfig, vitest      |
 | `@mocks/*`               | `tests/unit/utils/mocks/*`        | tsconfig, vitest      |
 | `@faketories/*`          | `tests/shared/utils/faketories/*` | tsconfig, vitest      |
@@ -380,6 +407,8 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 - **Classes**: May use inline `export class` since only one class per file is allowed.
 
+- **No type re-exports**: Never re-export types from a file that is not their original declaration. Import types from their canonical source (the file where they are defined). This prevents barrel-style indirection and keeps the dependency graph explicit.
+
 ### DTOs
 
 - Zod schema in `*.dto.shape.ts`: export the `z.object(...)` const (named `FOO_DTO`) and the inferred `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })` on fields to drive OpenAPI output. Boolean fields only require `.describe()` — `.meta({ example })` is not needed for booleans.
@@ -397,6 +426,23 @@ No relative imports (`../` or `./`) — always use path aliases.
 
 - Magic numbers are forbidden — extract to named constants in `*.constants.ts` files
 - Numbers 0, 1, and -1 are allowed inline
+
+### Lint Rule Disabling
+
+Disabling lint rules is a **last resort** — exhaust refactoring, type narrowing, and helper extraction first.
+
+When a disable is genuinely needed, use the **two-line format**:
+
+```ts
+// Acceptable as <concise justification explaining WHY the disable is safe>
+// oxlint-disable-next-line <rule-name(s)>
+suppressedCode();
+```
+
+- **Never** use file-level or block-level disables (`/* oxlint-disable */`, `/* eslint-disable */`) without explicit approval
+- Multiple rules on one line are comma-separated: `// oxlint-disable-next-line rule-a, rule-b`
+- Rule names use oxlint namespacing (`typescript/no-...`, `unicorn/...`, `eslint/...`) — no `@` prefix
+- ESLint-specific rules use `eslint/` prefix: `// oxlint-disable-next-line eslint/no-underscore-dangle`
 
 ---
 

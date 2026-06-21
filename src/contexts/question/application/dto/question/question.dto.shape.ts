@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
+import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
 import { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
 import { zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionCreatedAt, zQuestionId, zQuestionSourceUrls, zQuestionStatus, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";

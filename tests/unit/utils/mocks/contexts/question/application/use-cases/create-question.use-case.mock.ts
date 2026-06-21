@@ -1,10 +1,9 @@
-import type { QuestionCreationCommand } from "@question/domain/commands/question.commands";
+import type { QuestionCreationCommand } from "@question/domain/types/question.commands";
+import type { Question } from "@question/domain/types/question.entities";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 import type { Mock } from "vitest";
-
-import type { Question } from "@question/domain/entities/question.types";
 
 type CreateQuestionStub = {
   create: (command: QuestionCreationCommand) => Promise<Question>;

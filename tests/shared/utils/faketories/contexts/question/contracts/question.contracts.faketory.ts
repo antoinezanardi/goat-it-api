@@ -1,9 +1,7 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
-import { QUESTION_CREATION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
+import type { QuestionCreationContract } from "@question/domain/types/question.contracts";
+import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_CREATION_STATUSES } from "@question/domain/constants/question.constants";
 
 import { createFakeQuestionContentCreationContract } from "@faketories/contexts/question/contracts/question-content/question-content.contracts.faketory";
 import { createFakeQuestionAuthorCreationContract } from "@faketories/contexts/question/contracts/question-author/question-author.contracts.faketory";

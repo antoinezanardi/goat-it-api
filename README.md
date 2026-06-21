@@ -14,8 +14,8 @@
 ![Dependencies](https://img.shields.io/badge/-dependencies-black?style=flat-square&logoColor=white&logo=pnpm&color=B76507)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/goat-it-api/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/goat-it-api?targetFile=package.json)
 
 [![Tests count](https://byob.yarr.is/antoinezanardi/goat-it-api/unit-tests-count)](https://byob.yarr.is/antoinezanardi/goat-it-api/tests-count)
-[![Scenarios](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fantoinezanardi%2Fgoat-it-api%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/goat-it-api/main)
+[![Scenarios](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)](https://byob.yarr.is/antoinezanardi/goat-it-api/scenarios)
 
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_goat-it-api&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_goat-it-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_goat-it-api)

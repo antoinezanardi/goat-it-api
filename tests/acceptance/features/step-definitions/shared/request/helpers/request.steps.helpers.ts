@@ -90,6 +90,7 @@ function reconstructPayloadWithUndefined(flatObject: Record<string, unknown>): R
       if (!(part in current)) {
         current[part] = isNextPartIndex ? [] : {};
       }
+      // Acceptable as recursive object traversal requires narrowing the dynamic property access
       // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       current = current[part] as Record<string, unknown>;
     }

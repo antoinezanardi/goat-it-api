@@ -1,7 +1,7 @@
 {
   "$schema": "https://swc.rs/schema.json",
   "jsc": {
-    "target": "es2021",
+    "target": "es2024",
     "parser": {
       "syntax": "typescript",
       "decorators": true,
@@ -15,6 +15,7 @@
       "@app/*": ["src/app/*"],
       "@configs/*": ["configs/*"],
       "@question/*": ["src/contexts/question/*"],
+      "@question-theme/*": ["src/contexts/question-theme/*"],
       "@shared/*": ["src/shared/*"]
     },
     "transform": {

@@ -10,6 +10,15 @@ get {
   auth: inherit
 }
 
+params:query {
+  ~sort-by: createdAt
+  ~sort-order: desc
+  ~category: trivia
+  ~cognitive-difficulty: easy
+  ~author-role: admin
+  ~theme-ids: 507f1f77bcf86cd799439011
+}
+
 settings {
   encodeUrl: true
   timeout: inherit

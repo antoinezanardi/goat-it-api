@@ -1,18 +1,19 @@
 import { Test } from "@nestjs/testing";
 
-import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
-import { GetQuestionThemesByIdsOrThrowUseCase } from "@question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
-import { QuestionCreationError } from "@question/domain/errors/question.errors";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import { ReferencedQuestionThemeArchivedError } from "@question/modules/question-theme/domain/errors/question-theme.errors";
-import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question/modules/question-theme/domain/value-objects/question-theme-status/question-theme-status.constants";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
+import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
+import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 
-import { createMockedGetQuestionThemesByIdsOrThrowUseCase } from "@mocks/contexts/question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock";
+import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
+import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
+import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+
+import { createMockedGetQuestionThemesByIdsOrThrowUseCase } from "@mocks/contexts/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock";
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionCreationCommand } from "@faketories/contexts/question/commands/question.commands.faketory";
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
 import type { TestingModule } from "@nestjs/testing";
 

@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Perform CodeQL Analysis ❇️
         uses: ./.github/actions/code-ql
@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install project 📦
         uses: ./.github/actions/install-project
@@ -43,7 +43,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
@@ -76,7 +76,7 @@ jobs:
       vitest-lines-percent: ${{ steps.unit-tests.outputs.vitest-lines-percent }}
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Unit Tests 🧪
         id: unit-tests
@@ -93,7 +93,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Mutation Tests 👽
         id: mutation-tests
@@ -111,7 +111,7 @@ jobs:
       acceptance-tests-count: ${{ steps.acceptance-tests.outputs.acceptance-tests-count }}
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Acceptance Tests 🥒
         id: acceptance-tests
@@ -126,7 +126,7 @@ jobs:
       - acceptance-tests
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Generate Badges 💠
         uses: ./.github/actions/badges
@@ -151,7 +151,7 @@ jobs:
       - unit-tests
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: SonarCloud Analysis 🌥️
         uses: ./.github/actions/sonarcloud

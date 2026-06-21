@@ -1,12 +1,11 @@
-import type { QuestionModificationContract } from "@question/domain/contracts/question-modification/question-modification.contracts";
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment.contracts";
-import type { QuestionThemeAssignmentModificationContract } from "@question/domain/contracts/question-theme-assignment/question-theme-assignment-modification.contracts";
-import type { QuestionCreationContract } from "@question/domain/contracts/question.contracts";
+import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
+import type { Question } from "@question/domain/types/question.entities";
 
-import type { Question } from "@question/domain/entities/question.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 type QuestionRepository = {
-  findAll: () => Promise<Question[]>;
+  findAll: (options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>) => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
   create: (questionCreationContract: QuestionCreationContract) => Promise<Question | undefined>;
   archive: (id: string) => Promise<Question | undefined>;

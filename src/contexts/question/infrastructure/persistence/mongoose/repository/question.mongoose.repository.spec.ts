@@ -2,11 +2,14 @@ import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
+import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -22,6 +25,8 @@ import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
@@ -69,14 +74,50 @@ describe("Question Mongoose Repository", () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findAll, () => {
-    it("should aggregate with pipeline when called.", async() => {
-      await repositories.question.findAll();
+    let findAllOptions: FindAllOptions<QuestionSortableField, QuestionFilterOptions>;
 
-      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(QUESTION_MONGOOSE_REPOSITORY_PIPELINE);
+    beforeEach(() => {
+      findAllOptions = { sort: { sortBy: "createdAt", sortOrder: "asc" } };
+    });
+
+    it("should aggregate with pipeline and ascending sort stage when sort order is asc.", async() => {
+      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" } };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and descending sort stage when sort order is desc.", async() => {
+      findAllOptions = { sort: { sortOrder: "desc", sortBy: "category" } };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages when sort field has a semantic order.", async() => {
+      findAllOptions = { sort: { sortOrder: "asc", sortBy: "status" } };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline and semantic sort stages in descending order when sort field has a semantic order and direction is desc.", async() => {
+      findAllOptions = { sort: { sortOrder: "desc", sortBy: "cognitiveDifficulty" } };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
 
     it("should map and return questions when called.", async() => {
-      const questions = await repositories.question.findAll();
+      const questions = await repositories.question.findAll(findAllOptions);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenCalledTimes(questions.length);
     });
@@ -87,11 +128,10 @@ describe("Question Mongoose Repository", () => {
         createFakeQuestionAggregate(),
       ];
       mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
-      await repositories.question.findAll();
+      await repositories.question.findAll(findAllOptions);
 
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(1, questionAggregates[0], 0, questionAggregates);
-      // It's okay to disable this rule here because we want to explicitly test multiple calls to the mapper function.
-      // Multiple tests would be redundant.
+      // Acceptable as testing multiple calls to the mapper function requires multiple expects in a single block
       // oxlint-disable-next-line max-expects
       expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(2, questionAggregates[1], 1, questionAggregates);
     });
@@ -108,7 +148,7 @@ describe("Question Mongoose Repository", () => {
         .mockReturnValueOnce(expectedQuestions[1])
         .mockReturnValueOnce(expectedQuestions[2]);
 
-      const actualQuestions = await repositories.question.findAll();
+      const actualQuestions = await repositories.question.findAll(findAllOptions);
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
     });

@@ -1,4 +1,4 @@
-import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
@@ -6,6 +6,8 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY = createFakeQuestion
   _id: createFakeObjectId("5cd8edcc5fdf4cf6aaf79c9e"),
   slug: "cinema",
   color: "#33A1FF",
+  createdAt: new Date("2024-02-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-02-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     en: "Cinema",
     fr: undefined,
@@ -37,6 +39,8 @@ const TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY = createFakeQuestionT
   _id: createFakeObjectId("3ff6c1e3ae2fe3fdd9ced1e8"),
   slug: "music",
   color: undefined,
+  createdAt: new Date("2024-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-01-01T00:00:00.000Z"),
   label: createFakeLocalizedText({
     en: "Music",
     fr: undefined,

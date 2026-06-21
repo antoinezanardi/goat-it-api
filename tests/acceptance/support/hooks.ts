@@ -16,7 +16,7 @@ setWorldConstructor(GoatItWorld);
 
 const processes: AcceptanceHooksProcesses = {};
 
-BeforeAll(async function() {
+BeforeAll(async() => {
   loadEnvTestConfig();
   if (process.env.SKIP_BUILD === "true") {
     console.info("⏭️ Skipping application build for acceptance tests as per SKIP_BUILD env variable.");
@@ -52,7 +52,7 @@ After(async function(this: GoatItWorld, scenario: ITestCaseHookParameter): Promi
   printDebugOnScenarioFailure(this, scenario);
 });
 
-AfterAll(async function() {
+AfterAll(async() => {
   await closeTestDatabaseConnection();
   if (processes.app) {
     await killAppProcess(processes.app);

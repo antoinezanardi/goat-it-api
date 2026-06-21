@@ -2,20 +2,20 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
+import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
+
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
-import { createQuestionCreationCommandFromDto } from "@question/application/mappers/question-creation/question-creation.dto.mappers";
-import { createQuestionModificationCommandFromDto } from "@question/application/mappers/question-modification/question-modification.dto.mappers";
-import { createQuestionThemeAssignmentCreationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers";
-import { createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers";
+import { createQuestionCreationCommandFromDto, createQuestionModificationCommandFromDto, createAdminQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
+import { createQuestionThemeAssignmentCreationCommandFromDto, createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment.mappers";
+import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
-import { createAdminQuestionDtoFromEntity } from "@question/application/mappers/question/question.dto.mappers";
 
 import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
 import { createMockedModifyQuestionUseCase } from "@mocks/contexts/question/application/use-cases/modify-question.use-case.mock";
@@ -37,14 +37,16 @@ import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contex
 import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
 import { createFakeQuestionThemeAssignmentModificationDto } from "@faketories/contexts/question/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.faketory";
 import { createFakeQuestionThemeAssignmentModificationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment-modification.commands.faketory";
+import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 
 import type { Mock } from "vitest";
 
-vi.mock(import("@question/application/mappers/question/question.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-creation/question-creation.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-modification/question-modification.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-creation/question-theme-assignment-creation.dto.mappers"));
-vi.mock(import("@question/application/mappers/question-theme-assignment/question-theme-assignment-modification/question-theme-assignment-modification.dto.mappers"));
+import type { FindAllOptions } from "@shared/domain/types/find/find.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+
+vi.mock(import("@question/application/mappers/question.mappers"));
+vi.mock(import("@question/application/mappers/question-theme-assignment.mappers"));
+vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 
 describe("Admin Question Controller", () => {
   let adminQuestionController: AdminQuestionController;
@@ -68,6 +70,7 @@ describe("Admin Question Controller", () => {
       createQuestionModificationCommandFromDto: Mock;
       createQuestionThemeAssignmentCreationCommandFromDto: Mock;
       createQuestionThemeAssignmentModificationCommandFromDto: Mock;
+      createFindAllOptionsFromQueryDto: Mock;
     };
   };
 
@@ -92,6 +95,7 @@ describe("Admin Question Controller", () => {
         createQuestionModificationCommandFromDto: vi.mocked(createQuestionModificationCommandFromDto),
         createQuestionThemeAssignmentCreationCommandFromDto: vi.mocked(createQuestionThemeAssignmentCreationCommandFromDto),
         createQuestionThemeAssignmentModificationCommandFromDto: vi.mocked(createQuestionThemeAssignmentModificationCommandFromDto),
+        createFindAllOptionsFromQueryDto: vi.mocked(createFindAllOptionsFromQueryDto),
       },
     };
 
@@ -141,37 +145,50 @@ describe("Admin Question Controller", () => {
   });
 
   describe(AdminQuestionController.prototype.findQuestions, () => {
-    it("should list all questions when called.", async() => {
-      await adminQuestionController.findQuestions();
+    it("should create find all options from query dto when called.", async() => {
+      const queryDto = createFakeAdminFindQuestionsQueryDto();
+      await adminQuestionController.findQuestions(queryDto);
 
-      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.mappers.createFindAllOptionsFromQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto, createQuestionFilterOptionsFromQueryDto);
+    });
+
+    it("should list all questions with find all options when called.", async() => {
+      const queryDto = createFakeAdminFindQuestionsQueryDto();
+      const expectedFindAllOptions: FindAllOptions<QuestionSortableField, QuestionFilterOptions> = { sort: { sortBy: "createdAt", sortOrder: "desc" } };
+      mocks.mappers.createFindAllOptionsFromQueryDto.mockReturnValueOnce(expectedFindAllOptions);
+      await adminQuestionController.findQuestions(queryDto);
+
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expectedFindAllOptions);
     });
 
     it("should map every question to admin dto when called.", async() => {
+      const queryDto = createFakeAdminFindQuestionsQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
         createFakeQuestion(),
       ];
       mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findQuestions();
+      await adminQuestionController.findQuestions(queryDto);
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledTimes(questions.length);
     });
 
     it("should call the mapper with the correct parameters when called.", async() => {
+      const queryDto = createFakeAdminFindQuestionsQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
         createFakeQuestion(),
       ];
       mocks.useCases.findQuestions.list.mockResolvedValueOnce(questions);
-      await adminQuestionController.findQuestions();
+      await adminQuestionController.findQuestions(queryDto);
 
       expect(mocks.mappers.createAdminQuestionDtoFromEntity).toHaveBeenCalledWith(questions[0]);
     });
 
     it("should return the mapped dtos when called.", async() => {
+      const queryDto = createFakeAdminFindQuestionsQueryDto();
       const questions = [
         createFakeQuestion(),
         createFakeQuestion(),
@@ -182,7 +199,7 @@ describe("Admin Question Controller", () => {
         createFakeAdminQuestionDto(),
       ];
       mocks.mappers.createAdminQuestionDtoFromEntity.mockReturnValueOnce(expectedDtos[0]).mockReturnValueOnce(expectedDtos[1]);
-      const result = await adminQuestionController.findQuestions();
+      const result = await adminQuestionController.findQuestions(queryDto);
 
       expect(result).toStrictEqual(expectedDtos);
     });

@@ -1,14 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QuestionThemeAssignmentRemovalCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment.commands";
-import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment/question-theme-assignment.errors";
-import { QuestionMinimumThemesError } from "@question/domain/errors/question.errors";
-import { ensureQuestionThemeAssignmentIsRemovable } from "@question/domain/policies/question-theme-assignment/question-theme-assignment.policies";
+import { QuestionThemeAssignmentRemovalCommand } from "@question/domain/types/question.commands";
+import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
+import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
+import { ensureQuestionThemeAssignmentIsRemovable } from "@question/domain/rules/question.rules";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/value-objects/question-theme-assignment/question-theme-assignment.constants";
+import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
+import { Question } from "@question/domain/types/question.entities";
 
-import { Question } from "@question/domain/entities/question.types";
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()

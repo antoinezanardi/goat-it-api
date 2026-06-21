@@ -38,8 +38,8 @@ Feature: Modify Question Theme Assignment As Admin
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |
-      | science | false     | true   |
       | history | true      | false  |
+      | science | false     | true   |
 
   Scenario: Trying to set isPrimary to false on a theme assignment
     Given the database is populated with questions fixture set with name "five-questions"

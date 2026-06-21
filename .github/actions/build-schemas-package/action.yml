@@ -8,6 +8,10 @@ runs:
     - name: Install project 📦
       uses: ./.github/actions/install-project
 
+    - name: Typecheck @goat-it/schemas 🔍
+      shell: bash
+      run: pnpm --filter @goat-it/schemas run typecheck
+
     - name: Build @goat-it/schemas 📚
       shell: bash
       run: pnpm --filter @goat-it/schemas run build

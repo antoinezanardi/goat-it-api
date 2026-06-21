@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeAssignmentCreationCommand, QuestionThemeAssignmentRemovalCommand } from "@question/domain/commands/question-theme-assignment/question-theme-assignment.commands";
+import type { QuestionThemeAssignmentCreationCommand, QuestionThemeAssignmentRemovalCommand } from "@question/domain/types/question.commands";
 
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
 

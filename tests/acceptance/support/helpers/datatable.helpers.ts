@@ -87,7 +87,21 @@ function coerceStringToPrimitive(value: string): string | number | boolean {
   return Number.isNaN(asNumber) ? value : asNumber;
 }
 
+/**
+ * Builds a query parameter record from a DataTable row, filtering out undefined values. Only used in acceptance tests.
+ */
+function buildQueryFromRow(row: Record<string, string | string[] | undefined>): Record<string, string | string[]> {
+  const query: Record<string, string | string[]> = {};
+  for (const [key, value] of Object.entries(row)) {
+    if (value !== undefined) {
+      query[key] = value;
+    }
+  }
+  return query;
+}
+
 export {
+  buildQueryFromRow,
   coerceStringToPrimitive,
   zCoerceOptionalBoolean,
   zCoerceOptionalString,

@@ -1,13 +1,32 @@
 import { When } from "@cucumber/cucumber";
+import { z } from "zod";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
+import { buildQueryFromRow, validateDataTableAndGetFirstRow, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
+import type { DataTable } from "@cucumber/cucumber";
+
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
+
+const QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
+  "sort-by": zCoerceOptionalString(),
+  "sort-order": zCoerceOptionalString(),
+  "status": zCoerceOptionalString(),
+});
 
 When(/^the admin retrieves all question themes$/u, async function(this: GoatItWorld) {
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
+  });
+  await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
+});
+
+When(/^the admin retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, QUESTION_THEME_QUERY_PARAMS_SCHEMA);
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_ADMIN_API_KEY,
+    query: buildQueryFromRow(queryRow),
   });
   await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
 });

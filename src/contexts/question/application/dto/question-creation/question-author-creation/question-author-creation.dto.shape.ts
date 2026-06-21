@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { QUESTION_AUTHOR_NAME_MAX_LENGTH, QUESTION_AUTHOR_NAME_MIN_LENGTH, QUESTION_CREATION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";
+import { QUESTION_AUTHOR_NAME_MAX_LENGTH, QUESTION_AUTHOR_NAME_MIN_LENGTH, QUESTION_CREATION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
 
 const QUESTION_AUTHOR_CREATION_DTO = z.object({
   role: z.enum(QUESTION_CREATION_AUTHOR_ROLES)

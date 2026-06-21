@@ -1,18 +1,18 @@
 import { z } from "zod";
 
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
+import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/array/array.zod.preprocessors";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
-import { QUESTION_CATEGORIES } from "@question/domain/value-objects/question-category/question-category.constants";
-import { QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS } from "@question/domain/value-objects/question-source-urls/question-source-urls.constants";
-import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
-import { QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.constants";
+import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
+import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
-import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime } from "zod";
+import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess } from "zod";
 
-import type { QuestionCategoryEnum } from "@question/domain/value-objects/question-category/question-category.types";
-import type { QuestionStatusEnum } from "@question/domain/value-objects/question-status/question-status.types";
-import type { QuestionCognitiveDifficultyEnum } from "@question/domain/value-objects/question-cognitive-difficulty/question-cognitive-difficulty.types";
+function zQuestionAuthorRole(): ZodEnum<QuestionAuthorRoleEnum> {
+  return z.enum(QUESTION_AUTHOR_ROLES)
+    .describe("Question author's role");
+}
 
 function zQuestionCognitiveDifficulty(): ZodEnum<QuestionCognitiveDifficultyEnum> {
   return z.enum(QUESTION_COGNITIVE_DIFFICULTIES)
@@ -38,6 +38,15 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
 
+function zQuestionThemeIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
+  return z.preprocess(
+    normalizeToArray,
+    z.array(zMongoId().describe("Theme ID to filter questions by")).min(1),
+  )
+    .optional()
+    .describe("List of theme IDs to filter questions by (OR logic)");
+}
+
 function zQuestionId(): ZodString {
   return zMongoId()
     .describe("Question's unique identifier");
@@ -54,10 +63,12 @@ function zQuestionUpdatedAt(): ZodISODateTime {
 }
 
 export {
+  zQuestionAuthorRole,
   zQuestionCognitiveDifficulty,
   zQuestionStatus,
   zQuestionCategory,
   zQuestionSourceUrls,
+  zQuestionThemeIdsFilter,
   zQuestionId,
   zQuestionCreatedAt,
   zQuestionUpdatedAt,

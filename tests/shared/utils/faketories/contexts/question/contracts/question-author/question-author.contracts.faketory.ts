@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionAuthorCreationContract } from "@question/domain/contracts/question-author/question-author.contracts";
-import { QUESTION_CREATION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";
+import type { QuestionAuthorCreationContract } from "@question/domain/types/question.contracts";
+import { QUESTION_CREATION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
 
 function createFakeQuestionAuthorCreationContract(author: Partial<QuestionAuthorCreationContract> = {}): QuestionAuthorCreationContract {
   return {

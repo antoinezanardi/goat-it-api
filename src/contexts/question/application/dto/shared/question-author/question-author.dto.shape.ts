@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
-import { QUESTION_AUTHOR_ROLES } from "@question/domain/value-objects/question-author/question-author.constants";
+import { QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
 
 const QUESTION_AUTHOR_DTO = z.strictObject({
   role: z.enum(QUESTION_AUTHOR_ROLES)

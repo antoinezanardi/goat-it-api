@@ -1,4 +1,4 @@
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question/modules/question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
+import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
 
 import type { QuestionAggregatePipeline } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
@@ -42,7 +42,7 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
       themes: {
         $sortArray: {
           input: "$themes",
-          sortBy: { "theme._id": 1 },
+          sortBy: { "isPrimary": -1, "theme.slug": 1 },
         },
       },
     },
