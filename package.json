@@ -122,7 +122,7 @@
     "@vitest/coverage-v8": "^4.1.9",
     "@vitest/eslint-plugin": "^1.6.20",
     "commitlint": "^21.1.0",
-    "conventional-changelog-conventionalcommits": "^10.0.0",
+    "conventional-changelog-conventionalcommits": "^10.2.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.6.0",
     "eslint-import-resolver-typescript": "^4.4.5",
