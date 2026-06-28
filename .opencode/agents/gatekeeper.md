@@ -8,25 +8,44 @@ steps: 120
 permission:
   edit: allow
   bash:
-    "pnpm lint*": "allow"
-    "pnpm typecheck*": "allow"
-    "pnpm test:unit*": "allow"
-    "pnpm test:acceptance*": "allow"
-    "pnpm test:mutation*": "allow"
+    "pnpm run lint*": "allow"
+    "rtk pnpm run lint*": "allow"
+    "pnpm run typecheck*": "allow"
+    "rtk pnpm run typecheck*": "allow"
+    "pnpm run test:unit*": "allow"
+    "rtk pnpm run test:unit*": "allow"
+    "pnpm run test:acceptance*": "allow"
+    "rtk pnpm run test:acceptance*": "allow"
+    "pnpm run test:mutation*": "allow"
+    "rtk pnpm run test:mutation*": "allow"
     "git status*": "allow"
+    "rtk git status*": "allow"
     "git log*": "allow"
+    "rtk git log*": "allow"
     "git diff*": "allow"
+    "rtk git diff*": "allow"
     "cat *": "allow"
+    "rtk cat *": "allow"
     "grep *": "allow"
+    "rtk grep *": "allow"
     "ls *": "allow"
+    "rtk ls *": "allow"
     "find *": "allow"
+    "rtk find *": "allow"
     "head *": "allow"
+    "rtk head *": "allow"
     "tail *": "allow"
+    "rtk tail *": "allow"
     "echo *": "allow"
+    "rtk echo *": "allow"
     "wc *": "allow"
+    "rtk wc *": "allow"
     "git add *": "deny"
+    "rtk git add *": "deny"
     "git commit *": "deny"
+    "rtk git commit *": "deny"
     "git push *": "deny"
+    "rtk git push *": "deny"
   task: deny
   webfetch: deny
 ---
@@ -40,19 +59,19 @@ You are the **gatekeeper** subagent for the goat-it-api project. You run the ful
 ## Gate execution order (strict, no parallelism)
 
 1. **Lint (both linters):**
-   - `pnpm lint:oxlint:fix`
-   - `pnpm lint:eslint:fix`
+   - `pnpm run lint:oxlint:fix`
+   - `pnpm run lint:eslint:fix`
    - Run oxlint first, then ESLint
 
-2. **Typecheck:** `pnpm typecheck`
+2. **Typecheck:** `pnpm run typecheck`
 
-3. **Unit tests with coverage:** `pnpm test:unit:cov`
+3. **Unit tests with coverage:** `pnpm run test:unit:cov`
    - Coverage threshold: 100% (all branches, lines, functions)
 
-4. **Mutation tests:** `pnpm test:mutation`
+4. **Mutation tests:** `pnpm run test:mutation`
    - Only if `MUTATION_TESTING=true`. Mutation score must be 100%.
 
-5. **Acceptance tests:** `pnpm test:acceptance`
+5. **Acceptance tests:** `pnpm run test:acceptance`
    - Scope with `--tags` when re-running to fix specific failures.
 
 ## State tracking
