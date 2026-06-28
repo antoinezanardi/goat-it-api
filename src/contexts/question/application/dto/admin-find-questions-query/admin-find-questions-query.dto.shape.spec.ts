@@ -11,6 +11,8 @@ import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin
 
 import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 
+import type { z } from "zod";
+
 describe("Admin Find Questions Sort Query DTO Shape", () => {
   let validDto: AdminFindQuestionsQueryDto;
 
@@ -49,6 +51,10 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
+
+    it("should have sort-by as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["sort-by"]>().toEqualTypeOf<AdminFindQuestionsQueryDto["sort-by"] | undefined>();
+    });
   });
 
   describe("sort-order", () => {
@@ -77,6 +83,10 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
       const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have sort-order as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["sort-order"]>().toEqualTypeOf<AdminFindQuestionsQueryDto["sort-order"] | undefined>();
     });
   });
 

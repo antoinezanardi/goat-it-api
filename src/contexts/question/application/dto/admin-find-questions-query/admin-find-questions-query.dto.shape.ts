@@ -10,6 +10,7 @@ import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, z
 
 const ADMIN_FIND_QUESTIONS_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(ADMIN_QUESTION_SORTABLE_FIELDS)
+    .optional()
     .default(QUESTION_SORT_BY_DEFAULT)
     .describe(QUESTION_SORT_BY_DESCRIPTION)
     .meta({ example: QUESTION_SORT_BY_DEFAULT }),

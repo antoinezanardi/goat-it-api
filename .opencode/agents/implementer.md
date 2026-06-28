@@ -9,25 +9,46 @@ permission:
   edit: allow
   bash:
     "*": "ask"
-    "pnpm test:unit*": "allow"
-    "pnpm test:acceptance*": "allow"
-    "pnpm test:mutation*": "allow"
-    "pnpm lint*": "allow"
-    "pnpm typecheck*": "allow"
+    "pnpm run test:unit*": "allow"
+    "rtk pnpm run test:unit*": "allow"
+    "pnpm run test:acceptance*": "allow"
+    "rtk pnpm run test:acceptance*": "allow"
+    "pnpm run test:mutation*": "allow"
+    "rtk pnpm run test:mutation*": "allow"
+    "pnpm run lint*": "allow"
+    "rtk pnpm run lint*": "allow"
+    "pnpm run typecheck*": "allow"
+    "rtk pnpm run typecheck*": "allow"
     "git status*": "allow"
+    "rtk git status*": "allow"
     "git log*": "allow"
+    "rtk git log*": "allow"
     "git diff*": "allow"
+    "rtk git diff*": "allow"
     "git add *": "deny"
+    "rtk git add *": "deny"
     "git commit *": "deny"
+    "rtk git commit *": "deny"
     "git push *": "deny"
+    "rtk git push *": "deny"
     "ls *": "allow"
+    "rtk ls *": "allow"
     "cat *": "allow"
+    "rtk cat *": "allow"
     "mkdir *": "allow"
+    "rtk mkdir *": "allow"
     "grep *": "allow"
+    "rtk grep *": "allow"
+    "readlink *": "allow"
+    "rtk readlink *": "allow"
     "tail *": "allow"
+    "rtk tail *": "allow"
     "head *": "allow"
+    "rtk head *": "allow"
     "echo *": "allow"
+    "rtk echo *": "allow"
     "which *": "allow"
+    "rtk which *": "allow"
   task: deny
   webfetch: deny
 ---
@@ -46,10 +67,10 @@ If anything is unclear — **ask now** via the orchestrator. Don't guess.
 2. Run all related tests — verify no regression.
 3. If some tests fail, try to fix them. If you can't, report `BLOCKED` or `NEEDS_CONTEXT`.
 4. Self-review — the final-reviewer will check cross-task consistency later.
-5. Run minimal mandatory fast quality gate checks in sequence:
-   - `pnpm typecheck`
-   - `pnpm lint:oxlint:fix <full-path-modified-files>`
-   - `pnpm lint:eslint:fix <full-path-modified-files>`
+5. Run minimal mandatory fast quality gate checks listed below in sequence and fix any issues:
+   - `pnpm run typecheck`
+   - `pnpm run lint:oxlint:fix <full-path-modified-files>` (on modified files only)
+   - `pnpm run lint:eslint:fix <full-path-modified-files>` (on modified files only)
 6. Report back
 
 ## What you do NOT do
