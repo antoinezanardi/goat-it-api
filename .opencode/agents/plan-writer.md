@@ -19,6 +19,7 @@ permission:
     "git log *": "allow"
     "git diff *": "allow"
     "ls *": "allow"
+    "rtk ls *": "allow"
     "cat *": "allow"
     "head *": "allow"
     "tail *": "allow"

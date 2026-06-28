@@ -11,6 +11,8 @@ import type { FindQuestionsQueryDto } from "@question/application/dto/find-quest
 
 import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
 
+import type { z } from "zod";
+
 describe("Find Questions Sort Query DTO Shape", () => {
   let validDto: FindQuestionsQueryDto;
 
@@ -55,6 +57,10 @@ describe("Find Questions Sort Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
+
+    it("should have sort-by as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof FIND_QUESTIONS_QUERY_DTO>["sort-by"]>().toEqualTypeOf<FindQuestionsQueryDto["sort-by"] | undefined>();
+    });
   });
 
   describe("sort-order", () => {
@@ -83,6 +89,10 @@ describe("Find Questions Sort Query DTO Shape", () => {
       const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have sort-order as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof FIND_QUESTIONS_QUERY_DTO>["sort-order"]>().toEqualTypeOf<FindQuestionsQueryDto["sort-order"] | undefined>();
     });
   });
 

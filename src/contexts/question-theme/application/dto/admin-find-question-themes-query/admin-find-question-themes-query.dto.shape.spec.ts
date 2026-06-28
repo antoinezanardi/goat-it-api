@@ -8,6 +8,7 @@ import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 
 import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
 
+import type { z } from "zod";
 import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
 
 describe("Admin Find Question-Themes Query DTO Shape", () => {
@@ -54,6 +55,10 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
+
+    it("should have sort-by as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["sort-by"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["sort-by"] | undefined>();
+    });
   });
 
   describe("sort-order", () => {
@@ -82,6 +87,10 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
       const expectedMetadata = { description: QUESTION_THEME_SORT_ORDER_DESCRIPTION, example: QUESTION_THEME_SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have sort-order as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["sort-order"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["sort-order"] | undefined>();
     });
   });
 
