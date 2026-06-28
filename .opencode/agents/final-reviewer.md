@@ -73,7 +73,7 @@ You are the final reviewer. You review the whole implementation holistically —
 ### 4. Definition of Done checklist items
 - **Bruno sync:** Every endpoint has a corresponding `.bru` request in `configs/bruno/Goat It/`.
 - **Acceptance tests:** Scenarios cover happy path + key error cases. Tags follow conventions.
-- **Schemas package:** If existing exports modified → bump patch version. New export candidates → ask user.
+- **Schemas package:** If existing exports modified → bump patch version. Explicitly ask whether any new types should be exported from `@goat-it/schemas`.
 - **GlobalExceptionFilter:** New domain errors registered.
 - **Faketories:** New types have corresponding `createFake<Concept>` in `tests/shared/utils/faketories/`.
 - **Mocks:** New ports have corresponding `createMocked<What>` in `tests/unit/utils/mocks/`.

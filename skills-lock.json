@@ -1,12 +1,6 @@
 {
   "version": 1,
   "skills": {
-    "executing-plans": {
-      "source": "obra/superpowers",
-      "sourceType": "github",
-      "skillPath": "skills/executing-plans/SKILL.md",
-      "computedHash": "d3e5b64b97d4713e3a7f33625cae12ed9305898d85a1c6309f46765c39a9d789"
-    },
     "receiving-code-review": {
       "source": "obra/superpowers",
       "sourceType": "github",

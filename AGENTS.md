@@ -44,7 +44,6 @@ These skills have OpenCode slash commands wired up in `.opencode/commands/`:
 | `brainstorming`         | `/brainstorming`         | Explore intent, requirements and design before any creative/impl work  |
 | `create-faketory`       | `/create-faketory`       | Scaffold a faketory for an entity, DTO, command or Mongoose document   |
 | `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port |
-| `executing-plans`       | `/executing-plans`       | Execute a written implementation plan with review checkpoints          |
 | `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario                  |
 | `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions |
 | `writing-plans`         | `/writing-plans`         | Create a comprehensive implementation plan from a spec or requirements |
