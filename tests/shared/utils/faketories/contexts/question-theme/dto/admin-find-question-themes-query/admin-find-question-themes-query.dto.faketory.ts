@@ -4,6 +4,7 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS, QUESTION_THEME_STATUSES } from "@
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
+import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
 
 import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
 
@@ -11,6 +12,7 @@ function createFakeAdminFindQuestionThemesQueryDto(overrides: Partial<AdminFindQ
   return {
     [SORT_BY_QUERY_KEY]: faker.helpers.arrayElement(ADMIN_QUESTION_THEME_SORTABLE_FIELDS),
     [SORT_ORDER_QUERY_KEY]: faker.helpers.arrayElement(SORT_ORDERS),
+    [LIMIT_QUERY_KEY]: faker.number.int({ min: 1, max: 100 }),
     status: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_THEME_STATUSES)),
     ...overrides,
   };

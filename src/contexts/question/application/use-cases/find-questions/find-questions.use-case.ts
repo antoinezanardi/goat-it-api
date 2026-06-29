@@ -13,6 +13,8 @@ export class FindQuestionsUseCase {
   private readonly questionRepository: QuestionRepository) {}
 
   public async list(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
-    return this.questionRepository.findAll(options);
+    const questions = await this.questionRepository.findAll(options);
+
+    return questions.slice(0, options.limit);
   }
 }

@@ -58,5 +58,40 @@ describe("Find Questions Use Case", () => {
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
     });
+
+    it("should return only the first N questions when limit is set.", async() => {
+      const expectedQuestions = [
+        createFakeQuestion(),
+        createFakeQuestion(),
+        createFakeQuestion(),
+      ];
+      mocks.repositories.question.findAll.mockResolvedValueOnce(expectedQuestions);
+      const optionsWithLimit = { ...findAllOptions, limit: 2 };
+
+      const actualQuestions = await findQuestionsUseCase.list(optionsWithLimit);
+
+      expect(actualQuestions).toStrictEqual(expectedQuestions.slice(0, 2));
+    });
+
+    it("should return all questions when limit exceeds total count.", async() => {
+      const expectedQuestions = [
+        createFakeQuestion(),
+        createFakeQuestion(),
+      ];
+      mocks.repositories.question.findAll.mockResolvedValueOnce(expectedQuestions);
+      const optionsWithLimit = { ...findAllOptions, limit: 5 };
+
+      const actualQuestions = await findQuestionsUseCase.list(optionsWithLimit);
+
+      expect(actualQuestions).toStrictEqual(expectedQuestions);
+    });
+
+    it("should call repository with full options when limit is set.", async() => {
+      const optionsWithLimit = { ...findAllOptions, limit: 2 };
+
+      await findQuestionsUseCase.list(optionsWithLimit);
+
+      expect(mocks.repositories.question.findAll).toHaveBeenCalledExactlyOnceWith(optionsWithLimit);
+    });
   });
 });

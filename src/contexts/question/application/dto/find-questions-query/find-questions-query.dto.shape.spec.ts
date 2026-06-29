@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
@@ -93,6 +94,39 @@ describe("Find Questions Sort Query DTO Shape", () => {
 
     it("should have sort-order as optional when checking the input type.", () => {
       expectTypeOf<z.input<typeof FIND_QUESTIONS_QUERY_DTO>["sort-order"]>().toEqualTypeOf<FindQuestionsQueryDto["sort-order"] | undefined>();
+    });
+  });
+
+  describe("limit", () => {
+    it.each([1, 20, 100])("should pass validation when limit is '%s'.", limit => {
+      const dto = createFakeFindQuestionsQueryDto({ limit });
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it.each([0, -1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+      const dtoWithInvalidLimit = { ...validDto, limit };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
+    });
+
+    it("should use default value 20 when limit is not provided.", () => {
+      const dtoWithoutLimit = { "sort-by": "createdAt" };
+
+      const result = FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutLimit);
+
+      expect(result.limit).toBe(LIMIT_DEFAULT);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = FIND_QUESTIONS_QUERY_DTO.shape.limit.meta();
+      const expectedMetadata = { description: LIMIT_DESCRIPTION, example: LIMIT_DEFAULT };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have limit as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof FIND_QUESTIONS_QUERY_DTO>["limit"]>().toEqualTypeOf<FindQuestionsQueryDto["limit"] | undefined>();
     });
   });
 
@@ -193,6 +227,6 @@ describe("Find Questions Sort Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = FIND_QUESTIONS_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<FindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc" });
+    expect(result).toStrictEqual<FindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": 20 });
   });
 });

@@ -14,6 +14,8 @@ export class FindQuestionThemesUseCase {
   private readonly questionThemeRepository: QuestionThemeRepository) {}
 
   public async list(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
-    return this.questionThemeRepository.findAll(options);
+    const questionThemes = await this.questionThemeRepository.findAll(options);
+
+    return questionThemes.slice(0, options.limit);
   }
 }
