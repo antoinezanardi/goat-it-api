@@ -1,6 +1,6 @@
 const LIMIT_DESCRIPTION = "Maximum number of results to return";
 
-const LIMIT_DEFAULT = 20;
+const LIMIT_DEFAULT = 50;
 
 const LIMIT_MINIMUM = 1;
 

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
@@ -98,7 +98,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([1, 20, 100])("should pass validation when limit is '%s'.", limit => {
+    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
       const dto = createFakeFindQuestionsQueryDto({ limit });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -110,7 +110,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
     });
 
-    it("should use default value 20 when limit is not provided.", () => {
+    it("should use default value 50 when limit is not provided.", () => {
       const dtoWithoutLimit = { "sort-by": "createdAt" };
 
       const result = FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutLimit);
@@ -227,6 +227,6 @@ describe("Find Questions Sort Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = FIND_QUESTIONS_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<FindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": 20 });
+    expect(result).toStrictEqual<FindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": LIMIT_DEFAULT });
   });
 });

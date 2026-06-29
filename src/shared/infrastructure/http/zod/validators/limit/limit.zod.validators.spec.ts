@@ -9,7 +9,7 @@ import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.z
 
 describe("Limit Zod Validators", () => {
   describe(zLimit, () => {
-    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is '%s'.", (limit: number) => {
+    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", (limit: number) => {
       const schema = zLimit();
       const result = schema.safeParse(limit);
 
@@ -22,7 +22,7 @@ describe("Limit Zod Validators", () => {
       expect(() => schema.parse(invalidLimit)).toThrow(z.ZodError);
     });
 
-    it("should use default value 20 when limit is not provided.", () => {
+    it("should use default value 50 when limit is not provided.", () => {
       const schema = zLimit();
       const result = schema.parse(undefined);
 

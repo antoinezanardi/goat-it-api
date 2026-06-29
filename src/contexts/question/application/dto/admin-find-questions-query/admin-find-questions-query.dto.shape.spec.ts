@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { ZodError } from "zod";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-import { LIMIT_DEFAULT, LIMIT_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { ADMIN_FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
@@ -92,7 +92,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([1, 20, 100])("should pass validation when limit is '%s'.", limit => {
+    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
       const dto = createFakeAdminFindQuestionsQueryDto({ limit });
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -104,7 +104,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
     });
 
-    it("should use default value 20 when limit is not provided.", () => {
+    it("should use default value 50 when limit is not provided.", () => {
       const dtoWithoutLimit = { "sort-by": "createdAt" };
 
       const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutLimit);
@@ -241,6 +241,6 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<AdminFindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": 20 });
+    expect(result).toStrictEqual<AdminFindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": LIMIT_DEFAULT });
   });
 });

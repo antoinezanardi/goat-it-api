@@ -6,6 +6,7 @@ import type { Mock } from "vitest";
 
 type QuestionThemeMongooseFindQuery = Promise<QuestionThemeMongooseDocumentStub[]> & {
   sort: Mock<(sortOptions: unknown) => Promise<QuestionThemeMongooseDocumentStub[]>>;
+  limit: Mock<(limit: number) => Promise<QuestionThemeMongooseDocumentStub[]>>;
 };
 
 type QuestionThemeMongooseModelStub = {
@@ -26,9 +27,17 @@ type MockedQuestionThemeMongooseModel = {
 };
 
 function createQuestionThemeMongooseFindQuery(documents: QuestionThemeMongooseDocumentStub[]): QuestionThemeMongooseFindQuery {
-  const sortMock = vi.fn<(sortOptions: unknown) => Promise<QuestionThemeMongooseDocumentStub[]>>().mockResolvedValue(documents);
+  // Acceptable as mock utility creating a complex chainable Mongoose query object; direct type assertion is the standard pattern for this
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const self = Object.assign(Promise.resolve(documents)) as unknown as QuestionThemeMongooseFindQuery;
 
-  return Object.assign(Promise.resolve(documents), { sort: sortMock });
+  const sortMock = vi.fn<(sortOptions: unknown) => Promise<QuestionThemeMongooseDocumentStub[]>>().mockReturnValue(self);
+  const limitMock = vi.fn<(limit: number) => Promise<QuestionThemeMongooseDocumentStub[]>>().mockReturnValue(self);
+
+  self.sort = sortMock;
+  self.limit = limitMock;
+
+  return self;
 }
 
 function createMockedQuestionThemeMongooseModel(overrides: Partial<MockedQuestionThemeMongooseModel> = {}): MockedQuestionThemeMongooseModel {

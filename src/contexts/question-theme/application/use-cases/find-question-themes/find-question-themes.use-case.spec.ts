@@ -61,40 +61,5 @@ describe("Find Question Themes Use Case", () => {
 
       expect(mocks.repositories.questionTheme.findAll).toHaveBeenCalledExactlyOnceWith(findAllOptions);
     });
-
-    it("should return only the first N question themes when limit is set.", async() => {
-      const expectedQuestionThemes = [
-        createFakeQuestionTheme(),
-        createFakeQuestionTheme(),
-        createFakeQuestionTheme(),
-      ];
-      mocks.repositories.questionTheme.findAll.mockResolvedValueOnce(expectedQuestionThemes);
-      const optionsWithLimit = { ...findAllOptions, limit: 2 };
-
-      const actualQuestionThemes = await findQuestionThemesUseCase.list(optionsWithLimit);
-
-      expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes.slice(0, 2));
-    });
-
-    it("should return all question themes when limit exceeds total count.", async() => {
-      const expectedQuestionThemes = [
-        createFakeQuestionTheme(),
-        createFakeQuestionTheme(),
-      ];
-      mocks.repositories.questionTheme.findAll.mockResolvedValueOnce(expectedQuestionThemes);
-      const optionsWithLimit = { ...findAllOptions, limit: 5 };
-
-      const actualQuestionThemes = await findQuestionThemesUseCase.list(optionsWithLimit);
-
-      expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
-    });
-
-    it("should call repository with full options when limit is set.", async() => {
-      const optionsWithLimit = { ...findAllOptions, limit: 2 };
-
-      await findQuestionThemesUseCase.list(optionsWithLimit);
-
-      expect(mocks.repositories.questionTheme.findAll).toHaveBeenCalledExactlyOnceWith(optionsWithLimit);
-    });
   });
 });
