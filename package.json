@@ -99,7 +99,7 @@
     "docker:acceptance-tests:reset": "npm run docker:acceptance-tests:stop && npm run docker:acceptance-tests:start"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^21.1.0",
+    "@commitlint/config-conventional": "^21.2.0",
     "@cucumber/cucumber": "^13.0.0",
     "@eslint/config-inspector": "^3.0.4",
     "@faker-js/faker": "^10.5.0",
@@ -121,7 +121,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260621.1",
     "@vitest/coverage-v8": "^4.1.9",
     "@vitest/eslint-plugin": "^1.6.20",
-    "commitlint": "^21.1.0",
+    "commitlint": "^21.2.0",
     "conventional-changelog-conventionalcommits": "^10.2.0",
     "dotenv": "^17.4.2",
     "eslint": "^10.6.0",
