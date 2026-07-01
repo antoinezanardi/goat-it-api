@@ -3,8 +3,6 @@ import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionThemeMongooseDocument } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-
 describe("Question Theme Mongoose Mappers", () => {
   describe(createQuestionThemeFromDocument, () => {
     it("should map mongoose document to domain entity when called.", () => {
@@ -20,21 +18,21 @@ describe("Question Theme Mongoose Mappers", () => {
         createdAt: questionThemeDocument.createdAt,
         updatedAt: questionThemeDocument.updatedAt,
       });
-      const result = createQuestionThemeFromDocument(questionThemeDocument as unknown as QuestionThemeMongooseDocument);
+      const result = createQuestionThemeFromDocument(questionThemeDocument);
 
       expect(result).toStrictEqual(expectedQuestionTheme);
     });
 
     it("should map document.color to entity.color when present.", () => {
       const questionThemeDocument = createFakeQuestionThemeDocument({ color: "#FF5733" });
-      const result = createQuestionThemeFromDocument(questionThemeDocument as unknown as QuestionThemeMongooseDocument);
+      const result = createQuestionThemeFromDocument(questionThemeDocument);
 
       expect(result.color).toBe("#FF5733");
     });
 
     it("should correctly map the document when color is absent.", () => {
       const questionThemeDocument = createFakeQuestionThemeDocument({ color: undefined });
-      const result = createQuestionThemeFromDocument(questionThemeDocument as unknown as QuestionThemeMongooseDocument);
+      const result = createQuestionThemeFromDocument(questionThemeDocument);
 
       expect(result.color).toBeUndefined();
     });
