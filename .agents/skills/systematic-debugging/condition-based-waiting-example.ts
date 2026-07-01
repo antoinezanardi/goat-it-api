@@ -17,7 +17,7 @@ import type { LaceEvent, LaceEventType } from '~/threads/types';
  * Example:
  *   await waitForEvent(threadManager, agentThreadId, 'TOOL_RESULT');
  */
-export async function waitForEvent(
+export function waitForEvent(
   threadManager: ThreadManager,
   threadId: string,
   eventType: LaceEventType,
@@ -57,7 +57,7 @@ export async function waitForEvent(
  *   // Wait for 2 AGENT_MESSAGE events (initial response + continuation)
  *   await waitForEventCount(threadManager, agentThreadId, 'AGENT_MESSAGE', 2);
  */
-export async function waitForEventCount(
+export function waitForEventCount(
   threadManager: ThreadManager,
   threadId: string,
   eventType: LaceEventType,
@@ -108,7 +108,7 @@ export async function waitForEventCount(
  *     'TOOL_RESULT with id=call_123'
  *   );
  */
-export async function waitForEventMatch(
+export function waitForEventMatch(
   threadManager: ThreadManager,
   threadId: string,
   predicate: (event: LaceEvent) => boolean,
@@ -139,20 +139,20 @@ export async function waitForEventMatch(
 //
 // BEFORE (flaky):
 // ---------------
-// Const messagePromise = agent.sendMessage('Execute tools');
-// Await new Promise(r => setTimeout(r, 300)); // Hope tools start in 300ms
-// Agent.abort();
-// Await messagePromise;
-// Await new Promise(r => setTimeout(r, 50));  // Hope results arrive in 50ms
-// Expect(toolResults.length).toBe(2);         // Fails randomly
+// const messagePromise = agent.sendMessage('Execute tools');
+// await new Promise(r => setTimeout(r, 300)); // Hope tools start in 300ms
+// agent.abort();
+// await messagePromise;
+// await new Promise(r => setTimeout(r, 50));  // Hope results arrive in 50ms
+// expect(toolResults.length).toBe(2);         // Fails randomly
 //
 // AFTER (reliable):
 // ----------------
-// Const messagePromise = agent.sendMessage('Execute tools');
-// Await waitForEventCount(threadManager, threadId, 'TOOL_CALL', 2); // Wait for tools to start
-// Agent.abort();
-// Await messagePromise;
-// Await waitForEventCount(threadManager, threadId, 'TOOL_RESULT', 2); // Wait for results
-// Expect(toolResults.length).toBe(2); // Always succeeds
+// const messagePromise = agent.sendMessage('Execute tools');
+// await waitForEventCount(threadManager, threadId, 'TOOL_CALL', 2); // Wait for tools to start
+// agent.abort();
+// await messagePromise;
+// await waitForEventCount(threadManager, threadId, 'TOOL_RESULT', 2); // Wait for results
+// expect(toolResults.length).toBe(2); // Always succeeds
 //
 // Result: 60% pass rate → 100%, 40% faster execution

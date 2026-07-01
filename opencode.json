@@ -1,4 +1,47 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": true
+  "model": "opencode-go/deepseek-v4-pro",
+  "small_model": "opencode-go/deepseek-v4-flash",
+  "default_agent": "orchestrator",
+  "agent": {
+    "explore": {
+      "model": "opencode-go/deepseek-v4-flash"
+    }
+  },
+  "provider": {
+    "opencode-go": {
+      "options": {
+        "setCacheKey": true
+      }
+    }
+  },
+  "plugin": [
+    ["opencode-mempalace", {
+      "mcpCommand": ["mempalace-mcp"],
+      "palacePath": ".mempalace",
+      "threshold": 20
+    }]
+  ],
+  "permission": {
+    "skill": { "*": "allow" },
+    "bash": {
+      "git checkout -b *": "allow",
+      "git add *": "deny",
+      "git commit *": "deny",
+      "git push *": "deny",
+      "rtk git add *": "deny",
+      "rtk git commit *": "deny",
+      "rtk git push *": "deny"
+    }
+  },
+  "lsp": {
+    "oxlint": {
+      "command": ["oxlint", "--lsp"]
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 15000
+  }
 }

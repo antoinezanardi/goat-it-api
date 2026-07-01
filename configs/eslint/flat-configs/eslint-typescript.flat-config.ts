@@ -14,7 +14,7 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
   plugins: { "@typescript-eslint": TypeScriptPlugin as unknown as Linter },
   languageOptions: {
 
-    parser: TypescriptParser as Linter.Parser,
+    parser: TypescriptParser,
     parserOptions: {
       ecmaVersion: "latest",
       sourceType: "module",

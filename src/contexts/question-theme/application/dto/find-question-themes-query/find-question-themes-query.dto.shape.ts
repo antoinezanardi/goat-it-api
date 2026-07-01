@@ -8,10 +8,12 @@ import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 
 const FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_THEME_SORTABLE_FIELDS)
+    .optional()
     .default(QUESTION_THEME_SORT_BY_DEFAULT)
     .describe(QUESTION_THEME_SORT_BY_DESCRIPTION)
     .meta({ example: QUESTION_THEME_SORT_BY_DEFAULT }),
   [SORT_ORDER_QUERY_KEY]: z.enum(SORT_ORDERS)
+    .optional()
     .default(QUESTION_THEME_SORT_ORDER_DEFAULT)
     .describe(QUESTION_THEME_SORT_ORDER_DESCRIPTION)
     .meta({ example: QUESTION_THEME_SORT_ORDER_DEFAULT }),
