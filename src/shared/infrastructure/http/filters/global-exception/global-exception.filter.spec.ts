@@ -43,6 +43,8 @@ describe("Global Exception Filter", () => {
             status: vi.fn<(status: number) => FastifyReply>().mockReturnThis(),
             send: vi.fn<() => void>(),
           } as unknown as FastifyReply,
+          // Acceptable as we are creating a mock ServerResponse object for testing purposes. The type assertion is necessary to satisfy TypeScript's type checking, as we are creating an object that mimics the ServerResponse interface but does not fully implement it.
+          // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
           serverResponse: Object.assign(Object.create(ServerResponse.prototype), {
             writeHead: vi.fn<() => void>(),
             end: vi.fn<() => void>(),

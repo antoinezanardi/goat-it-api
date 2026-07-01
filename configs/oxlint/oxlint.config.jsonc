@@ -1026,6 +1026,7 @@
           }
         ],
         "vitest/consistent-vitest-vi": "error",
+        "jest/expect-expect": "off",
         "vitest/expect-expect": "error",
         "vitest/hoisted-apis-on-top": "error",
         "vitest/max-expects": [
