@@ -152,6 +152,24 @@ describe("Question Mongoose Repository", () => {
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
     });
+
+    it("should not include $limit stage when limit is not set.", async() => {
+      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" } };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should include $limit stage at end of pipeline when limit is set.", async() => {
+      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: 5 };
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages, { $limit: 5 }];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
   });
 
   describe(QuestionMongooseRepository.prototype.findById, () => {

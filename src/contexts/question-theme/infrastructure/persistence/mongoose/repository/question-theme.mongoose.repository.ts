@@ -26,7 +26,12 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const filterQuery = buildQuestionThemeFilterQuery(options.filters);
     // Acceptable as .sort() is a Mongoose Query method, not Array.prototype.sort
     // oxlint-disable-next-line unicorn/no-array-sort
-    const questionThemeDocuments = await this.questionThemeModel.find(filterQuery).sort(sortCriteria);
+    const query = this.questionThemeModel.find(filterQuery).sort(sortCriteria);
+
+    if (options.limit !== undefined) {
+      query.limit(options.limit);
+    }
+    const questionThemeDocuments = await query;
 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }

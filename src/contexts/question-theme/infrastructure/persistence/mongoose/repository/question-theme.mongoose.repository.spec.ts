@@ -115,6 +115,20 @@ describe("Question Theme Mongoose Repository", () => {
 
       expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
     });
+
+    it("should not apply limit to find query when limit is not set.", async() => {
+      findAllOptions = { sort: findAllOptions.sort };
+      await repositories.questionTheme.findAll(findAllOptions);
+
+      expect(mocks.models.questionTheme.findQuery.limit).not.toHaveBeenCalled();
+    });
+
+    it("should apply limit to find query when limit is set.", async() => {
+      findAllOptions = { ...findAllOptions, limit: 5 };
+      await repositories.questionTheme.findAll(findAllOptions);
+
+      expect(mocks.models.questionTheme.findQuery.limit).toHaveBeenCalledExactlyOnceWith(5);
+    });
   });
 
   describe(QuestionThemeMongooseRepository.prototype.findById, () => {

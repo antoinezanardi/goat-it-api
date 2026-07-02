@@ -5,6 +5,7 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS, QUESTION_THEME_STATUSES } from "@
 import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
 
@@ -94,6 +95,39 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
     });
   });
 
+  describe("limit", () => {
+    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+      const dto = createFakeAdminFindQuestionThemesQueryDto({ limit });
+
+      expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it.each([0, -1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+      const dtoWithInvalidLimit = { ...validDto, limit };
+
+      expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
+    });
+
+    it("should use default value 50 when limit is not provided.", () => {
+      const dtoWithoutLimit = { "sort-by": "slug" };
+
+      const result = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithoutLimit);
+
+      expect(result.limit).toBe(LIMIT_DEFAULT);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.limit.meta();
+      const expectedMetadata = { description: LIMIT_DESCRIPTION, example: LIMIT_DEFAULT };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have limit as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["limit"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["limit"] | undefined>();
+    });
+  });
+
   describe("status", () => {
     it.each(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
       const dto = createFakeAdminFindQuestionThemesQueryDto({ status });
@@ -121,6 +155,6 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<AdminFindQuestionThemesQueryDto>({ "sort-by": "slug", "sort-order": "asc" });
+    expect(result).toStrictEqual<AdminFindQuestionThemesQueryDto>({ "sort-by": "slug", "sort-order": "asc", "limit": LIMIT_DEFAULT });
   });
 });

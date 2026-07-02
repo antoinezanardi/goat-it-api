@@ -25,10 +25,12 @@ export class QuestionMongooseRepository implements QuestionRepository {
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+    const limitStage = options.limit === undefined ? [] : [{ $limit: options.limit }];
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
       ...filterStages,
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ...sortStages,
+      ...limitStage,
     ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
