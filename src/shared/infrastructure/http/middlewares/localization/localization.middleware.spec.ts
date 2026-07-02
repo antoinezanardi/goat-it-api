@@ -56,7 +56,7 @@ describe("Localization Middleware", () => {
           locale: fallbackLocale,
           fallbackLocale,
         }),
-      } as { localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
+      };
       const localizationMiddlewareStub = LocalizationMiddleware as unknown as { useFallbackLocale: (...parameters: unknown[]) => void };
       localizationMiddlewareStub.useFallbackLocale(request, fallbackLocale, next);
 
@@ -88,7 +88,7 @@ describe("Localization Middleware", () => {
           locale: "en",
           fallbackLocale: "en",
         }),
-      } as { headers: Record<string, string>; localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
+      };
       localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);
 
       expect(requestRaw).toStrictEqual(expectedRequestRaw);
