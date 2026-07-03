@@ -10,6 +10,7 @@ import { QuestionTheme } from "@question-theme/domain/types/question-theme.entit
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
 
 import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
@@ -26,7 +27,12 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const filterQuery = buildQuestionThemeFilterQuery(options.filters);
     // Acceptable as .sort() is a Mongoose Query method, not Array.prototype.sort
     // oxlint-disable-next-line unicorn/no-array-sort
-    const questionThemeDocuments = await this.questionThemeModel.find(filterQuery).sort(sortCriteria);
+    const query = this.questionThemeModel.find(filterQuery).sort(sortCriteria);
+
+    if (hasLimit(options.limit)) {
+      query.limit(options.limit);
+    }
+    const questionThemeDocuments = await query;
 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }

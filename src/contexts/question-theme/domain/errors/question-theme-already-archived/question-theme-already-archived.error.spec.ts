@@ -1,4 +1,4 @@
-import { QuestionThemeAlreadyArchivedError } from "./question-theme-already-archived.error";
+import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
 
 describe(QuestionThemeAlreadyArchivedError, () => {
   it("should have name QuestionThemeAlreadyArchivedError when created.", () => {

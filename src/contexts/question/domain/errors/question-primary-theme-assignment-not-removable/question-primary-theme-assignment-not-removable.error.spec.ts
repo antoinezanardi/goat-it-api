@@ -1,4 +1,4 @@
-import { QuestionPrimaryThemeAssignmentNotRemovableError } from "./question-primary-theme-assignment-not-removable.error";
+import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 
 describe(QuestionPrimaryThemeAssignmentNotRemovableError, () => {
   it("should set message when constructed.", () => {

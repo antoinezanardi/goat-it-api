@@ -1,4 +1,4 @@
-import { QuestionThemeAssignmentAlreadyExistsError } from "./question-theme-assignment-already-exists.error";
+import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 
 describe(QuestionThemeAssignmentAlreadyExistsError, () => {
   it("should set message when constructed.", () => {

@@ -5,6 +5,7 @@ import { QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants
 import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-query/find-question-themes-query.dto.faketory";
 
@@ -94,9 +95,42 @@ describe("Find Question-Themes Query DTO Shape", () => {
     });
   });
 
+  describe("limit", () => {
+    it.each([0, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+      const dto = createFakeFindQuestionThemesQueryDto({ limit });
+
+      expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+      const dtoWithInvalidLimit = { ...validDto, limit };
+
+      expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
+    });
+
+    it("should use default value 50 when limit is not provided.", () => {
+      const dtoWithoutLimit = { "sort-by": "slug" };
+
+      const result = FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithoutLimit);
+
+      expect(result.limit).toBe(LIMIT_DEFAULT);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = FIND_QUESTION_THEMES_QUERY_DTO.shape.limit.meta();
+      const expectedMetadata = { description: LIMIT_DESCRIPTION, example: LIMIT_DEFAULT };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should accept any coercible value when checking the input type.", () => {
+      expectTypeOf<z.input<typeof FIND_QUESTION_THEMES_QUERY_DTO>["limit"]>().toEqualTypeOf<unknown>();
+    });
+  });
+
   it("should use both defaults when no fields are provided.", () => {
     const result = FIND_QUESTION_THEMES_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<FindQuestionThemesQueryDto>({ "sort-by": "slug", "sort-order": "asc" });
+    expect(result).toStrictEqual<FindQuestionThemesQueryDto>({ "sort-by": "slug", "sort-order": "asc", "limit": LIMIT_DEFAULT });
   });
 });

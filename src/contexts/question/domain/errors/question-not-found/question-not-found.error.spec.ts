@@ -1,4 +1,4 @@
-import { QuestionNotFoundError } from "./question-not-found.error";
+import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 
 describe(QuestionNotFoundError, () => {
   it("should set message when constructed.", () => {
