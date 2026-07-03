@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
 import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
@@ -25,7 +26,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
-    const limitStage = options.limit === undefined || options.limit === 0 ? [] : [{ $limit: options.limit }];
+    const limitStage = hasLimit(options.limit) ? [{ $limit: options.limit }] : [];
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
       ...filterStages,
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,

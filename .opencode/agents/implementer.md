@@ -9,8 +9,8 @@ permission:
   edit: allow
   bash:
     "*": "ask"
-    "pnpm run test:unit*": "allow"
-    "rtk pnpm run test:unit*": "allow"
+    "pnpm run test:unit *": "allow"
+    "rtk pnpm run test:unit *": "allow"
     "pnpm run test:acceptance*": "allow"
     "rtk pnpm run test:acceptance*": "allow"
     "pnpm run test:mutation*": "allow"
@@ -21,8 +21,8 @@ permission:
     "rtk pnpm run lint:eslint*": "allow"
     "pnpm run lint:oxlint*": "allow"
     "rtk pnpm run lint:oxlint*": "allow"
-    "pnpm run typecheck*": "allow"
-    "rtk pnpm run typecheck*": "allow"
+    "pnpm run typecheck *": "allow"
+    "rtk pnpm run typecheck *": "allow"
     "git status*": "allow"
     "rtk git status*": "allow"
     "git log *": "allow"

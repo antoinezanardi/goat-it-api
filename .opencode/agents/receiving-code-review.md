@@ -13,6 +13,7 @@ permission:
     "git log *": "allow"
     "rtk git log *": "allow"
     "git diff *": "allow"
+    "rtk git diff *": "allow"
     "git add *": "deny"
     "git commit *": "deny"
     "git push *": "deny"

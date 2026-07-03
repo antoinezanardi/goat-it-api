@@ -11,6 +11,13 @@ const QUESTION_THEME_DATATABLE_ROW_SCHEMA = z.strictObject({
   status: z.string(),
 });
 
+const PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
+  "sort-by": zCoerceOptionalString(),
+  "sort-order": zCoerceOptionalString(),
+  "limit": zCoerceOptionalString(),
+});
+
 export {
   QUESTION_THEME_DATATABLE_ROW_SCHEMA,
+  PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA,
 };

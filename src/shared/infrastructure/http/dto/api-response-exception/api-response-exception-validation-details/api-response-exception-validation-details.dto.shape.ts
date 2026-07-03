@@ -14,6 +14,10 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
     .optional()
     .describe("Expected type of the invalid property value when applicable")
     .meta({ example: "string" }),
+  received: z.string()
+    .optional()
+    .describe("Received type of the invalid property value when applicable")
+    .meta({ example: "NaN" }),
   origin: z.string()
     .optional()
     .describe("Origin type of the invalid property value when applicable")

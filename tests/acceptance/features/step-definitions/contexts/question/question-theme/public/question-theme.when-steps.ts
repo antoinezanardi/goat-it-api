@@ -1,20 +1,15 @@
 import { When } from "@cucumber/cucumber";
-import { z } from "zod";
+
+import { PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA } from "./datatables/question-theme.datatables.schemas";
 
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
-import { buildQueryFromRow, validateDataTableAndGetFirstRow, zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
+import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
-
-const PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
-  "sort-by": zCoerceOptionalString(),
-  "sort-order": zCoerceOptionalString(),
-  "limit": zCoerceOptionalString(),
-});
 
 When(/^the client retrieves all question themes(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
   const fetchOptions = createFetchOptions({

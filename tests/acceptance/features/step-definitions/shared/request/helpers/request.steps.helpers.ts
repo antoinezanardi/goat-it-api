@@ -110,6 +110,7 @@ function mapDataTableRowToValidationDetails(row: ValidationDetailsRow): ApiRespo
       return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
     }).filter(value => value !== ""),
     expected: row.expected,
+    received: row.received,
     origin: row.origin,
     format: row.format,
     pattern: row.pattern,

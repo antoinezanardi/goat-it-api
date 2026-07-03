@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { createZLocalizedDataTableRowSchema } from "@acceptance-features/step-definitions/shared/locale/datatables/locale.datatables.helpers";
 
+import { zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
+
 const ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA = z.strictObject({
   slug: z.string().optional(),
   status: z.string().optional(),
@@ -14,9 +16,17 @@ const ADMIN_QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA = createZL
 
 const ADMIN_QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("aliases");
 
+const ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
+  "sort-by": zCoerceOptionalString(),
+  "sort-order": zCoerceOptionalString(),
+  "status": zCoerceOptionalString(),
+  "limit": zCoerceOptionalString(),
+});
+
 export {
   ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA,
   ADMIN_QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA,
   ADMIN_QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA,
   ADMIN_QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA,
+  ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA,
 };

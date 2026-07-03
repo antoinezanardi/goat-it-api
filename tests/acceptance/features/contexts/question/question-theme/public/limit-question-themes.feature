@@ -29,3 +29,18 @@ Feature: Limit Question Themes
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code       | message                                | path  | minimum | inclusive | origin |
+      | too_small  | Too small: expected number to be >=0   | limit | 0       | true      | number |
+
+  Scenario: Trying to limit question themes with an invalid value type
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    When the client retrieves all question themes with the following query:
+      | limit |
+      | abc   |
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                        | path  | expected | received |
+      | invalid_type  | Invalid input: expected number, received NaN   | limit | number   | NaN      |
