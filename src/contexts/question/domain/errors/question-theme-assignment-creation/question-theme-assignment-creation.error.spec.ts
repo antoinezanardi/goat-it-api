@@ -1,4 +1,4 @@
-import { QuestionThemeAssignmentCreationError } from "./question-theme-assignment-creation.error";
+import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
 
 describe(QuestionThemeAssignmentCreationError, () => {
   it("should set message when constructed.", () => {

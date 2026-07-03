@@ -1,6 +1,6 @@
 import { When } from "@cucumber/cucumber";
 
-import { ADMIN_QUESTION_QUERY_PARAMS_SCHEMA } from "./datatables/admin-question.datatables.schemas";
+import { ADMIN_QUESTION_QUERY_PARAMS_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
 import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";

@@ -1,6 +1,5 @@
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/constants/question.constants";
-
-import { QuestionAlreadyArchivedError } from "./question-already-archived.error";
+import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 
 describe(QuestionAlreadyArchivedError, () => {
   it("should set message including status when constructed.", () => {

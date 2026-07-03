@@ -39,7 +39,7 @@ const QUESTION_REJECTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   comment: zCoerceOptionalString(),
 });
 
-const PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA = z.object({
+const PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA = z.strictObject({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "category": zCoerceOptionalString(),

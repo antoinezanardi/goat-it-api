@@ -1,4 +1,4 @@
-import { QuestionThemeNotFoundError } from "./question-theme-not-found.error";
+import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 
 describe(QuestionThemeNotFoundError, () => {
   it("should have name QuestionThemeNotFoundError when created.", () => {

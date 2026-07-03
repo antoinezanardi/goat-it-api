@@ -18,7 +18,7 @@ const ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA = z.strictObject({
 
 const ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("label");
 
-const ADMIN_QUESTION_QUERY_PARAMS_SCHEMA = z.object({
+const ADMIN_QUESTION_QUERY_PARAMS_SCHEMA = z.strictObject({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "status": zCoerceOptionalString(),

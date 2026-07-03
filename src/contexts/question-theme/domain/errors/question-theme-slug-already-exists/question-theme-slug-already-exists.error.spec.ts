@@ -1,4 +1,4 @@
-import { QuestionThemeSlugAlreadyExistsError } from "./question-theme-slug-already-exists.error";
+import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
 describe(QuestionThemeSlugAlreadyExistsError, () => {
   it("should have name QuestionThemeSlugAlreadyExistsError when created.", () => {

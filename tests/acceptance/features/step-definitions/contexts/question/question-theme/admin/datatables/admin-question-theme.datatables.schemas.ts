@@ -16,7 +16,7 @@ const ADMIN_QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA = createZL
 
 const ADMIN_QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("aliases");
 
-const ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
+const ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.strictObject({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "status": zCoerceOptionalString(),

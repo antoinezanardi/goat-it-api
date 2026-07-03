@@ -1,4 +1,4 @@
-import { QuestionThemeAssignmentRemovalError } from "./question-theme-assignment-removal.error";
+import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
 
 describe(QuestionThemeAssignmentRemovalError, () => {
   it("should set message when constructed.", () => {
