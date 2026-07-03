@@ -116,6 +116,27 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     });
   });
 
+  describe("received", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { received: 789 });
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.received.description).toBe("Received type of the invalid property value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Received type of the invalid property value when applicable",
+        example: "NaN",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.received.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
   describe("origin", () => {
     it("should throw a zod error when assigned a non-string value (when present).", () => {
       const invalidDto = Object.assign(validApiResponseExceptionValidationDetailsDto, { origin: 123 });
