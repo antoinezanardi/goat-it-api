@@ -93,7 +93,7 @@ describe("Question Theme Controller", () => {
       mocks.mappers.createSortOptionsFromSortQueryDto.mockReturnValueOnce(expectedSortOptions);
       await questionThemeController.findQuestionThemes(queryDto, localization);
 
-      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith({ sort: expectedSortOptions });
+      expect(mocks.useCases.findQuestionThemes.list).toHaveBeenCalledExactlyOnceWith({ sort: expectedSortOptions, limit: queryDto.limit });
     });
 
     it("should map every question theme to dto when called.", async() => {

@@ -17,6 +17,7 @@ const PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA = z.object({
   "cognitive-difficulty": zCoerceOptionalString(),
   "author-role": zCoerceOptionalString(),
   "theme-ids": zCoerceOptionalStringArray(),
+  "limit": zCoerceOptionalString(),
 });
 
 When(/^the client retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {

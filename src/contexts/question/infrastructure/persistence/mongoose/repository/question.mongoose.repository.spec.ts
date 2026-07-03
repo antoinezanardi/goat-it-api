@@ -8,7 +8,7 @@ import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromCon
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
@@ -20,6 +20,7 @@ import { createFakeQuestionCreationContract } from "@faketories/contexts/questio
 import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
+import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 
 import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
@@ -77,11 +78,11 @@ describe("Question Mongoose Repository", () => {
     let findAllOptions: FindAllOptions<QuestionSortableField, QuestionFilterOptions>;
 
     beforeEach(() => {
-      findAllOptions = { sort: { sortBy: "createdAt", sortOrder: "asc" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortBy: "createdAt", sortOrder: "asc" }, limit: undefined });
     });
 
     it("should aggregate with pipeline and ascending sort stage when sort order is asc.", async() => {
-      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: undefined });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -90,7 +91,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and descending sort stage when sort order is desc.", async() => {
-      findAllOptions = { sort: { sortOrder: "desc", sortBy: "category" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "desc", sortBy: "category" }, limit: undefined });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -99,7 +100,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and semantic sort stages when sort field has a semantic order.", async() => {
-      findAllOptions = { sort: { sortOrder: "asc", sortBy: "status" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "status" }, limit: undefined });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -108,7 +109,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should aggregate with pipeline and semantic sort stages in descending order when sort field has a semantic order and direction is desc.", async() => {
-      findAllOptions = { sort: { sortOrder: "desc", sortBy: "cognitiveDifficulty" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "desc", sortBy: "cognitiveDifficulty" }, limit: undefined });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -154,7 +155,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should not include $limit stage when limit is not set.", async() => {
-      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" } };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: undefined });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
@@ -163,10 +164,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should include $limit stage at end of pipeline when limit is set.", async() => {
-      findAllOptions = { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: 5 };
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: 5 });
       await repositories.question.findAll(findAllOptions);
       const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
       const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages, { $limit: 5 }];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should not include $limit stage when limit is 0 (unlimited).", async() => {
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: 0 });
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedPipeline = [...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
 
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });

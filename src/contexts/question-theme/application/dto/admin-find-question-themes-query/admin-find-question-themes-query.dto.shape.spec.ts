@@ -102,7 +102,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each([0, -1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
@@ -123,8 +123,8 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
 
-    it("should have limit as optional when checking the input type.", () => {
-      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["limit"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["limit"] | undefined>();
+    it("should accept any coercible value when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["limit"]>().toEqualTypeOf<unknown>();
     });
   });
 

@@ -2,10 +2,10 @@ import { z } from "zod";
 
 import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
-import type { ZodDefault, ZodNumber, ZodOptional } from "zod";
+import type { ZodCoercedNumber, ZodDefault, ZodOptional } from "zod";
 
-function zLimit(): ZodDefault<ZodOptional<ZodNumber>> {
-  return z.number()
+function zLimit(): ZodDefault<ZodOptional<ZodCoercedNumber>> {
+  return z.coerce.number()
     .int()
     .min(LIMIT_MINIMUM)
     .optional()

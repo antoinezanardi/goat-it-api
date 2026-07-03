@@ -28,7 +28,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     // oxlint-disable-next-line unicorn/no-array-sort
     const query = this.questionThemeModel.find(filterQuery).sort(sortCriteria);
 
-    if (options.limit !== undefined) {
+    if (options.limit !== undefined && options.limit !== 0) {
       query.limit(options.limit);
     }
     const questionThemeDocuments = await query;

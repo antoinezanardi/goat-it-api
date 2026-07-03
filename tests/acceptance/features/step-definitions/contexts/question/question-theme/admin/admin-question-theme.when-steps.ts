@@ -13,6 +13,7 @@ const QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.object({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "status": zCoerceOptionalString(),
+  "limit": zCoerceOptionalString(),
 });
 
 When(/^the admin retrieves all question themes$/u, async function(this: GoatItWorld) {

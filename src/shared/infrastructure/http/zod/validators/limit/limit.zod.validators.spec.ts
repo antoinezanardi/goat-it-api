@@ -9,17 +9,24 @@ import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.z
 
 describe("Limit Zod Validators", () => {
   describe(zLimit, () => {
-    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", (limit: number) => {
+    it.each([LIMIT_MINIMUM, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", (limit: number) => {
       const schema = zLimit();
       const result = schema.safeParse(limit);
 
       expect(result.success).toBeTruthy();
     });
 
-    it.each([0, -1, 1.5, "string"])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
+    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
       const schema = zLimit();
 
       expect(() => schema.parse(invalidLimit)).toThrow(z.ZodError);
+    });
+
+    it("should coerce to a number when limit is a numeric string.", () => {
+      const schema = zLimit();
+      const result = schema.parse("50");
+
+      expect(result).toBe(50);
     });
 
     it("should use default value 50 when limit is not provided.", () => {
@@ -39,8 +46,8 @@ describe("Limit Zod Validators", () => {
       });
     });
 
-    it("should have limit as optional when checking the input type.", () => {
-      expectTypeOf<z.input<ReturnType<typeof zLimit>>>().toEqualTypeOf<number | undefined>();
+    it("should accept any coercible value when checking the input type.", () => {
+      expectTypeOf<z.input<ReturnType<typeof zLimit>>>().toEqualTypeOf<unknown>();
     });
   });
 });

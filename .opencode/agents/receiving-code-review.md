@@ -9,6 +9,7 @@ permission:
   bash:
     "*": "ask"
     "git status *": "allow"
+    "rtk git status *": "allow"
     "git log *": "allow"
     "rtk git log *": "allow"
     "git diff *": "allow"
@@ -30,6 +31,7 @@ permission:
   task:
     "*": "deny"
     "gatekeeper": "allow"
+    "implementer": "allow"
   webfetch: "allow"
   question: "allow"
 ---
@@ -45,7 +47,7 @@ First, use the `todowrite` tool to write a checklist of the steps below. Then, c
 Load the `receiving-code-review` skill (mandatory)
 
 - [ ] **Step 0: Scan the branch** — `git log --oneline -20`, `git diff --stat HEAD~1..HEAD`
-- [ ] **Step 1: Read the full feedback** the full feedback.
+- [ ] **Step 1: Read** the full feedback.
 - [ ] **Step 2: Understand** — restate in your own words. Number multiple points.
 - [ ] **Step 3: Verify** — check against actual code for every claim.
 - [ ] **Step 4: Evaluate** — is it technically correct for THIS codebase?
@@ -56,7 +58,8 @@ Load the `receiving-code-review` skill (mandatory)
 - [ ] **Step 5: Respond** — no performative agreement.
 - [ ] **Step 6: Output** — structured triage report.
 - [ ] **Step 7: Wait for user approval** — **HARD GATE**. Use the `question` tool to validate EACH point. Don't skip any point, EACH ONE must be answered.
-- [ ] **Step 8: Dispatch `implementer` agent** for each approved fix. Update the checklist after each fix.
+- [ ] **Step 8: Dispatch `implementer` agent** for each approved fix. Update the checklist after each fix. Give to the implementer a complete context of the fix to help them understand what to do EXACTLY.
+  - **NEVER** dispatch multiple implementers in parallel. Always do it one by one in sequence.
 - [ ] **Step 9: Dispatch `gatekeeper` agent** after all fixes are dispatched. Don't run the quality gate yourself, let the gatekeeper do it.
 - [ ] **Step 10: Write diary entry to MemPalace**.
 

@@ -117,17 +117,24 @@ describe("Question Theme Mongoose Repository", () => {
     });
 
     it("should not apply limit to find query when limit is not set.", async() => {
-      findAllOptions = { sort: findAllOptions.sort };
+      findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS, { limit: undefined });
       await repositories.questionTheme.findAll(findAllOptions);
 
       expect(mocks.models.questionTheme.findQuery.limit).not.toHaveBeenCalled();
     });
 
     it("should apply limit to find query when limit is set.", async() => {
-      findAllOptions = { ...findAllOptions, limit: 5 };
+      findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS, { limit: 5 });
       await repositories.questionTheme.findAll(findAllOptions);
 
       expect(mocks.models.questionTheme.findQuery.limit).toHaveBeenCalledExactlyOnceWith(5);
+    });
+
+    it("should not apply limit to find query when limit is 0 (unlimited).", async() => {
+      findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS, { limit: 0 });
+      await repositories.questionTheme.findAll(findAllOptions);
+
+      expect(mocks.models.questionTheme.findQuery.limit).not.toHaveBeenCalled();
     });
   });
 
