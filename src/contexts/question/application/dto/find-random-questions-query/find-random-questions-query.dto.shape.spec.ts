@@ -5,6 +5,7 @@ import { FIND_RANDOM_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-
 import type { FindRandomQuestionsQueryDto } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto.shape";
 
 import { createFakeFindRandomQuestionsQueryDto } from "@faketories/contexts/question/dto/find-random-questions-query/find-random-questions-query.dto.faketory";
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 
 import type { z } from "zod";
 
@@ -88,13 +89,17 @@ describe("Find Random Questions Query DTO Shape", () => {
 
   describe("excluded-ids", () => {
     it("should pass validation when a single valid ObjectId is provided.", () => {
-      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": ["60af924f4f1a2563f8e8b456"] });
+      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": [createFakeObjectId("60af924f4f1a2563f8e8b456").toString()] });
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid ObjectIds are provided.", () => {
-      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"] });
+      const excludedIds = [
+        createFakeObjectId("60af924f4f1a2563f8e8b456").toString(),
+        createFakeObjectId("507f1f77bcf86cd799439011").toString(),
+      ];
+      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": excludedIds });
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -112,13 +117,14 @@ describe("Find Random Questions Query DTO Shape", () => {
     });
 
     it("should throw zod error when more than 200 excluded ids are provided.", () => {
-      const dto = { ...validDto, "excluded-ids": Array.from({ length: 201 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`) };
+      const dto = { ...validDto, "excluded-ids": Array.from({ length: 201 }, () => createFakeObjectId().toString()) };
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
     });
 
     it("should throw zod error when duplicate excluded ids are provided.", () => {
-      const dto = { ...validDto, "excluded-ids": ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"] };
+      const duplicateId = createFakeObjectId().toString();
+      const dto = { ...validDto, "excluded-ids": [duplicateId, duplicateId] };
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
     });
@@ -208,13 +214,17 @@ describe("Find Random Questions Query DTO Shape", () => {
 
   describe("theme-ids", () => {
     it("should pass validation when a single valid theme id is provided.", () => {
-      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": ["60af924f4f1a2563f8e8b456"] });
+      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": [createFakeObjectId("60af924f4f1a2563f8e8b456").toString()] });
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid theme ids are provided.", () => {
-      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"] });
+      const themeIds = [
+        createFakeObjectId("60af924f4f1a2563f8e8b456").toString(),
+        createFakeObjectId("507f1f77bcf86cd799439011").toString(),
+      ];
+      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": themeIds });
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });

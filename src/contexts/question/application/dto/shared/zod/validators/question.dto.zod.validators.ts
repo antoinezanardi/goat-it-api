@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
 import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/array/array.zod.preprocessors";
+import { zCreateFilterArray } from "@shared/application/dto/zod/validators/array/array.zod.validators";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
@@ -40,33 +41,31 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
 }
 
 function zQuestionExcludedIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
-  return z.preprocess(
-    normalizeToArray,
-    z.array(zMongoId().describe("Question ID to exclude")).min(RANDOM_QUESTIONS_EXCLUDED_IDS_MINIMUM).max(RANDOM_QUESTIONS_EXCLUDED_IDS_MAXIMUM),
-  )
-    .refine(areValuesUniqueFromStrings, { message: "Excluded IDs must be unique" })
-    .optional()
-    .describe("List of question IDs to exclude from the random pool");
+  return zCreateFilterArray(
+    zMongoId().describe("Question ID to exclude"),
+    "Excluded IDs must be unique",
+    "List of question IDs to exclude from the random pool",
+    RANDOM_QUESTIONS_EXCLUDED_IDS_MINIMUM,
+    RANDOM_QUESTIONS_EXCLUDED_IDS_MAXIMUM,
+  );
 }
 
 function zQuestionCategoriesFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodEnum<QuestionCategoryEnum>>>> {
-  return z.preprocess(
-    normalizeToArray,
-    z.array(z.enum(QUESTION_CATEGORIES)).min(1),
-  )
-    .refine(areValuesUniqueFromStrings, { message: "Categories must be unique" })
-    .optional()
-    .describe("List of categories to include (OR logic)");
+  return zCreateFilterArray(
+    z.enum(QUESTION_CATEGORIES),
+    "Categories must be unique",
+    "List of categories to include (OR logic)",
+    1,
+  );
 }
 
 function zQuestionCognitiveDifficultiesFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodEnum<QuestionCognitiveDifficultyEnum>>>> {
-  return z.preprocess(
-    normalizeToArray,
-    z.array(z.enum(QUESTION_COGNITIVE_DIFFICULTIES)).min(1),
-  )
-    .refine(areValuesUniqueFromStrings, { message: "Cognitive difficulties must be unique" })
-    .optional()
-    .describe("List of cognitive difficulties to include (OR logic)");
+  return zCreateFilterArray(
+    z.enum(QUESTION_COGNITIVE_DIFFICULTIES),
+    "Cognitive difficulties must be unique",
+    "List of cognitive difficulties to include (OR logic)",
+    1,
+  );
 }
 
 function zQuestionThemeIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {

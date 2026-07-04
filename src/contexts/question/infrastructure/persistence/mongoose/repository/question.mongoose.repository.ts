@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
@@ -26,18 +26,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
   private static composeFindRandomMatchStage(options: FindRandomQuestionsOptions): Record<string, unknown> {
     const matchStage: Record<string, unknown> = { status: QUESTION_STATUS_ACTIVE };
 
-    if (options.excludedIds !== undefined && options.excludedIds.length > 0) {
-      matchStage._id = { $nin: options.excludedIds.map(id => new Types.ObjectId(id)) };
-    }
-    if (options.categories !== undefined && options.categories.length > 0) {
-      matchStage.category = { $in: options.categories };
-    }
-    if (options.cognitiveDifficulties !== undefined && options.cognitiveDifficulties.length > 0) {
-      matchStage.cognitiveDifficulty = { $in: options.cognitiveDifficulties };
-    }
-    if (options.themeIds !== undefined && options.themeIds.length > 0) {
-      matchStage["themes.themeId"] = { $in: options.themeIds.map(id => new Types.ObjectId(id)) };
-    }
+    addArrayFilterIfNonEmpty(options.excludedIds, matchStage, "_id", ids => ({ $nin: ids.map(id => new Types.ObjectId(id)) }));
+    addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
+    addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
+    addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+
     return matchStage;
   }
 

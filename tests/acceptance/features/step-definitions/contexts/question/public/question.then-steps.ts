@@ -152,6 +152,8 @@ Then(/^the response should contain up to (?<questionsCount>\d+) questions$/u, fu
 Then(/^all returned questions should have status "(?<status>[^"]+)"$/u, function(this: GoatItWorld, status: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
+  expect(questions.length).toBeGreaterThan(0);
+
   for (const question of questions) {
     expect(question.status).toBe(status);
   }
@@ -160,11 +162,14 @@ Then(/^all returned questions should have status "(?<status>[^"]+)"$/u, function
 Then(/^the response should not contain a question with id "(?<id>[^"]+)"$/u, function(this: GoatItWorld, id: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
+  expect(questions.length).toBeGreaterThan(0);
   expect(questions.some(question => question.id === id)).toBe(false);
 });
 
 Then(/^all returned questions should have category "(?<category>[^"]+)"$/u, function(this: GoatItWorld, category: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
+  expect(questions.length).toBeGreaterThan(0);
 
   for (const question of questions) {
     expect(question.category).toBe(category);
@@ -174,6 +179,8 @@ Then(/^all returned questions should have category "(?<category>[^"]+)"$/u, func
 Then(/^all returned questions should have cognitive difficulty "(?<cognitiveDifficulty>[^"]+)"$/u, function(this: GoatItWorld, cognitiveDifficulty: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
+  expect(questions.length).toBeGreaterThan(0);
+
   for (const question of questions) {
     expect(question.cognitiveDifficulty).toBe(cognitiveDifficulty);
   }
@@ -181,6 +188,8 @@ Then(/^all returned questions should have cognitive difficulty "(?<cognitiveDiff
 
 Then(/^all returned questions should have theme id "(?<themeId>[^"]+)"$/u, function(this: GoatItWorld, themeId: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
+  expect(questions.length).toBeGreaterThan(0);
 
   for (const question of questions) {
     expect(question.themes.some(themeAssignment => themeAssignment.theme.id === themeId)).toBe(true);

@@ -98,7 +98,29 @@ function buildMongooseSortCriteria<T extends string>(sortOptions: SortOptions<T>
   return { [sortOptions.sortBy]: direction, _id: direction };
 }
 
+/**
+ * Adds a value to a match stage object if the given array is defined and non-empty.
+ * Useful for building MongoDB aggregation $match stages from optional array filters.
+ * @param items - The array to check (may be undefined)
+ * @param matchStage - The match stage object to mutate
+ * @param key - The key to set in the match stage
+ * @param valueFunction - A function that produces the value from the non-empty array
+ */
+function addArrayFilterIfNonEmpty<T>(
+  items: T[] | undefined,
+  matchStage: Record<string, unknown>,
+  key: string,
+  valueFunction: (items: T[]) => unknown,
+): void {
+  if (items !== undefined && items.length > 0) {
+    // Acceptable as modifying the match stage builder object directly
+    // oxlint-disable-next-line no-param-reassign
+    matchStage[key] = valueFunction(items);
+  }
+}
+
 export {
+  addArrayFilterIfNonEmpty,
   buildMongooseAggregationSortStages,
   buildMongooseSortCriteria,
   getCrushedDataForMongoPatchUpdate,
