@@ -15,4 +15,8 @@ type QuestionFilterOptions = {
 
 type PublicQuestionFilterOptions = Omit<QuestionFilterOptions, "status">;
 
-export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions };
+type FindRandomOptions = {
+  limit: number;
+};
+
+export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomOptions };

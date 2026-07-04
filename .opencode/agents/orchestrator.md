@@ -43,7 +43,8 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 11 
 3. **Write plans from specs** → dispatch `plan-writer` subagent with the spec path inline.
    - Plan goes in `docs/superpowers/plans/YYYY-MM-DD-<feature>.md`.
    - Read the plan, ask user to confirm.
-4. **Implement tasks** → per task, dispatch `implementer` with FULL task text inline.
+4. **Implement tasks** → per task, dispatch `implementer` with FULL task text VERBATIM inline.
+   - You **MUST** pass the whole task text verbatim, step by step, to the subagent. The subagent is a simple and dumb implementer, so it needs its **FULL** task written from the plan. Do not make it read the plan file, only PASS the ENTIRE task text.
    - After each task, file a MemPalace KG fact recording what was built.
 5. **Final review** → dispatch `final-reviewer` with spec path, plan path, base SHA, head SHA.
 6. **Definition of Done** → dispatch `gatekeeper` with `MUTATION_TESTING: true` (always required in this project).

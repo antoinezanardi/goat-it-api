@@ -6,6 +6,7 @@ import { QuestionThemeModule } from "@question-theme/question-theme.module";
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
+import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
@@ -32,6 +33,7 @@ import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infr
     AdminQuestionController,
   ],
   providers: [
+    FindRandomQuestionsUseCase,
     FindQuestionsUseCase,
     FindQuestionByIdUseCase,
     CreateQuestionUseCase,
