@@ -1,5 +1,61 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.19.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.18.1...v1.19.0) (2026-06-21)
+
+### 🚀 Features
+
+* **filter:** add filtering options for questions and themes ([#795](https://github.com/antoinezanardi/goat-it-api/issues/795)) ([2ad177f](https://github.com/antoinezanardi/goat-it-api/commit/2ad177f3efc4e8f12313a7ddd6bffb51c4b6ace8))
+* **schema:** add typecheck step and update version to 0.0.11 ([#791](https://github.com/antoinezanardi/goat-it-api/issues/791)) ([f2c09a6](https://github.com/antoinezanardi/goat-it-api/commit/f2c09a61496b6f95a77d6f8e6f3cff3fc92a75c6))
+* **sort:** add sorting functionality for questions and themes ([#785](https://github.com/antoinezanardi/goat-it-api/issues/785)) ([2246177](https://github.com/antoinezanardi/goat-it-api/commit/2246177e781aaee0ef58dade8e96126eaf93a2be)), closes [/#diff-d56e5dafe19b1991b923a61c1c13732fa42098cbd3f6b5b6d7d1abffaac39e1aR1-R5](https://github.com/antoinezanardi///issues/diff-d56e5dafe19b1991b923a61c1c13732fa42098cbd3f6b5b6d7d1abffaac39e1aR1-R5) [/#diff-822f26a7017f71f8c5d3082ebd0f29783311673588a7fc1ce5a6e55cdaf8f5d1R1-R5](https://github.com/antoinezanardi///issues/diff-822f26a7017f71f8c5d3082ebd0f29783311673588a7fc1ce5a6e55cdaf8f5d1R1-R5) [/#diff-c555d08132f62ee44a28aad4df66781f8cc21fd7e86ab2b7f17d1d2c165b5ca9R5-R6](https://github.com/antoinezanardi///issues/diff-c555d08132f62ee44a28aad4df66781f8cc21fd7e86ab2b7f17d1d2c165b5ca9R5-R6)
+* **sort:** enhance semantic sorting ([#789](https://github.com/antoinezanardi/goat-it-api/issues/789)) ([8ef9909](https://github.com/antoinezanardi/goat-it-api/commit/8ef9909463472c1af1b7d2cf3036139206324dc6))
+
+### 📖 Docs
+
+* **agents:** clarify lint rule disabling guidelines in documentation ([#796](https://github.com/antoinezanardi/goat-it-api/issues/796)) ([c6a5ec9](https://github.com/antoinezanardi/goat-it-api/commit/c6a5ec99e634029ccc96c72cfa1f2603f6c13c45))
+
+### 🔩 Refactor
+
+* **acceptance:** simplify acceptance tests constants and documentation ([#784](https://github.com/antoinezanardi/goat-it-api/issues/784)) ([9601184](https://github.com/antoinezanardi/goat-it-api/commit/9601184cd873b1607cda157728f2c6dd3be302b6))
+* **project:** restructure to improve DDD architecture and imports ([#788](https://github.com/antoinezanardi/goat-it-api/issues/788)) ([5e92bd9](https://github.com/antoinezanardi/goat-it-api/commit/5e92bd96a1367a76c1eb0086ab1dd98172a934a3))
+
+### 🧹 Chore
+
+* **config:** update SWC and TypeScript configurations for ES2024 ([#779](https://github.com/antoinezanardi/goat-it-api/issues/779)) ([2a02516](https://github.com/antoinezanardi/goat-it-api/commit/2a025162899a676b8e9c0f5e7c9c167282686f96))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `axios` | `^1.18.0` |
+| `mongoose` | `^9.7.1` |
+| `type-fest` | `^5.7.0` |
+| `nest monorepo` | `^11.1.27` |
+| `actions/checkout action` | `v7` |
+| `commitlint monorepo` | `^21.0.2` |
+| `@arethetypeswrong/core` | `^0.18.3` |
+| `@cucumber/cucumber` | `v13` |
+| `@eslint/config-inspector` | `^3.0.4` |
+| `@faker-js/faker` | `^10.5.0` |
+| `@types/node` | `^24.13.2` |
+| `@typescript/native-preview` | `v7.0.0-dev.20260621.1` |
+| `@vitest/eslint-plugin` | `^1.6.20` |
+| `eslint` | `^10.4.1` |
+| `eslint-import-resolver-typescript` | `^4.4.5` |
+| `eslint-plugin-unicorn` | `v68` |
+| `lint-staged` | `^17.0.8` |
+| `tsdown` | `^0.22.1` |
+| `tsx` | `^4.22.4` |
+| `eslint monorepo` | `^10.5.0` |
+| `mongo docker tag` | `v8.3.4` |
+| `node.js` | `v26.3.1` |
+| `oxlint monorepo` | `v1.68.0` |
+| `pnpm` | `v11.8.0` |
+| `semantic-release monorepo` | `^25.0.5` |
+| `sonarsource/sonarqube-scan-action action` | `v8.2` |
+| `swc monorepo` | `^1.15.41` |
+| `typescript-eslint monorepo` | `^8.61.1` |
+| `vitest monorepo` | `^4.1.9` |
+
 ## [1.18.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.18.0...v1.18.1) (2026-05-27)
 
 ### 🐛 Bug Fixes
