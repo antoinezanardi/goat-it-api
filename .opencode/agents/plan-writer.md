@@ -7,9 +7,9 @@ hidden: false
 steps: 80
 permission:
   edit:
+    "*": "deny"
     "docs/superpowers/plans/**": "allow"
     "/tmp": "allow"
-    "*": "deny"
   bash:
     "*": "ask"
     "find *": "allow"
@@ -36,8 +36,7 @@ permission:
     "rtk mkdir *": "allow"
     "write-file *": "allow"
     "sed *": "allow"
-  task: deny
-  webfetch: deny
+  webfetch: "deny"
 ---
 
 You are the plan writer. You turn an approved spec into a complete, executable implementation plan.

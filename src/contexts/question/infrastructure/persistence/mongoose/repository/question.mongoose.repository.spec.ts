@@ -27,7 +27,7 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import type { FindRandomOptions, QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
@@ -581,6 +581,84 @@ describe("Question Mongoose Repository", () => {
       const actual = await repositories.question.modify(questionId, contract);
 
       expect(actual).toBeUndefined();
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.findRandom, () => {
+    it("should aggregate with match, sample and pipeline stages when called.", async() => {
+      const options: FindRandomOptions = { limit: 5 };
+      const expectedPipeline = [
+        { $match: { status: QUESTION_STATUS_ACTIVE } },
+        { $sample: { size: options.limit } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should use the limit from options in the sample stage when called.", async() => {
+      const options: FindRandomOptions = { limit: 10 };
+      const expectedPipeline = [
+        { $match: { status: QUESTION_STATUS_ACTIVE } },
+        { $sample: { size: options.limit } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should map and return questions when called.", async() => {
+      const options: FindRandomOptions = { limit: 3 };
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenCalledTimes(questionAggregates.length);
+    });
+
+    it("should call the mapper with every aggregate returned from model when called.", async() => {
+      const options: FindRandomOptions = { limit: 2 };
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(1, questionAggregates[0], 0, questionAggregates);
+      // Acceptable as testing multiple calls to the mapper function requires multiple expects in a single block
+      // oxlint-disable-next-line max-expects
+      expect(mocks.mappers.question.createQuestionFromAggregate).toHaveBeenNthCalledWith(2, questionAggregates[1], 1, questionAggregates);
+    });
+
+    it("should return mapped questions from model when called.", async() => {
+      const options: FindRandomOptions = { limit: 2 };
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+      const expectedQuestions = [
+        createFakeQuestion(),
+        createFakeQuestion(),
+      ];
+
+      vi.mocked(createQuestionFromAggregate)
+        .mockReturnValueOnce(expectedQuestions[0])
+        .mockReturnValueOnce(expectedQuestions[1]);
+
+      const actualQuestions = await repositories.question.findRandom(options);
+
+      expect(actualQuestions).toStrictEqual(expectedQuestions);
     });
   });
 

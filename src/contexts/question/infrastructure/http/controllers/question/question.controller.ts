@@ -11,9 +11,11 @@ import { Localization } from "@shared/infrastructure/http/decorators/localizatio
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
 import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
+import { FindRandomQuestionsQueryNestZodDto } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto";
 import { FindQuestionsQueryNestZodDto } from "@question/application/dto/find-questions-query/find-questions-query.dto";
 import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
+import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
@@ -25,6 +27,7 @@ import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.
 export class QuestionController {
   public constructor(
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
+    private readonly findRandomQuestionsUseCase: FindRandomQuestionsUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}
 
@@ -44,6 +47,25 @@ export class QuestionController {
   ): Promise<QuestionDto[]> {
     const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, createPublicQuestionFilterOptionsFromQueryDto);
     const questions = await this.findQuestionsUseCase.list(findAllOptions);
+
+    return questions.map(question => createQuestionDtoFromEntity(question, localization));
+  }
+
+  @Get("/random")
+  @ApiOperation({
+    tags: [SwaggerTags.QUESTIONS],
+    summary: "Get random questions",
+    description: "Get a random set of active questions for the game in the desired localization.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: [QuestionNestZodDto],
+  })
+  public async findRandomQuestions(
+    @Query() queryDto: FindRandomQuestionsQueryNestZodDto,
+    @Localization() localization: LocalizationOptions,
+  ): Promise<QuestionDto[]> {
+    const questions = await this.findRandomQuestionsUseCase.list({ limit: queryDto.limit });
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }

@@ -15,7 +15,7 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomOptions } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
@@ -128,6 +128,16 @@ export class QuestionMongooseRepository implements QuestionRepository {
         ],
       },
     });
+  }
+
+  public async findRandom(options: FindRandomOptions): Promise<Question[]> {
+    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
+      { $match: { status: QUESTION_STATUS_ACTIVE } },
+      { $sample: { size: options.limit } },
+      ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+    ]);
+
+    return questionWithThemes.map(createQuestionFromAggregate);
   }
 
   private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {

@@ -141,3 +141,18 @@ Then(/^the response should contain no rejection for the question$/u, function(th
 
   expect(question.rejection).toBeUndefined();
 });
+
+Then(/^the response should contain up to (?<questionsCount>\d+) questions$/u, function(this: GoatItWorld, countAsString: string): void {
+  const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+  const questionsCount = Math.trunc(Number(countAsString));
+
+  expect(questions.length).toBeLessThanOrEqual(questionsCount);
+});
+
+Then(/^all returned questions should have status "(?<status>[^"]+)"$/u, function(this: GoatItWorld, status: string): void {
+  const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
+  for (const question of questions) {
+    expect(question.status).toBe(status);
+  }
+});

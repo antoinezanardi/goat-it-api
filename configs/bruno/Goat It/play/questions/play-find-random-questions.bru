@@ -1,0 +1,22 @@
+meta {
+  name: Get Random Questions
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/questions/random
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~limit: 20
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}
