@@ -1,8 +1,10 @@
 import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 import { TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/two-english-only-question-themes.fixture-set";
+import { SIXTY_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/sixty-question-themes.fixture-set";
 import { FIVE_ACTIVE_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/five-active-questions.fixture-set";
 import { FIVE_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/five-questions.fixture-set";
 import { TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/two-english-only-questions.fixture-set";
+import { SIXTY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/sixty-questions.fixture-set";
 
 import type { FixtureInserterRegistry, FixtureRegistry } from "@acceptance-support/fixtures/types/fixture.types";
 
@@ -25,6 +27,10 @@ const FIXTURE_REGISTRY: FixtureRegistry = {
       data: TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET,
       dependencies: [["question-theme", "two-english-only-question-themes"]],
     },
+    "sixty-questions": {
+      data: SIXTY_QUESTIONS_FIXTURE_SET,
+      dependencies: [["question-theme", "sixty-question-themes"]],
+    },
   },
   "question-theme": {
     "five-question-themes": {
@@ -32,6 +38,9 @@ const FIXTURE_REGISTRY: FixtureRegistry = {
     },
     "two-english-only-question-themes": {
       data: TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET,
+    },
+    "sixty-question-themes": {
+      data: SIXTY_QUESTION_THEMES_FIXTURE_SET,
     },
   },
 };
