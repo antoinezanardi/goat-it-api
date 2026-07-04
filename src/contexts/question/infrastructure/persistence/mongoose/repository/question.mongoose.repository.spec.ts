@@ -10,6 +10,7 @@ import { QuestionMongooseRepository } from "@question/infrastructure/persistence
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
+import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -21,13 +22,14 @@ import { createFakeQuestionModificationContract } from "@faketories/contexts/que
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
+import { createFakeFindRandomQuestionsOptions } from "@faketories/contexts/question/domain/find-random-questions-options.faketory";
 
 import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-import type { FindRandomOptions, QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
@@ -586,7 +588,7 @@ describe("Question Mongoose Repository", () => {
 
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
     it.each([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
-      const options: FindRandomOptions = { limit };
+      const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
       const expectedPipeline = [
         { $match: { status: QUESTION_STATUS_ACTIVE } },
         { $sample: { size: limit } },
@@ -598,8 +600,122 @@ describe("Question Mongoose Repository", () => {
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
 
+    it("should add excluded ids to match stage as ObjectId $nin when provided.", async() => {
+      const excludedIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const expectedPipeline = [
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            _id: { $nin: excludedIds.map(id => new Types.ObjectId(id)) },
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should add categories to match stage as $in when provided.", async() => {
+      const categories: QuestionCategory[] = ["trivia", "riddle"];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const expectedPipeline = [
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            category: { $in: categories },
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should add cognitive difficulties to match stage as $in when provided.", async() => {
+      const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy", "hard"];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined });
+      const expectedPipeline = [
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            cognitiveDifficulty: { $in: cognitiveDifficulties },
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should add theme ids to match stage as ObjectId $in on nested themeId when provided.", async() => {
+      const themeIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined });
+      const expectedPipeline = [
+        {
+          $match: {
+            "status": QUESTION_STATUS_ACTIVE,
+            "themes.themeId": { $in: themeIds.map(id => new Types.ObjectId(id)) },
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should compose all filters in a single match stage when all options are provided.", async() => {
+      const excludedIds = ["618c1f4b3a2f000000000001"];
+      const categories: QuestionCategory[] = ["trivia"];
+      const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy"];
+      const themeIds = ["618c1f4b3a2f000000000002"];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds });
+      const expectedPipeline = [
+        {
+          $match: {
+            "status": QUESTION_STATUS_ACTIVE,
+            "_id": { $nin: excludedIds.map(id => new Types.ObjectId(id)) },
+            "category": { $in: categories },
+            "cognitiveDifficulty": { $in: cognitiveDifficulties },
+            "themes.themeId": { $in: themeIds.map(id => new Types.ObjectId(id)) },
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should not add filter to match stage when provided array is empty.", async() => {
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [] });
+      const expectedPipeline = [
+        { $match: { status: QUESTION_STATUS_ACTIVE } },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
     it("should map and return questions when called.", async() => {
-      const options: FindRandomOptions = { limit: 3 };
+      const options = createFakeFindRandomQuestionsOptions({ limit: 3, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),
@@ -612,7 +728,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should call the mapper with every aggregate returned from model when called.", async() => {
-      const options: FindRandomOptions = { limit: 2 };
+      const options = createFakeFindRandomQuestionsOptions({ limit: 2, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),
@@ -628,7 +744,7 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should return mapped questions from model when called.", async() => {
-      const options: FindRandomOptions = { limit: 2 };
+      const options = createFakeFindRandomQuestionsOptions({ limit: 2, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),

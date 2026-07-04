@@ -14,6 +14,8 @@ permission:
     "rtk git log *": "allow"
     "git diff *": "allow"
     "rtk git diff *": "allow"
+    "git branch *": "allow"
+    "rtk git branch *": "allow"
     "git add *": "deny"
     "git commit *": "deny"
     "git push *": "deny"

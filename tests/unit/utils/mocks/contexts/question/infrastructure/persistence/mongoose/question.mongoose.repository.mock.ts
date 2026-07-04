@@ -5,7 +5,7 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 
 import type { Mock } from "vitest";
 
-import type { FindRandomOptions } from "@question/domain/types/question.types";
+import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
 type QuestionRepositoryStub = {
   findAll: () => Promise<Question[]>;
@@ -17,7 +17,7 @@ type QuestionRepositoryStub = {
   modify: (id: string, contract: QuestionModificationContract) => Promise<Question | undefined>;
   modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
   countLiveByThemeId: (themeId: string) => Promise<number>;
-  findRandom: (options: FindRandomOptions) => Promise<Question[]>;
+  findRandom: (options: FindRandomQuestionsOptions) => Promise<Question[]>;
 };
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };

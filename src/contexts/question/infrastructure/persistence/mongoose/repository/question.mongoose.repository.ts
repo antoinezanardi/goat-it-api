@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
@@ -15,13 +15,24 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField, FindRandomOptions } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
+
+  private static composeFindRandomMatchStage(options: FindRandomQuestionsOptions): Record<string, unknown> {
+    const matchStage: Record<string, unknown> = { status: QUESTION_STATUS_ACTIVE };
+
+    addArrayFilterIfNonEmpty(options.excludedIds, matchStage, "_id", ids => ({ $nin: ids.map(id => new Types.ObjectId(id)) }));
+    addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
+    addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
+    addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+
+    return matchStage;
+  }
 
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
@@ -130,9 +141,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
     });
   }
 
-  public async findRandom(options: FindRandomOptions): Promise<Question[]> {
+  public async findRandom(options: FindRandomQuestionsOptions): Promise<Question[]> {
+    const matchStage = QuestionMongooseRepository.composeFindRandomMatchStage(options);
+
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
-      { $match: { status: QUESTION_STATUS_ACTIVE } },
+      { $match: matchStage },
       { $sample: { size: options.limit } },
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
     ]);

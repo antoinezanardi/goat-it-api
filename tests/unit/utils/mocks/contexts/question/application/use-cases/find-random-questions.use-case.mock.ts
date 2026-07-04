@@ -4,10 +4,10 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 
 import type { Mock } from "vitest";
 
-import type { FindRandomOptions } from "@question/domain/types/question.types";
+import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
 type FindRandomQuestionsUseCaseStub = {
-  list: (options: FindRandomOptions) => Promise<Question[]>;
+  list: (options: FindRandomQuestionsOptions) => Promise<Question[]>;
 };
 
 type MockedFindRandomQuestionsUseCase = { [K in keyof FindRandomQuestionsUseCaseStub]: Mock<FindRandomQuestionsUseCaseStub[K]> };

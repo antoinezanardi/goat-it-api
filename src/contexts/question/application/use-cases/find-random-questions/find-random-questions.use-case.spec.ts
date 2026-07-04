@@ -7,7 +7,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-import type { FindRandomOptions } from "@question/domain/types/question.types";
+import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
 describe("Find Random Questions Use Case", () => {
   let findRandomQuestionsUseCase: FindRandomQuestionsUseCase;
@@ -16,7 +16,7 @@ describe("Find Random Questions Use Case", () => {
       question: ReturnType<typeof createMockedQuestionRepository>;
     };
   };
-  let findRandomOptions: FindRandomOptions;
+  let findRandomOptions: FindRandomQuestionsOptions;
 
   beforeEach(async() => {
     mocks = {
