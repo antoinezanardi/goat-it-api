@@ -15,8 +15,12 @@ type QuestionFilterOptions = {
 
 type PublicQuestionFilterOptions = Omit<QuestionFilterOptions, "status">;
 
-type FindRandomOptions = {
+type FindRandomQuestionsOptions = {
   limit: number;
+  excludedIds?: string[];
+  categories?: QuestionCategory[];
+  cognitiveDifficulties?: QuestionCognitiveDifficulty[];
+  themeIds?: string[];
 };
 
-export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomOptions };
+export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomQuestionsOptions };

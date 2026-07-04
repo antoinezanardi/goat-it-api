@@ -60,8 +60,6 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 11 
 ### Domain skills (project-specific, load when relevant)
 - `brainstorming` — for the brainstormer phase
 - `writing-plans` — for plan creation
-- `executing-plans` — for plan execution
-- `subagent-driven-development` — for multi-task implementation
 - `requesting-code-review` — for final review
 - `create-faketory` — when faketories are needed
 - `create-mock` — when mocks are needed

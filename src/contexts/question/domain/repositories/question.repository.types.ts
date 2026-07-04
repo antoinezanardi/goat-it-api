@@ -1,7 +1,7 @@
 import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
 import type { Question } from "@question/domain/types/question.entities";
 
-import type { QuestionFilterOptions, QuestionSortableField, FindRandomOptions } from "@question/domain/types/question.types";
+import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 type QuestionRepository = {
@@ -14,7 +14,7 @@ type QuestionRepository = {
   modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
   modify: (id: string, contract: QuestionModificationContract) => Promise<Question | undefined>;
   countLiveByThemeId: (themeId: string) => Promise<number>;
-  findRandom: (options: FindRandomOptions) => Promise<Question[]>;
+  findRandom: (options: FindRandomQuestionsOptions) => Promise<Question[]>;
 };
 
 export type { QuestionRepository };

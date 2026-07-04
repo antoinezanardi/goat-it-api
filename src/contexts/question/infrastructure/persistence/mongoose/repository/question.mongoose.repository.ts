@@ -15,13 +15,31 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField, FindRandomOptions } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
+
+  private static composeFindRandomMatchStage(options: FindRandomQuestionsOptions): Record<string, unknown> {
+    const matchStage: Record<string, unknown> = { status: QUESTION_STATUS_ACTIVE };
+
+    if (options.excludedIds !== undefined && options.excludedIds.length > 0) {
+      matchStage._id = { $nin: options.excludedIds.map(id => new Types.ObjectId(id)) };
+    }
+    if (options.categories !== undefined && options.categories.length > 0) {
+      matchStage.category = { $in: options.categories };
+    }
+    if (options.cognitiveDifficulties !== undefined && options.cognitiveDifficulties.length > 0) {
+      matchStage.cognitiveDifficulty = { $in: options.cognitiveDifficulties };
+    }
+    if (options.themeIds !== undefined && options.themeIds.length > 0) {
+      matchStage["themes.themeId"] = { $in: options.themeIds.map(id => new Types.ObjectId(id)) };
+    }
+    return matchStage;
+  }
 
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
@@ -130,9 +148,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
     });
   }
 
-  public async findRandom(options: FindRandomOptions): Promise<Question[]> {
+  public async findRandom(options: FindRandomQuestionsOptions): Promise<Question[]> {
+    const matchStage = QuestionMongooseRepository.composeFindRandomMatchStage(options);
+
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
-      { $match: { status: QUESTION_STATUS_ACTIVE } },
+      { $match: matchStage },
       { $sample: { size: options.limit } },
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
     ]);

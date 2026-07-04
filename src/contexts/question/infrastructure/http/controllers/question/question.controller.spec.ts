@@ -4,7 +4,7 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
-import { createFindRandomOptionsFromQueryDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
+import { createFindRandomQuestionsOptionsFromQueryDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
@@ -26,7 +26,7 @@ import { createFakeFindRandomQuestionsQueryDto } from "@faketories/contexts/ques
 import type { Mock } from "vitest";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-import type { QuestionFilterOptions, QuestionSortableField, FindRandomOptions } from "@question/domain/types/question.types";
+import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
 vi.mock(import("@question/application/mappers/question.mappers"));
 vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
@@ -46,7 +46,7 @@ describe("Question Controller", () => {
     mappers: {
       createQuestionDtoFromEntity: Mock;
       createFindAllOptionsFromQueryDto: Mock;
-      createFindRandomOptionsFromQueryDto: Mock;
+      createFindRandomQuestionsOptionsFromQueryDto: Mock;
     };
   };
 
@@ -63,7 +63,7 @@ describe("Question Controller", () => {
       mappers: {
         createQuestionDtoFromEntity: vi.mocked(createQuestionDtoFromEntity),
         createFindAllOptionsFromQueryDto: vi.mocked(createFindAllOptionsFromQueryDto),
-        createFindRandomOptionsFromQueryDto: vi.mocked(createFindRandomOptionsFromQueryDto),
+        createFindRandomQuestionsOptionsFromQueryDto: vi.mocked(createFindRandomQuestionsOptionsFromQueryDto),
       },
     };
 
@@ -168,14 +168,14 @@ describe("Question Controller", () => {
 
       await questionController.findRandomQuestions(queryDto, localization);
 
-      expect(mocks.mappers.createFindRandomOptionsFromQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto);
+      expect(mocks.mappers.createFindRandomQuestionsOptionsFromQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto);
     });
 
     it.each([5, RANDOM_QUESTIONS_LIMIT_DEFAULT])("should list random questions with limit %s when called.", async expectedLimit => {
       const queryDto = createFakeFindRandomQuestionsQueryDto({ limit: expectedLimit });
       const localization = createFakeLocalizationOptions();
-      const expectedOptions: FindRandomOptions = { limit: expectedLimit };
-      mocks.mappers.createFindRandomOptionsFromQueryDto.mockReturnValueOnce(expectedOptions);
+      const expectedOptions: FindRandomQuestionsOptions = { limit: expectedLimit };
+      mocks.mappers.createFindRandomQuestionsOptionsFromQueryDto.mockReturnValueOnce(expectedOptions);
 
       await questionController.findRandomQuestions(queryDto, localization);
 

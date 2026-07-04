@@ -85,4 +85,156 @@ describe("Find Random Questions Query DTO Shape", () => {
       expectTypeOf<z.input<typeof FIND_RANDOM_QUESTIONS_QUERY_DTO>["limit"]>().toEqualTypeOf<unknown>();
     });
   });
+
+  describe("excluded-ids", () => {
+    it("should pass validation when a single valid ObjectId is provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": ["60af924f4f1a2563f8e8b456"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when multiple valid ObjectIds are provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "excluded-ids": ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when excluded-ids is omitted.", () => {
+      const { "excluded-ids": _, ...dtoWithoutExcludedIds } = validDto;
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dtoWithoutExcludedIds)).not.toThrow();
+    });
+
+    it("should throw zod error when an invalid ObjectId is provided.", () => {
+      const dto = { ...validDto, "excluded-ids": ["not-valid"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when more than 200 excluded ids are provided.", () => {
+      const dto = { ...validDto, "excluded-ids": Array.from({ length: 201 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`) };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when duplicate excluded ids are provided.", () => {
+      const dto = { ...validDto, "excluded-ids": ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when accessing the metadata.", () => {
+      const schema = FIND_RANDOM_QUESTIONS_QUERY_DTO.shape["excluded-ids"];
+
+      expect(schema.description).toBe("List of question IDs to exclude from the random pool");
+    });
+  });
+
+  describe("categories", () => {
+    it("should pass validation when a single valid category is provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ categories: ["trivia"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when multiple valid categories are provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ categories: ["trivia", "riddle"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when categories is omitted.", () => {
+      const { categories: _, ...dtoWithoutCategories } = validDto;
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dtoWithoutCategories)).not.toThrow();
+    });
+
+    it("should throw zod error when an invalid category is provided.", () => {
+      const dto = { ...validDto, categories: ["unknown"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when duplicate categories are provided.", () => {
+      const dto = { ...validDto, categories: ["trivia", "trivia"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when accessing the metadata.", () => {
+      const schema = FIND_RANDOM_QUESTIONS_QUERY_DTO.shape.categories;
+
+      expect(schema.description).toBe("List of categories to include (OR logic)");
+    });
+  });
+
+  describe("cognitive-difficulties", () => {
+    it("should pass validation when a single valid cognitive difficulty is provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "cognitive-difficulties": ["easy"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when multiple valid cognitive difficulties are provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "cognitive-difficulties": ["easy", "hard"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when cognitive-difficulties is omitted.", () => {
+      const { "cognitive-difficulties": _, ...dtoWithoutCognitiveDifficulties } = validDto;
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dtoWithoutCognitiveDifficulties)).not.toThrow();
+    });
+
+    it("should throw zod error when an invalid cognitive difficulty is provided.", () => {
+      const dto = { ...validDto, "cognitive-difficulties": ["extreme"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when duplicate cognitive difficulties are provided.", () => {
+      const dto = { ...validDto, "cognitive-difficulties": ["easy", "easy"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when accessing the metadata.", () => {
+      const schema = FIND_RANDOM_QUESTIONS_QUERY_DTO.shape["cognitive-difficulties"];
+
+      expect(schema.description).toBe("List of cognitive difficulties to include (OR logic)");
+    });
+  });
+
+  describe("theme-ids", () => {
+    it("should pass validation when a single valid theme id is provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": ["60af924f4f1a2563f8e8b456"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when multiple valid theme ids are provided.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ "theme-ids": ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"] });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when theme-ids is omitted.", () => {
+      const { "theme-ids": _, ...dtoWithoutThemeIds } = validDto;
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dtoWithoutThemeIds)).not.toThrow();
+    });
+
+    it("should throw zod error when an invalid theme id is provided.", () => {
+      const dto = { ...validDto, "theme-ids": ["not-valid"] };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when accessing the metadata.", () => {
+      const schema = FIND_RANDOM_QUESTIONS_QUERY_DTO.shape["theme-ids"];
+
+      expect(schema.description).toBe("List of theme IDs to filter questions by (OR logic)");
+    });
+  });
 });
