@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { RANDOM_QUESTIONS_LIMIT_DEFAULT, RANDOM_QUESTIONS_LIMIT_DESCRIPTION, RANDOM_QUESTIONS_LIMIT_MINIMUM } from "@question/application/dto/find-random-questions-query/constants/find-random-questions-query.dto.constants";
+import { RANDOM_QUESTIONS_LIMIT_DEFAULT, RANDOM_QUESTIONS_LIMIT_DESCRIPTION, RANDOM_QUESTIONS_LIMIT_MAXIMUM, RANDOM_QUESTIONS_LIMIT_MINIMUM } from "@question/application/dto/find-random-questions-query/constants/find-random-questions-query.dto.constants";
 import { FIND_RANDOM_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto.shape";
 import type { FindRandomQuestionsQueryDto } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto.shape";
 
@@ -33,9 +33,21 @@ describe("Find Random Questions Query DTO Shape", () => {
     });
 
     it("should pass validation when limit is a larger valid integer.", () => {
-      const dto = createFakeFindRandomQuestionsQueryDto({ limit: 100 });
+      const dto = createFakeFindRandomQuestionsQueryDto({ limit: RANDOM_QUESTIONS_LIMIT_MAXIMUM });
 
       expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when limit is exactly at the maximum.", () => {
+      const dto = createFakeFindRandomQuestionsQueryDto({ limit: RANDOM_QUESTIONS_LIMIT_MAXIMUM });
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should throw zod error when limit is above maximum.", () => {
+      const dtoWithInvalidLimit = { ...validDto, limit: RANDOM_QUESTIONS_LIMIT_MAXIMUM + 1 };
+
+      expect(() => FIND_RANDOM_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
     });
 
     it("should throw zod error when limit is 0 (below minimum).", () => {

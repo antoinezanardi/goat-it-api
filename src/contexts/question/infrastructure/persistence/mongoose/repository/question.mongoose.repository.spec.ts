@@ -585,24 +585,11 @@ describe("Question Mongoose Repository", () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
-    it("should aggregate with match, sample and pipeline stages when called.", async() => {
-      const options: FindRandomOptions = { limit: 5 };
+    it.each([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
+      const options: FindRandomOptions = { limit };
       const expectedPipeline = [
         { $match: { status: QUESTION_STATUS_ACTIVE } },
-        { $sample: { size: options.limit } },
-        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
-      ];
-
-      await repositories.question.findRandom(options);
-
-      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
-    });
-
-    it("should use the limit from options in the sample stage when called.", async() => {
-      const options: FindRandomOptions = { limit: 10 };
-      const expectedPipeline = [
-        { $match: { status: QUESTION_STATUS_ACTIVE } },
-        { $sample: { size: options.limit } },
+        { $sample: { size: limit } },
         ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ];
 

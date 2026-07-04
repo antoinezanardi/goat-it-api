@@ -60,7 +60,7 @@ When(/^the client retrieves the question with id "(?<questionId>[^"]+)" with an 
   await this.fetchAndStoreResponse(`/questions/${questionId}`, fetchOptions);
 });
 
-When(/^the game client retrieves random questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
+When(/^the client retrieves random questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,
     locale: locale ?? undefined,
@@ -68,7 +68,7 @@ When(/^the game client retrieves random questions(?: in locale "(?<locale>[^"]+)
   await this.fetchAndStoreResponse("/questions/random", fetchOptions);
 });
 
-When(/^the game client retrieves random questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
+When(/^the client retrieves random questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
   const queryRow = validateDataTableAndGetFirstRow(queryDataTable, RANDOM_QUESTION_QUERY_PARAMS_SCHEMA);
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,
