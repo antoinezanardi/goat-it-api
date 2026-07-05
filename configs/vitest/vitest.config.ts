@@ -14,6 +14,7 @@ const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 export default defineConfig({
   test: {
     pool: "threads",
+    isolate: false,
     watch: false,
     globals: true,
     clearMocks: true,
@@ -33,6 +34,8 @@ export default defineConfig({
         "src/**/*.commands.ts",
         "src/**/*.contracts.ts",
         "src/**/*.dto.ts",
+        "src/**/*.entities.ts",
+        "src/**/*.value-objects.ts",
       ],
       reportsDirectory: "tests/unit/coverage",
       reporter: [

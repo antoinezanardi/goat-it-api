@@ -25,6 +25,7 @@
 ## Test config
 
 - Test runner: Vitest (globals enabled). Config: `configs/vitest/vitest.config.ts`.
+- Isolation: `isolate: false` is set in the config for performance. This means all test files in the same thread share a single module registry. See [Mocking modules vs instances](#mocking-modules-vs-instances) for the impact on `vi.mock()` usage.
 - Coverage: V8 provider; coverage thresholds enforced at `100%` for statements, branches, functions and lines. Run: `pnpm run test:unit:cov`. Some files are excluded from coverage, see `configs/vitest/vitest.config.ts` for details.
 - Test files: pattern `src/**/*.spec.ts` (colocated with source).
 - Global setup / mocks: `tests/unit/setup/mocks.setup.ts` contains global test setup used by Vitest.
@@ -530,8 +531,14 @@ describe("Question Domain Errors", () => {
 
 ### Mocking modules vs instances
 
-- Module-level pure functions (mappers/helpers): mock with `vi.mock(import("..."))` at top of spec and use `vi.mocked()` to access typed mocks.
 - Instance collaborators (use-cases/repositories/services): create mock factories and inject via Nest `useValue` providers.
+- Module-level functions (mappers/helpers/third-party exports): **prefer `vi.spyOn()` over `vi.mock()`**. The config uses `isolate: false`, which shares a single module registry across all test files in a thread. `vi.mock()` only applies if the module hasn't been loaded yet — if another spec file (e.g. the module's own `*.spec.ts`) imports the real module first, the mock silently fails and tests become intermittently unstable.
+  - `vi.spyOn()` modifies the live module exports at runtime, so it works regardless of load order. `restoreMocks: true` in the config cleans up spies between tests automatically.
+  - Import the module as a namespace: `import * as fooHelpers from "@src/.../foo.helpers"`, then `vi.spyOn(fooHelpers, "barFn").mockReturnValue(...)` in `beforeEach`.
+  - For class static methods: `vi.spyOn(SomeModule, "staticMethod").mockReturnValue(...)`.
+  - For class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`.
+  - `vi.mock()` is still safe for modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Check with a grep before using it.
+  - For `@package-json`: import the real file (`import packageJson from "@package-json" with { type: "json" }`) and reference `packageJson.field` in assertions — do not mock it.
 
 ### Assertion style and helpers
 

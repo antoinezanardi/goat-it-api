@@ -183,6 +183,35 @@ myInstance["privateMethod"](arg);
 MyClass["staticPrivateMethod"](arg);
 ```
 
+## Mocking rule: prefer `vi.spyOn()` over `vi.mock()`
+
+The Vitest config uses `isolate: false`, which shares a single module registry across all test files in a thread. This means:
+
+- `vi.mock()` only applies if the target module hasn't been loaded yet. If another spec file (e.g. the module's own `*.spec.ts`) imports the real module first, the mock **silently fails** — tests become intermittently unstable.
+- `vi.spyOn()` modifies the live module exports at runtime and works regardless of load order. `restoreMocks: true` in the config cleans up spies between tests.
+
+**Always use `vi.spyOn()` for module-level functions** (mappers, helpers, third-party exports) unless you've verified with a grep that no other spec file imports the real module.
+
+```typescript
+// DO this
+import * as fooHelpers from "@src/.../foo.helpers";
+
+beforeEach(() => {
+  vi.spyOn(fooHelpers, "barFn").mockReturnValue("result");
+});
+
+// DON'T do this (unstable with isolate: false)
+vi.mock(import("@src/.../foo.helpers"));
+```
+
+Patterns:
+- Namespace functions: `import * as mod from "..."` → `vi.spyOn(mod, "fn")`
+- Class static methods: `vi.spyOn(SomeModule, "staticMethod")`
+- Class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`
+- `@package-json`: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions.
+
+`vi.mock()` is still safe for third-party modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Always check with a grep first.
+
 ## Structural conventions
 
 - Top-level `describe`: `"<ClassName> <Role>"` (e.g. `"Create Foo Use Case"`)
