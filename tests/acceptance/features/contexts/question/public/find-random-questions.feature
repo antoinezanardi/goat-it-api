@@ -21,13 +21,15 @@ Feature: Find Random Questions
     And the response should contain 3 questions
     And all returned questions should have status "active"
 
-  Scenario: Returning all active questions when limit exceeds available count
+  Scenario: Returning all matching active questions when limit exceeds available filtered count
     Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
-      | limit |
-      | 50    |
+      | categories | limit |
+      | riddle     | 20    |
     Then the request should have succeeded with status code 200
-    And the response should contain 50 questions
+    And the response should contain 14 questions
+    And all returned questions should have category "riddle"
+    And all returned questions should have status "active"
 
   Scenario: Filtering out non-active questions
     Given the database is populated with questions fixture set with name "sixty-questions"

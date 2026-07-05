@@ -10,6 +10,31 @@ import type { z } from "zod";
 
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
+function expectAllAdminQuestionsToHaveField(
+  questions: AdminQuestionDto[],
+  field: keyof AdminQuestionDto,
+  expectedValue: string,
+): void {
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    expect(question[field]).toBe(expectedValue);
+  }
+}
+
+function expectAllAdminQuestionsToHaveThemeId(
+  questions: AdminQuestionDto[],
+  themeId: string,
+): void {
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    const themeIds = question.themes.map(themeAssignment => themeAssignment.theme.id);
+
+    expect(themeIds).toContain(themeId);
+  }
+}
+
 function findQuestionByIdOrThrow<T extends Pick<AdminQuestionDto, "id">>(questions: T[], id: string): T {
   const question = questions.find(questionItem => questionItem.id === id);
   if (!question) {
@@ -66,6 +91,8 @@ function expectAdminQuestionDtoToHaveThemeWithLabel(
 }
 
 export {
+  expectAllAdminQuestionsToHaveField,
+  expectAllAdminQuestionsToHaveThemeId,
   findQuestionByIdOrThrow,
   expectAdminQuestionDtoToMatch,
   expectAdminQuestionThemeAssignmentsDtoToMatch,

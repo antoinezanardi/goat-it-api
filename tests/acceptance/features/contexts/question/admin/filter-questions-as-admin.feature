@@ -39,14 +39,16 @@ Feature: Filter Questions as Admin
       | ai          |
     Then the request should have succeeded with status code 200
     And the response should contain 18 admin questions
+    And all returned admin questions should have author role "ai"
 
   Scenario: Filtering admin questions by theme IDs
     Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
-      | theme-ids                                            |
-      | 600000000000000000000001,600000000000000000000002 |
+      | theme-ids                |
+      | 600000000000000000000001 |
     Then the request should have succeeded with status code 200
-    And the response should contain 5 admin questions
+    And the response should contain 4 admin questions
+    And all returned admin questions should have theme id "600000000000000000000001"
 
   Scenario: Filtering admin questions by multiple criteria
     Given the database is populated with questions fixture set with name "sixty-questions"

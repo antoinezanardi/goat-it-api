@@ -6,7 +6,7 @@ import type { QuestionDto } from "@question/application/dto/question/question.dt
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
 import { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
-import { expectQuestionThemeAssignmentsDtoToMatch, expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/public/helpers/question.steps.helpers";
+import { expectAllQuestionsToHaveField, expectAllQuestionsToHaveThemeId, expectQuestionThemeAssignmentsDtoToMatch, expectQuestionAuthorDtoToMatch, expectQuestionContentDtoToMatch, expectQuestionDtoToMatch, expectQuestionRejectionDtoToMatch, findQuestionByIdOrThrow } from "@acceptance-features/step-definitions/contexts/question/public/helpers/question.steps.helpers";
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -152,11 +152,7 @@ Then(/^the response should contain up to (?<questionsCount>\d+) questions$/u, fu
 Then(/^all returned questions should have status "(?<status>[^"]+)"$/u, function(this: GoatItWorld, status: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
-  expect(questions.length).toBeGreaterThan(0);
-
-  for (const question of questions) {
-    expect(question.status).toBe(status);
-  }
+  expectAllQuestionsToHaveField(questions, "status", status);
 });
 
 Then(/^the response should not contain a question with id "(?<id>[^"]+)"$/u, function(this: GoatItWorld, id: string): void {
@@ -169,29 +165,27 @@ Then(/^the response should not contain a question with id "(?<id>[^"]+)"$/u, fun
 Then(/^all returned questions should have category "(?<category>[^"]+)"$/u, function(this: GoatItWorld, category: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
-  expect(questions.length).toBeGreaterThan(0);
-
-  for (const question of questions) {
-    expect(question.category).toBe(category);
-  }
+  expectAllQuestionsToHaveField(questions, "category", category);
 });
 
 Then(/^all returned questions should have cognitive difficulty "(?<cognitiveDifficulty>[^"]+)"$/u, function(this: GoatItWorld, cognitiveDifficulty: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
-  expect(questions.length).toBeGreaterThan(0);
-
-  for (const question of questions) {
-    expect(question.cognitiveDifficulty).toBe(cognitiveDifficulty);
-  }
+  expectAllQuestionsToHaveField(questions, "cognitiveDifficulty", cognitiveDifficulty);
 });
 
 Then(/^all returned questions should have theme id "(?<themeId>[^"]+)"$/u, function(this: GoatItWorld, themeId: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
 
+  expectAllQuestionsToHaveThemeId(questions, themeId);
+});
+
+Then(/^all returned questions should have author role "(?<authorRole>[^"]+)"$/u, function(this: GoatItWorld, authorRole: string): void {
+  const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
   expect(questions.length).toBeGreaterThan(0);
 
   for (const question of questions) {
-    expect(question.themes.some(themeAssignment => themeAssignment.theme.id === themeId)).toBe(true);
+    expect(question.author.role).toBe(authorRole);
   }
 });

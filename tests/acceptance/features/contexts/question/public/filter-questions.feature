@@ -30,6 +30,7 @@ Feature: Filter Questions
       | game        |
     Then the request should have succeeded with status code 200
     And the response should contain 20 questions
+    And all returned questions should have author role "game"
 
   Scenario: Filtering questions by a single theme ID
     Given the database is populated with questions fixture set with name "sixty-questions"
