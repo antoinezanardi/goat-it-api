@@ -13,6 +13,7 @@ const swcJsc = SwcConfig.jsc as unknown as JscConfig;
 
 export default defineConfig({
   test: {
+    pool: "threads",
     watch: false,
     globals: true,
     clearMocks: true,
