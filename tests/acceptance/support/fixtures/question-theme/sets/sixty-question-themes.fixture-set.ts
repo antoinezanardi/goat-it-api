@@ -1,3 +1,6 @@
+// 60 themes (57 active, 3 archived: politics/economics/sports).
+// ObjectIds: 600000000000000000000001-60000000000000000000003c.
+// Slugs: cinema, music, science, history, geography, literature, animals, space, art, food, medicine, astronomy, biology, chemistry, physics, technology, gaming, poker, meditation, fitness, nutrition, cryptography, robotics, coffee, chocolate, cars, comics, aviation, maritime, wine, beer, tea, gardening, dance, theater, fashion, architecture, politics, economics, philosophy, psychology, sociology, anthropology, archaeology, linguistics, mythology, military, religion, mathematics, yoga, travel, climate, ecology, energy, paleontology, chess, photography, anime, magic, sports.
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";

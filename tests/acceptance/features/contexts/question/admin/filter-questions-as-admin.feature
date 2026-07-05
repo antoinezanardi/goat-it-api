@@ -6,87 +6,68 @@ Feature: Filter Questions as Admin
   I want to be able to filter questions by various criteria
 
   Scenario: Filtering admin questions by status "active"
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | status |
       | active |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                         |
-      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film)   |
-      | c3d4e5f6a7b8012345678903 | lexicon  | easy                | active | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup  |
+    And the response should contain 50 admin questions
+    And all returned admin questions should have status "active"
 
   Scenario: Filtering admin questions by category "trivia"
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | category |
       | trivia   |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | b2c3d4e5f6a7012345678902 | trivia   | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia   | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+    And the response should contain 15 admin questions
+    And all returned admin questions should have category "trivia"
 
   Scenario: Filtering admin questions by cognitive difficulty "easy"
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | cognitive-difficulty |
       | easy                 |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | c3d4e5f6a7b8012345678903 | lexicon  | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia   | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+    And the response should contain 19 admin questions
+    And all returned admin questions should have cognitive difficulty "easy"
 
   Scenario: Filtering admin questions by author role "ai"
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | author-role |
       | ai          |
     Then the request should have succeeded with status code 200
-    And the response should contain 3 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+    And the response should contain 18 admin questions
 
   Scenario: Filtering admin questions by theme IDs
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | theme-ids                                            |
-      | 9adeceb41db80ab7ec49b457,cddb37b90e4f6b7ec27bc1ee |
+      | 600000000000000000000001,600000000000000000000002 |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+    And the response should contain 5 admin questions
 
   Scenario: Filtering admin questions by multiple criteria
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | status | category |
       | active | riddle   |
     Then the request should have succeeded with status code 200
-    And the response should contain 1 admin questions
-    And the response should contain the following admin questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+    And the response should contain 14 admin questions
+    And all returned admin questions should have status "active"
+    And all returned admin questions should have category "riddle"
 
   Scenario: Filtering admin questions returns empty list when no match
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
-      | status | category    |
-      | active | explanation |
+      | status   | category |
+      | archived | lexicon  |
     Then the request should have succeeded with status code 200
     And the response should contain 0 admin questions
 
   Scenario: Filtering admin questions with invalid status value
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | status  |
       | invalid |
@@ -98,7 +79,7 @@ Feature: Filter Questions as Admin
       | invalid_value | Invalid option: expected one of "pending"\|"active"\|"archived"\|"rejected" | status | pending, active, archived, rejected |
 
   Scenario: Filtering admin questions with invalid category value
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | category |
       | invalid  |
@@ -110,7 +91,7 @@ Feature: Filter Questions as Admin
       | invalid_value | Invalid option: expected one of "trivia"\|"lexicon"\|"riddle"\|"explanation" | category | trivia, lexicon, riddle, explanation |
 
   Scenario: Filtering admin questions with invalid cognitive difficulty value
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | cognitive-difficulty |
       | invalid              |
@@ -122,7 +103,7 @@ Feature: Filter Questions as Admin
       | invalid_value | Invalid option: expected one of "easy"\|"medium"\|"hard" | cognitive-difficulty | easy, medium, hard |
 
   Scenario: Filtering admin questions with invalid author role value
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | author-role |
       | invalid     |
@@ -134,7 +115,7 @@ Feature: Filter Questions as Admin
       | invalid_value | Invalid option: expected one of "admin"\|"game"\|"ai" | author-role | admin, game, ai |
 
   Scenario: Filtering admin questions with invalid theme ID value
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves all questions with the following query:
       | theme-ids |
       | not-valid |

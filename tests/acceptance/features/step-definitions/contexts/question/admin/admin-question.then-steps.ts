@@ -26,6 +26,36 @@ Then(/^the response should contain (?<questionsCount>\d+) admin questions$/u, fu
   expect(questions).toHaveLength(questionsCount);
 });
 
+Then(/^all returned admin questions should have status "(?<status>[^"]+)"$/u, function(this: GoatItWorld, status: string): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    expect(question.status).toBe(status);
+  }
+});
+
+Then(/^all returned admin questions should have category "(?<category>[^"]+)"$/u, function(this: GoatItWorld, category: string): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    expect(question.category).toBe(category);
+  }
+});
+
+Then(/^all returned admin questions should have cognitive difficulty "(?<cognitiveDifficulty>[^"]+)"$/u, function(this: GoatItWorld, cognitiveDifficulty: string): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    expect(question.cognitiveDifficulty).toBe(cognitiveDifficulty);
+  }
+});
+
 Then(/^the response should contain the following admin questions:$/u, function(this: GoatItWorld, questionsDataTable: DataTable): void {
   const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
   const dataTableRows = validateDataTableAndGetRows(questionsDataTable, QUESTION_DATATABLE_ROW_SCHEMA);
