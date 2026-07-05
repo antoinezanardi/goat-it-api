@@ -1,3 +1,9 @@
+// 60 questions (57 active, 1 pending @ 70000000000000000000000e, 1 archived @ 70000000000000000000001c, 1 rejected @ 700000000000000000000036).
+// ObjectIds: 700000000000000000000001-70000000000000000000003c.
+// Categories (15 ea): trivia, lexicon, riddle, explanation.
+// Difficulties: 19 easy, 19 medium, 22 hard.
+// Author roles: 22 admin, 18 ai, 20 game.
+// Depends on SIXTY_QUESTION_THEMES_FIXTURE_SET being loaded first.
 import { createFakeQuestionAuthorAggregate, createFakeQuestionContentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionDocument, createFakeQuestionThemeAssignmentDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
@@ -593,7 +599,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
       name: "Riddle Master",
     }),
     rejection: undefined,
-    sourceUrls: [],
+    sourceUrls: ["https://en.wikipedia.org/wiki/Computer_keyboard"],
     createdAt: new Date("2025-01-01T00:00:00.000Z"),
     updatedAt: new Date("2025-01-01T00:00:00.000Z"),
   }),
@@ -902,7 +908,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
       name: "Riddle Generator",
     }),
     rejection: undefined,
-    sourceUrls: [],
+    sourceUrls: ["https://en.wikipedia.org/wiki/Fire"],
     createdAt: new Date("2025-01-01T00:00:00.000Z"),
     updatedAt: new Date("2025-01-01T00:00:00.000Z"),
   }),
@@ -1373,7 +1379,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
       name: "Fashion Designer",
     }),
     rejection: undefined,
-    sourceUrls: [],
+    sourceUrls: ["https://en.wikipedia.org/wiki/Shirt"],
     createdAt: new Date("2025-01-01T00:00:00.000Z"),
     updatedAt: new Date("2025-01-01T00:00:00.000Z"),
   }),
@@ -2092,7 +2098,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
       type: "duplicate-question",
       comment: "This question is a duplicate of an existing question in the database.",
     }),
-    sourceUrls: [],
+    sourceUrls: ["https://en.wikipedia.org/wiki/George_Washington"],
     createdAt: new Date("2025-01-01T00:00:00.000Z"),
     updatedAt: new Date("2025-01-01T00:00:00.000Z"),
   }),

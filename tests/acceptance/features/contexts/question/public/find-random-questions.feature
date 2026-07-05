@@ -6,14 +6,14 @@ Feature: Find Random Questions
   I want to retrieve a random set of active questions
 
   Scenario: Returning random questions with default limit
-    Given the database is populated with questions fixture set with name "five-active-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions
     Then the request should have succeeded with status code 200
     And the response should contain up to 20 questions
     And all returned questions should have status "active"
 
   Scenario: Returning random questions with custom limit
-    Given the database is populated with questions fixture set with name "five-active-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | limit |
       | 3     |
@@ -21,16 +21,18 @@ Feature: Find Random Questions
     And the response should contain 3 questions
     And all returned questions should have status "active"
 
-  Scenario: Returning all active questions when limit exceeds available count
-    Given the database is populated with questions fixture set with name "five-active-questions"
+  Scenario: Returning all matching active questions when limit exceeds available filtered count
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
-      | limit |
-      | 10    |
+      | categories | limit |
+      | riddle     | 20    |
     Then the request should have succeeded with status code 200
-    And the response should contain 5 questions
+    And the response should contain 14 questions
+    And all returned questions should have category "riddle"
+    And all returned questions should have status "active"
 
   Scenario: Filtering out non-active questions
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | limit |
       | 20    |
@@ -38,16 +40,16 @@ Feature: Find Random Questions
     And all returned questions should have status "active"
 
   Scenario: Excluding questions by IDs
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | excluded-ids             | limit |
-      | a1b2c3d4e5f6012345678901 | 20    |
+      | 700000000000000000000001 | 20    |
     Then the request should have succeeded with status code 200
     And all returned questions should have status "active"
-    And the response should not contain a question with id "a1b2c3d4e5f6012345678901"
+    And the response should not contain a question with id "700000000000000000000001"
 
   Scenario: Filtering by categories
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | categories | limit |
       | riddle     | 20    |
@@ -55,7 +57,7 @@ Feature: Find Random Questions
     And all returned questions should have category "riddle"
 
   Scenario: Filtering by cognitive difficulties
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | cognitive-difficulties | limit |
       | easy                   | 20    |
@@ -63,15 +65,15 @@ Feature: Find Random Questions
     And all returned questions should have cognitive difficulty "easy"
 
   Scenario: Filtering by theme IDs
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | theme-ids                | limit |
-      | 8ef21e4eb04eb0fa5a469d87 | 20    |
+      | 600000000000000000000001 | 20    |
     Then the request should have succeeded with status code 200
-    And all returned questions should have theme id "8ef21e4eb04eb0fa5a469d87"
+    And all returned questions should have theme id "600000000000000000000001"
 
   Scenario: Combining multiple filters
-    Given the database is populated with questions fixture set with name "five-questions"
+    Given the database is populated with questions fixture set with name "sixty-questions"
     When the client retrieves random questions with the following query:
       | categories | cognitive-difficulties | limit |
       | riddle     | medium                 | 20    |
