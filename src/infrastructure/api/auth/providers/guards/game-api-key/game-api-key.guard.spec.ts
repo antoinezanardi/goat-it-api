@@ -16,7 +16,7 @@ describe("Game Api Key Guard", () => {
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
     helpers: {
-      canActivateApiKeyGuardHandler: MockInstance;
+      canActivateApiKeyGuardHandler: MockInstance<typeof authHelpers.canActivateApiKeyGuardHandler>;
     };
   };
 

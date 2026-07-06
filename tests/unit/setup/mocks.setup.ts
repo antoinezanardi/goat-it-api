@@ -5,13 +5,13 @@ vi.mock("@nestjs/common", async importActual => ({
   Logger: vi.fn<() => ReturnType<typeof getMockedLoggerInstance>>(getMockedLoggerInstance),
 }));
 
-vi.mock("nestjs-zod", async importActual => {
-  // Acceptable as importActual returns a module namespace that is spreadable at runtime but not typed as an object
+vi.mock("nestjs-zod", async importOriginal => {
+  // Acceptable as importOriginal returns a module namespace that is spreadable at runtime but not typed as an object
   // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const actual = await importActual() as Record<string, unknown>;
+  const actual = await importOriginal() as Record<string, unknown>;
 
   return {
     ...actual,
-    cleanupOpenApiDoc: vi.fn(),
+    cleanupOpenApiDoc: vi.fn((document: unknown) => document),
   };
 });

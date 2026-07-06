@@ -92,21 +92,23 @@ describe("Swagger Helper", () => {
       const mockedApp = {} as NestFastifyApplication;
       const expectedDocument = { openapi: "3.0.0", paths: {}, components: { schemas: {} } } as OpenAPIObject;
       mocks.SwaggerModule.createDocument.mockReturnValue(expectedDocument);
-      createSwaggerDocument(mockedApp);
+      const result = createSwaggerDocument(mockedApp);
 
-      expect(mocks.cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);
+      expect(result).toStrictEqual(expectedDocument);
     });
   });
 
   describe(setupSwaggerModule, () => {
     it("should setup Swagger module when called.", () => {
       const mockedApp = {} as NestFastifyApplication;
+      const expectedDocument = { openapi: "3.0.0", paths: {}, components: { schemas: {} } } as OpenAPIObject;
       const expectedSwaggerOptions: SwaggerCustomOptions = {
         customSiteTitle: "Goat It API Reference Documentation",
       };
+      mocks.cleanupOpenApiDoc.mockReturnValue(expectedDocument);
       setupSwaggerModule(mockedApp);
 
-      expect(mocks.SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, undefined, expectedSwaggerOptions);
+      expect(mocks.SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, expectedDocument, expectedSwaggerOptions);
     });
   });
 });

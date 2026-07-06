@@ -20,8 +20,8 @@ describe("App Config Service", () => {
       nestConfig: ReturnType<typeof createMockedNestConfigService>;
     };
     helpers: {
-      hashApiKey: MockInstance;
-      createApiKeyValidator: MockInstance;
+      hashApiKey: MockInstance<typeof authHelpers.hashApiKey>;
+      createApiKeyValidator: MockInstance<typeof authHelpers.createApiKeyValidator>;
     };
   };
 
