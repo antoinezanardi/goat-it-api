@@ -6,7 +6,7 @@ import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@qu
 
 import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
-import { APP_BASE_URL } from "@acceptance-support/constants/app.constants";
+import { getAppBaseUrl } from "@acceptance-support/helpers/setup/app.helpers";
 
 import type { Model } from "mongoose";
 import type { IWorldOptions } from "@cucumber/cucumber";
@@ -33,7 +33,7 @@ class GoatItWorld extends World {
     super(options);
 
     this.fetchInstance = ofetch.create({
-      baseURL: APP_BASE_URL,
+      baseURL: getAppBaseUrl(),
       onRequest: () => {
         this.lastFetchResponse = undefined;
         this.lastPayload = { ...this.payload };

@@ -110,12 +110,9 @@ tests/acceptance/
 ```bash
 # Full acceptance test suite (requires Docker services)
 pnpm test:acceptance
-
-# Skip the NestJS build step (useful when the dist/ is already fresh)
-SKIP_BUILD=true pnpm test:acceptance
 ```
 
-> **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test`. The suite builds the app (`pnpm build`) by default before spawning the server process. Set `SKIP_BUILD=true` to skip the build.
+> **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test`. The suite builds the app (`pnpm build`) by default before spawning the server process.
 
 ---
 
@@ -126,7 +123,7 @@ All hooks live in `tests/acceptance/support/hooks.ts`. They execute in this orde
 ### `BeforeAll`
 
 1. Loads `env/.env.test` via `loadEnvTestConfig()`.
-2. Optionally builds the app (`buildAppForAcceptanceTests()`) unless `SKIP_BUILD=true`.
+2. Builds the app.
 3. Connects to MongoDB via `connectToTestDatabase()`.
 4. Spawns `pnpm run start:prod:test` and waits for the HTTP health endpoint to respond (`serveAppForAcceptanceTests()`). The app listens on `http://0.0.0.0:4242`.
 5. Stores the child process reference and log manager in the `processes` object.
@@ -649,8 +646,6 @@ For non-trivial response assertions:
 
 ```bash
 pnpm test:acceptance
-# or skip build if dist/ is up to date:
-SKIP_BUILD=true pnpm test:acceptance
 ```
 
 Fix any failures before merging. Acceptance tests must pass in CI alongside lint, typecheck, and unit tests.

@@ -1,8 +1,6 @@
 const SERVER_HOST = "0.0.0.0";
 
-const SERVER_PORT = 4242;
-
-const APP_BASE_URL = `http://${SERVER_HOST}:${SERVER_PORT}`;
+const DEFAULT_SERVER_PORT = 4242;
 
 const APP_ENV_TEST_PATH = "env/.env.test";
 
@@ -12,7 +10,7 @@ const APP_HEALTH_OK_STATUS = 200;
 
 const APP_HEALTH_RETRY_ATTEMPTS = 20;
 
-const APP_HEALTH_RETRY_DELAY_MS = 200;
+const APP_HEALTH_RETRY_DELAY_MS = 500;
 
 const APP_ADMIN_API_KEY = "test_admin_api_key_for_testing";
 
@@ -20,8 +18,7 @@ const APP_GAME_API_KEY = "test_game_api_key_for_testing";
 
 export {
   SERVER_HOST,
-  SERVER_PORT,
-  APP_BASE_URL,
+  DEFAULT_SERVER_PORT,
   APP_ENV_TEST_PATH,
   APP_FORCE_KILL_TIMEOUT_MS,
   APP_HEALTH_OK_STATUS,
