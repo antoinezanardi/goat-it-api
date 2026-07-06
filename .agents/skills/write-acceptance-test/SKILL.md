@@ -13,7 +13,7 @@ disable-model-invocation: true
 - Write `Given`, `When`, `Then` step definitions following naming and regex conventions
 - Define DataTable schemas using `z.strictObject` + `zCoerceOptional*` helpers
 - Write step helpers (pure assertion functions) for non-trivial Then assertions
-- Run `pnpm test:acceptance` (or `SKIP_BUILD=true pnpm test:acceptance`) until the suite is green
+- Run `pnpm test:acceptance` until the suite is green
 
 ## When to use me
 
@@ -217,7 +217,6 @@ export { MY_PAYLOAD };
 ## Checks to run when done
 
 ```bash
-SKIP_BUILD=true pnpm test:acceptance   # if dist/ is already built
 pnpm test:acceptance                   # full run with build
 pnpm run typecheck
 pnpm run lint

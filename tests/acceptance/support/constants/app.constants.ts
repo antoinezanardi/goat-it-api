@@ -10,7 +10,7 @@ const APP_HEALTH_OK_STATUS = 200;
 
 const APP_HEALTH_RETRY_ATTEMPTS = 20;
 
-const APP_HEALTH_RETRY_DELAY_MS = 200;
+const APP_HEALTH_RETRY_DELAY_MS = 500;
 
 const APP_ADMIN_API_KEY = "test_admin_api_key_for_testing";
 

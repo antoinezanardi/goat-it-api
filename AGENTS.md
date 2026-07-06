@@ -126,7 +126,6 @@ Running a single unit test or file:
 Running acceptance tests:
 
 - Full run:                 `pnpm test:acceptance`
-- Skip build (fast iteration, if `dist/` is already up to date): `SKIP_BUILD=true pnpm test:acceptance`
 - Specific feature:         `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature`
 - Specific scenario (line): `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature:8`
 - By scenario name:         `pnpm test:acceptance --name "should create a question"`
