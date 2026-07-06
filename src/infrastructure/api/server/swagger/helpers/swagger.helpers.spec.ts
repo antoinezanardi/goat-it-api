@@ -1,32 +1,27 @@
 import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { cleanupOpenApiDoc } from "nestjs-zod";
 
+import packageJson from "@package-json" with { type: "json" };
+
 import { createSwaggerDocument, getSwaggerConfig, getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
 import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import type { Mock } from "vitest";
-
-vi.mock(import("@nestjs/swagger"));
-
-vi.mock(import("nestjs-zod"));
-
-vi.mock(import("@package-json"), async importOriginal => ({
-  default: {
-    ...await importOriginal(),
-    description: "API for Goat It application.",
-    version: "1.0.0",
-  },
-}));
+import type { MockInstance } from "vitest";
 
 describe("Swagger Helper", () => {
   let mocks: {
     DocumentBuilder: {
-      setTitle: Mock;
-      setDescription: Mock;
-      setVersion: Mock;
-      build: Mock;
+      setTitle: MockInstance;
+      setDescription: MockInstance;
+      setVersion: MockInstance;
+      build: MockInstance;
     };
+    SwaggerModule: {
+      createDocument: MockInstance;
+      setup: MockInstance;
+    };
+    cleanupOpenApiDoc: MockInstance;
   };
 
   beforeEach(() => {
@@ -37,6 +32,11 @@ describe("Swagger Helper", () => {
         setVersion: vi.spyOn(DocumentBuilder.prototype, "setVersion").mockReturnThis(),
         build: vi.spyOn(DocumentBuilder.prototype, "build").mockReturnValue({} as Omit<OpenAPIObject, "paths">),
       },
+      SwaggerModule: {
+        createDocument: vi.spyOn(SwaggerModule, "createDocument").mockReturnValue({ openapi: "3.0.0", paths: {}, components: { schemas: {} } } as OpenAPIObject),
+        setup: vi.spyOn(SwaggerModule, "setup").mockReturnValue(undefined),
+      },
+      cleanupOpenApiDoc: vi.mocked(cleanupOpenApiDoc),
     };
   });
 
@@ -64,13 +64,13 @@ describe("Swagger Helper", () => {
     it("should set description when called.", () => {
       getSwaggerConfig();
 
-      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith("API for Goat It application.");
+      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(packageJson.description);
     });
 
     it("should set version when called.", () => {
       getSwaggerConfig();
 
-      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith("1.0.0");
+      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith(packageJson.version);
     });
 
     it("should build document when called.", () => {
@@ -85,28 +85,30 @@ describe("Swagger Helper", () => {
       const mockedApp = {} as NestFastifyApplication;
       createSwaggerDocument(mockedApp);
 
-      expect(SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});
+      expect(mocks.SwaggerModule.createDocument).toHaveBeenCalledExactlyOnceWith(mockedApp, {});
     });
 
     it("should clean up open api doc when called.", () => {
       const mockedApp = {} as NestFastifyApplication;
-      const expectedDocument = {} as OpenAPIObject;
-      vi.mocked(SwaggerModule.createDocument).mockReturnValue(expectedDocument);
-      createSwaggerDocument(mockedApp);
+      const expectedDocument = { openapi: "3.0.0", paths: {}, components: { schemas: {} } } as OpenAPIObject;
+      mocks.SwaggerModule.createDocument.mockReturnValue(expectedDocument);
+      const result = createSwaggerDocument(mockedApp);
 
-      expect(cleanupOpenApiDoc).toHaveBeenCalledExactlyOnceWith(expectedDocument);
+      expect(result).toStrictEqual(expectedDocument);
     });
   });
 
   describe(setupSwaggerModule, () => {
     it("should setup Swagger module when called.", () => {
       const mockedApp = {} as NestFastifyApplication;
+      const expectedDocument = { openapi: "3.0.0", paths: {}, components: { schemas: {} } } as OpenAPIObject;
       const expectedSwaggerOptions: SwaggerCustomOptions = {
         customSiteTitle: "Goat It API Reference Documentation",
       };
+      mocks.cleanupOpenApiDoc.mockReturnValue(expectedDocument);
       setupSwaggerModule(mockedApp);
 
-      expect(SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, undefined, expectedSwaggerOptions);
+      expect(mocks.SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith("/docs", mockedApp, expectedDocument, expectedSwaggerOptions);
     });
   });
 });
