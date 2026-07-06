@@ -1,7 +1,7 @@
 import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from "@cucumber/cucumber";
 
-import { buildAppForAcceptanceTests } from "@acceptance-support/helpers/setup/build.helpers";
 import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
+import { DEFAULT_SERVER_PORT } from "@acceptance-support/constants/app.constants";
 import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
 import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
 import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
@@ -18,11 +18,11 @@ const processes: AcceptanceHooksProcesses = {};
 
 BeforeAll(async() => {
   loadEnvTestConfig();
-  if (process.env.SKIP_BUILD === "true") {
-    console.info("⏭️ Skipping application build for acceptance tests as per SKIP_BUILD env variable.");
-  } else {
-    buildAppForAcceptanceTests();
-  }
+
+  const workerId = process.env.CUCUMBER_WORKER_ID ?? "0";
+  process.env.SERVER_PORT = String(DEFAULT_SERVER_PORT + Number(workerId));
+  process.env.MONGODB_DATABASE = `goat-it-test-${workerId}`;
+
   await connectToTestDatabase();
 
   const { process: appProcess, appLogs } = await serveAppForAcceptanceTests();

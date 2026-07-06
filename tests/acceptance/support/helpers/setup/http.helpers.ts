@@ -1,12 +1,13 @@
 import { request as fetch } from "node:http";
 import { URL } from "node:url";
 
-import { APP_BASE_URL, APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
+import { APP_HEALTH_OK_STATUS, APP_HEALTH_RETRY_ATTEMPTS, APP_HEALTH_RETRY_DELAY_MS } from "@acceptance-support/constants/app.constants";
+import { getAppBaseUrl } from "@acceptance-support/helpers/setup/app.helpers";
 
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 
 async function getApiHealth(): Promise<number> {
-  const urlObject = new URL(`${APP_BASE_URL}/health`);
+  const urlObject = new URL(`${getAppBaseUrl()}/health`);
 
   return new Promise<number>(resolve => {
     const request = fetch(

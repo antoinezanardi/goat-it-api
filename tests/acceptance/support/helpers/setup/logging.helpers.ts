@@ -75,9 +75,11 @@ class RingBuffer {
  * Generate a sanitized timestamp for use in directory names.
  */
 function generateRunId(): string {
+  const workerId = process.env.CUCUMBER_WORKER_ID;
+  const workerPrefix = workerId === undefined ? "" : `worker-${workerId}-`;
   const now = new Date();
 
-  return now.toISOString().replaceAll(":", "-").replaceAll(".", "-");
+  return `${workerPrefix}${now.toISOString().replaceAll(":", "-").replaceAll(".", "-")}`;
 }
 
 /**
