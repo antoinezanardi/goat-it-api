@@ -120,7 +120,7 @@
     "@typescript-eslint/parser": "^8.63.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "@vitest/eslint-plugin": "^1.6.21",
+    "@vitest/eslint-plugin": "^1.6.23",
     "commitlint": "^21.2.1",
     "conventional-changelog-conventionalcommits": "^10.2.1",
     "dotenv": "^17.4.2",
