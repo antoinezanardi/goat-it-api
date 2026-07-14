@@ -21,3 +21,5 @@ export type { FindQuestionThemesQueryDto } from "@question-theme/application/dto
 export type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 export type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 export type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+
+export { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_ORDER_DEFAULT } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";

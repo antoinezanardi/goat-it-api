@@ -1,4 +1,4 @@
-import { QuestionThemeAssignmentModificationError } from "./question-theme-assignment-modification.error";
+import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment-modification/question-theme-assignment-modification.error";
 
 describe(QuestionThemeAssignmentModificationError, () => {
   it("should set message when constructed.", () => {

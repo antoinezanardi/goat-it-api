@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types, UpdateQuery } from "mongoose";
 
-import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
@@ -14,7 +15,7 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
@@ -22,13 +23,26 @@ import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
+  private static composeFindRandomMatchStage(options: FindRandomQuestionsOptions): Record<string, unknown> {
+    const matchStage: Record<string, unknown> = { status: QUESTION_STATUS_ACTIVE };
+
+    addArrayFilterIfNonEmpty(options.excludedIds, matchStage, "_id", ids => ({ $nin: ids.map(id => new Types.ObjectId(id)) }));
+    addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
+    addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
+    addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+
+    return matchStage;
+  }
+
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+    const limitStage = hasLimit(options.limit) ? [{ $limit: options.limit }] : [];
     const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
       ...filterStages,
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ...sortStages,
+      ...limitStage,
     ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
@@ -125,6 +139,18 @@ export class QuestionMongooseRepository implements QuestionRepository {
         ],
       },
     });
+  }
+
+  public async findRandom(options: FindRandomQuestionsOptions): Promise<Question[]> {
+    const matchStage = QuestionMongooseRepository.composeFindRandomMatchStage(options);
+
+    const questionWithThemes = await this.questionModel.aggregate<QuestionAggregate>([
+      { $match: matchStage },
+      { $sample: { size: options.limit } },
+      ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+    ]);
+
+    return questionWithThemes.map(createQuestionFromAggregate);
   }
 
   private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {

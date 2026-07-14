@@ -1,15 +1,8 @@
 import { Test } from "@nestjs/testing";
 
-import { AppService } from "@app/providers/services/app.service";
+import packageJson from "@package-json" with { type: "json" };
 
-vi.mock(import("@package-json"), async importOriginal => ({
-  default: {
-    ...await importOriginal(),
-    name: "goat-it-api",
-    description: "API for Goat It application.",
-    version: "1.0.0",
-  },
-}));
+import { AppService } from "@app/providers/services/app.service";
 
 describe("App Service", () => {
   let services: { app: AppService };
@@ -23,10 +16,10 @@ describe("App Service", () => {
   describe("getApiMeta", () => {
     it("should return Api metadata when called.", () => {
       expect(services.app.getApiMeta()).toStrictEqual({
-        packageName: "goat-it-api",
+        packageName: packageJson.name,
         name: "Goat It API",
-        description: "API for Goat It application.",
-        version: "1.0.0",
+        description: packageJson.description,
+        version: packageJson.version,
       });
     });
   });

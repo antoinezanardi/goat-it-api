@@ -7,16 +7,16 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/con
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
 describe("Find Question Themes Use Case", () => {
   let findQuestionThemesUseCase: FindQuestionThemesUseCase;
   let mocks: {
     repositories: {
-      questionTheme: QuestionThemeRepository;
+      questionTheme: ReturnType<typeof createMockedQuestionThemeRepository>;
     };
   };
   let findAllOptions: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>;
@@ -42,7 +42,21 @@ describe("Find Question Themes Use Case", () => {
   });
 
   describe(FindQuestionThemesUseCase.prototype.list, () => {
-    it("should list all question themes from repository when called.", async() => {
+    it("should return all question themes when limit is not set.", async() => {
+      const expectedQuestionThemes = [
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+        createFakeQuestionTheme(),
+      ];
+      mocks.repositories.questionTheme.findAll.mockResolvedValueOnce(expectedQuestionThemes);
+      const optionsWithoutLimit = { sort: findAllOptions.sort };
+
+      const actualQuestionThemes = await findQuestionThemesUseCase.list(optionsWithoutLimit);
+
+      expect(actualQuestionThemes).toStrictEqual(expectedQuestionThemes);
+    });
+
+    it("should call repository with full options when called.", async() => {
       await findQuestionThemesUseCase.list(findAllOptions);
 
       expect(mocks.repositories.questionTheme.findAll).toHaveBeenCalledExactlyOnceWith(findAllOptions);

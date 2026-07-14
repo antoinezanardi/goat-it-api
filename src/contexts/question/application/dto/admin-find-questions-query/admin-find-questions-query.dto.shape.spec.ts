@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { ZodError } from "zod";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { ADMIN_FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
@@ -10,6 +11,8 @@ import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@questio
 import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 
 import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
+
+import type { z } from "zod";
 
 describe("Admin Find Questions Sort Query DTO Shape", () => {
   let validDto: AdminFindQuestionsQueryDto;
@@ -49,6 +52,10 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
+
+    it("should have sort-by as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["sort-by"]>().toEqualTypeOf<AdminFindQuestionsQueryDto["sort-by"] | undefined>();
+    });
   });
 
   describe("sort-order", () => {
@@ -77,6 +84,43 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
       const expectedMetadata = { description: SORT_ORDER_DESCRIPTION, example: SORT_ORDER_DEFAULT };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should have sort-order as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["sort-order"]>().toEqualTypeOf<AdminFindQuestionsQueryDto["sort-order"] | undefined>();
+    });
+  });
+
+  describe("limit", () => {
+    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+      const dto = createFakeAdminFindQuestionsQueryDto({ limit });
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+      const dtoWithInvalidLimit = { ...validDto, limit };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
+    });
+
+    it("should use default value 50 when limit is not provided.", () => {
+      const dtoWithoutLimit = { "sort-by": "createdAt" };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutLimit);
+
+      expect(result.limit).toBe(LIMIT_DEFAULT);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = ADMIN_FIND_QUESTIONS_QUERY_DTO.shape.limit.meta();
+      const expectedMetadata = { description: LIMIT_DESCRIPTION, example: LIMIT_DEFAULT };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+
+    it("should accept any coercible value when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["limit"]>().toEqualTypeOf<unknown>();
     });
   });
 
@@ -197,6 +241,6 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   it("should use both defaults when no fields are provided.", () => {
     const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<AdminFindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc" });
+    expect(result).toStrictEqual<AdminFindQuestionsQueryDto>({ "sort-by": "createdAt", "sort-order": "desc", "limit": LIMIT_DEFAULT });
   });
 });

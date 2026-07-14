@@ -1,6 +1,5 @@
 import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
-
-import { QuestionMinimumThemesError } from "./question-minimum-themes.error";
+import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 
 describe(QuestionMinimumThemesError, () => {
   it("should set message including minimum when constructed.", () => {

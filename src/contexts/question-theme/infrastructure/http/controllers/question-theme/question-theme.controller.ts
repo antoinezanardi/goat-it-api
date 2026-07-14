@@ -42,7 +42,7 @@ export class QuestionThemeController {
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionThemeDto[]> {
     const sortOptions = createSortOptionsFromSortQueryDto(queryDto);
-    const questionThemes = await this.findQuestionThemesUseCase.list({ sort: sortOptions });
+    const questionThemes = await this.findQuestionThemesUseCase.list({ sort: sortOptions, limit: queryDto.limit });
 
     return questionThemes.map(questionTheme => createQuestionThemeDtoFromEntity(questionTheme, localization));
   }

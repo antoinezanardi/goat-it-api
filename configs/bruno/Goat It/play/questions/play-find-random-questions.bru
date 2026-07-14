@@ -1,0 +1,26 @@
+meta {
+  name: Get Random Questions
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/questions/random
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ~limit: 20
+  ~excluded-ids: f1a2b3c4d5e6012345678901
+  ~categories: trivia
+  ~cognitive-difficulties: easy
+  ~theme-ids: 8ef21e4eb04eb0fa5a469d87
+}
+
+settings {
+  encodeUrl: true
+  timeout: inherit
+  followRedirects: true
+  maxRedirects: 5
+}

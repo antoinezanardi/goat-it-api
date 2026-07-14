@@ -1,7 +1,12 @@
 import { When } from "@cucumber/cucumber";
 
+import { PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/datatables/question-theme.datatables.schemas";
+
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
+import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
+
+import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
@@ -10,6 +15,15 @@ When(/^the client retrieves all question themes(?: in locale "(?<locale>[^"]+)")
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,
     locale: locale ?? undefined,
+  });
+  await this.fetchAndStoreResponse("/question-themes", fetchOptions);
+});
+
+When(/^the client retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, PUBLIC_QUESTION_THEME_QUERY_PARAMS_SCHEMA);
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    query: buildQueryFromRow(queryRow),
   });
   await this.fetchAndStoreResponse("/question-themes", fetchOptions);
 });

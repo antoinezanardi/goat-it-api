@@ -77,7 +77,7 @@ runs:
         } >> "$GITHUB_OUTPUT"
 
     - name: Save unit tests coverage in cache 🥡
-      uses: actions/cache/save@v5
+      uses: actions/cache/save@v6
       id: cache-unit-tests-coverage
       if: ${{ hashFiles(format('{0}/lcov.info', inputs.unit-tests-coverage-reports-path)) != '' }}
       with:

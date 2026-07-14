@@ -44,7 +44,6 @@ These skills have OpenCode slash commands wired up in `.opencode/commands/`:
 | `brainstorming`         | `/brainstorming`         | Explore intent, requirements and design before any creative/impl work  |
 | `create-faketory`       | `/create-faketory`       | Scaffold a faketory for an entity, DTO, command or Mongoose document   |
 | `create-mock`           | `/create-mock`           | Scaffold a typed Vitest mock factory for a repository or use-case port |
-| `executing-plans`       | `/executing-plans`       | Execute a written implementation plan with review checkpoints          |
 | `write-acceptance-test` | `/write-acceptance-test` | Write or complete a Cucumber acceptance test scenario                  |
 | `write-unit-test`       | `/write-unit-test`       | Write or complete a unit test file following 100%-coverage conventions |
 | `writing-plans`         | `/writing-plans`         | Create a comprehensive implementation plan from a spec or requirements |
@@ -54,18 +53,33 @@ These skills have OpenCode slash commands wired up in `.opencode/commands/`:
 
 These skills live in `.agents/skills/` and are loaded via the `skill` tool by name:
 
-| Skill                            | Purpose                                                        |
-|----------------------------------|----------------------------------------------------------------|
-| `dispatching-parallel-agents`    | Coordinate 2+ independent tasks without shared state           |
-| `finishing-a-development-branch` | Guide completion of dev work — merge, PR, or cleanup           |
-| `receiving-code-review`          | Process code review feedback with technical rigor              |
-| `requesting-code-review`         | Verify work meets requirements before merging                  |
-| `subagent-driven-development`    | Execute implementation plans with independent subagent tasks   |
-| `systematic-debugging`           | Structured debugging before proposing fixes                    |
-| `test-driven-development`        | Red-green-refactor workflow before writing implementation code |
-| `using-git-worktrees`            | Create isolated git worktrees for feature work                 |
-| `using-superpowers`              | Session bootstrap — skill discovery and invocation rules       |
-| `verification-before-completion` | Run verification commands before claiming work is done         |
+| Skill                     | Purpose                                                         |
+|---------------------------|-----------------------------------------------------------------|
+| `receiving-code-review`   | Process code review feedback with technical rigor               |
+| `requesting-code-review`  | Verify work meets requirements before merging                   |
+| `subagent-driven-development` | Execute implementation plans with independent subagent tasks |
+| `systematic-debugging`    | Structured debugging before proposing fixes                     |
+| `test-driven-development` | Red-green-refactor workflow before writing implementation code  |
+| `using-superpowers`       | Session bootstrap — skill discovery and invocation rules        |
+
+---
+
+## Agent Definitions
+
+Pre-configured agent definitions live under `.opencode/agents/`. These are adaptive persona configurations that combine a model, temperature, permission scope, and system prompt. They can be selected in the OpenCode agent switcher or dispatched as subagents by the orchestrator.
+
+| Agent | Mode | Model | Purpose |
+|-------|------|-------|---------|
+| `orchestrator` | primary | deepseek-v4-pro T:0.3 | **Default agent.** Drives the full cycle: detect spec → create branch → dispatch plan-writer → per-task implementer dispatch → final-reviewer → gatekeeper → commit proposal |
+| `brainstormer` | primary | deepseek-v4-pro T:0.7 | **Interactive design partner.** Explores intent, asks clarifying questions, proposes 2-3 approaches. Never implements. Instructs user to switch back to `orchestrator`. |
+| `receiving-code-review` | primary | deepseek-v4-pro T:0.3 | **Code review triage.** Evaluates PR/peer feedback with technical rigor: scan branch → read → understand → verify → evaluate → respond → dispatch gatekeeper |
+| `plan-writer` | subagent | kimi-k2.7-code T:0.2 | Turns approved specs into detailed implementation plans with bite-sized TDD steps, complete code, no placeholders. Can only edit `docs/superpowers/plans/`. |
+| `implementer` | subagent | deepseek-v4-flash T:0.2 | Implements ONE detailed task from a plan. Follows steps exactly, runs focused tests, self-reviews, reports DONE/BLOCKED/NEEDS_CONTEXT. Cannot commit. |
+| `gatekeeper` | subagent | deepseek-v4-flash T:0.2 | Runs full 5-step quality gate: `lint:fix` → `typecheck` → `test:unit:cov` → `test:mutation` → `test:acceptance`. Auto-fixes failures. Cannot commit. |
+| `final-reviewer` | subagent | deepseek-v4-flash T:0.1 | Reviews entire feature branch holistically: spec coverage, plan execution, code quality, architecture, cross-task consistency, DOD items. Does NOT run quality gates. |
+| `debugger` | subagent | deepseek-v4-pro T:0.2 | Systematic 4-phase debugging. Root cause investigation → pattern analysis → hypothesis → implementation. Writes failing regression test first. Runs full quality gates after fix. |
+| `investigator` | subagent | mimo-v2.5 T:0.2 | Lightweight parallel investigator for ONE independent problem. Cheap model for fan-out debugging. Returns root cause + minimal fix. |
+| `tdd-writer` | subagent | kimi-k2.7-code T:0.1 | **TDD red-phase only.** Writes failing test(s) for one task, verifies they fail correctly, then STOPS. Does NOT write implementation. |
 
 ---
 
@@ -112,7 +126,6 @@ Running a single unit test or file:
 Running acceptance tests:
 
 - Full run:                 `pnpm test:acceptance`
-- Skip build (fast iteration, if `dist/` is already up to date): `SKIP_BUILD=true pnpm test:acceptance`
 - Specific feature:         `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature`
 - Specific scenario (line): `pnpm test:acceptance tests/acceptance/features/question/admin-create-question.feature:8`
 - By scenario name:         `pnpm test:acceptance --name "should create a question"`
@@ -502,3 +515,35 @@ suppressedCode();
 - **Max function params**: 8; **max nested callbacks**: 5; **max classes per file**: 1
 - Prefer `const`, arrow callbacks, template literals, optional chaining, nullish coalescing
 - `no-param-reassign` with `props: true` — never mutate parameters
+
+---
+
+## MemPalace (persistent project memory)
+
+MemPalace is a local memory system that stores project context as searchable embeddings. It runs as an MCP server with tools (prefixed `mcp mempalace_*`). All data stays on your machine — no API keys, no cloud.
+
+### What's in the palace
+
+- **Drawers** of project files (code, docs, configs, tests) under wing `goat_it_api`
+- Rooms: `app`, `contexts`, `infrastructure`, `shared`, `src`, `testing`, `documentation`, `configuration`, `packages`, `scripts`, `general`
+- Future sessions will be auto-mined by the plugin (every 20 message pairs)
+
+### How agents should use it
+
+1. **For tasks involving codebase context** (architecture, patterns, past decisions): query MemPalace first:
+   ```
+   Search for patterns, decisions, or architecture related to the task
+   ```
+   Use `mcp mempalace_search` with the wing filter to find relevant drawers. Skip MemPalace for trivial or purely mechanical tasks.
+
+2. **File learnings** to the knowledge graph after making decisions:
+   Use `mcp mempalace_kg_add` to persist important decisions, conventions, or discoveries that future sessions should know.
+
+3. **Write diary entries** at session end:
+   Use `mcp mempalace_diary_write` to summarize what was accomplished.
+
+### Key commands
+
+- `mempalace search "query"` — semantic search across all project content
+- `mempalace search "query" --wing goat_it_api --room app` — scoped search
+- `mempalace status` — show drawer counts by room

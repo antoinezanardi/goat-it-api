@@ -4,6 +4,9 @@ packages:
 
 minimumReleaseAge: 0
 
+overrides:
+  conventional-changelog-writer: ^9.2.0
+
 allowBuilds:
   '@nestjs/core': true
   '@scarf/scarf': true

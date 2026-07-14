@@ -1,19 +1,17 @@
 import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
 
-import { createApiKeyValidator, hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
+import * as authHelpers from "@src/infrastructure/api/auth/helpers/auth.helpers";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createMockedNestConfigService } from "@mocks/infrastructure/api/config/providers/services/nest-config.service.mock";
 
 import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
-import type { Mock } from "vitest";
+import type { MockInstance } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
-
-vi.mock(import("@src/infrastructure/api/auth/helpers/auth.helpers"));
 
 describe("App Config Service", () => {
   let services: { appConfig: AppConfigService };
@@ -22,8 +20,8 @@ describe("App Config Service", () => {
       nestConfig: ReturnType<typeof createMockedNestConfigService>;
     };
     helpers: {
-      hashApiKey: Mock;
-      createApiKeyValidator: Mock;
+      hashApiKey: MockInstance<typeof authHelpers.hashApiKey>;
+      createApiKeyValidator: MockInstance<typeof authHelpers.createApiKeyValidator>;
     };
   };
 
@@ -52,8 +50,8 @@ describe("App Config Service", () => {
         }),
       },
       helpers: {
-        hashApiKey: vi.mocked(hashApiKey).mockReturnValue("hashed-api-key"),
-        createApiKeyValidator: vi.mocked(createApiKeyValidator).mockReturnValue(() => true),
+        hashApiKey: vi.spyOn(authHelpers, "hashApiKey").mockReturnValue("hashed-api-key"),
+        createApiKeyValidator: vi.spyOn(authHelpers, "createApiKeyValidator").mockReturnValue(() => true),
       },
     };
     const module: TestingModule = await Test.createTestingModule({

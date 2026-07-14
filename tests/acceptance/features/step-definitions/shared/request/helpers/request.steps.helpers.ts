@@ -9,7 +9,7 @@ import type { z } from "zod";
 type ValidationDetailsRow = z.infer<typeof REQUEST_VALIDATION_DETAILS_ROW_SCHEMA>;
 
 function tryParseOverriddenPayloadIntegerValue(payloadValue: string): number {
-  const parsedInteger = Number.parseInt(payloadValue, 10);
+  const parsedInteger = Math.trunc(Number(payloadValue));
   if (Number.isNaN(parsedInteger)) {
     throw new TypeError(`Failed to parse overridden payload value as integer: ${payloadValue}`);
   }
@@ -17,7 +17,7 @@ function tryParseOverriddenPayloadIntegerValue(payloadValue: string): number {
 }
 
 function tryParseOverriddenPayloadFloatValue(payloadValue: string): number {
-  const parsedFloat = Number.parseFloat(payloadValue);
+  const parsedFloat = Number(payloadValue);
   if (Number.isNaN(parsedFloat)) {
     throw new TypeError(`Failed to parse overridden payload value as float: ${payloadValue}`);
   }
@@ -110,6 +110,7 @@ function mapDataTableRowToValidationDetails(row: ValidationDetailsRow): ApiRespo
       return trimmedValue === "" || Number.isNaN(Number(trimmedValue)) ? trimmedValue : Number(trimmedValue);
     }).filter(value => value !== ""),
     expected: row.expected,
+    received: row.received,
     origin: row.origin,
     format: row.format,
     pattern: row.pattern,

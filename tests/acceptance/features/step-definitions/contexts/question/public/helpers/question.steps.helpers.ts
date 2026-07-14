@@ -7,6 +7,31 @@ import type { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_R
 
 import type { z } from "zod";
 
+function expectAllQuestionsToHaveField(
+  questions: QuestionDto[],
+  field: keyof QuestionDto,
+  expectedValue: string,
+): void {
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    expect(question[field]).toBe(expectedValue);
+  }
+}
+
+function expectAllQuestionsToHaveThemeId(
+  questions: QuestionDto[],
+  themeId: string,
+): void {
+  expect(questions.length).toBeGreaterThan(0);
+
+  for (const question of questions) {
+    const themeIds = question.themes.map(themeAssignment => themeAssignment.theme.id);
+
+    expect(themeIds).toContain(themeId);
+  }
+}
+
 function findQuestionByIdOrThrow<T extends Pick<QuestionDto, "id">>(questions: T[], id: string): T {
   const question = questions.find(questionItem => questionItem.id === id);
   if (!question) {
@@ -55,6 +80,8 @@ function expectQuestionRejectionDtoToMatch(questionDto: QuestionDto | AdminQuest
 }
 
 export {
+  expectAllQuestionsToHaveField,
+  expectAllQuestionsToHaveThemeId,
   findQuestionByIdOrThrow,
   expectQuestionDtoToMatch,
   expectQuestionContentDtoToMatch,

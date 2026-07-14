@@ -9,13 +9,13 @@ runs:
       uses: pnpm/action-setup@v6
 
     - name: Setup NodeJS ✨
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v7
       with:
         node-version-file: configs/node/.node-version
         cache: pnpm
 
     - name: Cache pnpm dependencies 🥡
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       id: cache-node-modules
       with:
         path: |

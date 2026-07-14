@@ -47,7 +47,7 @@ jobs:
           }' > package.json
 
       - name: Lint GitHub Workflows 🐙
-        uses: raven-actions/actionlint@v2.1.2
+        uses: raven-actions/actionlint@v2.2.0
         with:
           matcher: true
           fail-on-error: true

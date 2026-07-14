@@ -21,6 +21,7 @@ const REQUEST_VALIDATION_DETAILS_ROW_SCHEMA = z.strictObject({
   message: z.string(),
   path: z.string(),
   expected: zCoerceOptionalString(),
+  received: zCoerceOptionalString(),
   origin: zCoerceOptionalString(),
   format: zCoerceOptionalString(),
   pattern: zCoerceOptionalString(),

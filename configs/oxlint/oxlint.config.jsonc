@@ -281,6 +281,7 @@
     "eslint/prefer-const": "error",
     "eslint/prefer-destructuring": "off",
     "eslint/prefer-exponentiation-operator": "error",
+    "eslint/prefer-named-capture-group": "error",
     "eslint/prefer-numeric-literals": "error",
     "eslint/prefer-object-has-own": "error",
     "eslint/prefer-object-spread": "error",
@@ -361,8 +362,15 @@
     "node/global-require": "error",
     "node/handle-callback-err": "error",
     "node/no-exports-assign": "error",
+    "node/no-mixed-requires": "error",
     "node/no-new-require": "error",
     "node/no-path-concat": "error",
+    "node/no-sync": [
+      "error",
+      {
+        "allowAtRootLevel": true
+      }
+    ],
     "node/no-process-env": "off",
     // ---- Oxc Rules -----
     "oxc/approx-constant": "error",
@@ -429,11 +437,18 @@
       }
     ],
     "unicorn/import-style": "error",
+    "unicorn/max-nested-calls": [
+      "error",
+      {
+        "max": 5
+      }
+    ],
     "unicorn/new-for-builtins": "error",
     "unicorn/no-abusive-eslint-disable": "error",
     "unicorn/no-accessor-recursion": "error",
     "unicorn/no-anonymous-default-export": "error",
     "unicorn/no-array-callback-reference": "off",
+    "unicorn/no-array-fill-with-reference-type": "error",
     "unicorn/no-array-for-each": "error",
     "unicorn/no-array-method-this-argument": "error",
     "unicorn/no-array-reduce": "off",
@@ -503,6 +518,7 @@
     "unicorn/prefer-dom-node-remove": "error",
     "unicorn/prefer-dom-node-text-content": "error",
     "unicorn/prefer-event-target": "off",
+    "unicorn/prefer-export-from": "error",
     "unicorn/prefer-global-this": "error",
     "unicorn/prefer-includes": "error",
     "unicorn/prefer-import-meta-properties": "error",
@@ -516,6 +532,7 @@
     "unicorn/prefer-native-coercion-functions": "error",
     "unicorn/prefer-negative-index": "error",
     "unicorn/prefer-node-protocol": "error",
+    "unicorn/prefer-number-coercion": "error",
     "unicorn/prefer-number-properties": "error",
     "unicorn/prefer-object-from-entries": "error",
     "unicorn/prefer-optional-catch-binding": "error",
@@ -526,6 +543,7 @@
     "unicorn/prefer-response-static-json": "error",
     "unicorn/prefer-set-has": "error",
     "unicorn/prefer-set-size": "error",
+    "unicorn/prefer-single-call": "error",
     "unicorn/prefer-spread": "error",
     "unicorn/prefer-string-raw": "error",
     "unicorn/prefer-string-replace-all": "error",
@@ -595,6 +613,7 @@
             "max": 8
           }
         ],
+        "typescript/method-signature-style": "error",
         "typescript/no-array-constructor": "error",
         "typescript/no-array-delete": "error",
         "typescript/no-base-to-string": "error",
@@ -982,6 +1001,7 @@
         "eslint/max-lines-per-function": "off",
         "eslint/new-cap": "off",
         "eslint/no-magic-numbers": "off",
+        "unicorn/max-nested-calls": "off",
         "import/max-dependencies": [
           "error",
           {
@@ -1026,6 +1046,7 @@
           }
         ],
         "vitest/consistent-vitest-vi": "error",
+        "jest/expect-expect": "off",
         "vitest/expect-expect": "error",
         "vitest/hoisted-apis-on-top": "error",
         "vitest/max-expects": [
@@ -1181,7 +1202,8 @@
         "eslint/func-names": [
           "error",
           "never"
-        ]
+        ],
+        "node/no-sync": "off"
       }
     },
     // ---- Override for scripts files -----
@@ -1191,6 +1213,7 @@
       ],
       "rules": {
         "eslint/no-console": "off",
+        "node/no-sync": "off",
         "unicorn/filename-case": [
           "error",
           {

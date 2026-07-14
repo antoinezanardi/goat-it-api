@@ -1,24 +1,15 @@
 import { When } from "@cucumber/cucumber";
-import { z } from "zod";
+
+import { ADMIN_QUESTION_QUERY_PARAMS_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
-import { buildQueryFromRow, validateDataTableAndGetFirstRow, zCoerceOptionalString, zCoerceOptionalStringArray } from "@acceptance-support/helpers/datatable.helpers";
+import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
-
-const QUESTION_QUERY_PARAMS_SCHEMA = z.object({
-  "sort-by": zCoerceOptionalString(),
-  "sort-order": zCoerceOptionalString(),
-  "status": zCoerceOptionalString(),
-  "category": zCoerceOptionalString(),
-  "cognitive-difficulty": zCoerceOptionalString(),
-  "author-role": zCoerceOptionalString(),
-  "theme-ids": zCoerceOptionalStringArray(),
-});
 
 When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, async function(this: GoatItWorld, locale: Locale | null) {
   const fetchOptions = createFetchOptions({
@@ -29,7 +20,7 @@ When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, a
 });
 
 When(/^the admin retrieves all questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, QUESTION_QUERY_PARAMS_SCHEMA);
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, ADMIN_QUESTION_QUERY_PARAMS_SCHEMA);
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
     query: buildQueryFromRow(queryRow),

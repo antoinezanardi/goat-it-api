@@ -1,4 +1,4 @@
-import { QuestionThemeReferencedByLiveQuestionsError } from "./question-theme-referenced-by-live-questions.error";
+import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
 
 describe(QuestionThemeReferencedByLiveQuestionsError, () => {
   it("should have name QuestionThemeReferencedByLiveQuestionsError when created.", () => {

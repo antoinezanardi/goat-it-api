@@ -6,16 +6,21 @@ import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUE
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
+import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
+import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.zod.validators";
 
 const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)
+    .optional()
     .default(QUESTION_THEME_SORT_BY_DEFAULT)
     .describe(QUESTION_THEME_SORT_BY_DESCRIPTION)
     .meta({ example: QUESTION_THEME_SORT_BY_DEFAULT }),
   [SORT_ORDER_QUERY_KEY]: z.enum(SORT_ORDERS)
+    .optional()
     .default(QUESTION_THEME_SORT_ORDER_DEFAULT)
     .describe(QUESTION_THEME_SORT_ORDER_DESCRIPTION)
     .meta({ example: QUESTION_THEME_SORT_ORDER_DEFAULT }),
+  [LIMIT_QUERY_KEY]: zLimit(),
   status: zQuestionThemeStatus().optional(),
 });
 

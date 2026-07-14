@@ -5,6 +5,8 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 
 import type { Mock } from "vitest";
 
+import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
+
 type QuestionRepositoryStub = {
   findAll: () => Promise<Question[]>;
   findById: (id: string) => Promise<Question | undefined>;
@@ -15,6 +17,7 @@ type QuestionRepositoryStub = {
   modify: (id: string, contract: QuestionModificationContract) => Promise<Question | undefined>;
   modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
   countLiveByThemeId: (themeId: string) => Promise<number>;
+  findRandom: (options: FindRandomQuestionsOptions) => Promise<Question[]>;
 };
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };
@@ -34,6 +37,11 @@ function createMockedQuestionRepository(overrides: Partial<MockedQuestionReposit
     modify: vi.fn<QuestionRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestion()),
     modifyThemeAssignment: vi.fn<QuestionRepositoryStub["modifyThemeAssignment"]>().mockResolvedValue(createFakeQuestion()),
     countLiveByThemeId: vi.fn<QuestionRepositoryStub["countLiveByThemeId"]>().mockResolvedValue(0),
+    findRandom: vi.fn<QuestionRepositoryStub["findRandom"]>().mockResolvedValue([
+      createFakeQuestion(),
+      createFakeQuestion(),
+      createFakeQuestion(),
+    ]),
     ...overrides,
   };
 }

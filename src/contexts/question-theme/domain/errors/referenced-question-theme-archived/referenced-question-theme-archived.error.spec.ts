@@ -1,4 +1,4 @@
-import { ReferencedQuestionThemeArchivedError } from "./referenced-question-theme-archived.error";
+import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 describe(ReferencedQuestionThemeArchivedError, () => {
   it("should have name ReferencedQuestionThemeArchivedError when created.", () => {

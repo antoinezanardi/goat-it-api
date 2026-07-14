@@ -1,4 +1,4 @@
-import { QuestionCreationError } from "./question-creation.error";
+import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
 
 describe(QuestionCreationError, () => {
   it("should set message when constructed.", () => {
