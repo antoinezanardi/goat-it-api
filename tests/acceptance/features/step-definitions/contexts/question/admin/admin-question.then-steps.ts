@@ -15,8 +15,7 @@ import { expectAllAdminQuestionsToHaveField, expectAllAdminQuestionsToHaveThemeI
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
-import type { DataTable } from "@cucumber/cucumber";
-
+import type { DataTable } from "@acceptance-support/types/cucumber.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionsCount>\d+) admin questions$/u, function(this: GoatItWorld, countAsString: string): void {

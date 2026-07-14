@@ -7,8 +7,6 @@ import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.
 import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
-import type { ITestCaseHookParameter } from "@cucumber/cucumber";
-
 import type { AcceptanceHooksProcesses } from "@acceptance-support/types/hooks.types";
 import { GoatItWorld } from "@acceptance-support/types/world.types";
 
@@ -38,7 +36,7 @@ Before(async function(this: GoatItWorld) {
   this.appProcess = processes.app;
 });
 
-After(async function(this: GoatItWorld, scenario: ITestCaseHookParameter): Promise<void> {
+After(async function(this: GoatItWorld, scenario): Promise<void> {
   const status = scenario.result?.status;
 
   if (status !== Status.FAILED) {

@@ -11,8 +11,7 @@ import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-de
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 import { SUCCESS_HTTP_STATUSES } from "@acceptance-support/constants/http.constants";
 
-import type { DataTable } from "@cucumber/cucumber";
-
+import type { DataTable } from "@acceptance-support/types/cucumber.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/u, function(this: GoatItWorld, statusCode: string): void {
