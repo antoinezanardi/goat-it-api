@@ -57,7 +57,7 @@ jobs:
 
       - name: Setup Node.js for npm publish 🔧
         if: steps.check-version.outputs.exists == 'false'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version-file: configs/node/.node-version
           registry-url: https://registry.npmjs.org
