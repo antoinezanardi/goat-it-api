@@ -30,12 +30,6 @@
       "skillPath": "skills/using-superpowers/SKILL.md",
       "computedHash": "75fb918d6ddbdfea9abe9d67a8d9214b1c95d9da58078c078b04fc658526c1cf"
     },
-    "writing-plans": {
-      "source": "obra/superpowers",
-      "sourceType": "github",
-      "skillPath": "skills/writing-plans/SKILL.md",
-      "computedHash": "b73b59d43c34c3fc225bfae419c458bb216af80df25fc0c545dfa7fd2a161722"
-    },
     "writing-skills": {
       "source": "obra/superpowers",
       "sourceType": "github",

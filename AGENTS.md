@@ -254,7 +254,6 @@ Slash commands available in OpenCode sessions:
 - `/create-mock`           – Scaffold a typed Vitest mock factory for a repository or use-case port
 - `/write-acceptance-test` – Write or complete a Cucumber acceptance test scenario
 - `/write-unit-test`       – Write or complete a unit test file following 100%-coverage conventions
-- `/writing-plans`         – Create a comprehensive implementation plan from a spec or requirements
 - `/writing-skills`        – Create, edit, or verify an agent skill
 
 ## Useful docs (`docs/`)
