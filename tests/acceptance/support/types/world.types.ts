@@ -9,7 +9,6 @@ import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infr
 import { getAppBaseUrl } from "@acceptance-support/helpers/setup/app.helpers";
 
 import type { Model } from "mongoose";
-import type { IWorldOptions } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 import type { FetchResponse, $Fetch, FetchOptions } from "ofetch";
 
@@ -29,7 +28,7 @@ class GoatItWorld extends World {
 
   private readonly fetchInstance: $Fetch;
 
-  public constructor(options: IWorldOptions) {
+  public constructor(options: ConstructorParameters<typeof World>[0]) {
     super(options);
 
     this.fetchInstance = ofetch.create({

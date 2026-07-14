@@ -12,8 +12,8 @@ import { expectLocalizedTextFieldToBe, expectLocalizedTextsFieldToBe } from "@ac
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
 import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
-import type { DataTable } from "@cucumber/cucumber";
 
+import type { DataTable } from "@acceptance-support/types/cucumber.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionThemesCount>\d+) admin question themes$/u, function(this: GoatItWorld, countAsString: string): void {

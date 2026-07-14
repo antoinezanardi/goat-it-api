@@ -6,8 +6,7 @@ import { normalizePathForOverride, reconstructPayloadWithUndefined, tryParseOver
 
 import { validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
-import type { DataTable } from "@cucumber/cucumber";
-
+import type { DataTable } from "@acceptance-support/types/cucumber.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 /**
