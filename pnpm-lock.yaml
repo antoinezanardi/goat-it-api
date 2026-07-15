@@ -224,8 +224,8 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
       tsdown:
-        specifier: ^0.22.7
-        version: 0.22.7(@arethetypeswrong/core@0.18.5)(@typescript/native-preview@7.0.0-dev.20260707.2)(tsx@4.23.1)(typescript@6.0.3)
+        specifier: ^0.22.8
+        version: 0.22.8(@arethetypeswrong/core@0.18.5)(@typescript/native-preview@7.0.0-dev.20260707.2)(tsx@4.23.1)(typescript@6.0.3)
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -5302,14 +5302,14 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.27.8:
-    resolution: {integrity: sha512-IjBTFpkrYYJPRUmIjUJFsZdR1zeHskFcEwFDzSfFDoC2pZcSNgLrBUcDFY9K0Q+A1TZJR3q9MlVomxMDP8AuLQ==}
+  rolldown-plugin-dts@0.27.9:
+    resolution: {integrity: sha512-d54yt65+ZF/Mk8H6P36As02PAMdaiWRSzVNtJRc1h7nCgUFjuRI4cN2DyTfJyfVpPH6pgy7/2D7YQH1/Rh75Yg==}
     engines: {node: ^22.18.0 || >=24.11.0}
     peerDependencies:
       '@ts-macro/tsc': ^0.3.6
-      '@typescript/native-preview': '>=7.0.0-dev.20260325.1'
+      '@typescript/native-preview': '*'
       rolldown: ^1.0.0
-      typescript: ^5.0.0 || ^6.0.0 || ^7.0.0
+      typescript: ^5.0.0 || ^6.0.0 || ~7.0.0
       vue-tsc: ~3.2.0 || ~3.3.0
     peerDependenciesMeta:
       '@ts-macro/tsc':
@@ -5789,14 +5789,14 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tsdown@0.22.7:
-    resolution: {integrity: sha512-4egbOzc9dxVv/QS+gDV75FIxDIjQQeOnXBlUuikyjmn0ozuc6FW11djJjEEo3vqkuJRygpnKHurnj+Iwftk4VA==}
+  tsdown@0.22.8:
+    resolution: {integrity: sha512-6FOLlr1iLcE3LheqQt13hVUWtTduJNwF2akPskPe8Tf1hr+N5UULHzrNZYTMNwL6lr2UyQ8iefVBB6tdqp1PCQ==}
     engines: {node: ^22.18.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@tsdown/css': 0.22.7
-      '@tsdown/exe': 0.22.7
+      '@tsdown/css': 0.22.8
+      '@tsdown/exe': 0.22.8
       '@vitejs/devtools': '*'
       publint: ^0.3.8
       tsx: '*'
@@ -6322,7 +6322,7 @@ snapshots:
       '@babel/code-frame': 7.29.0
       '@babel/generator': 7.29.1
       '@babel/helper-compilation-targets': 7.28.6
-      '@babel/helper-module-transforms': 7.28.6(@babel/core@7.29.0)
+      '@babel/helper-module-transforms': 7.28.6(@babel/core@7.29.0(supports-color@10.2.2))
       '@babel/helpers': 7.29.2
       '@babel/parser': 7.29.3
       '@babel/template': 7.28.6
@@ -6386,7 +6386,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/helper-module-transforms@7.28.6(@babel/core@7.29.0)':
+  '@babel/helper-module-transforms@7.28.6(@babel/core@7.29.0(supports-color@10.2.2))':
     dependencies:
       '@babel/core': 7.29.0(supports-color@10.2.2)
       '@babel/helper-module-imports': 7.28.6
@@ -6475,7 +6475,7 @@ snapshots:
   '@babel/plugin-transform-modules-commonjs@7.28.6(@babel/core@7.29.0(supports-color@10.2.2))':
     dependencies:
       '@babel/core': 7.29.0(supports-color@10.2.2)
-      '@babel/helper-module-transforms': 7.28.6(@babel/core@7.29.0)
+      '@babel/helper-module-transforms': 7.28.6(@babel/core@7.29.0(supports-color@10.2.2))
       '@babel/helper-plugin-utils': 7.28.6
     transitivePeerDependencies:
       - supports-color
@@ -11121,7 +11121,7 @@ snapshots:
       glob: 13.0.6
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.27.8(@typescript/native-preview@7.0.0-dev.20260707.2)(rolldown@1.1.5)(typescript@6.0.3):
+  rolldown-plugin-dts@0.27.9(@typescript/native-preview@7.0.0-dev.20260707.2)(rolldown@1.1.5)(typescript@6.0.3):
     dependencies:
       dts-resolver: 3.0.0
       get-tsconfig: 5.0.0-beta.5
@@ -11639,7 +11639,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.22.7(@arethetypeswrong/core@0.18.5)(@typescript/native-preview@7.0.0-dev.20260707.2)(tsx@4.23.1)(typescript@6.0.3):
+  tsdown@0.22.8(@arethetypeswrong/core@0.18.5)(@typescript/native-preview@7.0.0-dev.20260707.2)(tsx@4.23.1)(typescript@6.0.3):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
@@ -11650,7 +11650,7 @@ snapshots:
       obug: 2.1.3
       picomatch: 4.0.5
       rolldown: 1.1.5
-      rolldown-plugin-dts: 0.27.8(@typescript/native-preview@7.0.0-dev.20260707.2)(rolldown@1.1.5)(typescript@6.0.3)
+      rolldown-plugin-dts: 0.27.9(@typescript/native-preview@7.0.0-dev.20260707.2)(rolldown@1.1.5)(typescript@6.0.3)
       semver: 7.8.5
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
