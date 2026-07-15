@@ -236,10 +236,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 Each skill has a `SKILL.md` entry point. Load only the relevant skill for the task.
 
-Available skills: `brainstorming`, `create-faketory`, `create-mock`, `executing-plans`,
-`receiving-code-review`, `requesting-code-review`, `subagent-driven-development`,
-`systematic-debugging`, `test-driven-development`, `using-superpowers`,
-`write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
+Available skills: `brainstorming`, `create-faketory`, `create-mock`, `receiving-code-review`, `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
 
 - **When writing unit tests**: load the `write-unit-test` skill first.
 - **When writing acceptance tests**: load the `write-acceptance-test` skill first.
@@ -254,12 +251,11 @@ Slash commands available in OpenCode sessions:
 - `/create-mock`           – Scaffold a typed Vitest mock factory for a repository or use-case port
 - `/write-acceptance-test` – Write or complete a Cucumber acceptance test scenario
 - `/write-unit-test`       – Write or complete a unit test file following 100%-coverage conventions
-- `/writing-plans`         – Create a comprehensive implementation plan from a spec or requirements
 - `/writing-skills`        – Create, edit, or verify an agent skill
 
 ## Useful docs (`docs/`)
 
-- `docs/superpowers/`              – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from plan-writer).
+- `docs/superpowers/`              – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/ARCHITECTURE.md`          – Hexagonal architecture, layers, data flow, DI patterns
 - `docs/BRUNO.md`                 – Bruno API collection setup
 - `tests/unit/README.md`          – Full unit test writing guide per file type

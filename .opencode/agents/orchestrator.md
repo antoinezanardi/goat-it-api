@@ -54,13 +54,12 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 11 
 ## Skills to load on demand
 
 ### Discipline skills (delegated to subagents)
-- `test-driven-development` — passed to `implementer` / `tdd-writer`
+
 - `systematic-debugging` — passed to `debugger` / `investigator`
 
 ### Domain skills (project-specific, load when relevant)
 - `brainstorming` — for the brainstormer phase
 - `writing-plans` — for plan creation
-- `requesting-code-review` — for final review
 - `create-faketory` — when faketories are needed
 - `create-mock` — when mocks are needed
 - `write-unit-test` — for unit test guidance

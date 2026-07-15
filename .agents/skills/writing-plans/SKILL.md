@@ -1,76 +1,60 @@
----
-name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code
----
+# Skill: writing-plans
 
-# Writing Plans
+# Writing Implementation Plans
 
-## Overview
+Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code in every step. Assume the executor knows TypeScript but nothing about this codebase's conventions.
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD.
-
-Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
-
-**Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
-
-**Context:** If working in an isolated worktree, it should have been created via the `superpowers:using-git-worktrees` skill at execution time.
+You're a senior engineer who knows the codebase's conventions and writes code that is simple, elegant, and reviewable. The produced plan should be executable by a junior engineer without further guidance.
 
 **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
-- (User preferences for plan location override this default)
+
+## Skills to Load **(MANDATORY)**
+
+- `create-faketory` — for knowing faketory conventions when writing test steps
+- `create-mock` — for knowing mock conventions when writing test steps
+- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions
+- `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns
+
+Architecture doc must be read from `docs/ARCHITECTURE.md`.
 
 ## Scope Check
 
-If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+If the spec covers multiple independent subsystems, stop and suggest breaking into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
 
 ## File Structure
 
-Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
+Before defining tasks, map out which files will be created or modified and what each one is responsible for. This locks in decomposition decisions.
 
 - Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
-- You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.
 - Files that change together should live together. Split by responsibility, not by technical layer.
-- In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.
-
-This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
+- Follow existing patterns. If a file has grown unwieldy, including a split in the plan is reasonable.
 
 ## Task Right-Sizing
 
-A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
-configuration, scaffolding, and documentation steps into the task whose
-deliverable needs them; split only where a reviewer could meaningfully
-reject one task while approving its neighbor. Each task ends with an
-independently testable deliverable.
+A task is the smallest unit that carries its own test cycle and is worth a reviewer's gate. Fold setup, configuration, and scaffolding into the task whose deliverable needs them. Split only where a reviewer could meaningfully reject one task while approving its neighbor.
 
 ## Bite-Sized Task Granularity
 
-**Each step is one action (2-5 minutes):**
-- "Write the failing test" - step
-- "Run it to make sure it fails" - step
-- "Implement the minimal code to make the test pass" - step
-- "Run the tests and make sure they pass" - step
+Each step is one action (2-5 minutes). Pattern: "Write implementation" → "Write test" → "Run to verify pass."
+
+If a task contains only types, interfaces, or constants, it may be a single step. If it contains logic, it must have a test step.
 
 ## Plan Document Header
 
-**Every plan MUST start with this header:**
+Every plan MUST start with:
 
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+**Goal:** [One sentence]
 
-**Goal:** [One sentence describing what this builds]
+**Architecture:** [2-3 sentences]
 
-**Architecture:** [2-3 sentences about approach]
-
-**Tech Stack:** [Key technologies/libraries]
+**Tech Stack:** NestJS 11, Fastify 5, Mongoose, Zod, TypeScript
 
 ## Global Constraints
 
-[The spec's project-wide requirements — version floors, dependency limits,
-naming and copy rules, platform requirements — one line each, with exact
-values copied verbatim from the spec. Every task's requirements implicitly
-include this section.]
+[Spec's project-wide requirements — one line each, verbatim from the spec.]
 
 ---
 ```
@@ -81,39 +65,29 @@ include this section.]
 ### Task N: [Component Name]
 
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+- Create: `src/contexts/<domain>/domain/entities/<entity>.entity.ts`
+- Modify: `src/contexts/<domain>/domain/repositories/<repo>.repository.types.ts`
+- Test: `src/contexts/<domain>/domain/entities/<entity>.spec.ts`
 
 **Interfaces:**
 - Consumes: [what this task uses from earlier tasks — exact signatures]
-- Produces: [what later tasks rely on — exact function names, parameter
-  and return types. A task's implementer sees only their own task; this
-  block is how they learn the names and types neighboring tasks use.]
+- Produces: [what later tasks rely on — exact function, parameter, return types]
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Write the implementation**
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+```ts
+// full implementation code
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **Step 2: Write the test**
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
-
-- [ ] **Step 3: Write minimal implementation**
-
-```python
-def function(input):
-    return expected
+```ts
+// full test code (colocated .spec.ts)
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [ ] **Step 3: Run test to verify it passes**
 
-Run: `pytest tests/path/test.py::test_name -v`
+Run: `pnpm run test:unit src/path/to/file.spec.ts`
 Expected: PASS
 ````
 
@@ -123,44 +97,42 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - "TBD", "TODO", "implement later", "fill in details"
 - "Add appropriate error handling" / "add validation" / "handle edge cases"
 - "Write tests for the above" (without actual test code)
-- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
+- "Similar to Task N" (repeat the code)
 - Steps that describe what to do without showing how (code blocks required for code steps)
 - References to types, functions, or methods not defined in any task
 
 ## Remember
+
 - Exact file paths always
 - Complete code in every step — if a step changes code, show the code
 - Exact commands with expected output
-- DRY, YAGNI, TDD
+- Follow project conventions, don't invent them, scan the codebase for patterns if you need to
+- DRY, YAGNI, you must write a senior engineer's code : simple and elegant
 
 ## Self-Review
 
-After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.
+After writing the complete plan, run this checklist:
 
-**1. Spec coverage:** Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.
+1. **Spec coverage:** Skim each spec requirement. Can you point to a task that implements it? List any gaps.
+2. **Placeholder scan:** Search the plan for any pattern from the "No Placeholders" section. Fix them.
+3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
+4. **Test coverage:** Every task with logic has explicit tests for its own files. Tasks with only types, interfaces, or constants may omit tests. No full `pnpm run test:unit:cov` run in any task. 100% coverage for files that have tests.
 
-**2. Placeholder scan:** Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.
+If you find issues, fix them inline. If a spec requirement has no task, add the task.
 
-**3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
+## Project-Specific Conventions (goat-it-api)
 
-If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
-
-## Execution Handoff
-
-After saving the plan, offer execution choice:
-
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
-
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
-
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
-- Fresh subagent per task + two-stage review
-
-**If Inline Execution chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers:executing-plans
-- Batch execution with checkpoints for review
+- **Hexagonal layers:** `domain/` (entities, value-objects, errors, commands, contracts, repository ports), `application/` (use-cases, DTOs, mappers), `infrastructure/` (controllers, Mongoose repositories)
+- **Path aliases:** `@src/*`, `@shared/*`, `@question/*`, `@question-theme/*`, `@faketories/*`, `@mocks/*`, `@unit-tests/*` — no relative imports
+- **DTO pattern:** `*.dto.shape.ts` (Zod schema with `.describe()` and `.meta({ example })`) + `*.dto.ts` (nestjs-zod wrapper)
+- **Repository pattern:** Port interface in `domain/repositories/*.repository.types.ts`, injection token in `*.repository.constants.ts`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`
+- **Errors:** Extend `Error` in `domain/errors/<error-name>/<error-name>.error.ts`, registered in `GlobalExceptionFilter`
+- **CRUD verbs:** `Create`, `Modify` (not `Update`), `Archive` (soft-delete), `Find`, `Remove` (detach)
+- **Rules:** `is*`/`has*`/`can*` predicates, `ensure*` policies, helpers — in `domain/rules/`
+- **Tests:** Colocated `*.spec.ts`, `@nestjs/testing` `Test.createTestingModule`, 100% coverage, one assertion per `it`
+- **Private methods:** Tested via `ClassName["privateMethod"](...)` syntax
+- **TypeScript:** No `any`, explicit return types, explicit accessibility, constructor injection `private readonly`, no enums (use `as const`), no `switch`/`case`
+- **No `console.log`:** Use NestJS Logger
+- **Faketories:** `createFake<Concept>(overrides)` in `tests/shared/utils/faketories/` using `@faker-js/faker`
+- **Mocks:** `createMocked<What>(overrides)` in `tests/unit/utils/mocks/` using `vi.fn()`
+- **Quality gates (NOT in plan steps — orchestrator runs them):** `lint:fix` → `typecheck` → `test:unit:cov` → `test:mutation` → `test:acceptance`
