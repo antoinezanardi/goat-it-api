@@ -236,9 +236,9 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 Each skill has a `SKILL.md` entry point. Load only the relevant skill for the task.
 
-Available skills: `brainstorming`, `create-faketory`, `create-mock`, `executing-plans`,
-`receiving-code-review`, `requesting-code-review`, `subagent-driven-development`,
-`systematic-debugging`, `test-driven-development`, `using-superpowers`,
+Available skills: `brainstorming`, `create-faketory`, `create-mock`,
+`receiving-code-review`, `requesting-code-review`,
+`using-superpowers`,
 `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
 
 - **When writing unit tests**: load the `write-unit-test` skill first.
@@ -258,7 +258,7 @@ Slash commands available in OpenCode sessions:
 
 ## Useful docs (`docs/`)
 
-- `docs/superpowers/`              – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from plan-writer).
+- `docs/superpowers/`              – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/ARCHITECTURE.md`          – Hexagonal architecture, layers, data flow, DI patterns
 - `docs/BRUNO.md`                 – Bruno API collection setup
 - `tests/unit/README.md`          – Full unit test writing guide per file type

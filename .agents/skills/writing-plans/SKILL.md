@@ -1,12 +1,21 @@
-# Skill: plan-writer
+# Skill: writing-plans
 
 # Writing Implementation Plans
 
 Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code in every step. Assume the executor knows TypeScript but nothing about this codebase's conventions.
 
-**Announce at start:** "I'm using the `plan-writer` skill to create the implementation plan."
+You're a senior engineer who knows the codebase's conventions and writes code that is simple, elegant, and reviewable. The produced plan should be executable by a junior engineer without further guidance.
 
 **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+
+## Skills to Load **(MANDATORY)**
+
+- `create-faketory` — for knowing faketory conventions when writing test steps
+- `create-mock` — for knowing mock conventions when writing test steps
+- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions
+- `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns
+
+Architecture doc must be read from `docs/ARCHITECTURE.md`.
 
 ## Scope Check
 
@@ -28,14 +37,14 @@ A task is the smallest unit that carries its own test cycle and is worth a revie
 
 Each step is one action (2-5 minutes). Pattern: "Write implementation" → "Write test" → "Run to verify pass."
 
+If a task contains only types, interfaces, or constants, it may be a single step. If it contains logic, it must have a test step.
+
 ## Plan Document Header
 
 Every plan MUST start with:
 
 ```markdown
 # [Feature Name] Implementation Plan
-
-> **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans or subagent-driven-development to implement this plan task-by-task.
 
 **Goal:** [One sentence]
 
@@ -97,7 +106,8 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - Exact file paths always
 - Complete code in every step — if a step changes code, show the code
 - Exact commands with expected output
-- DRY, YAGNI
+- Follow project conventions, don't invent them, scan the codebase for patterns if you need to
+- DRY, YAGNI, you must write a senior engineer's code : simple and elegant
 
 ## Self-Review
 
@@ -106,7 +116,7 @@ After writing the complete plan, run this checklist:
 1. **Spec coverage:** Skim each spec requirement. Can you point to a task that implements it? List any gaps.
 2. **Placeholder scan:** Search the plan for any pattern from the "No Placeholders" section. Fix them.
 3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
-4. **Test coverage:** Every task has explicit tests for its own files. No full `pnpm run test:unit:cov` run in any task.
+4. **Test coverage:** Every task has explicit tests for its own files. No full `pnpm run test:unit:cov` run in any task. 100% coverage.
 
 If you find issues, fix them inline. If a spec requirement has no task, add the task.
 
@@ -126,10 +136,3 @@ If you find issues, fix them inline. If a spec requirement has no task, add the 
 - **Faketories:** `createFake<Concept>(overrides)` in `tests/shared/utils/faketories/` using `@faker-js/faker`
 - **Mocks:** `createMocked<What>(overrides)` in `tests/unit/utils/mocks/` using `vi.fn()`
 - **Quality gates (NOT in plan steps — orchestrator runs them):** `lint:fix` → `typecheck` → `test:unit:cov` → `test:mutation` → `test:acceptance`
-
-## Skills to Load
-
-- `create-faketory` — for knowing faketory conventions when writing test steps
-- `create-mock` — for knowing mock conventions when writing test steps
-- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions
-- `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns

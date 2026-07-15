@@ -111,7 +111,7 @@ If anything is unclear — **ask now** via the orchestrator. Don't guess.
 - `write-unit-test` — for any test file
 - `write-acceptance-test` — when writing `.feature` files or step definitions
 - `systematic-debugging` — when you hit a failing test you don't understand
-- `test-driven-development` — for TDD red-green-refactor cycle
+
 
 ## While you work
 

@@ -54,7 +54,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 11 
 ## Skills to load on demand
 
 ### Discipline skills (delegated to subagents)
-- `test-driven-development` — passed to `implementer` / `tdd-writer`
+
 - `systematic-debugging` — passed to `debugger` / `investigator`
 
 ### Domain skills (project-specific, load when relevant)
