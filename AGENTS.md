@@ -236,10 +236,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 Each skill has a `SKILL.md` entry point. Load only the relevant skill for the task.
 
-Available skills: `brainstorming`, `create-faketory`, `create-mock`,
-`receiving-code-review`, `requesting-code-review`,
-`using-superpowers`,
-`write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
+Available skills: `brainstorming`, `create-faketory`, `create-mock`, `receiving-code-review`, `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
 
 - **When writing unit tests**: load the `write-unit-test` skill first.
 - **When writing acceptance tests**: load the `write-acceptance-test` skill first.

@@ -61,7 +61,7 @@ Every plan MUST start with:
 
 ## Task Structure
 
-```markdown
+````markdown
 ### Task N: [Component Name]
 
 **Files:**
@@ -89,7 +89,7 @@ Every plan MUST start with:
 
 Run: `pnpm run test:unit src/path/to/file.spec.ts`
 Expected: PASS
-```
+````
 
 ## No Placeholders
 
@@ -116,7 +116,7 @@ After writing the complete plan, run this checklist:
 1. **Spec coverage:** Skim each spec requirement. Can you point to a task that implements it? List any gaps.
 2. **Placeholder scan:** Search the plan for any pattern from the "No Placeholders" section. Fix them.
 3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
-4. **Test coverage:** Every task has explicit tests for its own files. No full `pnpm run test:unit:cov` run in any task. 100% coverage.
+4. **Test coverage:** Every task with logic has explicit tests for its own files. Tasks with only types, interfaces, or constants may omit tests. No full `pnpm run test:unit:cov` run in any task. 100% coverage for files that have tests.
 
 If you find issues, fix them inline. If a spec requirement has no task, add the task.
 
