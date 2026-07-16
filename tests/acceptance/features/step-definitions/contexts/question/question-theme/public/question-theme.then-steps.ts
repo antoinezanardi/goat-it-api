@@ -10,8 +10,8 @@ import { QUESTION_THEME_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-d
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
 import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import type { DataTable } from "@cucumber/cucumber";
 
-import type { DataTable } from "@acceptance-support/types/cucumber.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionThemesCount>\d+) question themes$/u, function(this: GoatItWorld, countAsString: string): void {

@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 import type { ZodType } from "zod";
-
-import type { DataTable } from "@acceptance-support/types/cucumber.types";
+import type { DataTable } from "@cucumber/cucumber";
 
 /**
  * Coerces a value to an optional boolean. If the value is an empty string or not a string, it returns undefined. Only used in acceptance tests.
