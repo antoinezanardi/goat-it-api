@@ -6,7 +6,8 @@ import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
 import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
-import type { DataTable } from "@acceptance-support/types/cucumber.types";
+import type { DataTable } from "@cucumber/cucumber";
+
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
