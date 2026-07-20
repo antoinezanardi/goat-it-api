@@ -74,7 +74,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
-    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { new: true });
+    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { returnDocument: "after" });
     if (!modifiedQuestionThemeDocument) {
       return undefined;
     }
@@ -85,7 +85,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
       status: QUESTION_THEME_STATUS_ARCHIVED,
     };
-    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
+    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { returnDocument: "after" });
     if (!archivedQuestionThemeDocument) {
       return undefined;
     }

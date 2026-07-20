@@ -272,7 +272,7 @@ describe("Question Theme Mongoose Repository", () => {
       expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(
         questionThemeId,
         updateQuery,
-        { new: true },
+        { returnDocument: "after" },
       );
     });
 
@@ -313,7 +313,7 @@ describe("Question Theme Mongoose Repository", () => {
       const questionThemeId = "question-theme-id";
       await repositories.questionTheme.archive(questionThemeId);
 
-      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionThemeId, { status: "archived" }, { new: true });
+      expect(mocks.models.questionTheme.findByIdAndUpdate).toHaveBeenCalledExactlyOnceWith(questionThemeId, { status: "archived" }, { returnDocument: "after" });
     });
 
     it("should return update and map question theme when called.", async() => {
