@@ -2,7 +2,7 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const CONFIG_PATH = path.resolve(import.meta.dirname, "../configs/oxlint/oxlint.config.jsonc");
+const CONFIG_PATH = path.resolve(import.meta.dirname, "../oxlint.config.jsonc");
 const EXCLUDED_PLUGINS = new Set(["jest", "jsdoc", "jsx_a11y", "nextjs", "react", "react_perf", "vue"]);
 const EXIT_CODE_MISSING = 1;
 const EXIT_CODE_ERROR = 2;
