@@ -280,7 +280,7 @@ MemPalace stores project context as searchable embeddings. It runs as an MCP ser
 - NestJS CLI config: `configs/nest/nest-cli.config.json`
 - Stryker config:   `configs/stryker/stryker.config.mjs`
 - ESLint config:    `eslint.config.ts` + `configs/eslint/flat-configs/`
-- Oxlint config:    `configs/oxlint/oxlint.config.jsonc`
+- Oxlint config:    `oxlint.config.jsonc`
 - Cucumber config:  `configs/cucumber/cucumber.json`
 - Env files:        `env/`
 - Test setup:       `tests/unit/setup/`
