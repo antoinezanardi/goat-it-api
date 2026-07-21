@@ -1,7 +1,7 @@
 ---
 description: Writes a detailed implementation plan from an approved spec for the goat-it-api NestJS 11 project. Produces bite-sized tasks (2-5min steps) with full code in every step. No placeholders. Dispatched by the orchestrator after spec approval.
 mode: subagent
-model: opencode-go/kimi-k2.7-code
+model: opencode-go/deepseek-v4-pro
 temperature: 0.2
 hidden: false
 steps: 80

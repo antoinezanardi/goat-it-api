@@ -1,7 +1,7 @@
 {
   "name": "@goat-it/schemas",
   "type": "module",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
   "scripts": {
     "dev": "tsdown --watch",
@@ -25,6 +25,7 @@
     "zod": "^4.4.3"
   },
   "peerDependencies": {
+    "@faker-js/faker": ">=9",
     "zod": "^4.4.3"
   },
   "publishConfig": {
@@ -56,6 +57,18 @@
     "./shared/constants": {
       "types": "./dist/shared/constants/index.d.mts",
       "import": "./dist/shared/constants/index.mjs"
+    },
+    "./testing/question": {
+      "types": "./dist/testing/question/index.d.mts",
+      "import": "./dist/testing/question/index.mjs"
+    },
+    "./testing/question-theme": {
+      "types": "./dist/testing/question-theme/index.d.mts",
+      "import": "./dist/testing/question-theme/index.mjs"
+    },
+    "./testing/shared": {
+      "types": "./dist/testing/shared/index.d.mts",
+      "import": "./dist/testing/shared/index.mjs"
     }
   },
   "dependencies": {

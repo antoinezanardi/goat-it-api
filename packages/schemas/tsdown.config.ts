@@ -7,11 +7,15 @@ export default defineConfig({
     "./src/shared/constants/index.ts",
     "./src/question/index.ts",
     "./src/question-theme/index.ts",
+    "./src/testing/question/index.ts",
+    "./src/testing/question-theme/index.ts",
+    "./src/testing/shared/index.ts",
   ],
   alias: {
     "@shared": new URL("../../src/shared", import.meta.url).pathname,
     "@question": new URL("../../src/contexts/question", import.meta.url).pathname,
     "@question-theme": new URL("../../src/contexts/question-theme", import.meta.url).pathname,
+    "@faketories": new URL("../../tests/shared/utils/faketories", import.meta.url).pathname,
   },
   format: ["esm"],
   deps: {
