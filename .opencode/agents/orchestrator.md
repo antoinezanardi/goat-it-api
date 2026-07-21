@@ -33,7 +33,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 11 
 ## The cycle you drive
 
 1. **First message: detect the spec and choose the path forward.**
-   - Use `bash` to list files in `docs/superpowers/specs/` matching `^[0-9]{4}-[0-9]{2}-[0-9]{2}-.*-design\.md$`.
+   - Use `bash` to list files in `docs/superpowers/specs/` matching `^[0-9]{4}-[0-9]{2}-[0-9]{2}-.*\.md$`. Get the latest created by reverse alphabetical sort. If the user has a specific spec in mind, they can name it.
    - **No specs found** → tell the user to switch to the `brainstormer` agent. STOP and wait.
    - **Specs found** → identify which one to use (latest by reverse-alphabetical sort, or user-named).
    - Announce the chosen spec path. This is the source of truth for the rest of the cycle.
