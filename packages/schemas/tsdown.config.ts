@@ -19,7 +19,7 @@ export default defineConfig({
   },
   format: ["esm"],
   deps: {
-    skipNodeModulesBundle: true,
+    neverBundle: true,
   },
   attw: {
     enabled: true,
