@@ -25,7 +25,7 @@
     "zod": "^4.4.3"
   },
   "peerDependencies": {
-    "@faker-js/faker": ">=9",
+    "@faker-js/faker": ">=10.5.0",
     "zod": "^4.4.3"
   },
   "publishConfig": {
