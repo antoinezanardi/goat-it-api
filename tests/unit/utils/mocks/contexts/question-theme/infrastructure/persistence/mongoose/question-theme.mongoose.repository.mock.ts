@@ -4,6 +4,8 @@ import type { QuestionThemeCreationContract, QuestionThemeModificationContract }
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import type { Mock } from "vitest";
 
+import type { QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
+
 type QuestionThemeRepositoryStub = {
   findAll: () => Promise<QuestionTheme[]>;
   findByIds: (ids: Set<string>) => Promise<QuestionTheme[]>;
@@ -12,6 +14,7 @@ type QuestionThemeRepositoryStub = {
   create: (questionThemeCreationContract: QuestionThemeCreationContract) => Promise<QuestionTheme>;
   modify: (id: string, questionThemeModificationContract: QuestionThemeModificationContract) => Promise<QuestionTheme | undefined>;
   archive: (id: string) => Promise<QuestionTheme | undefined>;
+  getStats: () => Promise<QuestionThemeStats>;
 };
 
 type MockedQuestionThemeRepository = { [K in keyof QuestionThemeRepositoryStub]: Mock<QuestionThemeRepositoryStub[K]> };
@@ -32,6 +35,11 @@ function createMockedQuestionThemeRepository(overrides: Partial<MockedQuestionTh
     create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
     modify: vi.fn<QuestionThemeRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestionTheme()),
     archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
+    getStats: vi.fn<QuestionThemeRepositoryStub["getStats"]>().mockResolvedValue({
+      total: 0,
+      byStatus: { active: 0, archived: 0 },
+      byQuestionCount: [],
+    }),
     ...overrides,
   };
 }

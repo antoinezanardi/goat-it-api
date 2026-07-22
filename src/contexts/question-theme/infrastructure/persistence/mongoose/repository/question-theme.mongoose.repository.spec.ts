@@ -1,5 +1,6 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
+import { Types } from "mongoose";
 
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -8,7 +9,10 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/con
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
+import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+
 import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFindQuery } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
+import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
@@ -28,6 +32,7 @@ describe("Question Theme Mongoose Repository", () => {
   let mocks: {
     models: {
       questionTheme: ReturnType<typeof createMockedQuestionThemeMongooseModel>;
+      question: ReturnType<typeof createMockedQuestionMongooseModel>;
     };
     mappers: {
       questionTheme: {
@@ -40,6 +45,7 @@ describe("Question Theme Mongoose Repository", () => {
     mocks = {
       models: {
         questionTheme: createMockedQuestionThemeMongooseModel(),
+        question: createMockedQuestionMongooseModel(),
       },
       mappers: {
         questionTheme: {
@@ -53,6 +59,10 @@ describe("Question Theme Mongoose Repository", () => {
         {
           provide: getModelToken(QuestionThemeMongooseSchema.name),
           useValue: mocks.models.questionTheme,
+        },
+        {
+          provide: getModelToken(QuestionMongooseSchema.name),
+          useValue: mocks.models.question,
         },
         QuestionThemeMongooseRepository,
       ],
@@ -333,6 +343,102 @@ describe("Question Theme Mongoose Repository", () => {
       const actualQuestionTheme = await repositories.questionTheme.archive(questionThemeId);
 
       expect(actualQuestionTheme).toBeUndefined();
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository["mapAggregationRowsToRecord"], () => {
+    const keys = ["active", "archived"] as const;
+
+    it("should return all keys with zero when rows are empty.", () => {
+      const result = QuestionThemeMongooseRepository["mapAggregationRowsToRecord"]([], keys);
+
+      expect(result).toStrictEqual({ active: 0, archived: 0 });
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.getStats, () => {
+    const themeAggResult = {
+      total: [{ count: 3 }],
+      statusRows: [{ _id: "active", count: 2 }, { _id: "archived", count: 1 }],
+    };
+
+    it("should return total from theme aggregation when themes exist.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.total).toBe(3);
+    });
+
+    it("should return total as 0 when no themes exist.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [], statusRows: [] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.total).toBe(0);
+    });
+
+    it("should include all status keys in byStatus when aggregation returns status rows.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(Object.keys(result.byStatus)).toStrictEqual(["active", "archived"]);
+    });
+
+    it("should skip null _id rows when mapping status aggregation results.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }, { _id: null, count: 1 }] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byStatus.active).toBe(1);
+    });
+
+    it("should include themes with zero active question count when no questions reference them.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([{ _id: new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d"), slug: "cinema" }]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount).toStrictEqual([{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }]);
+    });
+
+    it("should populate active question counts when questions are aggregated by theme.", async() => {
+      const themeId = new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d");
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ _id: themeId, count: 5 }] as never);
+      mocks.models.questionTheme.find.mockReturnValueOnce({
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([{ _id: themeId, slug: "cinema" }]),
+      } as never);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount[0].activeQuestionCount).toBe(5);
     });
   });
 });

@@ -19,6 +19,8 @@ permission:
     "rtk pnpm test:acceptance*": "allow"
     "pnpm run test:mutation*": "allow"
     "rtk pnpm run test:mutation*": "allow"
+    "pnpm run build*": "allow"
+    "rtk pnpm run build*": "allow"
     "pnpm run lint*": "allow"
     "rtk pnpm run lint*": "allow"
     "pnpm lint*": "allow"

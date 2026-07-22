@@ -5,6 +5,7 @@ import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cas
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { AdminQuestionThemeController } from "@question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
@@ -14,16 +15,18 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
-import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/modify-question-theme.use-case.mock";
+import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/archive-question-theme.use-case.mock";
+import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/create-question-theme.use-case.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindQuestionThemesUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-themes.use-case.mock";
-import { createMockedCreateQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/create-question-theme.use-case.mock";
-import { createMockedArchiveQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/archive-question-theme.use-case.mock";
+import { createMockedGetQuestionThemeStatsUseCase } from "@mocks/contexts/question-theme/application/use-cases/get-question-theme-stats.use-case.mock";
+import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/modify-question-theme.use-case.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
 import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
+import { createFakeQuestionThemeStatsDto } from "@faketories/contexts/question-theme/dto/question-theme-stats/question-theme-stats.dto.faketory";
 
 import type { Mock } from "vitest";
 
@@ -43,6 +46,7 @@ describe("Admin Question Theme Controller", () => {
       findQuestionThemes: ReturnType<typeof createMockedFindQuestionThemesUseCase>;
       findQuestionThemeById: ReturnType<typeof createMockedFindQuestionThemeByIdUseCase>;
       createQuestionTheme: ReturnType<typeof createMockedCreateQuestionThemeUseCase>;
+      getQuestionThemeStats: ReturnType<typeof createMockedGetQuestionThemeStatsUseCase>;
       modifyQuestionTheme: ReturnType<typeof createMockedModifyQuestionThemeUseCase>;
       archiveQuestionTheme: ReturnType<typeof createMockedArchiveQuestionThemeUseCase>;
     };
@@ -63,6 +67,7 @@ describe("Admin Question Theme Controller", () => {
         findQuestionThemes: createMockedFindQuestionThemesUseCase(),
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
         createQuestionTheme: createMockedCreateQuestionThemeUseCase(),
+        getQuestionThemeStats: createMockedGetQuestionThemeStatsUseCase(),
         modifyQuestionTheme: createMockedModifyQuestionThemeUseCase(),
         archiveQuestionTheme: createMockedArchiveQuestionThemeUseCase(),
       },
@@ -91,6 +96,10 @@ describe("Admin Question Theme Controller", () => {
         {
           provide: CreateQuestionThemeUseCase,
           useValue: mocks.useCases.createQuestionTheme,
+        },
+        {
+          provide: GetQuestionThemeStatsUseCase,
+          useValue: mocks.useCases.getQuestionThemeStats,
         },
         {
           provide: ModifyQuestionThemeUseCase,
@@ -251,6 +260,22 @@ describe("Admin Question Theme Controller", () => {
       const result = await adminQuestionThemeController.patchQuestionTheme(questionThemeId, questionThemeModificationDto);
 
       expect(result).toStrictEqual(expectedDto);
+    });
+  });
+
+  describe(AdminQuestionThemeController.prototype.getQuestionThemeStats, () => {
+    it("should call getQuestionThemeStatsUseCase.getStats when called.", async() => {
+      const dto = createFakeQuestionThemeStatsDto();
+      mocks.useCases.getQuestionThemeStats.getStats.mockResolvedValueOnce(dto);
+      const result = await adminQuestionThemeController.getQuestionThemeStats();
+
+      expect(result).toStrictEqual(dto);
+    });
+
+    it("should delegate to the use case exactly once when called.", async() => {
+      await adminQuestionThemeController.getQuestionThemeStats();
+
+      expect(mocks.useCases.getQuestionThemeStats.getStats).toHaveBeenCalledExactlyOnceWith();
     });
   });
 

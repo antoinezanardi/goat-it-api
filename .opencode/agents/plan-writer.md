@@ -57,3 +57,11 @@ You are the plan writer. You turn an approved spec into a complete, executable i
 ## Output
 
 `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
+
+## Self-review
+
+When the plan is complete, check for:
+
+- [ ] All tasks are bite-sized (2-5 min)
+- [ ] All tasks have implementation, test (when applicable), and verification steps
+- [ ] Only one `expect` per `it` in unit tests, use `it.each` for multiple assertions on the same subject

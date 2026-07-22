@@ -8,4 +8,21 @@ type AdminQuestionThemeFilterOptions = {
   status: QuestionThemeStatus;
 };
 
-export type { QuestionThemeSortableField, AdminQuestionThemeFilterOptions };
+type ThemeActiveQuestionCount = {
+  themeId: string;
+  themeSlug: string;
+  activeQuestionCount: number;
+};
+
+type QuestionThemeStats = {
+  total: number;
+  byStatus: Record<QuestionThemeStatus, number>;
+  byQuestionCount: ThemeActiveQuestionCount[];
+};
+
+export type {
+  QuestionThemeSortableField,
+  AdminQuestionThemeFilterOptions,
+  ThemeActiveQuestionCount,
+  QuestionThemeStats,
+};

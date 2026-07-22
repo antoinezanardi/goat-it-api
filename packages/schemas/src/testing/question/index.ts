@@ -15,3 +15,4 @@ export { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/quest
 export { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
 export { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
 export { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
+export { createFakeQuestionStatsDto } from "@faketories/contexts/question/dto/question-stats/question-stats.dto.faketory";

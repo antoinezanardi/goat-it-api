@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
+import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
@@ -40,6 +41,7 @@ import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/questio
     FindQuestionThemeByIdUseCase,
     CreateQuestionThemeUseCase,
     ModifyQuestionThemeUseCase,
+    GetQuestionThemeStatsUseCase,
     ArchiveQuestionThemeUseCase,
     {
       provide: QUESTION_THEME_REPOSITORY_TOKEN,

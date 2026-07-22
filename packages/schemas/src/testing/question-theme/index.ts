@@ -6,3 +6,4 @@ export {
   createFakeQuestionThemeDto,
   createFakeQuestionThemeModificationDto,
 } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
+export { createFakeQuestionThemeStatsDto } from "@faketories/contexts/question-theme/dto/question-theme-stats/question-theme-stats.dto.faketory";

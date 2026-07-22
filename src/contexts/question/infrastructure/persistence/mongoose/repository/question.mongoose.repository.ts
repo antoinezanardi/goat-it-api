@@ -8,19 +8,33 @@ import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_STATUS_REJECTED } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
 import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
+  private static readonly getStatsFacetStage = {
+    $facet: {
+      totalStage: [{ $count: "count" }],
+      byStatusStage: [{ $group: { _id: "$status", count: { $sum: 1 } } }],
+      byCategoryStage: [{ $group: { _id: "$category", count: { $sum: 1 } } }],
+      byCognitiveDifficultyStage: [{ $group: { _id: "$cognitiveDifficulty", count: { $sum: 1 } } }],
+      byAuthorRoleStage: [{ $group: { _id: "$author.role", count: { $sum: 1 } } }],
+      byRejectionTypeStage: [
+        { $match: { status: QUESTION_STATUS_REJECTED } },
+        { $group: { _id: "$rejection.type", count: { $sum: 1 } } },
+      ],
+    },
+  };
+
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
 
   private static composeFindRandomMatchStage(options: FindRandomQuestionsOptions): Record<string, unknown> {
@@ -32,6 +46,24 @@ export class QuestionMongooseRepository implements QuestionRepository {
     addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
 
     return matchStage;
+  }
+
+  private static mapAggregationRowsToRecord<T extends string>(
+    rows: { _id: T | null; count: number }[],
+    keys: readonly T[],
+  ): Record<T, number> {
+    // Acceptable as we immediately populate all keys before returning
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    const record = {} as Record<T, number>;
+    for (const key of keys) {
+      record[key] = 0;
+    }
+    for (const row of rows) {
+      if (row._id !== null) {
+        record[row._id] = row.count;
+      }
+    }
+    return record;
   }
 
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
@@ -151,6 +183,26 @@ export class QuestionMongooseRepository implements QuestionRepository {
     ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
+  }
+
+  public async getStats(): Promise<QuestionStats> {
+    const [result] = await this.questionModel.aggregate<{
+      totalStage: { count: number }[];
+      byStatusStage: { _id: string; count: number }[];
+      byCategoryStage: { _id: string; count: number }[];
+      byCognitiveDifficultyStage: { _id: string; count: number }[];
+      byAuthorRoleStage: { _id: string; count: number }[];
+      byRejectionTypeStage: { _id: string; count: number }[];
+    }>([QuestionMongooseRepository.getStatsFacetStage]);
+
+    return {
+      total: result.totalStage[0]?.count ?? 0,
+      byStatus: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byStatusStage, QUESTION_STATUSES),
+      byCategory: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byCategoryStage, QUESTION_CATEGORIES),
+      byCognitiveDifficulty: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byCognitiveDifficultyStage, QUESTION_COGNITIVE_DIFFICULTIES),
+      byAuthorRole: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byAuthorRoleStage, QUESTION_AUTHOR_ROLES),
+      byRejectionType: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byRejectionTypeStage, QUESTION_REJECTION_TYPES),
+    };
   }
 
   private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {

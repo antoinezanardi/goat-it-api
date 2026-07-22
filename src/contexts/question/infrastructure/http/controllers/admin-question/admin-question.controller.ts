@@ -24,15 +24,21 @@ import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-qu
 import { createQuestionModificationCommandFromDto, createQuestionCreationCommandFromDto, createAdminQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
+import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-question-stats/get-question-stats.use-case";
 import { AdminQuestionNestZodDto } from "@question/application/dto/admin-question/admin-question.dto";
+import { QuestionStatsNestZodDto } from "@question/application/dto/question-stats/question-stats.dto";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
 export class AdminQuestionController {
+  // Acceptable as the controller requires all use cases for admin question operations
+  // oxlint-disable-next-line eslint/max-params
   public constructor(
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
+    private readonly getQuestionStatsUseCase: GetQuestionStatsUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
     private readonly createQuestionUseCase: CreateQuestionUseCase,
     private readonly archiveQuestionUseCase: ArchiveQuestionUseCase,
@@ -60,6 +66,23 @@ export class AdminQuestionController {
     const questions = await this.findQuestionsUseCase.list(findAllOptions);
 
     return questions.map(question => createAdminQuestionDtoFromEntity(question));
+  }
+
+  @Get("/stats")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTIONS,
+    ],
+    summary: "Get question statistics for dashboard",
+    description: "Returns aggregated statistics about questions including counts by status, category, cognitive difficulty, author role, and rejection type.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionStatsNestZodDto,
+  })
+  public async getQuestionStats(): Promise<QuestionStatsDto> {
+    return this.getQuestionStatsUseCase.getStats();
   }
 
   @Get("/:id")
