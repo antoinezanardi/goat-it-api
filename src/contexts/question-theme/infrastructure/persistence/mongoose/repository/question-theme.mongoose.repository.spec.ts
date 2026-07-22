@@ -348,16 +348,6 @@ describe("Question Theme Mongoose Repository", () => {
     });
   });
 
-  describe(QuestionThemeMongooseRepository["mapAggregationRowsToRecord"], () => {
-    const keys = ["active", "archived"] as const;
-
-    it("should return all keys with zero when rows are empty.", () => {
-      const result = QuestionThemeMongooseRepository["mapAggregationRowsToRecord"]([], keys);
-
-      expect(result).toStrictEqual({ active: 0, archived: 0 });
-    });
-  });
-
   describe(QuestionThemeMongooseRepository.prototype.getStats, () => {
     const themeAggResult: QuestionThemeFacetAggregationResult = {
       total: [{ count: 3 }],
@@ -399,16 +389,6 @@ describe("Question Theme Mongoose Repository", () => {
       const result = await repositories.questionTheme.getStats();
 
       expect(Object.keys(result.byStatus)).toStrictEqual(["active", "archived"]);
-    });
-
-    it("should skip null _id rows when mapping status aggregation results.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }, { _id: null, count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
-
-      const result = await repositories.questionTheme.getStats();
-
-      expect(result.byStatus.active).toBe(1);
     });
 
     it("should return theme with zero active question count when no active questions reference a theme.", async() => {

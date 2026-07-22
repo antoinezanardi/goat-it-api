@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, UpdateQuery } from "mongoose";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
-import { QUESTION_THEME_STATUSES, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
+import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
@@ -29,24 +29,6 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     @InjectModel(QuestionThemeMongooseSchema.name) private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>,
     @InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>,
   ) {}
-
-  private static mapAggregationRowsToRecord<T extends string>(
-    rows: { _id: T | null; count: number }[],
-    keys: readonly T[],
-  ): Record<T, number> {
-    const record: Partial<Record<T, number>> = {};
-    for (const key of keys) {
-      record[key] = 0;
-    }
-    for (const row of rows) {
-      if (row._id !== null) {
-        record[row._id] = row.count;
-      }
-    }
-    // Acceptable as all keys have been initialized to 0; the Partial assignment is a safety net
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    return record as Record<T, number>;
-  }
 
   public async findAll(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
     const sortCriteria = buildMongooseSortCriteria(options.sort);
@@ -136,15 +118,17 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
 
   private async getThemeAggregationResult(): Promise<{
     total: number;
-    byStatus: Record<QuestionThemeStatus, number>;
+    byStatus: Partial<Record<QuestionThemeStatus, number>>;
   }> {
     const [themeAggResult] = await this.questionThemeModel.aggregate<QuestionThemeFacetAggregationResult>(QUESTION_THEME_FACET_MONGOOSE_REPOSITORY_PIPELINE);
     const total = themeAggResult.total.length > 0 ? themeAggResult.total[0].count : 0;
-    const byStatus = QuestionThemeMongooseRepository.mapAggregationRowsToRecord(
-      themeAggResult.statusRows,
-      QUESTION_THEME_STATUSES,
-    );
 
+    const byStatus: Partial<Record<QuestionThemeStatus, number>> = {};
+    for (const row of themeAggResult.statusRows) {
+      // Acceptable as MongoDB returns status enum values as strings
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+      byStatus[row._id as QuestionThemeStatus] = row.count;
+    }
     return { total, byStatus };
   }
 

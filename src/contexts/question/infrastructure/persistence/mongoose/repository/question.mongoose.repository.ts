@@ -8,7 +8,7 @@ import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
-import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
@@ -35,16 +35,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return matchStage;
   }
 
-  private static mapAggregationRowsToRecord<T extends string>(
-    rows: { _id: T | null; count: number }[],
-    keys: readonly T[],
-  ): Record<T, number> {
-    // Acceptable as we immediately populate all keys before returning
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const record = {} as Record<T, number>;
-    for (const key of keys) {
-      record[key] = 0;
-    }
+  private static aggregateRowsToPartialRecord<T extends string>(rows: { _id: T | null; count: number }[]): Partial<Record<T, number>> {
+    const record: Partial<Record<T, number>> = {};
+
     for (const row of rows) {
       if (row._id !== null) {
         record[row._id] = row.count;
@@ -177,11 +170,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
 
     return {
       total: result.totalStage[0]?.count ?? 0,
-      byStatus: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byStatusStage, QUESTION_STATUSES),
-      byCategory: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byCategoryStage, QUESTION_CATEGORIES),
-      byCognitiveDifficulty: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byCognitiveDifficultyStage, QUESTION_COGNITIVE_DIFFICULTIES),
-      byAuthorRole: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byAuthorRoleStage, QUESTION_AUTHOR_ROLES),
-      byRejectionType: QuestionMongooseRepository.mapAggregationRowsToRecord(result.byRejectionTypeStage, QUESTION_REJECTION_TYPES),
+      byStatus: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byStatusStage),
+      byCategory: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byCategoryStage),
+      byCognitiveDifficulty: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byCognitiveDifficultyStage),
+      byAuthorRole: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byAuthorRoleStage),
+      byRejectionType: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byRejectionTypeStage),
     };
   }
 

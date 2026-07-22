@@ -1,4 +1,4 @@
-import { createZeroFilledRecord } from "@shared/application/mappers/stats/stats.helpers";
+import { createStatsZeroFilledRecord } from "@shared/application/mappers/stats/stats.helpers";
 
 import {
   QUESTION_AUTHOR_ROLES,
@@ -14,11 +14,11 @@ import type { QuestionStats } from "@question/domain/types/question.types";
 function createQuestionStatsDtoFromStats(stats: QuestionStats): QuestionStatsDto {
   return {
     total: stats.total,
-    byStatus: { ...createZeroFilledRecord(QUESTION_STATUSES), ...stats.byStatus },
-    byCategory: { ...createZeroFilledRecord(QUESTION_CATEGORIES), ...stats.byCategory },
-    byCognitiveDifficulty: { ...createZeroFilledRecord(QUESTION_COGNITIVE_DIFFICULTIES), ...stats.byCognitiveDifficulty },
-    byAuthorRole: { ...createZeroFilledRecord(QUESTION_AUTHOR_ROLES), ...stats.byAuthorRole },
-    byRejectionType: { ...createZeroFilledRecord(QUESTION_REJECTION_TYPES), ...stats.byRejectionType },
+    byStatus: createStatsZeroFilledRecord(QUESTION_STATUSES, stats.byStatus),
+    byCategory: createStatsZeroFilledRecord(QUESTION_CATEGORIES, stats.byCategory),
+    byCognitiveDifficulty: createStatsZeroFilledRecord(QUESTION_COGNITIVE_DIFFICULTIES, stats.byCognitiveDifficulty),
+    byAuthorRole: createStatsZeroFilledRecord(QUESTION_AUTHOR_ROLES, stats.byAuthorRole),
+    byRejectionType: createStatsZeroFilledRecord(QUESTION_REJECTION_TYPES, stats.byRejectionType),
   };
 }
 

@@ -12,7 +12,7 @@ import {
 
 import type { QuestionStats } from "@question/domain/types/question.types";
 
-function createFakeByStatus(): QuestionStats["byStatus"] {
+function createFakeQuestionStatsByStatus(): QuestionStats["byStatus"] {
   return {
     [QUESTION_STATUS_PENDING]: faker.number.int({ min: 0, max: 20 }),
     [QUESTION_STATUS_ACTIVE]: faker.number.int({ min: 0, max: 20 }),
@@ -21,7 +21,7 @@ function createFakeByStatus(): QuestionStats["byStatus"] {
   };
 }
 
-function createFakeByCategory(): QuestionStats["byCategory"] {
+function createFakeQuestionStatsByCategory(): QuestionStats["byCategory"] {
   return {
     trivia: faker.number.int({ min: 0, max: 20 }),
     lexicon: faker.number.int({ min: 0, max: 20 }),
@@ -30,7 +30,7 @@ function createFakeByCategory(): QuestionStats["byCategory"] {
   };
 }
 
-function createFakeByCognitiveDifficulty(): QuestionStats["byCognitiveDifficulty"] {
+function createFakeQuestionStatsByCognitiveDifficulty(): QuestionStats["byCognitiveDifficulty"] {
   return {
     easy: faker.number.int({ min: 0, max: 20 }),
     medium: faker.number.int({ min: 0, max: 20 }),
@@ -38,7 +38,7 @@ function createFakeByCognitiveDifficulty(): QuestionStats["byCognitiveDifficulty
   };
 }
 
-function createFakeByAuthorRole(): QuestionStats["byAuthorRole"] {
+function createFakeQuestionStatsByAuthorRole(): QuestionStats["byAuthorRole"] {
   return {
     [QUESTION_AUTHOR_ROLE_ADMIN]: faker.number.int({ min: 0, max: 20 }),
     [QUESTION_AUTHOR_ROLE_GAME]: faker.number.int({ min: 0, max: 20 }),
@@ -46,7 +46,7 @@ function createFakeByAuthorRole(): QuestionStats["byAuthorRole"] {
   };
 }
 
-function createFakeByRejectionType(): QuestionStats["byRejectionType"] {
+function createFakeQuestionStatsByRejectionType(): QuestionStats["byRejectionType"] {
   return {
     "inappropriate-content": faker.number.int({ min: 0, max: 20 }),
     "incorrect-information": faker.number.int({ min: 0, max: 20 }),
@@ -59,20 +59,20 @@ function createFakeByRejectionType(): QuestionStats["byRejectionType"] {
 function createFakeQuestionStats(overrides: Partial<QuestionStats> = {}): QuestionStats {
   return {
     total: faker.number.int({ min: 0, max: 100 }),
-    byStatus: createFakeByStatus(),
-    byCategory: createFakeByCategory(),
-    byCognitiveDifficulty: createFakeByCognitiveDifficulty(),
-    byAuthorRole: createFakeByAuthorRole(),
-    byRejectionType: createFakeByRejectionType(),
+    byStatus: createFakeQuestionStatsByStatus(),
+    byCategory: createFakeQuestionStatsByCategory(),
+    byCognitiveDifficulty: createFakeQuestionStatsByCognitiveDifficulty(),
+    byAuthorRole: createFakeQuestionStatsByAuthorRole(),
+    byRejectionType: createFakeQuestionStatsByRejectionType(),
     ...overrides,
   };
 }
 
 export {
   createFakeQuestionStats,
-  createFakeByStatus,
-  createFakeByCategory,
-  createFakeByCognitiveDifficulty,
-  createFakeByAuthorRole,
-  createFakeByRejectionType,
+  createFakeQuestionStatsByStatus,
+  createFakeQuestionStatsByCategory,
+  createFakeQuestionStatsByCognitiveDifficulty,
+  createFakeQuestionStatsByAuthorRole,
+  createFakeQuestionStatsByRejectionType,
 };

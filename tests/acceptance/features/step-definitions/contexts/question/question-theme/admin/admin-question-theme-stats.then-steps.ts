@@ -1,8 +1,13 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
-import { z } from "zod";
 
 import { QUESTION_THEME_STATS_DTO } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
+
+import {
+  QUESTION_THEME_STATS_BY_QUESTION_COUNT_ROW_SCHEMA,
+  QUESTION_THEME_STATS_KEY_VALUE_SCHEMA,
+  QUESTION_THEME_STATS_TOTAL_SCHEMA,
+} from "@acceptance-features/step-definitions/contexts/question/question-theme/admin/datatables/admin-question-theme-stats.datatables.schemas";
 
 import { validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -10,21 +15,6 @@ import type { QuestionThemeStatsDto } from "@question-theme/application/dto/ques
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
-
-const QUESTION_THEME_STATS_TOTAL_SCHEMA = z.strictObject({
-  field: z.literal("total"),
-  value: z.coerce.number(),
-});
-
-const QUESTION_THEME_STATS_KEY_VALUE_SCHEMA = z.strictObject({
-  field: z.string(),
-  value: z.coerce.number(),
-});
-
-const QUESTION_THEME_STATS_BY_QUESTION_COUNT_ROW_SCHEMA = z.strictObject({
-  themeSlug: z.string(),
-  activeQuestionCount: z.coerce.number(),
-});
 
 Then(/^the response should contain question themes stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
   const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
@@ -38,16 +28,22 @@ Then(/^the response should contain question themes stats with:$/u, function(this
 Then(/^the response should contain question themes status stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
   const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
   const rows = validateDataTableAndGetRows(dataTable, QUESTION_THEME_STATS_KEY_VALUE_SCHEMA);
-  // Acceptable as we index a known Record with a runtime-validated key
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const byStatus = stats.byStatus as Record<string, number>;
 
   for (const { field, value } of rows) {
-    expect(byStatus[field]).toBe(value);
+    // Acceptable as we index a known Record with a runtime-validated key
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    const typedField = field as keyof typeof stats.byStatus;
+    expect(stats.byStatus[typedField]).toBe(value);
   }
 });
 
-Then(/^the response's byQuestionCount should contain:$/u, function(this: GoatItWorld, byQuestionCountDataTable: DataTable): void {
+Then(/^the response should contain question themes question count stats with an empty list$/u, function(this: GoatItWorld): void {
+  const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
+
+  expect(stats.byQuestionCount).toStrictEqual([]);
+});
+
+Then(/^the response should contain question themes question count stats with:$/u, function(this: GoatItWorld, byQuestionCountDataTable: DataTable): void {
   const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
   const dataTableRows = validateDataTableAndGetRows(byQuestionCountDataTable, QUESTION_THEME_STATS_BY_QUESTION_COUNT_ROW_SCHEMA);
 

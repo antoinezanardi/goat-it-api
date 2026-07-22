@@ -11,39 +11,37 @@ import {
 } from "@question/domain/constants/question.constants";
 import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
-const fakeCount = (max = 20): number => faker.number.int({ min: 0, max });
-
 function createFakeQuestionStatsDto(overrides: Partial<QuestionStatsDto> = {}): QuestionStatsDto {
   return {
-    total: fakeCount(100),
+    total: faker.number.int({ min: 0, max: 100 }),
     byStatus: {
-      [QUESTION_STATUS_PENDING]: fakeCount(),
-      [QUESTION_STATUS_ACTIVE]: fakeCount(),
-      [QUESTION_STATUS_ARCHIVED]: fakeCount(),
-      [QUESTION_STATUS_REJECTED]: fakeCount(),
+      [QUESTION_STATUS_PENDING]: faker.number.int({ min: 0, max: 20 }),
+      [QUESTION_STATUS_ACTIVE]: faker.number.int({ min: 0, max: 20 }),
+      [QUESTION_STATUS_ARCHIVED]: faker.number.int({ min: 0, max: 20 }),
+      [QUESTION_STATUS_REJECTED]: faker.number.int({ min: 0, max: 20 }),
     },
     byCategory: {
-      trivia: fakeCount(),
-      lexicon: fakeCount(),
-      riddle: fakeCount(),
-      explanation: fakeCount(),
+      trivia: faker.number.int({ min: 0, max: 20 }),
+      lexicon: faker.number.int({ min: 0, max: 20 }),
+      riddle: faker.number.int({ min: 0, max: 20 }),
+      explanation: faker.number.int({ min: 0, max: 20 }),
     },
     byCognitiveDifficulty: {
-      easy: fakeCount(),
-      medium: fakeCount(),
-      hard: fakeCount(),
+      easy: faker.number.int({ min: 0, max: 20 }),
+      medium: faker.number.int({ min: 0, max: 20 }),
+      hard: faker.number.int({ min: 0, max: 20 }),
     },
     byAuthorRole: {
-      [QUESTION_AUTHOR_ROLE_ADMIN]: fakeCount(),
-      [QUESTION_AUTHOR_ROLE_GAME]: fakeCount(),
-      [QUESTION_AUTHOR_ROLE_AI]: fakeCount(),
+      [QUESTION_AUTHOR_ROLE_ADMIN]: faker.number.int({ min: 0, max: 20 }),
+      [QUESTION_AUTHOR_ROLE_GAME]: faker.number.int({ min: 0, max: 20 }),
+      [QUESTION_AUTHOR_ROLE_AI]: faker.number.int({ min: 0, max: 20 }),
     },
     byRejectionType: {
-      "inappropriate-content": fakeCount(),
-      "incorrect-information": fakeCount(),
-      "poor-quality": fakeCount(),
-      "duplicate-question": fakeCount(),
-      "other": fakeCount(),
+      "inappropriate-content": faker.number.int({ min: 0, max: 20 }),
+      "incorrect-information": faker.number.int({ min: 0, max: 20 }),
+      "poor-quality": faker.number.int({ min: 0, max: 20 }),
+      "duplicate-question": faker.number.int({ min: 0, max: 20 }),
+      "other": faker.number.int({ min: 0, max: 20 }),
     },
     ...overrides,
   };

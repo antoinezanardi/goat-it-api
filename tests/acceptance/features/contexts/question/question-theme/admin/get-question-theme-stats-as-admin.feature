@@ -18,7 +18,7 @@ Feature: Get Question Theme Stats as Admin
       | field    | value |
       | active   | 57    |
       | archived | 3     |
-    And the response's byQuestionCount should contain:
+    And the response should contain question themes question count stats with:
       | themeSlug | activeQuestionCount |
       | animals   | 2                   |
       | art       | 3                   |
@@ -38,6 +38,7 @@ Feature: Get Question Theme Stats as Admin
       | field    | value |
       | active   | 0     |
       | archived | 0     |
+    And the response should contain question themes question count stats with an empty list
 
   Scenario: Trying to get question theme stats without API key
     When the admin retrieves question theme statistics without an API key

@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
+import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
@@ -38,7 +39,7 @@ describe("Get Question Theme Stats Use Case", () => {
 
       const result = await useCase.getStats();
 
-      expect(Object.keys(result.byStatus)).toStrictEqual(["active", "archived"]);
+      expect(Object.keys(result.byStatus)).toStrictEqual([...QUESTION_THEME_STATUSES]);
     });
 
     it("should return mapped DTO with correct total when repository returns total.", async() => {

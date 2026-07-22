@@ -6,9 +6,10 @@ import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persi
 
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
+import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
@@ -804,34 +805,6 @@ describe("Question Mongoose Repository", () => {
     });
   });
 
-  describe(QuestionMongooseRepository["mapAggregationRowsToRecord"], () => {
-    const keys = ["keyA", "keyB", "keyC"] as const;
-
-    it("should return all keys with zero when rows are empty.", () => {
-      const result = QuestionMongooseRepository["mapAggregationRowsToRecord"]([], keys);
-
-      expect(result).toStrictEqual({ keyA: 0, keyB: 0, keyC: 0 });
-    });
-
-    it("should populate counts from rows when some keys have values.", () => {
-      const result = QuestionMongooseRepository["mapAggregationRowsToRecord"](
-        [{ _id: "keyA", count: 3 }, { _id: "keyC", count: 1 }],
-        keys,
-      );
-
-      expect(result).toStrictEqual({ keyA: 3, keyB: 0, keyC: 1 });
-    });
-
-    it("should skip rows with null _id when computing the record.", () => {
-      const result = QuestionMongooseRepository["mapAggregationRowsToRecord"](
-        [{ _id: null, count: 5 }],
-        keys,
-      );
-
-      expect(result).toStrictEqual({ keyA: 0, keyB: 0, keyC: 0 });
-    });
-  });
-
   describe(QuestionMongooseRepository.prototype.getStats, () => {
     const facetResult: QuestionStatsAggregationResult = {
       totalStage: [{ count: 5 }],
@@ -842,13 +815,11 @@ describe("Question Mongoose Repository", () => {
       byRejectionTypeStage: [{ _id: "duplicate-question", count: 1 }],
     };
 
-    it("should call aggregate with a $facet pipeline when invoked.", async() => {
+    it("should call aggregate with the stats pipeline when invoked.", async() => {
       mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
       await repositories.question.getStats();
 
-      // Acceptable as expect.any is needed for partial matching and returns any
-      // oxlint-disable-next-line typescript/no-unsafe-assignment
-      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith([{ $facet: expect.any(Object) }]);
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE);
     });
 
     it("should return total from the $facet result when called.", async() => {
@@ -865,19 +836,39 @@ describe("Question Mongoose Repository", () => {
       expect(result.total).toBe(0);
     });
 
-    it.each<
-      { fieldName: "byStatus" | "byCategory" | "byCognitiveDifficulty" | "byAuthorRole" | "byRejectionType"; keysArray: readonly string[] }
-    >([
-      { fieldName: "byStatus", keysArray: QUESTION_STATUSES },
-      { fieldName: "byCategory", keysArray: QUESTION_CATEGORIES },
-      { fieldName: "byCognitiveDifficulty", keysArray: QUESTION_COGNITIVE_DIFFICULTIES },
-      { fieldName: "byAuthorRole", keysArray: QUESTION_AUTHOR_ROLES },
-      { fieldName: "byRejectionType", keysArray: QUESTION_REJECTION_TYPES },
-    ])("should include all $fieldName keys when stats are returned.", async({ fieldName, keysArray }) => {
+    it("should return partial record for byStatus when aggregation rows are provided.", async() => {
       mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
       const result = await repositories.question.getStats();
 
-      expect(Object.keys(result[fieldName])).toStrictEqual([...keysArray]);
+      expect(result.byStatus).toStrictEqual({ active: 3, pending: 2 });
+    });
+
+    it("should return partial record for byCategory when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCategory).toStrictEqual({ trivia: 5 });
+    });
+
+    it("should return partial record for byCognitiveDifficulty when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCognitiveDifficulty).toStrictEqual({ medium: 5 });
+    });
+
+    it("should return partial record for byAuthorRole when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byAuthorRole).toStrictEqual({ admin: 5 });
+    });
+
+    it("should return partial record for byRejectionType when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byRejectionType).toStrictEqual({ "duplicate-question": 1 });
     });
 
     it("should populate non-zero status counts from the aggregation when called.", async() => {
@@ -885,6 +876,16 @@ describe("Question Mongoose Repository", () => {
       const result = await repositories.question.getStats();
 
       expect(result.byStatus.active).toBe(3);
+    });
+
+    it("should skip rows with null _id when building partial records.", async() => {
+      // Acceptable as we need to test the null _id branch
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+      const facetWithNull = { ...facetResult, byStatusStage: [{ _id: null, count: 3 }, { _id: "active", count: 2 }] } as QuestionStatsAggregationResult;
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetWithNull as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byStatus.active).toBe(2);
     });
   });
 });
