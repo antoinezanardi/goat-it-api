@@ -808,11 +808,11 @@ describe("Question Mongoose Repository", () => {
   describe(QuestionMongooseRepository.prototype.getStats, () => {
     const facetResult: QuestionStatsAggregationResult = {
       totalStage: [{ count: 5 }],
-      byStatusStage: [{ _id: "active", count: 3 }, { _id: "pending", count: 2 }],
-      byCategoryStage: [{ _id: "trivia", count: 5 }],
-      byCognitiveDifficultyStage: [{ _id: "medium", count: 5 }],
-      byAuthorRoleStage: [{ _id: "admin", count: 5 }],
-      byRejectionTypeStage: [{ _id: "duplicate-question", count: 1 }],
+      byStatusStage: [{ active: 3, pending: 2 }],
+      byCategoryStage: [{ trivia: 5 }],
+      byCognitiveDifficultyStage: [{ medium: 5 }],
+      byAuthorRoleStage: [{ admin: 5 }],
+      byRejectionTypeStage: [{ "duplicate-question": 1 }],
     };
 
     it("should call aggregate with the stats pipeline when invoked.", async() => {
@@ -878,14 +878,39 @@ describe("Question Mongoose Repository", () => {
       expect(result.byStatus.active).toBe(3);
     });
 
-    it("should skip rows with null _id when building partial records.", async() => {
-      // Acceptable as we need to test the null _id branch
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      const facetWithNull = { ...facetResult, byStatusStage: [{ _id: null, count: 3 }, { _id: "active", count: 2 }] } as QuestionStatsAggregationResult;
-      mocks.models.question.aggregate.mockResolvedValueOnce([facetWithNull as unknown as QuestionAggregate]);
+    it("should return empty record for byStatus when byStatusStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byStatusStage: [] } as unknown as QuestionAggregate]);
       const result = await repositories.question.getStats();
 
-      expect(result.byStatus.active).toBe(2);
+      expect(result.byStatus).toStrictEqual({});
+    });
+
+    it("should return empty record for byCategory when byCategoryStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byCategoryStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCategory).toStrictEqual({});
+    });
+
+    it("should return empty record for byCognitiveDifficulty when byCognitiveDifficultyStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byCognitiveDifficultyStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCognitiveDifficulty).toStrictEqual({});
+    });
+
+    it("should return empty record for byAuthorRole when byAuthorRoleStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byAuthorRoleStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byAuthorRole).toStrictEqual({});
+    });
+
+    it("should return empty record for byRejectionType when byRejectionTypeStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byRejectionTypeStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byRejectionType).toStrictEqual({});
     });
   });
 });

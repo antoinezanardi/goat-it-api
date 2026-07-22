@@ -1,6 +1,5 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
-import { Types } from "mongoose";
 
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
@@ -9,10 +8,7 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/con
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
-import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-
 import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFindQuery } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.model.mock";
-import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
@@ -23,8 +19,7 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
-import type { QuestionThemeFacetAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
-import type { QuestionAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
@@ -34,7 +29,6 @@ describe("Question Theme Mongoose Repository", () => {
   let mocks: {
     models: {
       questionTheme: ReturnType<typeof createMockedQuestionThemeMongooseModel>;
-      question: ReturnType<typeof createMockedQuestionMongooseModel>;
     };
     mappers: {
       questionTheme: {
@@ -47,7 +41,6 @@ describe("Question Theme Mongoose Repository", () => {
     mocks = {
       models: {
         questionTheme: createMockedQuestionThemeMongooseModel(),
-        question: createMockedQuestionMongooseModel(),
       },
       mappers: {
         questionTheme: {
@@ -61,10 +54,6 @@ describe("Question Theme Mongoose Repository", () => {
         {
           provide: getModelToken(QuestionThemeMongooseSchema.name),
           useValue: mocks.models.questionTheme,
-        },
-        {
-          provide: getModelToken(QuestionMongooseSchema.name),
-          useValue: mocks.models.question,
         },
         QuestionThemeMongooseRepository,
       ],
@@ -349,22 +338,14 @@ describe("Question Theme Mongoose Repository", () => {
   });
 
   describe(QuestionThemeMongooseRepository.prototype.getStats, () => {
-    const themeAggResult: QuestionThemeFacetAggregationResult = {
+    const statsAggResult: QuestionThemeStatsAggregationResult = {
       total: [{ count: 3 }],
-      statusRows: [{ _id: "active", count: 2 }, { _id: "archived", count: 1 }],
+      statusRows: [{ active: 2, archived: 1 }],
+      byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
     };
 
-    function createMockFindQuery(leanResult: unknown[]): Partial<Record<string, Mock>> {
-      return {
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce(leanResult),
-      };
-    }
-
-    it("should return total from theme aggregation when themes exist.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+    it("should return total from aggregation when themes exist.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
 
       const result = await repositories.questionTheme.getStats();
 
@@ -372,9 +353,13 @@ describe("Question Theme Mongoose Repository", () => {
     });
 
     it("should return total as 0 when no themes exist.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [], statusRows: [] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [],
+  statusRows: [],
+  byQuestionCount: [],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
 
       const result = await repositories.questionTheme.getStats();
 
@@ -382,57 +367,87 @@ describe("Question Theme Mongoose Repository", () => {
     });
 
     it("should include all status keys in byStatus when aggregation returns status rows.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(Object.keys(result.byStatus)).toStrictEqual(["active", "archived"]);
     });
 
+    it("should skip status rows with null id when building byStatus map.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{}],
+  byQuestionCount: [],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(Object.keys(result.byStatus)).toStrictEqual([]);
+    });
+
     it("should return theme with zero active question count when no active questions reference a theme.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      const mockQuestionThemeDocument =
-        createMockFindQuery([{ _id: new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d"), slug: "cinema" }]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>;
-      mocks.models.questionTheme.find.mockReturnValueOnce(mockQuestionThemeDocument);
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{ active: 1 }],
+  byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byQuestionCount).toStrictEqual([{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }]);
     });
 
-    it("should populate active question count from aggregation when questions are found.", async() => {
-      const themeId = new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d");
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([{ _id: themeId, count: 5 } as unknown as QuestionAggregate]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([{ _id: themeId, slug: "cinema" }]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+    it("should populate active question count from lookup when questions are found.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{ active: 1 }],
+  byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 5 }],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byQuestionCount[0].activeQuestionCount).toBe(5);
     });
 
-    it("should query the question-theme model with slug projection when getting stats.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+    it("should return byQuestionCount sorted by slug when aggregation returns multiple themes.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 2 }],
+  statusRows: [{ active: 2 }],
+  byQuestionCount: [
+    { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
+    { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
+  ],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
 
-      await repositories.questionTheme.getStats();
+      const result = await repositories.questionTheme.getStats();
 
-      expect(mocks.models.questionTheme.find).toHaveBeenCalledWith({}, { slug: 1 });
+      expect(result.byQuestionCount[0].themeSlug).toBe("cinema");
     });
 
-    it("should sort the question-theme query by slug in ascending order when getting stats.", async() => {
-      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      const mockDocument = createMockFindQuery([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce(mockDocument as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+    it("should return second theme by slug order when aggregation returns multiple themes.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 2 }],
+  statusRows: [{ active: 2 }],
+  byQuestionCount: [
+    { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
+    { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
+  ],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
 
-      await repositories.questionTheme.getStats();
+      const result = await repositories.questionTheme.getStats();
 
-      expect(mockDocument.sort).toHaveBeenCalledWith({ slug: 1 });
+      expect(result.byQuestionCount[1].themeSlug).toBe("sport");
     });
   });
 });

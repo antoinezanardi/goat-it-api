@@ -35,17 +35,6 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return matchStage;
   }
 
-  private static aggregateRowsToPartialRecord<T extends string>(rows: { _id: T | null; count: number }[]): Partial<Record<T, number>> {
-    const record: Partial<Record<T, number>> = {};
-
-    for (const row of rows) {
-      if (row._id !== null) {
-        record[row._id] = row.count;
-      }
-    }
-    return record;
-  }
-
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
@@ -170,11 +159,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
 
     return {
       total: result.totalStage[0]?.count ?? 0,
-      byStatus: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byStatusStage),
-      byCategory: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byCategoryStage),
-      byCognitiveDifficulty: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byCognitiveDifficultyStage),
-      byAuthorRole: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byAuthorRoleStage),
-      byRejectionType: QuestionMongooseRepository.aggregateRowsToPartialRecord(result.byRejectionTypeStage),
+      byStatus: result.byStatusStage[0] ?? {},
+      byCategory: result.byCategoryStage[0] ?? {},
+      byCognitiveDifficulty: result.byCognitiveDifficultyStage[0] ?? {},
+      byAuthorRole: result.byAuthorRoleStage[0] ?? {},
+      byRejectionType: result.byRejectionTypeStage[0] ?? {},
     };
   }
 

@@ -31,11 +31,11 @@ type QuestionThemeAssignmentMongooseInsertPayload = QuestionMongooseDocument["th
 
 type QuestionStatsAggregationResult = {
   totalStage: { count: number }[];
-  byStatusStage: { _id: string; count: number }[];
-  byCategoryStage: { _id: string; count: number }[];
-  byCognitiveDifficultyStage: { _id: string; count: number }[];
-  byAuthorRoleStage: { _id: string; count: number }[];
-  byRejectionTypeStage: { _id: string; count: number }[];
+  byStatusStage: Record<string, number>[];
+  byCategoryStage: Record<string, number>[];
+  byCognitiveDifficultyStage: Record<string, number>[];
+  byAuthorRoleStage: Record<string, number>[];
+  byRejectionTypeStage: Record<string, number>[];
 };
 
 export type {
