@@ -5,7 +5,7 @@ import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-ca
 
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
 
-import type { QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
+import { createFakeQuestionThemeStats } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
 
 describe("Get Question Theme Stats Use Case", () => {
   let useCase: GetQuestionThemeStatsUseCase;
@@ -33,7 +33,7 @@ describe("Get Question Theme Stats Use Case", () => {
     });
 
     it("should return mapped DTO with all status keys present when stats are retrieved.", async() => {
-      const stats: QuestionThemeStats = { total: 1, byStatus: { active: 1, archived: 0 }, byQuestionCount: [] };
+      const stats = createFakeQuestionThemeStats({ total: 1 });
       mockedRepository.getStats.mockResolvedValueOnce(stats);
 
       const result = await useCase.getStats();
@@ -42,7 +42,7 @@ describe("Get Question Theme Stats Use Case", () => {
     });
 
     it("should return mapped DTO with correct total when repository returns total.", async() => {
-      const stats: QuestionThemeStats = { total: 5, byStatus: { active: 1, archived: 0 }, byQuestionCount: [] };
+      const stats = createFakeQuestionThemeStats({ total: 5 });
       mockedRepository.getStats.mockResolvedValueOnce(stats);
 
       const result = await useCase.getStats();

@@ -1,4 +1,5 @@
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
+import { createFakeQuestionThemeStats } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
 
 import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
@@ -35,11 +36,7 @@ function createMockedQuestionThemeRepository(overrides: Partial<MockedQuestionTh
     create: vi.fn<QuestionThemeRepositoryStub["create"]>().mockResolvedValue(createFakeQuestionTheme()),
     modify: vi.fn<QuestionThemeRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestionTheme()),
     archive: vi.fn<QuestionThemeRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestionTheme()),
-    getStats: vi.fn<QuestionThemeRepositoryStub["getStats"]>().mockResolvedValue({
-      total: 0,
-      byStatus: { active: 0, archived: 0 },
-      byQuestionCount: [],
-    }),
+    getStats: vi.fn<QuestionThemeRepositoryStub["getStats"]>().mockResolvedValue(createFakeQuestionThemeStats()),
     ...overrides,
   };
 }

@@ -11,29 +11,81 @@ import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-const QUESTION_STATS_FIELD_VALUE_ROW_SCHEMA = z.strictObject({
+const STATS_KEY_VALUE_SCHEMA = z.strictObject({
   field: z.string(),
   value: z.coerce.number(),
 });
 
-Then(/^the response should contain a Question Stats DTO with:$/u, function(this: GoatItWorld, statsDataTable: DataTable): void {
+const STATS_TOTAL_SCHEMA = z.strictObject({
+  field: z.literal("total"),
+  value: z.coerce.number(),
+});
+
+Then(/^the response should contain questions stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
   const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
-  const dataTableRows = validateDataTableAndGetRows(statsDataTable, QUESTION_STATS_FIELD_VALUE_ROW_SCHEMA);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_TOTAL_SCHEMA);
 
-  for (const { field, value } of dataTableRows) {
-    const parts = field.split(".");
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    let actual: Record<string, unknown> | number = stats;
+  for (const { field, value } of rows) {
+    expect(stats[field]).toBe(value);
+  }
+});
 
-    for (const part of parts) {
-      if (typeof actual !== "object") {
-        throw new TypeError(`Cannot navigate path "${field}": "${part}" is not an object.`);
-      }
-      // Acceptable as we navigate a known nested structure
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      actual = actual[part] as number;
-    }
+Then(/^the response should contain questions status stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byStatus = stats.byStatus as Record<string, number>;
 
-    expect(actual).toBe(value);
+  for (const { field, value } of rows) {
+    expect(byStatus[field]).toBe(value);
+  }
+});
+
+Then(/^the response should contain questions category stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byCategory = stats.byCategory as Record<string, number>;
+
+  for (const { field, value } of rows) {
+    expect(byCategory[field]).toBe(value);
+  }
+});
+
+Then(/^the response should contain questions cognitive difficulty stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byCognitiveDifficulty = stats.byCognitiveDifficulty as Record<string, number>;
+
+  for (const { field, value } of rows) {
+    expect(byCognitiveDifficulty[field]).toBe(value);
+  }
+});
+
+Then(/^the response should contain questions author role stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byAuthorRole = stats.byAuthorRole as Record<string, number>;
+
+  for (const { field, value } of rows) {
+    expect(byAuthorRole[field]).toBe(value);
+  }
+});
+
+Then(/^the response should contain questions rejection type stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byRejectionType = stats.byRejectionType as Record<string, number>;
+
+  for (const { field, value } of rows) {
+    expect(byRejectionType[field]).toBe(value);
   }
 });

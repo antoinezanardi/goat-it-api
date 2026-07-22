@@ -84,6 +84,7 @@ const ESLINT_IGNORES = [
   "tests/unit/coverage/**/*",
   "tests/mutation/**/*",
   "tests/acceptance/reports/**/*",
+  ".stryker-tmp/**/*",
 ];
 
 export {

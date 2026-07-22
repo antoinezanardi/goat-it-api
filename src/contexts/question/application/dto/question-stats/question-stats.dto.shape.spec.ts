@@ -1,77 +1,216 @@
 import { ZodError } from "zod";
 
-import {
-  QUESTION_AUTHOR_ROLES,
-  QUESTION_CATEGORIES,
-  QUESTION_COGNITIVE_DIFFICULTIES,
-  QUESTION_REJECTION_TYPES,
-  QUESTION_STATUSES,
-} from "@question/domain/constants/question.constants";
 import { QUESTION_STATS_DTO } from "@question/application/dto/question-stats/question-stats.dto.shape";
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
-import type { z } from "zod";
+import { createFakeQuestionStatsDto } from "@faketories/contexts/question/dto/question-stats/question-stats.dto.faketory";
 
-type QuestionStatsDtoShape = z.input<typeof QUESTION_STATS_DTO>;
+describe("Question Stats DTO Shape", () => {
+  let validDto: QuestionStatsDto;
 
-describe("Question Stats DTO", () => {
-  const createValidShape = (overrides: Partial<QuestionStatsDtoShape> = {}): QuestionStatsDtoShape => {
-    const zeroIfMissing = <T extends string>(keys: readonly T[]): Record<T, number> => {
-      const result = {} as Record<T, number>;
-      for (const key of keys) {
-        result[key] = 0;
-      }
-      return result;
-    };
-    return {
-      total: 5,
-      byStatus: zeroIfMissing(QUESTION_STATUSES),
-      byCategory: zeroIfMissing(QUESTION_CATEGORIES),
-      byCognitiveDifficulty: zeroIfMissing(QUESTION_COGNITIVE_DIFFICULTIES),
-      byAuthorRole: zeroIfMissing(QUESTION_AUTHOR_ROLES),
-      byRejectionType: zeroIfMissing(QUESTION_REJECTION_TYPES),
-      ...overrides,
-    };
-  };
+  beforeEach(() => {
+    validDto = createFakeQuestionStatsDto();
+  });
 
-  describe("shape", () => {
-    it("should accept when all fields are valid.", () => {
-      expect(() => QUESTION_STATS_DTO.parse(createValidShape())).not.toThrow();
+  it("should pass validation when assigned valid values.", () => {
+    expect(() => QUESTION_STATS_DTO.parse(validDto)).not.toThrow();
+  });
+
+  describe("total", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { total: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when total is missing.", () => {
-      const { total: _, ...rest } = createValidShape();
+    it("should throw a zod error when assigned a negative number.", () => {
+      const invalidDto = Object.assign(validDto, { total: -1 });
 
-      expect(() => QUESTION_STATS_DTO.parse(rest)).toThrow(ZodError);
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when total is negative.", () => {
-      expect(() => QUESTION_STATS_DTO.parse(createValidShape({ total: -1 }))).toThrow(ZodError);
+    it("should throw a zod error when assigned a non-integer number.", () => {
+      const invalidDto = Object.assign(validDto, { total: 1.5 });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when total is not an integer.", () => {
-      expect(() => QUESTION_STATS_DTO.parse(createValidShape({ total: 1.5 }))).toThrow(ZodError);
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.total.description).toBe("Total number of questions");
     });
 
-    it("should reject when byStatus is missing.", () => {
-      const { byStatus: _, ...rest } = createValidShape();
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.total.meta()).toStrictEqual<Record<string, unknown>>({ description: "Total number of questions" });
+    });
+  });
 
-      expect(() => QUESTION_STATS_DTO.parse(rest)).toThrow(ZodError);
+  describe("byStatus", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byStatus: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when byStatus contains a negative value.", () => {
-      const valid = createValidShape();
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byStatus: "invalid" });
 
-      expect(() => QUESTION_STATS_DTO.parse({ ...valid, byStatus: { ...valid.byStatus, active: -1 } })).toThrow(ZodError);
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when byStatus contains an unknown key.", () => {
-      const valid = createValidShape();
+    it("should throw a zod error when a record value is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byStatus: { active: -1 } } as QuestionStatsDto);
 
-      expect(() => QUESTION_STATS_DTO.parse({ ...valid, byStatus: { ...valid.byStatus, unknown: 0 } })).toThrow(ZodError);
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
-    it("should reject when an extra top-level property is present.", () => {
-      expect(() => QUESTION_STATS_DTO.parse({ ...createValidShape(), extra: true })).toThrow(ZodError);
+    it("should throw a zod error when an unknown key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byStatus: { ...validDto.byStatus, unknown: 0 } });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.byStatus.description).toBe("Number of questions per status");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.byStatus.meta()).toStrictEqual<Record<string, unknown>>({ description: "Number of questions per status" });
+    });
+  });
+
+  describe("byCategory", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byCategory: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byCategory: "invalid" });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when a record value is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byCategory: { trivia: -1 } } as QuestionStatsDto);
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an unknown key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byCategory: { ...validDto.byCategory, unknown: 0 } });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.byCategory.description).toBe("Number of questions per category");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.byCategory.meta()).toStrictEqual<Record<string, unknown>>({ description: "Number of questions per category" });
+    });
+  });
+
+  describe("byCognitiveDifficulty", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byCognitiveDifficulty: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byCognitiveDifficulty: "invalid" });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when a record value is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byCognitiveDifficulty: { easy: -1 } } as QuestionStatsDto);
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an unknown key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byCognitiveDifficulty: { ...validDto.byCognitiveDifficulty, unknown: 0 } });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.byCognitiveDifficulty.description).toBe("Number of questions per cognitive difficulty");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.byCognitiveDifficulty.meta()).toStrictEqual<Record<string, unknown>>({ description: "Number of questions per cognitive difficulty" });
+    });
+  });
+
+  describe("byAuthorRole", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byAuthorRole: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byAuthorRole: "invalid" });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when a record value is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byAuthorRole: { admin: -1 } } as QuestionStatsDto);
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an unknown key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byAuthorRole: { ...validDto.byAuthorRole, unknown: 0 } });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.byAuthorRole.description).toBe("Number of questions per author role");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.byAuthorRole.meta()).toStrictEqual<Record<string, unknown>>({ description: "Number of questions per author role" });
+    });
+  });
+
+  describe("byRejectionType", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byRejectionType: undefined });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byRejectionType: "invalid" });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when a record value is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byRejectionType: { "inappropriate-content": -1 } } as QuestionStatsDto);
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an unknown key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byRejectionType: { ...validDto.byRejectionType, unknown: 0 } });
+
+      expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_STATS_DTO.shape.byRejectionType.description).toBe("Number of rejected questions per rejection type");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_STATS_DTO.shape.byRejectionType.meta()).toStrictEqual<Record<string, unknown>>({ description: "Number of rejected questions per rejection type" });
     });
   });
 });

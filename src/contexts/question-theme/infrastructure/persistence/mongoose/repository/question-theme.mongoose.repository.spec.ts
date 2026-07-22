@@ -23,6 +23,8 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
+import type { QuestionThemeFacetAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
+import type { QuestionAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
@@ -357,18 +359,22 @@ describe("Question Theme Mongoose Repository", () => {
   });
 
   describe(QuestionThemeMongooseRepository.prototype.getStats, () => {
-    const themeAggResult = {
+    const themeAggResult: QuestionThemeFacetAggregationResult = {
       total: [{ count: 3 }],
       statusRows: [{ _id: "active", count: 2 }, { _id: "archived", count: 1 }],
     };
 
+    function createMockFindQuery(leanResult: unknown[]): Partial<Record<string, Mock>> {
+      return {
+        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
+        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce(leanResult),
+      };
+    }
+
     it("should return total from theme aggregation when themes exist.", async() => {
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
       mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
-      } as never);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
 
       const result = await repositories.questionTheme.getStats();
 
@@ -378,10 +384,7 @@ describe("Question Theme Mongoose Repository", () => {
     it("should return total as 0 when no themes exist.", async() => {
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [], statusRows: [] }]);
       mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
-      } as never);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
 
       const result = await repositories.questionTheme.getStats();
 
@@ -391,10 +394,7 @@ describe("Question Theme Mongoose Repository", () => {
     it("should include all status keys in byStatus when aggregation returns status rows.", async() => {
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([themeAggResult]);
       mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
-      } as never);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
 
       const result = await repositories.questionTheme.getStats();
 
@@ -404,41 +404,55 @@ describe("Question Theme Mongoose Repository", () => {
     it("should skip null _id rows when mapping status aggregation results.", async() => {
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }, { _id: null, count: 1 }] }]);
       mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([]),
-      } as never);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byStatus.active).toBe(1);
     });
 
-    it("should include themes with zero active question count when no questions reference them.", async() => {
+    it("should return theme with zero active question count when no active questions reference a theme.", async() => {
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
       mocks.models.question.aggregate.mockResolvedValueOnce([]);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([{ _id: new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d"), slug: "cinema" }]),
-      } as never);
+      const mockQuestionThemeDocument =
+        createMockFindQuery([{ _id: new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d"), slug: "cinema" }]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>;
+      mocks.models.questionTheme.find.mockReturnValueOnce(mockQuestionThemeDocument);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byQuestionCount).toStrictEqual([{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }]);
     });
 
-    it("should populate active question counts when questions are aggregated by theme.", async() => {
+    it("should populate active question count from aggregation when questions are found.", async() => {
       const themeId = new Types.ObjectId("665f1a2b3c4d5e6f7a8b9c0d");
       mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
-      mocks.models.question.aggregate.mockResolvedValueOnce([{ _id: themeId, count: 5 }] as never);
-      mocks.models.questionTheme.find.mockReturnValueOnce({
-        sort: vi.fn<(...arguments_: unknown[]) => unknown>().mockReturnThis(),
-        lean: vi.fn<(...arguments_: unknown[]) => Promise<unknown[]>>().mockResolvedValueOnce([{ _id: themeId, slug: "cinema" }]),
-      } as never);
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ _id: themeId, count: 5 } as unknown as QuestionAggregate]);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([{ _id: themeId, slug: "cinema" }]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byQuestionCount[0].activeQuestionCount).toBe(5);
+    });
+
+    it("should query the question-theme model with slug projection when getting stats.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce(createMockFindQuery([]) as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+
+      await repositories.questionTheme.getStats();
+
+      expect(mocks.models.questionTheme.find).toHaveBeenCalledWith({}, { slug: 1 });
+    });
+
+    it("should sort the question-theme query by slug in ascending order when getting stats.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([{ total: [{ count: 1 }], statusRows: [{ _id: "active", count: 1 }] }]);
+      mocks.models.question.aggregate.mockResolvedValueOnce([]);
+      const mockDocument = createMockFindQuery([]);
+      mocks.models.questionTheme.find.mockReturnValueOnce(mockDocument as unknown as ReturnType<typeof mocks.models.questionTheme.find>);
+
+      await repositories.questionTheme.getStats();
+
+      expect(mockDocument.sort).toHaveBeenCalledWith({ slug: 1 });
     });
   });
 });

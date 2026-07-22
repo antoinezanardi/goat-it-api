@@ -827,6 +827,12 @@
             ]
           }
         ],
+        "typescript/max-params": [
+          "error",
+          {
+            "max": 12
+          }
+        ],
         "import/max-dependencies": [
           "error",
           {
@@ -1152,6 +1158,15 @@
         "**/tests/shared/utils/faketories/**/*.faketory.ts"
       ],
       "rules": {
+        "eslint/max-lines-per-function": [
+          "error",
+          {
+            "max": 50,
+            "IIFEs": false,
+            "skipComments": true,
+            "skipBlankLines": true
+          }
+        ],
         "eslint/no-magic-numbers": "off",
         "eslint/no-param-reassign": "off",
         "typescript/no-magic-numbers": "off",

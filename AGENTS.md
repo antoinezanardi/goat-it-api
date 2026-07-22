@@ -202,7 +202,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`)
 - 100% coverage required (all branches, lines, functions)
 - Excluded from coverage: `*.module.ts`, `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
-- **Stryker mutation excludes differ**: mutation does NOT exclude `*.dto.ts`, `*.entities.ts`, `*.value-objects.ts`, or `*.pipeline.ts` — these files ARE subject to mutation testing.
+- **Stryker mutation excludes differ**: mutation excludes `*.entities.ts` and `*.value-objects.ts` in addition to all coverage exclusions (`*.pipeline.ts`, `*.schema.ts`, `*.constants.ts`, `*.module.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`). Only `*.dto.ts` files remain subject to mutation testing beyond standard source files.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; `it.each` for parametrized cases
 - Private methods tested via `ClassName["privateMethod"](...)`

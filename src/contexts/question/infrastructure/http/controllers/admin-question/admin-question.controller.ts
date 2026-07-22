@@ -34,8 +34,6 @@ import type { QuestionStatsDto } from "@question/application/dto/question-stats/
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
 export class AdminQuestionController {
-  // Acceptable as the controller requires all use cases for admin question operations
-  // oxlint-disable-next-line eslint/max-params
   public constructor(
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
     private readonly getQuestionStatsUseCase: GetQuestionStatsUseCase,

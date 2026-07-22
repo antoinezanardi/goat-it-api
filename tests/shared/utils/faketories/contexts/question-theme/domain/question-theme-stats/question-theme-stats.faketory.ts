@@ -2,9 +2,9 @@ import { faker } from "@faker-js/faker";
 
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 
-import type { ThemeActiveQuestionCount, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
+import type { QuestionThemeActiveQuestionStatsCount, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 
-function createFakeThemeActiveQuestionCount(overrides: Partial<ThemeActiveQuestionCount> = {}): ThemeActiveQuestionCount {
+function createFakeThemeActiveQuestionCount(overrides: Partial<QuestionThemeActiveQuestionStatsCount> = {}): QuestionThemeActiveQuestionStatsCount {
   return {
     themeId: faker.database.mongodbObjectId(),
     themeSlug: faker.lorem.slug(),

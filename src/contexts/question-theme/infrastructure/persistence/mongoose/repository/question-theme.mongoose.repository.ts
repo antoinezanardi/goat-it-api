@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Types, UpdateQuery } from "mongoose";
+import { Model, UpdateQuery } from "mongoose";
 
 import { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
 import { QUESTION_THEME_STATUSES, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
@@ -8,6 +8,7 @@ import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
+import { QUESTION_THEME_FACET_MONGOOSE_REPOSITORY_PIPELINE, QUESTION_ACTIVE_QUESTION_COUNT_MONGOOSE_REPOSITORY_PIPELINE } from "@question-theme/infrastructure/persistence/mongoose/repository/pipelines/question-theme-stats-pipeline/question-theme-stats.mongoose.repository.pipeline";
 
 import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
@@ -16,9 +17,9 @@ import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mon
 
 import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
 
-import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeStats, ThemeActiveQuestionCount } from "@question-theme/domain/types/question-theme.types";
+import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeActiveQuestionStatsCount, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
-import type { QuestionThemeMongooseDocument } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
+import type { QuestionCountAggregationRow, QuestionThemeFacetAggregationResult, QuestionThemeLeanProjection, QuestionThemeMongooseDocument } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
@@ -122,7 +123,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const activeCountMap = await this.getActiveQuestionCountMap();
     const allThemes = await this.getThemesSortedBySlug();
 
-    const byQuestionCount: ThemeActiveQuestionCount[] = [];
+    const byQuestionCount: QuestionThemeActiveQuestionStatsCount[] = [];
     for (const theme of allThemes) {
       byQuestionCount.push({
         themeId: theme._id.toString(),
@@ -137,19 +138,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     total: number;
     byStatus: Record<QuestionThemeStatus, number>;
   }> {
-    // Acceptable as aggregation $facet pipeline returns a document with these exact shapes
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const [themeAggResult] = await this.questionThemeModel.aggregate<{
-      total: { count: number }[];
-      statusRows: { _id: string; count: number }[];
-    }>([
-      {
-        $facet: {
-          total: [{ $count: "count" }],
-          statusRows: [{ $group: { _id: "$status", count: { $sum: 1 } } }],
-        },
-      },
-    ]);
+    const [themeAggResult] = await this.questionThemeModel.aggregate<QuestionThemeFacetAggregationResult>(QUESTION_THEME_FACET_MONGOOSE_REPOSITORY_PIPELINE);
     const total = themeAggResult.total.length > 0 ? themeAggResult.total[0].count : 0;
     const byStatus = QuestionThemeMongooseRepository.mapAggregationRowsToRecord(
       themeAggResult.statusRows,
@@ -160,16 +149,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   }
 
   private async getActiveQuestionCountMap(): Promise<Map<string, number>> {
-    // Acceptable as aggregation $group pipeline returns these exact fields
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    const activeCountRows = await this.questionModel.aggregate<{
-      _id: Types.ObjectId;
-      count: number;
-    }>([
-      { $match: { status: "active" } },
-      { $unwind: "$themes" },
-      { $group: { _id: "$themes.themeId", count: { $sum: 1 } } },
-    ]);
+    const activeCountRows = await this.questionModel.aggregate<QuestionCountAggregationRow>(QUESTION_ACTIVE_QUESTION_COUNT_MONGOOSE_REPOSITORY_PIPELINE);
 
     const activeCountMap: Map<string, number> = new Map();
     for (const row of activeCountRows) {
@@ -178,7 +158,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return activeCountMap;
   }
 
-  private async getThemesSortedBySlug(): Promise<{ _id: Types.ObjectId; slug: string }[]> {
+  private async getThemesSortedBySlug(): Promise<QuestionThemeLeanProjection[]> {
     // Acceptable as this is a Mongoose Query method, not Array.prototype.find
     // oxlint-disable-next-line unicorn/no-array-method-this-argument
     const allThemes = await this.questionThemeModel.find({}, { slug: 1 }).sort({ slug: 1 }).lean();

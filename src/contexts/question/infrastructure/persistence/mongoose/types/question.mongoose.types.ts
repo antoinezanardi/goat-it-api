@@ -29,6 +29,15 @@ type QuestionMongooseInsertPayload = Parameters<Model<QuestionMongooseDocument>[
 
 type QuestionThemeAssignmentMongooseInsertPayload = QuestionMongooseDocument["themes"][number];
 
+type QuestionStatsAggregationResult = {
+  totalStage: { count: number }[];
+  byStatusStage: { _id: string; count: number }[];
+  byCategoryStage: { _id: string; count: number }[];
+  byCognitiveDifficultyStage: { _id: string; count: number }[];
+  byAuthorRoleStage: { _id: string; count: number }[];
+  byRejectionTypeStage: { _id: string; count: number }[];
+};
+
 export type {
   QuestionMongooseDocument,
   QuestionAggregatePipeline,
@@ -36,4 +45,5 @@ export type {
   QuestionAggregate,
   QuestionMongooseInsertPayload,
   QuestionThemeAssignmentMongooseInsertPayload,
+  QuestionStatsAggregationResult,
 };

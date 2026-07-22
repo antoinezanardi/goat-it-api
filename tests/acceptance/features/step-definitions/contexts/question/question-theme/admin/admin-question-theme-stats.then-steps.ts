@@ -11,7 +11,12 @@ import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-const QUESTION_THEME_STATS_FIELD_VALUE_ROW_SCHEMA = z.strictObject({
+const QUESTION_THEME_STATS_TOTAL_SCHEMA = z.strictObject({
+  field: z.literal("total"),
+  value: z.coerce.number(),
+});
+
+const QUESTION_THEME_STATS_KEY_VALUE_SCHEMA = z.strictObject({
   field: z.string(),
   value: z.coerce.number(),
 });
@@ -21,25 +26,24 @@ const QUESTION_THEME_STATS_BY_QUESTION_COUNT_ROW_SCHEMA = z.strictObject({
   activeQuestionCount: z.coerce.number(),
 });
 
-Then(/^the response should contain a Question Theme Stats DTO with:$/u, function(this: GoatItWorld, statsDataTable: DataTable): void {
+Then(/^the response should contain question themes stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
   const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
-  const dataTableRows = validateDataTableAndGetRows(statsDataTable, QUESTION_THEME_STATS_FIELD_VALUE_ROW_SCHEMA);
+  const rows = validateDataTableAndGetRows(dataTable, QUESTION_THEME_STATS_TOTAL_SCHEMA);
 
-  for (const { field, value } of dataTableRows) {
-    const parts = field.split(".");
-    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-    let actual: Record<string, unknown> | number = stats;
+  for (const { field, value } of rows) {
+    expect(stats[field]).toBe(value);
+  }
+});
 
-    for (const part of parts) {
-      if (typeof actual !== "object") {
-        throw new TypeError(`Cannot navigate path "${field}": "${part}" is not an object.`);
-      }
-      // Acceptable as we navigate a known nested structure
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      actual = actual[part] as number;
-    }
+Then(/^the response should contain question themes status stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, QUESTION_THEME_STATS_KEY_VALUE_SCHEMA);
+  // Acceptable as we index a known Record with a runtime-validated key
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const byStatus = stats.byStatus as Record<string, number>;
 
-    expect(actual).toBe(value);
+  for (const { field, value } of rows) {
+    expect(byStatus[field]).toBe(value);
   }
 });
 

@@ -25,11 +25,11 @@ type FindRandomQuestionsOptions = {
 
 type QuestionStats = {
   total: number;
-  byStatus: Record<QuestionStatus, number>;
-  byCategory: Record<QuestionCategory, number>;
-  byCognitiveDifficulty: Record<QuestionCognitiveDifficulty, number>;
-  byAuthorRole: Record<QuestionAuthorRole, number>;
-  byRejectionType: Record<QuestionRejectionType, number>;
+  byStatus: Partial<Record<QuestionStatus, number>>;
+  byCategory: Partial<Record<QuestionCategory, number>>;
+  byCognitiveDifficulty: Partial<Record<QuestionCognitiveDifficulty, number>>;
+  byAuthorRole: Partial<Record<QuestionAuthorRole, number>>;
+  byRejectionType: Partial<Record<QuestionRejectionType, number>>;
 };
 
 export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomQuestionsOptions, QuestionStats };

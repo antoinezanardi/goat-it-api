@@ -6,7 +6,7 @@ import type { QuestionThemeStats } from "@question-theme/domain/types/question-t
 describe(createQuestionThemeStatsDtoFromStats, () => {
   const emptyStats: QuestionThemeStats = {
     total: 0,
-    byStatus: {} as QuestionThemeStats["byStatus"],
+    byStatus: {},
     byQuestionCount: [],
   };
 
@@ -24,14 +24,14 @@ describe(createQuestionThemeStatsDtoFromStats, () => {
   });
 
   it("should preserve active status value when provided.", () => {
-    const stats: QuestionThemeStats = { ...emptyStats, byStatus: { active: 4 } as QuestionThemeStats["byStatus"] };
+    const stats: QuestionThemeStats = { ...emptyStats, byStatus: { active: 4 } };
     const result = createQuestionThemeStatsDtoFromStats(stats);
 
     expect(result.byStatus.active).toBe(4);
   });
 
   it("should default archived status to zero when not provided.", () => {
-    const stats: QuestionThemeStats = { ...emptyStats, byStatus: { active: 4 } as QuestionThemeStats["byStatus"] };
+    const stats: QuestionThemeStats = { ...emptyStats, byStatus: { active: 4 } };
     const result = createQuestionThemeStatsDtoFromStats(stats);
 
     expect(result.byStatus.archived).toBe(0);

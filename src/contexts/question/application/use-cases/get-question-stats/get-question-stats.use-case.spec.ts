@@ -5,7 +5,7 @@ import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-que
 
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
 
-import type { QuestionStats } from "@question/domain/types/question.types";
+import { createFakeQuestionStats } from "@faketories/contexts/question/domain/question-stats/question-stats.faketory";
 
 describe("Get Question Stats Use Case", () => {
   let useCase: GetQuestionStatsUseCase;
@@ -33,7 +33,7 @@ describe("Get Question Stats Use Case", () => {
     });
 
     it("should return mapped DTO with all status keys present when stats are retrieved.", async() => {
-      const stats = { total: 1, byStatus: {}, byCategory: {}, byCognitiveDifficulty: {}, byAuthorRole: {}, byRejectionType: {} } as QuestionStats;
+      const stats = createFakeQuestionStats({ total: 1 });
       mockedRepository.getStats.mockResolvedValueOnce(stats);
 
       const result = await useCase.getStats();
@@ -42,7 +42,7 @@ describe("Get Question Stats Use Case", () => {
     });
 
     it("should return mapped DTO with correct total when repository returns total.", async() => {
-      const stats = { total: 7, byStatus: {}, byCategory: {}, byCognitiveDifficulty: {}, byAuthorRole: {}, byRejectionType: {} } as QuestionStats;
+      const stats = createFakeQuestionStats({ total: 7 });
       mockedRepository.getStats.mockResolvedValueOnce(stats);
 
       const result = await useCase.getStats();

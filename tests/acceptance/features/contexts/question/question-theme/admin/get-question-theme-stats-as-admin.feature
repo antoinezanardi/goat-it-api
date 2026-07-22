@@ -11,11 +11,13 @@ Feature: Get Question Theme Stats as Admin
     Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves question theme statistics
     Then the request should have succeeded with status code 200
-    And the response should contain a Question Theme Stats DTO with:
-      | field             | value |
-      | total             | 60    |
-      | byStatus.active   | 57    |
-      | byStatus.archived | 3     |
+    And the response should contain question themes stats with:
+      | field | value |
+      | total | 60    |
+    And the response should contain question themes status stats with:
+      | field    | value |
+      | active   | 57    |
+      | archived | 3     |
     And the response's byQuestionCount should contain:
       | themeSlug | activeQuestionCount |
       | animals   | 2                   |
@@ -29,11 +31,13 @@ Feature: Get Question Theme Stats as Admin
   Scenario: Get question theme stats with empty database
     When the admin retrieves question theme statistics
     Then the request should have succeeded with status code 200
-    And the response should contain a Question Theme Stats DTO with:
-      | field           | value |
-      | total           | 0     |
-      | byStatus.active | 0     |
-      | byStatus.archived | 0   |
+    And the response should contain question themes stats with:
+      | field | value |
+      | total | 0     |
+    And the response should contain question themes status stats with:
+      | field    | value |
+      | active   | 0     |
+      | archived | 0     |
 
   Scenario: Trying to get question theme stats without API key
     When the admin retrieves question theme statistics without an API key

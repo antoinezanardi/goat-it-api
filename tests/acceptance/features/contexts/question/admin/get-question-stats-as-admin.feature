@@ -16,54 +16,74 @@ Feature: Get Question Stats as Admin
     Given the database is populated with questions fixture set with name "sixty-questions"
     When the admin retrieves question statistics
     Then the request should have succeeded with status code 200
-    And the response should contain a Question Stats DTO with:
-      | field                             | value |
-      | total                             | 60    |
-      | byStatus.active                   | 57    |
-      | byStatus.pending                  | 1     |
-      | byStatus.rejected                 | 1     |
-      | byStatus.archived                 | 1     |
-      | byCategory.trivia                 | 15    |
-      | byCategory.lexicon                | 15    |
-      | byCategory.riddle                 | 15    |
-      | byCategory.explanation            | 15    |
-      | byCognitiveDifficulty.easy        | 19    |
-      | byCognitiveDifficulty.medium      | 19    |
-      | byCognitiveDifficulty.hard        | 22    |
-      | byAuthorRole.admin                | 22    |
-      | byAuthorRole.ai                   | 18    |
-      | byAuthorRole.game                 | 20    |
-      | byRejectionType.inappropriate-content | 0  |
-      | byRejectionType.incorrect-information | 0  |
-      | byRejectionType.poor-quality          | 0  |
-      | byRejectionType.duplicate-question    | 1  |
-      | byRejectionType.other                 | 0  |
+    And the response should contain questions stats with:
+      | field | value |
+      | total | 60    |
+    And the response should contain questions status stats with:
+      | field    | value |
+      | active   | 57    |
+      | pending  | 1     |
+      | rejected | 1     |
+      | archived | 1     |
+    And the response should contain questions category stats with:
+      | field       | value |
+      | trivia      | 15    |
+      | lexicon     | 15    |
+      | riddle      | 15    |
+      | explanation | 15    |
+    And the response should contain questions cognitive difficulty stats with:
+      | field  | value |
+      | easy   | 19    |
+      | medium | 19    |
+      | hard   | 22    |
+    And the response should contain questions author role stats with:
+      | field | value |
+      | admin | 22    |
+      | ai    | 18    |
+      | game  | 20    |
+    And the response should contain questions rejection type stats with:
+      | field                   | value |
+      | inappropriate-content   | 0     |
+      | incorrect-information   | 0     |
+      | poor-quality            | 0     |
+      | duplicate-question      | 1     |
+      | other                   | 0     |
 
   Scenario: Get question stats with empty database
     When the admin retrieves question statistics
     Then the request should have succeeded with status code 200
-    And the response should contain a Question Stats DTO with:
-      | field                             | value |
-      | total                             | 0     |
-      | byStatus.active                   | 0     |
-      | byStatus.pending                  | 0     |
-      | byStatus.rejected                 | 0     |
-      | byStatus.archived                 | 0     |
-      | byCategory.trivia                 | 0     |
-      | byCategory.lexicon                | 0     |
-      | byCategory.riddle                 | 0     |
-      | byCategory.explanation            | 0     |
-      | byCognitiveDifficulty.easy        | 0     |
-      | byCognitiveDifficulty.medium      | 0     |
-      | byCognitiveDifficulty.hard        | 0     |
-      | byAuthorRole.admin                | 0     |
-      | byAuthorRole.ai                   | 0     |
-      | byAuthorRole.game                 | 0     |
-      | byRejectionType.inappropriate-content | 0  |
-      | byRejectionType.incorrect-information | 0  |
-      | byRejectionType.poor-quality          | 0  |
-      | byRejectionType.duplicate-question    | 0  |
-      | byRejectionType.other                 | 0  |
+    And the response should contain questions stats with:
+      | field | value |
+      | total | 0     |
+    And the response should contain questions status stats with:
+      | field    | value |
+      | active   | 0     |
+      | pending  | 0     |
+      | rejected | 0     |
+      | archived | 0     |
+    And the response should contain questions category stats with:
+      | field       | value |
+      | trivia      | 0     |
+      | lexicon     | 0     |
+      | riddle      | 0     |
+      | explanation | 0     |
+    And the response should contain questions cognitive difficulty stats with:
+      | field  | value |
+      | easy   | 0     |
+      | medium | 0     |
+      | hard   | 0     |
+    And the response should contain questions author role stats with:
+      | field | value |
+      | admin | 0     |
+      | ai    | 0     |
+      | game  | 0     |
+    And the response should contain questions rejection type stats with:
+      | field                   | value |
+      | inappropriate-content   | 0     |
+      | incorrect-information   | 0     |
+      | poor-quality            | 0     |
+      | duplicate-question      | 0     |
+      | other                   | 0     |
 
   Scenario: Trying to get question stats without API key
     When the admin retrieves question statistics without an API key

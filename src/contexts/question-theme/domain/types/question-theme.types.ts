@@ -8,7 +8,7 @@ type AdminQuestionThemeFilterOptions = {
   status: QuestionThemeStatus;
 };
 
-type ThemeActiveQuestionCount = {
+type QuestionThemeActiveQuestionStatsCount = {
   themeId: string;
   themeSlug: string;
   activeQuestionCount: number;
@@ -16,13 +16,13 @@ type ThemeActiveQuestionCount = {
 
 type QuestionThemeStats = {
   total: number;
-  byStatus: Record<QuestionThemeStatus, number>;
-  byQuestionCount: ThemeActiveQuestionCount[];
+  byStatus: Partial<Record<QuestionThemeStatus, number>>;
+  byQuestionCount: QuestionThemeActiveQuestionStatsCount[];
 };
 
 export type {
   QuestionThemeSortableField,
   AdminQuestionThemeFilterOptions,
-  ThemeActiveQuestionCount,
+  QuestionThemeActiveQuestionStatsCount,
   QuestionThemeStats,
 };
