@@ -7,11 +7,13 @@ import { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-que
 import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
 import { QuestionThemeCreationNestZodDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
 import { QuestionThemeModificationNestZodDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import { QuestionThemeStatsNestZodDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
+import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
 
@@ -22,6 +24,8 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
+import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
+
 @AdminAuth()
 @Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
 export class AdminQuestionThemeController {
@@ -29,6 +33,7 @@ export class AdminQuestionThemeController {
     private readonly findQuestionThemesUseCase: FindQuestionThemesUseCase,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly createQuestionThemeUseCase: CreateQuestionThemeUseCase,
+    private readonly getQuestionThemeStatsUseCase: GetQuestionThemeStatsUseCase,
     private readonly modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase,
     private readonly archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase,
   ) {}
@@ -51,6 +56,23 @@ export class AdminQuestionThemeController {
     const questionThemes = await this.findQuestionThemesUseCase.list(findAllOptions);
 
     return questionThemes.map(questionTheme => createAdminQuestionThemeDtoFromEntity(questionTheme));
+  }
+
+  @Get("/stats")
+  @ApiOperation({
+    tags: [
+      SwaggerTags.ADMIN,
+      SwaggerTags.QUESTION_THEMES,
+    ],
+    summary: "Get question theme statistics for dashboard",
+    description: "Returns aggregated statistics about question themes including counts by status and active question counts per theme.",
+  })
+  @ZodResponse({
+    status: HttpStatus.OK,
+    type: QuestionThemeStatsNestZodDto,
+  })
+  public async getQuestionThemeStats(): Promise<QuestionThemeStatsDto> {
+    return this.getQuestionThemeStatsUseCase.getStats();
   }
 
   @Get("/:id")

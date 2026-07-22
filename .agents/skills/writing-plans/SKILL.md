@@ -1,4 +1,7 @@
-# Skill: writing-plans
+---
+name: writing-plans
+description: Write comprehensive implementation plans from an approved spec with bite-sized tasks (2-5 min steps), complete code, and no placeholders for the goat-it-api NestJS 11 project
+---
 
 # Writing Implementation Plans
 

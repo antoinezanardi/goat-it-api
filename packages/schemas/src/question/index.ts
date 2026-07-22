@@ -29,6 +29,7 @@ export { FIND_RANDOM_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-
 export { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto.shape";
 export { QUESTION_THEME_ASSIGNMENT_CREATION_DTO } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 export { QUESTION_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-modification.dto.shape";
+export { QUESTION_STATS_DTO } from "@question/application/dto/question-stats/question-stats.dto.shape";
 export { QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 export { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
 export { QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
@@ -47,6 +48,7 @@ export type { FindRandomQuestionsQueryDto } from "@question/application/dto/find
 export type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
 export type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 export type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
+export type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 export type { QuestionThemeAssignmentModificationDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 export type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 export type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";

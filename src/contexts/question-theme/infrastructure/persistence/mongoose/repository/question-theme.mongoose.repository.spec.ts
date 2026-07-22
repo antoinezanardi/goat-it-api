@@ -19,6 +19,7 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
+import type { QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
@@ -333,6 +334,120 @@ describe("Question Theme Mongoose Repository", () => {
       const actualQuestionTheme = await repositories.questionTheme.archive(questionThemeId);
 
       expect(actualQuestionTheme).toBeUndefined();
+    });
+  });
+
+  describe(QuestionThemeMongooseRepository.prototype.getStats, () => {
+    const statsAggResult: QuestionThemeStatsAggregationResult = {
+      total: [{ count: 3 }],
+      statusRows: [{ active: 2, archived: 1 }],
+      byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
+    };
+
+    it("should return total from aggregation when themes exist.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.total).toBe(3);
+    });
+
+    it("should return total as 0 when no themes exist.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [],
+  statusRows: [],
+  byQuestionCount: [],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.total).toBe(0);
+    });
+
+    it("should include all status keys in byStatus when aggregation returns status rows.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(Object.keys(result.byStatus)).toStrictEqual(["active", "archived"]);
+    });
+
+    it("should skip status rows with null id when building byStatus map.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{}],
+  byQuestionCount: [],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(Object.keys(result.byStatus)).toStrictEqual([]);
+    });
+
+    it("should return theme with zero active question count when no active questions reference a theme.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{ active: 1 }],
+  byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount).toStrictEqual([{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }]);
+    });
+
+    it("should populate active question count from lookup when questions are found.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 1 }],
+  statusRows: [{ active: 1 }],
+  byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 5 }],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount[0].activeQuestionCount).toBe(5);
+    });
+
+    it("should return byQuestionCount sorted by slug when aggregation returns multiple themes.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 2 }],
+  statusRows: [{ active: 2 }],
+  byQuestionCount: [
+    { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
+    { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
+  ],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount[0].themeSlug).toBe("cinema");
+    });
+
+    it("should return second theme by slug order when aggregation returns multiple themes.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+{
+  total: [{ count: 2 }],
+  statusRows: [{ active: 2 }],
+  byQuestionCount: [
+    { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
+    { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
+  ],
+} satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byQuestionCount[1].themeSlug).toBe("sport");
     });
   });
 });

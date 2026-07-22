@@ -10,6 +10,7 @@ type QuestionThemeMongooseFindQuery = Promise<QuestionThemeMongooseDocumentStub[
 };
 
 type QuestionThemeMongooseModelStub = {
+  aggregate: (pipeline?: unknown[]) => Promise<unknown[]>;
   find: (...arguments_: unknown[]) => QuestionThemeMongooseFindQuery;
   findOne: () => Promise<QuestionThemeMongooseDocumentStub | null>;
   findById: (id: string) => Promise<QuestionThemeMongooseDocumentStub | null>;
@@ -18,6 +19,7 @@ type QuestionThemeMongooseModelStub = {
 };
 
 type MockedQuestionThemeMongooseModel = {
+  aggregate: Mock<QuestionThemeMongooseModelStub["aggregate"]>;
   find: Mock<QuestionThemeMongooseModelStub["find"]>;
   findQuery: QuestionThemeMongooseFindQuery;
   findOne: Mock<QuestionThemeMongooseModelStub["findOne"]>;
@@ -49,6 +51,7 @@ function createMockedQuestionThemeMongooseModel(overrides: Partial<MockedQuestio
   const findQuery = overrides.findQuery ?? createQuestionThemeMongooseFindQuery(defaultDocuments);
 
   return {
+    aggregate: vi.fn<QuestionThemeMongooseModelStub["aggregate"]>().mockResolvedValue([]),
     find: vi.fn<QuestionThemeMongooseModelStub["find"]>().mockReturnValue(findQuery),
     findQuery,
     findOne: vi.fn<QuestionThemeMongooseModelStub["findOne"]>().mockResolvedValue(createFakeQuestionThemeDocument()),

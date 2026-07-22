@@ -1,5 +1,5 @@
 import type { ADMIN_QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
-import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty, QuestionStatus } from "@question/domain/types/question.value-objects";
+import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty, QuestionRejectionType, QuestionStatus } from "@question/domain/types/question.value-objects";
 
 import type { TupleToUnion } from "type-fest";
 
@@ -23,4 +23,13 @@ type FindRandomQuestionsOptions = {
   themeIds?: string[];
 };
 
-export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomQuestionsOptions };
+type QuestionStats = {
+  total: number;
+  byStatus: Partial<Record<QuestionStatus, number>>;
+  byCategory: Partial<Record<QuestionCategory, number>>;
+  byCognitiveDifficulty: Partial<Record<QuestionCognitiveDifficulty, number>>;
+  byAuthorRole: Partial<Record<QuestionAuthorRole, number>>;
+  byRejectionType: Partial<Record<QuestionRejectionType, number>>;
+};
+
+export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomQuestionsOptions, QuestionStats };
