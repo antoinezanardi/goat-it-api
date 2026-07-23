@@ -18,8 +18,9 @@ export default defineConfig({
     "@faketories": new URL("../../tests/shared/utils/faketories", import.meta.url).pathname,
   },
   format: ["esm"],
+  unbundle: true,
   deps: {
-    neverBundle: true,
+    neverBundle: ["zod", "type-fest", "@faker-js/faker"],
   },
   attw: {
     enabled: true,
@@ -27,7 +28,7 @@ export default defineConfig({
   },
   clean: true,
   dts: true,
-  unbundle: true,
+
   outDir: "dist",
   failOnWarn: true,
   sourcemap: true,
