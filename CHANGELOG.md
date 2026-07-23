@@ -1,5 +1,74 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.20.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.19.0...v1.20.0) (2026-07-14)
+
+### 🚀 Features
+
+* **find-all:** add optional `limit` query parameter to find-all endpoints ([#863](https://github.com/antoinezanardi/goat-it-api/issues/863)) ([a639c6d](https://github.com/antoinezanardi/goat-it-api/commit/a639c6de1b13a204668f453b52d749976c0d7f88))
+* **question:** add GET /questions/random endpoint ([#872](https://github.com/antoinezanardi/goat-it-api/issues/872)) ([0df9259](https://github.com/antoinezanardi/goat-it-api/commit/0df9259f34e317154d29bf3f9f6126db70a39f7e))
+* **question:** add optional filter query parameters to GET /questions/random ([#873](https://github.com/antoinezanardi/goat-it-api/issues/873)) ([96ca4c5](https://github.com/antoinezanardi/goat-it-api/commit/96ca4c51cd62f39af48ee0d8bfcd2bd07e6709a5))
+* **sort:** make sort-by and sort-order optional in Find-All DTO input types ([#862](https://github.com/antoinezanardi/goat-it-api/issues/862)) ([8242d77](https://github.com/antoinezanardi/goat-it-api/commit/8242d77173620c2717e6f683d30e0c882021f98b))
+
+### 📖 Docs
+
+* **agents:** development workflow ([#859](https://github.com/antoinezanardi/goat-it-api/issues/859)) ([960c5f0](https://github.com/antoinezanardi/goat-it-api/commit/960c5f05a18ca3526d3f54da5ac28fff1e6e0036))
+
+### ⚡️ Performance
+
+* **acceptance:** run tests in parallel with 4 isolated workers ([#886](https://github.com/antoinezanardi/goat-it-api/issues/886)) ([739457e](https://github.com/antoinezanardi/goat-it-api/commit/739457ee650e02afe1e01bca1e299675a51c150e))
+* **vitest:** enable isolate:false for faster unit tests ([#883](https://github.com/antoinezanardi/goat-it-api/issues/883)) ([ac322a1](https://github.com/antoinezanardi/goat-it-api/commit/ac322a163609e5260f7a95d628b05ad2eef15b98))
+* **vitest:** switch test pool from forks to threads ([#880](https://github.com/antoinezanardi/goat-it-api/issues/880)) ([916b123](https://github.com/antoinezanardi/goat-it-api/commit/916b123296d3a28a7f922bd019340b1e4d280a31))
+
+### ✅ Tests
+
+* **fixtures:** add sixty questions and themes fixture sets ([#874](https://github.com/antoinezanardi/goat-it-api/issues/874)) ([30dc707](https://github.com/antoinezanardi/goat-it-api/commit/30dc707ffdcdcd381a6a33843f347192268b389a))
+* migrate filter and random-questions tests to sixty fixtures ([#881](https://github.com/antoinezanardi/goat-it-api/issues/881)) ([fb6d4dd](https://github.com/antoinezanardi/goat-it-api/commit/fb6d4dd495ba81a57d984c463889dadcdb5dbc24))
+
+### 🧹 Chore
+
+* **locale:** export isValidLocale helper from locale.helpers ([#913](https://github.com/antoinezanardi/goat-it-api/issues/913)) ([09edded](https://github.com/antoinezanardi/goat-it-api/commit/09edded8968c5cd11830d93fb288293f435f2803))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `pin conventional-changelog-writer to v9 for conventionalcommits@10 compat` |  |
+| `@fastify/static` | `v10` |
+| `@nestjs/swagger` | `^11.4.5` |
+| `axios` | `^1.18.1` |
+| `fastify` | `^5.9.0` |
+| `mongoose` | `^9.7.4` |
+| `type-fest` | `^5.8.0` |
+| `nest monorepo` | `^11.1.28` |
+| `actions/cache action` | `v6` |
+| `actions/setup-node action` | `v7` |
+| `commitlint monorepo` | `^21.2.0` |
+| `@arethetypeswrong/core` | `^0.18.5` |
+| `@eslint/config-inspector` | `^3.1.0` |
+| `@nestjs/cli` | `^11.0.24` |
+| `@types/node` | `^24.13.3` |
+| `@typescript/native-preview` | `v7.0.0-dev.20260707.2` |
+| `@vitest/eslint-plugin` | `^1.6.23` |
+| `commitlint` | `^21.2.1` |
+| `conventional-changelog-conventionalcommits` | `v10` |
+| `conventional-changelog-writer` | `^9.2.0` |
+| `eslint` | `^10.7.0` |
+| `eslint-plugin-import-x` | `^4.17.1` |
+| `eslint-plugin-oxlint` | `v1.73.0` |
+| `eslint-plugin-unicorn` | `v71` |
+| `oxlint` | `^1.73.0` |
+| `oxlint-tsgolint` | `^0.24.0` |
+| `semantic-release` | `^25.0.7` |
+| `tsdown` | `^0.22.7` |
+| `tsx` | `^4.23.1` |
+| `node.js` | `v26.5.0` |
+| `oxlint monorepo` | `v1.72.0` |
+| `pnpm` | `v11.9.0` |
+| `raven-actions/actionlint action` | `v2.2.0` |
+| `swc monorepo` |  |
+| `typescript-eslint monorepo` | `^8.64.0` |
+| `vitest monorepo` | `^4.1.10` |
+
 ## [1.19.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.18.1...v1.19.0) (2026-06-21)
 
 ### 🚀 Features
