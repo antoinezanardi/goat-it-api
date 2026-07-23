@@ -1,5 +1,46 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.21.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.20.0...v1.21.0) (2026-07-23)
+
+### 🚀 Features
+
+* **schemas:** export DTO faketories under ./testing/* paths ([#944](https://github.com/antoinezanardi/goat-it-api/issues/944)) ([12f53cd](https://github.com/antoinezanardi/goat-it-api/commit/12f53cd26ccd6e9f8de5d94e8b20c88750eb2d80))
+* **stats:** add admin question and question-theme stats endpoints ([#951](https://github.com/antoinezanardi/goat-it-api/issues/951)) ([9de8496](https://github.com/antoinezanardi/goat-it-api/commit/9de849646c9378253bfe07b93d78640b724ceee9))
+
+### 📖 Docs
+
+* **agents:** streamline agent guidelines and update commands section ([#919](https://github.com/antoinezanardi/goat-it-api/issues/919)) ([085e5e3](https://github.com/antoinezanardi/goat-it-api/commit/085e5e3ee305305ae73e02a58274f104ffdd031e))
+
+### 🔩 Refactor
+
+* **skills:** extract plan-writer custom skill from upstream writing-plans ([#923](https://github.com/antoinezanardi/goat-it-api/issues/923)) ([bb07a05](https://github.com/antoinezanardi/goat-it-api/commit/bb07a05755df55f4472db5eee1ec444023acf0cb))
+
+### ✅ Tests
+
+* **env:** parameterize MONGODB_HOST tests for better coverage ([#940](https://github.com/antoinezanardi/goat-it-api/issues/940)) ([919b071](https://github.com/antoinezanardi/goat-it-api/commit/919b07145b03d23e64dd20997617c75288eade88))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@fastify/static` | `^10.1.2` |
+| `@nestjs/swagger` | `^11.4.6` |
+| `mongoose` | `^9.8.0` |
+| `@cucumber/cucumber` | `^13.2.0` |
+| `@faker-js/faker` | `v10` |
+| `@swc/core` | `^1.15.46` |
+| `eslint-plugin-unicorn` | `v72` |
+| `lint-staged` | `^17.1.1` |
+| `oxlint` | `^1.74.0` |
+| `oxlint-tsgolint` | `v7` |
+| `semantic-release` | `^25.0.8` |
+| `tsdown` | `^0.22.9` |
+| `mongo docker tag` | `v8.3.7` |
+| `oxlint monorepo` | `v1.75.0` |
+| `pnpm` | `v11.16.0` |
+| `semantic-release monorepo (major)` |  |
+| `typescript-eslint monorepo` | `^8.65.0` |
+
 ## [1.20.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.19.0...v1.20.0) (2026-07-14)
 
 ### 🚀 Features
