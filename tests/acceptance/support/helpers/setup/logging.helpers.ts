@@ -3,8 +3,8 @@ import path from "node:path";
 
 import { DEFAULT_TAIL_LINES, LOGS_BASE_DIR, RING_BUFFER_DEFAULT_CAPACITY } from "@acceptance-support/constants/logging.constants";
 
-import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
+import type { ITestCaseHookParameter as TestCaseHookParameter } from "@cucumber/cucumber";
 
 import type { AppLogsManager, AppLogsFlushResult } from "@acceptance-support/types/hooks.types";
 
@@ -112,7 +112,7 @@ function printLogTail(streamName: string, filePath: string, lines: string[], tai
  * @param appLogs
  * @param scenario
  */
-async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: ITestCaseHookParameter): Promise<void> {
+async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: TestCaseHookParameter): Promise<void> {
   try {
     const { stdoutPath, stderrPath, stdoutTail, stderrTail } = await appLogs.flushLogs();
 

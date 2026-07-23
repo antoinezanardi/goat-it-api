@@ -9,12 +9,14 @@ permission:
   edit: deny
   bash:
     "*": "ask"
-    "git status*": "allow"
-    "rtk git status*": "allow"
-    "git log*": "allow"
-    "rtk git log*": "allow"
-    "git diff*": "allow"
-    "rtk git diff*": "allow"
+    "git status *": "allow"
+    "rtk git status *": "allow"
+    "git log *": "allow"
+    "rtk git log *": "allow"
+    "git branch *": "allow"
+    "rtk git branch *": "allow"
+    "git diff *": "allow"
+    "rtk git diff *": "allow"
     "git add *": "deny"
     "git commit *": "deny"
     "git push *": "deny"
@@ -120,5 +122,4 @@ You are the final reviewer. You review the whole implementation holistically —
 
 ## Skills to load
 
-- `requesting-code-review` — for the review structure
 - `create-faketory` / `create-mock` / `write-unit-test` / `write-acceptance-test` — to evaluate test quality

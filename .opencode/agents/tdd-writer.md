@@ -79,5 +79,5 @@ You are the TDD red-phase writer. You write the failing test(s) for ONE task. No
 
 ## Skills to load
 
-- `test-driven-development` — RED phase only
+
 - `create-faketory` / `create-mock` / `write-unit-test` — for patterns and conventions

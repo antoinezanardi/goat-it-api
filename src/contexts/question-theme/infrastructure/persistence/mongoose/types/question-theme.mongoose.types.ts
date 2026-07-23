@@ -7,7 +7,14 @@ type QuestionThemeMongooseDocument = HydratedDocument<QuestionThemeMongooseSchem
 
 type QuestionThemeMongooseSchemaShape = QuestionThemeMongooseSchema & MongooseCollectionSchemaBase;
 
+type QuestionThemeStatsAggregationResult = {
+  total: { count: number }[];
+  statusRows: Record<string, number>[];
+  byQuestionCount: { themeId: string; themeSlug: string; activeQuestionCount: number }[];
+};
+
 export type {
   QuestionThemeMongooseDocument,
   QuestionThemeMongooseSchemaShape,
+  QuestionThemeStatsAggregationResult,
 };

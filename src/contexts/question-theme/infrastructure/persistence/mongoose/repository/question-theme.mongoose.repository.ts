@@ -8,19 +8,19 @@ import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
+import { QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question-theme/infrastructure/persistence/mongoose/repository/pipelines/question-theme-stats-pipeline/question-theme-stats.mongoose.repository.pipeline";
 
 import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
-import { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
-import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
-import { QuestionThemeMongooseDocument } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
+import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
+import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
+import type { QuestionThemeMongooseDocument, QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {
-  public constructor(@InjectModel(QuestionThemeMongooseSchema.name)
-  private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
+  public constructor(@InjectModel(QuestionThemeMongooseSchema.name) private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
   public async findAll(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
     const sortCriteria = buildMongooseSortCriteria(options.sort);
@@ -74,7 +74,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
-    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { new: true });
+    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { returnDocument: "after" });
     if (!modifiedQuestionThemeDocument) {
       return undefined;
     }
@@ -85,10 +85,20 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
       status: QUESTION_THEME_STATUS_ARCHIVED,
     };
-    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { new: true });
+    const archivedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, update, { returnDocument: "after" });
     if (!archivedQuestionThemeDocument) {
       return undefined;
     }
     return createQuestionThemeFromDocument(archivedQuestionThemeDocument);
+  }
+
+  public async getStats(): Promise<QuestionThemeStats> {
+    const [result] = await this.questionThemeModel.aggregate<QuestionThemeStatsAggregationResult>(QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE);
+
+    return {
+      total: result.total[0]?.count ?? 0,
+      byStatus: result.statusRows[0] ?? {},
+      byQuestionCount: result.byQuestionCount,
+    };
   }
 }

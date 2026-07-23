@@ -133,7 +133,6 @@ This project follows **Hexagonal Architecture** with NestJS 11 + Fastify 5 + Mon
 - **Errors**: Custom error classes extending `Error` in `domain/errors/`, registered in `GlobalExceptionFilter`.
 - **Testing**: 100% coverage required. Colocated `*.spec.ts`, `@nestjs/testing` for providers, Vitest + SWC. Faketories in `tests/shared/utils/faketories/`, mocks in `tests/unit/utils/mocks/`.
 - **Quality gates**: 5-step mandatory: `lint:fix` → `typecheck` → `test:unit:cov` → `test:acceptance` → `test:mutation`.
-- **Transitions**: After approval, invoke `writing-plans` skill to create implementation plan. The `orchestrator` agent drives the full cycle.
 
 ## Key Principles
 

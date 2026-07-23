@@ -1,3 +1,4 @@
+import { expect } from "expect";
 import { z } from "zod";
 
 import type { ZodType } from "zod";
@@ -100,9 +101,24 @@ function buildQueryFromRow(row: Record<string, string | string[] | undefined>): 
   return query;
 }
 
+/**
+ * Asserts that the given record's fields match the expected rows. Each row contains a field name and the expected value. Only used in acceptance tests.
+ */
+function expectRecordFieldValues(
+  record: Record<string, unknown>,
+  rows: { field: string; value: unknown }[],
+): void {
+  for (const { field, value } of rows) {
+    // Acceptable as we index a known Record with a runtime-validated key
+    // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+    expect(record[field]).toBe(value);
+  }
+}
+
 export {
   buildQueryFromRow,
   coerceStringToPrimitive,
+  expectRecordFieldValues,
   zCoerceOptionalBoolean,
   zCoerceOptionalString,
   zCoerceOptionalNumber,

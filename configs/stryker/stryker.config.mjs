@@ -15,6 +15,9 @@ export default {
     "!**/*.types.ts",
     "!**/*.commands.ts",
     "!**/*.contracts.ts",
+    "!**/*.pipeline.ts",
+    "!**/*.entities.ts",
+    "!**/*.value-objects.ts",
   ],
   plugins: [
     "@stryker-mutator/vitest-runner",

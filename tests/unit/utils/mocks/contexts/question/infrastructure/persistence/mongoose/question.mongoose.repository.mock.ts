@@ -2,10 +2,11 @@ import type { QuestionModificationContract, QuestionThemeAssignmentCreationContr
 import type { Question } from "@question/domain/types/question.entities";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionStats } from "@faketories/contexts/question/domain/question-stats/question-stats.faketory";
 
 import type { Mock } from "vitest";
 
-import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
+import type { FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
 
 type QuestionRepositoryStub = {
   findAll: () => Promise<Question[]>;
@@ -18,17 +19,14 @@ type QuestionRepositoryStub = {
   modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
   countLiveByThemeId: (themeId: string) => Promise<number>;
   findRandom: (options: FindRandomQuestionsOptions) => Promise<Question[]>;
+  getStats: () => Promise<QuestionStats>;
 };
 
 type MockedQuestionRepository = { [K in keyof QuestionRepositoryStub]: Mock<QuestionRepositoryStub[K]> };
 
 function createMockedQuestionRepository(overrides: Partial<MockedQuestionRepository> = {}): MockedQuestionRepository {
   return {
-    findAll: vi.fn<QuestionRepositoryStub["findAll"]>().mockResolvedValue([
-      createFakeQuestion(),
-      createFakeQuestion(),
-      createFakeQuestion(),
-    ]),
+    findAll: vi.fn<QuestionRepositoryStub["findAll"]>().mockResolvedValue([createFakeQuestion(), createFakeQuestion(), createFakeQuestion()]),
     findById: vi.fn<QuestionRepositoryStub["findById"]>().mockResolvedValue(createFakeQuestion()),
     create: vi.fn<QuestionRepositoryStub["create"]>().mockResolvedValue(createFakeQuestion()),
     archive: vi.fn<QuestionRepositoryStub["archive"]>().mockResolvedValue(createFakeQuestion()),
@@ -37,11 +35,8 @@ function createMockedQuestionRepository(overrides: Partial<MockedQuestionReposit
     modify: vi.fn<QuestionRepositoryStub["modify"]>().mockResolvedValue(createFakeQuestion()),
     modifyThemeAssignment: vi.fn<QuestionRepositoryStub["modifyThemeAssignment"]>().mockResolvedValue(createFakeQuestion()),
     countLiveByThemeId: vi.fn<QuestionRepositoryStub["countLiveByThemeId"]>().mockResolvedValue(0),
-    findRandom: vi.fn<QuestionRepositoryStub["findRandom"]>().mockResolvedValue([
-      createFakeQuestion(),
-      createFakeQuestion(),
-      createFakeQuestion(),
-    ]),
+    findRandom: vi.fn<QuestionRepositoryStub["findRandom"]>().mockResolvedValue([createFakeQuestion(), createFakeQuestion(), createFakeQuestion()]),
+    getStats: vi.fn<QuestionRepositoryStub["getStats"]>().mockResolvedValue(createFakeQuestionStats()),
     ...overrides,
   };
 }

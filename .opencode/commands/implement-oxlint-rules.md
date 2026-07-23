@@ -2,7 +2,7 @@
 
 ## Task
 
-Interactively implement all missing oxlint rules into `configs/oxlint/oxlint.config.jsonc` by running the checker script, fetching documentation for each rule, cross-referencing with ESLint configs, and inserting after user validation.
+Interactively implement all missing oxlint rules into `oxlint.config.jsonc` by running the checker script, fetching documentation for each rule, cross-referencing with ESLint configs, and inserting after user validation.
 
 ## Instructions
 
@@ -123,7 +123,7 @@ After all rules have been processed:
 ## Key rules
 
 - Always process rules alphabetically within each plugin group
-- Never modify ESLint config files — this command only touches `configs/oxlint/oxlint.config.jsonc`
+- Never modify ESLint config files — this command only touches `oxlint.config.jsonc`
 - Preserve all existing JSONC comments in the config file
 - Use surgical Edit operations (never rewrite the full file)
 - If the WebFetch for a doc URL fails, still present the rule to the user with "Doc unavailable" and continue

@@ -11,12 +11,13 @@ import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAs
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
+import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { Question } from "@question/domain/types/question.entities";
 
 import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
-import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
-import { QuestionAggregate, QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
+import { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 @Injectable()
@@ -151,6 +152,19 @@ export class QuestionMongooseRepository implements QuestionRepository {
     ]);
 
     return questionWithThemes.map(createQuestionFromAggregate);
+  }
+
+  public async getStats(): Promise<QuestionStats> {
+    const [result] = await this.questionModel.aggregate<QuestionStatsAggregationResult>(QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE);
+
+    return {
+      total: result.totalStage[0]?.count ?? 0,
+      byStatus: result.byStatusStage[0] ?? {},
+      byCategory: result.byCategoryStage[0] ?? {},
+      byCognitiveDifficulty: result.byCognitiveDifficultyStage[0] ?? {},
+      byAuthorRole: result.byAuthorRoleStage[0] ?? {},
+      byRejectionType: result.byRejectionTypeStage[0] ?? {},
+    };
   }
 
   private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {

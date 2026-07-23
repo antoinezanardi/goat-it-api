@@ -5,8 +5,8 @@ import { prettyJsonStringify } from "@test-helpers/json/json.helpers";
 import { waitForAppToBeReady } from "@acceptance-support/helpers/setup/http.helpers";
 import { attachBuffersToProcessStreams, createFlushLogsHandler, generateRunId, RingBuffer } from "@acceptance-support/helpers/setup/logging.helpers";
 
-import type { ITestCaseHookParameter } from "@cucumber/cucumber";
 import type { ChildProcessWithoutNullStreams, SpawnOptionsWithoutStdio } from "node:child_process";
+import type { ITestCaseHookParameter as TestCaseHookParameter } from "@cucumber/cucumber";
 
 import type { AppLogsManager } from "@acceptance-support/types/hooks.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
@@ -41,7 +41,7 @@ async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWith
   }
 }
 
-function printDebugOnScenarioFailure(world: GoatItWorld, scenario: ITestCaseHookParameter): void {
+function printDebugOnScenarioFailure(world: GoatItWorld, scenario: TestCaseHookParameter): void {
   console.error("Scenario:", scenario.pickle.name);
 
   console.error("-- Stored request payload in World --");

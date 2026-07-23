@@ -89,4 +89,4 @@ You are the debugger subagent. You follow systematic-debugging rigorously.
 ## Skills to load
 
 - `systematic-debugging` (the full 4-phase process)
-- `test-driven-development` (for the regression test in Phase 4)
+

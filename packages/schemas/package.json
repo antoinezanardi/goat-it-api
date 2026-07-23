@@ -1,7 +1,7 @@
 {
   "name": "@goat-it/schemas",
   "type": "module",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
   "scripts": {
     "dev": "tsdown --watch",
@@ -17,14 +17,15 @@
     "url": "https://github.com/antoinezanardi/goat-it-api",
     "directory": "packages/schemas"
   },
-  "packageManager": "pnpm@11.13.0",
+  "packageManager": "pnpm@11.16.0",
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
-    "tsdown": "^0.22.7",
+    "tsdown": "^0.22.13",
     "typescript": "^6.0.3",
     "zod": "^4.4.3"
   },
   "peerDependencies": {
+    "@faker-js/faker": ">=10.5.0",
     "zod": "^4.4.3"
   },
   "publishConfig": {
@@ -56,6 +57,18 @@
     "./shared/constants": {
       "types": "./dist/shared/constants/index.d.mts",
       "import": "./dist/shared/constants/index.mjs"
+    },
+    "./testing/question": {
+      "types": "./dist/testing/question/index.d.mts",
+      "import": "./dist/testing/question/index.mjs"
+    },
+    "./testing/question-theme": {
+      "types": "./dist/testing/question-theme/index.d.mts",
+      "import": "./dist/testing/question-theme/index.mjs"
+    },
+    "./testing/shared": {
+      "types": "./dist/testing/shared/index.d.mts",
+      "import": "./dist/testing/shared/index.mjs"
     }
   },
   "dependencies": {

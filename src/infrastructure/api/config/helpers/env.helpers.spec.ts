@@ -87,40 +87,18 @@ describe("Env Validation", () => {
       expect(validate(config)).toStrictEqual(expectedConfig);
     });
 
-    it("should accept a non-default valid IPv4 for when MONGODB_HOST is an override.", () => {
+    it.each<{ host: string; description: string }>([
+      { host: "192.168.0.10", description: "non-default valid IPv4" },
+      { host: "mongo.example.com", description: "non-default valid hostname" },
+      { host: "mongodb", description: "non-default docker hostname" },
+    ])("should accept a $description for when MONGODB_HOST is an override.", ({ host }) => {
       const config: Partial<Record<keyof AppEnv, unknown>> = {
         ...minimalValidEnv,
-        MONGODB_HOST: "192.168.0.10",
+        MONGODB_HOST: host,
       };
       const expectedConfig = createFakeAppEnv({
         ...defaultEnv,
-        MONGODB_HOST: "192.168.0.10",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a non-default valid hostname for when MONGODB_HOST is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        MONGODB_HOST: "mongo.example.com",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        MONGODB_HOST: "mongo.example.com",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a non-default docker hostname for when MONGODB_HOST is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        MONGODB_HOST: "mongodb",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        MONGODB_HOST: "mongodb",
+        MONGODB_HOST: host,
       });
 
       expect(validate(config)).toStrictEqual(expectedConfig);

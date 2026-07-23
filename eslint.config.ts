@@ -40,7 +40,7 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG,
   ESLINT_FIXTURES_FLAT_CONFIG,
    
-  ...oxlint.buildFromOxlintConfigFile("./configs/oxlint/oxlint.config.jsonc") as Linter.Config[],
+  ...oxlint.buildFromOxlintConfigFile("./oxlint.config.jsonc") as Linter.Config[],
 ];
 
 export default ESLINT_FLAT_CONFIGS;

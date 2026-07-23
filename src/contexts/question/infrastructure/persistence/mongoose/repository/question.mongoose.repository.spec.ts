@@ -6,6 +6,7 @@ import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persi
 
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
+import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
@@ -30,7 +31,7 @@ import type { TestingModule } from "@nestjs/testing";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
-import type { QuestionMongooseDocument } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
 
@@ -801,6 +802,115 @@ describe("Question Mongoose Repository", () => {
           $in: [QUESTION_STATUS_PENDING, QUESTION_STATUS_ACTIVE],
         },
       });
+    });
+  });
+
+  describe(QuestionMongooseRepository.prototype.getStats, () => {
+    const facetResult: QuestionStatsAggregationResult = {
+      totalStage: [{ count: 5 }],
+      byStatusStage: [{ active: 3, pending: 2 }],
+      byCategoryStage: [{ trivia: 5 }],
+      byCognitiveDifficultyStage: [{ medium: 5 }],
+      byAuthorRoleStage: [{ admin: 5 }],
+      byRejectionTypeStage: [{ "duplicate-question": 1 }],
+    };
+
+    it("should call aggregate with the stats pipeline when invoked.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      await repositories.question.getStats();
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE);
+    });
+
+    it("should return total from the $facet result when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.total).toBe(5);
+    });
+
+    it("should return total as 0 when totalStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, totalStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.total).toBe(0);
+    });
+
+    it("should return partial record for byStatus when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byStatus).toStrictEqual({ active: 3, pending: 2 });
+    });
+
+    it("should return partial record for byCategory when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCategory).toStrictEqual({ trivia: 5 });
+    });
+
+    it("should return partial record for byCognitiveDifficulty when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCognitiveDifficulty).toStrictEqual({ medium: 5 });
+    });
+
+    it("should return partial record for byAuthorRole when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byAuthorRole).toStrictEqual({ admin: 5 });
+    });
+
+    it("should return partial record for byRejectionType when aggregation rows are provided.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byRejectionType).toStrictEqual({ "duplicate-question": 1 });
+    });
+
+    it("should populate non-zero status counts from the aggregation when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byStatus.active).toBe(3);
+    });
+
+    it("should return empty record for byStatus when byStatusStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byStatusStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byStatus).toStrictEqual({});
+    });
+
+    it("should return empty record for byCategory when byCategoryStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byCategoryStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCategory).toStrictEqual({});
+    });
+
+    it("should return empty record for byCognitiveDifficulty when byCognitiveDifficultyStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byCognitiveDifficultyStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byCognitiveDifficulty).toStrictEqual({});
+    });
+
+    it("should return empty record for byAuthorRole when byAuthorRoleStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byAuthorRoleStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byAuthorRole).toStrictEqual({});
+    });
+
+    it("should return empty record for byRejectionType when byRejectionTypeStage is empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([{ ...facetResult, byRejectionTypeStage: [] } as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byRejectionType).toStrictEqual({});
     });
   });
 });
