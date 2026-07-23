@@ -1,5 +1,17 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.21.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.21.0...v1.21.1) (2026-07-23)
+
+### 🧹 Chore
+
+* **tsdown:** update unbundle settings and dependencies configuration ([#955](https://github.com/antoinezanardi/goat-it-api/issues/955)) ([45c9bd0](https://github.com/antoinezanardi/goat-it-api/commit/45c9bd01d1914a0ad56f616721e5085e5d029beb))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `lint-staged` | `^17.2.0` |
+
 ## [1.21.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.20.0...v1.21.0) (2026-07-23)
 
 ### 🚀 Features
