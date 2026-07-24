@@ -107,7 +107,7 @@
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.1.28",
     "@semantic-release/changelog": "^7.0.0",
-    "@semantic-release/git": "^11.0.0",
+    "@semantic-release/git": "^11.0.1",
     "@semantic-release/release-notes-generator": "^14.1.1",
     "@stryker-mutator/core": "^9.6.1",
     "@stryker-mutator/typescript-checker": "^9.6.1",
@@ -120,7 +120,7 @@
     "@typescript-eslint/parser": "^8.65.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitest/coverage-v8": "^4.1.10",
-    "@vitest/eslint-plugin": "^1.6.23",
+    "@vitest/eslint-plugin": "^1.6.24",
     "commitlint": "^21.2.1",
     "conventional-changelog-conventionalcommits": "^10.2.1",
     "dotenv": "^17.4.2",
@@ -148,7 +148,7 @@
     "validate-branch-name": "^1.3.2",
     "vitest": "^4.1.10"
   },
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.17.0",
   "dependencies": {
     "@fastify/static": "^10.1.2",
     "@nestjs/axios": "^4.0.1",
