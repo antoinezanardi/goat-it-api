@@ -164,7 +164,7 @@
     "fastify": "^5.10.0",
     "mongoose": "^9.8.0",
     "nestjs-pino": "^4.6.1",
-    "nestjs-zod": "^5.4.0",
+    "nestjs-zod": "^5.5.0",
     "radashi": "^12.9.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
