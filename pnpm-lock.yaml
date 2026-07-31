@@ -76,8 +76,8 @@ importers:
         specifier: ^13.2.0
         version: 13.2.0
       '@eslint/config-inspector':
-        specifier: ^3.1.0
-        version: 3.1.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(srvx@0.11.15)(typescript@6.0.3)
+        specifier: ^3.1.1
+        version: 3.1.1(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(srvx@0.12.5)(typescript@6.0.3)
       '@faker-js/faker':
         specifier: ^10.5.0
         version: 10.5.0
@@ -800,8 +800,8 @@ packages:
     resolution: {integrity: sha512-DObd/KKUsU+FaFv4PLxSRenpXfQWmPXXP3pPZ6/K1PCrMu2vQpMDMuQe/BqYeoLcz8ro0bVDF1RxOJgfVEdhUw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@eslint/config-inspector@3.1.0':
-    resolution: {integrity: sha512-miBAPkS/jN/c5RG/aEYhQaS64wlLXeo2EXXQ2w3SdCWux5icdrHyXnZyiF9dW8TukLURqK6xgzyIdgE1uGx5Vg==}
+  '@eslint/config-inspector@3.1.1':
+    resolution: {integrity: sha512-q315YC60RKDoJHpxDlmSn6kkXw2/Pmw2Je3DDFcK9scmvC6BPDHyR39+0vV3zfrRt6SjjGD4aBYzH4SLshHaJg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     hasBin: true
     peerDependencies:
@@ -3340,12 +3340,15 @@ packages:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
 
-  devframe@0.6.0:
-    resolution: {integrity: sha512-Pb8qMgoDmKYrVjw8TItmVI3o5PbffTxime5STp8JpWtb9SJiSbIupj96Ejly53/56uuljgyFjaRrV+t3kdA7dA==}
+  devframe@0.7.15:
+    resolution: {integrity: sha512-pHcCgDILv9BfF0oqEcpPzsPG/2/TLrhcYIUiWTNmP+YiyTmaGkW0osR/48STotnJNi3O2upj5L/6tpLOl/Ravg==}
     peerDependencies:
       '@modelcontextprotocol/sdk': ^1.0.0
+      cac: ^7.0.0
     peerDependenciesMeta:
       '@modelcontextprotocol/sdk':
+        optional: true
+      cac:
         optional: true
 
   diff-match-patch@1.0.5:
@@ -3897,12 +3900,12 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  h3@2.0.1-rc.22:
-    resolution: {integrity: sha512-Esv0DMIuPkCTSWCA0vO73vcTqwzH1wjSrAO1TXNu/K3up1sZHa9EKMapbmxCDYBeymC3fVTk4qxp7ogQWQ+KgA==}
+  h3@2.0.1-rc.26:
+    resolution: {integrity: sha512-GDxlvDsKxgjRvG5UBRJYyGJTMWLV30CJ4cV+e7QCTgftDHihrvio1fVPbNembhEr6J4WNm8IWy3fookgyTweLw==}
     engines: {node: '>=20.11.1'}
     hasBin: true
     peerDependencies:
-      crossws: ^0.4.1
+      crossws: ^0.4.9
     peerDependenciesMeta:
       crossws:
         optional: true
@@ -4717,8 +4720,8 @@ packages:
     resolution: {integrity: sha512-z9nC87iaZXXySbWWtTHfCFJyFvKaUAW6lODhikG7ILSbVgmwuFjUqkgnheHvAUcGedO29e2QGBRXMUD64aurqQ==}
     engines: {node: '>=20'}
 
-  nostics@1.1.4:
-    resolution: {integrity: sha512-U4FApICSLCQ0dYiN59pxUCEZC053palQXi57yLaNdMaL6TBY4C4q3qZrJKUGcor2dGv8EhEwt8y5KvU2bo2kFg==}
+  nostics@1.2.0:
+    resolution: {integrity: sha512-FGqEfhQjrvo1lL8KFifdTQiNwwQHJxC1jtYE1Rc54qF/jxONUNL+kC9gS1krX8Q65PgrQ5fCqH/I4NhWBvdSqg==}
 
   npm-run-path@5.3.0:
     resolution: {integrity: sha512-ppwTtiJZq0O/ai0z7yfudtBpWIoxM8yE6nHi1X47eFR2EWORqfbu6CnPlNsjeN683eT0qG6H/Pyf9fCcvjnnnQ==}
@@ -5238,8 +5241,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  rou3@0.8.1:
-    resolution: {integrity: sha512-ePa+XGk00/3HuCqrEnK3LxJW7I0SdNg6EFzKUJG73hMAdDcOUC/i/aSz7LSDwLrGr33kal/rqOGydzwl6U7zBA==}
+  rou3@0.9.1:
+    resolution: {integrity: sha512-z/sSmzvtwMDDnxsPVhfWMuG6F6mbmhFDXoVqLmMfbpDD9qfV3GDmSQpf0+W296/ZDIpW2wcMmBfpVFzcnOi/nA==}
 
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
@@ -5429,8 +5432,8 @@ packages:
     resolution: {integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg==}
     engines: {node: '>= 10.x'}
 
-  srvx@0.11.15:
-    resolution: {integrity: sha512-iXsux0UcOjdvs0LCMa2Ws3WwcDUozA3JN3BquNXkaFPP7TpRqgunKdEgoZ/uwb1J6xaYHfxtz9Twlh6yzwM6Tg==}
+  srvx@0.12.5:
+    resolution: {integrity: sha512-IuvtDNQg5EIwv3c6dleyau7u8hCyGQ7D6+V/QM799Aud07z0wCUcurKLTRfyG33C8oUY+UWcVBFkfHMcbtmRLA==}
     engines: {node: '>=20.16.0'}
     hasBin: true
 
@@ -6782,12 +6785,12 @@ snapshots:
     dependencies:
       '@eslint/core': 1.2.1
 
-  '@eslint/config-inspector@3.1.0(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(srvx@0.11.15)(typescript@6.0.3)':
+  '@eslint/config-inspector@3.1.1(eslint@10.8.0(jiti@2.7.0)(supports-color@10.2.2))(srvx@0.12.5)(typescript@6.0.3)':
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
       chokidar: 5.0.0
-      devframe: 0.6.0(srvx@0.11.15)(typescript@6.0.3)
+      devframe: 0.7.15(cac@7.0.0)(srvx@0.12.5)(typescript@6.0.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@10.2.2)
       jiti: 2.7.0
       tinyglobby: 0.2.17
@@ -9081,9 +9084,9 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  crossws@0.4.10(srvx@0.11.15):
+  crossws@0.4.10(srvx@0.12.5):
     optionalDependencies:
-      srvx: 0.11.15
+      srvx: 0.12.5
 
   crypto-random-string@4.0.0:
     dependencies:
@@ -9130,19 +9133,20 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  devframe@0.6.0(srvx@0.11.15)(typescript@6.0.3):
+  devframe@0.7.15(cac@7.0.0)(srvx@0.12.5)(typescript@6.0.3):
     dependencies:
       '@valibot/to-json-schema': 1.7.1(valibot@1.4.2(typescript@6.0.3))
       birpc: 4.0.0
-      cac: 7.0.0
-      crossws: 0.4.10(srvx@0.11.15)
+      crossws: 0.4.10(srvx@0.12.5)
       destr: 2.0.5
-      h3: 2.0.1-rc.22(crossws@0.4.10(srvx@0.11.15))
+      h3: 2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5))
       mrmime: 2.0.1
-      nostics: 1.1.4
+      nostics: 1.2.0
       pathe: 2.0.3
       ufo: 1.6.4
       valibot: 1.4.2(typescript@6.0.3)
+    optionalDependencies:
+      cac: 7.0.0
     transitivePeerDependencies:
       - srvx
       - typescript
@@ -9820,12 +9824,12 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  h3@2.0.1-rc.22(crossws@0.4.10(srvx@0.11.15)):
+  h3@2.0.1-rc.26(crossws@0.4.10(srvx@0.12.5)):
     dependencies:
-      rou3: 0.8.1
-      srvx: 0.11.15
+      rou3: 0.9.1
+      srvx: 0.12.5
     optionalDependencies:
-      crossws: 0.4.10(srvx@0.11.15)
+      crossws: 0.4.10(srvx@0.12.5)
 
   has-ansi@6.0.2:
     dependencies:
@@ -10507,7 +10511,7 @@ snapshots:
 
   normalize-url@9.0.0: {}
 
-  nostics@1.1.4: {}
+  nostics@1.2.0: {}
 
   npm-run-path@5.3.0:
     dependencies:
@@ -10986,7 +10990,7 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.2.0
       '@rolldown/binding-win32-x64-msvc': 1.2.0
 
-  rou3@0.8.1: {}
+  rou3@0.9.1: {}
 
   rxjs@7.8.1:
     dependencies:
@@ -11190,7 +11194,7 @@ snapshots:
 
   split2@4.2.0: {}
 
-  srvx@0.11.15: {}
+  srvx@0.12.5: {}
 
   stable-hash-x@0.2.0: {}
 
