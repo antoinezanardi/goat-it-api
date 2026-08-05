@@ -25,7 +25,7 @@ export { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-ques
 export { ADMIN_QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
 export { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto.shape";
 export { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
-export { FIND_RANDOM_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto.shape";
+export { FIND_RANDOM_QUESTIONS_BODY_DTO } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto.shape";
 export { QUESTION_CREATION_DTO } from "@question/application/dto/question-creation/question-creation.dto.shape";
 export { QUESTION_THEME_ASSIGNMENT_CREATION_DTO } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 export { QUESTION_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-modification.dto.shape";
@@ -44,7 +44,7 @@ export type { AdminQuestionContentDto } from "@question/application/dto/admin-qu
 export type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
 export type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 export type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
-export type { FindRandomQuestionsQueryDto } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto.shape";
+export type { FindRandomQuestionsBodyDto } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto.shape";
 export type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
 export type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 export type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
@@ -57,14 +57,11 @@ export type { QuestionAuthorDto } from "@question/application/dto/shared/questio
 export type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 
 export {
-  RANDOM_QUESTIONS_CATEGORIES_QUERY_KEY,
-  RANDOM_QUESTIONS_COGNITIVE_DIFFICULTIES_QUERY_KEY,
-  RANDOM_QUESTIONS_EXCLUDED_IDS_MAXIMUM,
-  RANDOM_QUESTIONS_EXCLUDED_IDS_MINIMUM,
-  RANDOM_QUESTIONS_EXCLUDED_IDS_QUERY_KEY,
-  RANDOM_QUESTIONS_LIMIT_DEFAULT,
-  RANDOM_QUESTIONS_LIMIT_MAXIMUM,
-  RANDOM_QUESTIONS_LIMIT_MINIMUM,
-} from "@question/application/dto/find-random-questions-query/constants/find-random-questions-query.dto.constants";
+  FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT,
+  FIND_RANDOM_QUESTIONS_BODY_LIMIT_MAXIMUM,
+  FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM,
+  FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM,
+  FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MINIMUM,
+} from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 
 export { QUESTION_SORT_BY_DEFAULT } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";

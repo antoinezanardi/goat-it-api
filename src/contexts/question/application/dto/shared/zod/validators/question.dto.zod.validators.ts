@@ -6,7 +6,7 @@ import { zCreateFilterArray } from "@shared/application/dto/zod/validators/array
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
-import { RANDOM_QUESTIONS_EXCLUDED_IDS_MAXIMUM, RANDOM_QUESTIONS_EXCLUDED_IDS_MINIMUM } from "@question/application/dto/find-random-questions-query/constants/find-random-questions-query.dto.constants";
+import { FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM, FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MINIMUM } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
 import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess } from "zod";
@@ -45,8 +45,8 @@ function zQuestionExcludedIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodStr
     zMongoId().describe("Question ID to exclude"),
     "Excluded IDs must be unique",
     "List of question IDs to exclude from the random pool",
-    RANDOM_QUESTIONS_EXCLUDED_IDS_MINIMUM,
-    RANDOM_QUESTIONS_EXCLUDED_IDS_MAXIMUM,
+    FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MINIMUM,
+    FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM,
   );
 }
 
