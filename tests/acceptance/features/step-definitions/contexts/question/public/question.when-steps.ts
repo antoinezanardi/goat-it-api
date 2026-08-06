@@ -1,6 +1,6 @@
 import { When } from "@cucumber/cucumber";
 
-import { PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA, RANDOM_QUESTION_QUERY_PARAMS_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
+import { PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA, RANDOM_QUESTION_BODY_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
 import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
@@ -64,15 +64,25 @@ When(/^the client retrieves random questions(?: in locale "(?<locale>[^"]+)")?$/
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,
     locale: locale ?? undefined,
+    method: "POST",
+    body: {},
   });
-  await this.fetchAndStoreResponse("/questions/random", fetchOptions);
+  await this.fetchAndStoreResponse("/questions/search/random", fetchOptions);
 });
 
-When(/^the client retrieves random questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, RANDOM_QUESTION_QUERY_PARAMS_SCHEMA);
+When(/^the client retrieves random questions with the following body:$/u, async function(this: GoatItWorld, bodyDataTable: DataTable) {
+  const bodyRow = validateDataTableAndGetFirstRow(bodyDataTable, RANDOM_QUESTION_BODY_SCHEMA);
+  const body: Record<string, unknown> = {
+    limit: bodyRow.limit === undefined ? undefined : Number(bodyRow.limit),
+    excludedIds: bodyRow.excludedIds,
+    categories: bodyRow.categories,
+    cognitiveDifficulties: bodyRow.cognitiveDifficulties,
+    themeIds: bodyRow.themeIds,
+  };
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,
-    query: buildQueryFromRow(queryRow),
+    method: "POST",
+    body,
   });
-  await this.fetchAndStoreResponse("/questions/random", fetchOptions);
+  await this.fetchAndStoreResponse("/questions/search/random", fetchOptions);
 });

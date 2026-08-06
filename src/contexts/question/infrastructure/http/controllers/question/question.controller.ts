@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
@@ -11,12 +11,12 @@ import { Localization } from "@shared/infrastructure/http/decorators/localizatio
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
 import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
-import { FindRandomQuestionsQueryNestZodDto } from "@question/application/dto/find-random-questions-query/find-random-questions-query.dto";
+import { FindRandomQuestionsBodyNestZodDto } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto";
 import { FindQuestionsQueryNestZodDto } from "@question/application/dto/find-questions-query/find-questions-query.dto";
 import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
-import { createFindRandomQuestionsOptionsFromQueryDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
+import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
@@ -52,7 +52,7 @@ export class QuestionController {
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
   }
 
-  @Get("/random")
+  @Post("/search/random")
   @ApiOperation({
     tags: [SwaggerTags.QUESTIONS],
     summary: "Get random questions",
@@ -63,10 +63,10 @@ export class QuestionController {
     type: [QuestionNestZodDto],
   })
   public async findRandomQuestions(
-    @Query() queryDto: FindRandomQuestionsQueryNestZodDto,
+    @Body() bodyDto: FindRandomQuestionsBodyNestZodDto,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionDto[]> {
-    const findRandomOptions = createFindRandomQuestionsOptionsFromQueryDto(queryDto);
+    const findRandomOptions = createFindRandomQuestionsOptionsFromBodyDto(bodyDto);
     const questions = await this.findRandomQuestionsUseCase.list(findRandomOptions);
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
