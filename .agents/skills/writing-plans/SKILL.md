@@ -120,6 +120,7 @@ After writing the complete plan, run this checklist:
 2. **Placeholder scan:** Search the plan for any pattern from the "No Placeholders" section. Fix them.
 3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
 4. **Test coverage:** Every task with logic has explicit tests for its own files. Tasks with only types, interfaces, or constants may omit tests. No full `pnpm run test:unit:cov` run in any task. 100% coverage for files that have tests.
+5. **Only one assertion per test:** Each test should have one assertion. If a test has multiple assertions, split it into multiple tests or use `it.each`.
 
 If you find issues, fix them inline. If a spec requirement has no task, add the task.
 

@@ -1,7 +1,7 @@
 {
   "name": "@goat-it/schemas",
   "type": "module",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Shared types, constants and Zod schemas for the Goat It projects.",
   "scripts": {
     "dev": "tsdown --watch",
@@ -17,10 +17,10 @@
     "url": "https://github.com/antoinezanardi/goat-it-api",
     "directory": "packages/schemas"
   },
-  "packageManager": "pnpm@11.16.0",
+  "packageManager": "pnpm@11.20.0",
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
-    "tsdown": "^0.22.13",
+    "tsdown": "^0.22.14",
     "typescript": "^6.0.3",
     "zod": "^4.4.3"
   },

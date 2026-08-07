@@ -32,6 +32,8 @@ permission:
     "rtk tail *": "allow"
     "find *": "allow"
     "rtk find *": "allow"
+    "sort *": "allow"
+    "rtk sort *": "allow"
     "echo *": "allow"
     "rtk echo *": "allow"
     "wc *": "allow"
@@ -102,10 +104,6 @@ You are the final reviewer. You review the whole implementation holistically —
 - No secrets, API keys, or credentials in code or config.
 - No `.env.*` files committed.
 
-### 7. No scope creep
-- No features added that weren't asked for in the spec.
-- No "while I'm here" refactors.
-
 ## Return format
 
 ```
@@ -116,7 +114,7 @@ You are the final reviewer. You review the whole implementation holistically —
 **Cross-task consistency:** [issues or "Consistent"]
 **DOD items:** [Bruno ✅ | Acceptance ✅ | Faketories ✅ | Mocks ✅ | ...]
 **Security:** [issues or "No concerns"]
-**Scope:** [creep / missing requirements]
+**Scope:** [missing requirements]
 **Assessment:** Ready to merge | Needs changes before merge
 ```
 

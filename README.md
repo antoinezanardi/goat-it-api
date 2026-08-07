@@ -1,4 +1,12 @@
-# 🐐 Goat It API
+<h1 align="center">
+  <strong>Goat It API</strong>
+</h1>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/antoinezanardi/goat-it-api/refs/heads/develop/public/img/logo/logo-512.avif" alt="Goat It API Logo" width="200"/>
+</p>
+
+---
 
 ![TypeScript](https://img.shields.io/badge/-TypeScript-black?style=for-the-badge&logoColor=white&logo=typescript&color=2F73BF)
 ![Nest](https://img.shields.io/badge/-NestJs-black?style=for-the-badge&logo=nestjs&color=E0234D)

@@ -55,7 +55,7 @@ jobs:
         id: cache-release-changelog
         with:
           path: RELEASE.md
-          key: ${{ runner.os }}-release-changelog-${{ hashFiles('RELEASE.md') }}
+          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
 
     outputs:
       new-release-version: ${{ steps.release.outputs.new-release-version }}
@@ -75,9 +75,7 @@ jobs:
         id: cache-release-changelog
         with:
           path: RELEASE.md
-          key: ${{ runner.os }}-release-changelog-
-          restore-keys: |
-            ${{ runner.os }}-release-changelog-
+          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
 
       - name: List open PR into main 📋
         run: |
