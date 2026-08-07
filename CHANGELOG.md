@@ -1,5 +1,47 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.22.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.21.1...v1.22.0) (2026-08-07)
+
+### 🚀 Features
+
+* **question:** convert GET /questions/random to POST /questions/search/random ([#993](https://github.com/antoinezanardi/goat-it-api/issues/993)) ([1c6cba4](https://github.com/antoinezanardi/goat-it-api/commit/1c6cba48706e88f187218b166df1e9414abd9083))
+
+### 🐛 Bug Fixes
+
+* **release:** correct retrieved cache ([d1bf0ba](https://github.com/antoinezanardi/goat-it-api/commit/d1bf0ba83c9f8dbc423a812afd091120afec8420))
+
+### 📖 Docs
+
+* **README:** add logo ([#973](https://github.com/antoinezanardi/goat-it-api/issues/973)) ([de913f1](https://github.com/antoinezanardi/goat-it-api/commit/de913f16a6d56a7b7edc01556197ba8b53afbec2))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@fastify/static` | `^10.1.3` |
+| `axios` | `^1.19.0` |
+| `fastify` | `^5.11.2` |
+| `mongoose` | `^9.9.1` |
+| `nestjs-zod` | `^5.5.0` |
+| `@cucumber/cucumber` | `^13.2.1` |
+| `@eslint/config-inspector` | `^3.2.0` |
+| `@semantic-release/git` | `^11.0.1` |
+| `@swc/core` | `^1.15.47` |
+| `@vitest/eslint-plugin` | `^1.6.25` |
+| `eslint` | `^10.8.0` |
+| `eslint-plugin-oxlint` | `v1.77.0` |
+| `eslint-plugin-unicorn` | `v73` |
+| `lint-staged` | `^17.3.0` |
+| `oxlint` | `^1.77.0` |
+| `semantic-release` | `^25.0.9` |
+| `tsdown` | `^0.22.14` |
+| `tsx` | `^4.23.9` |
+| `unplugin-swc` | `^1.5.10` |
+| `node.js` | `v26.6.0` |
+| `oxlint monorepo` | `v1.76.0` |
+| `pnpm` | `v11.20.0` |
+| `typescript-eslint monorepo` | `^8.66.0` |
+
 ## [1.21.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.21.0...v1.21.1) (2026-07-23)
 
 ### 🧹 Chore
