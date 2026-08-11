@@ -58,6 +58,31 @@ jobs:
       new-release-published: ${{ steps.release.outputs.new-release-published }}
       new-release-version: ${{ steps.release.outputs.new-release-version }}
 
+  sync-develop:
+    name: Sync Develop 🔄
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - release
+    if: needs.release.outputs.new-release-published == 'true'
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+          fetch-depth: 0
+
+      - name: Sync main into develop 🔄
+        env:
+          RELEASE_VERSION: ${{ needs.release.outputs.new-release-version }}
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git fetch --all
+          git checkout develop
+          git merge origin/main --no-ff -m "chore: sync release v${RELEASE_VERSION} from main [skip ci]"
+          git push origin develop
+
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
