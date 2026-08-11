@@ -1,5 +1,27 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.22.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.22.0...v1.22.1) (2026-08-11)
+
+### 🔁 CI
+
+* **semantic-release:** sync develop with release commit after publishing ([#1010](https://github.com/antoinezanardi/goat-it-api/issues/1010)) ([ec33113](https://github.com/antoinezanardi/goat-it-api/commit/ec33113da96dddf86e560fa548870e3638e18edf))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `fastify` | `^5.11.3` |
+| `mongoose` | `^9.9.2` |
+| `nest monorepo` | `^11.1.29` |
+| `@vitest/eslint-plugin` | `^1.6.27` |
+| `conventional-changelog-conventionalcommits` | `^10.3.0` |
+| `conventional-changelog-writer` | `^9.2.1` |
+| `eslint` | `^10.8.1` |
+| `tsx` | `^4.23.12` |
+| `oxlint monorepo` | `v1.78.0` |
+| `pnpm` | `v11.21.0` |
+| `typescript-eslint monorepo` | `^8.67.0` |
+
 ## [1.22.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.21.1...v1.22.0) (2026-08-07)
 
 ### 🚀 Features
