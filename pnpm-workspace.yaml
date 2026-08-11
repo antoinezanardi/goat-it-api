@@ -5,7 +5,7 @@ packages:
 minimumReleaseAge: 0
 
 overrides:
-  conventional-changelog-writer: ^9.2.0
+  conventional-changelog-writer: ^9.2.1
 
 allowBuilds:
   '@nestjs/core': true
