@@ -76,6 +76,7 @@
     "eslint/grouped-accessor-pairs": "error",
     "eslint/guard-for-in": "error",
     "eslint/id-match": "off",
+    "eslint/id-denylist": "off",
     "eslint/id-length": [
       "error",
       {
@@ -274,6 +275,10 @@
     "eslint/no-warning-comments": "off",
     "eslint/no-with": "error",
     "eslint/object-shorthand": "error",
+    "eslint/one-var": [
+      "error",
+      "never"
+    ],
     "eslint/operator-assignment": [
       "error",
       "always"
@@ -362,6 +367,10 @@
     "node/callback-return": "error",
     "node/global-require": "error",
     "node/handle-callback-err": "error",
+    "node/exports-style": [
+      "error",
+      "exports"
+    ],
     "node/no-exports-assign": "error",
     "node/no-mixed-requires": "error",
     "node/no-new-require": "error",
@@ -373,12 +382,14 @@
       }
     ],
     "node/no-process-env": "off",
+    "node/no-top-level-await": "error",
     // ---- Oxc Rules -----
     "oxc/approx-constant": "error",
     "oxc/bad-array-method-on-arguments": "error",
     "oxc/bad-bitwise-operator": "error",
     "oxc/bad-char-at-comparison": "error",
     "oxc/bad-comparison-sequence": "error",
+    "oxc/bad-match-all-arg": "error",
     "oxc/bad-min-max-func": "error",
     "oxc/bad-object-literal-comparison": "error",
     "oxc/bad-replace-all-arg": "error",
@@ -1087,6 +1098,7 @@
         "vitest/no-test-return-statement": "error",
         "vitest/no-unneeded-async-expect-function": "error",
         "vitest/padding-around-after-all-blocks": "error",
+        "vitest/padding-around-test-blocks": "error",
         "vitest/prefer-called-exactly-once-with": "error",
         "vitest/prefer-called-once": "error",
         "vitest/prefer-called-times": "off",
