@@ -205,8 +205,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       unplugin-swc:
-        specifier: ^1.5.10
-        version: 1.5.10(@swc/core@1.15.47)
+        specifier: ^1.5.11
+        version: 1.5.11(@swc/core@1.15.47)(esbuild@0.28.0)(rolldown@1.2.0)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.15.47)(esbuild@0.28.0))
       validate-branch-name:
         specifier: ^1.3.2
         version: 1.3.2(typescript@6.0.3)
@@ -1946,8 +1946,8 @@ packages:
   '@rolldown/pluginutils@1.0.0-rc.17':
     resolution: {integrity: sha512-n8iosDOt6Ig1UhJ2AYqoIhHWh/isz0xpicHTzpKBeotdVsTEcxsSA/i3EVM7gQAj0rU27OLAxCjzlj15IWY7bg==}
 
-  '@rollup/pluginutils@5.3.0':
-    resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
+  '@rollup/pluginutils@5.4.0':
+    resolution: {integrity: sha512-MfPp06CjRLfXQ3wY0R8vJDYBy/MvVcc9OulEfR0B8Iv9ko+GCNaRZ+EpJYFl27LhKsZK0o420sYCRHCjfCgeUg==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -5880,14 +5880,43 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unplugin-swc@1.5.10:
-    resolution: {integrity: sha512-aNvKH601KYzc/fXyDQJPAk8obNPzA4GdGqx+qSjQoyweMLDMLs5VRbunjL4skIv/hyyAnSgrbxMwXHdRTzhmew==}
+  unplugin-swc@1.5.11:
+    resolution: {integrity: sha512-R7U4GbfrESPnYLn3nXREZrwhKQk3BAmTBoKJ5lmo7btTc/yJpNsDzavBWo+XpQTjDSIogiZEAxC5ig/vfMWxWg==}
     peerDependencies:
       '@swc/core': ^1.2.108
 
-  unplugin@2.3.11:
-    resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
-    engines: {node: '>=18.12.0'}
+  unplugin@3.3.0:
+    resolution: {integrity: sha512-qa66K+crbfyE6JK10GjvbJeRrOsuC/JpbnHctfyp/i4oBTxWOzJfRZyDiOk1PtErMFRu8JhsU/wPvOdBNWe5Rg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      '@farmfe/core': '*'
+      '@rspack/core': '*'
+      bun-types-no-globals: '*'
+      esbuild: '*'
+      rolldown: '*'
+      rollup: '*'
+      unloader: '*'
+      vite: '*'
+      webpack: '*'
+    peerDependenciesMeta:
+      '@farmfe/core':
+        optional: true
+      '@rspack/core':
+        optional: true
+      bun-types-no-globals:
+        optional: true
+      esbuild:
+        optional: true
+      rolldown:
+        optional: true
+      rollup:
+        optional: true
+      unloader:
+        optional: true
+      vite:
+        optional: true
+      webpack:
+        optional: true
 
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
@@ -7764,7 +7793,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-rc.17': {}
 
-  '@rollup/pluginutils@5.3.0':
+  '@rollup/pluginutils@5.4.0':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
@@ -11640,21 +11669,33 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-swc@1.5.10(@swc/core@1.15.47):
+  unplugin-swc@1.5.11(@swc/core@1.15.47)(esbuild@0.28.0)(rolldown@1.2.0)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.15.47)(esbuild@0.28.0)):
     dependencies:
-      '@rollup/pluginutils': 5.3.0
+      '@rollup/pluginutils': 5.4.0
       '@swc/core': 1.15.47
       load-tsconfig: 0.2.5
-      unplugin: 2.3.11
+      unplugin: 3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.15.47)(esbuild@0.28.0))
     transitivePeerDependencies:
+      - '@farmfe/core'
+      - '@rspack/core'
+      - bun-types-no-globals
+      - esbuild
+      - rolldown
       - rollup
+      - unloader
+      - vite
+      - webpack
 
-  unplugin@2.3.11:
+  unplugin@3.3.0(esbuild@0.28.0)(rolldown@1.2.0)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.12)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.15.47)(esbuild@0.28.0)):
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      acorn: 8.17.0
       picomatch: 4.0.5
       webpack-virtual-modules: 0.6.2
+    optionalDependencies:
+      esbuild: 0.28.0
+      rolldown: 1.2.0
+      vite: 8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.12)(yaml@2.9.0)
+      webpack: 5.106.2(@swc/core@1.15.47)(esbuild@0.28.0)
 
   unrs-resolver@1.11.1:
     dependencies:
