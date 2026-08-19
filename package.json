@@ -101,7 +101,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^21.2.2",
     "@cucumber/cucumber": "^13.2.1",
-    "@eslint/config-inspector": "^3.2.0",
+    "@eslint/config-inspector": "^3.3.0",
     "@faker-js/faker": "^10.6.0",
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
