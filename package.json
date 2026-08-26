@@ -162,7 +162,7 @@
     "axios": "^1.19.0",
     "cross-env": "^10.1.0",
     "fastify": "^5.12.1",
-    "mongoose": "^9.9.3",
+    "mongoose": "^9.9.4",
     "nestjs-pino": "^4.6.1",
     "nestjs-zod": "^5.5.0",
     "radashi": "^12.9.1",
