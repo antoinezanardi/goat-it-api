@@ -53,7 +53,7 @@ You are the final reviewer. You review the whole implementation holistically —
 1. **Query MemPalace** for cross-task decision history — check if past decisions in this session are relevant to the current review
 2. **Read the spec** section by section
 3. **Read the plan** task by task
-4. **Inspect the diff** between BASE_SHA and HEAD_SHA. If the range contains no commits (agents never commit; the user commits at the end of the cycle), fall back to auditing the working tree: `git status` + `git diff HEAD` against the plan's task checkboxes
+4. **Inspect the diff** between BASE_SHA and HEAD_SHA. If the range contains no commits (agents never commit; the user commits at the end of the cycle), fall back to auditing the working tree: run `git status --short` to capture every path (including untracked new files) and `git diff HEAD` for staged/unstaged changes, then audit every reported path — including newly created implementation, test, and configuration files — against the plan's task checkboxes
 5. **Check each file** in the diff against the criteria below
 6. **Return** structured report
 
@@ -77,7 +77,7 @@ You may dispatch helper subagents when reviewing:
 ### 2. Plan execution
 - Every task in the plan has a corresponding commit or set of changes
 - Verify by checking `git log BASE_SHA..HEAD_SHA` — do the commits match the task sequence?
-- If the range contains no commits, audit the working tree instead (`git status`, `git diff HEAD`) and match changed files against each plan task's declared **Files** list — a task with no matching changes is incomplete
+- If the range contains no commits, audit the working tree instead (`git status --short` to capture all paths including untracked files, `git diff HEAD` for diffs) and match changed and newly created files against each plan task's declared **Files** list — a task with no matching changes is incomplete
 - If a task appears incomplete, flag it
 
 ### 3. Code review (NestJS/Hexagonal conventions)
