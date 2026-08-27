@@ -164,6 +164,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
       byCognitiveDifficulty: result.byCognitiveDifficultyStage[0] ?? {},
       byAuthorRole: result.byAuthorRoleStage[0] ?? {},
       byRejectionType: result.byRejectionTypeStage[0] ?? {},
+      byTranslationCompleteness: {
+        fullyTranslated: result.fullyTranslatedCountStage[0]?.count ?? 0,
+        incomplete: result.incompleteTranslationCountStage[0]?.count ?? 0,
+      },
     };
   }
 

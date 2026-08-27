@@ -4,9 +4,11 @@ import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/con
 import { zQuestionThemeStatus } from "@question-theme/application/dto/zod/validators/question-theme.dto.zod.validators";
 import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
+import { IS_FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
+import { zIsFullyTranslated } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
 import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.zod.validators";
 
 const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
@@ -22,6 +24,7 @@ const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
     .meta({ example: QUESTION_THEME_SORT_ORDER_DEFAULT }),
   [LIMIT_QUERY_KEY]: zLimit(),
   status: zQuestionThemeStatus().optional(),
+  [IS_FULLY_TRANSLATED_QUERY_KEY]: zIsFullyTranslated(),
 });
 
 type AdminFindQuestionThemesQueryDto = z.infer<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>;

@@ -48,6 +48,10 @@ Feature: Get Question Stats as Admin
       | poor-quality            | 0     |
       | duplicate-question      | 1     |
       | other                   | 0     |
+    And the response should contain questions translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 60    |
+      | incomplete        | 0     |
 
   Scenario: Get question stats with empty database
     When the admin retrieves question statistics
@@ -84,6 +88,10 @@ Feature: Get Question Stats as Admin
       | poor-quality            | 0     |
       | duplicate-question      | 0     |
       | other                   | 0     |
+    And the response should contain questions translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 0     |
+      | incomplete        | 0     |
 
   Scenario: Trying to get question stats without API key
     When the admin retrieves question statistics without an API key
@@ -96,3 +104,15 @@ Feature: Get Question Stats as Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Get question stats with mixed translation completeness data
+    Given the database is populated with questions fixture set with name "translation-completeness-questions"
+    When the admin retrieves question statistics
+    Then the request should have succeeded with status code 200
+    And the response should contain questions stats with:
+      | field | value |
+      | total | 4     |
+    And the response should contain questions translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 2     |
+      | incomplete        | 2     |

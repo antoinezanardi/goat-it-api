@@ -58,8 +58,13 @@ Then(/^the failed request's response should contain the following validation det
   for (const [index, validationDetailsEntry] of dataTableRows.entries()) {
     const actualValidationDetailsEntry = actualValidationDetails[index];
     const expectedValidationDetails = mapDataTableRowToValidationDetails(validationDetailsEntry);
-    const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
+    const { values: expectedValues, ...expectedRest } = shake(expectedValidationDetails);
+    const { values: actualValues, ...actualRest } = actualValidationDetailsEntry;
 
-    expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetailsWithoutUndefinedFields);
+    expect(actualRest).toStrictEqual(expectedRest);
+
+    if (expectedValues !== undefined) {
+      expect(actualValues?.map(String)).toStrictEqual(expectedValues.map(String));
+    }
   }
 });

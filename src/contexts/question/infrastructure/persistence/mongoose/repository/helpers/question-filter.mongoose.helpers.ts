@@ -1,5 +1,9 @@
 import { Types } from "mongoose";
 
+import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
+
+import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
+
 import type { PipelineStage } from "mongoose";
 
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
@@ -25,6 +29,9 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
   }
   if (filters.themeIds !== undefined) {
     matchConditions["themes.themeId"] = { $in: filters.themeIds.map(id => new Types.ObjectId(id)) };
+  }
+  if (filters.isFullyTranslated !== undefined) {
+    Object.assign(matchConditions, buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, filters.isFullyTranslated));
   }
 
   if (Object.keys(matchConditions).length === 0) {

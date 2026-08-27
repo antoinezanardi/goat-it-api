@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { zTranslationCompletenessStats } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
+
 import {
   QUESTION_AUTHOR_ROLES,
   QUESTION_CATEGORIES,
@@ -20,6 +22,8 @@ const QUESTION_STATS_DTO = z.strictObject({
     .describe("Number of questions per author role"),
   byRejectionType: z.record(z.enum(QUESTION_REJECTION_TYPES), z.number().int().nonnegative())
     .describe("Number of rejected questions per rejection type"),
+  byTranslationCompleteness: zTranslationCompletenessStats()
+    .describe("Translation completeness breakdown"),
 });
 
 type QuestionStatsDto = z.infer<typeof QUESTION_STATS_DTO>;

@@ -813,6 +813,8 @@ describe("Question Mongoose Repository", () => {
       byCognitiveDifficultyStage: [{ medium: 5 }],
       byAuthorRoleStage: [{ admin: 5 }],
       byRejectionTypeStage: [{ "duplicate-question": 1 }],
+      fullyTranslatedCountStage: [{ count: 4 }],
+      incompleteTranslationCountStage: [{ count: 1 }],
     };
 
     it("should call aggregate with the stats pipeline when invoked.", async() => {
@@ -911,6 +913,33 @@ describe("Question Mongoose Repository", () => {
       const result = await repositories.question.getStats();
 
       expect(result.byRejectionType).toStrictEqual({});
+    });
+
+    it("should return fullyTranslated count from the $facet result when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness.fullyTranslated).toBe(4);
+    });
+
+    it("should return incomplete count from the $facet result when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness.incomplete).toBe(1);
+    });
+
+    it("should return zero for fullyTranslated and incomplete when translation count stages are empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([
+        {
+          ...facetResult,
+          fullyTranslatedCountStage: [],
+          incompleteTranslationCountStage: [],
+        } as unknown as QuestionAggregate,
+      ]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness).toStrictEqual({ fullyTranslated: 0, incomplete: 0 });
     });
   });
 });
