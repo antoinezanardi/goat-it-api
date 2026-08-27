@@ -1,7 +1,7 @@
 ---
 description: Runs the full 5-step quality gate (lint → typecheck → unit cov → mutation → acceptance) with auto-fix for the goat-it-api project. Dispatched by orchestrator after all tasks, or by receiving-code-review after applying fixes.
 mode: subagent
-model: opencode-go/deepseek-v4-flash
+model: opencode-go/mimo-v2.5
 temperature: 0.2
 hidden: true
 steps: 120
@@ -11,6 +11,7 @@ permission:
     "pnpm run lint*": "allow"
     "pnpm run typecheck*": "allow"
     "pnpm run test:unit*": "allow"
+    "pnpm run test:unit:*": "allow"
     "pnpm run test:acceptance*": "allow"
     "pnpm run test:mutation*": "allow"
     "git status*": "allow"
@@ -43,17 +44,24 @@ You are the **gatekeeper** subagent for the goat-it-api project. You run the ful
    - `pnpm run lint:oxlint:fix`
    - `pnpm run lint:eslint:fix`
    - Run oxlint first, then ESLint
+   - Auto-fix runs as part of the commands themselves
+   - You can scope linting to a specific file by adding `path/to/file.ts` at the end of the command. Multiple files can be specified
 
 2. **Typecheck:** `pnpm run typecheck`
+   - If fails: inspect errors, fix type issues, re-run
 
 3. **Unit tests with coverage:** `pnpm run test:unit:cov`
    - Coverage threshold: 100% (all branches, lines, functions)
+   - If fails or coverage < 100%: inspect failures, fix broken tests, re-run
+   - You can scope unit tests to a specific file by adding `path/to/file.spec.ts` at the end of the command. Multiple files can be specified
 
 4. **Mutation tests:** `pnpm run test:mutation`
    - Only if `MUTATION_TESTING=true`. Mutation score must be 100%.
 
 5. **Acceptance tests:** `pnpm run test:acceptance`
-   - Scope with `--tags` when re-running to fix specific failures.
+   - Acceptance tests are **HEAVY** (full Docker build + Cucumber), so when re-running to fix specific failures, always use the `--tags` option to avoid re-running tests that have already passed.
+   - You can scope acceptance tests to a specific tag by adding `--tags "@question-themes"` at the end of the command.
+   - Always run full acceptance tests at the end to validate this step.
 
 ## State tracking
 
