@@ -47,12 +47,12 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 #### Universal checks (all types)
 
 - **[U1] Location & naming** — Spec colocated with source as `SourceFile.spec.ts`. No `spec/` subfolders.
-- **[U2] Explicit vitest imports** — `describe`, `it`, `expect`, `vi`, etc. imported from `"vitest"` in every test file. No reliance on undeclared globals.
-- **[U3] Describe label rule** — Controllers: string `"<Name> Controller"`. Use-cases: string `"<Name> Use Case"` (class name). Repositories: string `"<Name> Mongoose Repository"` or `"<Name> Repository"`. DTOs: string `"DTO"` or `"<Name> DTO"` with nested per-field describes. Errors: symbol reference (`describe(ClassName, ...)`). Helpers/mappers: symbol reference (`describe(functionName, ...)`). Never a free-form grouping string wrapping symbol describes.
+- **[U2] Vitest globals** — `describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`, etc. are **globals** via Vitest `globals: true` (`configs/vitest/vitest.config.ts:19`). **Do NOT** import them from `"vitest"`; rely on globals. Only `import type { Mock, MockInstance } from "vitest"` for type-only imports is allowed. Flag any `import { describe, it, expect, vi } from "vitest"` as a violation.
+- **[U3] Describe label rule** — Controllers: string `"<Name> Controller"`. Use-cases: string `"<Name> Use Case"` (class name). Repositories: string `"<Name> Mongoose Repository"` or `"<Name> Repository"`. DTOs (`.dto.shape.spec.ts`): string `"<DTOName> DTO Shape"` (e.g., `"Question DTO Shape"`) with nested per-field `describe("field", ...)` — file suffix is `.shape.spec.ts` because it tests the Zod shape of all fields. Errors: symbol reference (`describe(ClassName, ...)`). Helpers/mappers: symbol reference (`describe(functionName, ...)`). Never a free-form grouping string wrapping symbol describes.
 - **[U4] Single-call assertions** — No `toHaveBeenCalledTimes(1)` combined with `toHaveBeenCalledWith(...)`. Use `toHaveBeenCalledExactlyOnceWith(...)`.
 - **[U5] Error swallowing** — No `.catch(() => null)`. Use try/catch with `void error` or `await expect(promise).rejects.toThrow(exactErrorInstance)`.
 - **[U6] Type safety** — No `any`; no unsafe assertions without an `// Acceptable as ...` + `// oxlint-disable-next-line ...` comment pair.
-- **[U7] Faketory sources** — Fake data from `@faketories/*`. No inline mock data factories.
+- **[U7] Faketory sources** — Fake data from `@faketories/*`. No inline mock data factories — **except** DTO shape specs (`*.dto.shape.spec.ts`) which must use inline literals for `validDto` (see `[DT5]`).
 - **[U8] `it.each` usage** — Always use `it.each` for parameterized tests. Don't write multiple `it(...)` for the same test with different inputs. `it.each` should always be typed like `it.each<T>([...])`. Do NOT flag tests that describe semantically different conditions or edge cases as mergeable — only pure input duplicates of identical test logic count.
 
 #### Established patterns — do NOT flag
@@ -69,6 +69,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - `vi.fn()` with typed generic for mock factories (e.g. `vi.fn<RepositoryStub["method"]>()`).
 - `import packageJson from "@package-json" with { type: "json" }` for package.json assertions.
 - String `describe("prop", ...)` for getter properties (e.g., `AppConfigService` getters `serverConfig`, `corsConfig`, etc.) — getters have no callable symbol reference, so a string label is the correct pattern and not a `[U3]`/`[HP2]` violation.
+- Inline `validDto` literal in `*.dto.shape.spec.ts` (per new `[DT5]`) — not a `[U7]` violation.
 
 #### Controller checks
 
@@ -100,7 +101,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - **[DT2] ZodError assertions** — Negative tests use `expect(() => DTO.parse(bad)).toThrow(ZodError)`.
 - **[DT3] Metadata checks** — Assert `DTO.shape.field.meta()` with `toStrictEqual` for description + example.
 - **[DT4] Per-field coverage** — Every field has at least one positive + one negative test.
-- **[DT5] Faketory usage** — Valid DTOs built from `createFake*Dto()` faketories, modified minimally per test with `Object.assign({}, validDto, { field: badValue })`.
+- **[DT5] Inline valid DTO (shape specs)** — `*.dto.shape.spec.ts` must define `validDto` as an **inline literal** (no `createFake*Dto()`), e.g., `const validQuestionDto: QuestionDto = { id: "...", slug: "...", name: { en: "..." }, ... }` in `beforeEach`. Negative tests use `const bad = { ...validDto, field: badValue }` or `Object.assign({}, validDto, { field: badValue })` with a copied `validDto` (never mutating the original). Flag any `createFake*Dto()` or `Object.assign(validDto, {…})` (without `{}`) in shape specs.
 
 #### Helper checks
 

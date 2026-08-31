@@ -7,7 +7,7 @@ describe(normalizeToArray, () => {
     expect(result).toStrictEqual(["hello"]);
   });
 
-  it.each([
+  it.each<{ description: string; value: unknown }>([
     { value: ["a", "b"], description: "an array" },
     { value: undefined, description: "undefined" },
     { value: 42, description: "a number" },

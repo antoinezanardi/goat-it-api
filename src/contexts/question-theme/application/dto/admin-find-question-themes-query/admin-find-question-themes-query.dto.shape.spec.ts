@@ -11,6 +11,10 @@ import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/
 
 import type { z } from "zod";
 import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
+import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
+
+import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
+import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Admin Find Question-Themes Query DTO Shape", () => {
   let validDto: AdminFindQuestionThemesQueryDto;
@@ -24,7 +28,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+    it.each<QuestionThemeSortableField>(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
       const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-by": sortBy, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -63,7 +67,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-order", () => {
-    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+    it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
       const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-order": sortOrder, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -96,13 +100,13 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+    it.each<number>([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
       const dto = createFakeAdminFindQuestionThemesQueryDto({ limit, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
@@ -129,7 +133,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("status", () => {
-    it.each(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
+    it.each<QuestionThemeStatus>(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
       const dto = createFakeAdminFindQuestionThemesQueryDto({ status, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -153,7 +157,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("is-fully-translated", () => {
-    it.each(["true", "false"])("should pass validation when is-fully-translated is '%s'.", isFullyTranslated => {
+    it.each<string>(["true", "false"])("should pass validation when is-fully-translated is '%s'.", isFullyTranslated => {
       const dto = { ...createFakeAdminFindQuestionThemesQueryDto(), "is-fully-translated": isFullyTranslated } as unknown as AdminFindQuestionThemesQueryDto;
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();

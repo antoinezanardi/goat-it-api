@@ -8,14 +8,14 @@ import {
 import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.zod.validators";
 
 describe(zLimit, () => {
-  it.each([LIMIT_MINIMUM, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", (limit: number) => {
+  it.each<number>([LIMIT_MINIMUM, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", (limit: number) => {
     const schema = zLimit();
     const result = schema.safeParse(limit);
 
     expect(result.success).toBeTruthy();
   });
 
-  it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
+  it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
     const schema = zLimit();
 
     expect(() => schema.parse(invalidLimit)).toThrow(z.ZodError);

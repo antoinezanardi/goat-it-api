@@ -9,10 +9,13 @@ import { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questio
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
+import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
 import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
 
 import type { z } from "zod";
+
+import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Find Questions Sort Query DTO Shape", () => {
   let validDto: FindQuestionsQueryDto;
@@ -26,7 +29,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each(QUESTION_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+    it.each<(typeof QUESTION_SORTABLE_FIELDS)[number]>(QUESTION_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
       const dto = createFakeFindQuestionsQueryDto({ "sort-by": sortBy });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -65,7 +68,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("sort-order", () => {
-    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+    it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
       const dto = createFakeFindQuestionsQueryDto({ "sort-order": sortOrder });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -98,13 +101,13 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+    it.each<number>([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
       const dto = createFakeFindQuestionsQueryDto({ limit });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
@@ -131,7 +134,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("category", () => {
-    it.each(QUESTION_CATEGORIES)("should pass validation when category is '%s'.", category => {
+    it.each<QuestionCategory>(QUESTION_CATEGORIES)("should pass validation when category is '%s'.", category => {
       const dto = createFakeFindQuestionsQueryDto({ category });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -151,7 +154,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("cognitive-difficulty", () => {
-    it.each(QUESTION_COGNITIVE_DIFFICULTIES)("should pass validation when cognitive-difficulty is '%s'.", cognitiveDifficulty => {
+    it.each<QuestionCognitiveDifficulty>(QUESTION_COGNITIVE_DIFFICULTIES)("should pass validation when cognitive-difficulty is '%s'.", cognitiveDifficulty => {
       const dto = createFakeFindQuestionsQueryDto({ "cognitive-difficulty": cognitiveDifficulty });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
@@ -171,7 +174,7 @@ describe("Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("author-role", () => {
-    it.each(QUESTION_AUTHOR_ROLES)("should pass validation when author-role is '%s'.", authorRole => {
+    it.each<QuestionAuthorRole>(QUESTION_AUTHOR_ROLES)("should pass validation when author-role is '%s'.", authorRole => {
       const dto = createFakeFindQuestionsQueryDto({ "author-role": authorRole });
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();

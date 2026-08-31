@@ -8,7 +8,7 @@ import {
 import { zSortOrder } from "@shared/infrastructure/http/zod/validators/sort/sort.zod.validators";
 
 describe(zSortOrder, () => {
-  it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", (sortOrder: string) => {
+  it.each<string>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", (sortOrder: string) => {
     const schema = zSortOrder();
     const result = schema.safeParse(sortOrder);
 

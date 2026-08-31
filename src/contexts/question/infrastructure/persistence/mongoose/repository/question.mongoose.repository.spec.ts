@@ -588,7 +588,7 @@ describe("Question Mongoose Repository", () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
-    it.each([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
+    it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
       const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
       const expectedPipeline = [
         { $match: { status: QUESTION_STATUS_ACTIVE } },

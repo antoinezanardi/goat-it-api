@@ -60,7 +60,7 @@ describe("Find Random Questions Body DTO Shape", () => {
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
     });
 
-    it.each([1.5, "string"])("should throw zod error when limit is '%s' (non-integer).", limit => {
+    it.each<unknown>([1.5, "string"])("should throw zod error when limit is '%s' (non-integer).", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);

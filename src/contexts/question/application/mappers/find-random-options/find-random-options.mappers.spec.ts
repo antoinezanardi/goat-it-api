@@ -19,7 +19,7 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
     expect(result).toMatchObject({ limit: 10 });
   });
 
-  it.each([
+  it.each<{ test: string; bodyDto: ReturnType<typeof createFakeFindRandomQuestionsBodyDto>; expectedField: string; expectedValue: string[] }>([
     {
       test: "should map excludedIds when excludedIds is provided.",
       bodyDto: createFakeFindRandomQuestionsBodyDto({ excludedIds: ["60af924f4f1a2563f8e8b456"] }),
@@ -70,7 +70,7 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
     });
   });
 
-  it.each([
+  it.each<{ test: string; field: "excludedIds" | "categories" | "cognitiveDifficulties" | "themeIds" }>([
     {
       test: "should keep excludedIds undefined when excludedIds is omitted.",
       field: "excludedIds" as const,

@@ -12,6 +12,8 @@ import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/quest
 import type { z } from "zod";
 import type { FindQuestionThemesQueryDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";
 
+import type { SortOrder } from "@shared/domain/types/sort/sort.types";
+
 describe("Find Question-Themes Query DTO Shape", () => {
   let validDto: FindQuestionThemesQueryDto;
 
@@ -24,7 +26,7 @@ describe("Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each(QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+    it.each<(typeof QUESTION_THEME_SORTABLE_FIELDS)[number]>(QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
       const dto = createFakeFindQuestionThemesQueryDto({ "sort-by": sortBy });
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -63,7 +65,7 @@ describe("Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-order", () => {
-    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+    it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
       const dto = createFakeFindQuestionThemesQueryDto({ "sort-order": sortOrder });
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -96,13 +98,13 @@ describe("Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([0, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+    it.each<number>([0, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
       const dto = createFakeFindQuestionThemesQueryDto({ limit });
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
