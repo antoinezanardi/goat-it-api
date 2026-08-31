@@ -65,7 +65,6 @@ describe("Server", () => {
       )),
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
-      useStaticAssets: vi.fn<() => void>(),
       enableCors: vi.fn<() => INestApplication>(),
     } as Partial<INestApplication>);
   });
@@ -131,15 +130,6 @@ describe("Server", () => {
       expect(setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
     });
 
-    it("should use static assets when called.", async() => {
-      const app = await bootstrap();
-
-      expect(app.useStaticAssets).toHaveBeenCalledExactlyOnceWith({
-        root: `${process.cwd()}/public`,
-        prefix: "/public/",
-      });
-    });
-
     it("should listen on the default host and port when none are provided.", async() => {
       const app = await bootstrap();
 
@@ -192,7 +182,6 @@ describe("Server", () => {
         get: expect.any(Function) as () => never,
         listen: expect.any(Function) as () => void,
         getUrl: expect.any(Function) as () => void,
-        useStaticAssets: expect.any(Function) as () => void,
       };
 
       expect(app).toStrictEqual(expectedApp);
