@@ -250,8 +250,9 @@ Feature: Modify Question Theme As Admin
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
-      | code              | message                | path  | keys |
-      | unrecognized_keys | Unrecognized key: "jp" | label | jp   |
+      | code              | message                          | path  | keys |
+      | unrecognized_keys | Unrecognized key: "jp"           | label | jp   |
+      | custom            | At least one locale must be provided | label |      |
 
   Scenario: Trying to modify a question theme with a too long English label
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -289,8 +290,9 @@ Feature: Modify Question Theme As Admin
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
-      | code              | message                | path    | keys |
-      | unrecognized_keys | Unrecognized key: "jp" | aliases | jp   |
+      | code              | message                          | path    | keys |
+      | unrecognized_keys | Unrecognized key: "jp"           | aliases | jp   |
+      | custom            | At least one locale must be provided | aliases |      |
 
   Scenario: Trying to modify a question theme with too few Spanish aliases
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -367,8 +369,9 @@ Feature: Modify Question Theme As Admin
       | error       | statusCode | message                 | validationDetails |
       | Bad Request | 400        | Invalid request payload | <SET>             |
     And the failed request's response should contain the following validation details:
-      | code              | message                | path        | keys |
-      | unrecognized_keys | Unrecognized key: "lt" | description | lt   |
+      | code              | message                          | path        | keys |
+      | unrecognized_keys | Unrecognized key: "lt"           | description | lt   |
+      | custom            | At least one locale must be provided | description |      |
 
   Scenario: Trying to modify a question theme without API key
     Given the database is populated with question themes fixture set with name "five-question-themes"
