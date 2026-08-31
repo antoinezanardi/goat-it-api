@@ -106,13 +106,13 @@ Feature: Get Question Stats as Admin
       | Unauthorized | 401        | Invalid API key |
 
   Scenario: Get question stats with mixed translation completeness data
-    Given the database is populated with questions fixture set with name "translation-completeness-questions"
+    Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves question statistics
     Then the request should have succeeded with status code 200
     And the response should contain questions stats with:
       | field | value |
-      | total | 4     |
+      | total | 8     |
     And the response should contain questions translation completeness stats with:
       | field             | value |
       | fullyTranslated   | 2     |
-      | incomplete        | 2     |
+      | incomplete        | 6     |

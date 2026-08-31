@@ -129,7 +129,7 @@ Feature: Filter Questions as Admin
       | invalid_format | Invalid ObjectId value | theme-ids.0 | string | regex  | /^[\\da-f]{24}$/iu |
 
   Scenario: Filtering admin questions by is-fully-translated "true"
-    Given the database is populated with questions fixture set with name "translation-completeness-questions"
+    Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves all questions with the following query:
       | is-fully-translated |
       | true                |
@@ -137,15 +137,15 @@ Feature: Filter Questions as Admin
     And the response should contain 2 admin questions
 
   Scenario: Filtering admin questions by is-fully-translated "false"
-    Given the database is populated with questions fixture set with name "translation-completeness-questions"
+    Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves all questions with the following query:
       | is-fully-translated |
       | false               |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
+    And the response should contain 6 admin questions
 
   Scenario: Filtering admin questions with invalid is-fully-translated value
-    Given the database is populated with questions fixture set with name "translation-completeness-questions"
+    Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves all questions with the following query:
       | is-fully-translated |
       | maybe               |

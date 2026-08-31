@@ -6,14 +6,10 @@ type TranslationCompletenessFieldSpec = {
 };
 
 function buildLocaleNonNullConditions(path: string): Record<string, unknown> {
-  // Acceptable as MongoDB query syntax — null matches missing or explicitly null field values
-  // oxlint-disable-next-line unicorn/no-null
   return Object.fromEntries(LOCALES.map(locale => [`${path}.${locale}`, { $ne: null }]));
 }
 
 function buildLocaleNullConditions(path: string): Record<string, unknown>[] {
-  // Acceptable as MongoDB query syntax — null matches missing or explicitly null field values
-  // oxlint-disable-next-line unicorn/no-null
   return LOCALES.map(locale => ({ [`${path}.${locale}`]: null }));
 }
 
@@ -23,8 +19,6 @@ function buildFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec
   if (fieldSpec.isMandatory) {
     return allLocalesSet;
   }
-  // Acceptable as MongoDB query syntax — null matches missing or explicitly null field values
-  // oxlint-disable-next-line unicorn/no-null
   return { $or: [{ [fieldSpec.path]: null }, allLocalesSet] };
 }
 
@@ -34,8 +28,6 @@ function buildFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSp
   if (fieldSpec.isMandatory) {
     return someLocaleMissing;
   }
-  // Acceptable as MongoDB query syntax — null matches missing or explicitly null field values
-  // oxlint-disable-next-line unicorn/no-null
   return { $and: [{ [fieldSpec.path]: { $ne: null } }, someLocaleMissing] };
 }
 
