@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { APP_PIPE } from "@nestjs/core";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { LoggerModule } from "nestjs-pino";
 import { ZodValidationPipe } from "nestjs-zod";
 
@@ -20,6 +21,10 @@ import { QuestionModule } from "@question/question.module";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: `${process.cwd()}/public`,
+      serveRoot: "/public/",
+    }),
     AppConfigModule,
     LoggerModule.forRoot(getLoggerConfiguration()),
     HealthModule,
