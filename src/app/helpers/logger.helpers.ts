@@ -1,4 +1,4 @@
-import type { Params as PinoParameters } from "nestjs-pino/params";
+import type { Params as PinoParameters } from "nestjs-pino";
 
 function getLoggerConfiguration(): PinoParameters {
   return {
