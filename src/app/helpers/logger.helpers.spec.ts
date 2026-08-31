@@ -1,6 +1,6 @@
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 
-import type { Params as PinoParameters } from "nestjs-pino/params";
+import type { Params as PinoParameters } from "nestjs-pino";
 
 describe("Logger Helpers", () => {
   describe(getLoggerConfiguration, () => {
