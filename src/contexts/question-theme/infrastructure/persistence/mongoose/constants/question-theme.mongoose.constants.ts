@@ -1,4 +1,4 @@
-import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
+import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
 const QUESTION_THEME_MONGOOSE_COLLECTION_NAME = "question_themes";
 

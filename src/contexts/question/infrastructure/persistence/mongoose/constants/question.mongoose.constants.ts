@@ -1,7 +1,6 @@
-import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
-
 import { QUESTION_COGNITIVE_DIFFICULTY_SORT_ORDER, QUESTION_STATUS_SORT_ORDER } from "@question/domain/constants/question.constants";
 
+import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 import type { SemanticSortOrders } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
 import type { QuestionSortableField } from "@question/domain/types/question.types";
 

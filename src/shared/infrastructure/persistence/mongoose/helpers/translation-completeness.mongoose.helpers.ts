@@ -1,9 +1,6 @@
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-type TranslationCompletenessFieldSpec = {
-  path: string;
-  isMandatory: boolean;
-};
+import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
 function buildLocaleNonNullConditions(path: string): Record<string, unknown> {
   return Object.fromEntries(LOCALES.map(locale => [`${path}.${locale}`, { $ne: null }]));
@@ -39,5 +36,3 @@ function buildIsFullyTranslatedMatchCondition(
 }
 
 export { buildIsFullyTranslatedMatchCondition };
-
-export type { TranslationCompletenessFieldSpec };
