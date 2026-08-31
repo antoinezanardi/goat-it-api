@@ -34,4 +34,10 @@ describe("App Health Details Check DTO Shape", () => {
       expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.message.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
+
+  describe("responseTime", () => {
+    it("should have correct description when accessing description.", () => {
+      expect(APP_HEALTH_DETAILS_CHECK_DTO.shape.responseTime.description).toBe("Optional response time in milliseconds for the health check");
+    });
+  });
 });
