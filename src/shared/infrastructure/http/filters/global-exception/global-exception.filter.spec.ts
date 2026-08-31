@@ -25,7 +25,7 @@ import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/
 
 import type { FastifyReply } from "fastify";
 
-describe("Global Exception Filter", () => {
+describe(GlobalExceptionFilter, () => {
   let mocks: {
     filters: {
       globalException: {
@@ -54,7 +54,9 @@ describe("Global Exception Filter", () => {
     };
   });
 
-  describe("sendNestHttpException", () => {
+  // Acceptable as private static method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(GlobalExceptionFilter["sendNestHttpException"], () => {
     it("should send the correct status using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
@@ -88,7 +90,9 @@ describe("Global Exception Filter", () => {
     });
   });
 
-  describe("sendZodValidationException", () => {
+  // Acceptable as private static method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(GlobalExceptionFilter["sendZodValidationException"], () => {
     it("should send BadRequestException status when called.", () => {
       const zodValidationException = new ZodValidationException(new ZodError([
         {
@@ -346,7 +350,9 @@ describe("Global Exception Filter", () => {
     });
   });
 
-  describe("sendUnknownException", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(GlobalExceptionFilter.prototype["sendUnknownException"], () => {
     it("should log the error message when called with an Error.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();

@@ -2,7 +2,7 @@ import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/per
 
 import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
-describe("Build Is Fully Translated Match Condition", () => {
+describe(buildIsFullyTranslatedMatchCondition, () => {
   const mandatoryFieldSpec: TranslationCompletenessFieldSpec = { path: "label", isMandatory: true };
   const optionalFieldSpec: TranslationCompletenessFieldSpec = { path: "content.context", isMandatory: false };
 

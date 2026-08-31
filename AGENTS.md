@@ -238,7 +238,7 @@ Each skill has a `SKILL.md` entry point. Load only the relevant skill for the ta
 
 Available skills: `brainstorming`, `create-faketory`, `create-mock`, `receiving-code-review`, `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
 
-- **When writing unit tests**: load the `write-unit-test` skill first.
+- **When writing unit tests** (including inside plans): always load the `write-unit-test` skill first and verify the result against the `.opencode/commands/lint-unit-tests.md` §4 checklist.
 - **When writing acceptance tests**: load the `write-acceptance-test` skill first.
 - **When creating faketories/mocks**: load `create-faketory` / `create-mock`.
 
@@ -250,6 +250,7 @@ Slash commands available in OpenCode sessions:
 - `/create-faketory`       – Scaffold a faketory for an entity, DTO, command or Mongoose document
 - `/create-mock`           – Scaffold a typed Vitest mock factory for a repository or use-case port
 - `/write-acceptance-test` – Write or complete a Cucumber acceptance test scenario
+- `/lint-unit-tests`     – Audit spec files against unit testing conventions, then fix user-approved violations
 - `/write-unit-test`       – Write or complete a unit test file following 100%-coverage conventions
 - `/writing-skills`        – Create, edit, or verify an agent skill
 

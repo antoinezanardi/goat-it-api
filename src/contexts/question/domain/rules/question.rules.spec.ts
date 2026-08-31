@@ -6,96 +6,94 @@ import type { QuestionCreationAuthorRole, QuestionCreationStatus } from "@questi
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
-describe("Question Rules", () => {
-  describe(computeQuestionStatusFromAuthorRole, () => {
-    it.each<{
-      test: string;
-      input: QuestionCreationAuthorRole;
-      expected: QuestionCreationStatus;
-    }>([
-      {
-        test: "should return active when author role is admin",
-        input: "admin",
-        expected: "active",
-      },
-      {
-        test: "should return pending when author role is ai",
-        input: "ai",
-        expected: "pending",
-      },
-    ])("$test", ({ input, expected }) => {
-      const status = computeQuestionStatusFromAuthorRole(input);
+describe(computeQuestionStatusFromAuthorRole, () => {
+  it.each<{
+    test: string;
+    input: QuestionCreationAuthorRole;
+    expected: QuestionCreationStatus;
+  }>([
+    {
+      test: "should return active when author role is admin",
+      input: "admin",
+      expected: "active",
+    },
+    {
+      test: "should return pending when author role is ai",
+      input: "ai",
+      expected: "pending",
+    },
+  ])("$test", ({ input, expected }) => {
+    const status = computeQuestionStatusFromAuthorRole(input);
 
-      expect(status).toBe(expected);
-    });
+    expect(status).toBe(expected);
+  });
+});
+
+describe(findQuestionThemeAssignmentInQuestionByThemeId, () => {
+  it("should return the question theme assignment when it exists in the question.", () => {
+    const question = createFakeQuestion();
+    const expected = question.themes[0];
+
+    const actual = findQuestionThemeAssignmentInQuestionByThemeId(question, expected.theme.id);
+
+    expect(actual).toStrictEqual(expected);
   });
 
-  describe(findQuestionThemeAssignmentInQuestionByThemeId, () => {
-    it("should return the question theme assignment when it exists in the question.", () => {
-      const question = createFakeQuestion();
-      const expected = question.themes[0];
+  it("should return undefined when the question theme assignment does not exist.", () => {
+    const question = createFakeQuestion();
 
-      const actual = findQuestionThemeAssignmentInQuestionByThemeId(question, expected.theme.id);
+    const actual = findQuestionThemeAssignmentInQuestionByThemeId(question, "non-existent-id");
 
-      expect(actual).toStrictEqual(expected);
+    expect(actual).toBeUndefined();
+  });
+});
+
+describe(ensureQuestionThemeAssignmentIsRemovable, () => {
+  it("should not throw when the theme assignment is not primary.", () => {
+    const question = createFakeQuestion({
+      themes: [
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+      ],
     });
 
-    it("should return undefined when the question theme assignment does not exist.", () => {
-      const question = createFakeQuestion();
-
-      const actual = findQuestionThemeAssignmentInQuestionByThemeId(question, "non-existent-id");
-
-      expect(actual).toBeUndefined();
-    });
+    expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).not.toThrow();
   });
 
-  describe(ensureQuestionThemeAssignmentIsRemovable, () => {
-    it("should not throw when the theme assignment is not primary.", () => {
-      const question = createFakeQuestion({
-        themes: [
-          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
-          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
-        ],
-      });
-
-      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).not.toThrow();
+  it("should throw QuestionThemeAssignmentAbsentError when the theme is not assigned to the question.", () => {
+    const question = createFakeQuestion({
+      themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false })],
     });
 
-    it("should throw QuestionThemeAssignmentAbsentError when the theme is not assigned to the question.", () => {
-      const question = createFakeQuestion({
-        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false })],
-      });
-
-      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
-    });
-
-    it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when the theme assignment is primary.", () => {
-      const question = createFakeQuestion({
-        themes: [
-          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: true }),
-          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: false }),
-        ],
-      });
-
-      expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).toThrow(QuestionPrimaryThemeAssignmentNotRemovableError);
-    });
+    expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
   });
 
-  describe(ensureQuestionThemeAssignmentIsModifiable, () => {
-    it("should not throw when the theme is assigned to the question.", () => {
-      const question = createFakeQuestion({
-        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) })],
-      });
-
-      expect(() => ensureQuestionThemeAssignmentIsModifiable(question, "theme-1")).not.toThrow();
+  it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when the theme assignment is primary.", () => {
+    const question = createFakeQuestion({
+      themes: [
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: true }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: false }),
+      ],
     });
 
-    it("should throw QuestionThemeAssignmentAbsentError when the theme is not assigned to the question.", () => {
-      const question = createFakeQuestion({
-        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) })],
-      });
+    expect(() => ensureQuestionThemeAssignmentIsRemovable(question, "theme-1")).toThrow(QuestionPrimaryThemeAssignmentNotRemovableError);
+  });
+});
 
-      expect(() => ensureQuestionThemeAssignmentIsModifiable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
+describe(ensureQuestionThemeAssignmentIsModifiable, () => {
+  it("should not throw when the theme is assigned to the question.", () => {
+    const question = createFakeQuestion({
+      themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) })],
     });
+
+    expect(() => ensureQuestionThemeAssignmentIsModifiable(question, "theme-1")).not.toThrow();
+  });
+
+  it("should throw QuestionThemeAssignmentAbsentError when the theme is not assigned to the question.", () => {
+    const question = createFakeQuestion({
+      themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) })],
+    });
+
+    expect(() => ensureQuestionThemeAssignmentIsModifiable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
   });
 });

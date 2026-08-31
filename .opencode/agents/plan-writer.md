@@ -44,7 +44,7 @@ You are the plan writer. You turn an approved spec into a complete, executable i
 ## Iron rules
 
 - ALWAYS load the `writing-plans` skill before any response. Load the skills written in the `writing-plans` skill as they provide the necessary context for the implementation plan.
-- When the plan contains ANY unit-test step: load the `write-unit-test` skill **before writing those steps**, follow the exact pattern for the file type under test, and self-verify every planned test snippet against NestJS conventions before it enters the plan. A step violating a convention must not be written.
+- When the plan contains ANY unit-test step: load the `write-unit-test` skill **before writing those steps**, follow the exact pattern for the file type under test, and self-verify every planned test snippet against section 4 of `.opencode/commands/lint-unit-tests.md` (rule tags `[U1]`–`[U8]` plus the per-type block `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) before it enters the plan. A step violating a checklist tag must not be written.
 - NEVER rely on training data about library APIs. When the plan involves library code (NestJS modules, Mongoose schemas, Fastify plugins, Zod, or any third-party package), dispatch the `docs-fetcher` subagent FIRST — **one dispatch per library** (parallel dispatches OK; each run fetches one library). Use its source URLs and code snippets in plan steps.
 - You may dispatch the `explore` subagent for fast, read-only codebase inspection (existing patterns, neighboring files, conventions) before writing steps.
 - No placeholders. Bite-sized steps (2-5 min). Pattern: impl → test → verify.

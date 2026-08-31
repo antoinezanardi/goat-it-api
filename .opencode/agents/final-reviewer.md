@@ -112,6 +112,14 @@ You may dispatch helper subagents when reviewing:
 - No secrets, API keys, or credentials in code or config.
 - No `.env.*` files committed.
 
+### 10. Unit-test convention audit (mandatory)
+
+- **Trigger:** the diff adds or modifies any `*.spec.ts`, faketory, or mock file.
+- Read `.opencode/commands/lint-unit-tests.md` section 4 IN FULL; classify each spec file with its §3 classification table (controller, use-case, repository, dto, error, helper).
+- Apply the universal checks `[U1]`–`[U8]` plus the spec-type's block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) — **static analysis only**; never execute tests (quality gates belong to the gatekeeper).
+- Entries under "Established patterns — do NOT flag" are conventions, not violations.
+- Report every violation as `` `[tag]` `file:line` — expected pattern ``.
+
 ## Return format
 
 **Evidence discipline:** every ✅/❌ claim MUST cite `file:line` (or command output). A claim you could not verify is marked ⚠️ unverified — never silently omitted, never asserted without proof.

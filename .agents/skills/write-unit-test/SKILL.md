@@ -235,6 +235,13 @@ pnpm run typecheck
 pnpm run lint
 ```
 
+## Final audit checklist
+
+The command `.opencode/commands/lint-unit-tests.md` is the **final audit checklist** — its rule
+tags (`[U*]`, `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) are mirrored in this
+skill so anything written per this skill passes that audit. After writing a test, mentally
+verify it against section 4 of that command before considering the task done.
+
 ## Reference
 
 - **Primary authoritative guide (read first):** `tests/unit/README.md`
