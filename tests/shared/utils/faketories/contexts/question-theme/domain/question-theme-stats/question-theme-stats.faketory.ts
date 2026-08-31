@@ -21,6 +21,10 @@ function createFakeQuestionThemeStats(overrides: Partial<QuestionThemeStats> = {
       [QUESTION_THEME_STATUS_ARCHIVED]: faker.number.int({ min: 0, max: 30 }),
     },
     byQuestionCount: faker.helpers.multiple(() => createFakeThemeActiveQuestionCount(), { count: { min: 0, max: 5 } }),
+    byTranslationCompleteness: {
+      fullyTranslated: faker.number.int({ min: 0, max: 30 }),
+      incomplete: faker.number.int({ min: 0, max: 30 }),
+    },
     ...overrides,
   };
 }

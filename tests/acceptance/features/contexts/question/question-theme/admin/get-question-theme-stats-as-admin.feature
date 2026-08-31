@@ -27,6 +27,10 @@ Feature: Get Question Theme Stats as Admin
       | music     | 3                   |
       | science   | 1                   |
       | sports    | 1                   |
+    And the response should contain question themes translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 60    |
+      | incomplete        | 0     |
 
   Scenario: Get question theme stats with empty database
     When the admin retrieves question theme statistics
@@ -39,6 +43,10 @@ Feature: Get Question Theme Stats as Admin
       | active   | 0     |
       | archived | 0     |
     And the response should contain question themes question count stats with an empty list
+    And the response should contain question themes translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 0     |
+      | incomplete        | 0     |
 
   Scenario: Trying to get question theme stats without API key
     When the admin retrieves question theme statistics without an API key
@@ -51,3 +59,15 @@ Feature: Get Question Theme Stats as Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Get question theme stats with mixed translation completeness data
+    Given the database is populated with question themes fixture set with name "eight-translation-completeness-question-themes"
+    When the admin retrieves question theme statistics
+    Then the request should have succeeded with status code 200
+    And the response should contain question themes stats with:
+      | field | value |
+      | total | 8     |
+    And the response should contain question themes translation completeness stats with:
+      | field             | value |
+      | fullyTranslated   | 2     |
+      | incomplete        | 6     |

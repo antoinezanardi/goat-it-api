@@ -1,4 +1,7 @@
+import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
+
 import { QUESTION_STATUS_REJECTED } from "@question/domain/constants/question.constants";
+import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 // Acceptable as MongoDB query syntax — null matches missing grouped field values
 // oxlint-disable-next-line unicorn/no-null
@@ -40,6 +43,14 @@ const GET_STATS_FACET_STAGE = {
       { $group: { _id: "$rejection.type", count: { $sum: 1 } } },
       FILTER_NULL_ID_STAGE,
       ...ROWS_TO_RECORD_STAGES,
+    ],
+    fullyTranslatedCountStage: [
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, true) },
+      { $count: "count" },
+    ],
+    incompleteTranslationCountStage: [
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, false) },
+      { $count: "count" },
     ],
   },
 };

@@ -16,7 +16,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   let validDto: AdminFindQuestionThemesQueryDto;
 
   beforeEach(() => {
-    validDto = createFakeAdminFindQuestionThemesQueryDto();
+    validDto = createFakeAdminFindQuestionThemesQueryDto({ "is-fully-translated": undefined });
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -25,7 +25,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   describe("sort-by", () => {
     it.each(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-by": sortBy });
+      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-by": sortBy, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -64,7 +64,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   describe("sort-order", () => {
     it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-order": sortOrder });
+      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-order": sortOrder, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -97,7 +97,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   describe("limit", () => {
     it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ limit });
+      const dto = createFakeAdminFindQuestionThemesQueryDto({ limit, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -130,7 +130,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   describe("status", () => {
     it.each(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ status });
+      const dto = createFakeAdminFindQuestionThemesQueryDto({ status, "is-fully-translated": undefined });
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -149,6 +149,39 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.status.unwrap().description).toBe("Question Theme's status");
+    });
+  });
+
+  describe("is-fully-translated", () => {
+    it.each(["true", "false"])("should pass validation when is-fully-translated is '%s'.", isFullyTranslated => {
+      const dto = { ...createFakeAdminFindQuestionThemesQueryDto(), "is-fully-translated": isFullyTranslated } as unknown as AdminFindQuestionThemesQueryDto;
+
+      expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should parse is-fully-translated to a boolean when value is a valid boolean string.", () => {
+      const dto = { ...createFakeAdminFindQuestionThemesQueryDto(), "is-fully-translated": "false" } as unknown as AdminFindQuestionThemesQueryDto;
+
+      const result = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto);
+
+      expect(result["is-fully-translated"]).toBeFalsy();
+    });
+
+    it("should throw zod error when is-fully-translated is invalid.", () => {
+      const dtoWithInvalidValue = { ...validDto, "is-fully-translated": "maybe" };
+
+      expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidValue)).toThrow(ZodError);
+    });
+
+    it("should pass validation when is-fully-translated is not provided.", () => {
+      const dtoWithoutIsFullyTranslated: Record<string, unknown> = { ...validDto };
+      delete dtoWithoutIsFullyTranslated["is-fully-translated"];
+
+      expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithoutIsFullyTranslated)).not.toThrow();
+    });
+
+    it("should have is-fully-translated as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["is-fully-translated"]>().toEqualTypeOf<string | undefined>();
     });
   });
 

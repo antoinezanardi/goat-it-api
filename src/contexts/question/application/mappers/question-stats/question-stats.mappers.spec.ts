@@ -79,4 +79,13 @@ describe(createQuestionStatsDtoFromStats, () => {
 
     expect(result.byCategory.lexicon).toBe(0);
   });
+
+  it("should return byTranslationCompleteness from stats when provided.", () => {
+    const byTranslationCompleteness = { fullyTranslated: 7, incomplete: 2 };
+    const stats = createFakeQuestionStats({ byTranslationCompleteness });
+
+    const result = createQuestionStatsDtoFromStats(stats);
+
+    expect(result.byTranslationCompleteness).toStrictEqual(byTranslationCompleteness);
+  });
 });

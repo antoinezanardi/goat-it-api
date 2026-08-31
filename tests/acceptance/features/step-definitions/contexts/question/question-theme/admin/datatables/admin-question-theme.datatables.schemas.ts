@@ -21,6 +21,7 @@ const ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.strictObject({
   "sort-order": zCoerceOptionalString(),
   "status": zCoerceOptionalString(),
   "limit": zCoerceOptionalString(),
+  "is-fully-translated": zCoerceOptionalString(),
 });
 
 export {

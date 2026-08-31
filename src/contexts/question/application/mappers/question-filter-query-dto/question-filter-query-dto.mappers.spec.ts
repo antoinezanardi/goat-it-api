@@ -1,4 +1,5 @@
 import { createPublicQuestionFilterOptionsFromQueryDto, createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
+import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 
 import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
@@ -8,13 +9,16 @@ import type { PublicQuestionFilterOptions, QuestionFilterOptions } from "@questi
 describe("Question Filter Query DTO Mappers", () => {
   describe(createQuestionFilterOptionsFromQueryDto, () => {
     it("should return all filter options when all filter fields are provided.", () => {
-      const dto = createFakeAdminFindQuestionsQueryDto({
-        "status": "active",
-        "category": "trivia",
-        "cognitive-difficulty": "hard",
-        "author-role": "admin",
-        "theme-ids": ["507f1f77bcf86cd799439011"],
-      });
+      const dto = {
+        ...createFakeAdminFindQuestionsQueryDto({
+          "status": "active",
+          "category": "trivia",
+          "cognitive-difficulty": "hard",
+          "author-role": "admin",
+          "theme-ids": ["507f1f77bcf86cd799439011"],
+        }),
+        "is-fully-translated": true,
+      } as unknown as AdminFindQuestionsQueryDto;
 
       const result = createQuestionFilterOptionsFromQueryDto(dto);
 
@@ -24,6 +28,7 @@ describe("Question Filter Query DTO Mappers", () => {
         cognitiveDifficulty: "hard",
         authorRole: "admin",
         themeIds: ["507f1f77bcf86cd799439011"],
+        isFullyTranslated: true,
       };
 
       expect(result).toStrictEqual(expected);
@@ -36,6 +41,7 @@ describe("Question Filter Query DTO Mappers", () => {
         "cognitive-difficulty": undefined,
         "author-role": undefined,
         "theme-ids": undefined,
+        "is-fully-translated": undefined,
       });
 
       const result = createQuestionFilterOptionsFromQueryDto(dto);
@@ -52,6 +58,7 @@ describe("Question Filter Query DTO Mappers", () => {
         "cognitive-difficulty": undefined,
         "author-role": undefined,
         "theme-ids": undefined,
+        "is-fully-translated": undefined,
       });
 
       const result = createQuestionFilterOptionsFromQueryDto(dto);
@@ -107,6 +114,21 @@ describe("Question Filter Query DTO Mappers", () => {
       const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe("public mapper", () => {
+    it("should not include isFullyTranslated when the source dto contains it since public mapper omits it.", () => {
+      const dto = createFakeFindQuestionsQueryDto({
+        "category": "trivia",
+        "cognitive-difficulty": "easy",
+        "author-role": "game",
+        "theme-ids": ["507f1f77bcf86cd799439011"],
+      });
+
+      const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
+
+      expect(result).not.toHaveProperty("isFullyTranslated");
     });
   });
 });

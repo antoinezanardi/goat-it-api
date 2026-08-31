@@ -1,0 +1,290 @@
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
+import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_FIRST_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("111111111111111111111101"),
+  slug: "fully-translated-theme-1",
+  color: "#33A1FF",
+  label: createFakeLocalizedText({
+    en: "Cooking",
+    fr: "Cuisine",
+    it: "Cucina",
+    pt: "Culinária",
+    es: "Cocina",
+    de: "Kochen",
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Recipes", "Food"],
+    fr: ["Recettes", "Nourriture"],
+    it: ["Ricette", "Cibo"],
+    pt: ["Receitas", "Comida"],
+    es: ["Recetas", "Comida"],
+    de: ["Rezepte", "Essen"],
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about cooking, recipes and culinary arts.",
+    fr: "Thème concernant la cuisine, les recettes et les arts culinaires.",
+    it: "Tema sulla cucina, le ricette e le arti culinarie.",
+    pt: "Tema sobre culinária, receitas e artes culinárias.",
+    es: "Tema sobre cocina, recetas y artes culinarias.",
+    de: "Thema über Kochen, Rezepte und kulinarische Künste.",
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_SECOND_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("222222222222222222222202"),
+  slug: "fully-translated-theme-2",
+  color: "#FA2333",
+  label: createFakeLocalizedText({
+    en: "Travel",
+    fr: "Voyage",
+    it: "Viaggio",
+    pt: "Viagem",
+    es: "Viaje",
+    de: "Reise",
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Destinations", "Tourism"],
+    fr: ["Destinations", "Tourisme"],
+    it: ["Destinazioni", "Turismo"],
+    pt: ["Destinos", "Turismo"],
+    es: ["Destinos", "Turismo"],
+    de: ["Reiseziele", "Tourismus"],
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about travel, destinations and tourism.",
+    fr: "Thème concernant les voyages, les destinations et le tourisme.",
+    it: "Tema sui viaggi, le destinazioni e il turismo.",
+    pt: "Tema sobre viagens, destinos e turismo.",
+    es: "Tema sobre viajes, destinos y turismo.",
+    de: "Thema über Reisen, Reiseziele und Tourismus.",
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIRST_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("333333333333333333333303"),
+  slug: "incomplete-theme-1",
+  color: undefined,
+  label: createFakeLocalizedText({
+    en: "Nature",
+    fr: undefined,
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Environment", "Outdoors"],
+    fr: undefined,
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about nature, environment and outdoor activities.",
+    fr: undefined,
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SECOND_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("444444444444444444444404"),
+  slug: "incomplete-theme-2",
+  color: "#9B59B6",
+  label: createFakeLocalizedText({
+    en: "Music",
+    fr: "Musique",
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Songs", "Tunes"],
+    fr: ["Chanson", "Son"],
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about music, artists and music genres.",
+    fr: "Thème lié à la musique, aux artistes et aux genres musicaux.",
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_THIRD_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("555555555555555555555505"),
+  slug: "incomplete-theme-3",
+  color: "#2ECC71",
+  label: createFakeLocalizedText({
+    en: "Technology",
+    fr: "Technologie",
+    it: "Tecnologia",
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Innovation", "Digital"],
+    fr: ["Innovation", "Numérique"],
+    it: ["Innovazione", "Digitale"],
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about technology, innovation and digital trends.",
+    fr: "Thème concernant la technologie, l'innovation et les tendances numériques.",
+    it: "Tema sulla tecnologia, l'innovazione e le tendenze digitali.",
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FOURTH_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("666666666666666666666606"),
+  slug: "incomplete-theme-4",
+  color: "#E67E22",
+  label: createFakeLocalizedText({
+    en: "Geography",
+    fr: "Géographie",
+    it: "Geografia",
+    pt: "Geografia",
+    es: undefined,
+    de: undefined,
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Countries", "Maps"],
+    fr: ["Pays", "Cartes"],
+    it: ["Paesi", "Mappe"],
+    pt: ["Países", "Mapas"],
+    es: undefined,
+    de: undefined,
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about geography, countries and world regions.",
+    fr: "Thème concernant la géographie, les pays et les régions du monde.",
+    it: "Tema sulla geografia, i paesi e le regioni del mondo.",
+    pt: "Tema sobre geografia, países e regiões do mundo.",
+    es: undefined,
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIFTH_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("777777777777777777777707"),
+  slug: "incomplete-theme-5",
+  color: "#1ABC9C",
+  label: createFakeLocalizedText({
+    en: "Art",
+    fr: "Art",
+    it: "Arte",
+    pt: "Arte",
+    es: "Arte",
+    de: "Kunst",
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Painting", "Sculpture"],
+    fr: ["Peinture", "Sculpture"],
+    it: ["Pittura", "Scultura"],
+    pt: ["Pintura", "Escultura"],
+    es: ["Pintura", "Escultura"],
+    de: ["Malerei", "Bildhauerei"],
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about visual arts, painting and sculpture.",
+    fr: undefined,
+    it: undefined,
+    pt: undefined,
+    es: undefined,
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SIXTH_ENTRY = createFakeQuestionThemeDocument({
+  _id: createFakeObjectId("888888888888888888888808"),
+  slug: "incomplete-theme-6",
+  color: undefined,
+  label: createFakeLocalizedText({
+    en: "Literature",
+    fr: undefined,
+    it: "Letteratura",
+    pt: undefined,
+    es: "Literatura",
+    de: undefined,
+  }),
+  aliases: createFakeLocalizedTexts({
+    en: ["Books", "Writing"],
+    fr: undefined,
+    it: ["Libri", "Scrittura"],
+    pt: undefined,
+    es: ["Libros", "Escritura"],
+    de: undefined,
+  }),
+  description: createFakeLocalizedText({
+    en: "Theme about literature, books and creative writing.",
+    fr: undefined,
+    it: "Tema sulla letteratura, i libri e la scrittura creativa.",
+    pt: undefined,
+    es: "Tema sobre literatura, libros y escritura creativa.",
+    de: undefined,
+  }),
+  status: "active",
+  createdAt: new Date("2024-06-01T00:00:00.000Z"),
+  updatedAt: new Date("2024-06-01T00:00:00.000Z"),
+});
+
+const EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FIXTURE_SET = [
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_FIRST_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_SECOND_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIRST_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SECOND_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_THIRD_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FOURTH_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIFTH_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SIXTH_ENTRY,
+] as const satisfies ReturnType<typeof createFakeQuestionThemeDocument>[];
+
+export {
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_FIRST_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FULLY_TRANSLATED_SECOND_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIRST_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SECOND_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_THIRD_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FOURTH_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_FIFTH_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_INCOMPLETE_SIXTH_ENTRY,
+  EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FIXTURE_SET,
+};

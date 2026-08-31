@@ -27,6 +27,7 @@ const ADMIN_QUESTION_QUERY_PARAMS_SCHEMA = z.strictObject({
   "author-role": zCoerceOptionalString(),
   "theme-ids": zCoerceOptionalStringArray(),
   "limit": zCoerceOptionalString(),
+  "is-fully-translated": zCoerceOptionalString(),
 });
 
 export {

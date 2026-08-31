@@ -342,6 +342,8 @@ describe("Question Theme Mongoose Repository", () => {
       total: [{ count: 3 }],
       statusRows: [{ active: 2, archived: 1 }],
       byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
+      fullyTranslatedCountStage: [{ count: 2 }],
+      incompleteTranslationCountStage: [{ count: 1 }],
     };
 
     it("should return total from aggregation when themes exist.", async() => {
@@ -358,6 +360,8 @@ describe("Question Theme Mongoose Repository", () => {
   total: [],
   statusRows: [],
   byQuestionCount: [],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
@@ -380,6 +384,8 @@ describe("Question Theme Mongoose Repository", () => {
   total: [{ count: 1 }],
   statusRows: [{}],
   byQuestionCount: [],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
@@ -394,6 +400,8 @@ describe("Question Theme Mongoose Repository", () => {
   total: [{ count: 1 }],
   statusRows: [{ active: 1 }],
   byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 0 }],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
@@ -408,6 +416,8 @@ describe("Question Theme Mongoose Repository", () => {
   total: [{ count: 1 }],
   statusRows: [{ active: 1 }],
   byQuestionCount: [{ themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 5 }],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
@@ -425,6 +435,8 @@ describe("Question Theme Mongoose Repository", () => {
     { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
     { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
   ],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
@@ -442,12 +454,44 @@ describe("Question Theme Mongoose Repository", () => {
     { themeId: "665f1a2b3c4d5e6f7a8b9c0d", themeSlug: "cinema", activeQuestionCount: 3 },
     { themeId: "775f1a2b3c4d5e6f7a8b9c0e", themeSlug: "sport", activeQuestionCount: 1 },
   ],
+  fullyTranslatedCountStage: [],
+  incompleteTranslationCountStage: [],
 } satisfies QuestionThemeStatsAggregationResult,
       ]);
 
       const result = await repositories.questionTheme.getStats();
 
       expect(result.byQuestionCount[1].themeSlug).toBe("sport");
+    });
+
+    it("should return fullyTranslated count from the $facet result when called.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byTranslationCompleteness.fullyTranslated).toBe(2);
+    });
+
+    it("should return incomplete count from the $facet result when called.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([statsAggResult]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byTranslationCompleteness.incomplete).toBe(1);
+    });
+
+    it("should return zero for fullyTranslated and incomplete when translation count stages are empty.", async() => {
+      mocks.models.questionTheme.aggregate.mockResolvedValueOnce([
+        {
+          ...statsAggResult,
+          fullyTranslatedCountStage: [],
+          incompleteTranslationCountStage: [],
+        } satisfies QuestionThemeStatsAggregationResult,
+      ]);
+
+      const result = await repositories.questionTheme.getStats();
+
+      expect(result.byTranslationCompleteness).toStrictEqual({ fullyTranslated: 0, incomplete: 0 });
     });
   });
 });

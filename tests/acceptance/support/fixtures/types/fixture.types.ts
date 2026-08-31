@@ -28,11 +28,13 @@ type FixtureRegistry = {
     "five-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
     "two-english-only-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
     "sixty-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
+    "eight-translation-completeness-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
   };
   "question-theme": {
     "five-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;
     "two-english-only-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;
     "sixty-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;
+    "eight-translation-completeness-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;
   };
 };
 

@@ -43,6 +43,10 @@ function createFakeQuestionStatsDto(overrides: Partial<QuestionStatsDto> = {}): 
       "duplicate-question": faker.number.int({ min: 0, max: 20 }),
       "other": faker.number.int({ min: 0, max: 20 }),
     },
+    byTranslationCompleteness: {
+      fullyTranslated: faker.number.int({ min: 0, max: 20 }),
+      incomplete: faker.number.int({ min: 0, max: 20 }),
+    },
     ...overrides,
   };
 }

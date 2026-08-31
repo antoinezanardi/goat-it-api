@@ -1,6 +1,8 @@
+import { EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/eight-translation-completeness-question-themes.fixture-set";
 import { FIVE_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 import { TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/two-english-only-question-themes.fixture-set";
 import { SIXTY_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/question-theme/sets/sixty-question-themes.fixture-set";
+import { EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/eight-translation-completeness-questions.fixture-set";
 import { FIVE_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/five-questions.fixture-set";
 import { TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/two-english-only-questions.fixture-set";
 import { SIXTY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/sixty-questions.fixture-set";
@@ -26,6 +28,10 @@ const FIXTURE_REGISTRY: FixtureRegistry = {
       data: SIXTY_QUESTIONS_FIXTURE_SET,
       dependencies: [["question-theme", "sixty-question-themes"]],
     },
+    "eight-translation-completeness-questions": {
+      data: EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET,
+      dependencies: [["question-theme", "eight-translation-completeness-question-themes"]],
+    },
   },
   "question-theme": {
     "five-question-themes": {
@@ -36,6 +42,9 @@ const FIXTURE_REGISTRY: FixtureRegistry = {
     },
     "sixty-question-themes": {
       data: SIXTY_QUESTION_THEMES_FIXTURE_SET,
+    },
+    "eight-translation-completeness-question-themes": {
+      data: EIGHT_TRANSLATION_COMPLETENESS_QUESTION_THEMES_FIXTURE_SET,
     },
   },
 };

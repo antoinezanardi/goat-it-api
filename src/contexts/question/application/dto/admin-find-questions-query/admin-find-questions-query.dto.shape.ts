@@ -1,7 +1,9 @@
 import { z } from "zod";
 
+import { IS_FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
+import { zIsFullyTranslated } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
 import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.zod.validators";
 import { zSortOrder } from "@shared/infrastructure/http/zod/validators/sort/sort.zod.validators";
 
@@ -23,6 +25,7 @@ const ADMIN_FIND_QUESTIONS_QUERY_DTO = z.object({
   [QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY]: zQuestionCognitiveDifficulty().optional(),
   [QUESTION_AUTHOR_ROLE_QUERY_KEY]: zQuestionAuthorRole().optional(),
   [QUESTION_THEME_IDS_QUERY_KEY]: zQuestionThemeIdsFilter(),
+  [IS_FULLY_TRANSLATED_QUERY_KEY]: zIsFullyTranslated(),
 });
 
 type AdminFindQuestionsQueryDto = z.infer<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>;

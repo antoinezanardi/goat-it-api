@@ -157,4 +157,46 @@ describe("Question Theme Stats DTO Shape", () => {
       });
     });
   });
+
+  describe("byTranslationCompleteness", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = Object.assign(validDto, { byTranslationCompleteness: undefined });
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = Object.assign(validDto, { byTranslationCompleteness: "invalid" });
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when fullyTranslated is negative.", () => {
+      const invalidDto = Object.assign(validDto, { byTranslationCompleteness: { fullyTranslated: -1, incomplete: 0 } });
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when incomplete is not an integer.", () => {
+      const invalidDto = Object.assign(validDto, { byTranslationCompleteness: { fullyTranslated: 0, incomplete: 1.5 } });
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an extra key is present.", () => {
+      const invalidDto = Object.assign(validDto, { byTranslationCompleteness: { ...validDto.byTranslationCompleteness, extra: true } });
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_THEME_STATS_DTO.shape.byTranslationCompleteness.description).toBe("Translation completeness breakdown");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_THEME_STATS_DTO.shape.byTranslationCompleteness.meta()).toStrictEqual<Record<string, unknown>>({
+        description: "Translation completeness breakdown",
+      });
+    });
+  });
 });
