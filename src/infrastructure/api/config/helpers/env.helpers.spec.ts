@@ -382,27 +382,19 @@ describe(getEnvFilePath, () => {
     process.env.NODE_ENV = originalEnv;
   });
 
-  it("should return '.env' when NODE_ENV is not set.", () => {
+  it("should return 'env/.env' when NODE_ENV is not set.", () => {
     delete process.env.NODE_ENV;
 
     expect(getEnvFilePath()).toBe("env/.env");
   });
 
-  it("should return '.env.development' when NODE_ENV is 'development'.", () => {
-    process.env.NODE_ENV = "development";
+  it.each<[string, string]>([
+    ["development", "env/.env.development"],
+    ["test", "env/.env.test"],
+    ["production", "env/.env"],
+  ])("should return '%s' when NODE_ENV is '%s'.", (nodeEnv, expected) => {
+    process.env.NODE_ENV = nodeEnv;
 
-    expect(getEnvFilePath()).toBe("env/.env.development");
-  });
-
-  it("should return '.env.test' when NODE_ENV is 'test'.", () => {
-    process.env.NODE_ENV = "test";
-
-    expect(getEnvFilePath()).toBe("env/.env.test");
-  });
-
-  it("should return '.env' when NODE_ENV is 'production'.", () => {
-    process.env.NODE_ENV = "production";
-
-    expect(getEnvFilePath()).toBe("env/.env");
+    expect(getEnvFilePath()).toBe(expected);
   });
 });

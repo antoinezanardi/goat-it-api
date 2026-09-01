@@ -72,6 +72,14 @@ describe("Admin Question DTO Shape", () => {
     });
   });
 
+  describe("category", () => {
+    it("should throw zod error when category is invalid.", () => {
+      const dtoWithInvalidCategory = { ...validAdminQuestionDto, category: "invalid" };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidCategory)).toThrow(ZodError);
+    });
+  });
+
   describe("themes", () => {
     it("should throw zod error when themes is empty.", () => {
       const dtoWithEmptyThemes = { ...validAdminQuestionDto, themes: [] };
@@ -251,6 +259,14 @@ describe("Admin Question DTO Shape", () => {
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("sourceUrls", () => {
+    it("should throw zod error when sourceUrls is invalid.", () => {
+      const dtoWithInvalidSourceUrls = { ...validAdminQuestionDto, sourceUrls: "invalid" };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrow(ZodError);
     });
   });
 

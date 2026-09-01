@@ -53,6 +53,12 @@ describe("Question Content Creation DTO Shape", () => {
   });
 
   describe("context", () => {
+    it("should throw zod error when context is invalid.", () => {
+      const invalid = { ...validDto, context: 123 };
+
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
     it("should pass validation when context is omitted.", () => {
       const dtoWithoutContext = { ...validDto, context: undefined };
 
@@ -70,6 +76,12 @@ describe("Question Content Creation DTO Shape", () => {
   });
 
   describe("trivia", () => {
+    it("should throw zod error when trivia is invalid.", () => {
+      const invalid = { ...validDto, trivia: 456 };
+
+      expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
     it("should pass validation when trivia is omitted.", () => {
       const dtoWithoutTrivia = { ...validDto, trivia: undefined };
 
