@@ -1,5 +1,4 @@
 @question-theme @find-question-theme-by-id @public
-
 Feature: Find Question Theme by ID
   In order to display question theme to end users
   As an API client

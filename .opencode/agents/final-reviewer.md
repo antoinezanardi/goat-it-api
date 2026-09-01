@@ -120,6 +120,14 @@ You may dispatch helper subagents when reviewing:
 - Entries under "Established patterns — do NOT flag" are conventions, not violations.
 - Report every violation as `` `[tag]` `file:line` — expected pattern ``.
 
+### 11. Acceptance-test convention audit (mandatory)
+
+- **Trigger:** the diff adds or modifies any file under `tests/acceptance/`.
+- Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL; classify each file with its §3 classification table (feature, step, datatable, fixture-set, payload, step-helper, support-helper).
+- Apply the universal checks `[AU*]` plus the file-type's block (`[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]`) — **static analysis only**; never execute tests (quality gates belong to the gatekeeper).
+- Entries under "Established patterns — do NOT flag" are conventions, not violations.
+- Report every violation as `` `[tag]` `file:line` — expected pattern ``.
+
 ## Return format
 
 **Evidence discipline:** every ✅/❌ claim MUST cite `file:line` (or command output). A claim you could not verify is marked ⚠️ unverified — never silently omitted, never asserted without proof.

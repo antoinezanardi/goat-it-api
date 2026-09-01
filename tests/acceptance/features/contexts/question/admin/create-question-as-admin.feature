@@ -1,5 +1,4 @@
 @question @create-question @admin
-
 Feature: Create Question as Admin
   In order to create new questions for the system
   As an admin API client
@@ -107,7 +106,7 @@ Feature: Create Question as Admin
       | author.role   | string | ai        |
       | author.name   | string | GoatItGPT |
       | author.gameId | string |           |
-    When the admin creates a new question with the request payload
+    And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
       | id    | category | cognitiveDifficulty | status  | sourceUrls                                                                                         |
@@ -125,7 +124,7 @@ Feature: Create Question as Admin
       | content.answer.fr    | string | "   Alexander Fleming   "                                                                                                                                                 |
       | content.context.fr   | string | "   En 1928, Alexander Fleming a découvert la pénicilline, une percée qui a conduit aux antibiotiques modernes.   "                                                       |
       | content.trivia.fr    | array  | ["   Alexander Fleming a découvert la pénicilline en 1928.   ","   Fleming, Florey et Chain ont reçu le prix Nobel en 1945 pour leurs travaux sur les antibiotiques.   "] |
-    When the admin creates a new question with the request payload
+    And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following question statement for the admin question:
       | locale | statement                        |

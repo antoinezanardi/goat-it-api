@@ -1,6 +1,5 @@
 @question-theme @modify-question-theme @admin
-
-Feature: Modify Question Theme As Admin
+Feature: Modify Question Theme as Admin
   In order to modify an existing question theme
   As an admin API client
   I want to be able to update partially a question theme by its identifier for administration purposes

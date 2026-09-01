@@ -1,5 +1,4 @@
 @question @filter-questions @admin
-
 Feature: Filter Questions as Admin
   In order to find specific questions in the back office
   As an admin API client

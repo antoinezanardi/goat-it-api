@@ -1,5 +1,4 @@
 @question @limit-questions @public
-
 Feature: Limit Questions
   In order to control how many questions are returned
   As an API client
