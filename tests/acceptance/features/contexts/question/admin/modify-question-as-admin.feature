@@ -1,5 +1,4 @@
 @question @modify-question @admin
-
 Feature: Modify Question as Admin
   In order to update question data without recreating it
   As an admin API client

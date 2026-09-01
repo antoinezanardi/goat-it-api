@@ -1,6 +1,6 @@
 import { When } from "@cucumber/cucumber";
 
-import { ADMIN_QUESTION_QUERY_PARAMS_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
+import { ADMIN_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
 import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
@@ -20,7 +20,7 @@ When(/^the admin retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, a
 });
 
 When(/^the admin retrieves all questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, ADMIN_QUESTION_QUERY_PARAMS_SCHEMA);
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, ADMIN_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA);
   const fetchOptions = createFetchOptions({
     apiKey: APP_ADMIN_API_KEY,
     query: buildQueryFromRow(queryRow),

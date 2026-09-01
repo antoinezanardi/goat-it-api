@@ -1,5 +1,4 @@
 @app @app-metadata
-
 Feature: App Metadata
 
   Scenario: App responds with correct metadata

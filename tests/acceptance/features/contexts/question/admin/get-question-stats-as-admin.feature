@@ -1,5 +1,4 @@
 @question @get-question-stats @admin
-
 Feature: Get Question Stats as Admin
   In order to provide dashboard analytics
   As an admin API client

@@ -43,7 +43,7 @@ const QUESTION_REJECTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   comment: zCoerceOptionalString(),
 });
 
-const PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA = z.strictObject({
+const PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA = z.strictObject({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "category": zCoerceOptionalString(),
@@ -53,7 +53,7 @@ const PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA = z.strictObject({
   [LIMIT_QUERY_KEY]: zCoerceOptionalString(),
 });
 
-const RANDOM_QUESTION_BODY_SCHEMA = z.strictObject({
+const RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA = z.strictObject({
   limit: zCoerceOptionalString(),
   excludedIds: zCoerceOptionalStringArray(),
   categories: zCoerceOptionalStringArray(),
@@ -68,6 +68,6 @@ export {
   QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA,
   QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA,
   QUESTION_REJECTION_DATATABLE_ROW_SCHEMA,
-  PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA,
-  RANDOM_QUESTION_BODY_SCHEMA,
+  PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA,
+  RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA,
 };

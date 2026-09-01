@@ -1,5 +1,4 @@
 @app @app-health
-
 Feature: App Health
 
   Scenario: App responds with correct metadata

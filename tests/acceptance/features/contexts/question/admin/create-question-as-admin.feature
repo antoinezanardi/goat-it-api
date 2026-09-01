@@ -1,5 +1,4 @@
 @question @create-question @admin
-
 Feature: Create Question as Admin
   In order to create new questions for the system
   As an admin API client

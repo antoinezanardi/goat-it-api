@@ -1,5 +1,4 @@
 @app @app-docs
-
 Feature: App Docs
 
   Scenario: App serves API Reference Docs

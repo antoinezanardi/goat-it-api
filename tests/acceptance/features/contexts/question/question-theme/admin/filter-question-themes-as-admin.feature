@@ -1,5 +1,4 @@
 @question-theme @filter-question-themes @admin
-
 Feature: Filter Question Themes as Admin
   In order to find specific question themes in the back office
   As an admin API client

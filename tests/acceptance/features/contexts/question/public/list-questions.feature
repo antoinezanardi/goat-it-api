@@ -1,5 +1,4 @@
 @question @list-questions @public
-
 Feature: List Questions
   In order to display questions to end users
   As an API client

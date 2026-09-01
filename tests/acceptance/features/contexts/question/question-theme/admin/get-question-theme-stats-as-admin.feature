@@ -1,5 +1,4 @@
 @question-theme @get-question-theme-stats @admin
-
 Feature: Get Question Theme Stats as Admin
   In order to provide dashboard analytics
   As an admin API client

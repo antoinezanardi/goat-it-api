@@ -1,5 +1,4 @@
 @question @find-question-by-id @public
-
 Feature: Find Question by ID
   In order to display question to end users
   As an API client

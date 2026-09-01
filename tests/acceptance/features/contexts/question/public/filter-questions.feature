@@ -1,5 +1,4 @@
 @question @filter-questions @public
-
 Feature: Filter Questions
   In order to find specific questions
   As an API client

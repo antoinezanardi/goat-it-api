@@ -1,5 +1,4 @@
 @question @find-random-questions @public
-
 Feature: Find Random Questions
   In order to provide varied game sessions
   As a game client

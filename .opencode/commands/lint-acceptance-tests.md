@@ -7,7 +7,7 @@ Audit acceptance test files against the repository conventions defined in `tests
 - If the prompt specifies file paths, audit only those files.
 - Otherwise, audit every file under `tests/acceptance/`.
 
-The audit is **static analysis only** — never execute tests, run the acceptance suite, or run any shell commands. Deep semantic checks (coverage) are out of scope.
+The audit is **static analysis only** — never execute tests or run shell commands beyond the scoped lint/typecheck/acceptance commands specified in the quality gate (step 9). Deep semantic checks (coverage, mutation) are out of scope.
 
 To protect the main context during the **audit phase**, files are NEVER read by the main agent: after classification, audit work is dispatched to parallel `general` subagents that return only structured violation summaries. During the **fix phase**, the main agent may read and edit files directly only for mechanical categories touching at most 2 files (step 8, *Direct fix allowance*); all other fixes remain delegated to subagents. The main agent aggregates, reports, asks for approval, then applies fixes.
 
@@ -51,7 +51,6 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 #### Universal checks (all types)
 
 - **[AU1] No switch/case** — Use object maps or conditional chains. The project convention prohibits `switch`/`case` statements (see `AGENTS.md`).
-- **[AU2] Import type** — Type-only imports must use `import type` syntax. The `typescript/consistent-type-imports` rule is disabled in the linter due to decorator false positives, so this convention is enforced by the lint command.
 
 #### Established patterns — do NOT flag
 
@@ -62,7 +61,6 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - `as const satisfies` on fixture set arrays.
 - `shake()` from `radashi` in shared Then steps.
 - `PAYLOADS as Record<string, ...>` type assertion in request given steps.
-- `import type { ... }` for type-only imports (this is the correct pattern, not an `[AU2]` violation).
 - Sync Then steps (no `async` needed for synchronous assertions).
 - `z.coerce.number()` for non-optional numeric columns in DataTable schemas.
 - `z.literal(...)` for exact-match columns in DataTable schemas.
@@ -77,7 +75,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - **[FT3] No Background** — Each scenario is self-contained — no `Background:` keyword.
 - **[FT4] No But keyword** — Use `And` to continue the most recent block type, never `But`.
 - **[FT5] No Scenario Outline** — No `Scenario Outline:` or `Examples:` — use separate `Scenario:` blocks.
-- **[FT6] Step ordering** — Scenario steps must follow `Given` → `And` → `When` → `And` → `Then` → `And` sequence. `Given` sets up DB state and payload. `When` fires HTTP. `Then` asserts response.
+- **[FT6] Step ordering** — Scenario steps must follow `Given` → `And` → `When` → `And` → `Then` → `And` sequence. `Given` sets up DB state and payload. `When` fires HTTP. `Then` asserts response. Two consecutive same-keyword steps on adjacent step lines (ignoring DataTable rows between them) is a violation — e.g., `Given ...` followed immediately by `Given ...`, `When ...` followed by `When ...`, or `Then ...` followed by `Then ...` — the second must use `And`.
 - **[FT7] Scenario assertion** — Each scenario must have at least one `Then` step (or an `And` after a `Then` that implies assertion).
 - **[FT8] Feature path** — Feature files must be at `tests/acceptance/features/contexts/<context>/<audience>/<slug>.feature` or `tests/acceptance/features/app/<slug>.feature`. Flags if path doesn't match these patterns.
 - **[FT9] Feature naming convention** — Feature file names and `Feature:` titles must follow the homogenized pattern:
@@ -128,7 +126,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 
 During the audit phase the main agent must NOT read acceptance test files itself. Instead:
 
-1. **Batch** — Group the classified files by type in batches of 4-8 files per group (single-file input → one group of one; smaller remainders are acceptable).
+1. **Batch** — Group the classified files by type in batches of 4-8 files per group (single-file input → one group of one; smaller remainders are acceptable). **Exception for Step files**: when batching `*-steps.ts` files, include any co-located `*.steps.helpers.ts` files from the same directory in the same batch. This allows the subagent to cross-reference step definitions with their helpers for ST10 (step helper extraction) checks.
 2. **Dispatch** — Launch one `general` subagent per group via the Task tool, in parallel waves of at most ~6 concurrent tasks. Mark each task as read-only research/audit work.
 3. **Prompt** — Use exactly this template per group, filling `<TYPE>`, listing the file paths:
 
@@ -141,16 +139,19 @@ During the audit phase the main agent must NOT read acceptance test files itself
    - <path1>
    - <path2>
 
-   Steps:
-   1. Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL and apply the
-      Universal checks, the "Established patterns — do NOT flag" block, the exact
-      "<Type> checks" block named for this group's type — to every listed file.
-   2. Read each listed file completely. Consult `tests/acceptance/README.md` only when
-      needed to judge a pattern against the conventions.
-   3. Record every violation with its tag + line number(s). Multiple occurrences of
-      the same rule in one file collapse into a single entry listing all lines.
+    Steps:
+    1. Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL and apply the
+       Universal check, the "Established patterns — do NOT flag" block, the exact
+       "<Type> checks" block named for this group's type — to every listed file.
+       If this batch includes both `*-steps.ts` and `*.steps.helpers.ts` files, also
+       apply [ST10] by cross-referencing step definitions with their helpers to detect
+       repeated patterns that should be extracted.
+    2. Read each listed file completely. Consult `tests/acceptance/README.md` only when
+       needed to judge a pattern against the conventions.
+    3. Record every violation with its tag + line number(s). Multiple occurrences of
+       the same rule in one file collapse into a single entry listing all lines.
 
-   Return EXACTLY this structure for each file, in the same order, nothing else:
+   Return EXACTLY this structure for each file, in the same order, nothing else. Do NOT return markdown tables, summary blocks, or any prose before or after — ONLY the structure below. Non-compliant output will be rejected and the task re-dispatched.
 
    FILE: <path>
    STATUS: ✅ PASSED / ❌ FAILED / ⚠️ NEEDS HUMAN JUDGMENT
@@ -225,10 +226,14 @@ Once every approved category is fixed, run the FULL quality gate on the whole re
 ```bash
 pnpm run lint:fix
 pnpm run typecheck
-pnpm run test:unit:cov
+pnpm run test:acceptance
 ```
 
+> `pnpm run test:acceptance` requires Docker services (MongoDB) to be running. If Docker is unavailable, skip the acceptance gate and note it in the finish report.
+
 Fix forward and re-run from the failing command until all three pass.
+
+> **Do NOT run `pnpm run test:unit:cov`, `pnpm run test:unit`, or `pnpm run test:mutation` at any point during this process.** Unit tests and mutation testing are out of scope for acceptance test linting.
 
 ### 10. Finish
 
