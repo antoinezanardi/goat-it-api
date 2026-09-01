@@ -49,7 +49,7 @@
 - Use path aliases for imports; follow repository import order conventions.
 - Use faketories (`@faketories/...`) to build test data and `@mocks/...` factories for dependency mocks. Never use manual mock objects inline. See [Mocks & Faketories (where and how)](#mocks--faketories-where-and-how) for details.
 - Prefer existing mock/faketory factory functions. If none fit, add new mocks or factories under `tests/unit/utils/mocks/` or `tests/shared/utils/faketories/` mirroring the source path.
-- Every test file contains a top-level `describe("<Name> <Type>", () => { ... })` block. The `<Name>` matches the class or module under test, and `<Type>` describes its role (example: `Question Theme Controller`).
+- Every test file contains a top-level describe block. For controllers, use-cases, repositories, services, errors, and helpers/mappers, use the class/function symbol as the describe label (e.g., `describe(QuestionThemeController, () => { ... })`). For DTOs, use a string label (e.g., `describe("Question Theme DTO Shape", () => { ... })`).
 - Every mock is stored in the main `describe` block's scope. See the examples below for patterns. No need to reset mocks between tests as Vitest does it automatically in the config between each test.
 - For each function and method under test, create a nested `describe(<methodName>, () => { ... })` block containing all relevant `it` tests. The method should be referenced in the `describe` name as-is (example: `describe(myFunction, () => { ... })`).
 - What to test in a function or method:
@@ -57,7 +57,7 @@
   - Each error branch (throwing) separately
   - Boundary conditions (e.g., empty arrays, null/undefined inputs).
 - When a method is quite simple and the assertions are only on its output, you must use `it.each([...])` to parametrize multiple input→output cases instead of writing multiple `it` blocks. `it.each` must always be typed: `it.each<T>([...])`.
-- When a test that asserts an error is thrown, use `await expect(promise).rejects.toThrow(...)` syntax. The exact error instance should be asserted, not just the message.
+- When a test that asserts an error is thrown: use `expect(() => synchronousCall()).toThrow(...)` for synchronous operations (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(...)` for Promise-returning operations. The exact error instance should be asserted, not just the message.
 - Test deterministic inputs→outputs and edge cases. Keep tests small and focused.
 - Always use `toStrictEqual(expected)` for value equality assertions to get type hinting and strict shape checks. If the type can't be automatically inferred, use `toStrictEqual<T>(expected)`. 
 - Private methods must be tested too, via `ClassName["privateMethodName"](...)` syntax.
@@ -73,7 +73,7 @@
     
 - Template (`health.controller.spec.ts`):
 ```ts
-describe("Health Controller", () => {
+describe(HealthController, () => {
   let healthController: HealthController;
   let mocks: {
     services: {
@@ -137,7 +137,7 @@ describe("Health Controller", () => {
 
 - Template (`get-question-themes-by-ids-or-throw.use-case.spec.ts`):
 ```ts
-describe("Get Question Themes By Ids Or Throw Use Case", () => {
+describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   let getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase;
   
   // Top-level mocks object, populated in beforeEach and used by tests.
@@ -403,7 +403,7 @@ import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validator
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
-    it.each([
+    it.each<{ test: string; value: string; expected: boolean }>([
       { test: "valid slug", value: "valid-slug", expected: true },
       { test: "too short", value: "a", expected: false },
     ])("$test", ({ value, expected }) => {
@@ -418,7 +418,7 @@ describe("String Zod Validators", () => {
   });
 
   describe(zMongoId, () => {
-    it.each([
+    it.each<{ test: string; value: string; expected: boolean }>([
       { test: "valid id", value: "507f1f77bcf86cd799439011", expected: true },
       { test: "invalid id", value: "invalid", expected: false },
     ])("$test", ({ value, expected }) => {
@@ -530,4 +530,4 @@ describe("Question Domain Errors", () => {
 - Use the repository's helper matchers when present (e.g. `toHaveBeenCalledExactlyOnceWith()`).
 - For value equality use `toStrictEqual(expected)` to include type hinting. Use `toStrictEqual<T>(expected)` when the type can't be automatically inferred.
 - `it.each` must always be typed: `it.each<T>([...])`.
-- Error assertions: `await expect(promise).rejects.toThrow(exactErrorInstance)` — assert exact error class, not just message string.
+- Error assertions: `expect(() => synchronousCall()).toThrow(exactErrorInstance)` for synchronous errors (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(exactErrorInstance)` for async errors — assert exact error class, not just message string.

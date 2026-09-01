@@ -32,7 +32,7 @@ vi.mock(import("@question/application/mappers/question.mappers"));
 vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 vi.mock(import("@question/application/mappers/find-random-options/find-random-options.mappers"));
 
-describe("Question Controller", () => {
+describe(QuestionController, () => {
   let questionController: QuestionController;
   let mocks: {
     services: {

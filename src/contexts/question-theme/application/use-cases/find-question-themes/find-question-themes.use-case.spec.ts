@@ -12,7 +12,7 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/ent
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
-describe("Find Question Themes Use Case", () => {
+describe(FindQuestionThemesUseCase, () => {
   let findQuestionThemesUseCase: FindQuestionThemesUseCase;
   let mocks: {
     repositories: {

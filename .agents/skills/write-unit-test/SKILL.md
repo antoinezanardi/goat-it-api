@@ -27,10 +27,10 @@ disable-model-invocation: true
 ### Controllers
 
 Purpose: verify HTTP wiring only — routing, DTO mapping, use-case delegation.
-Describe label: `"<Name> Controller"`, nested `describe(Controller.prototype.method, ...)`.
+Describe label: `describe(ControllerClass, ...)`, nested `describe(Controller.prototype.method, ...)`.
 
 ```typescript
-describe("Foo Controller", () => {
+describe(FooController, () => {
   let controller: FooController;
   let mocks: { useCases: { createFoo: ReturnType<typeof createMockedCreateFooUseCase> } };
 
@@ -61,10 +61,10 @@ describe("Foo Controller", () => {
 ### Use-cases
 
 Purpose: validate business orchestration, repository calls, and domain error propagation.
-Describe label: `"<Name> Use Case"`, nested `describe(UseCase.prototype.method, ...)`.
+Describe label: `describe(UseCaseClass, ...)`, nested `describe(UseCase.prototype.method, ...)`.
 
 ```typescript
-describe("Create Foo Use Case", () => {
+describe(CreateFooUseCase, () => {
   let useCase: CreateFooUseCase;
   let mocks: { repositories: { foo: ReturnType<typeof createMockedFooRepository> } };
 
@@ -101,10 +101,10 @@ describe("Create Foo Use Case", () => {
 ### Repositories
 
 Purpose: test query shapes and document→entity mapping; mock the Mongoose `Model`.
-Describe label: `"<Name> Mongoose Repository"` or `"<Name> Repository"`.
+Describe label: `describe(RepositoryClass, ...)`.
 
 ```typescript
-describe("Foo Mongoose Repository", () => {
+describe(FooMongooseRepository, () => {
   let repository: FooMongooseRepository;
 
   const mocks = {
@@ -155,6 +155,8 @@ describe("Foo Mongoose Repository", () => {
 ### DTOs (`*.dto.shape.spec.ts`)
 
 **DT5 rule**: `validDto` must be an **inline literal** — never a faketory call. Negative tests use `{ ...validDto, field: badValue }` (spread copy).
+
+**DT6 rule**: `validDto` must be declared with `let` using a **structural type** (inline object type annotation) — never a DTO type annotation (e.g., `let validDto: SomeDto`) and never a cast (e.g., `as SomeDto`). Assign the value in `beforeEach`. This keeps DTO shape tests decoupled from the DTO class and avoids import circularity.
 
 ```typescript
 describe("Foo DTO Shape", () => {

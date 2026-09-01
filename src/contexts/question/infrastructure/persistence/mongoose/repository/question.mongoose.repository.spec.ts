@@ -35,7 +35,7 @@ import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregat
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
 
-describe("Question Mongoose Repository", () => {
+describe(QuestionMongooseRepository, () => {
   let repositories: { question: QuestionMongooseRepository };
   let mocks: {
     models: {

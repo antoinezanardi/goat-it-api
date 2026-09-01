@@ -392,7 +392,7 @@ describe(getEnvFilePath, () => {
     ["development", "env/.env.development"],
     ["test", "env/.env.test"],
     ["production", "env/.env"],
-  ])("should return '%s' when NODE_ENV is '%s'.", (nodeEnv, expected) => {
+  ])("should return the expected path when NODE_ENV is '%s'.", (nodeEnv, expected) => {
     process.env.NODE_ENV = nodeEnv;
 
     expect(getEnvFilePath()).toBe(expected);

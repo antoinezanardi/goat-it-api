@@ -48,7 +48,7 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 
 - **[U1] Location & naming** — Spec colocated with source as `SourceFile.spec.ts`. No `spec/` subfolders.
 - **[U2] Vitest globals** — `describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`, etc. are **globals** via Vitest `globals: true` (`configs/vitest/vitest.config.ts:19`). **Do NOT** import them from `"vitest"`; rely on globals. Only `import type { Mock, MockInstance } from "vitest"` for type-only imports is allowed. Flag any `import { describe, it, expect, vi } from "vitest"` as a violation.
-- **[U3] Describe label rule** — Controllers: string `"<Name> Controller"`. Use-cases: string `"<Name> Use Case"` (class name). Repositories: string `"<Name> Mongoose Repository"` or `"<Name> Repository"`. DTOs (`.dto.shape.spec.ts`): string `"<DTOName> DTO Shape"` (e.g., `"Question DTO Shape"`) with nested per-field `describe("field", ...)` — file suffix is `.shape.spec.ts` because it tests the Zod shape of all fields. Errors: symbol reference (`describe(ClassName, ...)`). Helpers/mappers: symbol reference (`describe(functionName, ...)`). Services classified as Helper (`.service.spec.ts`): string `"<Name> Service"` — services have dependencies and follow the same string-label convention as controllers/repos, not the symbol convention of pure helpers. Never a free-form grouping string wrapping symbol describes.
+- **[U3] Describe label rule** — Controllers, Use-cases, Repositories, Services, Errors, Helpers/mappers: symbol reference (`describe(ClassName, ...)`). DTOs (`.dto.shape.spec.ts`): string `"<DTOName> DTO Shape"` (e.g., `"Question DTO Shape"`) with nested per-field `describe("field", ...)` — file suffix is `.shape.spec.ts` because it tests the Zod shape of all fields. Never a free-form grouping string wrapping symbol describes.
 - **[U4] Single-call assertions** — No `toHaveBeenCalledTimes(1)` combined with `toHaveBeenCalledWith(...)`. Use `toHaveBeenCalledExactlyOnceWith(...)`. Standalone `toHaveBeenCalledOnce()` (without argument matching) is acceptable.
 - **[U5] Error swallowing** — No `.catch(() => null)`. Use try/catch with `void error` or `await expect(promise).rejects.toThrow(exactErrorInstance)`.
 - **[U6] Type safety** — No `any`; no unsafe assertions without an `// Acceptable as ...` + `// oxlint-disable-next-line ...` comment pair.
@@ -226,13 +226,13 @@ pnpm run test:unit:cov
 
 Fix forward and re-run from the failing command until all three pass.
 
-After the three gates pass, run mutation testing as the **very last step**:
+After the three gates pass, run mutation testing:
 
 ```bash
 pnpm run test:mutation
 ```
 
-Fix any survived mutants if the score is below threshold, then re-run from `pnpm run lint:fix`.
+If the score is below threshold (survived mutants), fix the issues, then re-run the **full gate sequence** (`pnpm run lint:fix` → `pnpm run typecheck` → `pnpm run test:unit:cov` → `pnpm run test:mutation`). Do **not** finish until `pnpm run test:mutation` passes the configured score threshold.
 
 ### 10. Finish
 

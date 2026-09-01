@@ -206,14 +206,14 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - One assertion per `it` block; `it.each` for parametrized cases — always typed: `it.each<T>([...])`
 - Private methods tested via `ClassName["privateMethod"](...)`
 - Top-level describe labels by file type:
-  - Controllers: `"<Name> Controller"`
-  - Use-cases: `"<Name> Use Case"`
-  - Repositories: `"<Name> Mongoose Repository"` or `"<Name> Repository"`
-  - Services: `"<Name> Service"`
-  - DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"`
+  - Controllers: symbol reference `describe(ControllerClass, ...)`
+  - Use-cases: symbol reference `describe(UseCaseClass, ...)`
+  - Repositories: symbol reference `describe(RepositoryClass, ...)`
+  - Services: symbol reference `describe(ServiceClass, ...)`
+  - DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"` (string label)
   - Errors: symbol reference `describe(ClassName, ...)`
   - Helpers/mappers: symbol reference `describe(functionName, ...)`
-- Assertion style: `toStrictEqual<T>(expected)` for value equality, `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions, `await expect(promise).rejects.toThrow(exactErrorInstance)` for errors
+- Assertion style: `toStrictEqual<T>(expected)` for value equality, `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions, `expect(() => synchronousCall()).toThrow(exactErrorInstance)` for synchronous errors (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(exactErrorInstance)` for async errors
 
 ### Mocks (`@mocks/*`)
 

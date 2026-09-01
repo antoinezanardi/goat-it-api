@@ -9,7 +9,7 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 
 import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
-describe("Find Random Questions Use Case", () => {
+describe(FindRandomQuestionsUseCase, () => {
   let findRandomQuestionsUseCase: FindRandomQuestionsUseCase;
   let mocks: {
     repositories: {

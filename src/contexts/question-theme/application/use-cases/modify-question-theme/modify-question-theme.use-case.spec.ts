@@ -11,7 +11,7 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/ent
 import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
 import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 
-describe("Modify Question Theme Use Case", () => {
+describe(ModifyQuestionThemeUseCase, () => {
   let modifyQuestionThemeUseCase: ModifyQuestionThemeUseCase;
   let mocks: {
     repositories: {
