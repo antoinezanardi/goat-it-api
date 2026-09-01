@@ -196,18 +196,27 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
   ```
 - Never file-level or block-level disables without approval
 - Rule names use oxlint namespacing (`typescript/no-...`, `unicorn/...`, `eslint/...`) — no `@` prefix
-
 ## Tests and test style
 
-- Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`)
+- Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`)
 - 100% coverage required (all branches, lines, functions)
 - Excluded from coverage: `*.module.ts`, `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
 - **Stryker mutation excludes differ**: mutation excludes `*.entities.ts` and `*.value-objects.ts` in addition to all coverage exclusions (`*.pipeline.ts`, `*.schema.ts`, `*.constants.ts`, `*.module.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`). Only `*.dto.ts` files remain subject to mutation testing beyond standard source files.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
-- One assertion per `it` block; `it.each` for parametrized cases
+- One assertion per `it` block; `it.each` for parametrized cases — always typed: `it.each<T>([...])`
 - Private methods tested via `ClassName["privateMethod"](...)`
+- Top-level describe labels by file type:
+  - Controllers: `"<Name> Controller"`
+  - Use-cases: `"<Name> Use Case"`
+  - Repositories: `"<Name> Mongoose Repository"` or `"<Name> Repository"`
+  - Services: `"<Name> Service"`
+  - DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"`
+  - Errors: symbol reference `describe(ClassName, ...)`
+  - Helpers/mappers: symbol reference `describe(functionName, ...)`
+- Assertion style: `toStrictEqual<T>(expected)` for value equality, `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions, `await expect(promise).rejects.toThrow(exactErrorInstance)` for errors
 
 ### Mocks (`@mocks/*`)
+
 - Named `createMocked<What>(overrides: Partial<MockedWhat> = {})`, return `vi.fn()`-based typed objects
 - Mock at the port level (repository/use-case interface), not internal Mongoose details
 - Inject via Nest `useValue` providers in `createTestingModule`
@@ -219,10 +228,11 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
   - New Bruno endpoint → add `.bru` file under `configs/bruno/Goat It/`
 
 ### Faketories (`@faketories/*`)
+
 - Named `createFake<EntityName>(overrides: Partial<T> = {})`, spread overrides last
 - Use `@faker-js/faker` for randomized values; randomize optional fields
 - Organized by layer: `entity/`, `dto/`, `mongoose/`, `commands/`, `contracts/`
-
+- **DTO shape specs** (`*.dto.shape.spec.ts`): use inline literals for `validDto`, never faketories. Negative tests use `{ ...validDto, field: badValue }` (spread copy). No `as SomeDto` casts — use structural type on `let` declaration.
 ## Git / commit / PR expectations
 
 - **Never commit unless the user explicitly asks for it.** Do not create commits autonomously.

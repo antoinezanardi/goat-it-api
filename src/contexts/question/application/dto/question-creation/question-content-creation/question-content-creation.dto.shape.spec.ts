@@ -20,7 +20,7 @@ describe("Question Content Creation DTO Shape", () => {
 
   describe("statement", () => {
     it("should throw zod error when statement is invalid.", () => {
-      const invalid = Object.assign(validDto, { statement: "invalid" });
+      const invalid = { ...validDto, statement: "invalid" };
 
       expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -37,7 +37,7 @@ describe("Question Content Creation DTO Shape", () => {
 
   describe("answer", () => {
     it("should throw zod error when answer is invalid.", () => {
-      const invalid = Object.assign(validDto, { answer: "invalid" });
+      const invalid = { ...validDto, answer: "invalid" };
 
       expect(() => QUESTION_CONTENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });

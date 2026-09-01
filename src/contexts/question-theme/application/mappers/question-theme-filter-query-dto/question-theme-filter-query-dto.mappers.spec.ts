@@ -2,8 +2,6 @@ import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-the
 
 import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
 
-import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
-
 import type { AdminQuestionThemeFilterOptions } from "@question-theme/domain/types/question-theme.types";
 
 describe(createAdminQuestionThemeFilterOptionsFromQueryDto, () => {
@@ -18,7 +16,7 @@ describe(createAdminQuestionThemeFilterOptionsFromQueryDto, () => {
   });
 
   it("should return filter options with isFullyTranslated when is-fully-translated is provided.", () => {
-    const dto = { ...createFakeAdminFindQuestionThemesQueryDto({ status: undefined }), "is-fully-translated": false } as unknown as AdminFindQuestionThemesQueryDto;
+    const dto = { ...createFakeAdminFindQuestionThemesQueryDto({ status: undefined }), "is-fully-translated": false };
 
     const result = createAdminQuestionThemeFilterOptionsFromQueryDto(dto);
 
@@ -28,7 +26,7 @@ describe(createAdminQuestionThemeFilterOptionsFromQueryDto, () => {
   });
 
   it("should return all filter options when all filter fields are provided.", () => {
-    const dto = { ...createFakeAdminFindQuestionThemesQueryDto({ status: "active" }), "is-fully-translated": true } as unknown as AdminFindQuestionThemesQueryDto;
+    const dto = { ...createFakeAdminFindQuestionThemesQueryDto({ status: "active" }), "is-fully-translated": true };
 
     const result = createAdminQuestionThemeFilterOptionsFromQueryDto(dto);
 
