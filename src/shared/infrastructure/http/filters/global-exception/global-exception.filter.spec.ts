@@ -62,7 +62,7 @@ describe(GlobalExceptionFilter, () => {
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
       globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
 
-      expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledWith(exception.getStatus());
+      expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledExactlyOnceWith(exception.getStatus());
     });
 
     it("should send the correct response using the FastifyReply when called.", () => {
@@ -70,7 +70,7 @@ describe(GlobalExceptionFilter, () => {
       const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
       globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
 
-      expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledWith(exception.getResponse());
+      expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledExactlyOnceWith(exception.getResponse());
     });
 
     it("should write the correct head using the ServerResponse when called.", () => {

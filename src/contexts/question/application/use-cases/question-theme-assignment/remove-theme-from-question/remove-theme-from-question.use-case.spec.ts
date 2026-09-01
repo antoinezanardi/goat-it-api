@@ -15,7 +15,7 @@ import { createFakeQuestionThemeAssignmentRemovalCommand } from "@faketories/con
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-describe("Remove Theme From Question Use Case", () => {
+describe("RemoveThemeFromQuestionUseCase Use Case", () => {
   let useCase: RemoveThemeFromQuestionUseCase;
   let mocks: {
     repositories: {

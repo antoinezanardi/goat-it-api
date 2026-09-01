@@ -17,7 +17,7 @@ import type { z } from "zod";
 
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
-describe("Find Questions Sort Query DTO Shape", () => {
+describe("Find Questions Query DTO Shape", () => {
   let validDto: FindQuestionsQueryDto;
 
   beforeEach(() => {

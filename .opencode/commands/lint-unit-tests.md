@@ -70,6 +70,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - `import packageJson from "@package-json" with { type: "json" }` for package.json assertions.
 - String `describe("prop", ...)` for getter properties (e.g., `AppConfigService` getters `serverConfig`, `corsConfig`, etc.) — getters have no callable symbol reference, so a string label is the correct pattern and not a `[U3]`/`[HP2]` violation.
 - Inline `validDto` literal in `*.dto.shape.spec.ts` (per new `[DT5]`) — not a `[U7]` violation.
+- `describe(validatorFn, ...)` for Zod validator specs (`.validators.spec.ts` classified as Helper per §3 rule 6) — validators are pure functions with a symbol reference, so `[HP2]` symbol describe is the correct pattern, not a `[U3]` string-label violation.
 
 #### Controller checks
 

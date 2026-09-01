@@ -18,7 +18,7 @@ import type { z } from "zod";
 import type { QuestionSortableField } from "@question/domain/types/question.types";
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
-describe("Admin Find Questions Sort Query DTO Shape", () => {
+describe("Admin Find Questions Query DTO Shape", () => {
   let validDto: AdminFindQuestionsQueryDto;
 
   beforeEach(() => {

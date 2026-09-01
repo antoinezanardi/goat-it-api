@@ -5,7 +5,7 @@ import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 import { createFakeAppMetadata } from "@faketories/app/app.faketory";
 
-describe("App Metadata DTO Shape", () => {
+describe("AppMetadata DTO Shape", () => {
   let validAppMetadataDto: AppMetadataDto | Record<string, unknown>;
 
   beforeEach(() => {
