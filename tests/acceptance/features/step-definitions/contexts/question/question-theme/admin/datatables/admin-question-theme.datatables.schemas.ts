@@ -5,9 +5,9 @@ import { createZLocalizedDataTableRowSchema } from "@acceptance-features/step-de
 import { zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
 
 const ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA = z.strictObject({
-  slug: z.string().optional(),
-  status: z.string().optional(),
-  color: z.string().optional(),
+  slug: zCoerceOptionalString(),
+  status: zCoerceOptionalString(),
+  color: zCoerceOptionalString(),
 });
 
 const ADMIN_QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("label");

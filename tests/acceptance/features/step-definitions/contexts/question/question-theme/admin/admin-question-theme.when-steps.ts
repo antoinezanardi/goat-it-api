@@ -1,9 +1,9 @@
 import { When } from "@cucumber/cucumber";
 
+import { fetchListWithQuery } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
 import { ADMIN_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/admin/datatables/admin-question-theme.datatables.schemas";
 
 import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
-import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
@@ -18,12 +18,7 @@ When(/^the admin retrieves all question themes$/u, async function(this: GoatItWo
 });
 
 When(/^the admin retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, ADMIN_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA);
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_ADMIN_API_KEY,
-    query: buildQueryFromRow(queryRow),
-  });
-  await this.fetchAndStoreResponse("/admin/question-themes", fetchOptions);
+  await fetchListWithQuery(this, "/admin/question-themes", queryDataTable, ADMIN_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, APP_ADMIN_API_KEY);
 });
 
 When(/^the admin retrieves all question themes without an API key$/u, async function(this: GoatItWorld) {

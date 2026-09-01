@@ -1,9 +1,9 @@
 import { When } from "@cucumber/cucumber";
 
+import { fetchListWithQuery } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
 import { PUBLIC_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/datatables/question-theme.datatables.schemas";
 
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
-import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
@@ -20,12 +20,7 @@ When(/^the client retrieves all question themes(?: in locale "(?<locale>[^"]+)")
 });
 
 When(/^the client retrieves all question themes with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, PUBLIC_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA);
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_GAME_API_KEY,
-    query: buildQueryFromRow(queryRow),
-  });
-  await this.fetchAndStoreResponse("/question-themes", fetchOptions);
+  await fetchListWithQuery(this, "/question-themes", queryDataTable, PUBLIC_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, APP_GAME_API_KEY);
 });
 
 When(/^the client retrieves all question themes sorted by "(?<sortBy>[^"]+)" in "(?<sortOrder>[^"]+)" order$/u, async function(this: GoatItWorld, sortBy: string, sortOrder: string) {

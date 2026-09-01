@@ -126,7 +126,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 
 During the audit phase the main agent must NOT read acceptance test files itself. Instead:
 
-1. **Batch** — Group the classified files by type in batches of 4-8 files per group (single-file input → one group of one; smaller remainders are acceptable). **Exception for Step files**: when batching `*-steps.ts` files, include any co-located `*.steps.helpers.ts` files from the same directory in the same batch. This allows the subagent to cross-reference step definitions with their helpers for ST10 (step helper extraction) checks.
+1. **Batch** — Group the classified files by type in batches of 4-8 files per group (single-file input → one group of one; smaller remainders are acceptable). **Exception for Step files**: when batching `*-steps.ts` files, include any co-located `*.steps.helpers.ts` files from the same directory in the same batch. **Exception for ST10**: the [ST10] step helper extraction check requires cross-referencing ALL step files and ALL step helpers across the entire codebase. Dispatch a dedicated ST10-only batch containing every `*-steps.ts` and `*.steps.helpers.ts` file (all directories, all contexts). This batch applies ONLY [ST10] — all other step checks are covered by the per-directory batches.
 2. **Dispatch** — Launch one `general` subagent per group via the Task tool, in parallel waves of at most ~6 concurrent tasks. Mark each task as read-only research/audit work.
 3. **Prompt** — Use exactly this template per group, filling `<TYPE>`, listing the file paths:
 
@@ -143,13 +143,13 @@ During the audit phase the main agent must NOT read acceptance test files itself
     1. Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL and apply the
        Universal check, the "Established patterns — do NOT flag" block, the exact
        "<Type> checks" block named for this group's type — to every listed file.
-       If this batch includes both `*-steps.ts` and `*.steps.helpers.ts` files, also
-       apply [ST10] by cross-referencing step definitions with their helpers to detect
-       repeated patterns that should be extracted.
     2. Read each listed file completely. Consult `tests/acceptance/README.md` only when
        needed to judge a pattern against the conventions.
     3. Record every violation with its tag + line number(s). Multiple occurrences of
        the same rule in one file collapse into a single entry listing all lines.
+    4. Before returning, verify that every reported line number exists in its file
+       (line number ≤ total lines). Remove any violation with an out-of-range line number
+       — it is a hallucination.
 
    Return EXACTLY this structure for each file, in the same order, nothing else. Do NOT return markdown tables, summary blocks, or any prose before or after — ONLY the structure below. Non-compliant output will be rejected and the task re-dispatched.
 
@@ -163,7 +163,44 @@ During the audit phase the main agent must NOT read acceptance test files itself
    Omit VIOLATIONS/WARNINGS sections when empty. No prose before or after.
    ```
 
-4. **Collect & retry** — If an agent fails or returns truncated/malformed output, re-dispatch ONCE with HALF the files per batch (split into two tasks), preserving the original single-type grouping. If it still fails, mark its files ⚠️ `unaudited — manual review` in the report.
+   **ST10-only batch template** (for the dedicated cross-codebase ST10 batch):
+
+   ```text
+   You are auditing acceptance test step definitions for step helper extraction patterns.
+   This is a READ-ONLY audit: do NOT modify any file and do NOT run any test or shell command.
+   NEVER run acceptance tests (`pnpm run test:acceptance`).
+
+   This batch checks [ST10] ONLY — all other checks are handled by per-directory batches.
+
+   Files to audit — all Step and StepHelper files:
+   - <path1>
+   - <path2>
+   - ... (every *-steps.ts and *.steps.helpers.ts file in the codebase)
+
+    Steps:
+    1. Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL and apply ONLY
+       [ST10] Step helper extraction — to every listed file.
+    2. Read each listed file completely.
+    3. Identify logic patterns that appear in 3+ different step functions ACROSS the entire
+       codebase (not just within this batch). Patterns include: auth-check fetch wrappers,
+       number parsing, iteration-and-assert loops, response assertion helpers, etc.
+    4. For each repeated pattern, list the specific files and line numbers where it appears,
+       and recommend extraction to a shared helper location.
+
+   Return EXACTLY this structure, nothing else:
+
+   PATTERN: <description of the repeated logic>
+   OCCURRENCES:
+   - <file>:<line> — <brief context>
+   - <file>:<line> — <brief context>
+   RECOMMENDATION: <where to extract and what to name the helper>
+
+   If no repeated patterns are found, return: NO ST10 VIOLATIONS FOUND
+
+   Do NOT return markdown tables, summary blocks, or any prose before or after.
+   ```
+
+4. **Collect & retry** — If an agent fails or returns truncated/malformed output, re-dispatch ONCE with HALF the files per batch (split into two tasks), preserving the original single-type grouping. If it still fails, mark its files ⚠️ `unaudited — manual review` in the report. **Hallucination guard**: before returning, the subagent MUST verify that every reported line number exists in the file (line number ≤ total lines in that file). If a line number exceeds the file length, remove that violation from the output — it is a hallucination. The main agent should also spot-check a sample of reported line numbers against file contents.
 
 ### 6. Report
 
