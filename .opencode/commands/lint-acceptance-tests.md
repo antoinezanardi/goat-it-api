@@ -82,20 +82,27 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
   - **Admin features**: file `<action>-<entity>-as-admin.feature`, title `<Verb> <Entity> as Admin` (e.g., `create-question-as-admin.feature` → `Feature: Create Question as Admin`).
   - **Public features**: file `<action>-<entity>.feature`, title `<Verb> <Entity>` (e.g., `list-questions.feature` → `Feature: List Questions`).
   - **App features**: file `app-<feature>.feature`, title `App <Feature>` (e.g., `app-health.feature` → `Feature: App Health`).
-  - **Scenario names**: use present participle phrasing — `Creating a question...`, `Listing all questions...`, `Trying to create a question...`.
+  - **Scenario names**: use present participle phrasing — `Creating a question...`, `Archiving a question...`, `Getting question theme stats...`, `Listing all questions...`, `Trying to create a question...`. Non-compliant: imperative (`Create a question...`, `Get question theme stats...`) or present tense (`App serves...`).
 
 #### Step definition checks (`*-steps.ts`)
 
+These checks apply to actual step definition files (`*-steps.ts`), not to helper files.
+
 - **[ST1] World declaration** — All step functions must declare `this: GoatItWorld` as first parameter.
 - **[ST2] Regex `/u` flag** — Step regex patterns must end with `/u` flag.
-- **[ST3] Regex anchors** — Step regex patterns must use `^` and `$` anchors.
+- **[ST3] Regex anchors** — Step regex patterns must use `^` and `$` anchors. Verify by reading the exact regex line — do not assume from partial context.
 - **[ST4] Named capture groups** — Regex must use named capture groups `(?<name>...)` for parameters.
 - **[ST5] When steps pattern** — When steps must call `createFetchOptions(...)` then `this.fetchAndStoreResponse(...)`.
 - **[ST6] Then steps pattern** — Then steps must call `this.expectLastResponseJson(...)` or `this.expectLastResponseText()` before asserting with `expect()`.
-- **[ST7] No step registration in helpers** — Helper files (`*.steps.helpers.ts`) must NOT call `Given()`, `When()`, or `Then()` from `@cucumber/cucumber`.
 - **[ST8] File naming** — Step files must follow `<domain>[-<sub>].{given,when,then}-steps.ts` naming pattern.
 - **[ST9] DataTable Zod validation** — Every step function that receives a `DataTable` parameter MUST call `validateDataTableAndGetFirstRow(dataTable, SCHEMA)` or `validateDataTableAndGetRows(dataTable, SCHEMA)` from `@acceptance-support/helpers/datatable.helpers` before using the data. Flags any step that receives `dataTable: DataTable` (or `queryDataTable`, `errorDataTable`, etc.) without validating it through a Zod schema.
 - **[ST10] Step helper extraction** — If the same logic pattern appears in 3+ different step functions across the codebase, it must be extracted to a dedicated step helper file under `helpers/` in the appropriate `step-definitions/` subfolder. Flags repeated patterns (auth-check fetch wrappers, number parsing, iteration-and-assert loops, etc.) that should be consolidated. Additionally, step helpers that are reused across contexts (e.g., public and admin) must be placed in a shared location (e.g., `step-definitions/shared/`) rather than duplicated in each context's `helpers/` folder.
+
+#### StepHelper checks (`*.steps.helpers.ts`)
+
+These checks apply to step helper files only.
+
+- **[ST7] No step registration in helpers** — Helper files (`*.steps.helpers.ts`) must NOT call `Given()`, `When()`, or `Then()` from `@cucumber/cucumber`.
 
 #### DataTable schema checks (`*.datatables.schemas.ts`)
 
@@ -108,7 +115,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - **[FS1] Type assertion** — Set array must end with `as const satisfies ReturnType<typeof createFake...>[]`.
 - **[FS2] No faker/random** — No `faker.` calls, `Math.random()`, or `Date.now()` — must be deterministic.
 - **[FS3] Deterministic IDs** — Must use `createFakeObjectId("<hex>")` with hardcoded hex strings for `_id` fields.
-- **[FS4] Named entry exports** — Individual entries referenced by payloads/assertions must be exported as named constants.
+- **[FS4] Named entry exports** — Individual entries referenced by payloads/assertions must be exported as named constants. Only flag if individual entries are imported elsewhere (in payloads or step helpers). If entries are only used inline within the set array, the rule does not apply.
 - **[FS5] Set naming** — Set constant must use `_FIXTURE_SET` suffix.
 
 #### Payload checks (`*-payload.ts`)
