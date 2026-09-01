@@ -1,13 +1,14 @@
-import type { AppHealthDetailsCheckDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details-check/app-health-details-check.dto.shape";
 import { APP_HEALTH_DETAILS_CHECK_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details-check/app-health-details-check.dto.shape";
 
-import { createFakeAppHealthDetailsCheckDto } from "@faketories/infrastructure/api/health/health.faketory";
-
 describe("App Health Details Check DTO Shape", () => {
-  let validAppHealthDetailsCheckDto: AppHealthDetailsCheckDto;
+  let validAppHealthDetailsCheckDto: { status: string; message?: string; responseTime?: number };
 
   beforeEach(() => {
-    validAppHealthDetailsCheckDto = createFakeAppHealthDetailsCheckDto();
+    validAppHealthDetailsCheckDto = {
+      status: "up",
+      message: "Connection successful",
+      responseTime: 150,
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {

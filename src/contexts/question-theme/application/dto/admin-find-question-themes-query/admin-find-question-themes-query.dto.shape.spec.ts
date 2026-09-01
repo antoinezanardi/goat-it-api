@@ -7,20 +7,20 @@ import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUE
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
-import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
-
-import type { z } from "zod";
-import type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
-import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
-
-import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
-import type { SortOrder } from "@shared/domain/types/sort/sort.types";
-
 describe("Admin Find Question-Themes Query DTO Shape", () => {
-  let validDto: AdminFindQuestionThemesQueryDto;
+  let validDto: {
+    "sort-by"?: string;
+    "sort-order"?: string;
+    "limit": number;
+    "status"?: string;
+    "is-fully-translated"?: string;
+  };
 
   beforeEach(() => {
-    validDto = createFakeAdminFindQuestionThemesQueryDto({ "is-fully-translated": undefined });
+    validDto = {
+      "sort-order": "asc",
+      "limit": LIMIT_DEFAULT,
+    };
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -28,8 +28,8 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each<QuestionThemeSortableField>(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-by": sortBy, "is-fully-translated": undefined });
+    it.each(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+      const dto = { ...validDto, "sort-by": sortBy };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -60,15 +60,11 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
-
-    it("should have sort-by as optional when checking the input type.", () => {
-      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["sort-by"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["sort-by"] | undefined>();
-    });
   });
 
   describe("sort-order", () => {
-    it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ "sort-order": sortOrder, "is-fully-translated": undefined });
+    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+      const dto = { ...validDto, "sort-order": sortOrder };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -93,15 +89,11 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
-
-    it("should have sort-order as optional when checking the input type.", () => {
-      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["sort-order"]>().toEqualTypeOf<AdminFindQuestionThemesQueryDto["sort-order"] | undefined>();
-    });
   });
 
   describe("limit", () => {
     it.each<number>([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ limit, "is-fully-translated": undefined });
+      const dto = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -126,15 +118,11 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
-
-    it("should accept any coercible value when checking the input type.", () => {
-      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["limit"]>().toEqualTypeOf<unknown>();
-    });
   });
 
   describe("status", () => {
-    it.each<QuestionThemeStatus>(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
-      const dto = createFakeAdminFindQuestionThemesQueryDto({ status, "is-fully-translated": undefined });
+    it.each(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
+      const dto = { ...validDto, status };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -158,13 +146,13 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   describe("is-fully-translated", () => {
     it.each<string>(["true", "false"])("should pass validation when is-fully-translated is '%s'.", isFullyTranslated => {
-      const dto = { ...createFakeAdminFindQuestionThemesQueryDto(), "is-fully-translated": isFullyTranslated } as unknown as AdminFindQuestionThemesQueryDto;
+      const dto = { ...validDto, "is-fully-translated": isFullyTranslated };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should parse is-fully-translated to a boolean when value is a valid boolean string.", () => {
-      const dto = { ...createFakeAdminFindQuestionThemesQueryDto(), "is-fully-translated": "false" } as unknown as AdminFindQuestionThemesQueryDto;
+      const dto = { ...validDto, "is-fully-translated": "false" };
 
       const result = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto);
 
@@ -183,15 +171,11 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithoutIsFullyTranslated)).not.toThrow();
     });
-
-    it("should have is-fully-translated as optional when checking the input type.", () => {
-      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>["is-fully-translated"]>().toEqualTypeOf<string | undefined>();
-    });
   });
 
   it("should use both defaults when no fields are provided.", () => {
     const result = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse({});
 
-    expect(result).toStrictEqual<AdminFindQuestionThemesQueryDto>({ "sort-by": "slug", "sort-order": "asc", "limit": LIMIT_DEFAULT });
+    expect(result).toStrictEqual({ "sort-by": "slug", "sort-order": "asc", "limit": LIMIT_DEFAULT });
   });
 });

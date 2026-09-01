@@ -7,16 +7,18 @@ import {
   FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM,
 } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 import { FIND_RANDOM_QUESTIONS_BODY_DTO } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto.shape";
-import type { FindRandomQuestionsBodyDto } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto.shape";
-
-import { createFakeFindRandomQuestionsBodyDto } from "@faketories/contexts/question/dto/find-random-questions-body/find-random-questions-body.dto.faketory";
-import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 
 describe("Find Random Questions Body DTO Shape", () => {
-  let validDto: FindRandomQuestionsBodyDto;
+  let validDto: { limit?: number; excludedIds?: string[]; categories?: string[]; cognitiveDifficulties?: string[]; themeIds?: string[] };
 
   beforeEach(() => {
-    validDto = createFakeFindRandomQuestionsBodyDto();
+    validDto = {
+      limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT,
+      excludedIds: ["60af924f4f1a2563f8e8b456"],
+      categories: ["trivia"],
+      cognitiveDifficulties: ["easy"],
+      themeIds: ["60af924f4f1a2563f8e8b457"],
+    };
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -25,19 +27,19 @@ describe("Find Random Questions Body DTO Shape", () => {
 
   describe("limit", () => {
     it("should pass validation when limit is a valid integer at the minimum.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM });
+      const dto = { ...validDto, limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when limit is a valid integer above the minimum.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT });
+      const dto = { ...validDto, limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when limit is at the maximum.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_MAXIMUM });
+      const dto = { ...validDto, limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_MAXIMUM };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
@@ -87,19 +89,14 @@ describe("Find Random Questions Body DTO Shape", () => {
 
   describe("excludedIds", () => {
     it("should pass validation when a single valid ObjectId is provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({
-        excludedIds: [createFakeObjectId("60af924f4f1a2563f8e8b456").toString()],
-      });
+      const dto = { ...validDto, excludedIds: ["60af924f4f1a2563f8e8b456"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid ObjectIds are provided.", () => {
-      const excludedIds = [
-        createFakeObjectId("60af924f4f1a2563f8e8b456").toString(),
-        createFakeObjectId("507f1f77bcf86cd799439011").toString(),
-      ];
-      const dto = createFakeFindRandomQuestionsBodyDto({ excludedIds });
+      const excludedIds = ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"];
+      const dto = { ...validDto, excludedIds };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
@@ -117,13 +114,13 @@ describe("Find Random Questions Body DTO Shape", () => {
     });
 
     it("should throw zod error when more than 5000 excluded ids are provided.", () => {
-      const dto = { ...validDto, excludedIds: Array.from({ length: 5001 }, () => createFakeObjectId().toString()) };
+      const dto = { ...validDto, excludedIds: Array.from({ length: 5001 }, (_, index) => `60af924f4f1a2563f8e8b4${index.toString().padStart(2, "0")}`) };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).toThrow(ZodError);
     });
 
     it("should throw zod error when duplicate excluded ids are provided.", () => {
-      const duplicateId = createFakeObjectId().toString();
+      const duplicateId = "60af924f4f1a2563f8e8b456";
       const dto = { ...validDto, excludedIds: [duplicateId, duplicateId] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).toThrow(ZodError);
@@ -138,13 +135,13 @@ describe("Find Random Questions Body DTO Shape", () => {
 
   describe("categories", () => {
     it("should pass validation when a single valid category is provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ categories: ["trivia"] });
+      const dto = { ...validDto, categories: ["trivia"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid categories are provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ categories: ["trivia", "riddle"] });
+      const dto = { ...validDto, categories: ["trivia", "riddle"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
@@ -176,13 +173,13 @@ describe("Find Random Questions Body DTO Shape", () => {
 
   describe("cognitiveDifficulties", () => {
     it("should pass validation when a single valid cognitive difficulty is provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ cognitiveDifficulties: ["easy"] });
+      const dto = { ...validDto, cognitiveDifficulties: ["easy"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid cognitive difficulties are provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({ cognitiveDifficulties: ["easy", "hard"] });
+      const dto = { ...validDto, cognitiveDifficulties: ["easy", "hard"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
@@ -214,19 +211,14 @@ describe("Find Random Questions Body DTO Shape", () => {
 
   describe("themeIds", () => {
     it("should pass validation when a single valid theme id is provided.", () => {
-      const dto = createFakeFindRandomQuestionsBodyDto({
-        themeIds: [createFakeObjectId("60af924f4f1a2563f8e8b456").toString()],
-      });
+      const dto = { ...validDto, themeIds: ["60af924f4f1a2563f8e8b456"] };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });
 
     it("should pass validation when multiple valid theme ids are provided.", () => {
-      const themeIds = [
-        createFakeObjectId("60af924f4f1a2563f8e8b456").toString(),
-        createFakeObjectId("507f1f77bcf86cd799439011").toString(),
-      ];
-      const dto = createFakeFindRandomQuestionsBodyDto({ themeIds });
+      const themeIds = ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"];
+      const dto = { ...validDto, themeIds };
 
       expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
     });

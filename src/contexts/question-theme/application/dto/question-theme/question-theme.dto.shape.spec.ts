@@ -5,15 +5,31 @@ import { QUESTION_THEME_DTO } from "@question-theme/application/dto/question-the
 
 import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import { createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
-
-import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
-
 describe("Question Theme DTO Shape", () => {
-  let validQuestionThemeDto: QuestionThemeDto;
+  let validQuestionThemeDto: {
+    id: string;
+    slug: string;
+    label: string;
+    aliases: string[];
+    description: string;
+    color?: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 
   beforeEach(() => {
-    validQuestionThemeDto = createFakeQuestionThemeDto();
+    validQuestionThemeDto = {
+      id: "60af924f4f1a2563f8e8b456",
+      slug: "general-knowledge",
+      label: "General Knowledge",
+      aliases: ["gk", "general"],
+      description: "A theme for general knowledge questions",
+      color: "#FF5733",
+      status: "active",
+      createdAt: "2026-04-14T00:00:00.000Z",
+      updatedAt: "2026-04-14T00:00:00.000Z",
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -22,7 +38,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("id", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { id: 123 });
+      const invalidDto = { ...validQuestionThemeDto, id: 123 };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -43,7 +59,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { slug: 123 });
+      const invalidDto = { ...validQuestionThemeDto, slug: 123 };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -64,7 +80,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("label", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { label: 123 });
+      const invalidDto = { ...validQuestionThemeDto, label: 123 };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -85,13 +101,13 @@ describe("Question Theme DTO Shape", () => {
 
   describe("aliases", () => {
     it("should throw a zod error when assigned a non-array value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { aliases: "not-an-array" });
+      const invalidDto = { ...validQuestionThemeDto, aliases: "not-an-array" };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when array items are not strings.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { aliases: ["a", 2, "c"] });
+      const invalidDto = { ...validQuestionThemeDto, aliases: ["a", 2, "c"] };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -112,7 +128,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("description", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { description: 123 });
+      const invalidDto = { ...validQuestionThemeDto, description: 123 };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -166,7 +182,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("status", () => {
     it("should throw a zod error when assigned an invalid enum value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { status: "unknown" });
+      const invalidDto = { ...validQuestionThemeDto, status: "unknown" };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -187,7 +203,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("createdAt", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { createdAt: "not-a-date" });
+      const invalidDto = { ...validQuestionThemeDto, createdAt: "not-a-date" };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -208,7 +224,7 @@ describe("Question Theme DTO Shape", () => {
 
   describe("updatedAt", () => {
     it("should throw a zod error when assigned a non-iso datetime string.", () => {
-      const invalidDto = Object.assign(validQuestionThemeDto, { updatedAt: 123 });
+      const invalidDto = { ...validQuestionThemeDto, updatedAt: 123 };
 
       expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
     });

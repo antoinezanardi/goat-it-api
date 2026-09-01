@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { ZodError } from "zod";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
@@ -11,17 +10,27 @@ import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@questio
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
-import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
-
 import type { z } from "zod";
 
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Find Questions Query DTO Shape", () => {
-  let validDto: FindQuestionsQueryDto;
+  let validDto: {
+    "sort-by"?: string;
+    "sort-order": string;
+    "limit": number;
+    "category"?: string;
+    "cognitive-difficulty"?: string;
+    "author-role"?: string;
+    "theme-ids"?: string | string[];
+  };
 
   beforeEach(() => {
-    validDto = createFakeFindQuestionsQueryDto();
+    validDto = {
+      "sort-order": "desc",
+      "limit": LIMIT_DEFAULT,
+      "theme-ids": ["60af924f4f1a2563f8e8b456"],
+    };
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -30,7 +39,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("sort-by", () => {
     it.each<(typeof QUESTION_SORTABLE_FIELDS)[number]>(QUESTION_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
-      const dto = createFakeFindQuestionsQueryDto({ "sort-by": sortBy });
+      const dto = { ...validDto, "sort-by": sortBy };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -69,7 +78,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("sort-order", () => {
     it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
-      const dto = createFakeFindQuestionsQueryDto({ "sort-order": sortOrder });
+      const dto = { ...validDto, "sort-order": sortOrder };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -102,7 +111,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("limit", () => {
     it.each<number>([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
-      const dto = createFakeFindQuestionsQueryDto({ limit });
+      const dto = { ...validDto, limit };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -135,7 +144,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("category", () => {
     it.each<QuestionCategory>(QUESTION_CATEGORIES)("should pass validation when category is '%s'.", category => {
-      const dto = createFakeFindQuestionsQueryDto({ category });
+      const dto = { ...validDto, category };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -155,7 +164,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("cognitive-difficulty", () => {
     it.each<QuestionCognitiveDifficulty>(QUESTION_COGNITIVE_DIFFICULTIES)("should pass validation when cognitive-difficulty is '%s'.", cognitiveDifficulty => {
-      const dto = createFakeFindQuestionsQueryDto({ "cognitive-difficulty": cognitiveDifficulty });
+      const dto = { ...validDto, "cognitive-difficulty": cognitiveDifficulty };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -175,7 +184,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("author-role", () => {
     it.each<QuestionAuthorRole>(QUESTION_AUTHOR_ROLES)("should pass validation when author-role is '%s'.", authorRole => {
-      const dto = createFakeFindQuestionsQueryDto({ "author-role": authorRole });
+      const dto = { ...validDto, "author-role": authorRole };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -195,7 +204,7 @@ describe("Find Questions Query DTO Shape", () => {
 
   describe("theme-ids", () => {
     it("should pass validation when theme-ids is a valid array of mongo IDs.", () => {
-      const dto = createFakeFindQuestionsQueryDto({ "theme-ids": [faker.database.mongodbObjectId(), faker.database.mongodbObjectId()] });
+      const dto = { ...validDto, "theme-ids": ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b457"] };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -213,7 +222,7 @@ describe("Find Questions Query DTO Shape", () => {
     });
 
     it("should pass validation when theme-ids is a single string value.", () => {
-      const dtoWithSingleThemeId = { ...validDto, "theme-ids": faker.database.mongodbObjectId() };
+      const dtoWithSingleThemeId = { ...validDto, "theme-ids": "60af924f4f1a2563f8e8b456" };
 
       const result = FIND_QUESTIONS_QUERY_DTO.parse(dtoWithSingleThemeId);
 

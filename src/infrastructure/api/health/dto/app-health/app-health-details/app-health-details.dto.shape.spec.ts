@@ -1,14 +1,17 @@
 import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
-import type { AppHealthDetailsDto } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto.shape";
 import { APP_HEALTH_DETAILS_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health-details/app-health-details.dto.shape";
 
-import { createFakeAppHealthDetailsDto } from "@faketories/infrastructure/api/health/health.faketory";
-
 describe("App Health Details DTO Shape", () => {
-  let validAppHealthDetailsDto: AppHealthDetailsDto;
+  let validAppHealthDetailsDto: {
+    "mongoose": { status: string; message?: string; responseTime?: number };
+    "goat-it-docs": { status: string; message?: string; responseTime?: number };
+  };
 
   beforeEach(() => {
-    validAppHealthDetailsDto = createFakeAppHealthDetailsDto();
+    validAppHealthDetailsDto = {
+      "mongoose": { status: "up", message: "Connection successful", responseTime: 150 },
+      "goat-it-docs": { status: "up", message: "Connection successful", responseTime: 200 },
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {

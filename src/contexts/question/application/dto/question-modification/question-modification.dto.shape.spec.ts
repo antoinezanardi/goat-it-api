@@ -1,16 +1,31 @@
 import { ZodError } from "zod";
 
 import { QUESTION_SOURCE_URLS_MAX_ITEMS } from "@question/domain/constants/question.constants";
-import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 import { QUESTION_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-modification.dto.shape";
 
-import { createFakeQuestionModificationDto } from "@faketories/contexts/question/dto/question-modification/question-modification.dto.faketory";
-
 describe("Question Modification DTO Shape", () => {
-  let validDto: QuestionModificationDto;
+  let validDto: {
+    category?: string;
+    cognitiveDifficulty?: string;
+    sourceUrls?: string[];
+    content?: {
+      statement?: { en: string };
+      answer?: { en: string };
+      context?: { en: string };
+      trivia?: Record<string, string[]>;
+    };
+  };
 
   beforeEach(() => {
-    validDto = createFakeQuestionModificationDto();
+    validDto = {
+      category: "trivia",
+      cognitiveDifficulty: "easy",
+      sourceUrls: ["https://example.com/source1"],
+      content: {
+        statement: { en: "What is the capital of France?" },
+        answer: { en: "Paris" },
+      },
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {

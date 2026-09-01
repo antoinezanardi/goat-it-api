@@ -1,15 +1,17 @@
 import { ZodError } from "zod";
 
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
-import { createFakeAppMetadata } from "@faketories/app/app.faketory";
-
 describe("AppMetadata DTO Shape", () => {
-  let validAppMetadataDto: AppMetadataDto | Record<string, unknown>;
+  let validAppMetadataDto: { name: string; version: string; description: string; packageName: string };
 
   beforeEach(() => {
-    validAppMetadataDto = createFakeAppMetadata();
+    validAppMetadataDto = {
+      name: "Goat It",
+      version: "1.0.0",
+      description: "An AI-powered question and answer platform.",
+      packageName: "goat-it-api",
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -18,13 +20,13 @@ describe("AppMetadata DTO Shape", () => {
 
   describe("name", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { name: 123 });
+      const invalidDto = { ...validAppMetadataDto, name: 123 };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned an empty string.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { name: "" });
+      const invalidDto = { ...validAppMetadataDto, name: "" };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -45,7 +47,7 @@ describe("AppMetadata DTO Shape", () => {
 
   describe("version", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { version: 456 });
+      const invalidDto = { ...validAppMetadataDto, version: 456 };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -79,7 +81,7 @@ describe("AppMetadata DTO Shape", () => {
         value: "",
       },
     ])("$test", ({ value }) => {
-      const invalidDto = Object.assign(validAppMetadataDto, { version: value });
+      const invalidDto = { ...validAppMetadataDto, version: value };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -101,7 +103,7 @@ describe("AppMetadata DTO Shape", () => {
         value: "2.1.0-alpha",
       },
     ])("$test", ({ value }) => {
-      const validDto = Object.assign(validAppMetadataDto, { version: value });
+      const validDto = { ...validAppMetadataDto, version: value };
 
       expect(() => APP_METADATA_DTO.parse(validDto)).not.toThrow();
     });
@@ -122,13 +124,13 @@ describe("AppMetadata DTO Shape", () => {
 
   describe("description", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { description: 789 });
+      const invalidDto = { ...validAppMetadataDto, description: 789 };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned an empty string.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { description: "" });
+      const invalidDto = { ...validAppMetadataDto, description: "" };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -149,13 +151,13 @@ describe("AppMetadata DTO Shape", () => {
 
   describe("packageName", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { packageName: true });
+      const invalidDto = { ...validAppMetadataDto, packageName: true };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned an invalid slug.", () => {
-      const invalidDto = Object.assign(validAppMetadataDto, { packageName: "Invalid Package!" });
+      const invalidDto = { ...validAppMetadataDto, packageName: "Invalid Package!" };
 
       expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
     });

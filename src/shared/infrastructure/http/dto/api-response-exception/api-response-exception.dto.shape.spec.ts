@@ -1,15 +1,24 @@
 import { ZodError } from "zod";
 
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 
-import { createFakeApiResponseExceptionDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
-
 describe("Api Response Exception DTO Shape", () => {
-  let validApiResponseExceptionDto: ApiResponseExceptionDto;
+  let validApiResponseExceptionDto: {
+    statusCode: number;
+    message: string;
+    error: string;
+    validationDetails?: { code: string; message: string; path: (string | number)[] }[];
+    errorCode?: string;
+  };
 
   beforeEach(() => {
-    validApiResponseExceptionDto = createFakeApiResponseExceptionDto();
+    validApiResponseExceptionDto = {
+      statusCode: 400,
+      message: "The request could not be understood by the server due to malformed syntax.",
+      error: "Bad Request",
+      validationDetails: [{ code: "type_error", message: "Expected type string but received type number", path: ["user", "age"] }],
+      errorCode: "bad-request",
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -18,7 +27,7 @@ describe("Api Response Exception DTO Shape", () => {
 
   describe("statusCode", () => {
     it("should throw a zod error when assigned a non-number value.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionDto, { statusCode: "invalid" });
+      const invalidDto = { ...validApiResponseExceptionDto, statusCode: "invalid" };
 
       expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -39,7 +48,7 @@ describe("Api Response Exception DTO Shape", () => {
 
   describe("message", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionDto, { message: 123 });
+      const invalidDto = { ...validApiResponseExceptionDto, message: 123 };
 
       expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -60,7 +69,7 @@ describe("Api Response Exception DTO Shape", () => {
 
   describe("error", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionDto, { error: 123 });
+      const invalidDto = { ...validApiResponseExceptionDto, error: 123 };
 
       expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -81,7 +90,7 @@ describe("Api Response Exception DTO Shape", () => {
 
   describe("validationDetails", () => {
     it("should throw a zod error when assigned a non-array value.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionDto, { validationDetails: "invalid" });
+      const invalidDto = { ...validApiResponseExceptionDto, validationDetails: "invalid" };
 
       expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -93,7 +102,7 @@ describe("Api Response Exception DTO Shape", () => {
 
   describe("errorCode", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validApiResponseExceptionDto, { errorCode: 123 });
+      const invalidDto = { ...validApiResponseExceptionDto, errorCode: 123 };
 
       expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });

@@ -2,17 +2,52 @@ import { ZodError } from "zod";
 
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
-import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
-import { createFakeQuestionDto } from "@faketories/contexts/question/dto/question/question.dto.faketory";
-
 describe("Question DTO Shape", () => {
-  let validQuestionDto: QuestionDto;
+  let validQuestionDto: {
+    id: string;
+    category: string;
+    themes: { theme: Record<string, unknown>; isPrimary: boolean; isHint: boolean }[];
+    content: { statement: string; answer: string; context?: string; trivia?: string[] };
+    cognitiveDifficulty: string;
+    author: { role: string; gameId?: string; name?: string };
+    status: string;
+    rejection?: { type: string; comment?: string };
+    sourceUrls: string[];
+    createdAt: string;
+    updatedAt: string;
+  };
 
   beforeEach(() => {
-    validQuestionDto = createFakeQuestionDto();
+    validQuestionDto = {
+      id: "60af924f4f1a2563f8e8b456",
+      category: "trivia",
+      themes: [
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b457",
+            slug: "general-knowledge",
+            label: "General Knowledge",
+            aliases: ["gk", "trivia"],
+            description: "General knowledge questions",
+            color: "#FF5733",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: true,
+          isHint: false,
+        },
+      ],
+      content: { statement: "What is the capital of France?", answer: "Paris" },
+      cognitiveDifficulty: "easy",
+      author: { role: "admin", name: "TestAuthor" },
+      status: "active",
+      sourceUrls: ["https://example.com/source1"],
+      createdAt: "2026-04-14T00:00:00.000Z",
+      updatedAt: "2026-04-14T00:00:00.000Z",
+    };
   });
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
@@ -21,7 +56,7 @@ describe("Question DTO Shape", () => {
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
-      const dtoWithInvalidId = Object.assign(validQuestionDto, { id: "invalid" });
+      const dtoWithInvalidId = { ...validQuestionDto, id: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
     });
@@ -39,13 +74,13 @@ describe("Question DTO Shape", () => {
 
   describe("themes", () => {
     it("should throw zod error when themes is empty.", () => {
-      const dtoWithEmptyThemes = Object.assign(validQuestionDto, { themes: [] });
+      const dtoWithEmptyThemes = { ...validQuestionDto, themes: [] };
 
       expect(() => QUESTION_DTO.parse(dtoWithEmptyThemes)).toThrow(ZodError);
     });
 
     it("should throw zod error when themes is invalid.", () => {
-      const dtoWithInvalidThemes = Object.assign(validQuestionDto, { themes: "invalid" });
+      const dtoWithInvalidThemes = { ...validQuestionDto, themes: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidThemes)).toThrow(ZodError);
     });
@@ -61,12 +96,68 @@ describe("Question DTO Shape", () => {
 
     it("should throw zod error when themes exceed maximum items.", () => {
       const themes = [
-        createFakeQuestionThemeAssignmentDto(),
-        createFakeQuestionThemeAssignmentDto(),
-        createFakeQuestionThemeAssignmentDto(),
-        createFakeQuestionThemeAssignmentDto(),
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b457",
+            slug: "general-knowledge",
+            label: "General Knowledge",
+            aliases: ["gk", "trivia"],
+            description: "General knowledge questions",
+            color: "#FF5733",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: true,
+          isHint: false,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b458",
+            slug: "science",
+            label: "Science",
+            aliases: ["sci", "nature"],
+            description: "Science questions",
+            color: "#33FF57",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: true,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b459",
+            slug: "history",
+            label: "History",
+            aliases: ["hist", "past"],
+            description: "History questions",
+            color: "#3357FF",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: false,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b460",
+            slug: "geography",
+            label: "Geography",
+            aliases: ["geo", "world"],
+            description: "Geography questions",
+            color: "#FF33E6",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: true,
+        },
       ];
-      const dtoWithTooManyThemes = Object.assign(validQuestionDto, { themes });
+      const dtoWithTooManyThemes = { ...validQuestionDto, themes };
 
       expect(() => QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrow(ZodError);
     });
@@ -74,7 +165,7 @@ describe("Question DTO Shape", () => {
 
   describe("content", () => {
     it("should throw zod error when content is invalid.", () => {
-      const dtoWithInvalidContent = Object.assign(validQuestionDto, { content: "invalid" });
+      const dtoWithInvalidContent = { ...validQuestionDto, content: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidContent)).toThrow(ZodError);
     });
@@ -91,7 +182,7 @@ describe("Question DTO Shape", () => {
 
   describe("cognitiveDifficulty", () => {
     it("should throw zod error when cognitiveDifficulty is invalid.", () => {
-      const dtoWithInvalidCognitiveDifficulty = Object.assign(validQuestionDto, { cognitiveDifficulty: "invalid" });
+      const dtoWithInvalidCognitiveDifficulty = { ...validQuestionDto, cognitiveDifficulty: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidCognitiveDifficulty)).toThrow(ZodError);
     });
@@ -108,7 +199,7 @@ describe("Question DTO Shape", () => {
 
   describe("author", () => {
     it("should throw zod error when author is invalid.", () => {
-      const dtoWithInvalidAuthor = Object.assign(validQuestionDto, { author: "invalid" });
+      const dtoWithInvalidAuthor = { ...validQuestionDto, author: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidAuthor)).toThrow(ZodError);
     });
@@ -125,7 +216,7 @@ describe("Question DTO Shape", () => {
 
   describe("status", () => {
     it("should throw zod error when status is invalid.", () => {
-      const dtoWithInvalidStatus = Object.assign(validQuestionDto, { status: "invalid" });
+      const dtoWithInvalidStatus = { ...validQuestionDto, status: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidStatus)).toThrow(ZodError);
     });
@@ -142,13 +233,13 @@ describe("Question DTO Shape", () => {
 
   describe("rejection", () => {
     it("should throw zod error when rejection is invalid.", () => {
-      const dtoWithInvalidRejection = Object.assign(validQuestionDto, { rejection: "invalid" });
+      const dtoWithInvalidRejection = { ...validQuestionDto, rejection: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidRejection)).toThrow(ZodError);
     });
 
     it("should pass validation when rejection is omitted.", () => {
-      const dtoWithoutRejection = createFakeQuestionDto({ rejection: undefined });
+      const dtoWithoutRejection = { ...validQuestionDto, rejection: undefined };
 
       expect(() => QUESTION_DTO.parse(dtoWithoutRejection)).not.toThrow(ZodError);
     });
@@ -165,7 +256,7 @@ describe("Question DTO Shape", () => {
 
   describe("sourceUrls", () => {
     it("should throw zod error when sourceUrls is invalid.", () => {
-      const dtoWithInvalidSourceUrls = Object.assign(validQuestionDto, { sourceUrls: "invalid" });
+      const dtoWithInvalidSourceUrls = { ...validQuestionDto, sourceUrls: "invalid" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrow(ZodError);
     });
@@ -186,13 +277,13 @@ describe("Question DTO Shape", () => {
 
   describe("createdAt / updatedAt", () => {
     it("should throw zod error when createdAt is invalid.", () => {
-      const dtoWithInvalidCreatedAt = Object.assign(validQuestionDto, { createdAt: "not-a-date" });
+      const dtoWithInvalidCreatedAt = { ...validQuestionDto, createdAt: "not-a-date" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrow(ZodError);
     });
 
     it("should throw zod error when updatedAt is invalid.", () => {
-      const dtoWithInvalidUpdatedAt = Object.assign(validQuestionDto, { updatedAt: "not-a-date" });
+      const dtoWithInvalidUpdatedAt = { ...validQuestionDto, updatedAt: "not-a-date" };
 
       expect(() => QUESTION_DTO.parse(dtoWithInvalidUpdatedAt)).toThrow(ZodError);
     });

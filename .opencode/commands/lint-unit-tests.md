@@ -102,7 +102,8 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 - **[DT2] ZodError assertions** — Negative tests use `expect(() => DTO.parse(bad)).toThrow(ZodError)`.
 - **[DT3] Metadata checks** — Assert `DTO.shape.field.meta()` with `toStrictEqual` for description + example.
 - **[DT4] Per-field coverage** — Every field has at least one positive + one negative test.
-- **[DT5] Inline valid DTO (shape specs)** — `*.dto.shape.spec.ts` must define `validDto` as an **inline literal** (no `createFake*Dto()`), e.g., `const validQuestionDto: QuestionDto = { id: "...", slug: "...", name: { en: "..." }, ... }` in `beforeEach`. Negative tests use `const bad = { ...validDto, field: badValue }` or `Object.assign({}, validDto, { field: badValue })` with a copied `validDto` (never mutating the original). Flag any `createFake*Dto()` or `Object.assign(validDto, {…})` (without `{}`) in shape specs.
+- **[DT5] Inline valid DTO (shape specs)** — `*.dto.shape.spec.ts` must define `validDto` as an **inline literal**. The `beforeEach` assigns `validDto = { ... }` with a plain object literal — never `createFake*Dto()`, never a faketory call, never `Object.assign(validDto, {...})` (mutating). Negative tests use `{ ...validDto, field: badValue }` (spread copy). When testing parameterized valid values (e.g. `it.each` over enums), rebuild the DTO inline with `{ ...validDto, field: value }` — do NOT call faketories. Nested objects (e.g. `themes: [{ ... }]`) must also be inline literals. Remove ALL `@faketories/*` imports from shape spec files. Remove ALL `as SomeDto` or `as unknown as SomeDto` casts on DTO objects — the structural type on the `let` declaration handles typing. Flag any remaining faketory call, faketory import, or `as` cast in `*.dto.shape.spec.ts`.
+- **[DT6] No DTO type annotation on validDto** — `*.dto.shape.spec.ts` must NOT use the DTO type name on `validDto`. The `let` declaration must use a structural type (e.g., `let validDto: { field: type; ... };`) or be untyped, with assignment in `beforeEach`. Never `let validDto: SomeDto` or `let validDto = {} as SomeDto`. OxLint flags `let validDto = { ... }` at top level as `require-hook`, so the `let` must be declared without initialization and assigned in `beforeEach`.
 
 #### Helper checks
 
@@ -127,6 +128,7 @@ During the audit phase the main agent must NOT read spec files itself — that i
    ```text
    You are auditing unit test spec files against repository conventions.
    This is a READ-ONLY audit: do NOT modify any file and do NOT run any test or shell command.
+   NEVER run mutation testing (`pnpm run test:mutation`) or acceptance tests (`pnpm run test:acceptance`).
 
    Files to audit — type <TYPE>:
    - <path1>
@@ -189,11 +191,11 @@ Classify before asking: **mechanical** = unambiguous single-file edits; **judgme
 
 ### 8. Fix selected violations
 
-Work through approved categories ONE at a time:
+Work through approved categories ONE at a time. **NO parallel work across categories** — complete each category fully (fix + verify) before starting the next. This prevents concurrent write races, revert conflicts, and inconsistent state across the working tree.
 
 - **Direct fix allowance** — a mechanical category touching at most 2 files may be applied directly by the main agent (read + edit + scoped verification per section 9) instead of dispatching subagents.
-- For each remaining category, list every file it touches and dispatch fixes in batches of 4 files per `general` subagent task (smaller remainders fine), in parallel waves of **at most 2 tasks** (reduced from 6 to avoid concurrent write races — see retrospective §11). Each batch must operate on **disjoint file sets** and must **not run `pnpm run lint:fix` in parallel**; instead run `pnpm run test:unit <spec paths>` per batch for isolation, then run a single `pnpm run lint:fix` once after all batches in the category complete.
-- Each batch prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `tests/unit/README.md`, scoped verification (`pnpm run test:unit <spec paths>` plus focused eslint/oxlint fixes must pass; revert a single fix if irrecoverable), and the structured `FILE / STATUS / NOTES` return format. Also declare any known working-tree modifications that predate the batch so the subagent does not misattribute them.
+- For each remaining category, dispatch ONE `general` subagent per category via the Task tool. The subagent receives ALL files for that category in a single prompt and fixes them sequentially. This avoids concurrent write races and inconsistent cross-batch state. **NEVER split a category into parallel batches** — multiple subagents writing to different files in the same category causes revert races and lost edits. The subagent must NOT run `pnpm run lint:fix` or `pnpm run test:unit:cov` — verification is done by the main agent after the subagent returns. **NEVER run mutation testing or acceptance tests in subagents.**
+- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `tests/unit/README.md`, the current working-tree state (pre-existing modifications), and the structured `FILE / STATUS / NOTES` return format.
 - Apply corrections following the exact patterns from `tests/unit/README.md` — never invent alternatives.
 - Judgmental items may require adding or removing test cases; write them per the file-type pattern.
 - Respect repo conventions: no comments (except allowed lint-disable/JSDoc forms), correct import grouping/order, no `any`.
@@ -223,6 +225,14 @@ pnpm run test:unit:cov
 ```
 
 Fix forward and re-run from the failing command until all three pass.
+
+After the three gates pass, run mutation testing as the **very last step**:
+
+```bash
+pnpm run test:mutation
+```
+
+Fix any survived mutants if the score is below threshold, then re-run from `pnpm run lint:fix`.
 
 ### 10. Finish
 

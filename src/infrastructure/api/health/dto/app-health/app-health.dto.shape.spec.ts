@@ -1,13 +1,22 @@
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 import { APP_HEALTH_DTO } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
-import { createFakeAppHealthDto } from "@faketories/infrastructure/api/health/health.faketory";
-
 describe("App Health DTO Shape", () => {
-  let validAppHealthDto: AppHealthDto;
+  let validAppHealthDto: {
+    status: string;
+    details: {
+      "mongoose": { status: string; message?: string; responseTime?: number };
+      "goat-it-docs": { status: string; message?: string; responseTime?: number };
+    };
+  };
 
   beforeEach(() => {
-    validAppHealthDto = createFakeAppHealthDto();
+    validAppHealthDto = {
+      status: "ok",
+      details: {
+        "mongoose": { status: "up", message: "Connection successful", responseTime: 150 },
+        "goat-it-docs": { status: "up", message: "Connection successful", responseTime: 200 },
+      },
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {

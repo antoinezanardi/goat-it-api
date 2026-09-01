@@ -7,18 +7,19 @@ import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUE
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
-import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-query/find-question-themes-query.dto.faketory";
-
 import type { z } from "zod";
 import type { FindQuestionThemesQueryDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";
 
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Find Question-Themes Query DTO Shape", () => {
-  let validDto: FindQuestionThemesQueryDto;
+  let validDto: { "sort-by"?: string; "sort-order"?: string; "limit": number };
 
   beforeEach(() => {
-    validDto = createFakeFindQuestionThemesQueryDto();
+    validDto = {
+      "sort-order": "asc",
+      "limit": LIMIT_DEFAULT,
+    };
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -27,7 +28,7 @@ describe("Find Question-Themes Query DTO Shape", () => {
 
   describe("sort-by", () => {
     it.each<(typeof QUESTION_THEME_SORTABLE_FIELDS)[number]>(QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
-      const dto = createFakeFindQuestionThemesQueryDto({ "sort-by": sortBy });
+      const dto = { ...validDto, "sort-by": sortBy };
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -66,7 +67,7 @@ describe("Find Question-Themes Query DTO Shape", () => {
 
   describe("sort-order", () => {
     it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
-      const dto = createFakeFindQuestionThemesQueryDto({ "sort-order": sortOrder });
+      const dto = { ...validDto, "sort-order": sortOrder };
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -99,7 +100,7 @@ describe("Find Question-Themes Query DTO Shape", () => {
 
   describe("limit", () => {
     it.each<number>([0, 1, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
-      const dto = createFakeFindQuestionThemesQueryDto({ limit });
+      const dto = { ...validDto, limit };
 
       expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });

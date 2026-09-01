@@ -1,15 +1,17 @@
 import { ZodError } from "zod";
 
-import type { QuestionContentCreationDto } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
 import { QUESTION_CONTENT_CREATION_DTO } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
 
-import { createFakeQuestionContentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-content-creation/question-content-creation.dto.faketory";
-
 describe("Question Content Creation DTO Shape", () => {
-  let validDto: QuestionContentCreationDto;
+  let validDto: { statement: { en: string }; answer: { en: string }; context?: { en: string }; trivia?: Record<string, string[]> };
 
   beforeEach(() => {
-    validDto = createFakeQuestionContentCreationDto();
+    validDto = {
+      statement: { en: "What is the capital of France?" },
+      answer: { en: "Paris" },
+      context: { en: "Geography question" },
+      trivia: { en: ["Paris is the capital of France"] },
+    };
   });
 
   it("should pass validation when a valid QuestionContentCreationDto is provided.", () => {
@@ -52,7 +54,7 @@ describe("Question Content Creation DTO Shape", () => {
 
   describe("context", () => {
     it("should pass validation when context is omitted.", () => {
-      const dtoWithoutContext = createFakeQuestionContentCreationDto({ context: undefined });
+      const dtoWithoutContext = { ...validDto, context: undefined };
 
       expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutContext)).not.toThrow(ZodError);
     });
@@ -69,7 +71,7 @@ describe("Question Content Creation DTO Shape", () => {
 
   describe("trivia", () => {
     it("should pass validation when trivia is omitted.", () => {
-      const dtoWithoutTrivia = createFakeQuestionContentCreationDto({ trivia: undefined });
+      const dtoWithoutTrivia = { ...validDto, trivia: undefined };
 
       expect(() => QUESTION_CONTENT_CREATION_DTO.parse(dtoWithoutTrivia)).not.toThrow(ZodError);
     });
