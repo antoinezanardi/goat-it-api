@@ -32,7 +32,7 @@ vi.mock(import("@question/application/mappers/question.mappers"));
 vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 vi.mock(import("@question/application/mappers/find-random-options/find-random-options.mappers"));
 
-describe("Question Controller", () => {
+describe(QuestionController, () => {
   let questionController: QuestionController;
   let mocks: {
     services: {
@@ -162,7 +162,7 @@ describe("Question Controller", () => {
   });
 
   describe(QuestionController.prototype.findRandomQuestions, () => {
-    it.each([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should create find random options from body dto when called with limit %s.", async expectedLimit => {
+    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should create find random options from body dto when called with limit %s.", async expectedLimit => {
       const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: expectedLimit });
       const localization = createFakeLocalizationOptions();
 
@@ -171,7 +171,7 @@ describe("Question Controller", () => {
       expect(mocks.mappers.createFindRandomQuestionsOptionsFromBodyDto).toHaveBeenCalledExactlyOnceWith(bodyDto);
     });
 
-    it.each([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should list random questions with limit %s when called.", async expectedLimit => {
+    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should list random questions with limit %s when called.", async expectedLimit => {
       const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: expectedLimit });
       const localization = createFakeLocalizationOptions();
       const expectedOptions: FindRandomQuestionsOptions = { limit: expectedLimit };

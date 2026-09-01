@@ -11,7 +11,7 @@ import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/que
 
 import type { Mock } from "vitest";
 
-describe("Create Question Theme Use Case", () => {
+describe(CreateQuestionThemeUseCase, () => {
   let createQuestionThemeUseCase: CreateQuestionThemeUseCase;
   let mocks: {
     repositories: {

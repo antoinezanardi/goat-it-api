@@ -2,26 +2,24 @@ import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/s
 
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 
-describe("Sort Query DTO Mapper", () => {
-  describe(createSortOptionsFromSortQueryDto, () => {
-    it("should map sort-by to sortBy and sort-order to sortOrder when called.", () => {
-      const dto = { "sort-by": "createdAt" as const, "sort-order": "asc" as const };
+describe(createSortOptionsFromSortQueryDto, () => {
+  it("should map sort-by to sortBy and sort-order to sortOrder when called.", () => {
+    const dto = { "sort-by": "createdAt" as const, "sort-order": "asc" as const };
 
-      const result = createSortOptionsFromSortQueryDto(dto);
+    const result = createSortOptionsFromSortQueryDto(dto);
 
-      const expected: SortOptions<"createdAt"> = { sortBy: "createdAt", sortOrder: "asc" };
+    const expected: SortOptions<"createdAt"> = { sortBy: "createdAt", sortOrder: "asc" };
 
-      expect(result).toStrictEqual(expected);
-    });
+    expect(result).toStrictEqual(expected);
+  });
 
-    it("should map desc sort order correctly when called.", () => {
-      const dto = { "sort-by": "updatedAt" as const, "sort-order": "desc" as const };
+  it("should map desc sort order correctly when called.", () => {
+    const dto = { "sort-by": "updatedAt" as const, "sort-order": "desc" as const };
 
-      const result = createSortOptionsFromSortQueryDto(dto);
+    const result = createSortOptionsFromSortQueryDto(dto);
 
-      const expected: SortOptions<"updatedAt"> = { sortBy: "updatedAt", sortOrder: "desc" };
+    const expected: SortOptions<"updatedAt"> = { sortBy: "updatedAt", sortOrder: "desc" };
 
-      expect(result).toStrictEqual(expected);
-    });
+    expect(result).toStrictEqual(expected);
   });
 });

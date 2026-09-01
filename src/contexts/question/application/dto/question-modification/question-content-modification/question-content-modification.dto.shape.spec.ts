@@ -1,15 +1,17 @@
 import { ZodError } from "zod";
 
-import type { QuestionContentModificationDto } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
 import { QUESTION_CONTENT_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
 
-import { createFakeQuestionContentModificationDto } from "@faketories/contexts/question/dto/question-modification/question-modification.dto.faketory";
-
 describe("Question Content Modification DTO Shape", () => {
-  let validDto: QuestionContentModificationDto;
+  let validDto: { statement?: { en: string }; answer?: { en: string }; context?: { en: string }; trivia?: Record<string, string[]> };
 
   beforeEach(() => {
-    validDto = createFakeQuestionContentModificationDto();
+    validDto = {
+      statement: { en: "What is the capital of France?" },
+      answer: { en: "Paris" },
+      context: { en: "Geography question" },
+      trivia: { en: ["Paris is the capital of France"] },
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {

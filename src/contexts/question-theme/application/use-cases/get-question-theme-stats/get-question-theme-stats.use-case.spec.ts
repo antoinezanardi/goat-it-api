@@ -8,7 +8,7 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-th
 
 import { createFakeQuestionThemeStats } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
 
-describe("Get Question Theme Stats Use Case", () => {
+describe(GetQuestionThemeStatsUseCase, () => {
   let useCase: GetQuestionThemeStatsUseCase;
   let mockedRepository: ReturnType<typeof createMockedQuestionThemeRepository>;
 

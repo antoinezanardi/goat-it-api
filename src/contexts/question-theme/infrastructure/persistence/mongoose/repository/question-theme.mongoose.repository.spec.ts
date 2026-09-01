@@ -24,7 +24,7 @@ import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 
-describe("Question Theme Mongoose Repository", () => {
+describe(QuestionThemeMongooseRepository, () => {
   let repositories: { questionTheme: QuestionThemeMongooseRepository };
   let mocks: {
     models: {

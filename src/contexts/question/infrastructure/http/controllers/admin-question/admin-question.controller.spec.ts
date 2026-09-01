@@ -51,7 +51,7 @@ vi.mock(import("@question/application/mappers/question.mappers"));
 vi.mock(import("@question/application/mappers/question-theme-assignment.mappers"));
 vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 
-describe("Admin Question Controller", () => {
+describe(AdminQuestionController, () => {
   let adminQuestionController: AdminQuestionController;
   let mocks: {
     services: {

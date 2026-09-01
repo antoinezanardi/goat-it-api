@@ -15,7 +15,7 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/ent
 
 import type { TestingModule } from "@nestjs/testing";
 
-describe("Modify Question Theme Assignment Use Case", () => {
+describe(ModifyQuestionThemeAssignmentUseCase, () => {
   let useCase: ModifyQuestionThemeAssignmentUseCase;
   let mocks: {
     repositories: {

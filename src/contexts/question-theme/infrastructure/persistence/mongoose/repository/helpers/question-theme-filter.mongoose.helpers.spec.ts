@@ -2,7 +2,7 @@ import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/pe
 
 import type { AdminQuestionThemeFilterOptions } from "@question-theme/domain/types/question-theme.types";
 
-describe("Build Question Theme Filter Query", () => {
+describe(buildQuestionThemeFilterQuery, () => {
   it("should return an empty object when called without arguments.", () => {
     const result = buildQuestionThemeFilterQuery();
 

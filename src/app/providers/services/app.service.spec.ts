@@ -4,7 +4,7 @@ import packageJson from "@package-json" with { type: "json" };
 
 import { AppService } from "@app/providers/services/app.service";
 
-describe("App Service", () => {
+describe(AppService, () => {
   let services: { app: AppService };
 
   beforeEach(async() => {
@@ -13,7 +13,7 @@ describe("App Service", () => {
     services = { app: testingModule.get<AppService>(AppService) };
   });
 
-  describe("getApiMeta", () => {
+  describe(AppService.prototype.getApiMeta, () => {
     it("should return Api metadata when called.", () => {
       expect(services.app.getApiMeta()).toStrictEqual({
         packageName: packageJson.name,

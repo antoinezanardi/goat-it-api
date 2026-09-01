@@ -10,7 +10,7 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 
-describe("Find Questions Use Case", () => {
+describe(FindQuestionsUseCase, () => {
   let findQuestionsUseCase: FindQuestionsUseCase;
   let mocks: {
     repositories: {

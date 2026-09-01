@@ -2,17 +2,52 @@ import { ZodError } from "zod";
 
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto.shape";
 
-import { createFakeAdminQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.faketory";
-import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
-
 describe("Admin Question DTO Shape", () => {
-  let validAdminQuestionDto: AdminQuestionDto;
+  let validAdminQuestionDto: {
+    id: string;
+    category: string;
+    themes: { theme: Record<string, unknown>; isPrimary: boolean; isHint: boolean }[];
+    content: { statement: { en: string }; answer: { en: string } };
+    cognitiveDifficulty: string;
+    author: { role: string; gameId?: string; name?: string };
+    status: string;
+    rejection?: { type: string; comment?: string };
+    sourceUrls: string[];
+    createdAt: string;
+    updatedAt: string;
+  };
 
   beforeEach(() => {
-    validAdminQuestionDto = createFakeAdminQuestionDto();
+    validAdminQuestionDto = {
+      id: "60af924f4f1a2563f8e8b456",
+      category: "trivia",
+      themes: [
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b457",
+            slug: "general-knowledge",
+            label: { en: "General Knowledge" },
+            aliases: { en: ["gk", "trivia"] },
+            description: { en: "General knowledge questions" },
+            color: "#FF5733",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: true,
+          isHint: false,
+        },
+      ],
+      content: { statement: { en: "What is the capital of France?" }, answer: { en: "Paris" } },
+      cognitiveDifficulty: "easy",
+      author: { role: "admin", name: "TestAuthor" },
+      status: "active",
+      sourceUrls: ["https://example.com/source1"],
+      createdAt: "2026-04-14T00:00:00.000Z",
+      updatedAt: "2026-04-14T00:00:00.000Z",
+    };
   });
 
   it("should pass validation when a valid AdminQuestionDto is provided.", () => {
@@ -21,7 +56,7 @@ describe("Admin Question DTO Shape", () => {
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
-      const dtoWithInvalidId = Object.assign(validAdminQuestionDto, { id: "invalid" });
+      const dtoWithInvalidId = { ...validAdminQuestionDto, id: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
     });
@@ -37,15 +72,23 @@ describe("Admin Question DTO Shape", () => {
     });
   });
 
+  describe("category", () => {
+    it("should throw zod error when category is invalid.", () => {
+      const dtoWithInvalidCategory = { ...validAdminQuestionDto, category: "invalid" };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidCategory)).toThrow(ZodError);
+    });
+  });
+
   describe("themes", () => {
     it("should throw zod error when themes is empty.", () => {
-      const dtoWithEmptyThemes = Object.assign(validAdminQuestionDto, { themes: [] });
+      const dtoWithEmptyThemes = { ...validAdminQuestionDto, themes: [] };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithEmptyThemes)).toThrow(ZodError);
     });
 
     it("should throw zod error when themes is invalid.", () => {
-      const dtoWithInvalidThemes = Object.assign(validAdminQuestionDto, { themes: "invalid" });
+      const dtoWithInvalidThemes = { ...validAdminQuestionDto, themes: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidThemes)).toThrow(ZodError);
     });
@@ -61,12 +104,68 @@ describe("Admin Question DTO Shape", () => {
 
     it("should throw zod error when themes exceed maximum items.", () => {
       const themes = [
-        createFakeAdminQuestionThemeAssignmentDto(),
-        createFakeAdminQuestionThemeAssignmentDto(),
-        createFakeAdminQuestionThemeAssignmentDto(),
-        createFakeAdminQuestionThemeAssignmentDto(),
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b457",
+            slug: "general-knowledge",
+            label: { en: "General Knowledge" },
+            aliases: { en: ["gk", "trivia"] },
+            description: { en: "General knowledge questions" },
+            color: "#FF5733",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: true,
+          isHint: false,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b458",
+            slug: "science",
+            label: { en: "Science" },
+            aliases: { en: ["sci", "nature"] },
+            description: { en: "Science questions" },
+            color: "#33FF57",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: true,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b459",
+            slug: "history",
+            label: { en: "History" },
+            aliases: { en: ["hist", "past"] },
+            description: { en: "History questions" },
+            color: "#3357FF",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: false,
+        },
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b460",
+            slug: "geography",
+            label: { en: "Geography" },
+            aliases: { en: ["geo", "world"] },
+            description: { en: "Geography questions" },
+            color: "#FF33E6",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: false,
+          isHint: true,
+        },
       ];
-      const dtoWithTooManyThemes = Object.assign(validAdminQuestionDto, { themes });
+      const dtoWithTooManyThemes = { ...validAdminQuestionDto, themes };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithTooManyThemes)).toThrow(ZodError);
     });
@@ -74,7 +173,7 @@ describe("Admin Question DTO Shape", () => {
 
   describe("content", () => {
     it("should throw zod error when content is invalid.", () => {
-      const dtoWithInvalidContent = Object.assign(validAdminQuestionDto, { content: "invalid" });
+      const dtoWithInvalidContent = { ...validAdminQuestionDto, content: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidContent)).toThrow(ZodError);
     });
@@ -91,7 +190,7 @@ describe("Admin Question DTO Shape", () => {
 
   describe("cognitiveDifficulty", () => {
     it("should throw zod error when cognitiveDifficulty is invalid.", () => {
-      const dtoWithInvalidCognitiveDifficulty = Object.assign(validAdminQuestionDto, { cognitiveDifficulty: "invalid" });
+      const dtoWithInvalidCognitiveDifficulty = { ...validAdminQuestionDto, cognitiveDifficulty: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidCognitiveDifficulty)).toThrow(ZodError);
     });
@@ -108,7 +207,7 @@ describe("Admin Question DTO Shape", () => {
 
   describe("author", () => {
     it("should throw zod error when author is invalid.", () => {
-      const dtoWithInvalidAuthor = Object.assign(validAdminQuestionDto, { author: "invalid" });
+      const dtoWithInvalidAuthor = { ...validAdminQuestionDto, author: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidAuthor)).toThrow(ZodError);
     });
@@ -125,7 +224,7 @@ describe("Admin Question DTO Shape", () => {
 
   describe("status", () => {
     it("should throw zod error when status is invalid.", () => {
-      const dtoWithInvalidStatus = Object.assign(validAdminQuestionDto, { status: "invalid" });
+      const dtoWithInvalidStatus = { ...validAdminQuestionDto, status: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidStatus)).toThrow(ZodError);
     });
@@ -142,13 +241,13 @@ describe("Admin Question DTO Shape", () => {
 
   describe("rejection", () => {
     it("should throw zod error when rejection is invalid.", () => {
-      const dtoWithInvalidRejection = Object.assign(validAdminQuestionDto, { rejection: "invalid" });
+      const dtoWithInvalidRejection = { ...validAdminQuestionDto, rejection: "invalid" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidRejection)).toThrow(ZodError);
     });
 
     it("should pass validation when rejection is omitted.", () => {
-      const dtoWithoutRejection = createFakeAdminQuestionDto({ rejection: undefined });
+      const dtoWithoutRejection = { ...validAdminQuestionDto, rejection: undefined };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithoutRejection)).not.toThrow();
     });
@@ -163,15 +262,23 @@ describe("Admin Question DTO Shape", () => {
     });
   });
 
+  describe("sourceUrls", () => {
+    it("should throw zod error when sourceUrls is invalid.", () => {
+      const dtoWithInvalidSourceUrls = { ...validAdminQuestionDto, sourceUrls: "invalid" };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrow(ZodError);
+    });
+  });
+
   describe("createdAt / updatedAt", () => {
     it("should throw zod error when createdAt is invalid.", () => {
-      const dtoWithInvalidCreatedAt = Object.assign(validAdminQuestionDto, { createdAt: "not-a-date" });
+      const dtoWithInvalidCreatedAt = { ...validAdminQuestionDto, createdAt: "not-a-date" };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrow(ZodError);
     });
 
     it("should throw zod error when updatedAt is invalid.", () => {
-      const dtoWithInvalidUpdatedAt = Object.assign(validAdminQuestionDto, { updatedAt: 12_345 });
+      const dtoWithInvalidUpdatedAt = { ...validAdminQuestionDto, updatedAt: 12_345 };
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidUpdatedAt)).toThrow(ZodError);
     });

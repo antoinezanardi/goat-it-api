@@ -15,7 +15,7 @@ You're a senior engineer who knows the codebase's conventions and writes code th
 
 - `create-faketory` — for knowing faketory conventions when writing test steps
 - `create-mock` — for knowing mock conventions when writing test steps
-- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions
+- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions. **Mandatory compliance:** every unit test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-unit-tests.md` — universal checks `[U1]`–`[U8]` plus the per-type block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Verify each spec snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 - `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns
 
 Architecture doc must be read from `docs/ARCHITECTURE.md`.
@@ -121,6 +121,7 @@ After writing the complete plan, run this checklist:
 3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
 4. **Test coverage:** Every task with logic has explicit tests for its own files. Tasks with only types, interfaces, or constants may omit tests. No full `pnpm run test:unit:cov` run in any task. 100% coverage for files that have tests.
 5. **Only one assertion per test:** Each test should have one assertion. If a test has multiple assertions, split it into multiple tests or use `it.each`.
+6. **Unit-test convention compliance (mandatory):** Re-read §4 of `.opencode/commands/lint-unit-tests.md` and audit every unit-test snippet in the plan against it — universal `[U1]`–`[U8]` plus the per-type block matching each spec's classification. Any violation found must be fixed inline before the plan is finished.
 
 If you find issues, fix them inline. If a spec requirement has no task, add the task.
 

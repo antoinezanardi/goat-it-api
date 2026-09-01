@@ -4,7 +4,7 @@ import { buildQuestionAggregationFilterStages } from "@question/infrastructure/p
 
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
 
-describe("Build Question Aggregation Filter Stages", () => {
+describe(buildQuestionAggregationFilterStages, () => {
   it("should return an empty array when called without arguments.", () => {
     const result = buildQuestionAggregationFilterStages();
 

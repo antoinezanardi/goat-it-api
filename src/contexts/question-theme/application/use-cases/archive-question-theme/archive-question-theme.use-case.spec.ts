@@ -13,7 +13,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
-describe("Archive Question Theme Use Case", () => {
+describe(ArchiveQuestionThemeUseCase, () => {
   let archiveQuestionThemeUseCase: ArchiveQuestionThemeUseCase;
   let mocks: {
     repositories: {
