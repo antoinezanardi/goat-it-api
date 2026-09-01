@@ -1,3 +1,8 @@
+---
+description: Translate all not-fully-translated questions from French source to all other locales via the admin API.
+agent: build
+---
+
 # Translate questions
 
 ## Task
@@ -8,13 +13,15 @@ Translate all not-fully-translated questions from French source to all other loc
 - With a single `PATCH /admin/questions/:id`, translate all missing locales of one question.
 - The command is over when **ALL** questions are fully translated.
 
+**IMPORTANT**: Questions MUST be translated **ONE AT A TIME**. Never batch questions. Each question must be fully processed (displayed, translated, approved by user, PATCHed, verified) before fetching and starting the next one. The reviewer must re-read each translation individually.
+
 ## Instructions
 
 ### 1. Get API credentials
 
 Ask the user for the API base URL and admin API key via the `question` tool:
 
-1. Ask for the **base URL** (e.g., `http://localhost:3000`, `https://api.example.com`).
+1. Ask for the **base URL** (e.g., `http://localhost:3000`, `https://api.staging.goat-it.fr` or `https://api.goat-it.fr`).
 2. Ask for the **admin API key** (the `goat-it-api-key` header value).
 
 Store both values for subsequent requests.
@@ -42,11 +49,11 @@ curl -s "{baseUrl}/admin/questions?is-fully-translated=false&limit=100&sort-by=c
 ```
 
 - If the response is an **empty array** → output "All questions are fully translated." and stop.
-- Otherwise, store the list of questions. Each question has an `id` and `content` with `statement`, `answer`, `context?`, `trivia?` — each being a localized object with optional locale keys.
+- Otherwise, store the list of questions for counting purposes, but **only fetch and process ONE question at a time** in step 4. Each question has an `id` and `content` with `statement`, `answer`, `context?`, `trivia?` — each being a localized object with optional locale keys.
 
 ### 4. Per-question translation loop
 
-For **each** question in the list, execute the following steps in order:
+**Process ONE question at a time.** After completing all steps for a question (including verification in 4h), only then fetch the next untranslated question. Never preload or batch multiple questions.
 
 #### 4a. Display French source
 
@@ -221,19 +228,41 @@ curl -s "{baseUrl}/admin/questions/{questionId}" \
 
 Check that all mandatory fields (`statement`, `answer`) have non-null values for all 6 locales (`fr`, `en`, `es`, `de`, `it`, `pt`). If optional fields were translated, verify those too.
 
-- If still incomplete → display which locales/fields are missing, ask user what to do.
+- If still incomplete → display which locales/fields are missing, then ask the user via `question` tool with options: `["Retry", "Skip", "Halt"]`.
+  - **Retry**: go back to step 4c, regenerate translations for the missing fields/locales, then re-PATCH and re-verify.
+  - **Skip**: record this question as skipped (with reason: "incomplete after patch"), output `✗ Question {id} skipped (incomplete)`, and move to the next question.
+  - **Halt**: record this question as halted (with reason: "incomplete after patch"), output `✗ Question {id} halted (incomplete)`, and stop the entire command.
+  Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
 - If complete → output `✓ Question {id} fully translated` and move to the next question.
 
 ### 5. Completion
 
-When all questions have been processed, output a summary:
+When all questions have been processed, output a summary.
+
+**If all questions were successfully translated (no skips, no halts, no errors):**
 
 ```
 Translation complete.
 
 Questions translated: {count}
 Locales: en, es, de, it, pt (source: fr, untouched)
-Issues: {count or "none"}
+Issues: none
 ```
 
-If any questions were skipped or had errors, list them with their IDs and reasons.
+**If any questions were skipped or had errors:**
+
+```
+Translation partial.
+
+Questions translated: {successfully_translated_count} / {total_count}
+Locales: en, es, de, it, pt (source: fr, untouched)
+Issues: {count}
+```
+
+Then list each problematic question with its ID and reason:
+
+```
+- {questionId}: skipped (reason: {reason})
+- {questionId}: halted (reason: {reason})
+- {questionId}: error (reason: {reason})
+```
