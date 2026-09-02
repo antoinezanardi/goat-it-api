@@ -113,5 +113,5 @@ Feature: Get Question Stats as Admin
       | total | 8     |
     And the response should contain questions translation completeness stats with:
       | field             | value |
-      | fullyTranslated   | 2     |
-      | incomplete        | 6     |
+      | fullyTranslated   | 3     |
+      | incomplete        | 5     |

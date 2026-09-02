@@ -15,6 +15,7 @@ describe("Admin Question DTO Shape", () => {
     status: string;
     rejection?: { type: string; comment?: string };
     sourceUrls: string[];
+    applicableLocales?: string[];
     createdAt: string;
     updatedAt: string;
   };
@@ -298,6 +299,42 @@ describe("Admin Question DTO Shape", () => {
       const expectedMetadata = {
         description: "Question's last update date",
         example: ISO_DATE_TIME_EXAMPLE,
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("applicableLocales", () => {
+    it("should pass validation when a valid subset of locales is provided.", () => {
+      const dtoWithApplicableLocales = { ...validAdminQuestionDto, applicableLocales: ["fr"] };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithApplicableLocales)).not.toThrow();
+    });
+
+    it("should pass validation when applicableLocales is omitted.", () => {
+      const dtoWithoutApplicableLocales = { ...validAdminQuestionDto };
+      delete dtoWithoutApplicableLocales.applicableLocales;
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithoutApplicableLocales)).not.toThrow();
+    });
+
+    it("should pass validation when applicableLocales is an empty array.", () => {
+      const dtoWithEmptyApplicableLocales = { ...validAdminQuestionDto, applicableLocales: [] };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(dtoWithEmptyApplicableLocales)).not.toThrow();
+    });
+
+    it("should throw zod error when applicableLocales contains an unsupported locale.", () => {
+      const invalid = { ...validAdminQuestionDto, applicableLocales: ["jp"] };
+
+      expect(() => ADMIN_QUESTION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = ADMIN_QUESTION_DTO.shape.applicableLocales.meta();
+      const expectedMetadata = {
+        description: "Subset of locales this question is relevant for, if restricted",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);

@@ -133,7 +133,12 @@ Feature: Filter Questions as Admin
       | is-fully-translated |
       | true                |
     Then the request should have succeeded with status code 200
-    And the response should contain 2 admin questions
+    And the response should contain 3 admin questions
+    And the response should contain an admin question among them with id "a50000000000000000000005" and the following question statement:
+      | locale | statement                 |
+      | en     | What does HTML stand for? |
+      | fr     | Que signifie HTML?        |
+      | it     | Cosa significa HTML?      |
 
   Scenario: Filtering admin questions by is-fully-translated "false"
     Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
@@ -141,7 +146,7 @@ Feature: Filter Questions as Admin
       | is-fully-translated |
       | false               |
     Then the request should have succeeded with status code 200
-    And the response should contain 6 admin questions
+    And the response should contain 5 admin questions
 
   Scenario: Filtering admin questions with invalid is-fully-translated value
     Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"

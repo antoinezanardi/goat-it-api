@@ -28,11 +28,86 @@ function buildFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSp
   return { $and: [{ [fieldSpec.path]: { $ne: null } }, someLocaleMissing] };
 }
 
+function buildRequiredLocalesExpression(applicableLocalesPath: string): Record<string, unknown> {
+  return {
+    $cond: [
+      { $eq: [{ $size: { $ifNull: [applicableLocalesPath, []] } }, 0] },
+      LOCALES,
+      applicableLocalesPath,
+    ],
+  };
+}
+
+function buildDynamicLocaleFieldExpression(path: string, localeVariable: string): Record<string, unknown> {
+  return {
+    $getField: {
+      field: `$$${localeVariable}`,
+      input: `$${path}`,
+    },
+  };
+}
+
+function buildDynamicFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec, applicableLocalesPath: string): Record<string, unknown> {
+  const allLocalesNonNull = {
+    $allElementsTrue: [
+      {
+        $map: {
+          input: buildRequiredLocalesExpression(applicableLocalesPath),
+          as: "locale",
+          in: {
+            $gt: [buildDynamicLocaleFieldExpression(fieldSpec.path, "locale"), null],
+          },
+        },
+      },
+    ],
+  };
+
+  if (fieldSpec.isMandatory) {
+    return allLocalesNonNull;
+  }
+  return {
+    $or: [{ $not: { $gt: [`$${fieldSpec.path}`, null] } }, allLocalesNonNull],
+  };
+}
+
+function buildDynamicFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSpec, applicableLocalesPath: string): Record<string, unknown> {
+  const someLocaleNull = {
+    $anyElementTrue: [
+      {
+        $map: {
+          input: buildRequiredLocalesExpression(applicableLocalesPath),
+          as: "locale",
+          in: {
+            $not: { $gt: [buildDynamicLocaleFieldExpression(fieldSpec.path, "locale"), null] },
+          },
+        },
+      },
+    ],
+  };
+
+  if (fieldSpec.isMandatory) {
+    return someLocaleNull;
+  }
+  return {
+    $and: [{ $gt: [`$${fieldSpec.path}`, null] }, someLocaleNull],
+  };
+}
+
 function buildIsFullyTranslatedMatchCondition(
   fieldSpecs: TranslationCompletenessFieldSpec[],
   isFullyTranslated: boolean,
+  applicableLocalesPath?: string,
 ): Record<string, unknown> {
-  return isFullyTranslated ? { $and: fieldSpecs.map(buildFieldCompleteCondition) } : { $or: fieldSpecs.map(buildFieldIncompleteCondition) };
+  if (applicableLocalesPath === undefined) {
+    return isFullyTranslated ? { $and: fieldSpecs.map(buildFieldCompleteCondition) } : { $or: fieldSpecs.map(buildFieldIncompleteCondition) };
+  }
+
+  const completeExpressions = fieldSpecs.map(spec => buildDynamicFieldCompleteCondition(spec, applicableLocalesPath));
+  const incompleteExpressions = fieldSpecs.map(spec => buildDynamicFieldIncompleteCondition(spec, applicableLocalesPath));
+
+  return {
+    $expr: isFullyTranslated ? { $and: completeExpressions } : { $or: incompleteExpressions },
+  };
 }
 
 export { buildIsFullyTranslatedMatchCondition };

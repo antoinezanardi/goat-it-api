@@ -1,3 +1,4 @@
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
 import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
@@ -162,5 +163,135 @@ describe(buildIsFullyTranslatedMatchCondition, () => {
     const result = buildIsFullyTranslatedMatchCondition(specs, isFullyTranslated);
 
     expect(result).toStrictEqual(expected);
+  });
+
+  it("should return an $expr condition using applicableLocalesPath when third argument is provided and isFullyTranslated is true.", () => {
+    const result = buildIsFullyTranslatedMatchCondition([mandatoryFieldSpec], true, "$applicableLocales");
+
+    expect(result).toStrictEqual({
+      $expr: {
+        $and: [
+          {
+            $allElementsTrue: [
+              {
+                $map: {
+                  input: {
+                    $cond: [
+                      { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                      LOCALES,
+                      "$applicableLocales",
+                    ],
+                  },
+                  as: "locale",
+                  in: {
+                    $gt: [{ $getField: { field: "$$locale", input: "$label" } }, null],
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+  });
+
+  it("should return an $expr condition with optional field semantics when isFullyTranslated is true and field is optional.", () => {
+    const result = buildIsFullyTranslatedMatchCondition([optionalFieldSpec], true, "$applicableLocales");
+
+    expect(result).toStrictEqual({
+      $expr: {
+        $and: [
+          {
+            $or: [
+              { $not: { $gt: ["$content.context", null] } },
+              {
+                $allElementsTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: {
+                        $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null],
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
+  });
+
+  it("should return an $expr condition with mandatory incomplete semantics when isFullyTranslated is false.", () => {
+    const result = buildIsFullyTranslatedMatchCondition([mandatoryFieldSpec], false, "$applicableLocales");
+
+    expect(result).toStrictEqual({
+      $expr: {
+        $or: [
+          {
+            $anyElementTrue: [
+              {
+                $map: {
+                  input: {
+                    $cond: [
+                      { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                      LOCALES,
+                      "$applicableLocales",
+                    ],
+                  },
+                  as: "locale",
+                  in: {
+                    $not: { $gt: [{ $getField: { field: "$$locale", input: "$label" } }, null] },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+  });
+
+  it("should return an $expr condition with optional incomplete semantics when isFullyTranslated is false and field is optional.", () => {
+    const result = buildIsFullyTranslatedMatchCondition([optionalFieldSpec], false, "$applicableLocales");
+
+    expect(result).toStrictEqual({
+      $expr: {
+        $or: [
+          {
+            $and: [
+              { $gt: ["$content.context", null] },
+              {
+                $anyElementTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: {
+                        $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null] },
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    });
   });
 });

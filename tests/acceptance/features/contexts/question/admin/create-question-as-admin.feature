@@ -615,3 +615,57 @@ Feature: Create Question as Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Creating a question restricted to a subset of locales as admin
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value |
+      | applicableLocales | array | ["fr"] |
+    And the admin creates a new question with the request payload
+    Then the request should have succeeded with status code 201
+    And the response should contain the following admin question:
+      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         | applicableLocales |
+      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ | fr                |
+
+  Scenario: Trying to create a question with an empty applicableLocales array
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value |
+      | applicableLocales | array | []    |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code      | message                                     | path              | origin | minimum | inclusive |
+      | too_small | Too small: expected array to have >=1 items | applicableLocales | array  | 1       | true      |
+
+  Scenario: Trying to create a question with duplicate applicableLocales
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value       |
+      | applicableLocales | array | ["fr","fr"] |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code   | message                | path              |
+      | custom | Locales must be unique | applicableLocales |
+
+  Scenario: Trying to create a question with an unsupported applicableLocale
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value       |
+      | applicableLocales | array | ["fr","jp"] |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                                            | path                | values                 |
+      | invalid_value | Invalid option: expected one of "en"\|"fr"\|"es"\|"de"\|"it"\|"pt" | applicableLocales.1 | en, fr, es, de, it, pt |

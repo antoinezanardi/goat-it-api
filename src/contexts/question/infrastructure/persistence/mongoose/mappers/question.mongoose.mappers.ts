@@ -46,6 +46,7 @@ function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregat
     status: questionMongooseAggregate.status,
     rejection: questionMongooseAggregate.rejection,
     sourceUrls: new Set(questionMongooseAggregate.sourceUrls),
+    applicableLocales: questionMongooseAggregate.applicableLocales,
     createdAt: questionMongooseAggregate.createdAt,
     updatedAt: questionMongooseAggregate.updatedAt,
   };

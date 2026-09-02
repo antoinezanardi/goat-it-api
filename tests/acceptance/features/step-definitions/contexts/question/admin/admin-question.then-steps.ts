@@ -246,3 +246,9 @@ Then(/^the response should contain no rejection for the admin question$/u, funct
 
   expect(question.rejection).toBeUndefined();
 });
+
+Then(/^the response should contain no applicableLocales for the admin question$/u, function(this: GoatItWorld): void {
+  const question = this.expectLastResponseJson<AdminQuestionDto>(ADMIN_QUESTION_DTO);
+
+  expect(question.applicableLocales).toStrictEqual([]);
+});

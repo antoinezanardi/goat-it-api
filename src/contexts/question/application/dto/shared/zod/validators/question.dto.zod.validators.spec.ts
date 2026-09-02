@@ -1,4 +1,4 @@
-import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionAuthorRole, () => {
@@ -602,6 +602,81 @@ describe("Question DTO Zod Validators", () => {
       const result = schema.safeParse(notUniqueTestValue);
 
       expect(result.error?.issues[0].message).toBe("Cognitive difficulties must be unique");
+    });
+  });
+
+  describe(zQuestionApplicableLocales, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      minItems: number;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a valid subset of locales is provided",
+        value: ["fr"],
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return true when all locales are provided",
+        value: ["en", "fr", "es", "de", "it", "pt"],
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return true when value is undefined",
+        value: undefined,
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return false when an empty array is provided with default minItems",
+        value: [],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return true when an empty array is provided with minItems 0",
+        value: [],
+        minItems: 0,
+        expected: true,
+      },
+      {
+        test: "should return false when duplicate locales are provided",
+        value: ["fr", "fr"],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return false when an invalid locale is provided",
+        value: ["fr", "jp"],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return false when more than the maximum number of locales is provided",
+        value: ["en", "fr", "es", "de", "it", "pt", "en"],
+        minItems: 1,
+        expected: false,
+      },
+    ])("$test", ({ value, minItems, expected }) => {
+      const result = zQuestionApplicableLocales(minItems).safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionApplicableLocales();
+
+      expect(schema.description).toBe("Subset of locales this question is relevant for; omit if relevant for all locales");
+    });
+
+    it("should have the correct refinement message for uniqueness when duplicates are present.", () => {
+      const schema = zQuestionApplicableLocales();
+      const result = schema.safeParse(["fr", "fr"]);
+
+      expect(result.error?.issues[0].message).toBe("Locales must be unique");
     });
   });
 });

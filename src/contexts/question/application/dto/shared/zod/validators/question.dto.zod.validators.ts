@@ -3,6 +3,7 @@ import { z } from "zod";
 import { areValuesUniqueFromStrings } from "@shared/application/dto/zod/refinements/array/array.zod.refinements";
 import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/array/array.zod.preprocessors";
 import { zCreateFilterArray } from "@shared/application/dto/zod/validators/array/array.zod.validators";
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
@@ -10,6 +11,8 @@ import { FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM, FIND_RANDOM_QUESTIONS_
 import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
 import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess } from "zod";
+
+import type { LocaleEnum } from "@shared/domain/value-objects/locale/locale.types";
 
 function zQuestionAuthorRole(): ZodEnum<QuestionAuthorRoleEnum> {
   return z.enum(QUESTION_AUTHOR_ROLES)
@@ -29,6 +32,15 @@ function zQuestionStatus(): ZodEnum<QuestionStatusEnum> {
 function zQuestionCategory(): ZodEnum<QuestionCategoryEnum> {
   return z.enum(QUESTION_CATEGORIES)
     .describe("Question's category");
+}
+
+function zQuestionApplicableLocales(minItems = 1): ZodOptional<ZodArray<ZodEnum<LocaleEnum>>> {
+  return z.array(z.enum(LOCALES))
+    .min(minItems)
+    .max(LOCALES.length)
+    .refine(areValuesUniqueFromStrings, { message: "Locales must be unique" })
+    .optional()
+    .describe("Subset of locales this question is relevant for; omit if relevant for all locales");
 }
 
 function zQuestionSourceUrls(): ZodArray<ZodURL> {
@@ -97,6 +109,7 @@ export {
   zQuestionCognitiveDifficulty,
   zQuestionStatus,
   zQuestionCategory,
+  zQuestionApplicableLocales,
   zQuestionSourceUrls,
   zQuestionExcludedIdsFilter,
   zQuestionCategoriesFilter,
