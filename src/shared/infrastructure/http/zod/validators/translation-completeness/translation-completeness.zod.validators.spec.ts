@@ -52,7 +52,12 @@ describe(zIsFullyTranslated, () => {
   it("should have the correct description when describing the schema.", () => {
     const description = zIsFullyTranslated().description;
 
-    expect(description).toBe("Filters resources by whether every LocalizedText/LocalizedTexts field has all 6 supported locales set");
+    expect(description).toBe("Filters resources by translation completeness: 'true' returns only fully translated resources, 'false' returns only incomplete ones. " +
+      "A resource is fully translated when all mandatory LocalizedText/LocalizedTexts fields have a non-null value " +
+      "in every applicable locale, and all optional LocalizedText/LocalizedTexts fields are either null (never translated) " +
+      "or have a non-null value in every applicable locale. " +
+      "Applicable locales come from the resource's applicableLocales field: if absent, null, or empty, " +
+      "all 6 supported locales apply (en, fr, es, de, it, pt).");
   });
 });
 

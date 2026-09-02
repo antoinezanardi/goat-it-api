@@ -127,26 +127,67 @@ Feature: Filter Questions as Admin
       | code           | message                | path        | origin | format | pattern          |
       | invalid_format | Invalid ObjectId value | theme-ids.0 | string | regex  | /^[\\da-f]{24}$/iu |
 
-  Scenario: Filtering admin questions by is-fully-translated "true"
+  Scenario: Filtering admin questions that are fully translated as admin
     Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves all questions with the following query:
       | is-fully-translated |
       | true                |
     Then the request should have succeeded with status code 200
     And the response should contain 3 admin questions
+    And the response should contain an admin question among them with id "a10000000000000000000001" and the following question statement:
+      | locale | statement                                                                  |
+      | en     | What is the main ingredient in traditional Italian pesto sauce?              |
+      | fr     | Quel est l'ingrédient principal de la sauce pesto traditionnelle italienne? |
+      | it     | Qual è l'ingrediente principale del tradizionale pesto italiano?            |
+      | pt     | Qual é o ingrediente principal do molho pesto tradicional italiano?          |
+      | es     | ¿Cuál es el ingrediente principal de la salsa pesto tradicional italiana?   |
+      | de     | Was ist die Hauptzutat der traditionellen italienischen Pesto-Soße?          |
+    And the response should contain an admin question among them with id "a20000000000000000000002" and the following question statement:
+      | locale | statement                                              |
+      | en     | Which city is known as the Eternal City?               |
+      | fr     | Quelle ville est connue comme la Ville Éternelle?       |
+      | it     | Quale città è conosciuta come la Città Eterna?          |
+      | pt     | Qual cidade é conhecida como a Cidade Eterna?          |
+      | es     | ¿Qué ciudad es conocida como la Ciudad Eterna?         |
+      | de     | Welche Stadt ist als Die Ewige Stadt bekannt?           |
     And the response should contain an admin question among them with id "a50000000000000000000005" and the following question statement:
       | locale | statement                 |
       | en     | What does HTML stand for? |
       | fr     | Que signifie HTML?        |
       | it     | Cosa significa HTML?      |
 
-  Scenario: Filtering admin questions by is-fully-translated "false"
+  Scenario: Filtering admin questions that are not fully translated as admin
     Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"
     When the admin retrieves all questions with the following query:
       | is-fully-translated |
       | false               |
     Then the request should have succeeded with status code 200
     And the response should contain 5 admin questions
+    And the response should contain an admin question among them with id "a30000000000000000000003" and the following question statement:
+      | locale | statement                                    |
+      | en     | What is the largest rainforest in the world? |
+    And the response should contain an admin question among them with id "a40000000000000000000004" and the following question statement:
+      | locale | statement                      |
+      | en     | Who composed the Four Seasons? |
+      | fr     | Qui a composé les Quatre Saisons? |
+    And the response should contain an admin question among them with id "a60000000000000000000006" and the following question statement:
+      | locale | statement                            |
+      | en     | Which is the longest river in Africa? |
+      | fr     | Quel est le plus long fleuve d'Afrique? |
+      | it     | Qual è il fiume più lungo dell'Africa? |
+      | pt     | Qual é o rio mais longo da África? |
+    And the response should contain an admin question among them with id "a70000000000000000000007" and the following question statement:
+      | locale | statement                      |
+      | en     | Who painted the Mona Lisa?     |
+      | fr     | Qui a peint la Joconde?        |
+      | it     | Chi ha dipinto la Gioconda?    |
+      | pt     | Quem pintou a Mona Lisa?       |
+      | es     | ¿Quién pintó la Mona Lisa?     |
+    And the response should contain an admin question among them with id "a80000000000000000000008" and the following question statement:
+      | locale | statement                                  |
+      | en     | Who wrote 'One Hundred Years of Solitude'? |
+      | it     | Chi ha scritto 'Cent'anni di solitudine'?  |
+      | es     | ¿Quién escribió 'Cien años de soledad'?   |
 
   Scenario: Filtering admin questions with invalid is-fully-translated value
     Given the database is populated with questions fixture set with name "eight-translation-completeness-questions"

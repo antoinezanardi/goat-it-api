@@ -219,7 +219,7 @@ Feature: Modify Question as Admin
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
 
-  Scenario: Setting applicableLocales on an existing question as admin
+  Scenario: Adding applicable locales to an existing question as admin
     Given the database is populated with questions fixture set with name "five-questions"
     And the request payload is set from scope "question", type "modification" and name "complete"
     When the request payload is overridden with the following values:
@@ -235,7 +235,7 @@ Feature: Modify Question as Admin
       | id                       | category | cognitiveDifficulty | status | sourceUrls                                       | applicableLocales |
       | a1b2c3d4e5f6012345678901 | trivia   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) | fr, en            |
 
-  Scenario: Clearing applicableLocales via an empty array in modification as admin
+  Scenario: Removing applicable locales from an existing question as admin
     Given the database is populated with questions fixture set with name "five-questions"
     And the request payload is set from scope "question", type "modification" and name "complete"
     When the request payload is overridden with the following values:
@@ -250,4 +250,4 @@ Feature: Modify Question as Admin
     And the response should contain the following admin question:
       | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
       | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
-    And the response should contain no applicableLocales for the admin question
+    And the response should contain an empty applicable locales array for the admin question
