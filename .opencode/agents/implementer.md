@@ -11,9 +11,10 @@ permission:
     "*": "ask"
     "pnpm run test:unit *": "allow"
     "pnpm test:unit *": "allow"
-    "pnpm run test:acceptance *": "allow"
-    "pnpm test:acceptance:skip-build *": "allow"
     "pnpm test:acceptance *": "allow"
+    "pnpm run test:acceptance *": "allow"
+    "pnpm run test:acceptance:skip-build *": "allow"
+    "pnpm test:acceptance:skip-build *": "allow"
     "pnpm run test:mutation *": "allow"
     "pnpm run build *": "allow"
     "pnpm run lint *": "allow"
@@ -77,11 +78,11 @@ If anything is unclear (requirements, approach, dependencies, assumptions) — *
 1. **Do not** commit.
 2. **Do not** run the FULL quality gate checks **UNLESS** it is stated in the task steps. The orchestrator will run them at the end of the cycle.
 3. **Do not** run the full test suite coverage unless it is stated in the task steps. Your job is to run the tests only on your tasks files.
-4. **Do not** run acceptance tests without scoping them to a tag. Acceptance tests are **HEAVY** (full Docker + Cucumber). If you need to run them:
+4. **Do not** run acceptance tests without scoping them to a tag. Acceptance tests are **HEAVY** (full Docker + Cucumber). Docker services must be running before any acceptance test run. If you need to run them:
    - ALWAYS run `pnpm run build` first (or use `pnpm run test:acceptance` which builds internally) so the compiled artifacts match your current source. Skip this only when explicitly told to use `pnpm run test:acceptance:skip-build`.
    - ALWAYS scope to a tag with `pnpm run test:acceptance --tags "@feature-tag"` where the tag matches the scenarios you created or modified.
    - If acceptance tests fail INSTANTLY (e.g., spawn/connection errors, missing-compiled-artifact errors, every scenario fails in <1 second with the same root cause) — re-run `pnpm run build` first, then retry. Stale `dist/` is the most common cause.
-5. **Do not** run the full `pnpm run test:acceptance` (no-tag) unless explicitly asked. It runs the entire Cucumber suite and takes a long time. Always scope by tag.
+5. The untagged `pnpm run test:acceptance` (no-tag) is a **mandatory quality gate** per AGENTS.md gate #5. It runs the entire Cucumber suite and is required before considering any task complete. Only the orchestrator or final-reviewer should invoke this gate. During task implementation, scope by tag for targeted acceptance testing of scenarios you created or modified.
 
 ## Project-specific rules (goat-it-api)
 
