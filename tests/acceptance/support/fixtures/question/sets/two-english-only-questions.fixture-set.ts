@@ -8,6 +8,7 @@ import { TWO_ENGLISH_ONLY_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY, TWO_ENGLISH_ONLY
 const TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("aa11bb22cc33dd44ee55ff01"),
+    applicableLocales: undefined,
     category: "riddle",
     createdAt: new Date("2024-02-01T00:00:00.000Z"),
     updatedAt: new Date("2024-02-01T00:00:00.000Z"),
@@ -63,6 +64,7 @@ const TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("bb22cc33dd44ee55ff660102"),
+    applicableLocales: undefined,
     category: "trivia",
     createdAt: new Date("2024-01-01T00:00:00.000Z"),
     updatedAt: new Date("2024-01-01T00:00:00.000Z"),

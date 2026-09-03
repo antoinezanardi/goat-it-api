@@ -214,6 +214,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
   - Errors: symbol reference `describe(ClassName, ...)`
   - Helpers/mappers: symbol reference `describe(functionName, ...)`
 - Assertion style: `toStrictEqual<T>(expected)` for value equality, `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions, `expect(() => synchronousCall()).toThrow(exactErrorInstance)` for synchronous errors (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(exactErrorInstance)` for async errors
+- Vitest test callbacks (`describe`, `it`, `it.each`, `beforeEach`, `beforeAll`, `afterEach`, `afterAll`) do NOT need an explicit `: void` return-type annotation — oxlint's type-aware analysis automatically treats them as `void`-returning, even though the global `explicit-function-return-type` rule applies elsewhere. External reviewers may flag these as missing `: void`; this is a false positive for this codebase.
 
 ### Mocks (`@mocks/*`)
 

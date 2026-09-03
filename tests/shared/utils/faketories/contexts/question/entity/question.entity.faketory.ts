@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import { QUESTION_AUTHOR_ROLES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_CATEGORIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionAuthor, QuestionContent, QuestionRejection, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
@@ -64,6 +66,7 @@ function createFakeQuestion(question: Partial<Question> = {}): Question {
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.helpers.maybe(createFakeQuestionRejection),
     sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     createdAt: faker.date.past(),
     updatedAt: faker.date.recent(),
     ...question,

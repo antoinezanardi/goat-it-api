@@ -12,6 +12,7 @@ const QUESTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   cognitiveDifficulty: z.string(),
   status: z.string(),
   sourceUrls: zCoerceOptionalStringArray(),
+  applicableLocales: zCoerceOptionalStringArray(),
 });
 
 const QUESTION_CONTENT_DATATABLE_ROW_SCHEMA = z.strictObject({

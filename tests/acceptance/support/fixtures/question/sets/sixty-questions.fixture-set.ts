@@ -15,6 +15,7 @@ import { SIXTY_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY, SIXTY_QUESTION_THEMES_FIXTU
 const SIXTY_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000001"),
+    applicableLocales: [],
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -54,6 +55,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000002"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -90,6 +92,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000003"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -127,6 +130,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000004"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -166,6 +170,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000005"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -202,6 +207,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000006"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -239,6 +245,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000007"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -275,6 +282,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000008"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -314,6 +322,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000009"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -351,6 +360,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000a"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -390,6 +400,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000b"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -426,6 +437,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000c"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -463,6 +475,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000d"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -499,6 +512,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000e"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "pending",
     cognitiveDifficulty: "easy",
@@ -535,6 +549,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000000f"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -572,6 +587,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000010"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -605,6 +621,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000011"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -646,6 +663,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000012"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -686,6 +704,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000013"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -719,6 +738,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000014"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -764,6 +784,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000015"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -800,6 +821,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000016"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -844,6 +866,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000017"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -878,6 +901,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000018"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -914,6 +938,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000019"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -963,6 +988,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001a"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1000,6 +1026,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001b"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1036,6 +1063,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001c"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "archived",
     cognitiveDifficulty: "medium",
@@ -1077,6 +1105,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001d"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1114,6 +1143,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001e"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1163,6 +1193,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000001f"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1197,6 +1228,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000020"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1233,6 +1265,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000021"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1274,6 +1307,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000022"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1311,6 +1345,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000023"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1352,6 +1387,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000024"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1385,6 +1421,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000025"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1422,6 +1459,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000026"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1463,6 +1501,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000027"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1510,6 +1549,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000028"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1546,6 +1586,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000029"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1587,6 +1628,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002a"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1624,6 +1666,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002b"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1665,6 +1708,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002c"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1701,6 +1745,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002d"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1738,6 +1783,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002e"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1787,6 +1833,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000002f"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1823,6 +1870,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000030"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1865,6 +1913,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000031"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -1898,6 +1947,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000032"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -1947,6 +1997,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000033"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -1986,6 +2037,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000034"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -2027,6 +2079,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000035"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -2068,6 +2121,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000036"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "rejected",
     cognitiveDifficulty: "easy",
@@ -2104,6 +2158,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000037"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -2146,6 +2201,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000038"),
+    applicableLocales: undefined,
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -2187,6 +2243,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("700000000000000000000039"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
@@ -2233,6 +2290,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000003a"),
+    applicableLocales: undefined,
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
@@ -2275,6 +2333,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000003b"),
+    applicableLocales: undefined,
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
@@ -2321,6 +2380,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("70000000000000000000003c"),
+    applicableLocales: undefined,
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",

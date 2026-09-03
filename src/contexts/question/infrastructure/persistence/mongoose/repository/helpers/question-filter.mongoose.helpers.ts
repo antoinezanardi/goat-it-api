@@ -31,7 +31,7 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
     matchConditions["themes.themeId"] = { $in: filters.themeIds.map(id => new Types.ObjectId(id)) };
   }
   if (filters.isFullyTranslated !== undefined) {
-    Object.assign(matchConditions, buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, filters.isFullyTranslated));
+    Object.assign(matchConditions, buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, filters.isFullyTranslated, "$applicableLocales"));
   }
 
   if (Object.keys(matchConditions).length === 0) {

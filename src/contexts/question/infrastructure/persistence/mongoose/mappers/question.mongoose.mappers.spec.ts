@@ -101,6 +101,7 @@ describe(createQuestionFromAggregate, () => {
       status: questionAggregate.status,
       rejection: questionAggregate.rejection,
       sourceUrls: new Set(questionAggregate.sourceUrls),
+      applicableLocales: questionAggregate.applicableLocales,
       createdAt: questionAggregate.createdAt,
       updatedAt: questionAggregate.updatedAt,
     });

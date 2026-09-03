@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
@@ -81,50 +83,88 @@ describe(buildQuestionAggregationFilterStages, () => {
           "cognitiveDifficulty": "easy",
           "author.role": "admin",
           "themes.themeId": { $in: [new Types.ObjectId(themeId)] },
-          "$and": [
-            {
-              "content.statement.en": { $ne: null },
-              "content.statement.fr": { $ne: null },
-              "content.statement.es": { $ne: null },
-              "content.statement.de": { $ne: null },
-              "content.statement.it": { $ne: null },
-              "content.statement.pt": { $ne: null },
-            },
-            {
-              "content.answer.en": { $ne: null },
-              "content.answer.fr": { $ne: null },
-              "content.answer.es": { $ne: null },
-              "content.answer.de": { $ne: null },
-              "content.answer.it": { $ne: null },
-              "content.answer.pt": { $ne: null },
-            },
-            {
-              $or: [
-                { "content.context": null },
-                {
-                  "content.context.en": { $ne: null },
-                  "content.context.fr": { $ne: null },
-                  "content.context.es": { $ne: null },
-                  "content.context.de": { $ne: null },
-                  "content.context.it": { $ne: null },
-                  "content.context.pt": { $ne: null },
-                },
-              ],
-            },
-            {
-              $or: [
-                { "content.trivia": null },
-                {
-                  "content.trivia.en": { $ne: null },
-                  "content.trivia.fr": { $ne: null },
-                  "content.trivia.es": { $ne: null },
-                  "content.trivia.de": { $ne: null },
-                  "content.trivia.it": { $ne: null },
-                  "content.trivia.pt": { $ne: null },
-                },
-              ],
-            },
-          ],
+          "$expr": {
+            $and: [
+              {
+                $allElementsTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: { $gt: [{ $getField: { field: "$$locale", input: "$content.statement" } }, null] },
+                    },
+                  },
+                ],
+              },
+              {
+                $allElementsTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: { $gt: [{ $getField: { field: "$$locale", input: "$content.answer" } }, null] },
+                    },
+                  },
+                ],
+              },
+              {
+                $or: [
+                  { $not: { $gt: ["$content.context", null] } },
+                  {
+                    $allElementsTrue: [
+                      {
+                        $map: {
+                          input: {
+                            $cond: [
+                              { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                              LOCALES,
+                              "$applicableLocales",
+                            ],
+                          },
+                          as: "locale",
+                          in: { $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null] },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                $or: [
+                  { $not: { $gt: ["$content.trivia", null] } },
+                  {
+                    $allElementsTrue: [
+                      {
+                        $map: {
+                          input: {
+                            $cond: [
+                              { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                              LOCALES,
+                              "$applicableLocales",
+                            ],
+                          },
+                          as: "locale",
+                          in: { $gt: [{ $getField: { field: "$$locale", input: "$content.trivia" } }, null] },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
     ]);
@@ -135,111 +175,179 @@ describe(buildQuestionAggregationFilterStages, () => {
       name: "isFullyTranslated: true",
       filters: { isFullyTranslated: true },
       expected: {
-        $and: [
-          {
-            "content.statement.en": { $ne: null },
-            "content.statement.fr": { $ne: null },
-            "content.statement.es": { $ne: null },
-            "content.statement.de": { $ne: null },
-            "content.statement.it": { $ne: null },
-            "content.statement.pt": { $ne: null },
-          },
-          {
-            "content.answer.en": { $ne: null },
-            "content.answer.fr": { $ne: null },
-            "content.answer.es": { $ne: null },
-            "content.answer.de": { $ne: null },
-            "content.answer.it": { $ne: null },
-            "content.answer.pt": { $ne: null },
-          },
-          {
-            $or: [
-              { "content.context": null },
-              {
-                "content.context.en": { $ne: null },
-                "content.context.fr": { $ne: null },
-                "content.context.es": { $ne: null },
-                "content.context.de": { $ne: null },
-                "content.context.it": { $ne: null },
-                "content.context.pt": { $ne: null },
-              },
-            ],
-          },
-          {
-            $or: [
-              { "content.trivia": null },
-              {
-                "content.trivia.en": { $ne: null },
-                "content.trivia.fr": { $ne: null },
-                "content.trivia.es": { $ne: null },
-                "content.trivia.de": { $ne: null },
-                "content.trivia.it": { $ne: null },
-                "content.trivia.pt": { $ne: null },
-              },
-            ],
-          },
-        ],
+        $expr: {
+          $and: [
+            {
+              $allElementsTrue: [
+                {
+                  $map: {
+                    input: {
+                      $cond: [
+                        { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                        LOCALES,
+                        "$applicableLocales",
+                      ],
+                    },
+                    as: "locale",
+                    in: { $gt: [{ $getField: { field: "$$locale", input: "$content.statement" } }, null] },
+                  },
+                },
+              ],
+            },
+            {
+              $allElementsTrue: [
+                {
+                  $map: {
+                    input: {
+                      $cond: [
+                        { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                        LOCALES,
+                        "$applicableLocales",
+                      ],
+                    },
+                    as: "locale",
+                    in: { $gt: [{ $getField: { field: "$$locale", input: "$content.answer" } }, null] },
+                  },
+                },
+              ],
+            },
+            {
+              $or: [
+                { $not: { $gt: ["$content.context", null] } },
+                {
+                  $allElementsTrue: [
+                    {
+                      $map: {
+                        input: {
+                          $cond: [
+                            { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                            LOCALES,
+                            "$applicableLocales",
+                          ],
+                        },
+                        as: "locale",
+                        in: { $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null] },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              $or: [
+                { $not: { $gt: ["$content.trivia", null] } },
+                {
+                  $allElementsTrue: [
+                    {
+                      $map: {
+                        input: {
+                          $cond: [
+                            { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                            LOCALES,
+                            "$applicableLocales",
+                          ],
+                        },
+                        as: "locale",
+                        in: { $gt: [{ $getField: { field: "$$locale", input: "$content.trivia" } }, null] },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       },
     },
     {
       name: "isFullyTranslated: false",
       filters: { isFullyTranslated: false },
       expected: {
-        $or: [
-          {
-            $or: [
-              { "content.statement.en": null },
-              { "content.statement.fr": null },
-              { "content.statement.es": null },
-              { "content.statement.de": null },
-              { "content.statement.it": null },
-              { "content.statement.pt": null },
-            ],
-          },
-          {
-            $or: [
-              { "content.answer.en": null },
-              { "content.answer.fr": null },
-              { "content.answer.es": null },
-              { "content.answer.de": null },
-              { "content.answer.it": null },
-              { "content.answer.pt": null },
-            ],
-          },
-          {
-            $and: [
-              { "content.context": { $ne: null } },
-              {
-                $or: [
-                  { "content.context.en": null },
-                  { "content.context.fr": null },
-                  { "content.context.es": null },
-                  { "content.context.de": null },
-                  { "content.context.it": null },
-                  { "content.context.pt": null },
-                ],
-              },
-            ],
-          },
-          {
-            $and: [
-              { "content.trivia": { $ne: null } },
-              {
-                $or: [
-                  { "content.trivia.en": null },
-                  { "content.trivia.fr": null },
-                  { "content.trivia.es": null },
-                  { "content.trivia.de": null },
-                  { "content.trivia.it": null },
-                  { "content.trivia.pt": null },
-                ],
-              },
-            ],
-          },
-        ],
+        $expr: {
+          $or: [
+            {
+              $anyElementTrue: [
+                {
+                  $map: {
+                    input: {
+                      $cond: [
+                        { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                        LOCALES,
+                        "$applicableLocales",
+                      ],
+                    },
+                    as: "locale",
+                    in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.statement" } }, null] } },
+                  },
+                },
+              ],
+            },
+            {
+              $anyElementTrue: [
+                {
+                  $map: {
+                    input: {
+                      $cond: [
+                        { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                        LOCALES,
+                        "$applicableLocales",
+                      ],
+                    },
+                    as: "locale",
+                    in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.answer" } }, null] } },
+                  },
+                },
+              ],
+            },
+            {
+              $and: [
+                { $gt: ["$content.context", null] },
+                {
+                  $anyElementTrue: [
+                    {
+                      $map: {
+                        input: {
+                          $cond: [
+                            { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                            LOCALES,
+                            "$applicableLocales",
+                          ],
+                        },
+                        as: "locale",
+                        in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null] } },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              $and: [
+                { $gt: ["$content.trivia", null] },
+                {
+                  $anyElementTrue: [
+                    {
+                      $map: {
+                        input: {
+                          $cond: [
+                            { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                            LOCALES,
+                            "$applicableLocales",
+                          ],
+                        },
+                        as: "locale",
+                        in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.trivia" } }, null] } },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
       },
     },
-  ])("should return expected match stage when $name.", ({ filters, expected }) => {
+  ])("should return expected $expr match stage when $name.", ({ filters, expected }) => {
     const result = buildQuestionAggregationFilterStages(filters);
 
     expect(result).toStrictEqual([{ $match: expected }]);
@@ -254,58 +362,88 @@ describe(buildQuestionAggregationFilterStages, () => {
       {
         $match: {
           status: "active",
-          $or: [
-            {
-              $or: [
-                { "content.statement.en": null },
-                { "content.statement.fr": null },
-                { "content.statement.es": null },
-                { "content.statement.de": null },
-                { "content.statement.it": null },
-                { "content.statement.pt": null },
-              ],
-            },
-            {
-              $or: [
-                { "content.answer.en": null },
-                { "content.answer.fr": null },
-                { "content.answer.es": null },
-                { "content.answer.de": null },
-                { "content.answer.it": null },
-                { "content.answer.pt": null },
-              ],
-            },
-            {
-              $and: [
-                { "content.context": { $ne: null } },
-                {
-                  $or: [
-                    { "content.context.en": null },
-                    { "content.context.fr": null },
-                    { "content.context.es": null },
-                    { "content.context.de": null },
-                    { "content.context.it": null },
-                    { "content.context.pt": null },
-                  ],
-                },
-              ],
-            },
-            {
-              $and: [
-                { "content.trivia": { $ne: null } },
-                {
-                  $or: [
-                    { "content.trivia.en": null },
-                    { "content.trivia.fr": null },
-                    { "content.trivia.es": null },
-                    { "content.trivia.de": null },
-                    { "content.trivia.it": null },
-                    { "content.trivia.pt": null },
-                  ],
-                },
-              ],
-            },
-          ],
+          $expr: {
+            $or: [
+              {
+                $anyElementTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.statement" } }, null] } },
+                    },
+                  },
+                ],
+              },
+              {
+                $anyElementTrue: [
+                  {
+                    $map: {
+                      input: {
+                        $cond: [
+                          { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                          LOCALES,
+                          "$applicableLocales",
+                        ],
+                      },
+                      as: "locale",
+                      in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.answer" } }, null] } },
+                    },
+                  },
+                ],
+              },
+              {
+                $and: [
+                  { $gt: ["$content.context", null] },
+                  {
+                    $anyElementTrue: [
+                      {
+                        $map: {
+                          input: {
+                            $cond: [
+                              { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                              LOCALES,
+                              "$applicableLocales",
+                            ],
+                          },
+                          as: "locale",
+                          in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.context" } }, null] } },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                $and: [
+                  { $gt: ["$content.trivia", null] },
+                  {
+                    $anyElementTrue: [
+                      {
+                        $map: {
+                          input: {
+                            $cond: [
+                              { $eq: [{ $size: { $ifNull: ["$applicableLocales", []] } }, 0] },
+                              LOCALES,
+                              "$applicableLocales",
+                            ],
+                          },
+                          as: "locale",
+                          in: { $not: { $gt: [{ $getField: { field: "$$locale", input: "$content.trivia" } }, null] } },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
     ]);

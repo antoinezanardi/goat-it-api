@@ -18,6 +18,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 1: Fully translated — Cooking theme
   createFakeQuestionDocument({
     _id: createFakeObjectId("a10000000000000000000001"),
+    applicableLocales: undefined,
     category: "trivia",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -75,6 +76,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 2: Fully translated — Travel theme
   createFakeQuestionDocument({
     _id: createFakeObjectId("a20000000000000000000002"),
+    applicableLocales: undefined,
     category: "riddle",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -124,6 +126,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 3: Incomplete — Nature theme (English-only)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a30000000000000000000003"),
+    applicableLocales: undefined,
     category: "explanation",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -173,6 +176,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 4: Incomplete — Music theme (en + fr only)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a40000000000000000000004"),
+    applicableLocales: undefined,
     category: "trivia",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -227,7 +231,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
     updatedAt: new Date("2024-06-01T00:00:00.000Z"),
   }),
 
-  // Question 5: Incomplete — Technology theme (en + fr + it only)
+  // Question 5: Fully translated under locale restriction — Technology theme (en + fr + it)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a50000000000000000000005"),
     category: "lexicon",
@@ -238,6 +242,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
         isPrimary: true,
       }),
     ],
+    applicableLocales: ["en", "fr", "it"],
     content: createFakeQuestionContentAggregate({
       statement: createFakeLocalizedText({
         en: "What does HTML stand for?",
@@ -272,6 +277,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 6: Incomplete — Geography theme (en + fr + it + pt only)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a60000000000000000000006"),
+    applicableLocales: undefined,
     category: "riddle",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -321,6 +327,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 7: Incomplete — Art theme (missing 'de' locale in statement)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a70000000000000000000007"),
+    applicableLocales: undefined,
     category: "explanation",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -370,6 +377,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
   // Question 8: Incomplete — Literature theme (en + it + es only)
   createFakeQuestionDocument({
     _id: createFakeObjectId("a80000000000000000000008"),
+    applicableLocales: [],
     category: "trivia",
     themes: [
       createFakeQuestionThemeAssignmentDocument({

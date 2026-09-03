@@ -45,11 +45,11 @@ const GET_STATS_FACET_STAGE = {
       ...ROWS_TO_RECORD_STAGES,
     ],
     fullyTranslatedCountStage: [
-      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, true) },
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, true, "$applicableLocales") },
       { $count: "count" },
     ],
     incompleteTranslationCountStage: [
-      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, false) },
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, false, "$applicableLocales") },
       { $count: "count" },
     ],
   },

@@ -10,6 +10,7 @@ describe("Question Creation DTO Shape", () => {
     cognitiveDifficulty: string;
     author: { role: string; name: string };
     sourceUrls: string[];
+    applicableLocales?: string[];
   };
 
   beforeEach(() => {
@@ -209,6 +210,48 @@ describe("Question Creation DTO Shape", () => {
       const metadata = QUESTION_CREATION_DTO.shape.category.meta();
       const expectedMetadata = {
         description: "Question's category",
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("applicableLocales", () => {
+    it("should pass validation when a valid subset of locales is provided.", () => {
+      const dtoWithApplicableLocales = { ...validDto, applicableLocales: ["fr"] };
+
+      expect(() => QUESTION_CREATION_DTO.parse(dtoWithApplicableLocales)).not.toThrow();
+    });
+
+    it("should pass validation when applicableLocales is omitted.", () => {
+      const dtoWithoutApplicableLocales = { ...validDto };
+      delete dtoWithoutApplicableLocales.applicableLocales;
+
+      expect(() => QUESTION_CREATION_DTO.parse(dtoWithoutApplicableLocales)).not.toThrow();
+    });
+
+    it("should throw zod error when applicableLocales is empty.", () => {
+      const invalid = { ...validDto, applicableLocales: [] };
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when applicableLocales contains a duplicate locale.", () => {
+      const invalid = { ...validDto, applicableLocales: ["fr", "fr"] };
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when applicableLocales contains an unsupported locale.", () => {
+      const invalid = { ...validDto, applicableLocales: ["jp"] };
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = QUESTION_CREATION_DTO.shape.applicableLocales.meta();
+      const expectedMetadata = {
+        description: "Subset of locales this question is relevant for; omit if relevant for all locales",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);

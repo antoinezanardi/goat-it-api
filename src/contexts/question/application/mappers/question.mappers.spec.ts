@@ -161,6 +161,7 @@ describe(createAdminQuestionDtoFromEntity, () => {
       status: questionEntity.status,
       rejection: questionEntity.rejection,
       sourceUrls: [...questionEntity.sourceUrls],
+      applicableLocales: questionEntity.applicableLocales,
       createdAt: questionEntity.createdAt.toISOString(),
       updatedAt: questionEntity.updatedAt.toISOString(),
     });
@@ -244,6 +245,7 @@ describe(createQuestionCreationCommandFromDto, () => {
         },
         status: computeQuestionStatusFromAuthorRole(dto.author.role),
         sourceUrls: new Set(dto.sourceUrls),
+        applicableLocales: dto.applicableLocales,
       },
     });
 
@@ -262,6 +264,7 @@ describe(createQuestionModificationCommandFromDto, () => {
         cognitiveDifficulty: questionModificationDto.cognitiveDifficulty,
         sourceUrls: questionModificationDto.sourceUrls,
         content: questionModificationDto.content,
+        applicableLocales: questionModificationDto.applicableLocales,
       },
     });
 
