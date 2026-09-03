@@ -67,7 +67,8 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
 });
 
 describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
-  it("should return all public filter options when all filter fields are provided.", () => {
+  it("should return all public filter options and locale when all filter fields are provided.", () => {
+    const locale = "fr";
     const dto = createFakeFindQuestionsQueryDto({
       "category": "lexicon",
       "cognitive-difficulty": "easy",
@@ -75,19 +76,21 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "theme-ids": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
     });
 
-    const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
 
     const expected: Partial<PublicQuestionFilterOptions> = {
       category: "lexicon",
       cognitiveDifficulty: "easy",
       authorRole: "game",
       themeIds: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+      locale: "fr",
     };
 
     expect(result).toStrictEqual(expected);
   });
 
-  it("should return only defined filter options when some filter fields are provided.", () => {
+  it("should return only defined filter options and locale when some filter fields are provided.", () => {
+    const locale = "fr";
     const dto = createFakeFindQuestionsQueryDto({
       "category": "riddle",
       "cognitive-difficulty": undefined,
@@ -95,14 +98,15 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "theme-ids": undefined,
     });
 
-    const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
 
-    const expected: Partial<PublicQuestionFilterOptions> = { category: "riddle" };
+    const expected: Partial<PublicQuestionFilterOptions> = { category: "riddle", locale: "fr" };
 
     expect(result).toStrictEqual(expected);
   });
 
-  it("should return undefined when no filter fields are provided.", () => {
+  it("should return only locale when no other filter fields are provided.", () => {
+    const locale = "fr";
     const dto = createFakeFindQuestionsQueryDto({
       "category": undefined,
       "cognitive-difficulty": undefined,
@@ -110,12 +114,13 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "theme-ids": undefined,
     });
 
-    const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
 
-    expect(result).toBeUndefined();
+    expect(result).toStrictEqual({ locale: "fr" });
   });
 
   it("should not include isFullyTranslated when the source dto contains it since public mapper omits it.", () => {
+    const locale = "fr";
     const dto = createFakeFindQuestionsQueryDto({
       "category": "trivia",
       "cognitive-difficulty": "easy",
@@ -123,8 +128,17 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "theme-ids": ["507f1f77bcf86cd799439011"],
     });
 
-    const result = createPublicQuestionFilterOptionsFromQueryDto(dto);
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
 
     expect(result).not.toHaveProperty("isFullyTranslated");
+  });
+
+  it("should include the provided locale in the returned options when the locale is provided.", () => {
+    const locale = "it";
+    const dto = createFakeFindQuestionsQueryDto();
+
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
+
+    expect(result).toMatchObject({ locale: "it" });
   });
 });

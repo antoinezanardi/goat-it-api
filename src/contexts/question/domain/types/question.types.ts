@@ -3,6 +3,7 @@ import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty,
 
 import type { TupleToUnion } from "type-fest";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { TranslationCompletenessStats } from "@shared/domain/types/translation-completeness/translation-completeness.types";
 
 type QuestionSortableField = TupleToUnion<typeof ADMIN_QUESTION_SORTABLE_FIELDS>;
@@ -14,6 +15,7 @@ type QuestionFilterOptions = {
   authorRole: QuestionAuthorRole;
   themeIds: string[];
   isFullyTranslated: boolean;
+  locale?: Locale;
 };
 
 type PublicQuestionFilterOptions = Omit<QuestionFilterOptions, "status" | "isFullyTranslated">;
@@ -24,6 +26,7 @@ type FindRandomQuestionsOptions = {
   categories?: QuestionCategory[];
   cognitiveDifficulties?: QuestionCognitiveDifficulty[];
   themeIds?: string[];
+  locale: Locale;
 };
 
 type QuestionStats = {

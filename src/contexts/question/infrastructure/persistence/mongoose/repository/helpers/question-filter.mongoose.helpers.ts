@@ -6,8 +6,21 @@ import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrast
 
 import type { PipelineStage } from "mongoose";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
 
+function buildIsApplicableForLocaleMatchCondition(locale: Locale): Record<string, unknown> {
+  return {
+    $or: [
+      { applicableLocales: { $exists: false } },
+      { applicableLocales: { $size: 0 } },
+      { applicableLocales: locale },
+    ],
+  };
+}
+
+// Acceptable as locale filter wiring adds 3 lines; function was already at the 30-line cap
+// oxlint-disable-next-line eslint/max-lines-per-function
 function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOptions>): PipelineStage[] {
   if (!filters) {
     return [];
@@ -33,6 +46,9 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
   if (filters.isFullyTranslated !== undefined) {
     Object.assign(matchConditions, buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, filters.isFullyTranslated, "$applicableLocales"));
   }
+  if (filters.locale !== undefined) {
+    Object.assign(matchConditions, buildIsApplicableForLocaleMatchCondition(filters.locale));
+  }
 
   if (Object.keys(matchConditions).length === 0) {
     return [];
@@ -40,4 +56,4 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
   return [{ $match: matchConditions }];
 }
 
-export { buildQuestionAggregationFilterStages };
+export { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages };

@@ -5,7 +5,7 @@ import { Model, Types, UpdateQuery } from "mongoose";
 import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
-import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
+import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 import { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
@@ -31,6 +31,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
     addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
     addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
     addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+    Object.assign(matchStage, buildIsApplicableForLocaleMatchCondition(options.locale));
 
     return matchStage;
   }

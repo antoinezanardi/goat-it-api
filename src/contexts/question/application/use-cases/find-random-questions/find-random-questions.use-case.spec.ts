@@ -35,7 +35,7 @@ describe(FindRandomQuestionsUseCase, () => {
     }).compile();
 
     findRandomQuestionsUseCase = testingModule.get<FindRandomQuestionsUseCase>(FindRandomQuestionsUseCase);
-    findRandomOptions = { limit: 5 };
+    findRandomOptions = { limit: 5, locale: "en" };
   });
 
   describe(FindRandomQuestionsUseCase.prototype.list, () => {

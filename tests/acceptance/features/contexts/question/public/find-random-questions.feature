@@ -167,3 +167,29 @@ Feature: Find Random Questions
     And the failed request's response should contain the following validation details:
       | code   | message                     | path        |
       | custom | Excluded IDs must be unique | excludedIds |
+
+  Scenario: Returning random questions respects locale filter and returns requested count
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves random questions with the following body:
+      | limit |
+      | 3     |
+    Then the request should have succeeded with status code 200
+    And the response should contain 3 questions
+    And all returned questions should have status "active"
+
+  Scenario: Excluding questions whose applicableLocales does not contain the client's locale from random selection
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves random questions with the following body:
+      | limit |
+      | 20    |
+    Then the request should have succeeded with status code 200
+    And the response should contain 3 questions
+    And all returned questions should have status "active"
+    And the response should not contain a question with id "aabbccdd1122334455667703"
+
+  Scenario: Including unrestricted and explicitly-allowed questions in random selection
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves random questions in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 4 questions
+    And all returned questions should have status "active"
