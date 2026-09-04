@@ -324,3 +324,63 @@ Feature: List Questions
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Listing questions includes those without applicableLocales when locale is provided
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves all questions in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 4 questions
+    And the response should contain the following questions:
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+
+  Scenario: Listing questions includes those with empty applicableLocales when locale is provided
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves all questions in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 4 questions
+    And the response should contain the following questions:
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+
+  Scenario: Listing questions includes those whose applicableLocales contains the client's locale
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves all questions in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 4 questions
+    And the response should contain the following questions:
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+
+  Scenario: Listing questions excludes those whose applicableLocales does not contain the client's locale
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves all questions in locale "en"
+    Then the request should have succeeded with status code 200
+    And the response should contain 3 questions
+    And the response should contain the following questions:
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+    And the response should not contain a question with id "aabbccdd1122334455667703"
+
+  Scenario: Listing questions falls back to configured locale when no Accept-Language header is sent
+    Given the database is populated with questions fixture set with name "applicable-locales-questions"
+    When the client retrieves all questions
+    Then the request should have succeeded with status code 200
+    And the response should contain 3 questions
+    And the response should contain the following questions:
+      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+    And the response should not contain a question with id "aabbccdd1122334455667703"

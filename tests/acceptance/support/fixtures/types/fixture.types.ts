@@ -29,6 +29,7 @@ type FixtureRegistry = {
     "two-english-only-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
     "sixty-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
     "eight-translation-completeness-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
+    "applicable-locales-questions": FixtureDefinition<QuestionMongooseDocumentStub>;
   };
   "question-theme": {
     "five-question-themes": FixtureDefinition<QuestionThemeMongooseDocumentStub>;

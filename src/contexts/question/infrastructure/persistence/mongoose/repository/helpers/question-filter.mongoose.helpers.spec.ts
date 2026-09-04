@@ -2,9 +2,23 @@ import { Types } from "mongoose";
 
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-import { buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
+import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
+
+describe(buildIsApplicableForLocaleMatchCondition, () => {
+  it("should return a three-branch $or match condition when locale is provided.", () => {
+    const result = buildIsApplicableForLocaleMatchCondition(LOCALES[0]);
+
+    expect(result).toStrictEqual({
+      $or: [
+        { applicableLocales: { $exists: false } },
+        { applicableLocales: { $size: 0 } },
+        { applicableLocales: LOCALES[0] },
+      ],
+    });
+  });
+});
 
 describe(buildQuestionAggregationFilterStages, () => {
   it("should return an empty array when called without arguments.", () => {
@@ -447,5 +461,50 @@ describe(buildQuestionAggregationFilterStages, () => {
         },
       },
     ]);
+  });
+
+  it("should return a match stage including the locale condition when locale is provided.", () => {
+    const filters: Partial<QuestionFilterOptions> = { locale: "fr" };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([
+      {
+        $match: {
+          $or: [
+            { applicableLocales: { $exists: false } },
+            { applicableLocales: { $size: 0 } },
+            { applicableLocales: "fr" },
+          ],
+        },
+      },
+    ]);
+  });
+
+  it("should combine locale condition with other filter conditions when both are provided.", () => {
+    const filters: Partial<QuestionFilterOptions> = { status: "active", locale: "fr" };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([
+      {
+        $match: {
+          status: "active",
+          $or: [
+            { applicableLocales: { $exists: false } },
+            { applicableLocales: { $size: 0 } },
+            { applicableLocales: "fr" },
+          ],
+        },
+      },
+    ]);
+  });
+
+  it("should not add locale condition when locale is undefined.", () => {
+    const filters: Partial<QuestionFilterOptions> = { status: "active", locale: undefined };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([{ $match: { status: "active" } }]);
   });
 });

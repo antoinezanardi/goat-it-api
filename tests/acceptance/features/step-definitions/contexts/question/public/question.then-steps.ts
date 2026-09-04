@@ -32,6 +32,12 @@ Then(/^the response should contain the following questions:$/u, function(this: G
   }
 });
 
+Then(/^the response should contain a question among them with id "(?<id>[^"]+)"$/u, function(this: GoatItWorld, id: string): void {
+  const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
+  findQuestionByIdOrThrow(questions, id);
+});
+
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following content:$/u, function(this: GoatItWorld, id: string, questionContentDataTable: DataTable): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
   const dataTableRows = validateDataTableAndGetFirstRow(questionContentDataTable, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA);

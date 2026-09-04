@@ -10,8 +10,9 @@ import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
-import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
+import * as questionFilterQueryDtoMappers from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
+import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedFindRandomQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-random-questions.use-case.mock";
@@ -93,12 +94,26 @@ describe(QuestionController, () => {
   });
 
   describe(QuestionController.prototype.findQuestions, () => {
-    it("should create find all options from query dto when called.", async() => {
+    it("should create find all options from query dto and locale-aware mapper when called.", async() => {
       const queryDto = createFakeFindQuestionsQueryDto();
       const localization = createFakeLocalizationOptions();
       await questionController.findQuestions(queryDto, localization);
 
-      expect(mocks.mappers.createFindAllOptionsFromQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto, createPublicQuestionFilterOptionsFromQueryDto);
+      expect(mocks.mappers.createFindAllOptionsFromQueryDto).toHaveBeenCalledExactlyOnceWith(queryDto, expect.any(Function));
+    });
+
+    it("should call public filter mapper with query dto and localization locale when finding questions.", async() => {
+      const queryDto = createFakeFindQuestionsQueryDto();
+      const localization = createFakeLocalizationOptions();
+      const createPublicQuestionFilterOptionsFromQueryDtoSpy = vi.spyOn(questionFilterQueryDtoMappers, "createPublicQuestionFilterOptionsFromQueryDto");
+
+      type FilterMapper = (dto: FindQuestionsQueryDto) => Partial<QuestionFilterOptions> | undefined;
+
+      mocks.mappers.createFindAllOptionsFromQueryDto.mockImplementation((dto: FindQuestionsQueryDto, mapper: FilterMapper) => mapper(dto));
+
+      await questionController.findQuestions(queryDto, localization);
+
+      expect(createPublicQuestionFilterOptionsFromQueryDtoSpy).toHaveBeenCalledExactlyOnceWith(queryDto, localization.locale);
     });
 
     it("should list all questions with find all options when called.", async() => {
@@ -162,19 +177,19 @@ describe(QuestionController, () => {
   });
 
   describe(QuestionController.prototype.findRandomQuestions, () => {
-    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should create find random options from body dto when called with limit %s.", async expectedLimit => {
+    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should create find random options from body dto and locale when called with limit %s.", async expectedLimit => {
       const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: expectedLimit });
       const localization = createFakeLocalizationOptions();
 
       await questionController.findRandomQuestions(bodyDto, localization);
 
-      expect(mocks.mappers.createFindRandomQuestionsOptionsFromBodyDto).toHaveBeenCalledExactlyOnceWith(bodyDto);
+      expect(mocks.mappers.createFindRandomQuestionsOptionsFromBodyDto).toHaveBeenCalledExactlyOnceWith(bodyDto, localization.locale);
     });
 
-    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should list random questions with limit %s when called.", async expectedLimit => {
+    it.each<number>([5, FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT])("should list random questions with limit %s and locale when called.", async expectedLimit => {
       const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: expectedLimit });
       const localization = createFakeLocalizationOptions();
-      const expectedOptions: FindRandomQuestionsOptions = { limit: expectedLimit };
+      const expectedOptions: FindRandomQuestionsOptions = { limit: expectedLimit, locale: localization.locale };
       mocks.mappers.createFindRandomQuestionsOptionsFromBodyDto.mockReturnValueOnce(expectedOptions);
 
       await questionController.findRandomQuestions(bodyDto, localization);

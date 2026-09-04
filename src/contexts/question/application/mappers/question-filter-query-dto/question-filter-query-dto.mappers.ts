@@ -5,6 +5,7 @@ import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_C
 import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { PublicQuestionFilterOptions, QuestionFilterOptions } from "@question/domain/types/question.types";
 
 function createQuestionFilterOptionsFromQueryDto(dto: AdminFindQuestionsQueryDto): Partial<QuestionFilterOptions> | undefined {
@@ -18,12 +19,13 @@ function createQuestionFilterOptionsFromQueryDto(dto: AdminFindQuestionsQueryDto
   });
 }
 
-function createPublicQuestionFilterOptionsFromQueryDto(dto: FindQuestionsQueryDto): Partial<PublicQuestionFilterOptions> | undefined {
+function createPublicQuestionFilterOptionsFromQueryDto(dto: FindQuestionsQueryDto, locale: Locale): Partial<PublicQuestionFilterOptions> | undefined {
   return pickDefinedValues({
     category: dto[QUESTION_CATEGORY_QUERY_KEY],
     cognitiveDifficulty: dto[QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY],
     authorRole: dto[QUESTION_AUTHOR_ROLE_QUERY_KEY],
     themeIds: dto[QUESTION_THEME_IDS_QUERY_KEY],
+    locale,
   });
 }
 
