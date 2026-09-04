@@ -591,7 +591,7 @@ describe(QuestionMongooseRepository, () => {
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
     it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
       const locale = LOCALES[0];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -615,7 +615,7 @@ describe(QuestionMongooseRepository, () => {
     it("should add excluded ids to match stage as ObjectId $nin when provided.", async() => {
       const locale = LOCALES[0];
       const excludedIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -640,7 +640,7 @@ describe(QuestionMongooseRepository, () => {
     it("should add categories to match stage as $in when provided.", async() => {
       const locale = LOCALES[0];
       const categories: QuestionCategory[] = ["trivia", "riddle"];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -665,7 +665,7 @@ describe(QuestionMongooseRepository, () => {
     it("should add cognitive difficulties to match stage as $in when provided.", async() => {
       const locale = LOCALES[0];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy", "hard"];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -690,7 +690,7 @@ describe(QuestionMongooseRepository, () => {
     it("should add theme ids to match stage as ObjectId $in on nested themeId when provided.", async() => {
       const locale = LOCALES[0];
       const themeIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -718,7 +718,7 @@ describe(QuestionMongooseRepository, () => {
       const categories: QuestionCategory[] = ["trivia"];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy"];
       const themeIds = ["618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -745,7 +745,7 @@ describe(QuestionMongooseRepository, () => {
 
     it("should not add filter to match stage when provided array is empty.", async() => {
       const locale = LOCALES[0];
-      const options = createFakeFindRandomQuestionsOptions(locale, { limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [] });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [], locale });
       const expectedPipeline = [
         {
           $match: {
@@ -767,12 +767,13 @@ describe(QuestionMongooseRepository, () => {
     });
 
     it("should map and return questions when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions(LOCALES[0], {
+      const options = createFakeFindRandomQuestionsOptions({
         limit: 3,
         excludedIds: undefined,
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        locale: LOCALES[0],
       });
       const questionAggregates = [
         createFakeQuestionAggregate(),
@@ -786,12 +787,13 @@ describe(QuestionMongooseRepository, () => {
     });
 
     it("should call the mapper with every aggregate returned from model when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions(LOCALES[0], {
+      const options = createFakeFindRandomQuestionsOptions({
         limit: 2,
         excludedIds: undefined,
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        locale: LOCALES[0],
       });
       const questionAggregates = [
         createFakeQuestionAggregate(),
@@ -808,12 +810,13 @@ describe(QuestionMongooseRepository, () => {
     });
 
     it("should return mapped questions from model when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions(LOCALES[0], {
+      const options = createFakeFindRandomQuestionsOptions({
         limit: 2,
         excludedIds: undefined,
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        locale: LOCALES[0],
       });
       const questionAggregates = [
         createFakeQuestionAggregate(),
