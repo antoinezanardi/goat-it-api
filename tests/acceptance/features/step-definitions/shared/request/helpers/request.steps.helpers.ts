@@ -2,9 +2,13 @@ import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastru
 
 import type { REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 
-import { coerceStringToPrimitive } from "@acceptance-support/helpers/datatable.helpers";
+import { buildQueryFromRow, coerceStringToPrimitive, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
+import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
+import type { DataTable } from "@cucumber/cucumber";
 import type { z } from "zod";
+
+import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 type ValidationDetailsRow = z.infer<typeof REQUEST_VALIDATION_DETAILS_ROW_SCHEMA>;
 
@@ -122,7 +126,24 @@ function mapDataTableRowToValidationDetails(row: ValidationDetailsRow): ApiRespo
   };
 }
 
+async function fetchListWithQuery<T extends Record<string, string | string[] | undefined>>(
+  world: GoatItWorld,
+  path: string,
+  queryDataTable: DataTable,
+  schema: z.ZodType<T>,
+  apiKey: string,
+): Promise<void> {
+  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, schema);
+  const fetchOptions = createFetchOptions({
+    apiKey,
+    query: buildQueryFromRow(queryRow),
+  });
+
+  return world.fetchAndStoreResponse(path, fetchOptions);
+}
+
 export {
+  fetchListWithQuery,
   mapDataTableRowToValidationDetails,
   tryParseOverriddenPayloadValue,
   normalizePathForOverride,

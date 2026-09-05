@@ -1,15 +1,12 @@
 import { ZodError } from "zod";
 
-import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
 import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
 
-import { createFakeAdminQuestionContentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-content/admin-question-content.dto.faketory";
-
 describe("Admin Question Content DTO Shape", () => {
-  let validAdminQuestionContentDto: AdminQuestionContentDto;
+  let validAdminQuestionContentDto: { statement: { en: string }; answer: { en: string }; context?: { en: string }; trivia?: { en: string[] } };
 
   beforeEach(() => {
-    validAdminQuestionContentDto = createFakeAdminQuestionContentDto();
+    validAdminQuestionContentDto = { statement: { en: "Test statement" }, answer: { en: "Test answer" } };
   });
 
   it("should pass validation when a valid AdminQuestionContentDto is provided.", () => {
@@ -18,13 +15,13 @@ describe("Admin Question Content DTO Shape", () => {
 
   describe("statement", () => {
     it("should throw zod error when statement is missing.", () => {
-      const dtoWithoutStatement = Object.assign(validAdminQuestionContentDto, { statement: undefined });
+      const dtoWithoutStatement = { ...validAdminQuestionContentDto, statement: undefined };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithoutStatement)).toThrow(ZodError);
     });
 
     it("should throw zod error when statement is invalid.", () => {
-      const dtoWithInvalidStatement = Object.assign(validAdminQuestionContentDto, { statement: "invalid" });
+      const dtoWithInvalidStatement = { ...validAdminQuestionContentDto, statement: "invalid" };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithInvalidStatement)).toThrow(ZodError);
     });
@@ -41,13 +38,13 @@ describe("Admin Question Content DTO Shape", () => {
 
   describe("answer", () => {
     it("should throw zod error when answer is missing.", () => {
-      const dtoWithoutAnswer = Object.assign(validAdminQuestionContentDto, { answer: undefined });
+      const dtoWithoutAnswer = { ...validAdminQuestionContentDto, answer: undefined };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithoutAnswer)).toThrow(ZodError);
     });
 
     it("should throw zod error when answer is invalid.", () => {
-      const dtoWithInvalidAnswer = Object.assign(validAdminQuestionContentDto, { answer: 456 });
+      const dtoWithInvalidAnswer = { ...validAdminQuestionContentDto, answer: 456 };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithInvalidAnswer)).toThrow(ZodError);
     });
@@ -63,14 +60,20 @@ describe("Admin Question Content DTO Shape", () => {
   });
 
   describe("context", () => {
+    it("should pass validation when context is valid.", () => {
+      const dtoWithValidContext = { ...validAdminQuestionContentDto, context: { en: "Additional context" } };
+
+      expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithValidContext)).not.toThrow();
+    });
+
     it("should throw zod error when context is invalid.", () => {
-      const dtoWithInvalidContext = Object.assign(validAdminQuestionContentDto, { context: 123 });
+      const dtoWithInvalidContext = { ...validAdminQuestionContentDto, context: 123 };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithInvalidContext)).toThrow(ZodError);
     });
 
-    it("should pass validation when context is omitted.", () => {
-      const dtoWithoutContext = createFakeAdminQuestionContentDto({ context: undefined });
+    it("should pass validation when context is absent.", () => {
+      const dtoWithoutContext = { ...validAdminQuestionContentDto, context: undefined };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithoutContext)).not.toThrow(ZodError);
     });
@@ -86,14 +89,20 @@ describe("Admin Question Content DTO Shape", () => {
   });
 
   describe("trivia", () => {
+    it("should pass validation when trivia is valid.", () => {
+      const dtoWithValidTrivia = { ...validAdminQuestionContentDto, trivia: { en: ["Fun fact 1", "Fun fact 2"] } };
+
+      expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithValidTrivia)).not.toThrow();
+    });
+
     it("should throw zod error when trivia is invalid.", () => {
-      const dtoWithInvalidTrivia = Object.assign(validAdminQuestionContentDto, { trivia: 789 });
+      const dtoWithInvalidTrivia = { ...validAdminQuestionContentDto, trivia: 789 };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithInvalidTrivia)).toThrow(ZodError);
     });
 
-    it("should pass validation when trivia is omitted.", () => {
-      const dtoWithoutTrivia = createFakeAdminQuestionContentDto({ trivia: undefined });
+    it("should pass validation when trivia is absent.", () => {
+      const dtoWithoutTrivia = { ...validAdminQuestionContentDto, trivia: undefined };
 
       expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(dtoWithoutTrivia)).not.toThrow(ZodError);
     });

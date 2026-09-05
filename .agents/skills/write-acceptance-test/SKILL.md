@@ -222,6 +222,8 @@ pnpm run typecheck
 pnpm run lint
 ```
 
+The command `.opencode/commands/lint-acceptance-tests.md` is the **final audit checklist** — its rule tags `[AU*]`, `[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]` define the acceptance test conventions. Verify written files against section 4 before considering work complete.
+
 ## Reference
 
 - **Primary authoritative guide (read first):** `tests/acceptance/README.md`

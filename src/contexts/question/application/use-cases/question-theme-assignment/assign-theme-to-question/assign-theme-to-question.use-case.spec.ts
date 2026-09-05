@@ -21,7 +21,7 @@ import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/co
 
 import type { TestingModule } from "@nestjs/testing";
 
-describe("Assign Theme To Question Use Case", () => {
+describe(AssignThemeToQuestionUseCase, () => {
   let assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase;
   let mocks: {
     repositories: {

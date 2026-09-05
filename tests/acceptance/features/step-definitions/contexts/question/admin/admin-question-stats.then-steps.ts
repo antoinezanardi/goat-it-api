@@ -55,3 +55,10 @@ Then(/^the response should contain questions rejection type stats with:$/u, func
 
   expectRecordFieldValues(stats.byRejectionType, rows);
 });
+
+Then(/^the response should contain questions translation completeness stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionStatsDto>(QUESTION_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, ADMIN_QUESTION_STATS_FIELD_VALUE_DATATABLE_ROW_SCHEMA);
+
+  expectRecordFieldValues(stats.byTranslationCompleteness, rows);
+});

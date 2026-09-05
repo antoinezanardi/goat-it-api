@@ -2,15 +2,21 @@ import { ZodError } from "zod";
 
 import { QUESTION_THEME_STATS_DTO } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
 
-import { createFakeQuestionThemeStatsDto } from "@faketories/contexts/question-theme/dto/question-theme-stats/question-theme-stats.dto.faketory";
-
-import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
-
 describe("Question Theme Stats DTO Shape", () => {
-  let validDto: QuestionThemeStatsDto;
+  let validDto: {
+    total: number;
+    byStatus: Record<string, number>;
+    byQuestionCount: { themeId: string; themeSlug: string; activeQuestionCount: number }[];
+    byTranslationCompleteness: { fullyTranslated: number; incomplete: number };
+  };
 
   beforeEach(() => {
-    validDto = createFakeQuestionThemeStatsDto();
+    validDto = {
+      total: 10,
+      byStatus: { active: 8, archived: 2 },
+      byQuestionCount: [{ themeId: "60af924f4f1a2563f8e8b456", themeSlug: "general-knowledge", activeQuestionCount: 5 }],
+      byTranslationCompleteness: { fullyTranslated: 7, incomplete: 3 },
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -19,19 +25,19 @@ describe("Question Theme Stats DTO Shape", () => {
 
   describe("total", () => {
     it("should throw a zod error when missing.", () => {
-      const invalidDto = Object.assign(validDto, { total: undefined });
+      const invalidDto = { ...validDto, total: undefined };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned a negative number.", () => {
-      const invalidDto = Object.assign(validDto, { total: -1 });
+      const invalidDto = { ...validDto, total: -1 };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned a non-integer number.", () => {
-      const invalidDto = Object.assign(validDto, { total: 1.5 });
+      const invalidDto = { ...validDto, total: 1.5 };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -47,19 +53,19 @@ describe("Question Theme Stats DTO Shape", () => {
 
   describe("byStatus", () => {
     it("should throw a zod error when missing.", () => {
-      const invalidDto = Object.assign(validDto, { byStatus: undefined });
+      const invalidDto = { ...validDto, byStatus: undefined };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned a non-object value.", () => {
-      const invalidDto = Object.assign(validDto, { byStatus: "invalid" });
+      const invalidDto = { ...validDto, byStatus: "invalid" };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when a record value is negative.", () => {
-      const invalidDto = Object.assign(validDto, { byStatus: { active: -1 } } as QuestionThemeStatsDto);
+      const invalidDto = { ...validDto, byStatus: { active: -1 } };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -75,40 +81,40 @@ describe("Question Theme Stats DTO Shape", () => {
 
   describe("byQuestionCount", () => {
     it("should throw a zod error when missing.", () => {
-      const invalidDto = Object.assign(validDto, { byQuestionCount: undefined });
+      const invalidDto = { ...validDto, byQuestionCount: undefined };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when assigned a non-array value.", () => {
-      const invalidDto = Object.assign(validDto, { byQuestionCount: "invalid" });
+      const invalidDto = { ...validDto, byQuestionCount: "invalid" };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when an entry has a missing themeId.", () => {
-      const invalidDto = Object.assign(validDto, { byQuestionCount: [{ themeSlug: "cinema", activeQuestionCount: 2 }] } as QuestionThemeStatsDto);
+      const invalidDto = { ...validDto, byQuestionCount: [{ themeSlug: "cinema", activeQuestionCount: 2 }] };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when an entry has a missing themeSlug.", () => {
-      const invalidDto = Object.assign(validDto, { byQuestionCount: [{ themeId: "a", activeQuestionCount: 2 }] } as QuestionThemeStatsDto);
+      const invalidDto = { ...validDto, byQuestionCount: [{ themeId: "a", activeQuestionCount: 2 }] };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when an entry has a negative activeQuestionCount.", () => {
-      const invalidDto = Object.assign(validDto, { byQuestionCount: [{ themeId: "a", themeSlug: "cinema", activeQuestionCount: -1 }] } as QuestionThemeStatsDto);
+      const invalidDto = { ...validDto, byQuestionCount: [{ themeId: "a", themeSlug: "cinema", activeQuestionCount: -1 }] };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when an entry contains extra properties.", () => {
-      const invalidDto = Object.assign(
-        validDto,
-        { byQuestionCount: [{ themeId: "a", themeSlug: "cinema", activeQuestionCount: 2, extra: true }] } as unknown as QuestionThemeStatsDto,
-      );
+      const invalidDto = {
+        ...validDto,
+        byQuestionCount: [{ themeId: "a", themeSlug: "cinema", activeQuestionCount: 2, extra: true }],
+      };
 
       expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -154,6 +160,48 @@ describe("Question Theme Stats DTO Shape", () => {
         expect(QUESTION_THEME_STATS_DTO.shape.byQuestionCount.element.shape.activeQuestionCount.meta()).toStrictEqual<Record<string, unknown>>({
           description: ACTIVE_QUESTION_COUNT_DESCRIPTION,
         });
+      });
+    });
+  });
+
+  describe("byTranslationCompleteness", () => {
+    it("should throw a zod error when missing.", () => {
+      const invalidDto = { ...validDto, byTranslationCompleteness: undefined };
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when assigned a non-object value.", () => {
+      const invalidDto = { ...validDto, byTranslationCompleteness: "invalid" };
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when fullyTranslated is negative.", () => {
+      const invalidDto = { ...validDto, byTranslationCompleteness: { fullyTranslated: -1, incomplete: 0 } };
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when incomplete is not an integer.", () => {
+      const invalidDto = { ...validDto, byTranslationCompleteness: { fullyTranslated: 0, incomplete: 1.5 } };
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when an extra key is present.", () => {
+      const invalidDto = { ...validDto, byTranslationCompleteness: { ...validDto.byTranslationCompleteness, extra: true } };
+
+      expect(() => QUESTION_THEME_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_THEME_STATS_DTO.shape.byTranslationCompleteness.description).toBe("Translation completeness breakdown");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      expect(QUESTION_THEME_STATS_DTO.shape.byTranslationCompleteness.meta()).toStrictEqual<Record<string, unknown>>({
+        description: "Translation completeness breakdown",
       });
     });
   });

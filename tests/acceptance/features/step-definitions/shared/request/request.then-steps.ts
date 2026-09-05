@@ -1,9 +1,10 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { shake } from "radashi";
+import { z } from "zod";
 
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
+import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
@@ -20,6 +21,7 @@ Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/
   if (!SUCCESS_HTTP_STATUSES.includes(expectedStatus)) {
     throw new Error(`The expected status code ${expectedStatus} is not a success status code.`);
   }
+  this.expectLastResponseJson(z.any());
   expect(this.lastFetchResponse?.status).toBe(expectedStatus);
 });
 
@@ -29,6 +31,7 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
     throw new Error(`The expected status code ${expectedStatus} is a success status code.`);
   }
   const requestError = validateDataTableAndGetFirstRow(errorDataTable, REQUEST_ERROR_ROW_SCHEMA);
+  const errorResponse = this.expectLastResponseJson<ApiResponseExceptionDto>(API_RESPONSE_EXCEPTION_DTO);
   const expectedError: Omit<ApiResponseExceptionDto, "validationDetails"> & { validationDetails?: ReturnType<typeof expect.any> } = {
     error: requestError.error,
     message: requestError.message,
@@ -39,11 +42,10 @@ Then(/^the request should have failed with status code (?<statusCode>\d{3}) and 
     expectedError.validationDetails = expect.any(Array);
   }
 
-  const { _data: errorData, status: errorStatusCode } = this.lastFetchResponse ?? {};
   const expectedErrorWithoutUndefinedFields = shake(expectedError);
 
-  expect(errorStatusCode).toBe(expectedStatus);
-  expect(errorData).toStrictEqual(expectedErrorWithoutUndefinedFields);
+  expect(errorResponse.statusCode).toBe(expectedStatus);
+  expect(errorResponse).toStrictEqual(expectedErrorWithoutUndefinedFields);
 });
 
 Then(/^the failed request's response should contain the following validation details:$/u, function(this: GoatItWorld, validationDetailsDataTable: DataTable): void {
@@ -58,8 +60,13 @@ Then(/^the failed request's response should contain the following validation det
   for (const [index, validationDetailsEntry] of dataTableRows.entries()) {
     const actualValidationDetailsEntry = actualValidationDetails[index];
     const expectedValidationDetails = mapDataTableRowToValidationDetails(validationDetailsEntry);
-    const expectedValidationDetailsWithoutUndefinedFields = shake(expectedValidationDetails);
+    const { values: expectedValues, ...expectedRest } = shake(expectedValidationDetails);
+    const { values: actualValues, ...actualRest } = actualValidationDetailsEntry;
 
-    expect(actualValidationDetailsEntry).toStrictEqual(expectedValidationDetailsWithoutUndefinedFields);
+    expect(actualRest).toStrictEqual(expectedRest);
+
+    if (expectedValues !== undefined) {
+      expect(actualValues?.map(String)).toStrictEqual(expectedValues.map(String));
+    }
   }
 });

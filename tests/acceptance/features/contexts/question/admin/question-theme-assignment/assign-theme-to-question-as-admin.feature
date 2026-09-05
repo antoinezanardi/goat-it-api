@@ -1,6 +1,5 @@
 @question @question-theme-assignment @assign-theme-to-question @admin
-
-Feature: Assign Theme To Question As Admin
+Feature: Assign Theme To Question as Admin
   In order to enrich existing questions with relevant themes
   As an admin API client
   I want to be able to assign a theme to a question

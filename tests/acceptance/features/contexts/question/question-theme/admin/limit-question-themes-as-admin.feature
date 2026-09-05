@@ -1,5 +1,4 @@
 @question-theme @limit-question-themes @admin
-
 Feature: Limit Question Themes as Admin
   In order to control how many question themes are returned in the back office
   As an admin API client

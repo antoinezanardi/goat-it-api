@@ -1,6 +1,5 @@
 import { ZodError } from "zod";
 
-import type { QuestionContentDto } from "@question/application/dto/question/question-content/question-content.dto.shape";
 import { QUESTION_CONTENT_DTO } from "@question/application/dto/question/question-content/question-content.dto.shape";
 import {
   QUESTION_STATEMENT_EXAMPLE,
@@ -9,13 +8,16 @@ import {
   QUESTION_TRIVIA_EXAMPLE,
 } from "@question/application/dto/shared/zod/validators/question-content/constants/question-content.zod.validators.constants";
 
-import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
-
 describe("Question Content DTO Shape", () => {
-  let validQuestionContentDto: QuestionContentDto;
+  let validQuestionContentDto: { statement: string; answer: string; context?: string; trivia?: string[] };
 
   beforeEach(() => {
-    validQuestionContentDto = createFakeQuestionContentDto();
+    validQuestionContentDto = {
+      statement: QUESTION_STATEMENT_EXAMPLE,
+      answer: QUESTION_ANSWER_EXAMPLE,
+      context: QUESTION_CONTEXT_EXAMPLE,
+      trivia: QUESTION_TRIVIA_EXAMPLE,
+    };
   });
 
   it("should pass validation when a valid QuestionContentDto is provided.", () => {
@@ -24,13 +26,13 @@ describe("Question Content DTO Shape", () => {
 
   describe("statement", () => {
     it("should throw zod error when statement is missing.", () => {
-      const dtoWithoutStatement = Object.assign(validQuestionContentDto, { statement: undefined });
+      const dtoWithoutStatement = { ...validQuestionContentDto, statement: undefined };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutStatement)).toThrow(ZodError);
     });
 
     it("should throw zod error when statement is invalid.", () => {
-      const dtoWithInvalidStatement = Object.assign(validQuestionContentDto, { statement: 123 });
+      const dtoWithInvalidStatement = { ...validQuestionContentDto, statement: 123 };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidStatement)).toThrow(ZodError);
     });
@@ -48,13 +50,13 @@ describe("Question Content DTO Shape", () => {
 
   describe("answer", () => {
     it("should throw zod error when answer is missing.", () => {
-      const dtoWithoutAnswer = Object.assign(validQuestionContentDto, { answer: undefined });
+      const dtoWithoutAnswer = { ...validQuestionContentDto, answer: undefined };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutAnswer)).toThrow(ZodError);
     });
 
     it("should throw zod error when answer is invalid.", () => {
-      const dtoWithInvalidAnswer = Object.assign(validQuestionContentDto, { answer: 456 });
+      const dtoWithInvalidAnswer = { ...validQuestionContentDto, answer: 456 };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidAnswer)).toThrow(ZodError);
     });
@@ -72,13 +74,13 @@ describe("Question Content DTO Shape", () => {
 
   describe("context", () => {
     it("should throw zod error when context is invalid.", () => {
-      const dtoWithInvalidContext = Object.assign(validQuestionContentDto, { context: 123 });
+      const dtoWithInvalidContext = { ...validQuestionContentDto, context: 123 };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidContext)).toThrow(ZodError);
     });
 
     it("should pass validation when context is omitted.", () => {
-      const dtoWithoutContext = createFakeQuestionContentDto({ context: undefined });
+      const dtoWithoutContext = { ...validQuestionContentDto, context: undefined };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutContext)).not.toThrow(ZodError);
     });
@@ -96,13 +98,13 @@ describe("Question Content DTO Shape", () => {
 
   describe("trivia", () => {
     it("should throw zod error when trivia is invalid.", () => {
-      const dtoWithInvalidTrivia = Object.assign(validQuestionContentDto, { trivia: 789 });
+      const dtoWithInvalidTrivia = { ...validQuestionContentDto, trivia: 789 };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithInvalidTrivia)).toThrow(ZodError);
     });
 
     it("should pass validation when trivia is omitted.", () => {
-      const dtoWithoutTrivia = createFakeQuestionContentDto({ trivia: undefined });
+      const dtoWithoutTrivia = { ...validQuestionContentDto, trivia: undefined };
 
       expect(() => QUESTION_CONTENT_DTO.parse(dtoWithoutTrivia)).not.toThrow(ZodError);
     });

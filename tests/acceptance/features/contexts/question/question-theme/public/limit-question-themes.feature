@@ -1,5 +1,4 @@
 @question-theme @limit-question-themes @public
-
 Feature: Limit Question Themes
   In order to control how many question themes are returned
   As an API client

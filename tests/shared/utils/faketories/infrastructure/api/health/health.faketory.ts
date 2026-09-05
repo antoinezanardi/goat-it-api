@@ -33,6 +33,7 @@ function createFakeAppHealthDetailsCheckDto(appHealthDetailsCheckDto: Partial<Ap
   return {
     status: faker.helpers.arrayElement(HEALTH_DETAILS_STATUS_ENUM),
     message: faker.helpers.maybe(() => faker.lorem.sentence()),
+    responseTime: faker.helpers.maybe(() => faker.number.int({ min: 1, max: 5000 })),
     ...appHealthDetailsCheckDto,
   };
 }

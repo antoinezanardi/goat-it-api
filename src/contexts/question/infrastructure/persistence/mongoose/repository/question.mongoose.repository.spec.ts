@@ -3,6 +3,7 @@ import { Test } from "@nestjs/testing";
 import { Types } from "mongoose";
 
 import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
@@ -35,7 +36,7 @@ import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregat
 
 vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
 
-describe("Question Mongoose Repository", () => {
+describe(QuestionMongooseRepository, () => {
   let repositories: { question: QuestionMongooseRepository };
   let mocks: {
     models: {
@@ -588,10 +589,20 @@ describe("Question Mongoose Repository", () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
-    it.each([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
-      const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+    it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
+      const locale = LOCALES[0];
+      const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
-        { $match: { status: QUESTION_STATUS_ACTIVE } },
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
+          },
+        },
         { $sample: { size: limit } },
         ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ];
@@ -602,13 +613,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should add excluded ids to match stage as ObjectId $nin when provided.", async() => {
+      const locale = LOCALES[0];
       const excludedIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
             status: QUESTION_STATUS_ACTIVE,
             _id: { $nin: excludedIds.map(id => new Types.ObjectId(id)) },
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
           },
         },
         { $sample: { size: 5 } },
@@ -621,13 +638,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should add categories to match stage as $in when provided.", async() => {
+      const locale = LOCALES[0];
       const categories: QuestionCategory[] = ["trivia", "riddle"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
             status: QUESTION_STATUS_ACTIVE,
             category: { $in: categories },
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
           },
         },
         { $sample: { size: 5 } },
@@ -640,13 +663,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should add cognitive difficulties to match stage as $in when provided.", async() => {
+      const locale = LOCALES[0];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy", "hard"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
             status: QUESTION_STATUS_ACTIVE,
             cognitiveDifficulty: { $in: cognitiveDifficulties },
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
           },
         },
         { $sample: { size: 5 } },
@@ -659,13 +688,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should add theme ids to match stage as ObjectId $in on nested themeId when provided.", async() => {
+      const locale = LOCALES[0];
       const themeIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
             "status": QUESTION_STATUS_ACTIVE,
             "themes.themeId": { $in: themeIds.map(id => new Types.ObjectId(id)) },
+            "$or": [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
           },
         },
         { $sample: { size: 5 } },
@@ -678,11 +713,12 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should compose all filters in a single match stage when all options are provided.", async() => {
+      const locale = LOCALES[0];
       const excludedIds = ["618c1f4b3a2f000000000001"];
       const categories: QuestionCategory[] = ["trivia"];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy"];
       const themeIds = ["618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -691,6 +727,11 @@ describe("Question Mongoose Repository", () => {
             "category": { $in: categories },
             "cognitiveDifficulty": { $in: cognitiveDifficulties },
             "themes.themeId": { $in: themeIds.map(id => new Types.ObjectId(id)) },
+            "$or": [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
           },
         },
         { $sample: { size: 5 } },
@@ -703,9 +744,19 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should not add filter to match stage when provided array is empty.", async() => {
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [] });
+      const locale = LOCALES[0];
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [], locale });
       const expectedPipeline = [
-        { $match: { status: QUESTION_STATUS_ACTIVE } },
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
+          },
+        },
         { $sample: { size: 5 } },
         ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ];
@@ -716,7 +767,14 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should map and return questions when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions({ limit: 3, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 3,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale: LOCALES[0],
+      });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),
@@ -729,7 +787,14 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should call the mapper with every aggregate returned from model when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions({ limit: 2, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 2,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale: LOCALES[0],
+      });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),
@@ -745,7 +810,14 @@ describe("Question Mongoose Repository", () => {
     });
 
     it("should return mapped questions from model when called.", async() => {
-      const options = createFakeFindRandomQuestionsOptions({ limit: 2, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 2,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale: LOCALES[0],
+      });
       const questionAggregates = [
         createFakeQuestionAggregate(),
         createFakeQuestionAggregate(),
@@ -813,6 +885,8 @@ describe("Question Mongoose Repository", () => {
       byCognitiveDifficultyStage: [{ medium: 5 }],
       byAuthorRoleStage: [{ admin: 5 }],
       byRejectionTypeStage: [{ "duplicate-question": 1 }],
+      fullyTranslatedCountStage: [{ count: 4 }],
+      incompleteTranslationCountStage: [{ count: 1 }],
     };
 
     it("should call aggregate with the stats pipeline when invoked.", async() => {
@@ -911,6 +985,33 @@ describe("Question Mongoose Repository", () => {
       const result = await repositories.question.getStats();
 
       expect(result.byRejectionType).toStrictEqual({});
+    });
+
+    it("should return fullyTranslated count from the $facet result when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness.fullyTranslated).toBe(4);
+    });
+
+    it("should return incomplete count from the $facet result when called.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([facetResult as unknown as QuestionAggregate]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness.incomplete).toBe(1);
+    });
+
+    it("should return zero for fullyTranslated and incomplete when translation count stages are empty.", async() => {
+      mocks.models.question.aggregate.mockResolvedValueOnce([
+        {
+          ...facetResult,
+          fullyTranslatedCountStage: [],
+          incompleteTranslationCountStage: [],
+        } as unknown as QuestionAggregate,
+      ]);
+      const result = await repositories.question.getStats();
+
+      expect(result.byTranslationCompleteness).toStrictEqual({ fullyTranslated: 0, incomplete: 0 });
     });
   });
 });

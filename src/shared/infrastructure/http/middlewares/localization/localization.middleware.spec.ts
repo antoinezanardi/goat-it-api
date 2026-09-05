@@ -13,7 +13,7 @@ import { createFakeLocalizationConfigFromEnv } from "@faketories/infrastructure/
 import type { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
-describe("Localization Middleware", () => {
+describe(LocalizationMiddleware, () => {
   let localizationMiddleware: LocalizationMiddleware;
   let mocks: {
     services: {
@@ -44,7 +44,9 @@ describe("Localization Middleware", () => {
     localizationMiddleware = testingModule.get<LocalizationMiddleware>(LocalizationMiddleware);
   });
 
-  describe("useFallbackLocale", () => {
+  // Acceptable as private static method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(LocalizationMiddleware["useFallbackLocale"], () => {
     it("should set localization options with fallback locale when called.", () => {
       const fallbackLocale: Locale = "en";
       const request = {
@@ -76,7 +78,7 @@ describe("Localization Middleware", () => {
     });
   });
 
-  describe("use", () => {
+  describe(LocalizationMiddleware.prototype.use, () => {
     it("should set localization options with fallback locale when header locale is undefined.", () => {
       const requestRaw = {
         headers: {},
@@ -140,7 +142,9 @@ describe("Localization Middleware", () => {
     });
   });
 
-  describe("getFirstLocaleFromHeader", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(LocalizationMiddleware.prototype["getFirstLocaleFromHeader"], () => {
     it.each<{
       test: string;
       headerLocale: string | undefined;

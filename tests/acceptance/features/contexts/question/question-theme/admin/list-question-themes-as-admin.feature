@@ -1,5 +1,4 @@
 @question-theme @list-question-themes @admin
-
 Feature: List Question Themes as Admin
   In order to display question themes to back office users
   As an admin API client

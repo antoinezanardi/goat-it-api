@@ -11,6 +11,8 @@ type QuestionThemeStatsAggregationResult = {
   total: { count: number }[];
   statusRows: Record<string, number>[];
   byQuestionCount: { themeId: string; themeSlug: string; activeQuestionCount: number }[];
+  fullyTranslatedCountStage: { count: number }[];
+  incompleteTranslationCountStage: { count: number }[];
 };
 
 export type {

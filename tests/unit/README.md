@@ -49,15 +49,15 @@
 - Use path aliases for imports; follow repository import order conventions.
 - Use faketories (`@faketories/...`) to build test data and `@mocks/...` factories for dependency mocks. Never use manual mock objects inline. See [Mocks & Faketories (where and how)](#mocks--faketories-where-and-how) for details.
 - Prefer existing mock/faketory factory functions. If none fit, add new mocks or factories under `tests/unit/utils/mocks/` or `tests/shared/utils/faketories/` mirroring the source path.
-- Every test file contains a top-level `describe("<Name> <Type>", () => { ... })` block. The `<Name>` matches the class or module under test, and `<Type>` describes its role (example: `Question Theme Controller`).
+- Every test file contains a top-level describe block. For controllers, use-cases, repositories, services, errors, and helpers/mappers, use the class/function symbol as the describe label (e.g., `describe(QuestionThemeController, () => { ... })`). For DTOs, use a string label (e.g., `describe("Question Theme DTO Shape", () => { ... })`).
 - Every mock is stored in the main `describe` block's scope. See the examples below for patterns. No need to reset mocks between tests as Vitest does it automatically in the config between each test.
 - For each function and method under test, create a nested `describe(<methodName>, () => { ... })` block containing all relevant `it` tests. The method should be referenced in the `describe` name as-is (example: `describe(myFunction, () => { ... })`).
 - What to test in a function or method:
   - Positive/success paths.
   - Each error branch (throwing) separately
   - Boundary conditions (e.g., empty arrays, null/undefined inputs).
-- When a method is quite simple and the assertions are only on its output, you must use `it.each([...])` to parametrize multiple input→output cases instead of writing multiple `it` blocks.
-- When a test that asserts an error is thrown, use `await expect(promise).rejects.toThrow(...)` syntax. The exact error instance should be asserted, not just the message.
+- When a method is quite simple and the assertions are only on its output, you must use `it.each([...])` to parametrize multiple input→output cases instead of writing multiple `it` blocks. `it.each` must always be typed: `it.each<T>([...])`.
+- When a test that asserts an error is thrown: use `expect(() => synchronousCall()).toThrow(...)` for synchronous operations (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(...)` for Promise-returning operations. The exact error instance should be asserted, not just the message.
 - Test deterministic inputs→outputs and edge cases. Keep tests small and focused.
 - Always use `toStrictEqual(expected)` for value equality assertions to get type hinting and strict shape checks. If the type can't be automatically inferred, use `toStrictEqual<T>(expected)`. 
 - Private methods must be tested too, via `ClassName["privateMethodName"](...)` syntax.
@@ -73,7 +73,7 @@
     
 - Template (`health.controller.spec.ts`):
 ```ts
-describe("Health Controller", () => {
+describe(HealthController, () => {
   let healthController: HealthController;
   let mocks: {
     services: {
@@ -137,7 +137,7 @@ describe("Health Controller", () => {
 
 - Template (`get-question-themes-by-ids-or-throw.use-case.spec.ts`):
 ```ts
-describe("Get Question Themes By Ids Or Throw Use Case", () => {
+describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   let getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase;
   
   // Top-level mocks object, populated in beforeEach and used by tests.
@@ -338,39 +338,47 @@ describe("Get Question Themes By Ids Or Throw Use Case", () => {
 
 - Key rules:
   - Cover every DTO field with at least one positive (accepts) and one negative (rejects) test.
-  - Use faketories (e.g. `createFakeQuestionDto`, `createFakeAdminQuestionDto`) to produce valid examples and make minimal per-test modifications for negative cases.
+  - For `*.dto.shape.spec.ts` files, `validDto` must be an **inline literal** — never a faketory call. Declare with a structural type (e.g., `let validDto: { field: type; ... };`) and assign in `beforeEach`. Negative tests use `{ ...validDto, field: badValue }` (spread copy). Remove all `@faketories/*` imports and all `as SomeDto` casts from shape spec files.
   - Prefer `DTO.parse(valid)` or `expect(() => DTO.parse(valid)).not.toThrow()` for positive tests; use `safeParse` when you need to inspect `success` / `error` details.
   - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrow(ZodError)`) and inspect `parsed.error.errors` when necessary.
   - Assert Zod metadata (`.meta()`) and property metadata (`DTO.shape.field.meta()`) exactly with `toStrictEqual` so OpenAPI generation expectations are maintained.
   - For refinements and small validators (slugs, mongo ids, ISO datetimes) use `it.each` to enumerate valid/invalid inputs and assert `schema.safeParse(value).success`.
 
-- Good DTO test pattern (based on `src/contexts/question/application/dto/question/question.dto.spec.ts` and `admin-question.dto.spec.ts`):
+- DTO shape spec template (DT5-compliant):
 
 ```ts
 import { ZodError } from "zod";
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto";
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
 
-import { createFakeQuestionDto } from "@faketories/contexts/question/question-question.dto.faketory"; // adjust path
-
-describe("Question DTO Specs", () => {
-  let validQuestionDto: QuestionDto;
+describe("Question DTO Shape", () => {
+  let validDto: {
+    id: string;
+    content: { statement: { en: string }; answer: { en: string } };
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 
   beforeEach(() => {
-    validQuestionDto = createFakeQuestionDto();
+    validDto = {
+      id: "60af924f4f1a2563f8e8b456",
+      content: { statement: { en: "What is the capital of France?" }, answer: { en: "Paris" } },
+      status: "active",
+      createdAt: "2026-04-14T00:00:00.000Z",
+      updatedAt: "2026-04-14T00:00:00.000Z",
+    };
   });
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
-    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrow();
+    expect(() => QUESTION_DTO.parse(validDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
-      const dtoWithInvalidId = Object.assign({}, validQuestionDto, { id: "invalid" });
-
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
+      const invalid = { ...validDto, id: "invalid" };
+      expect(() => QUESTION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -379,29 +387,11 @@ describe("Question DTO Specs", () => {
         description: "Question's unique identifier",
         example: "60af924f4f1a2563f8e8b456",
       };
-
       expect(metadata).toStrictEqual(expectedMetadata);
     });
   });
 
-  // repeat per-field positive/negative checks (themes, content, status, createdAt, ...)
-  describe("createdAt / updatedAt", () => {
-    it("should throw zod error when createdAt is invalid.", () => {
-      const dtoWithInvalidCreatedAt = Object.assign({}, validQuestionDto, { createdAt: "not-a-date" });
-
-      expect(() => QUESTION_DTO.parse(dtoWithInvalidCreatedAt)).toThrow(ZodError);
-    });
-
-    it("should have correct metadata for createdAt when accessed.", () => {
-      const metadata = QUESTION_DTO.shape.createdAt.meta();
-      const expectedMetadata = {
-        description: "Question's creation date",
-        example: ISO_DATE_TIME_EXAMPLE,
-      };
-
-      expect(metadata).toStrictEqual(expectedMetadata);
-    });
-  });
+  // repeat per-field positive/negative checks for each field
 });
 ```
 
@@ -409,28 +399,26 @@ describe("Question DTO Specs", () => {
 
 ```ts
 import { zSlug, zMongoId, zIsoDateTime } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
-import { ISO_DATE_TIME_EXAMPLE, SLUG_MIN_LENGTH, SLUG_MAX_LENGTH } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
-    it.each([
+    it.each<{ test: string; value: string; expected: boolean }>([
       { test: "valid slug", value: "valid-slug", expected: true },
       { test: "too short", value: "a", expected: false },
     ])("$test", ({ value, expected }) => {
       const result = zSlug().safeParse(value);
-      
       expect(result.success).toBe(expected);
     });
 
     it("should trim spaces from the slug value when parsing.", () => {
       const parsed = zSlug().parse("  valid-slug  ");
-      
       expect(parsed).toBe("valid-slug");
     });
   });
 
   describe(zMongoId, () => {
-    it.each([
+    it.each<{ test: string; value: string; expected: boolean }>([
       { test: "valid id", value: "507f1f77bcf86cd799439011", expected: true },
       { test: "invalid id", value: "invalid", expected: false },
     ])("$test", ({ value, expected }) => {
@@ -447,12 +435,11 @@ describe("String Zod Validators", () => {
 ```
 
 - References:
-  - `src/contexts/question/application/dto/question/question.dto.spec.ts`
-  - `src/contexts/question/application/dto/admin-question/admin-question.dto.spec.ts`
+  - `src/contexts/question/application/dto/question/question.dto.shape.spec.ts`
+  - `src/contexts/question/application/dto/admin-question/admin-question.dto.shape.spec.ts`
   - `src/shared/infrastructure/http/zod/validators/string/string.zod.validators.spec.ts`
 
 Notes:
-- Use `Object.assign({}, validDto, { field: badValue })` to avoid mutating shared faketory output across tests.
 - Prefer `DTO.parse` for positive tests and `safeParse` when you need to inspect `error` details.
 - Keep each `it` focused to one assertion — split coverage into multiple `it` lines when needed.
 
@@ -464,29 +451,26 @@ Notes:
  - Template (`date.helpers.spec.ts`):
 
  ```ts
-import { describe, it, expect } from "vitest";
 import { formatDate } from "@shared/.../date.helpers";
 
-describe("Date Helpers", () => {
-  describe(formatDate, () => {
-    it.each<{
-      test: string;
-      input: Date;
-      expected: string;
-    }>([
-      {
-        test: "should format date to YYYY-MM-DD",
-        input: new Date("2024-01-15T10:20:30Z"),
-        expected: "2024-01-15",
-      },
-      {
-        test: "should format date with leading zeros",
-        input: new Date("2024-06-05T08:09:07Z"),
-        expected: "2024-06-05",
-      },
-    ])("$test", ({ input, expected }) => {
-      expect(formatDate(input)).toBe(expected);
-    });
+describe(formatDate, () => {
+  it.each<{
+    test: string;
+    input: Date;
+    expected: string;
+  }>([
+    {
+      test: "should format date to YYYY-MM-DD",
+      input: new Date("2024-01-15T10:20:30Z"),
+      expected: "2024-01-15",
+    },
+    {
+      test: "should format date with leading zeros",
+      input: new Date("2024-06-05T08:09:07Z"),
+      expected: "2024-06-05",
+    },
+  ])("$test", ({ input, expected }) => {
+    expect(formatDate(input)).toBe(expected);
   });
 });
 ```
@@ -545,3 +529,5 @@ describe("Question Domain Errors", () => {
 - One assertion per `it` block.
 - Use the repository's helper matchers when present (e.g. `toHaveBeenCalledExactlyOnceWith()`).
 - For value equality use `toStrictEqual(expected)` to include type hinting. Use `toStrictEqual<T>(expected)` when the type can't be automatically inferred.
+- `it.each` must always be typed: `it.each<T>([...])`.
+- Error assertions: `expect(() => synchronousCall()).toThrow(exactErrorInstance)` for synchronous errors (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(exactErrorInstance)` for async errors — assert exact error class, not just message string.

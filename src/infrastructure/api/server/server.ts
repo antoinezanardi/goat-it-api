@@ -27,10 +27,6 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   app.useGlobalFilters(new GlobalExceptionFilter());
 
   setupSwaggerModule(app);
-  app.useStaticAssets({
-    root: `${process.cwd()}/public`,
-    prefix: "/public/",
-  });
 
   await app.listen(appConfigService.serverConfig);
 

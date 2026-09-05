@@ -7,7 +7,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestionStats } from "@faketories/contexts/question/domain/question-stats/question-stats.faketory";
 
-describe("Get Question Stats Use Case", () => {
+describe(GetQuestionStatsUseCase, () => {
   let useCase: GetQuestionStatsUseCase;
   let mockedRepository: ReturnType<typeof createMockedQuestionRepository>;
 

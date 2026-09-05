@@ -3,44 +3,42 @@ import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/co
 import { createFakeCorsConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors/cors.faketory";
 
-describe("Cors Helpers", () => {
-  describe(createCorsConfig, () => {
-    it("should return default CORS config when called.", () => {
-      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
-        origin: "*",
-      });
-      const corsConfig = createCorsConfig(corsConfigFromEnv);
-      const expectedCorsConfig = createFakeCorsConfig({
-        origin: "*",
-        credentials: false,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-      });
-
-      expect(corsConfig).toStrictEqual(expectedCorsConfig);
+describe(createCorsConfig, () => {
+  it("should return default CORS config when called.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+      origin: "*",
+    });
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
+    const expectedCorsConfig = createFakeCorsConfig({
+      origin: "*",
+      credentials: false,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     });
 
-    it("should use origin from configuration when provided.", () => {
-      const corsConfigFromEnv = createFakeCorsConfigFromEnv({
-        origin: "https://example.com",
-      });
-      const corsConfig = createCorsConfig(corsConfigFromEnv);
+    expect(corsConfig).toStrictEqual(expectedCorsConfig);
+  });
 
-      expect(corsConfig.origin).toBe("https://example.com");
+  it("should use origin from configuration when provided.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv({
+      origin: "https://example.com",
     });
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-    it("should set credentials to false when called.", () => {
-      const corsConfigFromEnv = createFakeCorsConfigFromEnv();
-      const corsConfig = createCorsConfig(corsConfigFromEnv);
+    expect(corsConfig.origin).toBe("https://example.com");
+  });
 
-      expect(corsConfig.credentials).toBeFalsy();
-    });
+  it("should set credentials to false when called.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-    it("should set allowed methods to default values when called.", () => {
-      const corsConfigFromEnv = createFakeCorsConfigFromEnv();
-      const corsConfig = createCorsConfig(corsConfigFromEnv);
+    expect(corsConfig.credentials).toBeFalsy();
+  });
 
-      expect(corsConfig.methods).toStrictEqual(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
-    });
+  it("should set allowed methods to default values when called.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
+
+    expect(corsConfig.methods).toStrictEqual(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
   });
 });

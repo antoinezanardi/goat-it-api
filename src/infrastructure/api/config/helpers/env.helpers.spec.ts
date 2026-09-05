@@ -5,7 +5,7 @@ import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.fake
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
-describe("Env Validation", () => {
+describe(validate, () => {
   const minimalValidEnv: Partial<AppEnv> = {
     API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
     ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
@@ -23,388 +23,378 @@ describe("Env Validation", () => {
     FALLBACK_LOCALE: "en",
   }));
 
-  describe(validate, () => {
-    it("should return parsed env when config is valid with all fields.", () => {
-      const config: Record<keyof AppEnv, unknown> = {
-        SERVER_HOST: "192.168.1.1",
-        SERVER_PORT: "4000",
-        CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
-        MONGODB_PORT: "27018",
-        MONGODB_DATABASE: "goat-it-test",
-        FALLBACK_LOCALE: "fr",
-        API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
-        ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
-        GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
-      };
-      const expectedConfig = createFakeAppEnv({
-        SERVER_HOST: "192.168.1.1",
-        SERVER_PORT: 4000,
-        CORS_ORIGIN: "*",
-        MONGODB_HOST: "0.0.0.0",
-        MONGODB_PORT: 27_018,
-        MONGODB_DATABASE: "goat-it-test",
-        FALLBACK_LOCALE: "fr",
-        API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
-        ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
-        GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
+  it("should return parsed env when config is valid with all fields.", () => {
+    const config: Record<keyof AppEnv, unknown> = {
+      SERVER_HOST: "192.168.1.1",
+      SERVER_PORT: "4000",
+      CORS_ORIGIN: "*",
+      MONGODB_HOST: "0.0.0.0",
+      MONGODB_PORT: "27018",
+      MONGODB_DATABASE: "goat-it-test",
+      FALLBACK_LOCALE: "fr",
+      API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
+      ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    };
+    const expectedConfig = createFakeAppEnv({
+      SERVER_HOST: "192.168.1.1",
+      SERVER_PORT: 4000,
+      CORS_ORIGIN: "*",
+      MONGODB_HOST: "0.0.0.0",
+      MONGODB_PORT: 27_018,
+      MONGODB_DATABASE: "goat-it-test",
+      FALLBACK_LOCALE: "fr",
+      API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
+      ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
     });
 
-    it("should return parsed env with all defaults when config only has optional fields missing.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-      };
-
-      expect(validate(config)).toStrictEqual(defaultEnv);
-    });
-
-    it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        SERVER_PORT: "8080",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        SERVER_PORT: 8080,
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        SERVER_PORT: 9000,
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        SERVER_PORT: 9000,
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it.each<{ host: string; description: string }>([
-      { host: "192.168.0.10", description: "non-default valid IPv4" },
-      { host: "mongo.example.com", description: "non-default valid hostname" },
-      { host: "mongodb", description: "non-default docker hostname" },
-    ])("should accept a $description for when MONGODB_HOST is an override.", ({ host }) => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        MONGODB_HOST: host,
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        MONGODB_HOST: host,
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        CORS_ORIGIN: "https://example.com",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        CORS_ORIGIN: "https://example.com",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a valid MONGODB_PORT when it is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        MONGODB_PORT: "28017",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        MONGODB_PORT: 28_017,
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        MONGODB_DATABASE: "my-database-1",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        MONGODB_DATABASE: "my-database-1",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> = {
-        ...minimalValidEnv,
-        FALLBACK_LOCALE: "es",
-      };
-      const expectedConfig = createFakeAppEnv({
-        ...defaultEnv,
-        FALLBACK_LOCALE: "es",
-      });
-
-      expect(validate(config)).toStrictEqual(expectedConfig);
-    });
-
-    it("should return parsed env when config contains additional properties.", () => {
-      const config: Partial<Record<keyof AppEnv, unknown>> & { EXTRA_FIELD: string } = {
-        ...minimalValidEnv,
-        EXTRA_FIELD: "should be ignored",
-      };
-
-      expect(validate(config)).toStrictEqual(defaultEnv);
-    });
-
-    it.each<{
-      test: string;
-      config: Partial<Record<keyof AppEnv, unknown>>;
-      errorMessage: string;
-    }>([
-      {
-        test: "should throw error when SERVER_HOST is an invalid hostname.",
-        config: {
-          SERVER_HOST: "invalid_host_name!",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_HOST is not a valid IP address.",
-        config: {
-          SERVER_HOST: "aa.aaa?aaa",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_HOST is an empty string.",
-        config: {
-          SERVER_HOST: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_PORT is negative.",
-        config: {
-          SERVER_PORT: "-1",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_PORT is below minimum.",
-        config: {
-          SERVER_PORT: "0",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_PORT is above maximum.",
-        config: {
-          SERVER_PORT: "70000",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_PORT is a non-numeric string.",
-        config: {
-          SERVER_PORT: "not_a_number",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when SERVER_PORT is an empty string.",
-        config: {
-          SERVER_PORT: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when CORS_ORIGIN is not a valid URL and not '*'.",
-        config: {
-          CORS_ORIGIN: "invalid_url",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when CORS_ORIGIN is an empty string.",
-        config: {
-          CORS_ORIGIN: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_HOST is not a valid IPv4 address.",
-        config: {
-          MONGODB_HOST: "invalid_ip_address",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_HOST is an empty string.",
-        config: {
-          MONGODB_HOST: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_PORT is negative.",
-        config: {
-          MONGODB_PORT: "-1",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_PORT is below minimum.",
-        config: {
-          MONGODB_PORT: "0",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_PORT is above maximum.",
-        config: {
-          MONGODB_PORT: "70000",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_PORT is a non-numeric string.",
-        config: {
-          MONGODB_PORT: "not_a_number",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_PORT is an empty string.",
-        config: {
-          MONGODB_PORT: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_DATABASE contains invalid characters.",
-        config: {
-          MONGODB_DATABASE: "invalid database name!",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_DATABASE ends with a hyphen.",
-        config: {
-          MONGODB_DATABASE: "invalid-database-",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when MONGODB_DATABASE is an empty string.",
-        config: {
-          MONGODB_DATABASE: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when FALLBACK_LOCALE is not in the supported locales.",
-        config: {
-          FALLBACK_LOCALE: "unknown",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when FALLBACK_LOCALE is an empty string.",
-        config: {
-          FALLBACK_LOCALE: "",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when API_KEY_HMAC_SECRET is missing.",
-        config: {
-          API_KEY_HMAC_SECRET: undefined,
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when API_KEY_HMAC_SECRET is too short.",
-        config: {
-          API_KEY_HMAC_SECRET: "short-secret",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when ADMIN_API_KEY is missing.",
-        config: {
-          ADMIN_API_KEY: undefined,
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when ADMIN_API_KEY is too short.",
-        config: {
-          ADMIN_API_KEY: "short-key",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when GAME_API_KEY is missing.",
-        config: {
-          GAME_API_KEY: undefined,
-        },
-        errorMessage: "Invalid environment variables",
-      },
-      {
-        test: "should throw error when GAME_API_KEY is too short.",
-        config: {
-          GAME_API_KEY: "short-key",
-        },
-        errorMessage: "Invalid environment variables",
-      },
-    ])("$test", ({ config, errorMessage }) => {
-      const fullConfig = {
-        ...defaultEnv,
-        ...config,
-      };
-
-      expect(() => validate(fullConfig)).toThrow(errorMessage);
-    });
+    expect(validate(config)).toStrictEqual(expectedConfig);
   });
 
-  describe(getEnvFilePath, () => {
-    const originalEnv = process.env.NODE_ENV;
+  it("should return parsed env with all defaults when config only has optional fields missing.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+    };
 
-    afterEach(() => {
-      process.env.NODE_ENV = originalEnv;
+    expect(validate(config)).toStrictEqual(defaultEnv);
+  });
+
+  it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      SERVER_PORT: "8080",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      SERVER_PORT: 8080,
     });
 
-    it("should return '.env' when NODE_ENV is not set.", () => {
-      delete process.env.NODE_ENV;
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
 
-      expect(getEnvFilePath()).toBe("env/.env");
+  it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      SERVER_PORT: 9000,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      SERVER_PORT: 9000,
     });
 
-    it("should return '.env.development' when NODE_ENV is 'development'.", () => {
-      process.env.NODE_ENV = "development";
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
 
-      expect(getEnvFilePath()).toBe("env/.env.development");
+  it.each<{ host: string; description: string }>([
+    { host: "192.168.0.10", description: "non-default valid IPv4" },
+    { host: "mongo.example.com", description: "non-default valid hostname" },
+    { host: "mongodb", description: "non-default docker hostname" },
+  ])("should accept a $description for when MONGODB_HOST is an override.", ({ host }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      MONGODB_HOST: host,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      MONGODB_HOST: host,
     });
 
-    it("should return '.env.test' when NODE_ENV is 'test'.", () => {
-      process.env.NODE_ENV = "test";
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
 
-      expect(getEnvFilePath()).toBe("env/.env.test");
+  it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      CORS_ORIGIN: "https://example.com",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      CORS_ORIGIN: "https://example.com",
     });
 
-    it("should return '.env' when NODE_ENV is 'production'.", () => {
-      process.env.NODE_ENV = "production";
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
 
-      expect(getEnvFilePath()).toBe("env/.env");
+  it("should accept a valid MONGODB_PORT when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      MONGODB_PORT: "28017",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      MONGODB_PORT: 28_017,
     });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      MONGODB_DATABASE: "my-database-1",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      MONGODB_DATABASE: "my-database-1",
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      FALLBACK_LOCALE: "es",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      FALLBACK_LOCALE: "es",
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should return parsed env when config contains additional properties.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> & { EXTRA_FIELD: string } = {
+      ...minimalValidEnv,
+      EXTRA_FIELD: "should be ignored",
+    };
+
+    expect(validate(config)).toStrictEqual(defaultEnv);
+  });
+
+  it.each<{
+    test: string;
+    config: Partial<Record<keyof AppEnv, unknown>>;
+    errorMessage: string;
+  }>([
+    {
+      test: "should throw error when SERVER_HOST is an invalid hostname.",
+      config: {
+        SERVER_HOST: "invalid_host_name!",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_HOST is not a valid IP address.",
+      config: {
+        SERVER_HOST: "aa.aaa?aaa",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_HOST is an empty string.",
+      config: {
+        SERVER_HOST: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_PORT is negative.",
+      config: {
+        SERVER_PORT: "-1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_PORT is below minimum.",
+      config: {
+        SERVER_PORT: "0",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_PORT is above maximum.",
+      config: {
+        SERVER_PORT: "70000",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_PORT is a non-numeric string.",
+      config: {
+        SERVER_PORT: "not_a_number",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when SERVER_PORT is an empty string.",
+      config: {
+        SERVER_PORT: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when CORS_ORIGIN is not a valid URL and not '*'.",
+      config: {
+        CORS_ORIGIN: "invalid_url",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when CORS_ORIGIN is an empty string.",
+      config: {
+        CORS_ORIGIN: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_HOST is not a valid IPv4 address.",
+      config: {
+        MONGODB_HOST: "invalid_ip_address",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_HOST is an empty string.",
+      config: {
+        MONGODB_HOST: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_PORT is negative.",
+      config: {
+        MONGODB_PORT: "-1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_PORT is below minimum.",
+      config: {
+        MONGODB_PORT: "0",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_PORT is above maximum.",
+      config: {
+        MONGODB_PORT: "70000",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_PORT is a non-numeric string.",
+      config: {
+        MONGODB_PORT: "not_a_number",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_PORT is an empty string.",
+      config: {
+        MONGODB_PORT: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_DATABASE contains invalid characters.",
+      config: {
+        MONGODB_DATABASE: "invalid database name!",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_DATABASE ends with a hyphen.",
+      config: {
+        MONGODB_DATABASE: "invalid-database-",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when MONGODB_DATABASE is an empty string.",
+      config: {
+        MONGODB_DATABASE: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when FALLBACK_LOCALE is not in the supported locales.",
+      config: {
+        FALLBACK_LOCALE: "unknown",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when FALLBACK_LOCALE is an empty string.",
+      config: {
+        FALLBACK_LOCALE: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when API_KEY_HMAC_SECRET is missing.",
+      config: {
+        API_KEY_HMAC_SECRET: undefined,
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when API_KEY_HMAC_SECRET is too short.",
+      config: {
+        API_KEY_HMAC_SECRET: "short-secret",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when ADMIN_API_KEY is missing.",
+      config: {
+        ADMIN_API_KEY: undefined,
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when ADMIN_API_KEY is too short.",
+      config: {
+        ADMIN_API_KEY: "short-key",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when GAME_API_KEY is missing.",
+      config: {
+        GAME_API_KEY: undefined,
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when GAME_API_KEY is too short.",
+      config: {
+        GAME_API_KEY: "short-key",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+  ])("$test", ({ config, errorMessage }) => {
+    const fullConfig = {
+      ...defaultEnv,
+      ...config,
+    };
+
+    expect(() => validate(fullConfig)).toThrow(errorMessage);
+  });
+});
+
+describe(getEnvFilePath, () => {
+  const originalEnv = process.env.NODE_ENV;
+
+  afterEach(() => {
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it("should return 'env/.env' when NODE_ENV is not set.", () => {
+    delete process.env.NODE_ENV;
+
+    expect(getEnvFilePath()).toBe("env/.env");
+  });
+
+  it.each<[string, string]>([
+    ["development", "env/.env.development"],
+    ["test", "env/.env.test"],
+    ["production", "env/.env"],
+  ])("should return the expected path when NODE_ENV is '%s'.", (nodeEnv, expected) => {
+    process.env.NODE_ENV = nodeEnv;
+
+    expect(getEnvFilePath()).toBe(expected);
   });
 });

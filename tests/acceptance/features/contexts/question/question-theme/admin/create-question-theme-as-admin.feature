@@ -1,6 +1,5 @@
 @question-theme @create-question-theme @admin
-
-Feature: Create Question Theme As Admin
+Feature: Create Question Theme as Admin
   In order to create question themes to categorize questions
   As an admin API client
   I want to be able to create a question theme by providing its data
@@ -45,7 +44,7 @@ Feature: Create Question Theme As Admin
       | label.es       | string | "   Cultura general "                            |
       | aliases.es     | array  | ["   Conocimientos ", "  General  "]             |
       | description.es | string | "   Un tema que abarca una amplia gama de temas" |
-    When the admin creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question theme:
       | slug              | status | color   |
@@ -65,7 +64,7 @@ Feature: Create Question Theme As Admin
     When the request payload is overridden with the following values:
       | path  | type      | value |
       | color | undefined |       |
-    When the admin creates a new question theme with the request payload
+    And the admin creates a new question theme with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question theme:
       | slug              | status |

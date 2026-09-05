@@ -3,6 +3,9 @@ import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty,
 
 import type { TupleToUnion } from "type-fest";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+import type { TranslationCompletenessStats } from "@shared/domain/types/translation-completeness/translation-completeness.types";
+
 type QuestionSortableField = TupleToUnion<typeof ADMIN_QUESTION_SORTABLE_FIELDS>;
 
 type QuestionFilterOptions = {
@@ -11,9 +14,11 @@ type QuestionFilterOptions = {
   cognitiveDifficulty: QuestionCognitiveDifficulty;
   authorRole: QuestionAuthorRole;
   themeIds: string[];
+  isFullyTranslated: boolean;
+  locale?: Locale;
 };
 
-type PublicQuestionFilterOptions = Omit<QuestionFilterOptions, "status">;
+type PublicQuestionFilterOptions = Omit<QuestionFilterOptions, "status" | "isFullyTranslated">;
 
 type FindRandomQuestionsOptions = {
   limit: number;
@@ -21,6 +26,7 @@ type FindRandomQuestionsOptions = {
   categories?: QuestionCategory[];
   cognitiveDifficulties?: QuestionCognitiveDifficulty[];
   themeIds?: string[];
+  locale: Locale;
 };
 
 type QuestionStats = {
@@ -30,6 +36,7 @@ type QuestionStats = {
   byCognitiveDifficulty: Partial<Record<QuestionCognitiveDifficulty, number>>;
   byAuthorRole: Partial<Record<QuestionAuthorRole, number>>;
   byRejectionType: Partial<Record<QuestionRejectionType, number>>;
+  byTranslationCompleteness: TranslationCompletenessStats;
 };
 
 export type { QuestionSortableField, QuestionFilterOptions, PublicQuestionFilterOptions, FindRandomQuestionsOptions, QuestionStats };

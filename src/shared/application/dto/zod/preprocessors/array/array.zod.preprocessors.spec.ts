@@ -1,13 +1,13 @@
 import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/array/array.zod.preprocessors";
 
-describe("Normalize To Array", () => {
+describe(normalizeToArray, () => {
   it("should return an array containing the string when value is a string.", () => {
     const result = normalizeToArray("hello");
 
     expect(result).toStrictEqual(["hello"]);
   });
 
-  it.each([
+  it.each<{ description: string; value: unknown }>([
     { value: ["a", "b"], description: "an array" },
     { value: undefined, description: "undefined" },
     { value: 42, description: "a number" },
