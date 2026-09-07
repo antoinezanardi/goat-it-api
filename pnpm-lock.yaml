@@ -306,8 +306,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       unplugin-swc:
-        specifier: ^1.5.11
-        version: 1.5.11(@swc/core@1.16.2)(esbuild@0.28.0)(rolldown@1.2.7)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.13)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.16.2)(esbuild@0.28.0))
+        specifier: ^1.6.0
+        version: 1.6.0(@swc/core@1.16.2)(esbuild@0.28.0)(rolldown@1.2.7)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.13)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.16.2)(esbuild@0.28.0))
       validate-branch-name:
         specifier: ^1.3.2
         version: 1.3.2(typescript@6.0.3)
@@ -6046,8 +6046,8 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unplugin-swc@1.5.11:
-    resolution: {integrity: sha512-R7U4GbfrESPnYLn3nXREZrwhKQk3BAmTBoKJ5lmo7btTc/yJpNsDzavBWo+XpQTjDSIogiZEAxC5ig/vfMWxWg==}
+  unplugin-swc@1.6.0:
+    resolution: {integrity: sha512-aOdzxAwJvz1GeQ8vwSNA2N8AreHYBrpwxqnwzxmB7LCdeZiXOBDj0rgjZod+lMxFsJGm8k6lF/1iKF/9wacLbw==}
     peerDependencies:
       '@swc/core': ^1.2.108
 
@@ -11832,7 +11832,7 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin-swc@1.5.11(@swc/core@1.16.2)(esbuild@0.28.0)(rolldown@1.2.7)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.13)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.16.2)(esbuild@0.28.0)):
+  unplugin-swc@1.6.0(@swc/core@1.16.2)(esbuild@0.28.0)(rolldown@1.2.7)(vite@8.0.10(@types/node@24.13.3)(esbuild@0.28.0)(jiti@2.7.0)(terser@5.46.2)(tsx@4.23.13)(yaml@2.9.0))(webpack@5.106.2(@swc/core@1.16.2)(esbuild@0.28.0)):
     dependencies:
       '@rollup/pluginutils': 5.4.0
       '@swc/core': 1.16.2
