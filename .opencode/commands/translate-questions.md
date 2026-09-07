@@ -92,7 +92,7 @@ Options: `["Translate to all missing locales", "Mark as French-only (applicableL
 
 - **Translate to all missing locales** → continue to step 4d.
 - **Mark as French-only** → skip translation; jump directly to step 4g (case 2) to PATCH `applicableLocales: ["fr"]`.
-- **Skip this question** → move to the next question.
+- **Skip this question** → record `{questionId}: skipped (reason: skipped by user)` in the running issues list, output `✗ Question {questionId} skipped (skipped by user)`, and move to the next question.
 - **Halt command** → stop the entire command.
 
 When choosing "Mark as French-only", the command will not translate content; the question will only be visible to French players. Use this option when:
@@ -141,7 +141,7 @@ Options: `["Approve", "Reject"]`
 - If **Reject** → ask the user what to do via `question` tool: `["Mark as French-only (skip translation)", "Provide manual English translation", "Skip this question", "Halt command"]`.
   - **Mark as French-only**: jump directly to step 4g (case 2) to PATCH `applicableLocales: ["fr"]`.
   - **Manual**: user provides the English translations; use those instead, then continue at step 4f.
-  - **Skip**: move to the next question.
+  - **Skip**: record `{questionId}: skipped (reason: skipped by user during approval)` in the running issues list, output `✗ Question {questionId} skipped (skipped by user during approval)`, and move to the next question.
   - **Halt**: stop the entire command.
 - If **Approve** → proceed to step 4f.
 
@@ -219,13 +219,14 @@ Example payload (if `context` and `trivia` also need translation):
 }
 ```
 
-Execute the PATCH:
+Execute the PATCH and capture both the response body and the HTTP status code (printed on the last line via -w):
 
 ```bash
 curl -s -X PATCH "{baseUrl}/admin/questions/{questionId}" \
   -H "Content-Type: application/json" \
   -H "goat-it-api-key: {apiKey}" \
-  -d '{payload}'
+  -d '{payload}' \
+  -w "\n%{http_code}"
 ```
 
 **Case 2: Marking as French-only** (from step 4c or 4e reject)
@@ -238,13 +239,14 @@ Send only the `applicableLocales` field:
 }
 ```
 
-Execute the PATCH:
+Execute the PATCH and capture both the response body and the HTTP status code (printed on the last line via -w):
 
 ```bash
 curl -s -X PATCH "{baseUrl}/admin/questions/{questionId}" \
   -H "Content-Type: application/json" \
   -H "goat-it-api-key: {apiKey}" \
-  -d '{"applicableLocales": ["fr"]}'
+  -d '{"applicableLocales": ["fr"]}' \
+  -w "\n%{http_code}"
 ```
 
 #### 4h. Handle errors
@@ -255,7 +257,7 @@ If the PATCH returns a non-`200` status:
 - Ask via `question` tool: `["Retry", "Mark as French-only", "Skip this question", "Halt command"]`.
   - **Retry**: go back to step 4d (translation case) or step 4g case 2 (French-only case) with the error context.
   - **Mark as French-only** (translation case only): switch to step 4g case 2.
-  - **Skip**: move to the next question.
+  - **Skip**: record `{questionId}: skipped (reason: skipped by user after PATCH error)` in the running issues list, output `✗ Question {questionId} skipped (skipped by user after PATCH error)`, and move to the next question.
   - **Halt**: stop the entire command.
 
 #### 4i. Verify question is fully handled
@@ -277,7 +279,7 @@ curl -s "{baseUrl}/admin/questions/{questionId}" \
   - **Skip**: record this question as skipped (with reason: "incomplete after patch"), output `✗ Question {id} skipped (incomplete)`, and move to the next question.
   - **Halt**: record this question as halted (with reason: "incomplete after patch"), output `✗ Question {id} halted (incomplete)`, and stop the entire command.
   Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
-- If complete → output `✓ Question {id} fully translated` (translation case) or `✓ Question {id} marked as French-only` (French-only case) and move to the next question.
+- If complete → output `✓ Question {id} fully translated` (translation case) or `✓ Question {id} marked as French-only` (French-only case), increment `translated_count` (translation case) or `french_only_count` (French-only case) by exactly 1, then move to the next question.
 
 ### 5. Completion
 
@@ -312,3 +314,19 @@ Then list each problematic question with its ID and reason:
 - {questionId}: halted (reason: {reason})
 - {questionId}: error (reason: {reason})
 ```
+
+### 6. Lessons learned
+
+After the finish report, run a short retrospective and offer to improve **this command**:
+
+1. **Collect findings** from the session:
+   - Translations the user accepted as-is or rewrote manually (candidate style entries: tone, terminology, locale conventions).
+   - Decisions to mark questions as French-only that the user later reversed (candidate heuristic entries: when to suggest French-only proactively).
+   - Per-question choices the user rejected (translate vs French-only vs skip) and the reasoning they gave.
+   - Loop friction: ambiguous wording, misleading verification outputs, partial API responses that the agent had to re-interpret.
+   - Any explicit user feedback during approval questions or issue reviews.
+2. **Propose improvements** — map each finding to a concrete edit of `.opencode/commands/translate-questions.md` (step wording, verification logic, summary format, locale list, French-only heuristics). Present them as a table: improvement → lessons addressed, then ask via the question tool which to apply.
+3. **Never modify the command without explicit user approval.**
+4. **Apply approved edits** directly, verify each landed by re-reading/grepping the edited sections, and report where each change lives.
+
+Skip this step only when the user explicitly closes the session first; otherwise always offer it.
