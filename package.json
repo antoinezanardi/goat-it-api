@@ -165,7 +165,7 @@
     "mongoose": "^9.9.5",
     "nestjs-pino": "^5.1.0",
     "nestjs-zod": "^5.5.0",
-    "radashi": "^12.9.1",
+    "radashi": "^12.9.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "zod": "^4.5.4"
