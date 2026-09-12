@@ -1,5 +1,12 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.23.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.23.0...v1.23.1) (2026-09-12)
+
+### 🧹 Chore
+
+* **schemas:** update schemas package to 0.0.24 ([2480516](https://github.com/antoinezanardi/goat-it-api/commit/2480516591729576e788c2807828f55e38e94cd7))
+* sync release v1.23.0 from main ([6b59def](https://github.com/antoinezanardi/goat-it-api/commit/6b59def7a5273bb2d8449d1697c27d6206eb7584))
+
 ## [1.23.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.22.1...v1.23.0) (2026-09-12)
 
 ### 🚀 Features
