@@ -19,11 +19,17 @@ import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-Then(/^the response should contain (?<questionsCount>\d+) admin questions$/u, function(this: GoatItWorld, countAsString: string): void {
+Then(/^the response should contain (?<questionsCount>\d+) admin questions?$/u, function(this: GoatItWorld, countAsString: string): void {
   const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
   const questionsCount = Math.trunc(Number(countAsString));
 
   expect(questions).toHaveLength(questionsCount);
+});
+
+Then(/^the response should contain an admin question among them with id "(?<id>[^"]+)"$/u, function(this: GoatItWorld, id: string): void {
+  const questions = this.expectLastResponseJson<AdminQuestionDto[]>(z.array(ADMIN_QUESTION_DTO));
+
+  findQuestionByIdOrThrow(questions, id);
 });
 
 Then(/^all returned admin questions should have status "(?<status>[^"]+)"$/u, function(this: GoatItWorld, status: string): void {
@@ -245,4 +251,16 @@ Then(/^the response should contain no rejection for the admin question$/u, funct
   const question = this.expectLastResponseJson<AdminQuestionDto>(ADMIN_QUESTION_DTO);
 
   expect(question.rejection).toBeUndefined();
+});
+
+Then(/^the response should contain no applicable locales for the admin question$/u, function(this: GoatItWorld): void {
+  const question = this.expectLastResponseJson<AdminQuestionDto>(ADMIN_QUESTION_DTO);
+
+  expect(question.applicableLocales).toBeUndefined();
+});
+
+Then(/^the response should contain an empty applicable locales array for the admin question$/u, function(this: GoatItWorld): void {
+  const question = this.expectLastResponseJson<AdminQuestionDto>(ADMIN_QUESTION_DTO);
+
+  expect(question.applicableLocales).toStrictEqual([]);
 });

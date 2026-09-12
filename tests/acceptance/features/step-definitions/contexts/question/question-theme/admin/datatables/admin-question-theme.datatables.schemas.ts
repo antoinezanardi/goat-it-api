@@ -5,9 +5,9 @@ import { createZLocalizedDataTableRowSchema } from "@acceptance-features/step-de
 import { zCoerceOptionalString } from "@acceptance-support/helpers/datatable.helpers";
 
 const ADMIN_QUESTION_THEME_DATATABLE_ROW_SCHEMA = z.strictObject({
-  slug: z.string().optional(),
-  status: z.string().optional(),
-  color: z.string().optional(),
+  slug: zCoerceOptionalString(),
+  status: zCoerceOptionalString(),
+  color: zCoerceOptionalString(),
 });
 
 const ADMIN_QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("label");
@@ -16,11 +16,12 @@ const ADMIN_QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA = createZL
 
 const ADMIN_QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA = createZLocalizedDataTableRowSchema("aliases");
 
-const ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA = z.strictObject({
+const ADMIN_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA = z.strictObject({
   "sort-by": zCoerceOptionalString(),
   "sort-order": zCoerceOptionalString(),
   "status": zCoerceOptionalString(),
   "limit": zCoerceOptionalString(),
+  "is-fully-translated": zCoerceOptionalString(),
 });
 
 export {
@@ -28,5 +29,5 @@ export {
   ADMIN_QUESTION_THEME_LOCALIZED_LABEL_DATATABLE_ROW_SCHEMA,
   ADMIN_QUESTION_THEME_LOCALIZED_DESCRIPTION_DATATABLE_ROW_SCHEMA,
   ADMIN_QUESTION_THEME_LOCALIZED_ALIASES_DATATABLE_ROW_SCHEMA,
-  ADMIN_QUESTION_THEME_QUERY_PARAMS_SCHEMA,
+  ADMIN_QUESTION_THEME_QUERY_PARAMS_DATATABLE_ROW_SCHEMA,
 };

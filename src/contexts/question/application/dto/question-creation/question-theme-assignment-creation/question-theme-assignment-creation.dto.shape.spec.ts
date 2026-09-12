@@ -1,15 +1,16 @@
 import { ZodError } from "zod";
 
-import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import { QUESTION_THEME_ASSIGNMENT_CREATION_DTO } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 
-import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
-
 describe("Question Theme Assignment Creation DTO Shape", () => {
-  let validDto: QuestionThemeAssignmentCreationDto;
+  let validDto: { themeId: string; isPrimary: boolean; isHint: boolean };
 
   beforeEach(() => {
-    validDto = createFakeQuestionThemeAssignmentCreationDto();
+    validDto = {
+      themeId: "60af924f4f1a2563f8e8b456",
+      isPrimary: true,
+      isHint: false,
+    };
   });
 
   it("should pass validation when a valid QuestionThemeAssignmentCreationDto is provided.", () => {
@@ -18,7 +19,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
 
   describe("themeId", () => {
     it("should throw zod error when themeId is invalid.", () => {
-      const invalid = Object.assign(validDto, { themeId: "not-an-id" });
+      const invalid = { ...validDto, themeId: "not-an-id" };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -36,7 +37,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
 
   describe("isPrimary", () => {
     it("should throw zod error when isPrimary is invalid.", () => {
-      const invalid = Object.assign(validDto, { isPrimary: "not-boolean" });
+      const invalid = { ...validDto, isPrimary: "not-boolean" };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -53,7 +54,7 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
 
   describe("isHint", () => {
     it("should throw zod error when isHint is invalid.", () => {
-      const invalid = Object.assign(validDto, { isHint: "not-boolean" });
+      const invalid = { ...validDto, isHint: "not-boolean" };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });

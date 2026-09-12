@@ -9,7 +9,7 @@ import { createFakeHealthIndicatorResult } from "@faketories/infrastructure/api/
 
 import type { HealthCheckResult } from "@nestjs/terminus";
 
-describe("Health Controller", () => {
+describe(HealthController, () => {
   let healthController: HealthController;
   let mocks: {
     services: {

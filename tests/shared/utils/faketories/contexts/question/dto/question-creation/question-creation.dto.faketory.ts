@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 
@@ -15,6 +17,7 @@ function createFakeQuestionCreationDto(creationDto: Partial<QuestionCreationDto>
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
     author: createFakeQuestionAuthorCreationDto(),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     ...creationDto,
   };
 }

@@ -1,10 +1,10 @@
-FROM --platform=$BUILDPLATFORM node:26.7.0-alpine AS base
+FROM --platform=$BUILDPLATFORM node:26.8.2-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
 
-RUN npm install -g corepack@0.34.4 --force
+RUN npm install -g corepack --force
 
 RUN corepack enable
 
@@ -56,7 +56,7 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM node:26.7.0-alpine AS production
+FROM node:26.8.2-alpine AS production
 
 USER node
 

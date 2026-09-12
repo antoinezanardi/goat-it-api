@@ -19,6 +19,7 @@ function createQuestionStatsDtoFromStats(stats: QuestionStats): QuestionStatsDto
     byCognitiveDifficulty: createStatsZeroFilledRecord(QUESTION_COGNITIVE_DIFFICULTIES, stats.byCognitiveDifficulty),
     byAuthorRole: createStatsZeroFilledRecord(QUESTION_AUTHOR_ROLES, stats.byAuthorRole),
     byRejectionType: createStatsZeroFilledRecord(QUESTION_REJECTION_TYPES, stats.byRejectionType),
+    byTranslationCompleteness: stats.byTranslationCompleteness,
   };
 }
 

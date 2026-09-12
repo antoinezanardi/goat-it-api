@@ -1,5 +1,4 @@
 @question @sort-questions @public
-
 Feature: Sort Questions
   In order to display questions in a specific order
   As an API client

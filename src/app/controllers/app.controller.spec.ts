@@ -5,7 +5,7 @@ import { AppService } from "@app/providers/services/app.service";
 
 import { createMockedAppService } from "@mocks/app/providers/services/app.service.mock";
 
-describe("App Controller", () => {
+describe(AppController, () => {
   let appController: AppController;
   let mocks: {
     services: {

@@ -11,6 +11,7 @@ function createQuestionThemeStatsDtoFromStats(stats: QuestionThemeStats): Questi
     total: stats.total,
     byStatus: createStatsZeroFilledRecord(QUESTION_THEME_STATUSES, stats.byStatus),
     byQuestionCount: stats.byQuestionCount,
+    byTranslationCompleteness: stats.byTranslationCompleteness,
   };
 }
 

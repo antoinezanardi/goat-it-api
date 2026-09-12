@@ -9,6 +9,7 @@ import { FIVE_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY, FIVE_QUESTION_THEMES_FIXTURE
 const FIVE_QUESTIONS_FIXTURE_SET = [
   createFakeQuestionDocument({
     _id: createFakeObjectId("a1b2c3d4e5f6012345678901"),
+    applicableLocales: undefined,
     category: "riddle",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -82,6 +83,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("b2c3d4e5f6a7012345678902"),
+    applicableLocales: undefined,
     category: "trivia",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -137,6 +139,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("c3d4e5f6a7b8012345678903"),
+    applicableLocales: undefined,
     category: "lexicon",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -179,6 +182,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("d4e5f6a7b8c9012345678904"),
+    applicableLocales: undefined,
     category: "explanation",
     themes: [
       createFakeQuestionThemeAssignmentDocument({
@@ -242,6 +246,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
   }),
   createFakeQuestionDocument({
     _id: createFakeObjectId("efd39a4ac3bdfd03d2f8cdf1"),
+    applicableLocales: undefined,
     category: "trivia",
     themes: [
       createFakeQuestionThemeAssignmentDocument({

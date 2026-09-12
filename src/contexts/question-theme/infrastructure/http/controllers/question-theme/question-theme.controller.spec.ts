@@ -26,7 +26,7 @@ import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 vi.mock(import("@question-theme/application/mappers/question-theme.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
-describe("Question Theme Controller", () => {
+describe(QuestionThemeController, () => {
   let questionThemeController: QuestionThemeController;
   let mocks: {
     services: {

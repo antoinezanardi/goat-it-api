@@ -8,7 +8,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-describe("Find Question By Id Use Case", () => {
+describe(FindQuestionByIdUseCase, () => {
   let findQuestionByIdUseCase: FindQuestionByIdUseCase;
   let mocks: {
     repositories: {

@@ -15,7 +15,7 @@ import type { MongooseModuleOptions } from "@nestjs/mongoose";
 import type { TestingModule } from "@nestjs/testing";
 import type { Connection } from "mongoose";
 
-describe("Database Service", () => {
+describe(DatabaseService, () => {
   let services: { database: DatabaseService };
   let mocks: {
     services: {
@@ -48,13 +48,11 @@ describe("Database Service", () => {
     services = { database: module.get<DatabaseService>(DatabaseService) };
   });
 
-  describe("Constructor", () => {
-    it("should log database connection message when instantiated.", () => {
-      expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);
-    });
+  it("should log database connection message when instantiated.", () => {
+    expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);
   });
 
-  describe("createMongooseOptions", () => {
+  describe(DatabaseService.prototype.createMongooseOptions, () => {
     it("should log database connecting message when called.", () => {
       services.database.createMongooseOptions();
       const mockedLoggerInstance = getMockedLoggerInstance();
@@ -88,7 +86,7 @@ describe("Database Service", () => {
     });
   });
 
-  describe("onMongooseConnectionCreate", () => {
+  describe(DatabaseService.prototype["onMongooseConnectionCreate"], () => {
     it("should log database connected message when connection emits connected event.", () => {
       const fakeConnection = new EventEmitter() as unknown as Connection;
       services.database["onMongooseConnectionCreate"](fakeConnection);

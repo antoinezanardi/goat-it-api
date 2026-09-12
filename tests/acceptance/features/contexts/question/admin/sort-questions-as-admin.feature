@@ -1,5 +1,4 @@
 @question @sort-questions @admin
-
 Feature: Sort Questions as Admin
   In order to display questions in a specific order in the back office
   As an admin API client

@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 import type { QuestionMongooseDocumentStub, QuestionThemeAssignmentMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
@@ -32,6 +34,7 @@ function createFakeQuestionDocument(questionDocument: Partial<QuestionMongooseDo
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.helpers.maybe(createFakeQuestionRejection),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     createdAt: faker.date.anytime(),
     updatedAt: faker.date.anytime(),
     ...questionDocument,

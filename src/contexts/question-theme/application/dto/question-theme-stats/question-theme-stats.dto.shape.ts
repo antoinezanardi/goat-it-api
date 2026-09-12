@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
+import { zTranslationCompletenessStats } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
+
 const QUESTION_THEME_STATS_DTO = z.strictObject({
   total: z.number().int().nonnegative().describe("Total number of question themes"),
   byStatus: z
@@ -18,6 +20,8 @@ const QUESTION_THEME_STATS_DTO = z.strictObject({
         .describe("Number of active questions referencing this theme (includes 0 for themes with no active questions)"),
     }))
     .describe("Active question count per theme, sorted alphabetically by slug"),
+  byTranslationCompleteness: zTranslationCompletenessStats()
+    .describe("Translation completeness breakdown"),
 });
 
 type QuestionThemeStatsDto = z.infer<typeof QUESTION_THEME_STATS_DTO>;

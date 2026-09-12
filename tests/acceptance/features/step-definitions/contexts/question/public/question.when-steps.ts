@@ -1,9 +1,10 @@
 import { When } from "@cucumber/cucumber";
 
-import { PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA, RANDOM_QUESTION_BODY_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
+import { fetchListWithQuery } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
+import { PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
-import { buildQueryFromRow, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
+import { validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
@@ -20,12 +21,7 @@ When(/^the client retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, 
 });
 
 When(/^the client retrieves all questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
-  const queryRow = validateDataTableAndGetFirstRow(queryDataTable, PUBLIC_QUESTION_QUERY_PARAMS_SCHEMA);
-  const fetchOptions = createFetchOptions({
-    apiKey: APP_GAME_API_KEY,
-    query: buildQueryFromRow(queryRow),
-  });
-  await this.fetchAndStoreResponse("/questions", fetchOptions);
+  await fetchListWithQuery(this, "/questions", queryDataTable, PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, APP_GAME_API_KEY);
 });
 
 When(/^the client retrieves all questions without an API key$/u, async function(this: GoatItWorld) {
@@ -71,7 +67,7 @@ When(/^the client retrieves random questions(?: in locale "(?<locale>[^"]+)")?$/
 });
 
 When(/^the client retrieves random questions with the following body:$/u, async function(this: GoatItWorld, bodyDataTable: DataTable) {
-  const bodyRow = validateDataTableAndGetFirstRow(bodyDataTable, RANDOM_QUESTION_BODY_SCHEMA);
+  const bodyRow = validateDataTableAndGetFirstRow(bodyDataTable, RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA);
   const body: Record<string, unknown> = {
     limit: bodyRow.limit === undefined ? undefined : Number(bodyRow.limit),
     excludedIds: bodyRow.excludedIds,

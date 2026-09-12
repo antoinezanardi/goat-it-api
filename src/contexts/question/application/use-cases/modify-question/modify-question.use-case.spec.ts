@@ -10,7 +10,7 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
 import { createFakeQuestionModificationCommand } from "@faketories/contexts/question/commands/question-modification.commands.faketory";
 
-describe("Modify Question Use Case", () => {
+describe(ModifyQuestionUseCase, () => {
   let modifyQuestionUseCase: ModifyQuestionUseCase;
   let mocks: {
     repositories: {

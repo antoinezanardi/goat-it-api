@@ -49,6 +49,9 @@ function expectAdminQuestionDtoToMatch(questionDto: AdminQuestionDto, expectedQu
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
   expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);
+  if (expectedQuestionDto.applicableLocales !== undefined) {
+    expect(questionDto.applicableLocales).toStrictEqual(expectedQuestionDto.applicableLocales);
+  }
 }
 
 function expectAdminQuestionThemeAssignmentsDtoToMatch(

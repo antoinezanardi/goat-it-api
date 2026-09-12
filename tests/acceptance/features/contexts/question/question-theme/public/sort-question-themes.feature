@@ -1,5 +1,4 @@
 @question-theme @sort-question-themes @public
-
 Feature: Sort Question Themes
   In order to display question themes in a specific order
   As an API client

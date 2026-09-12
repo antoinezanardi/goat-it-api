@@ -1,5 +1,4 @@
 @question @find-question-by-id @admin
-
 Feature: Find Question by ID as Admin
   In order to display question to back office users
   As an admin API client

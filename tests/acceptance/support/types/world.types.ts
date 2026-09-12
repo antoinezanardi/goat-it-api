@@ -78,8 +78,8 @@ class GoatItWorld extends World {
 
   private constructTestDatabaseModels(): void {
     this.models = {
-      questions: model(QuestionMongooseSchema.name, QUESTION_MONGOOSE_SCHEMA),
-      questionThemes: model(QuestionThemeMongooseSchema.name, QUESTION_THEME_MONGOOSE_SCHEMA),
+      questions: model<QuestionMongooseSchema>(QuestionMongooseSchema.name, QUESTION_MONGOOSE_SCHEMA),
+      questionThemes: model<QuestionThemeMongooseSchema>(QuestionThemeMongooseSchema.name, QUESTION_THEME_MONGOOSE_SCHEMA),
     };
   }
 }

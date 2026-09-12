@@ -50,3 +50,10 @@ Then(/^the response should contain question themes question count stats with:$/u
     expect(matchingEntry.activeQuestionCount).toBe(expectedRow.activeQuestionCount);
   }
 });
+
+Then(/^the response should contain question themes translation completeness stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {
+  const stats = this.expectLastResponseJson<QuestionThemeStatsDto>(QUESTION_THEME_STATS_DTO);
+  const rows = validateDataTableAndGetRows(dataTable, ADMIN_QUESTION_THEME_STATS_FIELD_VALUE_DATATABLE_ROW_SCHEMA);
+
+  expectRecordFieldValues(stats.byTranslationCompleteness, rows);
+});

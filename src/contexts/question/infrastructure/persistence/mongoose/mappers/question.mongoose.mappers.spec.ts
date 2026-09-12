@@ -12,131 +12,130 @@ import { createFakeObjectId } from "@faketories/infrastructure/database/database
 import { createFakeQuestionAggregate, createFakeQuestionAuthorAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestion, createFakeQuestionAuthor, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-describe("Question Mongoose Mappers", () => {
-  describe(createQuestionAuthorFromAggregate, () => {
-    it("should correctly map a question author when role is 'ai'.", () => {
-      const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthorAggregate({
-          role: "ai",
-          name: "AI Question Generator",
-        }),
-      });
-      const expectedQuestionAuthor = createFakeQuestionAuthor({
+describe(createQuestionAuthorFromAggregate, () => {
+  it("should correctly map a question author when role is 'ai'.", () => {
+    const questionAggregate = createFakeQuestionAggregate({
+      author: createFakeQuestionAuthorAggregate({
         role: "ai",
         name: "AI Question Generator",
-      });
-
-      const result = createQuestionAuthorFromAggregate(questionAggregate);
-
-      expect(result).toStrictEqual(expectedQuestionAuthor);
+      }),
+    });
+    const expectedQuestionAuthor = createFakeQuestionAuthor({
+      role: "ai",
+      name: "AI Question Generator",
     });
 
-    it("should correctly map a question author when role is 'game' and gameId is provided.", () => {
-      const gameId = createFakeObjectId();
-      const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthorAggregate({
-          role: "game",
-          gameId,
-          name: "Trivia Master",
-        }),
-      });
-      const expectedQuestionAuthor = createFakeQuestionAuthor({
+    const result = createQuestionAuthorFromAggregate(questionAggregate);
+
+    expect(result).toStrictEqual(expectedQuestionAuthor);
+  });
+
+  it("should correctly map a question author when role is 'game' and gameId is provided.", () => {
+    const gameId = createFakeObjectId();
+    const questionAggregate = createFakeQuestionAggregate({
+      author: createFakeQuestionAuthorAggregate({
         role: "game",
-        gameId: gameId.toString(),
+        gameId,
         name: "Trivia Master",
-      });
-      const result = createQuestionAuthorFromAggregate(questionAggregate);
-
-      expect(result).toStrictEqual(expectedQuestionAuthor);
+      }),
     });
-
-    it("should throw an error when role is 'game' and gameId is missing.", () => {
-      const questionAggregate = createFakeQuestionAggregate({
-        author: createFakeQuestionAuthorAggregate({
-          role: "game",
-          name: "Trivia Master",
-        }),
-      });
-      questionAggregate.author.gameId = undefined;
-      const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
-
-      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
+    const expectedQuestionAuthor = createFakeQuestionAuthor({
+      role: "game",
+      gameId: gameId.toString(),
+      name: "Trivia Master",
     });
+    const result = createQuestionAuthorFromAggregate(questionAggregate);
 
-    it("should throw an error when role is 'game' and gameId is not in the author object.", () => {
-      const questionAggregate = createFakeQuestionAggregate();
-      questionAggregate.author = {
+    expect(result).toStrictEqual(expectedQuestionAuthor);
+  });
+
+  it("should throw an error when role is 'game' and gameId is missing.", () => {
+    const questionAggregate = createFakeQuestionAggregate({
+      author: createFakeQuestionAuthorAggregate({
         role: "game",
         name: "Trivia Master",
-      };
-      const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
-
-      expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
+      }),
     });
+    questionAggregate.author.gameId = undefined;
+    const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
+
+    expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
   });
 
-  describe(createQuestionThemeAssignmentFromQuestionThemeAggregate, () => {
-    it("should correctly map a question theme assignment from aggregate when called.", () => {
-      const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate();
-      const expectedQuestionThemeAssignment = createFakeQuestionThemeAssignment({
-        theme: createQuestionThemeFromDocument(questionThemeAssignmentAggregate.theme),
-        isPrimary: questionThemeAssignmentAggregate.isPrimary,
-        isHint: questionThemeAssignmentAggregate.isHint,
-      });
-      const result = createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate);
+  it("should throw an error when role is 'game' and gameId is not in the author object.", () => {
+    const questionAggregate = createFakeQuestionAggregate();
+    questionAggregate.author = {
+      role: "game",
+      name: "Trivia Master",
+    };
+    const expectedError = new QuestionPersistenceMappingError(questionAggregate._id.toString(), "Missing gameId for question author with role 'game'");
 
-      expect(result).toStrictEqual(expectedQuestionThemeAssignment);
-    });
+    expect(() => createQuestionAuthorFromAggregate(questionAggregate)).toThrow(expectedError);
   });
+});
 
-  describe(createQuestionFromAggregate, () => {
-    it("should correctly map a question from aggregate when called.", () => {
-      const questionAggregate = createFakeQuestionAggregate();
-      const expectedQuestion = createFakeQuestion({
-        id: questionAggregate._id.toString(),
-        themes: questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
-        content: questionAggregate.content,
-        category: questionAggregate.category,
-        cognitiveDifficulty: questionAggregate.cognitiveDifficulty,
-        author: createQuestionAuthorFromAggregate(questionAggregate),
-        status: questionAggregate.status,
-        rejection: questionAggregate.rejection,
-        sourceUrls: new Set(questionAggregate.sourceUrls),
-        createdAt: questionAggregate.createdAt,
-        updatedAt: questionAggregate.updatedAt,
-      });
-      const result = createQuestionFromAggregate(questionAggregate);
-
-      expect(result).toStrictEqual(expectedQuestion);
+describe(createQuestionThemeAssignmentFromQuestionThemeAggregate, () => {
+  it("should correctly map a question theme assignment from aggregate when called.", () => {
+    const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate();
+    const expectedQuestionThemeAssignment = createFakeQuestionThemeAssignment({
+      theme: createQuestionThemeFromDocument(questionThemeAssignmentAggregate.theme),
+      isPrimary: questionThemeAssignmentAggregate.isPrimary,
+      isHint: questionThemeAssignmentAggregate.isHint,
     });
+    const result = createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate);
+
+    expect(result).toStrictEqual(expectedQuestionThemeAssignment);
   });
+});
 
-  describe(createQuestionThemeAssignmentMongooseInsertPayloadFromContract, () => {
-    it("should map a question theme assignment creation contract to mongoose insert payload correctly when called.", () => {
-      const questionThemeAssignmentCreationContract = createFakeQuestionThemeAssignmentCreationContract();
-      const expectedMongooseInsertPayload = createFakeQuestionThemeAssignmentMongooseInsertPayload({
-        themeId: new Types.ObjectId(questionThemeAssignmentCreationContract.themeId),
-        isPrimary: questionThemeAssignmentCreationContract.isPrimary,
-        isHint: questionThemeAssignmentCreationContract.isHint,
-      });
-      const result = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
-
-      expect(result).toStrictEqual(expectedMongooseInsertPayload);
+describe(createQuestionFromAggregate, () => {
+  it("should correctly map a question from aggregate when called.", () => {
+    const questionAggregate = createFakeQuestionAggregate();
+    const expectedQuestion = createFakeQuestion({
+      id: questionAggregate._id.toString(),
+      themes: questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
+      content: questionAggregate.content,
+      category: questionAggregate.category,
+      cognitiveDifficulty: questionAggregate.cognitiveDifficulty,
+      author: createQuestionAuthorFromAggregate(questionAggregate),
+      status: questionAggregate.status,
+      rejection: questionAggregate.rejection,
+      sourceUrls: new Set(questionAggregate.sourceUrls),
+      applicableLocales: questionAggregate.applicableLocales,
+      createdAt: questionAggregate.createdAt,
+      updatedAt: questionAggregate.updatedAt,
     });
+    const result = createQuestionFromAggregate(questionAggregate);
+
+    expect(result).toStrictEqual(expectedQuestion);
   });
+});
 
-  describe(createQuestionMongooseInsertPayloadFromContract, () => {
-    it("should map a question creation contract to mongoose insert payload correctly when called.", () => {
-      const questionCreationContract = createFakeQuestionCreationContract();
-      const expectedMongooseInsertPayload = createFakeQuestionMongooseInsertPayload({
-        ...questionCreationContract,
-        sourceUrls: [...questionCreationContract.sourceUrls],
-        themes: questionCreationContract.themes.map(themeAssignmentCreateContract => createQuestionThemeAssignmentMongooseInsertPayloadFromContract(themeAssignmentCreateContract)),
-      });
-
-      const result = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
-
-      expect(result).toStrictEqual(expectedMongooseInsertPayload);
+describe(createQuestionThemeAssignmentMongooseInsertPayloadFromContract, () => {
+  it("should map a question theme assignment creation contract to mongoose insert payload correctly when called.", () => {
+    const questionThemeAssignmentCreationContract = createFakeQuestionThemeAssignmentCreationContract();
+    const expectedMongooseInsertPayload = createFakeQuestionThemeAssignmentMongooseInsertPayload({
+      themeId: new Types.ObjectId(questionThemeAssignmentCreationContract.themeId),
+      isPrimary: questionThemeAssignmentCreationContract.isPrimary,
+      isHint: questionThemeAssignmentCreationContract.isHint,
     });
+    const result = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
+
+    expect(result).toStrictEqual(expectedMongooseInsertPayload);
+  });
+});
+
+describe(createQuestionMongooseInsertPayloadFromContract, () => {
+  it("should map a question creation contract to mongoose insert payload correctly when called.", () => {
+    const questionCreationContract = createFakeQuestionCreationContract();
+    const expectedMongooseInsertPayload = createFakeQuestionMongooseInsertPayload({
+      ...questionCreationContract,
+      sourceUrls: [...questionCreationContract.sourceUrls],
+      themes: questionCreationContract.themes.map(themeAssignmentCreateContract => createQuestionThemeAssignmentMongooseInsertPayloadFromContract(themeAssignmentCreateContract)),
+    });
+
+    const result = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
+
+    expect(result).toStrictEqual(expectedMongooseInsertPayload);
   });
 });

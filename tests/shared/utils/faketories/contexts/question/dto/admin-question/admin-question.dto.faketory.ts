@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
@@ -19,6 +21,7 @@ function createFakeAdminQuestionDto(adminQuestionDto: Partial<AdminQuestionDto> 
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.helpers.maybe(createFakeQuestionRejectionDto),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     createdAt: faker.date.anytime().toISOString(),
     updatedAt: faker.date.anytime().toISOString(),
     ...adminQuestionDto,

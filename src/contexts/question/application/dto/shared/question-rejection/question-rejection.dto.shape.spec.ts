@@ -1,15 +1,15 @@
 import { ZodError } from "zod";
 
-import type { QuestionRejectionDto } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 
-import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
-
 describe("Question Rejection DTO Shape", () => {
-  let validQuestionRejectionDto: QuestionRejectionDto;
+  let validQuestionRejectionDto: { type: string; comment?: string };
 
   beforeEach(() => {
-    validQuestionRejectionDto = createFakeQuestionRejectionDto();
+    validQuestionRejectionDto = {
+      type: "inappropriate-content",
+      comment: "The question is too ambiguous.",
+    };
   });
 
   it("should pass validation when a valid QuestionRejectionDto is provided.", () => {
@@ -79,15 +79,13 @@ describe("Question Rejection DTO Shape", () => {
 
   describe("comment", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionRejectionDto, { comment: 123 });
+      const invalidDto = { ...validQuestionRejectionDto, comment: 123 };
 
       expect(() => QUESTION_REJECTION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when comment is omitted.", () => {
-      const dtoWithoutComment = createFakeQuestionRejectionDto({
-        comment: undefined,
-      });
+      const dtoWithoutComment = { ...validQuestionRejectionDto, comment: undefined };
 
       expect(() => QUESTION_REJECTION_DTO.parse(dtoWithoutComment)).not.toThrow(ZodError);
     });

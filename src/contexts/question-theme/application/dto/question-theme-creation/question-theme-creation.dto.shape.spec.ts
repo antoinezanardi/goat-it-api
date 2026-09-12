@@ -4,15 +4,17 @@ import { QUESTION_THEME_CREATION_DTO } from "@question-theme/application/dto/que
 
 import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
-
-import type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
-
 describe("Question Theme Creation Dto Shape", () => {
-  let validQuestionThemeCreationDto: QuestionThemeCreationDto;
+  let validQuestionThemeCreationDto: { slug: string; label: Record<string, string>; aliases: Record<string, string[]>; description: Record<string, string>; color?: string };
 
   beforeEach(() => {
-    validQuestionThemeCreationDto = createFakeQuestionThemeCreationDto();
+    validQuestionThemeCreationDto = {
+      slug: "general-knowledge",
+      label: { en: "General Knowledge" },
+      aliases: { en: ["gk", "general"] },
+      description: { en: "A theme for general knowledge questions" },
+      color: "#FF5733",
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -21,7 +23,7 @@ describe("Question Theme Creation Dto Shape", () => {
 
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeCreationDto, { slug: 123 });
+      const invalidDto = { ...validQuestionThemeCreationDto, slug: 123 };
 
       expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -42,7 +44,7 @@ describe("Question Theme Creation Dto Shape", () => {
 
   describe("label", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
-      const invalidDto = Object.assign(validQuestionThemeCreationDto, { label: "not-localized" });
+      const invalidDto = { ...validQuestionThemeCreationDto, label: "not-localized" };
 
       expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -54,7 +56,7 @@ describe("Question Theme Creation Dto Shape", () => {
 
   describe("aliases", () => {
     it("should throw a zod error when assigned a non-object localized texts.", () => {
-      const invalidDto = Object.assign(validQuestionThemeCreationDto, { aliases: "not-localized" });
+      const invalidDto = { ...validQuestionThemeCreationDto, aliases: "not-localized" };
 
       expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -66,7 +68,7 @@ describe("Question Theme Creation Dto Shape", () => {
 
   describe("description", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
-      const invalidDto = Object.assign(validQuestionThemeCreationDto, { description: 456 });
+      const invalidDto = { ...validQuestionThemeCreationDto, description: 456 };
 
       expect(() => QUESTION_THEME_CREATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });

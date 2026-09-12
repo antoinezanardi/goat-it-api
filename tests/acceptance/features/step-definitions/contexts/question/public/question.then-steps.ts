@@ -14,7 +14,7 @@ import type { DataTable } from "@cucumber/cucumber";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
-Then(/^the response should contain (?<questionsCount>\d+) questions$/u, function(this: GoatItWorld, countAsString: string): void {
+Then(/^the response should contain (?<questionsCount>\d+) questions?$/u, function(this: GoatItWorld, countAsString: string): void {
   const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
   const questionsCount = Math.trunc(Number(countAsString));
 
@@ -30,6 +30,12 @@ Then(/^the response should contain the following questions:$/u, function(this: G
 
     expectQuestionDtoToMatch(question, expectedQuestion);
   }
+});
+
+Then(/^the response should contain a question among them with id "(?<id>[^"]+)"$/u, function(this: GoatItWorld, id: string): void {
+  const questions = this.expectLastResponseJson<QuestionDto[]>(z.array(QUESTION_DTO));
+
+  findQuestionByIdOrThrow(questions, id);
 });
 
 Then(/^the response should contain a question among them with id "(?<id>[^"]+)" and the following content:$/u, function(this: GoatItWorld, id: string, questionContentDataTable: DataTable): void {

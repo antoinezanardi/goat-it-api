@@ -9,7 +9,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
-describe("Archive Question Use Case", () => {
+describe(ArchiveQuestionUseCase, () => {
   let archiveQuestionUseCase: ArchiveQuestionUseCase;
   let mocks: { repositories: { question: ReturnType<typeof createMockedQuestionRepository> } };
 

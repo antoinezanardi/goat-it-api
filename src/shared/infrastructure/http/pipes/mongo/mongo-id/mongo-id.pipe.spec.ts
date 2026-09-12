@@ -2,7 +2,7 @@ import { BadRequestException } from "@nestjs/common";
 
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-describe("Mongo Id Pipe", () => {
+describe(MongoIdPipe, () => {
   describe(MongoIdPipe.prototype.transform, () => {
     it("should return value when value is a valid mongo id.", () => {
       const pipe = new MongoIdPipe();

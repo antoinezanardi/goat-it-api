@@ -13,7 +13,7 @@ import type { TestingModule } from "@nestjs/testing";
 
 import type { AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
-describe("App Config Service", () => {
+describe(AppConfigService, () => {
   let services: { appConfig: AppConfigService };
   let mocks: {
     services: {
@@ -124,7 +124,7 @@ describe("App Config Service", () => {
     });
   });
 
-  describe("mongoDatabaseConfig", () => {
+  describe("mongoDbConfig", () => {
     it("should return mongo database config from env when called.", () => {
       const mongoDatabaseConfig = createFakeMongoDatabaseConfigFromEnv({
         host: "localhost",
@@ -175,7 +175,9 @@ describe("App Config Service", () => {
     });
   });
 
-  describe("computeAuthenticationConfigCache", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(AppConfigService.prototype["computeAuthenticationConfigCache"], () => {
     it("should throw error when one of the required env vars is not defined.", () => {
       mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
         throw new Error("API_KEY_HMAC_SECRET is not defined");
@@ -201,7 +203,9 @@ describe("App Config Service", () => {
     });
   });
 
-  describe("deleteSensitiveEnvVariables", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(AppConfigService["deleteSensitiveEnvVariables"], () => {
     it("should delete api key hmac secret when computing authentication config cache.", () => {
       expect(process.env.API_KEY_HMAC_SECRET).toBeUndefined();
     });

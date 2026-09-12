@@ -1,4 +1,6 @@
-import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { faker } from "@faker-js/faker";
+
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionAuthorRole, () => {
@@ -294,6 +296,91 @@ describe("Question DTO Zod Validators", () => {
       const innerElementDescription = (schema.unwrap() as PreprocessDefinition)._zod.def.out._zod.def.element.description;
 
       expect(innerElementDescription).toBe("Theme ID to filter questions by");
+    });
+  });
+
+  describe(zQuestionIdsFilter, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when an array with a valid MongoDB ObjectId is provided",
+        value: ["60af924f4f1a2563f8e8b456"],
+        expected: true,
+      },
+      {
+        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided",
+        value: ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"],
+        expected: true,
+      },
+      {
+        test: "should return true when a single string MongoDB ObjectId is provided",
+        value: "60af924f4f1a2563f8e8b456",
+        expected: true,
+      },
+      {
+        test: "should return true when value is undefined",
+        value: undefined,
+        expected: true,
+      },
+      {
+        test: "should return false when an empty array is provided",
+        value: [],
+        expected: false,
+      },
+      {
+        test: "should return false when an array with an invalid ObjectId is provided",
+        value: ["not-a-valid-id"],
+        expected: false,
+      },
+      {
+        test: "should return false when an array exceeds the maximum allowed items",
+        value: Array.from({ length: 101 }, () => faker.database.mongodbObjectId()),
+        expected: false,
+      },
+      {
+        test: "should return false when an array contains duplicate ObjectIds",
+        value: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"],
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionIdsFilter().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should normalize a single string value to an array when parsed.", () => {
+      const result = zQuestionIdsFilter().safeParse("60af924f4f1a2563f8e8b456");
+
+      expect(result.data).toStrictEqual(["60af924f4f1a2563f8e8b456"]);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionIdsFilter();
+
+      expect(schema.description).toBe("List of question IDs to filter by (OR logic)");
+    });
+
+    it("should have the correct inner element description when called.", () => {
+      const schema = zQuestionIdsFilter();
+
+      type PreprocessDefinition = { _zod: { def: { out: { _zod: { def: { element: { description: string } } } } } } };
+
+      // Acceptable as Zod internal _zod structure must be accessed to verify nested schema descriptions
+      // oxlint-disable-next-line eslint/no-underscore-dangle
+      const innerElementDescription = (schema.unwrap() as PreprocessDefinition)._zod.def.out._zod.def.element.description;
+
+      expect(innerElementDescription).toBe("Question ID to filter by");
+    });
+
+    it("should have the correct refinement message for uniqueness when duplicates are present.", () => {
+      const schema = zQuestionIdsFilter();
+      const notUniqueTestValue = ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"];
+      const result = schema.safeParse(notUniqueTestValue);
+
+      expect(result.error?.issues[0].message).toBe("IDs must be unique");
     });
   });
 
@@ -602,6 +689,81 @@ describe("Question DTO Zod Validators", () => {
       const result = schema.safeParse(notUniqueTestValue);
 
       expect(result.error?.issues[0].message).toBe("Cognitive difficulties must be unique");
+    });
+  });
+
+  describe(zQuestionApplicableLocales, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      minItems: number;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a valid subset of locales is provided",
+        value: ["fr"],
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return true when all locales are provided",
+        value: ["en", "fr", "es", "de", "it", "pt"],
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return true when value is undefined",
+        value: undefined,
+        minItems: 1,
+        expected: true,
+      },
+      {
+        test: "should return false when an empty array is provided with default minItems",
+        value: [],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return true when an empty array is provided with minItems 0",
+        value: [],
+        minItems: 0,
+        expected: true,
+      },
+      {
+        test: "should return false when duplicate locales are provided",
+        value: ["fr", "fr"],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return false when an invalid locale is provided",
+        value: ["fr", "jp"],
+        minItems: 1,
+        expected: false,
+      },
+      {
+        test: "should return false when more than the maximum number of locales is provided",
+        value: ["en", "fr", "es", "de", "it", "pt", "en"],
+        minItems: 1,
+        expected: false,
+      },
+    ])("$test", ({ value, minItems, expected }) => {
+      const result = zQuestionApplicableLocales(minItems).safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionApplicableLocales();
+
+      expect(schema.description).toBe("Subset of locales this question is relevant for; omit if relevant for all locales");
+    });
+
+    it("should have the correct refinement message for uniqueness when duplicates are present.", () => {
+      const schema = zQuestionApplicableLocales();
+      const result = schema.safeParse(["fr", "fr"]);
+
+      expect(result.error?.issues[0].message).toBe("Locales must be unique");
     });
   });
 });

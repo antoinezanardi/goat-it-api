@@ -9,7 +9,7 @@ import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/p
 import type { ExecutionContext } from "@nestjs/common";
 import type { MockInstance } from "vitest";
 
-describe("Game Api Key Guard", () => {
+describe(GameApiKeyGuard, () => {
   let gameApiKeyGuard: GameApiKeyGuard;
   let mocks: {
     services: {

@@ -1,5 +1,4 @@
 @question @limit-questions @admin
-
 Feature: Limit Questions as Admin
   In order to control how many questions are returned in the back office
   As an admin API client

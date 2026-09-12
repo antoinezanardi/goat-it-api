@@ -99,6 +99,10 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
       total: result.total[0]?.count ?? 0,
       byStatus: result.statusRows[0] ?? {},
       byQuestionCount: result.byQuestionCount,
+      byTranslationCompleteness: {
+        fullyTranslated: result.fullyTranslatedCountStage[0]?.count ?? 0,
+        incomplete: result.incompleteTranslationCountStage[0]?.count ?? 0,
+      },
     };
   }
 }

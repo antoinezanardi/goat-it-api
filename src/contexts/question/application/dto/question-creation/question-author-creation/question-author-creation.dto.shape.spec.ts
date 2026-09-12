@@ -1,16 +1,13 @@
 import { ZodError } from "zod";
 
 import { QUESTION_AUTHOR_NAME_MAX_LENGTH } from "@question/domain/constants/question.constants";
-import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 import { QUESTION_AUTHOR_CREATION_DTO } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 
-import { createFakeQuestionAuthorCreationDto } from "@faketories/contexts/question/dto/question-creation/question-author-creation/question-author-creation.dto.faketory";
-
 describe("Question Author Creation DTO Shape", () => {
-  let validDto: QuestionAuthorCreationDto;
+  let validDto: { role: string; name: string };
 
   beforeEach(() => {
-    validDto = createFakeQuestionAuthorCreationDto();
+    validDto = { role: "admin", name: "ValidName" };
   });
 
   it("should pass validation when a valid QuestionAuthorCreationDto is provided.", () => {
@@ -19,7 +16,7 @@ describe("Question Author Creation DTO Shape", () => {
 
   describe("role", () => {
     it("should throw zod error when role is invalid.", () => {
-      const invalid = Object.assign(validDto, { role: "invalid" });
+      const invalid = { ...validDto, role: "invalid" };
 
       expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -37,7 +34,7 @@ describe("Question Author Creation DTO Shape", () => {
 
   describe("name", () => {
     it("should throw zod error when name is not a string.", () => {
-      const invalid = Object.assign(validDto, { name: 123 });
+      const invalid = { ...validDto, name: 123 };
 
       expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -53,21 +50,21 @@ describe("Question Author Creation DTO Shape", () => {
     });
 
     it("should throw zod error when name is too short.", () => {
-      const invalid = Object.assign(validDto, { name: "A" });
+      const invalid = { ...validDto, name: "A" };
 
       expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should throw zod error when name is too long.", () => {
       const longName = "A".repeat(QUESTION_AUTHOR_NAME_MAX_LENGTH + 1);
-      const invalid = Object.assign(validDto, { name: longName });
+      const invalid = { ...validDto, name: longName };
 
       expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should trim whitespace from name before validation when parsed.", () => {
       const nameWithWhitespace = "   ValidName   ";
-      const dtoWithWhitespace = Object.assign(validDto, { name: nameWithWhitespace });
+      const dtoWithWhitespace = { ...validDto, name: nameWithWhitespace };
       const parsedDto = QUESTION_AUTHOR_CREATION_DTO.parse(dtoWithWhitespace);
 
       expect(parsedDto.name).toBe(nameWithWhitespace.trim());

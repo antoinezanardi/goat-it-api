@@ -36,6 +36,8 @@ type QuestionStatsAggregationResult = {
   byCognitiveDifficultyStage: Record<string, number>[];
   byAuthorRoleStage: Record<string, number>[];
   byRejectionTypeStage: Record<string, number>[];
+  fullyTranslatedCountStage: { count: number }[];
+  incompleteTranslationCountStage: { count: number }[];
 };
 
 export type {

@@ -1,5 +1,4 @@
 @question-theme @sort-question-themes @admin
-
 Feature: Sort Question Themes as Admin
   In order to display question themes in a specific order in the back office
   As an admin API client

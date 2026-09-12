@@ -38,4 +38,13 @@ describe(createQuestionThemeStatsDtoFromStats, () => {
 
     expect(result.byQuestionCount).toStrictEqual(byQC);
   });
+
+  it("should return byTranslationCompleteness from stats when provided.", () => {
+    const byTranslationCompleteness = { fullyTranslated: 3, incomplete: 1 };
+    const stats = createFakeQuestionThemeStats({ total: 0, byStatus: {}, byQuestionCount: [], byTranslationCompleteness });
+
+    const result = createQuestionThemeStatsDtoFromStats(stats);
+
+    expect(result.byTranslationCompleteness).toStrictEqual(byTranslationCompleteness);
+  });
 });

@@ -991,6 +991,15 @@
         ]
       }
     },
+    // ---- Override for mongoose helpers -----
+    {
+      "files": [
+        "**/src/**/mongoose/**/helpers/*.ts"
+      ],
+      "rules": {
+        "unicorn/no-null": "off"
+      }
+    },
     // ---- Override for mongoose repositories -----
     {
       "files": [

@@ -1,5 +1,4 @@
 @question @list-questions @admin
-
 Feature: List Questions as Admin
   In order to display questions to back office users
   As an admin API client

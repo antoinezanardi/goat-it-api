@@ -1,5 +1,4 @@
 @question @archive-question @admin
-
 Feature: Archive Question As Admin
   In order to archive question to prevent its use in new games
   As an admin API client

@@ -1,3 +1,7 @@
+import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
+
+import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
+
 import { QUESTION_STATUS_ACTIVE } from "@question/domain/constants/question.constants";
 
 // Acceptable as MongoDB query syntax — null matches missing grouped field values
@@ -57,6 +61,14 @@ const QUESTION_THEME_STATS_FACET_STAGE = {
           activeQuestionCount: 1 as const,
         },
       },
+    ],
+    fullyTranslatedCountStage: [
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS, true) },
+      { $count: "count" },
+    ],
+    incompleteTranslationCountStage: [
+      { $match: buildIsFullyTranslatedMatchCondition(QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS, false) },
+      { $count: "count" },
     ],
   },
 };

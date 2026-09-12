@@ -64,6 +64,10 @@ function createFakeQuestionStats(overrides: Partial<QuestionStats> = {}): Questi
     byCognitiveDifficulty: createFakeQuestionStatsByCognitiveDifficulty(),
     byAuthorRole: createFakeQuestionStatsByAuthorRole(),
     byRejectionType: createFakeQuestionStatsByRejectionType(),
+    byTranslationCompleteness: {
+      fullyTranslated: faker.number.int({ min: 0, max: 20 }),
+      incomplete: faker.number.int({ min: 0, max: 20 }),
+    },
     ...overrides,
   };
 }

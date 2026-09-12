@@ -1,5 +1,4 @@
 @question @create-question @admin
-
 Feature: Create Question as Admin
   In order to create new questions for the system
   As an admin API client
@@ -107,7 +106,7 @@ Feature: Create Question as Admin
       | author.role   | string | ai        |
       | author.name   | string | GoatItGPT |
       | author.gameId | string |           |
-    When the admin creates a new question with the request payload
+    And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
       | id    | category | cognitiveDifficulty | status  | sourceUrls                                                                                         |
@@ -125,7 +124,7 @@ Feature: Create Question as Admin
       | content.answer.fr    | string | "   Alexander Fleming   "                                                                                                                                                 |
       | content.context.fr   | string | "   En 1928, Alexander Fleming a découvert la pénicilline, une percée qui a conduit aux antibiotiques modernes.   "                                                       |
       | content.trivia.fr    | array  | ["   Alexander Fleming a découvert la pénicilline en 1928.   ","   Fleming, Florey et Chain ont reçu le prix Nobel en 1945 pour leurs travaux sur les antibiotiques.   "] |
-    When the admin creates a new question with the request payload
+    And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following question statement for the admin question:
       | locale | statement                        |
@@ -616,3 +615,70 @@ Feature: Create Question as Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Creating a question applicable to a subset of locales as admin
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value       |
+      | applicableLocales | array | ["fr","en"] |
+    And the admin creates a new question with the request payload
+    Then the request should have succeeded with status code 201
+    And the response should contain the following admin question:
+      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         | applicableLocales |
+      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ | fr, en            |
+
+  Scenario: Trying to create a question without any applicable locale
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value |
+      | applicableLocales | array | []    |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code      | message                                     | path              | origin | minimum | inclusive |
+      | too_small | Too small: expected array to have >=1 items | applicableLocales | array  | 1       | true      |
+
+  Scenario: Trying to create a question with duplicate applicable locales
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value       |
+      | applicableLocales | array | ["fr","fr"] |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code   | message                | path              |
+      | custom | Locales must be unique | applicableLocales |
+
+  Scenario: Trying to create a question with an unsupported applicable locale
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type  | value       |
+      | applicableLocales | array | ["fr","jp"] |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                                            | path                | values                 |
+      | invalid_value | Invalid option: expected one of "en"\|"fr"\|"es"\|"de"\|"it"\|"pt" | applicableLocales.1 | en, fr, es, de, it, pt |
+
+  Scenario: Creating a question without applicable locales as admin
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path              | type      | value     |
+      | applicableLocales | undefined | undefined |
+    And the admin creates a new question with the request payload
+    Then the request should have succeeded with status code 201
+    And the response should contain the following admin question:
+      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+    And the response should contain no applicable locales for the admin question

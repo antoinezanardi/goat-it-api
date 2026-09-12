@@ -8,7 +8,7 @@ import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-th
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
-describe("Get Question Themes By Ids Or Throw Use Case", () => {
+describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   let getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase;
   let mocks: {
     repositories: {

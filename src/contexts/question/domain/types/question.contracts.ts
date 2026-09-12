@@ -1,6 +1,6 @@
 import type { QuestionCategory, QuestionCognitiveDifficulty, QuestionCreationAuthorRole, QuestionCreationStatus } from "@question/domain/types/question.value-objects";
 
-import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
+import type { Locale, LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 type QuestionAuthorCreationContract = {
   role: QuestionCreationAuthorRole;
@@ -33,6 +33,7 @@ type QuestionCreationContract = {
   author: QuestionAuthorCreationContract;
   status: QuestionCreationStatus;
   sourceUrls: Set<string>;
+  applicableLocales?: Locale[];
 };
 
 type QuestionContentModificationContract = {
@@ -47,6 +48,7 @@ type QuestionModificationContract = {
   cognitiveDifficulty?: QuestionCognitiveDifficulty;
   sourceUrls?: string[];
   content?: QuestionContentModificationContract;
+  applicableLocales?: Locale[];
 };
 
 export type {

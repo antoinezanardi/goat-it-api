@@ -1,5 +1,4 @@
 @question-theme @archive-question-theme @admin
-
 Feature: Archive Question Theme As Admin
   In order to archive question theme to prevent its use in new questions
   As an admin API client

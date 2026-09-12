@@ -80,7 +80,7 @@ jobs:
           git config user.name "GitHub Actions"
           git fetch --all
           git checkout develop
-          git merge origin/main --no-ff -m "chore: sync release v${RELEASE_VERSION} from main [skip ci]"
+          git merge origin/main --no-ff -m "chore: sync release v${RELEASE_VERSION} from main"
           git push origin develop
 
   unit-tests:

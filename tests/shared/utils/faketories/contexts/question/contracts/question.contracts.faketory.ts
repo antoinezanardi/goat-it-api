@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import type { QuestionCreationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_CREATION_STATUSES } from "@question/domain/constants/question.constants";
 
@@ -16,6 +18,7 @@ function createFakeQuestionCreationContract(contract: Partial<QuestionCreationCo
     author: createFakeQuestionAuthorCreationContract(),
     status: faker.helpers.arrayElement(QUESTION_CREATION_STATUSES),
     sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     ...contract,
   };
 }

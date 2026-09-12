@@ -1,16 +1,16 @@
 import { ZodError } from "zod";
 
 import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
-import type { QuestionAuthorDto } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
-import { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
-
 describe("Question Author DTO Shape", () => {
-  let validQuestionAuthorDto: QuestionAuthorDto;
+  let validQuestionAuthorDto: { role: string; gameId?: string; name?: string };
 
   beforeEach(() => {
-    validQuestionAuthorDto = createFakeQuestionAuthorDto();
+    validQuestionAuthorDto = {
+      role: "admin",
+      name: "TriviaMaster3000",
+    };
   });
 
   it("should pass validation when a valid QuestionAuthorDto is provided.", () => {
@@ -62,13 +62,13 @@ describe("Question Author DTO Shape", () => {
 
   describe("gameId", () => {
     it("should throw a zod error when assigned an invalid mongo id.", () => {
-      const invalidDto = Object.assign(validQuestionAuthorDto, { gameId: "invalid-id" });
+      const invalidDto = { ...validQuestionAuthorDto, gameId: "invalid-id" };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when gameId is omitted.", () => {
-      const dtoWithoutGameId = createFakeQuestionAuthorDto({ gameId: undefined });
+      const dtoWithoutGameId = { ...validQuestionAuthorDto, gameId: undefined };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutGameId)).not.toThrow(ZodError);
     });
@@ -85,13 +85,13 @@ describe("Question Author DTO Shape", () => {
 
   describe("name", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionAuthorDto, { name: 123 });
+      const invalidDto = { ...validQuestionAuthorDto, name: 123 };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when name is omitted.", () => {
-      const dtoWithoutName = createFakeQuestionAuthorDto({ name: undefined });
+      const dtoWithoutName = { ...validQuestionAuthorDto, name: undefined };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(dtoWithoutName)).not.toThrow(ZodError);
     });
@@ -108,25 +108,25 @@ describe("Question Author DTO Shape", () => {
 
   describe(isGameIdSetOnGameRole, () => {
     it("should throw a zod error when role is 'game' and gameId is not set.", () => {
-      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
+      const invalidDto = { ...validQuestionAuthorDto, role: "game", gameId: undefined };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should throw a zod error when role is not 'game' and gameId is set.", () => {
-      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "admin", gameId: "64b64c4f2f9b2567e4d8b123" });
+      const invalidDto = { ...validQuestionAuthorDto, role: "admin", gameId: "64b64c4f2f9b2567e4d8b123" };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
     });
 
     it("should pass validation when role is 'game' and gameId is set.", () => {
-      const validDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: "64b64c4f2f9b2567e4d8b123" });
+      const validDto = { ...validQuestionAuthorDto, role: "game", gameId: "64b64c4f2f9b2567e4d8b123" };
 
       expect(() => QUESTION_AUTHOR_DTO.parse(validDto)).not.toThrow();
     });
 
     it("should set error message correctly when validation fails.", () => {
-      const invalidDto = Object.assign(validQuestionAuthorDto, { role: "game", gameId: undefined });
+      const invalidDto = { ...validQuestionAuthorDto, role: "game", gameId: undefined };
       const parseResult = QUESTION_AUTHOR_DTO.safeParse(invalidDto);
 
       expect(parseResult.error?.issues[0].message).toBe("Game ID must be set if and only if the author role is 'game'.");

@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 import type { QuestionContentModificationDto } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
 import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
@@ -22,6 +24,7 @@ function createFakeQuestionModificationDto(overrides: Partial<QuestionModificati
     cognitiveDifficulty: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)),
     sourceUrls: faker.helpers.maybe(() => [faker.internet.url(), faker.internet.url()]),
     content: faker.helpers.maybe(createFakeQuestionContentModificationDto),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     ...overrides,
   };
 }

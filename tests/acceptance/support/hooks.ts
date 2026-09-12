@@ -2,6 +2,7 @@ import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from 
 
 import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
 import { DEFAULT_SERVER_PORT } from "@acceptance-support/constants/app.constants";
+import { HOOKS_BEFORE_ALL_TIMEOUT_MS } from "@acceptance-support/constants/hooks.constants";
 import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
 import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
 import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
@@ -14,7 +15,7 @@ setWorldConstructor(GoatItWorld);
 
 const processes: AcceptanceHooksProcesses = {};
 
-BeforeAll(async() => {
+BeforeAll({ timeout: HOOKS_BEFORE_ALL_TIMEOUT_MS }, async() => {
   loadEnvTestConfig();
 
   const workerId = process.env.CUCUMBER_WORKER_ID ?? "0";

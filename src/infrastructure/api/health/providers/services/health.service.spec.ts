@@ -9,7 +9,7 @@ import { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndic
 
 import type { TestingModule } from "@nestjs/testing";
 
-describe("Health Service", () => {
+describe(HealthService, () => {
   let services: { health: HealthService };
   let mocks: {
     services: {
@@ -80,7 +80,9 @@ describe("Health Service", () => {
     });
   });
 
-  describe("checkMongooseConnection", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(HealthService.prototype["checkMongooseConnection"], () => {
     it("should call ping check from mongoose health indicator when called.", async() => {
       await services.health["checkMongooseConnection"]();
 
@@ -88,7 +90,9 @@ describe("Health Service", () => {
     });
   });
 
-  describe("checkGoatItDocs", () => {
+  // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
+  // oxlint-disable-next-line typescript/dot-notation
+  describe(HealthService.prototype["checkGoatItDocs"], () => {
     it("should call ping check from http health indicator when called.", async() => {
       await services.health["checkGoatItDocs"]();
 

@@ -4,15 +4,23 @@ import { QUESTION_THEME_MODIFICATION_DTO } from "@question-theme/application/dto
 
 import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
-
-import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
-
 describe("Question Theme Modification DTO Shape", () => {
-  let validQuestionThemeModificationDto: QuestionThemeModificationDto;
+  let validQuestionThemeModificationDto: {
+    slug?: string;
+    label?: Record<string, string>;
+    aliases?: Record<string, string[]>;
+    description?: Record<string, string>;
+    color?: string;
+  };
 
   beforeEach(() => {
-    validQuestionThemeModificationDto = createFakeQuestionThemeModificationDto();
+    validQuestionThemeModificationDto = {
+      slug: "general-knowledge",
+      label: { en: "General Knowledge" },
+      aliases: { en: ["gk", "general"] },
+      description: { en: "A theme for general knowledge questions" },
+      color: "#FF5733",
+    };
   });
 
   it("should pass validation when assigned valid values.", () => {
@@ -20,14 +28,14 @@ describe("Question Theme Modification DTO Shape", () => {
   });
 
   it("should pass validation when assigned empty object.", () => {
-    const validEmptyDto = {} as QuestionThemeModificationDto;
+    const validEmptyDto: Record<string, unknown> = {};
 
     expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validEmptyDto)).not.toThrow();
   });
 
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
-      const invalidDto = Object.assign(validQuestionThemeModificationDto, { slug: 123 });
+      const invalidDto = { ...validQuestionThemeModificationDto, slug: 123 };
 
       expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -48,7 +56,7 @@ describe("Question Theme Modification DTO Shape", () => {
 
   describe("label", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
-      const invalidDto = Object.assign(validQuestionThemeModificationDto, { label: "not-localized" });
+      const invalidDto = { ...validQuestionThemeModificationDto, label: "not-localized" };
 
       expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -60,7 +68,7 @@ describe("Question Theme Modification DTO Shape", () => {
 
   describe("aliases", () => {
     it("should throw a zod error when assigned a non-object localized texts.", () => {
-      const invalidDto = Object.assign(validQuestionThemeModificationDto, { aliases: "not-localized" });
+      const invalidDto = { ...validQuestionThemeModificationDto, aliases: "not-localized" };
 
       expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });
@@ -72,7 +80,7 @@ describe("Question Theme Modification DTO Shape", () => {
 
   describe("description", () => {
     it("should throw a zod error when assigned a non-object localized text.", () => {
-      const invalidDto = Object.assign(validQuestionThemeModificationDto, { description: 456 });
+      const invalidDto = { ...validQuestionThemeModificationDto, description: 456 };
 
       expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
     });

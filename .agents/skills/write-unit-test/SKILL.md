@@ -27,9 +27,10 @@ disable-model-invocation: true
 ### Controllers
 
 Purpose: verify HTTP wiring only — routing, DTO mapping, use-case delegation.
+Describe label: `describe(ControllerClass, ...)`, nested `describe(Controller.prototype.method, ...)`.
 
 ```typescript
-describe("Foo Controller", () => {
+describe(FooController, () => {
   let controller: FooController;
   let mocks: { useCases: { createFoo: ReturnType<typeof createMockedCreateFooUseCase> } };
 
@@ -60,9 +61,10 @@ describe("Foo Controller", () => {
 ### Use-cases
 
 Purpose: validate business orchestration, repository calls, and domain error propagation.
+Describe label: `describe(UseCaseClass, ...)`, nested `describe(UseCase.prototype.method, ...)`.
 
 ```typescript
-describe("Create Foo Use Case", () => {
+describe(CreateFooUseCase, () => {
   let useCase: CreateFooUseCase;
   let mocks: { repositories: { foo: ReturnType<typeof createMockedFooRepository> } };
 
@@ -99,42 +101,88 @@ describe("Create Foo Use Case", () => {
 ### Repositories
 
 Purpose: test query shapes and document→entity mapping; mock the Mongoose `Model`.
+Describe label: `describe(RepositoryClass, ...)`.
 
 ```typescript
-const mocks = {
-  models: {
-    foo: {
-      find: vi.fn(),
-      findOne: vi.fn(),
-      create: vi.fn()
-    }
-  },
-} as const;
+describe(FooMongooseRepository, () => {
+  let repository: FooMongooseRepository;
 
-// Inject via: { provide: getModelToken(FooSchema.name), useValue: mocks.models.foo }
+  const mocks = {
+    models: {
+      foo: {
+        find: vi.fn(),
+        findOne: vi.fn(),
+        create: vi.fn(),
+        updateOne: vi.fn(),
+      },
+    },
+    mappers: {
+      foo: {
+        createFooFromDocument: vi.fn(),
+      },
+    },
+  } as const;
+
+  beforeEach(async () => {
+    const module = await Test.createTestingModule({
+      providers: [
+        FooMongooseRepository,
+        { provide: getModelToken(FooSchema.name), useValue: mocks.models.foo },
+      ],
+    }).compile();
+    repository = module.get(FooMongooseRepository);
+  });
+
+  describe(FooMongooseRepository.prototype.findById, () => {
+    it("should return undefined when document is not found.", async () => {
+      mocks.models.foo.findOne.mockResolvedValue(null);
+      const result = await repository.findById("some-id");
+      expect(result).toBeUndefined();
+    });
+
+    it("should map and return entity when document is found.", async () => {
+      const doc = createFakeFooDocument();
+      const entity = createFakeFoo();
+      mocks.models.foo.findOne.mockResolvedValue(doc);
+      mocks.mappers.foo.createFooFromDocument.mockReturnValue(entity);
+      const result = await repository.findById(doc._id.toString());
+      expect(result).toStrictEqual(entity);
+    });
+  });
+});
 ```
 
 ### DTOs (`*.dto.shape.spec.ts`)
 
+**DT5 rule**: `validDto` must be an **inline literal** — never a faketory call. Negative tests use `{ ...validDto, field: badValue }` (spread copy).
+
+**DT6 rule**: `validDto` must be declared with `let` using a **structural type** (inline object type annotation) — never a DTO type annotation (e.g., `let validDto: SomeDto`) and never a cast (e.g., `as SomeDto`). Assign the value in `beforeEach`. This keeps DTO shape tests decoupled from the DTO class and avoids import circularity.
+
 ```typescript
-describe("Foo DTO", () => {
-  describe("fieldName", () => {
-    it("should accept a valid value.", () => {
-      expect(() => FOO_DTO.parse(createFakeFooDto())).not.toThrow();
+describe("Foo DTO Shape", () => {
+  let validDto: { fieldA: string; fieldB: number; optionalField?: string };
+
+  beforeEach(() => {
+    validDto = {
+      fieldA: "valid-value",
+      fieldB: 42,
+    };
+  });
+
+  it("should pass validation when a valid FooDto is provided.", () => {
+    expect(() => FOO_DTO.parse(validDto)).not.toThrow();
+  });
+
+  describe("fieldA", () => {
+    it("should throw zod error when fieldA is invalid.", () => {
+      const invalid = { ...validDto, fieldA: 123 };
+      expect(() => FOO_DTO.parse(invalid)).toThrow(ZodError);
     });
 
-    it("should reject an invalid value.", () => {
-      expect(() => FOO_DTO.parse({
-        ...createFakeFooDto(),
-        fieldName: "bad"
-      })).toThrow(ZodError);
-    });
-
-    it("should have correct metadata.", () => {
-      expect(FOO_DTO.shape.fieldName.meta()).toStrictEqual({
-        description: "…",
-        example: "…"
-      });
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = FOO_DTO.shape.fieldA.meta();
+      const expectedMetadata = { description: "…", example: "…" };
+      expect(metadata).toStrictEqual(expectedMetadata);
     });
   });
 });
@@ -142,25 +190,22 @@ describe("Foo DTO", () => {
 
 ### Helpers / pure functions
 
-Use `it.each` for multiple input→output cases; no Nest module required:
+Describe label: `describe(functionName, ...)` for named functions. Use `it.each` for parameterized input→output cases.
 
 ```typescript
 describe(myHelper, () => {
   it.each<{ input: X; expected: Y }>([
-    { input: …,
-  expected: …
-},
-])
-  ("should return $expected when input is $input.", ({
-                                                       input,
-                                                       expected
-                                                     }) => {
+    { input: valueA, expected: resultA },
+    { input: valueB, expected: resultB },
+  ])("should return $expected when input is $input.", ({ input, expected }) => {
     expect(myHelper(input)).toStrictEqual(expected);
   });
 });
 ```
 
 ### Errors
+
+Describe label: `describe(ErrorClassName, ...)` at top level.
 
 ```typescript
 describe(MyError, () => {
@@ -169,7 +214,7 @@ describe(MyError, () => {
   });
 
   it("should format message correctly when constructed.", () => {
-    expect(new MyError("id").message).toBe(`My error for id`);
+    expect(new MyError("id").message).toStrictEqual("My error for id");
   });
 });
 ```
@@ -214,6 +259,18 @@ Patterns:
 
 ## Structural conventions
 
+### Describe labels by file type
+
+- Controllers: `"<Name> Controller"`
+- Use-cases: `"<Name> Use Case"`
+- Repositories: `"<Name> Mongoose Repository"` or `"<Name> Repository"`
+- Services: `"<Name> Service"`
+- DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"`
+- Errors: symbol reference `describe(ClassName, ...)`
+- Helpers/mappers: symbol reference `describe(functionName, ...)`
+
+### Assertion rules
+
 - Top-level `describe`: `"<ClassName> <Role>"` (e.g. `"Create Foo Use Case"`)
 - Nested `describe`: reference the method directly — `describe(FooClass.prototype.myMethod, ...)`
 - Test name pattern: `"should <expected behavior> when <condition>."`
@@ -222,10 +279,11 @@ Patterns:
 - Use `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions
 - Use `await expect(promise).rejects.toThrow(exactErrorInstance)` for error assertions
 - Use `it.each` instead of multiple identical `it` blocks that vary only in inputs
+- `it.each` must always be typed: `it.each<T>([...])`
 
 ## Coverage exclusions (no spec needed)
 
-`*.module.ts`, `*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`
+`*.module.ts`, `*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
 
 ## Checks to run when done
 
@@ -234,6 +292,13 @@ pnpm run test:unit:cov   # must stay at 100%
 pnpm run typecheck
 pnpm run lint
 ```
+
+## Final audit checklist
+
+The command `.opencode/commands/lint-unit-tests.md` is the **final audit checklist** — its rule
+tags (`[U*]`, `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) are mirrored in this
+skill so anything written per this skill passes that audit. After writing a test, mentally
+verify it against section 4 of that command before considering the task done.
 
 ## Reference
 

@@ -74,6 +74,7 @@ function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto 
     author: question.author,
     rejection: question.rejection,
     sourceUrls: [...question.sourceUrls],
+    applicableLocales: question.applicableLocales,
     status: question.status,
     createdAt: question.createdAt.toISOString(),
     updatedAt: question.updatedAt.toISOString(),
@@ -114,6 +115,7 @@ function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): Questio
       author: createQuestionAuthorCreationContractFromDto(dto.author),
       status: computeQuestionStatusFromAuthorRole(dto.author.role),
       sourceUrls: new Set(dto.sourceUrls),
+      applicableLocales: dto.applicableLocales,
     },
   };
 }
@@ -126,6 +128,7 @@ function createQuestionModificationCommandFromDto(questionId: string, questionMo
       cognitiveDifficulty: questionModificationDto.cognitiveDifficulty,
       sourceUrls: questionModificationDto.sourceUrls,
       content: questionModificationDto.content,
+      applicableLocales: questionModificationDto.applicableLocales,
     },
   };
 }

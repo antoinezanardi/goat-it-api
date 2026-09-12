@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
 import { ZodError } from "zod";
+import { faker } from "@faker-js/faker";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
@@ -8,17 +8,35 @@ import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructu
 import { ADMIN_FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 import { ADMIN_QUESTION_SORTABLE_FIELDS, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
+import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty, QuestionStatus } from "@question/domain/types/question.value-objects";
 import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
-
-import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 
 import type { z } from "zod";
 
-describe("Admin Find Questions Sort Query DTO Shape", () => {
-  let validDto: AdminFindQuestionsQueryDto;
+import type { QuestionSortableField } from "@question/domain/types/question.types";
+import type { SortOrder } from "@shared/domain/types/sort/sort.types";
+
+describe("Admin Find Questions Query DTO Shape", () => {
+  let validDto: {
+    "sort-by"?: string;
+    "sort-order": string;
+    "limit": number;
+    "status"?: string;
+    "category"?: string;
+    "cognitive-difficulty"?: string;
+    "author-role"?: string;
+    "theme-ids"?: string | string[];
+    "ids"?: string | string[];
+    "is-fully-translated"?: string;
+  };
 
   beforeEach(() => {
-    validDto = createFakeAdminFindQuestionsQueryDto();
+    validDto = {
+      "sort-order": "desc",
+      "limit": LIMIT_DEFAULT,
+      "theme-ids": ["60af924f4f1a2563f8e8b456"],
+      "ids": ["60af924f4f1a2563f8e8b456"],
+    };
   });
 
   it("should pass validation when a valid dto is provided.", () => {
@@ -26,8 +44,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each(ADMIN_QUESTION_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ "sort-by": sortBy });
+    it.each<QuestionSortableField>(ADMIN_QUESTION_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+      const dto = { ...validDto, "sort-by": sortBy, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -59,8 +77,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("sort-order", () => {
-    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ "sort-order": sortOrder });
+    it.each<SortOrder>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+      const dto = { ...validDto, "sort-order": sortOrder, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -92,13 +110,13 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("limit", () => {
-    it.each([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ limit });
+    it.each<number>([LIMIT_MINIMUM, LIMIT_DEFAULT, 100])("should pass validation when limit is %d.", limit => {
+      const dto = { ...validDto, limit, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);
@@ -125,8 +143,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("status", () => {
-    it.each(QUESTION_STATUSES)("should pass validation when status is '%s'.", status => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ status });
+    it.each<QuestionStatus>(QUESTION_STATUSES)("should pass validation when status is '%s'.", status => {
+      const dto = { ...validDto, status, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -145,8 +163,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("category", () => {
-    it.each(QUESTION_CATEGORIES)("should pass validation when category is '%s'.", category => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ category });
+    it.each<QuestionCategory>(QUESTION_CATEGORIES)("should pass validation when category is '%s'.", category => {
+      const dto = { ...validDto, category, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -165,8 +183,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("cognitive-difficulty", () => {
-    it.each(QUESTION_COGNITIVE_DIFFICULTIES)("should pass validation when cognitive-difficulty is '%s'.", cognitiveDifficulty => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ "cognitive-difficulty": cognitiveDifficulty });
+    it.each<QuestionCognitiveDifficulty>(QUESTION_COGNITIVE_DIFFICULTIES)("should pass validation when cognitive-difficulty is '%s'.", cognitiveDifficulty => {
+      const dto = { ...validDto, "cognitive-difficulty": cognitiveDifficulty, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -185,8 +203,8 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
   });
 
   describe("author-role", () => {
-    it.each(QUESTION_AUTHOR_ROLES)("should pass validation when author-role is '%s'.", authorRole => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ "author-role": authorRole });
+    it.each<QuestionAuthorRole>(QUESTION_AUTHOR_ROLES)("should pass validation when author-role is '%s'.", authorRole => {
+      const dto = { ...validDto, "author-role": authorRole, "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -206,7 +224,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
 
   describe("theme-ids", () => {
     it("should pass validation when theme-ids is a valid array of mongo IDs.", () => {
-      const dto = createFakeAdminFindQuestionsQueryDto({ "theme-ids": [new Types.ObjectId().toString(), new Types.ObjectId().toString()] });
+      const dto = { ...validDto, "theme-ids": ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b457"], "is-fully-translated": undefined };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
@@ -224,7 +242,7 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
     });
 
     it("should pass validation when theme-ids is a single string value.", () => {
-      const dtoWithSingleThemeId = { ...validDto, "theme-ids": new Types.ObjectId().toString() };
+      const dtoWithSingleThemeId = { ...validDto, "theme-ids": "60af924f4f1a2563f8e8b456" };
 
       const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithSingleThemeId);
 
@@ -235,6 +253,94 @@ describe("Admin Find Questions Sort Query DTO Shape", () => {
       const dtoWithEmptyThemeIds = { ...validDto, "theme-ids": [] };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithEmptyThemeIds)).toThrow(ZodError);
+    });
+  });
+
+  describe("ids", () => {
+    it("should pass validation when ids is a valid array of mongo IDs.", () => {
+      const dto = { ...validDto, ids: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b457"] };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should throw zod error when ids contains invalid values.", () => {
+      const dtoWithInvalidIds = { ...validDto, ids: ["not-a-mongo-id"] };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidIds)).toThrow(ZodError);
+    });
+
+    it("should pass validation when ids is not provided.", () => {
+      const { ids: _, ...dtoWithoutIds } = validDto;
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutIds)).not.toThrow();
+    });
+
+    it("should pass validation when ids is a single string value.", () => {
+      const dtoWithSingleId = { ...validDto, ids: "60af924f4f1a2563f8e8b456" };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithSingleId);
+
+      expect(result.ids).toStrictEqual([dtoWithSingleId.ids]);
+    });
+
+    it("should throw zod error when ids is an empty array.", () => {
+      const dtoWithEmptyIds = { ...validDto, ids: [] };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithEmptyIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids is a comma-separated string of invalid values.", () => {
+      const dtoWithCommaSeparatedInvalidIds = { ...validDto, ids: "not-a-mongo-id,also-invalid" };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithCommaSeparatedInvalidIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids exceeds the maximum of 100 items.", () => {
+      const dtoWithTooManyIds = {
+        ...validDto,
+        ids: Array.from({ length: 101 }, () => faker.database.mongodbObjectId()),
+      };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithTooManyIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids contains duplicate values.", () => {
+      const dtoWithDuplicateIds = { ...validDto, ids: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"] };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithDuplicateIds)).toThrow(ZodError);
+    });
+  });
+
+  describe("is-fully-translated", () => {
+    it.each<string>(["true", "false"])("should pass validation when is-fully-translated is '%s'.", isFullyTranslated => {
+      const dto = { ...validDto, "is-fully-translated": isFullyTranslated };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should parse is-fully-translated to a boolean when value is a valid boolean string.", () => {
+      const dto = { ...validDto, "is-fully-translated": "true" };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
+
+      expect(result["is-fully-translated"]).toBeTruthy();
+    });
+
+    it("should throw zod error when is-fully-translated is invalid.", () => {
+      const dtoWithInvalidValue = { ...validDto, "is-fully-translated": "maybe" };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidValue)).toThrow(ZodError);
+    });
+
+    it("should pass validation when is-fully-translated is not provided.", () => {
+      const dtoWithoutIsFullyTranslated: Record<string, unknown> = { ...validDto };
+      delete dtoWithoutIsFullyTranslated["is-fully-translated"];
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutIsFullyTranslated)).not.toThrow();
+    });
+
+    it("should have is-fully-translated as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["is-fully-translated"]>().toEqualTypeOf<string | undefined>();
     });
   });
 

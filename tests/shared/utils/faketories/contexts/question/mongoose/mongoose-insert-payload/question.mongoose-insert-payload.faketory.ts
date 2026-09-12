@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 import { createFakeQuestionAuthorAggregate, createFakeQuestionContentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
@@ -26,6 +28,7 @@ function createFakeQuestionMongooseInsertPayload(override: Partial<QuestionMongo
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
+    applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),
     ...override,
   };
 }

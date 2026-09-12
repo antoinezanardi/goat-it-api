@@ -20,6 +20,7 @@ import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/applicati
 import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
+import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
 import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -46,7 +47,7 @@ export class QuestionController {
     @Query() queryDto: FindQuestionsQueryNestZodDto,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionDto[]> {
-    const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, createPublicQuestionFilterOptionsFromQueryDto);
+    const findAllOptions = createFindAllOptionsFromQueryDto(queryDto, (dto: FindQuestionsQueryDto) => createPublicQuestionFilterOptionsFromQueryDto(dto, localization.locale));
     const questions = await this.findQuestionsUseCase.list(findAllOptions);
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));
@@ -66,7 +67,7 @@ export class QuestionController {
     @Body() bodyDto: FindRandomQuestionsBodyNestZodDto,
     @Localization() localization: LocalizationOptions,
   ): Promise<QuestionDto[]> {
-    const findRandomOptions = createFindRandomQuestionsOptionsFromBodyDto(bodyDto);
+    const findRandomOptions = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, localization.locale);
     const questions = await this.findRandomQuestionsUseCase.list(findRandomOptions);
 
     return questions.map(question => createQuestionDtoFromEntity(question, localization));

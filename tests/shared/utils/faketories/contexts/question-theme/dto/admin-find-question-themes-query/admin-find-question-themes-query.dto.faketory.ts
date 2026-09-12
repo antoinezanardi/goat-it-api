@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS, QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
+import { IS_FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
@@ -15,6 +16,7 @@ function createFakeAdminFindQuestionThemesQueryDto(overrides: Partial<AdminFindQ
     [SORT_ORDER_QUERY_KEY]: faker.helpers.arrayElement(SORT_ORDERS),
     [LIMIT_QUERY_KEY]: faker.helpers.maybe(() => faker.number.int({ min: LIMIT_MINIMUM })) ?? LIMIT_DEFAULT,
     status: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_THEME_STATUSES)),
+    [IS_FULLY_TRANSLATED_QUERY_KEY]: faker.helpers.maybe(() => faker.datatype.boolean()),
     ...overrides,
   };
 }

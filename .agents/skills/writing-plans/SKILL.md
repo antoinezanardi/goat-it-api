@@ -15,8 +15,8 @@ You're a senior engineer who knows the codebase's conventions and writes code th
 
 - `create-faketory` — for knowing faketory conventions when writing test steps
 - `create-mock` — for knowing mock conventions when writing test steps
-- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions
-- `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns
+- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions. **Mandatory compliance:** every unit test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-unit-tests.md` — universal checks `[U1]`–`[U8]` plus the per-type block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Verify each spec snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
+- `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns. **Mandatory compliance:** every acceptance test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-acceptance-tests.md` — universal checks `[AU*]` plus the per-type block (`[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]`). Verify each snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 
 Architecture doc must be read from `docs/ARCHITECTURE.md`.
 
@@ -94,6 +94,55 @@ Run: `pnpm run test:unit src/path/to/file.spec.ts`
 Expected: PASS
 ````
 
+### Modify step format (when the target file already exists)
+
+For steps that **modify an existing file**, do **NOT** paste the full file. Each step MUST:
+
+1. Anchor the change with **line range AND named area** (e.g., `the `transformItem` function at lines 47-62`). The named area keeps the anchor meaningful even if line numbers drift slightly.
+2. Show the **snippet** to add, replace, or remove. Up to 2-3 lines of immediate surrounding context are allowed (e.g., the closing brace of the function being replaced) to make the change self-explanatory — but no full file, no full template, no full imports block.
+3. State the operation explicitly: `Insert`, `Replace`, `Append`, or `Remove`.
+
+Example — a step that replaces a function:
+
+````markdown
+- [ ] **Step 1: Replace `transformItem` (the `transformItem` function at lines 47-62)**
+
+Replace:
+
+```ts
+function transformItem(item: Item): TransformedItem {
+  return {
+    id: item.id,
+    label: item.label,
+  };
+}
+```
+
+With:
+
+```ts
+function transformItem(item: Item): TransformedItem {
+  return {
+    id: item.id,
+    label: item.label.toUpperCase(),
+    isArchived: item.archived,
+  };
+}
+```
+````
+
+Example — a step that inserts a new import:
+
+````markdown
+- [ ] **Step 2: Add new import (insert after the existing `@nestjs/common` import at line 8)**
+
+```ts
+import { Question } from "@question/domain/entities/question.entity";
+```
+````
+
+Create steps are unchanged: write the full file as today.
+
 ## No Placeholders
 
 Every step must contain the actual content an engineer needs. These are **plan failures** — never write them:
@@ -104,10 +153,13 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - Steps that describe what to do without showing how (code blocks required for code steps)
 - References to types, functions, or methods not defined in any task
 
+For **modify steps** (steps that change an existing file instead of creating one), it is acceptable to reference the file's exact line range or named area instead of pasting the full file. The snippet itself must still be complete (no `...`, no truncation). See the "Modify step format" sub-section above.
+
 ## Remember
 
 - Exact file paths always
-- Complete code in every step — if a step changes code, show the code
+- **Create steps:** show the full file content (the whole file IS the code)
+- **Modify steps:** show the changed snippet (with up to 2-3 lines of surrounding context) anchored to **line range + named area**. Never paste unchanged surrounding code or the full file.
 - Exact commands with expected output
 - Follow project conventions, don't invent them, scan the codebase for patterns if you need to
 - DRY, YAGNI, you must write a senior engineer's code : simple and elegant
@@ -121,6 +173,9 @@ After writing the complete plan, run this checklist:
 3. **Type consistency:** Do the types, method signatures, and property names in later tasks match earlier tasks?
 4. **Test coverage:** Every task with logic has explicit tests for its own files. Tasks with only types, interfaces, or constants may omit tests. No full `pnpm run test:unit:cov` run in any task. 100% coverage for files that have tests.
 5. **Only one assertion per test:** Each test should have one assertion. If a test has multiple assertions, split it into multiple tests or use `it.each`.
+6. **Unit-test convention compliance (mandatory):** Re-read §4 of `.opencode/commands/lint-unit-tests.md` and audit every unit-test snippet in the plan against it — universal `[U1]`–`[U8]` plus the per-type block matching each spec's classification. Any violation found must be fixed inline before the plan is finished.
+7. **Acceptance-test convention compliance (mandatory):** Re-read §4 of `.opencode/commands/lint-acceptance-tests.md` and audit every acceptance-test snippet in the plan against it — universal `[AU*]` plus the per-type block matching each file's classification. Any violation found must be fixed inline before the plan is finished.
+8. **Modify steps cite exact locations:** Every step that modifies an existing file names both the line range AND the named area being changed (e.g., `the `transformItem` function at lines 47-62`). Full files do not appear in modify steps; snippets do not include unchanged code beyond 2-3 lines of context.
 
 If you find issues, fix them inline. If a spec requirement has no task, add the task.
 
@@ -140,3 +195,4 @@ If you find issues, fix them inline. If a spec requirement has no task, add the 
 - **Faketories:** `createFake<Concept>(overrides)` in `tests/shared/utils/faketories/` using `@faker-js/faker`
 - **Mocks:** `createMocked<What>(overrides)` in `tests/unit/utils/mocks/` using `vi.fn()`
 - **Quality gates (NOT in plan steps — orchestrator runs them):** `lint:fix` → `typecheck` → `test:unit:cov` → `test:mutation` → `test:acceptance`
+- **Plan snippet policy (mandatory):** Create steps contain the whole file. Modify steps contain only the changed snippet (with up to 2-3 lines of surrounding context), anchored to a line range AND a named area. The implementer reads the file once before editing to locate the anchor; the plan never reproduces unchanged code.
