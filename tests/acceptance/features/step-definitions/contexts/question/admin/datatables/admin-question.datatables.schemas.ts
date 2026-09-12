@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { QUESTION_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
+
 import { createZLocalizedDataTableRowSchema } from "@acceptance-features/step-definitions/shared/locale/datatables/locale.datatables.helpers";
 
 import { zCoerceOptionalBoolean, zCoerceOptionalString, zCoerceOptionalStringArray } from "@acceptance-support/helpers/datatable.helpers";
@@ -26,6 +28,7 @@ const ADMIN_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA = z.strictObject({
   "cognitive-difficulty": zCoerceOptionalString(),
   "author-role": zCoerceOptionalString(),
   "theme-ids": zCoerceOptionalStringArray(),
+  [QUESTION_IDS_QUERY_KEY]: zCoerceOptionalStringArray(),
   "limit": zCoerceOptionalString(),
   "is-fully-translated": zCoerceOptionalString(),
 });

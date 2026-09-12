@@ -23,6 +23,7 @@ describe("Find Questions Query DTO Shape", () => {
     "cognitive-difficulty"?: string;
     "author-role"?: string;
     "theme-ids"?: string | string[];
+    "ids"?: string | string[];
   };
 
   beforeEach(() => {
@@ -30,6 +31,7 @@ describe("Find Questions Query DTO Shape", () => {
       "sort-order": "desc",
       "limit": LIMIT_DEFAULT,
       "theme-ids": ["60af924f4f1a2563f8e8b456"],
+      "ids": ["60af924f4f1a2563f8e8b456"],
     };
   });
 
@@ -233,6 +235,61 @@ describe("Find Questions Query DTO Shape", () => {
       const dtoWithEmptyThemeIds = { ...validDto, "theme-ids": [] };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithEmptyThemeIds)).toThrow(ZodError);
+    });
+  });
+
+  describe("ids", () => {
+    it("should pass validation when ids is a valid array of mongo IDs.", () => {
+      const dto = { ...validDto, ids: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b457"] };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should throw zod error when ids contains invalid values.", () => {
+      const dtoWithInvalidIds = { ...validDto, ids: ["not-a-mongo-id"] };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidIds)).toThrow(ZodError);
+    });
+
+    it("should pass validation when ids is not provided.", () => {
+      const { ids: _, ...dtoWithoutIds } = validDto;
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutIds)).not.toThrow();
+    });
+
+    it("should pass validation when ids is a single string value.", () => {
+      const dtoWithSingleId = { ...validDto, ids: "60af924f4f1a2563f8e8b456" };
+
+      const result = FIND_QUESTIONS_QUERY_DTO.parse(dtoWithSingleId);
+
+      expect(result.ids).toStrictEqual([dtoWithSingleId.ids]);
+    });
+
+    it("should throw zod error when ids is an empty array.", () => {
+      const dtoWithEmptyIds = { ...validDto, ids: [] };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithEmptyIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids is a comma-separated string of invalid values.", () => {
+      const dtoWithCommaSeparatedInvalidIds = { ...validDto, ids: "not-a-mongo-id,also-invalid" };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithCommaSeparatedInvalidIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids exceeds the maximum of 100 items.", () => {
+      const dtoWithTooManyIds = {
+        ...validDto,
+        ids: Array.from({ length: 101 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`),
+      };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithTooManyIds)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when ids contains duplicate values.", () => {
+      const dtoWithDuplicateIds = { ...validDto, ids: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"] };
+
+      expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithDuplicateIds)).toThrow(ZodError);
     });
   });
 
