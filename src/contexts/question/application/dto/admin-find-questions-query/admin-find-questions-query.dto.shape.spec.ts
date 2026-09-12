@@ -1,4 +1,5 @@
 import { ZodError } from "zod";
+import { faker } from "@faker-js/faker";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
@@ -297,7 +298,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
     it("should throw zod error when ids exceeds the maximum of 100 items.", () => {
       const dtoWithTooManyIds = {
         ...validDto,
-        ids: Array.from({ length: 101 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`),
+        ids: Array.from({ length: 101 }, () => faker.database.mongodbObjectId()),
       };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithTooManyIds)).toThrow(ZodError);

@@ -1,3 +1,5 @@
+import { faker } from "@faker-js/faker";
+
 import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
@@ -335,7 +337,7 @@ describe("Question DTO Zod Validators", () => {
       },
       {
         test: "should return false when an array exceeds the maximum allowed items",
-        value: Array.from({ length: 101 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`),
+        value: Array.from({ length: 101 }, () => faker.database.mongodbObjectId()),
         expected: false,
       },
       {

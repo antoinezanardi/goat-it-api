@@ -122,6 +122,8 @@ Feature: Filter Questions
       | 700000000000000000000001,70000000000000000000000f |
     Then the request should have succeeded with status code 200
     And the response should contain 2 questions
+    And the response should contain a question among them with id "700000000000000000000001"
+    And the response should contain a question among them with id "70000000000000000000000f"
 
   Scenario: Filtering public questions by IDs combined with category
     Given the database is populated with questions fixture set with name "sixty-questions"
@@ -130,6 +132,7 @@ Feature: Filter Questions
       | 700000000000000000000001 | trivia   |
     Then the request should have succeeded with status code 200
     And the response should contain 1 question
+    And the response should contain a question among them with id "700000000000000000000001"
 
   Scenario: Filtering public questions by unknown ID returns empty list
     Given the database is populated with questions fixture set with name "sixty-questions"
