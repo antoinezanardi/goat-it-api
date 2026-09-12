@@ -1,5 +1,80 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.23.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.22.1...v1.23.0) (2026-09-12)
+
+### 🚀 Features
+
+* **admin:** add translation completeness filter and stat ([#1047](https://github.com/antoinezanardi/goat-it-api/issues/1047)) ([94d90f5](https://github.com/antoinezanardi/goat-it-api/commit/94d90f53592657b6aa82412d5322b5e0f2417781))
+* **opencode:** add translate-questions command for translating not-fully-translated question ([#1062](https://github.com/antoinezanardi/goat-it-api/issues/1062)) ([6bad42c](https://github.com/antoinezanardi/goat-it-api/commit/6bad42cfc37b40a40722d798ce128ac4bb8cf7fa))
+* **question:** add applicableLocales for per-question locale-restricted translation completeness ([#1065](https://github.com/antoinezanardi/goat-it-api/issues/1065)) ([e239202](https://github.com/antoinezanardi/goat-it-api/commit/e2392023b76a5eb5f1c3cc80fef0e9c7126f607b))
+* **question:** filter public endpoints by applicableLocale ([#1067](https://github.com/antoinezanardi/goat-it-api/issues/1067)) ([9b04feb](https://github.com/antoinezanardi/goat-it-api/commit/9b04feb10552c721f9059ad1e575b779d1ee2776))
+* **questions:** filter by ids on GET /questions and GET /admin/questions ([#1094](https://github.com/antoinezanardi/goat-it-api/issues/1094)) ([710a21c](https://github.com/antoinezanardi/goat-it-api/commit/710a21c317b8510a402651ca8e2f1eb4772c5a77))
+* **translate-questions:** add option to mark questions as French-only via applicableLocales ([#1075](https://github.com/antoinezanardi/goat-it-api/issues/1075)) ([8668e48](https://github.com/antoinezanardi/goat-it-api/commit/8668e480c18314db440a4a4c55bbb1fffb35a042))
+
+### 🐛 Bug Fixes
+
+* **ci:** remove skip ci token from sync-develop merge message ([#1031](https://github.com/antoinezanardi/goat-it-api/issues/1031)) ([99ae791](https://github.com/antoinezanardi/goat-it-api/commit/99ae7915683268660dbe0079d8131c77cdc8987f))
+
+### 📖 Docs
+
+* **opencode:** align agentic workflow with web-game reference ([#1045](https://github.com/antoinezanardi/goat-it-api/issues/1045)) ([e1adef3](https://github.com/antoinezanardi/goat-it-api/commit/e1adef3d8deadc010966c30bc101f1fa2d959ed3))
+
+### 🔩 Refactor
+
+* **acceptance:** add lint-acceptance-tests command for acceptance test convention audit ([#1059](https://github.com/antoinezanardi/goat-it-api/issues/1059)) ([3bdda60](https://github.com/antoinezanardi/goat-it-api/commit/3bdda608d4c14ee3fc122eeae2c0fac3f9ec1c5a))
+* **specs:** add lint unit tests for specs quality and refactor them ([#1056](https://github.com/antoinezanardi/goat-it-api/issues/1056)) ([6895122](https://github.com/antoinezanardi/goat-it-api/commit/68951226895bbfe296920448e8c43bec34dfac49))
+
+### ⚡️ Performance
+
+* **cors:** use Zod validate and hoisted schema for origin check ([#1093](https://github.com/antoinezanardi/goat-it-api/issues/1093)) ([3e0a488](https://github.com/antoinezanardi/goat-it-api/commit/3e0a48857795d4c0fc20c2e20326a756213fb64a))
+
+### 🧹 Chore
+
+* **ai:** remove rtk ([#1014](https://github.com/antoinezanardi/goat-it-api/issues/1014)) ([a08e1f7](https://github.com/antoinezanardi/goat-it-api/commit/a08e1f7ab791bc89edcea6160287052ef9f44a07))
+* **plan-writer:** add batch writing strategy for large plans ([#1063](https://github.com/antoinezanardi/goat-it-api/issues/1063)) ([957c5bc](https://github.com/antoinezanardi/goat-it-api/commit/957c5bc62cfe8a64be4ca4490fe41f46a49137e0))
+* **plan-writer:** use snippet-only modify steps and mirror admin models ([#1081](https://github.com/antoinezanardi/goat-it-api/issues/1081)) ([3608203](https://github.com/antoinezanardi/goat-it-api/commit/3608203cd4d0123417cb1e9d0e9378c31f2d6d73))
+* sync release v1.22.1 from main [skip ci] ([2664fbb](https://github.com/antoinezanardi/goat-it-api/commit/2664fbb5f2c04395cd8c97fd8ad41e4461b0f947))
+* trigger ci ([ba0ad0a](https://github.com/antoinezanardi/goat-it-api/commit/ba0ad0ae739b874ead47485b0d30df75303748c6))
+* upgrade to nest 12 ([#1053](https://github.com/antoinezanardi/goat-it-api/issues/1053)) ([030fefa](https://github.com/antoinezanardi/goat-it-api/commit/030fefafb3cbc718fc11507eec3fa817996ddb4f))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@nestjs/axios` | `v12` |
+| `@nestjs/mongoose` | `v12` |
+| `@nestjs/swagger` | `^11.4.7` |
+| `@nestjs/terminus` | `v12` |
+| `axios` | `^1.20.0` |
+| `fastify` | `^5.12.4` |
+| `mongoose` | `^9.9.5` |
+| `nestjs-pino` | `v5` |
+| `radashi` | `^12.9.2` |
+| `type-fest` | `^5.9.0` |
+| `zod` | `^4.6.2` |
+| `nest monorepo` | `^11.2.3` |
+| `commitlint monorepo` | `^21.2.2` |
+| `@eslint/config-inspector` | `^3.4.1` |
+| `@faker-js/faker` | `v10.6.0` |
+| `@nestjs/schematics` | `^12.0.1` |
+| `@swc/core` | `^1.16.2` |
+| `@types/node` | `^24.13.4` |
+| `conventional-changelog-conventionalcommits` | `^10.4.0` |
+| `eslint` | `^10.9.1` |
+| `eslint-plugin-unicorn` | `v74` |
+| `expect` | `^30.5.1` |
+| `lint-staged` | `^17.5.1` |
+| `tsdown` | `^0.23.0` |
+| `tsx` | `^4.23.13` |
+| `unplugin-swc` | `^1.6.0` |
+| `mongo docker tag` | `v8.3.9` |
+| `node.js` | `v26.8.2` |
+| `oxlint monorepo` | `v1.82.0` |
+| `pnpm` | `v12.4.1` |
+| `stryker-js monorepo` | `v10` |
+| `typescript-eslint monorepo` | `^8.70.0` |
+| `vitest monorepo` | `^4.1.11` |
+
 ## [1.22.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.22.0...v1.22.1) (2026-08-11)
 
 ### 🔁 CI
