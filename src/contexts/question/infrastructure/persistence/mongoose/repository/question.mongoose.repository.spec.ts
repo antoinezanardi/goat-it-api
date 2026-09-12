@@ -184,6 +184,19 @@ describe(QuestionMongooseRepository, () => {
 
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
+
+    it("should aggregate with pipeline including _id $in match stage when filters.ids is provided.", async() => {
+      const ids = ["618c1f4b3a2f000000000020", "618c1f4b3a2f000000000021"];
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, { sort: { sortOrder: "asc", sortBy: "createdAt" }, limit: undefined, filters: { ids } });
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedMatchStage = {
+        $match: { _id: { $in: ids.map(id => new Types.ObjectId(id)) } },
+      };
+      const expectedPipeline = [expectedMatchStage, ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
   });
 
   describe(QuestionMongooseRepository.prototype.findById, () => {

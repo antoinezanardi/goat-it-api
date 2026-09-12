@@ -15,6 +15,7 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
         "cognitive-difficulty": "hard",
         "author-role": "admin",
         "theme-ids": ["507f1f77bcf86cd799439011"],
+        "ids": ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
       }),
       "is-fully-translated": true,
     } as unknown as AdminFindQuestionsQueryDto;
@@ -27,7 +28,28 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
       cognitiveDifficulty: "hard",
       authorRole: "admin",
       themeIds: ["507f1f77bcf86cd799439011"],
+      ids: ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
       isFullyTranslated: true,
+    };
+
+    expect(result).toStrictEqual(expected);
+  });
+
+  it("should propagate ids when only ids is provided in the admin dto.", () => {
+    const dto = createFakeAdminFindQuestionsQueryDto({
+      "status": undefined,
+      "category": undefined,
+      "cognitive-difficulty": undefined,
+      "author-role": undefined,
+      "theme-ids": undefined,
+      "ids": ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
+      "is-fully-translated": undefined,
+    });
+
+    const result = createQuestionFilterOptionsFromQueryDto(dto);
+
+    const expected: Partial<QuestionFilterOptions> = {
+      ids: ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
     };
 
     expect(result).toStrictEqual(expected);
@@ -40,6 +62,7 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
       "cognitive-difficulty": undefined,
       "author-role": undefined,
       "theme-ids": undefined,
+      "ids": undefined,
       "is-fully-translated": undefined,
     });
 
@@ -57,6 +80,7 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
       "cognitive-difficulty": undefined,
       "author-role": undefined,
       "theme-ids": undefined,
+      "ids": undefined,
       "is-fully-translated": undefined,
     });
 
@@ -74,6 +98,7 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "cognitive-difficulty": "easy",
       "author-role": "game",
       "theme-ids": ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+      "ids": ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
     });
 
     const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
@@ -83,6 +108,27 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       cognitiveDifficulty: "easy",
       authorRole: "game",
       themeIds: ["507f1f77bcf86cd799439011", "507f1f77bcf86cd799439012"],
+      ids: ["507f1f77bcf86cd799439013", "507f1f77bcf86cd799439014"],
+      locale: "fr",
+    };
+
+    expect(result).toStrictEqual(expected);
+  });
+
+  it("should propagate ids alongside locale in the public mapper when only ids and locale are provided.", () => {
+    const locale = "fr";
+    const dto = createFakeFindQuestionsQueryDto({
+      "category": undefined,
+      "cognitive-difficulty": undefined,
+      "author-role": undefined,
+      "theme-ids": undefined,
+      "ids": ["507f1f77bcf86cd799439013"],
+    });
+
+    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
+
+    const expected: Partial<PublicQuestionFilterOptions> = {
+      ids: ["507f1f77bcf86cd799439013"],
       locale: "fr",
     };
 
@@ -96,6 +142,7 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "cognitive-difficulty": undefined,
       "author-role": undefined,
       "theme-ids": undefined,
+      "ids": undefined,
     });
 
     const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
@@ -112,6 +159,7 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
       "cognitive-difficulty": undefined,
       "author-role": undefined,
       "theme-ids": undefined,
+      "ids": undefined,
     });
 
     const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);

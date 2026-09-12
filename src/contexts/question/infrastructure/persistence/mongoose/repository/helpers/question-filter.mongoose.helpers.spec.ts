@@ -53,6 +53,58 @@ describe(buildQuestionAggregationFilterStages, () => {
     expect(result).toStrictEqual([{ $match: { "themes.themeId": { $in: [new Types.ObjectId(themeId)] } } }]);
   });
 
+  it("should return a match stage with _id $in ObjectIds when ids is defined.", () => {
+    const questionId = "507f1f77bcf86cd799439013";
+    const filters: Partial<QuestionFilterOptions> = { ids: [questionId] };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([{ $match: { _id: { $in: [new Types.ObjectId(questionId)] } } }]);
+  });
+
+  it("should return a match stage with _id $in ObjectIds for multiple ids when ids has multiple values.", () => {
+    const questionId1 = "507f1f77bcf86cd799439013";
+    const questionId2 = "507f1f77bcf86cd799439014";
+    const filters: Partial<QuestionFilterOptions> = { ids: [questionId1, questionId2] };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([{ $match: { _id: { $in: [new Types.ObjectId(questionId1), new Types.ObjectId(questionId2)] } } }]);
+  });
+
+  it("should not add _id condition when ids is undefined.", () => {
+    const filters: Partial<QuestionFilterOptions> = { status: "active" };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([{ $match: { status: "active" } }]);
+  });
+
+  it("should not add _id condition when ids is an empty array.", () => {
+    const filters: Partial<QuestionFilterOptions> = { ids: [] };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([]);
+  });
+
+  it("should combine _id condition with themeIds condition when both are provided.", () => {
+    const questionId = "507f1f77bcf86cd799439013";
+    const themeId = "507f1f77bcf86cd799439011";
+    const filters: Partial<QuestionFilterOptions> = { ids: [questionId], themeIds: [themeId] };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([
+      {
+        $match: {
+          "themes.themeId": { $in: [new Types.ObjectId(themeId)] },
+          "_id": { $in: [new Types.ObjectId(questionId)] },
+        },
+      },
+    ]);
+  });
+
   it("should return a single match stage with all conditions when multiple filters are defined.", () => {
     const themeId = "507f1f77bcf86cd799439011";
     const filters: Partial<QuestionFilterOptions> = {
@@ -84,6 +136,7 @@ describe(buildQuestionAggregationFilterStages, () => {
       cognitiveDifficulty: "easy",
       authorRole: "admin",
       themeIds: [themeId],
+      ids: [],
       isFullyTranslated: true,
     };
 

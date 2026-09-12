@@ -1,7 +1,7 @@
 import { pickDefinedValues } from "@shared/domain/rules/object/object.rules";
 import { IS_FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";
 
-import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_STATUS_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
+import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_IDS_QUERY_KEY, QUESTION_STATUS_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
 import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
@@ -15,6 +15,7 @@ function createQuestionFilterOptionsFromQueryDto(dto: AdminFindQuestionsQueryDto
     cognitiveDifficulty: dto[QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY],
     authorRole: dto[QUESTION_AUTHOR_ROLE_QUERY_KEY],
     themeIds: dto[QUESTION_THEME_IDS_QUERY_KEY],
+    ids: dto[QUESTION_IDS_QUERY_KEY],
     isFullyTranslated: dto[IS_FULLY_TRANSLATED_QUERY_KEY],
   });
 }
@@ -25,6 +26,7 @@ function createPublicQuestionFilterOptionsFromQueryDto(dto: FindQuestionsQueryDt
     cognitiveDifficulty: dto[QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY],
     authorRole: dto[QUESTION_AUTHOR_ROLE_QUERY_KEY],
     themeIds: dto[QUESTION_THEME_IDS_QUERY_KEY],
+    ids: dto[QUESTION_IDS_QUERY_KEY],
     locale,
   });
 }

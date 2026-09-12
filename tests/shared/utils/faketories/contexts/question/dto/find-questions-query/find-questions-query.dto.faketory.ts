@@ -6,7 +6,7 @@ import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.d
 import { LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
-import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
+import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_IDS_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
 function createFakeFindQuestionsQueryDto(overrides: Partial<FindQuestionsQueryDto> = {}): FindQuestionsQueryDto {
@@ -18,6 +18,7 @@ function createFakeFindQuestionsQueryDto(overrides: Partial<FindQuestionsQueryDt
     [QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY]: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)),
     [QUESTION_AUTHOR_ROLE_QUERY_KEY]: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_AUTHOR_ROLES)),
     [QUESTION_THEME_IDS_QUERY_KEY]: faker.helpers.maybe(() => [faker.database.mongodbObjectId()]),
+    [QUESTION_IDS_QUERY_KEY]: faker.helpers.maybe(() => Array.from({ length: faker.number.int({ min: 1, max: 3 }) }, () => faker.database.mongodbObjectId())),
     ...overrides,
   };
 }

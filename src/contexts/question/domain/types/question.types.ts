@@ -14,6 +14,7 @@ type QuestionFilterOptions = {
   cognitiveDifficulty: QuestionCognitiveDifficulty;
   authorRole: QuestionAuthorRole;
   themeIds: string[];
+  ids: string[];
   isFullyTranslated: boolean;
   locale?: Locale;
 };

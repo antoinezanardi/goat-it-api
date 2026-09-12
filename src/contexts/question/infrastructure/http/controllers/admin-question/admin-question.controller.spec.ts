@@ -17,6 +17,7 @@ import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-qu
 import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-question-stats/get-question-stats.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
+import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 
 import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
 import { createMockedModifyQuestionUseCase } from "@mocks/contexts/question/application/use-cases/modify-question.use-case.mock";
@@ -168,6 +169,29 @@ describe(AdminQuestionController, () => {
       await adminQuestionController.findQuestions(queryDto);
 
       expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expectedFindAllOptions);
+    });
+
+    it("should propagate ids through to the use case when ids is provided in the admin query dto.", async() => {
+      const ids = ["618c1f4b3a2f000000000040", "618c1f4b3a2f000000000041"];
+      const queryDto = { ...createFakeAdminFindQuestionsQueryDto(), ids } as AdminFindQuestionsQueryDto;
+
+      type FilterMapper = (dto: AdminFindQuestionsQueryDto) => Partial<QuestionFilterOptions> | undefined;
+
+      mocks.mappers.createFindAllOptionsFromQueryDto.mockImplementation((dto: AdminFindQuestionsQueryDto, mapper: FilterMapper) => {
+        const filters = mapper(dto);
+
+        return { sort: { sortBy: "createdAt", sortOrder: "desc" }, filters, limit: 10 };
+      });
+
+      await adminQuestionController.findQuestions(queryDto);
+
+      const expectedCall = {
+        // Acceptable as expect.objectContaining returns any from Vitest types
+        // oxlint-disable-next-line typescript/no-unsafe-assignment
+        filters: expect.objectContaining({ ids }),
+      };
+
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(expectedCall));
     });
 
     it("should map every question to admin dto when called.", async() => {

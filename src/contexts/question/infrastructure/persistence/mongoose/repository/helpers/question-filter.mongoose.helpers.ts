@@ -34,6 +34,7 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
   });
 
   addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+  addArrayFilterIfNonEmpty(filters.ids, matchConditions, "_id", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
 
   if (filters.isFullyTranslated !== undefined) {
     Object.assign(matchConditions, buildIsFullyTranslatedMatchCondition(QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS, filters.isFullyTranslated, "$applicableLocales"));

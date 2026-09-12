@@ -126,6 +126,30 @@ describe(QuestionController, () => {
       expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expectedFindAllOptions);
     });
 
+    it("should propagate ids through to the use case when ids is provided in the query dto.", async() => {
+      const ids = ["618c1f4b3a2f000000000030", "618c1f4b3a2f000000000031"];
+      const queryDto = { ...createFakeFindQuestionsQueryDto(), ids } as FindQuestionsQueryDto;
+      const localization = createFakeLocalizationOptions();
+
+      type FilterMapper = (dto: FindQuestionsQueryDto) => Partial<QuestionFilterOptions> | undefined;
+
+      mocks.mappers.createFindAllOptionsFromQueryDto.mockImplementation((dto: FindQuestionsQueryDto, mapper: FilterMapper) => {
+        const filters = mapper(dto);
+
+        return { sort: { sortBy: "createdAt", sortOrder: "desc" }, filters, limit: 10 };
+      });
+
+      await questionController.findQuestions(queryDto, localization);
+
+      const expectedCall = {
+        // Acceptable as expect.objectContaining returns any from Vitest types
+        // oxlint-disable-next-line typescript/no-unsafe-assignment
+        filters: expect.objectContaining({ ids }),
+      };
+
+      expect(mocks.useCases.findQuestions.list).toHaveBeenCalledExactlyOnceWith(expect.objectContaining(expectedCall));
+    });
+
     it("should map every question to dto when called.", async() => {
       const queryDto = createFakeFindQuestionsQueryDto();
       const localization = createFakeLocalizationOptions();
