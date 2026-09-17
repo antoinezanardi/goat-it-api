@@ -1,30 +1,31 @@
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
 /**
- * Build a flat condition where every locale of the given localized field is non-null.
+ * Build a flat condition where every given locale of the given localized field is non-null.
  * Used for the "this field has every locale set" check in static (no `applicableLocales`) mode.
  */
-function buildLocaleNonNullConditions(path: string): Record<string, unknown> {
-  return Object.fromEntries(LOCALES.map(locale => [`${path}.${locale}`, { $ne: null }]));
+function buildLocaleNonNullConditions(path: string, locales: readonly Locale[]): Record<string, unknown> {
+  return Object.fromEntries(locales.map(locale => [`${path}.${locale}`, { $ne: null }]));
 }
 
 /**
- * Build an array of conditions where any one locale of the given localized field is null.
+ * Build an array of conditions where any one given locale of the given localized field is null.
  * Used as a `$or` array for "at least one locale is missing" in static mode.
  */
-function buildLocaleNullConditions(path: string): Record<string, unknown>[] {
-  return LOCALES.map(locale => ({ [`${path}.${locale}`]: null }));
+function buildLocaleNullConditions(path: string, locales: readonly Locale[]): Record<string, unknown>[] {
+  return locales.map(locale => ({ [`${path}.${locale}`]: null }));
 }
 
 /**
- * Build a Mongo match for "this localized field is complete":
+ * Build a Mongo match for "this localized field is complete across the given locales":
  * - Mandatory fields: every locale must be set (non-null).
  * - Optional fields: the entire field is null OR every locale is set.
  */
-function buildFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec): Record<string, unknown> {
-  const allLocalesSet = buildLocaleNonNullConditions(fieldSpec.path);
+function buildFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec, locales: readonly Locale[]): Record<string, unknown> {
+  const allLocalesSet = buildLocaleNonNullConditions(fieldSpec.path, locales);
 
   if (fieldSpec.isMandatory) {
     return allLocalesSet;
@@ -33,12 +34,12 @@ function buildFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec
 }
 
 /**
- * Build a Mongo match for "this localized field is incomplete":
+ * Build a Mongo match for "this localized field is incomplete across the given locales":
  * - Mandatory fields: at least one locale is null.
  * - Optional fields: the field is set (non-null) AND at least one locale is null.
  */
-function buildFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSpec): Record<string, unknown> {
-  const someLocaleMissing = { $or: buildLocaleNullConditions(fieldSpec.path) };
+function buildFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSpec, locales: readonly Locale[]): Record<string, unknown> {
+  const someLocaleMissing = { $or: buildLocaleNullConditions(fieldSpec.path, locales) };
 
   if (fieldSpec.isMandatory) {
     return someLocaleMissing;
@@ -160,7 +161,10 @@ function buildIsFullyTranslatedMatchCondition(
   applicableLocalesPath?: string,
 ): Record<string, unknown> {
   if (applicableLocalesPath === undefined) {
-    return isFullyTranslated ? { $and: fieldSpecs.map(buildFieldCompleteCondition) } : { $or: fieldSpecs.map(buildFieldIncompleteCondition) };
+    const staticCompleteCondition = { $and: fieldSpecs.map(fieldSpec => buildFieldCompleteCondition(fieldSpec, LOCALES)) };
+    const staticIncompleteCondition = { $or: fieldSpecs.map(fieldSpec => buildFieldIncompleteCondition(fieldSpec, LOCALES)) };
+
+    return isFullyTranslated ? staticCompleteCondition : staticIncompleteCondition;
   }
 
   const completeExpressions = fieldSpecs.map(spec => buildDynamicFieldCompleteCondition(spec, applicableLocalesPath));
@@ -171,4 +175,27 @@ function buildIsFullyTranslatedMatchCondition(
   };
 }
 
-export { buildIsFullyTranslatedMatchCondition };
+/**
+ * Build the Mongo match clause that restricts a resource to those whose localized fields
+ * are fully translated **in one single locale**.
+ *
+ * Unlike {@link buildIsFullyTranslatedMatchCondition}, which either checks every supported
+ * locale or resolves each document's own `applicableLocales`, this builder takes one concrete
+ * locale and emits plain (non-`$expr`) field conditions, so regular indexes stay usable.
+ *
+ * Per-field semantics match the static completeness mode:
+ * - Mandatory fields: the locale must be set (non-null).
+ * - Optional fields: the entire field is null/absent OR the locale is set.
+ *
+ * @param fieldSpecs - The localized fields to evaluate.
+ * @param locale - The single locale every present field must be translated in.
+ * @returns A Mongo match-condition object suitable for `Model.find(...)` or pipeline `$match`.
+ */
+function buildIsFullyTranslatedForLocaleMatchCondition(
+  fieldSpecs: TranslationCompletenessFieldSpec[],
+  locale: Locale,
+): Record<string, unknown> {
+  return { $and: fieldSpecs.map(fieldSpec => buildFieldCompleteCondition(fieldSpec, [locale])) };
+}
+
+export { buildIsFullyTranslatedMatchCondition, buildIsFullyTranslatedForLocaleMatchCondition };

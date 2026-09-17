@@ -204,3 +204,37 @@ Feature: Find Random Questions
     And the response should contain a question among them with id "aabbccdd1122334455667702"
     And the response should contain a question among them with id "aabbccdd1122334455667703"
     And the response should contain a question among them with id "aabbccdd1122334455667704"
+
+  Scenario: Excluding questions that are not completely translated in the client's locale
+    Given the database is populated with questions fixture set with name "locale-completeness-questions"
+    When the client retrieves random questions in locale "it"
+    Then the request should have succeeded with status code 200
+    And the response should contain 2 questions
+    And the response should contain a question among them with id "aabbccdd1122334455667801"
+    And the response should contain a question among them with id "aabbccdd1122334455667803"
+    And the response should not contain a question with id "aabbccdd1122334455667804"
+
+  Scenario: Excluding a question whose optional field is not translated in the client's locale
+    Given the database is populated with questions fixture set with name "locale-completeness-questions"
+    When the client retrieves random questions in locale "it"
+    Then the request should have succeeded with status code 200
+    And the response should contain 2 questions
+    And the response should not contain a question with id "aabbccdd1122334455667802"
+    And the response should contain a question among them with id "aabbccdd1122334455667803"
+
+  Scenario: Excluding questions that are only translated in the fallback locale
+    Given the database is populated with questions fixture set with name "locale-completeness-questions"
+    When the client retrieves random questions in locale "fr"
+    Then the request should have succeeded with status code 200
+    And the response should contain 1 question
+    And the response should contain a question among them with id "aabbccdd1122334455667805"
+    And the response should not contain a question with id "aabbccdd1122334455667804"
+
+  Scenario: Returning the exact requested count when enough questions are fully translated in the client's locale
+    Given the database is populated with questions fixture set with name "locale-completeness-questions"
+    When the client retrieves random questions with the following body:
+      | limit |
+      | 1     |
+    Then the request should have succeeded with status code 200
+    And the response should contain 1 question
+    And the response should contain a question among them with id "aabbccdd1122334455667804"
