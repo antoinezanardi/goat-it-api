@@ -5,6 +5,7 @@ import { SIXTY_QUESTION_THEMES_FIXTURE_SET } from "@acceptance-support/fixtures/
 import { APPLICABLE_LOCALES_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/applicable-locales-questions.fixture-set";
 import { EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/eight-translation-completeness-questions.fixture-set";
 import { FIVE_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/five-questions.fixture-set";
+import { LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/locale-completeness-questions.fixture-set";
 import { TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/two-english-only-questions.fixture-set";
 import { SIXTY_QUESTIONS_FIXTURE_SET } from "@acceptance-support/fixtures/question/sets/sixty-questions.fixture-set";
 
@@ -35,6 +36,10 @@ const FIXTURE_REGISTRY: FixtureRegistry = {
     },
     "applicable-locales-questions": {
       data: APPLICABLE_LOCALES_QUESTIONS_FIXTURE_SET,
+      dependencies: [["question-theme", "five-question-themes"]],
+    },
+    "locale-completeness-questions": {
+      data: LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_SET,
       dependencies: [["question-theme", "five-question-themes"]],
     },
   },
