@@ -1,7 +1,7 @@
 ---
 description: Runs the full 5-step quality gate (lint → typecheck → unit cov → mutation → acceptance) with auto-fix for the goat-it-api project. Dispatched by orchestrator after all tasks, or by receiving-code-review after applying fixes.
 mode: subagent
-model: opencode-go/mimo-v2.5
+model: opencode-go/muse-spark-1.3-contributor
 temperature: 0.2
 hidden: true
 steps: 120

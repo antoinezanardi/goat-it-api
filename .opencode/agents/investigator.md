@@ -1,7 +1,7 @@
 ---
 description: Investigates a single independent problem domain in parallel for the goat-it-api project. Use when 3+ independent failures occur. Returns root cause + minimal fix for ONE problem only. Cheap model — fan out freely.
 mode: subagent
-model: opencode-go/mimo-v2.5
+model: opencode-go/muse-spark-1.3-contributor
 temperature: 0.2
 hidden: true
 steps: 40

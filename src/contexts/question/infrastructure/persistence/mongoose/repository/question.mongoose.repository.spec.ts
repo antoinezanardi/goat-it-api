@@ -31,6 +31,7 @@ import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
@@ -602,6 +603,25 @@ describe(QuestionMongooseRepository, () => {
   });
 
   describe(QuestionMongooseRepository.prototype.findRandom, () => {
+    const expectedLocaleCompletenessCondition = (locale: Locale): Record<string, unknown> => ({
+      $and: [
+        { [`content.statement.${locale}`]: { $ne: null } },
+        { [`content.answer.${locale}`]: { $ne: null } },
+        {
+          $or: [
+            { "content.context": null },
+            { [`content.context.${locale}`]: { $ne: null } },
+          ],
+        },
+        {
+          $or: [
+            { "content.trivia": null },
+            { [`content.trivia.${locale}`]: { $ne: null } },
+          ],
+        },
+      ],
+    });
+
     it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
       const locale = LOCALES[0];
       const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
@@ -614,9 +634,41 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: limit } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should build locale conditions with the requested locale when it is not the first supported locale.", async() => {
+      const locale: Locale = "it";
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale,
+      });
+      const expectedPipeline = [
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
+            ...expectedLocaleCompletenessCondition(locale),
+          },
+        },
+        { $sample: { size: 5 } },
         ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
       ];
 
@@ -639,6 +691,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },
@@ -664,6 +717,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },
@@ -689,6 +743,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },
@@ -714,6 +769,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },
@@ -745,6 +801,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },
@@ -768,6 +825,7 @@ describe(QuestionMongooseRepository, () => {
               { applicableLocales: { $size: 0 } },
               { applicableLocales: locale },
             ],
+            ...expectedLocaleCompletenessCondition(locale),
           },
         },
         { $sample: { size: 5 } },

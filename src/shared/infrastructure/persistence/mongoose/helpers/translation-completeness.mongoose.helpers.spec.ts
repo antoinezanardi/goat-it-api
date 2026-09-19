@@ -1,6 +1,7 @@
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
-import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
+import { buildIsFullyTranslatedMatchCondition, buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
 describe(buildIsFullyTranslatedMatchCondition, () => {
@@ -293,5 +294,81 @@ describe(buildIsFullyTranslatedMatchCondition, () => {
         ],
       },
     });
+  });
+});
+
+describe(buildIsFullyTranslatedForLocaleMatchCondition, () => {
+  const mandatoryFieldSpec: TranslationCompletenessFieldSpec = { path: "label", isMandatory: true };
+  const optionalFieldSpec: TranslationCompletenessFieldSpec = { path: "content.context", isMandatory: false };
+
+  it.each<{
+    name: string;
+    specs: TranslationCompletenessFieldSpec[];
+    locale: Locale;
+    expected: Record<string, unknown>;
+  }>([
+    {
+      name: "a single mandatory field",
+      specs: [mandatoryFieldSpec],
+      locale: "it",
+      expected: {
+        $and: [{ "label.it": { $ne: null } }],
+      },
+    },
+    {
+      name: "a single mandatory field for another locale",
+      specs: [mandatoryFieldSpec],
+      locale: "fr",
+      expected: {
+        $and: [{ "label.fr": { $ne: null } }],
+      },
+    },
+    {
+      name: "a single optional field",
+      specs: [optionalFieldSpec],
+      locale: "it",
+      expected: {
+        $and: [
+          {
+            $or: [
+              { "content.context": null },
+              { "content.context.it": { $ne: null } },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "a mandatory and an optional field",
+      specs: [mandatoryFieldSpec, optionalFieldSpec],
+      locale: "de",
+      expected: {
+        $and: [
+          { "label.de": { $ne: null } },
+          {
+            $or: [
+              { "content.context": null },
+              { "content.context.de": { $ne: null } },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      name: "no field spec",
+      specs: [],
+      locale: "it",
+      expected: { $and: [] },
+    },
+  ])("should return expected condition when specs are $name.", ({ specs, locale, expected }) => {
+    const result = buildIsFullyTranslatedForLocaleMatchCondition(specs, locale);
+
+    expect(result).toStrictEqual(expected);
+  });
+
+  it("should not return an $expr condition when called.", () => {
+    const result = buildIsFullyTranslatedForLocaleMatchCondition([mandatoryFieldSpec, optionalFieldSpec], "it");
+
+    expect(result).not.toHaveProperty("$expr");
   });
 });

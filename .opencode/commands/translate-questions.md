@@ -100,6 +100,8 @@ When choosing "Mark as French-only", the command will not translate content; the
 - The question is **deeply tied to French culture** that cannot be meaningfully adapted for non-French players.
 - The question relies on **puns, wordplay, or jokes** that do not translate.
 
+**Per-locale relevance note:** translation is all-or-nothing (all 5 target locales or French-only — there is no per-locale exclusion). If the question is likely trivial, overly familiar, or barely relevant for speakers of specific locales (e.g., a question about the `tilde` for `es`/`pt` speakers who use `ñ`/`ã` daily), state this explicitly in the decision prompt (e.g., `Note: trivial for es/pt speakers`) so the user can weigh it. An easy question for one locale is normal in a quiz and is not by itself a reason to mark as French-only.
+
 #### 4d. Generate English translation
 
 Translate the French content to English for all fields that need it:
@@ -115,6 +117,8 @@ Translation rules:
 - Keep placeholder structures intact (e.g., `{name}`, `{count}`, `{{variable}}`).
 - For `trivia` arrays, translate each element individually.
 - Keep proper nouns, brand names, and game-specific terminology consistent.
+- **Proper-noun localization:** verify person names, place names, and historical terms per locale (web check when unsure) — spelling may differ by locale (e.g., `Nabuchodonosor` → en `Nebuchadnezzar`, de `Nebukadnezar`, es/it/pt `Nabucodonosor`). Use the localized spelling in every field.
+- **Local acronyms/institutions:** expand locale-specific acronyms in the target language in both `statement` and `context` (e.g., `BnF` → en `French National Library (BnF)`, es `Biblioteca Nacional de Francia (BnF)`), so non-French players understand the reference.
 
 #### 4e. Wait for user approval
 
@@ -219,13 +223,24 @@ Example payload (if `context` and `trivia` also need translation):
 }
 ```
 
-Execute the PATCH and capture both the response body and the HTTP status code (printed on the last line via -w):
+Write the payload to a temp file first (normative — never inline JSON with `-d '{...}'`, which breaks on apostrophes in translations such as `cow's` or `l'hanami`):
+
+```bash
+python3 -c "
+import json
+payload={...}  # content-only payload built in step 4f, never containing fr
+open('/tmp/payload_{questionId}.json','w').write(json.dumps(payload, ensure_ascii=False))
+print('payload written')
+"
+```
+
+Execute the PATCH from the file and capture both the response body and the HTTP status code (printed on the last line via -w):
 
 ```bash
 curl -s -X PATCH "{baseUrl}/admin/questions/{questionId}" \
   -H "Content-Type: application/json" \
   -H "goat-it-api-key: {apiKey}" \
-  -d '{payload}' \
+  -d @/tmp/payload_{questionId}.json \
   -w "\n%{http_code}"
 ```
 
@@ -271,6 +286,8 @@ curl -s "{baseUrl}/admin/questions/{questionId}" \
 ```
 
 **For translation case:** Check that all mandatory fields (`statement`, `answer`) have non-null values for all 6 locales (`fr`, `en`, `es`, `de`, `it`, `pt`). If optional fields were translated, verify those too.
+
+**French-untouched check (translation case, mandatory):** French (`fr`) is the source of truth and must never change. Compare every re-fetched `fr` value against the French source snapshot captured in step 4a (`statement.fr`, `answer.fr`, and `context.fr`/`trivia.fr` where non-null). All must be strictly equal (exact string match, per trivia element). If any `fr` value differs → treat as incomplete: display the differing field(s) with before/after values, then ask the user via `question` tool with options `["Retry", "Skip", "Halt"]` (Retry = re-PATCH with a `fr`-free payload rebuilt from the 4a snapshot, then re-verify).
 
 **For French-only case:** Check that `applicableLocales` is now exactly `["fr"]`.
 
