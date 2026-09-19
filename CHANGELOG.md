@@ -1,5 +1,40 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.24.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.23.1...v1.24.0) (2026-09-19)
+
+### 🚀 Features
+
+* **question:** exclude not fully translated questions from random search ([#1116](https://github.com/antoinezanardi/goat-it-api/issues/1116)) ([3e4b3e1](https://github.com/antoinezanardi/goat-it-api/commit/3e4b3e1b273a559313b6f2c7d8f5749ead96e0db))
+
+### 🧹 Chore
+
+* sync release v1.23.1 from main ([18673e0](https://github.com/antoinezanardi/goat-it-api/commit/18673e045c608e8b0313fd86853254b511715cd7))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@nestjs/axios` | `^12.0.1` |
+| `@nestjs/common` | `^12.0.3` |
+| `fastify` | `^5.12.5` |
+| `mongoose` | `^9.10.1` |
+| `nestjs-pino` | `^5.2.0` |
+| `radashi` | `^12.9.5` |
+| `type-fest` | `^5.10.0` |
+| `zod` | `^4.6.5` |
+| `nest monorepo` | `^12.0.3` |
+| `@eslint/config-inspector` | `^3.5.0` |
+| `@types/node` | `^24.13.6` |
+| `dotenv` | `v18` |
+| `eslint` | `^10.11.0` |
+| `eslint-plugin-unicorn` | `v76` |
+| `expect` | `^30.5.2` |
+| `oxlint-tsgolint` | `^7.0.2002` |
+| `mongo docker tag` | `v8.3.11` |
+| `node.js` | `v26.9.0` |
+| `oxlint monorepo` | `v1.83.0` |
+| `pnpm` | `v12.4.2` |
+
 ## [1.23.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.23.0...v1.23.1) (2026-09-12)
 
 ### 🧹 Chore
