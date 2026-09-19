@@ -5,6 +5,7 @@ import { Model, Types, UpdateQuery } from "mongoose";
 import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
+import { shuffleArray } from "@shared/domain/helpers/array/array.helpers";
 
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS, QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
@@ -157,7 +158,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
       ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
     ]);
 
-    return questionWithThemes.map(createQuestionFromAggregate);
+    return shuffleArray(questionWithThemes.map(createQuestionFromAggregate));
   }
 
   public async getStats(): Promise<QuestionStats> {
