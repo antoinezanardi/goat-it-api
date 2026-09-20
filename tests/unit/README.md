@@ -522,7 +522,7 @@ describe("Question Domain Errors", () => {
   - For class static methods: `vi.spyOn(SomeModule, "staticMethod").mockReturnValue(...)`.
   - For class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`.
   - `vi.mock()` is still safe for modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Check with a grep before using it.
-  - For `@package-json`: import the real file (`import packageJson from "@package-json" with { type: "json" }`) and reference `packageJson.field` in assertions — do not mock it.
+  - For package metadata: import the real file (`import packageJson from "@package-json" with { type: "json" }`) and reference `packageJson.field` in assertions — do not mock it. In `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers` instead.
 
 ### Assertion style and helpers
 

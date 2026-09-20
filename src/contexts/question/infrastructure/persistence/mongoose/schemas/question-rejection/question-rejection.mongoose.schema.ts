@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
 import { QUESTION_REJECTION_TYPES } from "@question/domain/constants/question.constants";
-import { QuestionRejectionType } from "@question/domain/types/question.value-objects";
+import type { QuestionRejectionType } from "@question/domain/types/question.value-objects";
 
 @Schema({
   ...DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS,

@@ -1,13 +1,15 @@
-import { BadRequestException, Inject, Injectable, NestMiddleware } from "@nestjs/common";
-import { FastifyReply } from "fastify";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { z } from "zod";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-import { Locale } from "@shared/domain/value-objects/locale/locale.types";
-import { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
+import type { FastifyReply } from "fastify";
+import type { NestMiddleware } from "@nestjs/common";
+
+import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
+import type { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 /**
  * Middleware for extracting the locale from the 'Accept-Language' HTTP header and attaching it to the request.

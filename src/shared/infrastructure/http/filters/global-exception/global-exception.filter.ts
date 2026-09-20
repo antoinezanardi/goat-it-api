@@ -1,8 +1,7 @@
 import { ServerResponse } from "node:http";
 
 import { ZodValidationException } from "nestjs-zod";
-import { FastifyReply } from "fastify";
-import { ArgumentsHost, BadRequestException, Catch, ConflictException, ExceptionFilter, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Catch, ConflictException, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { ZodError } from "zod";
 
 import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
@@ -19,6 +18,9 @@ import { QuestionNotFoundError } from "@question/domain/errors/question-not-foun
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
+
+import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
+import type { FastifyReply } from "fastify";
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Write comprehensive implementation plans from an approved spec with bite-sized tasks (2-5 min steps), complete code, and no placeholders for the goat-it-api NestJS 11 project
+description: Write comprehensive implementation plans from an approved spec with bite-sized tasks (2-5 min steps), complete code, and no placeholders for the goat-it-api NestJS 12 project
 ---
 
 # Writing Implementation Plans
@@ -53,7 +53,7 @@ Every plan MUST start with:
 
 **Architecture:** [2-3 sentences]
 
-**Tech Stack:** NestJS 11, Fastify 5, Mongoose, Zod, TypeScript
+**Tech Stack:** NestJS 12, Fastify 5, Mongoose, Zod, TypeScript
 
 ## Global Constraints
 

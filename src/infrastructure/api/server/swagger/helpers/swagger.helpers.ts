@@ -1,12 +1,14 @@
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { cleanupOpenApiDoc } from "nestjs-zod";
 
-import packageJson from "@package-json" with { type: "json" };
-
 import { SWAGGER_DOCUMENTATION_PATH, SWAGGER_DOCUMENTATION_TITLE } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
-import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
+import { readPackageJson } from "@shared/domain/helpers/package-json/package-json.helpers";
+
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
+
+const packageJson = readPackageJson();
 
 function getSwaggerUrl(appUrl: string): string {
   const url = new URL(SWAGGER_DOCUMENTATION_PATH, appUrl);

@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { APP_PIPE } from "@nestjs/core";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { LoggerModule } from "nestjs-pino";
@@ -18,6 +18,8 @@ import { AppService } from "@app/providers/services/app.service";
 import { LocalizationMiddleware } from "@shared/infrastructure/http/middlewares/localization/localization.middleware";
 
 import { QuestionModule } from "@question/question.module";
+
+import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
 
 @Module({
   imports: [

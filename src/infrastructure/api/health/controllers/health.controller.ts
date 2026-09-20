@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { HealthCheck } from "@nestjs/terminus";
 import { ZodResponse } from "nestjs-zod";
 
-import { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
+import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 import { AppHealthNestZodDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
 import { createAppHealthDtoFromHealthCheckResult } from "@src/infrastructure/api/health/mappers/health.mappers";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";

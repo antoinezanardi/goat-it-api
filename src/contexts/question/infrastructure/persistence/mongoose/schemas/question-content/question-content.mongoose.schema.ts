@@ -4,7 +4,7 @@ import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastruct
 import { LOCALIZED_TEXT_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-text.mongoose.schema";
 import { LOCALIZED_TEXTS_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-texts.mongoose.schema";
 
-import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
+import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 @Schema({
   ...DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS,

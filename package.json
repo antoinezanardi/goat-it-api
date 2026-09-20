@@ -42,7 +42,7 @@
     "type": "individual",
     "url": "https://github.com/sponsors/antoinezanardi"
   },
-  "type": "commonjs",
+  "type": "module",
   "main": "dist/main.js",
   "readme": "README.md",
   "engines": {
@@ -58,7 +58,7 @@
   ],
   "scripts": {
     "prepare": "scripts/post-install-prepare.sh",
-    "build": "nest build --config configs/nest/nest-cli.config.json",
+    "build": "nest build --config configs/nest/nest-cli.config.json && tsc-alias -p configs/typescript/tsconfig.app.json --resolve-full-paths",
     "typecheck": "tsgo -b --clean && tsgo -b --noEmit",
     "start": "nest start --config configs/nest/nest-cli.config.json",
     "start:dev": "nest start --watch --config configs/nest/nest-cli.config.json",
@@ -142,6 +142,7 @@
     "rimraf": "^6.1.3",
     "semantic-release": "^25.0.9",
     "semantic-release-export-data": "^1.2.0",
+    "tsc-alias": "^1.9.5",
     "tsx": "^4.23.15",
     "type-fest": "^5.10.0",
     "typescript": "^6.0.3",
