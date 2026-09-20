@@ -13,7 +13,7 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FindRandomQuestionsBodyNestZodDto } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto";
 import { FindQuestionsQueryNestZodDto } from "@question/application/dto/find-questions-query/find-questions-query.dto";
-import { QuestionDto } from "@question/application/dto/question/question.dto.shape";
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
 import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
@@ -22,7 +22,7 @@ import { FindQuestionsUseCase } from "@question/application/use-cases/find-quest
 import { QuestionNestZodDto } from "@question/application/dto/question/question.dto";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
-import { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
+import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 @GameAuth()
 @Controller(ControllerPrefixes.QUESTIONS)

@@ -19,7 +19,7 @@
     "sourceMap": true,
     "strict": true,
     "strictBindCallApply": true,
-    "target": "ES2021",
+    "target": "ES2023",
     "resolveJsonModule": true,
     "strictPropertyInitialization": true,
     "paths": {

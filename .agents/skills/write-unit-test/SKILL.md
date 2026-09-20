@@ -253,7 +253,7 @@ Patterns:
 - Namespace functions: `import * as mod from "..."` → `vi.spyOn(mod, "fn")`
 - Class static methods: `vi.spyOn(SomeModule, "staticMethod")`
 - Class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`
-- `@package-json`: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions.
+- Package metadata: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions. Inside `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers`.
 
 `vi.mock()` is still safe for third-party modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Always check with a grep first.
 

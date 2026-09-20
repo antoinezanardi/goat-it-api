@@ -2,13 +2,14 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
-import { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
 
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 import { LOCALIZED_TEXT_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-text.mongoose.schema";
 import { LOCALIZED_TEXTS_MONGOOSE_SCHEMA } from "@shared/infrastructure/persistence/mongoose/schemas/localization/localized-texts.mongoose.schema";
 
-import { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
+import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
+
+import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 @Schema({
   ...DEFAULT_MONGOOSE_SCHEMA_OPTIONS,

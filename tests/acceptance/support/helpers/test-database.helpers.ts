@@ -1,4 +1,4 @@
-import { connect as connectToMongoDatabase, connection, ConnectionStates, disconnect } from "mongoose";
+import mongoose from "mongoose";
 
 function validateEnvRequirements(): void {
   const requiredEnvVariables = [
@@ -20,20 +20,20 @@ function validateEnvRequirements(): void {
 }
 
 async function connectToTestDatabase(): Promise<void> {
-  if (connection.readyState === ConnectionStates.connected) {
+  if (mongoose.connection.readyState === mongoose.ConnectionStates.connected) {
     return;
   }
 
   validateEnvRequirements();
 
   const mongoUri = `mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}`;
-  await connectToMongoDatabase(mongoUri, {
+  await mongoose.connect(mongoUri, {
     dbName: process.env.MONGODB_DATABASE,
   });
 }
 
 async function resetTestDatabase(): Promise<void> {
-  const collections = await connection.db?.collections();
+  const collections = await mongoose.connection.db?.collections();
   if (!collections) {
     return;
   }
@@ -41,7 +41,7 @@ async function resetTestDatabase(): Promise<void> {
 }
 
 async function closeTestDatabaseConnection(): Promise<void> {
-  return disconnect();
+  return mongoose.disconnect();
 }
 
 export {

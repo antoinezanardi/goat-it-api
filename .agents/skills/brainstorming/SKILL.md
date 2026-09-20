@@ -125,7 +125,7 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 ## Project-Specific Context (goat-it-api)
 
-This project follows **Hexagonal Architecture** with NestJS 11 + Fastify 5 + Mongoose + Zod. When brainstorming:
+This project follows **Hexagonal Architecture** with NestJS 12 + Fastify 5 + Mongoose + Zod. When brainstorming:
 
 - **Architecture**: Structure around bounded contexts under `src/contexts/<domain>/`, each with `domain/` (entities, errors, commands, contracts, repository ports), `application/` (use-cases, DTOs, mappers), `infrastructure/` (controllers, Mongoose repositories).
 - **Repository pattern**: Port interface + injection token in `domain/repositories/`, Mongoose implementation in `infrastructure/persistence/mongoose/repository/`.

@@ -60,7 +60,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/consistent-type-assertions": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "@typescript-eslint/consistent-type-exports": "error",
-    "@typescript-eslint/consistent-type-imports": "error",
+    // Disabled for now because of false positives because of decorators' usage
+    "@typescript-eslint/consistent-type-imports": "off",
     "@typescript-eslint/default-param-last": "error",
     "@typescript-eslint/dot-notation": [
       "error",

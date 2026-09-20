@@ -2,9 +2,10 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
-import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
-import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
+import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+
+import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
 @Injectable()
 export class FindQuestionThemeByIdUseCase {

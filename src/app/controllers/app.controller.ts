@@ -4,7 +4,7 @@ import { ZodResponse } from "nestjs-zod";
 
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 
-import { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import { AppMetadataNestZodDto } from "@app/dto/app-metadata/app-metadata.dto";
 import { AppService } from "@app/providers/services/app.service";
 

@@ -5,12 +5,13 @@ import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/questi
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 import { ensureNoLiveQuestionsReferenceTheme } from "@question-theme/domain/rules/question-theme.rules";
-import { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
-import { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
-import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
+import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+
+import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
+import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()
 export class ArchiveQuestionThemeUseCase {

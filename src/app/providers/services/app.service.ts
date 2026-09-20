@@ -1,8 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import packageJson from "@package-json" with { type: "json" };
+import { readPackageJson } from "@shared/domain/helpers/package-json/package-json.helpers";
 
 import type { AppMetadata } from "@app/types/app.types";
+
+const packageJson = readPackageJson();
 
 @Injectable()
 export class AppService {

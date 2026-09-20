@@ -1,19 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
 
-import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { isQuestionThemeArchived } from "@question-theme/domain/rules/question-theme.rules";
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QuestionThemeAssignmentCreationCommand } from "@question/domain/types/question.commands";
-import { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import type { QuestionThemeAssignmentCreationCommand } from "@question/domain/types/question.commands";
+import type { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
 import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
-import { Question } from "@question/domain/types/question.entities";
+import type { Question } from "@question/domain/types/question.entities";
 
-import { QuestionRepository } from "@question/domain/repositories/question.repository.types";
+import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()
 export class AssignThemeToQuestionUseCase {
