@@ -194,8 +194,8 @@ importers:
         specifier: ^12.0.1
         version: 12.0.1(@fastify/static@10.1.3)(@nestjs/common@12.0.3(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.0.3(@nestjs/common@12.0.3(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)
       '@nestjs/terminus':
-        specifier: ^12.0.0
-        version: 12.0.0(fbede478a16ea0de86b45e7041b95032)
+        specifier: ^12.1.0
+        version: 12.1.0(fbede478a16ea0de86b45e7041b95032)
       axios:
         specifier: ^1.20.0
         version: 1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
@@ -1735,8 +1735,8 @@ packages:
       class-validator:
         optional: true
 
-  '@nestjs/terminus@12.0.0':
-    resolution: {integrity: sha512-UCMJtBDc3/SBTu2yXQg/7OmQghGH9upVU56USS/UQoLKcnQkKM03MHP+VQ4oPz+KreI4wu+At9RNgSIpo/dCFg==}
+  '@nestjs/terminus@12.1.0':
+    resolution: {integrity: sha512-bag1KT1Pk2KpDhXh6fhf3F7IpRGs8IMSdPaD1+9hclP3hSAIkCYN/YUhkAY+2G7OuoUmyDuKVb7MgNw+L5ZBbQ==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       '@grpc/grpc-js': '*'
@@ -7826,7 +7826,7 @@ snapshots:
       '@fastify/static': 10.1.3
       class-transformer: 0.5.1
 
-  '@nestjs/terminus@12.0.0(fbede478a16ea0de86b45e7041b95032)':
+  '@nestjs/terminus@12.1.0(fbede478a16ea0de86b45e7041b95032)':
     dependencies:
       '@nestjs/common': 12.0.3(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
       '@nestjs/core': 12.0.3(@nestjs/common@12.0.3(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2)
