@@ -28,6 +28,8 @@ function tryParseOverriddenPayloadFloatValue(payloadValue: string): number {
   return parsedFloat;
 }
 
+// Acceptable as the function tries to parse a string value into a boolean, and the name reflects that intent
+// eslint-disable-next-line unicorn/consistent-boolean-name
 function tryParseOverriddenPayloadBooleanValue(payloadValue: string): boolean {
   if (payloadValue === "true") {
     return true;
@@ -89,9 +91,11 @@ function reconstructPayloadWithUndefined(flatObject: Record<string, unknown>): R
     const leafPart = parts[parts.length - 1];
 
     let current = result;
-    for (const [index, part] of parts.slice(0, -1).entries()) {
+    const parentEntries = parts.slice(0, -1).entries();
+
+    for (const [index, part] of parentEntries) {
       const isNextPartIndex = !Number.isNaN(Number(parts[index + 1]));
-      if (!(part in current)) {
+      if (!Object.hasOwn(current, part)) {
         current[part] = isNextPartIndex ? [] : {};
       }
       // Acceptable as recursive object traversal requires narrowing the dynamic property access

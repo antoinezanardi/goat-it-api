@@ -106,10 +106,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
 
       return this.findById(questionId);
     }
-    const setFields = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
-    if (Object.keys(setFields).length > 0) {
+    const fieldsToSet = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
+    if (Object.keys(fieldsToSet).length > 0) {
       const themeObjectId = new Types.ObjectId(themeId);
-      await this.questionModel.findByIdAndUpdate(questionId, { $set: setFields }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
+      await this.questionModel.findByIdAndUpdate(questionId, { $set: fieldsToSet }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
     }
     return this.findById(questionId);
   }

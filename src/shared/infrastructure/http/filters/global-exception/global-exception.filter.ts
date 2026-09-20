@@ -58,7 +58,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       validationDetails,
     });
 
-    GlobalExceptionFilter.sendNestHttpException(badRequestException, response);
+    this.sendNestHttpException(badRequestException, response);
   }
 
   public catch(exception: unknown, host: ArgumentsHost): void {

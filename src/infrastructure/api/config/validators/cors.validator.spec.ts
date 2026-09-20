@@ -1,6 +1,6 @@
-import { validateCorsOrigin } from "@src/infrastructure/api/config/validators/cors.validator";
+import { isCorsOriginValid } from "@src/infrastructure/api/config/validators/cors.validator";
 
-describe(validateCorsOrigin, () => {
+describe(isCorsOriginValid, () => {
   it.each<{
     test: string;
     value: string;
@@ -12,8 +12,8 @@ describe(validateCorsOrigin, () => {
       isValid: true,
     },
     {
-      test: "should return true for valid domain 'http://example.com'.",
-      value: "http://example.com",
+      test: "should return true for valid domain 'https://example.com'.",
+      value: "https://example.com",
       isValid: true,
     },
     {
@@ -22,8 +22,15 @@ describe(validateCorsOrigin, () => {
       isValid: true,
     },
     {
-      test: "should return true for valid domain with port 'http://example.com:8080'.",
-      value: "http://example.com:8080",
+      test: "should return true for valid domain with port 'https://example.com:8080'.",
+      value: "https://example.com:8080",
+      isValid: true,
+    },
+    {
+      test: "should return true for valid domain with http protocol.",
+      // Acceptable as this case must use plain HTTP to cover the optional protocol in the validator regex
+      // eslint-disable-next-line unicorn/prefer-https
+      value: "http://example.com",
       isValid: true,
     },
     {
@@ -62,6 +69,6 @@ describe(validateCorsOrigin, () => {
       isValid: false,
     },
   ])("$test", ({ value, isValid }) => {
-    expect(validateCorsOrigin(value)).toBe(isValid);
+    expect(isCorsOriginValid(value)).toBe(isValid);
   });
 });

@@ -8,8 +8,10 @@ export function buildAppForAcceptanceTests(): void {
     stdio: "inherit",
   };
   const buildProcess = spawnSync("pnpm run build", spawnOptions);
-  if (buildProcess.status !== 0) {
-    const errorDetails = buildProcess.error?.message ?? "Unknown error";
-    throw new Error(`Failed to build the application for acceptance tests. ${errorDetails}`);
+  if (buildProcess.status === 0) {
+    return;
   }
+  const errorDetails = buildProcess.error?.message ?? "Unknown error";
+
+  throw new Error(`Failed to build the application for acceptance tests. ${errorDetails}`);
 }
