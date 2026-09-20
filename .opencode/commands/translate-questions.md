@@ -97,6 +97,7 @@ Options: `["Translate to all missing locales", "Mark as French-only (applicableL
 
 When choosing "Mark as French-only", the command will not translate content; the question will only be visible to French players. Use this option when:
 - The question is a **lexicon** one (the answer is a French-specific term that would lose meaning in another language).
+- The question is about a **French idiom or French technical vocabulary** with no direct equivalent in the target locales (e.g., `payer en monnaie de singe`, `branle-bas de combat`, `bourdon`/`coquille` in printing) — flag these proactively as French-only candidates in the step 4c decision prompt.
 - The question is **deeply tied to French culture** that cannot be meaningfully adapted for non-French players.
 - The question relies on **puns, wordplay, or jokes** that do not translate.
 
@@ -119,6 +120,7 @@ Translation rules:
 - Keep proper nouns, brand names, and game-specific terminology consistent.
 - **Proper-noun localization:** verify person names, place names, and historical terms per locale (web check when unsure) — spelling may differ by locale (e.g., `Nabuchodonosor` → en `Nebuchadnezzar`, de `Nebukadnezar`, es/it/pt `Nabucodonosor`). Use the localized spelling in every field.
 - **Local acronyms/institutions:** expand locale-specific acronyms in the target language in both `statement` and `context` (e.g., `BnF` → en `French National Library (BnF)`, es `Biblioteca Nacional de Francia (BnF)`), so non-French players understand the reference.
+- **Historical nicknames/terms:** translate the literal meaning in every target locale and keep the French original in parentheses (e.g., `chaise volante` → en `"chaise volante" ("flying chair")`, es `"chaise volante" ("silla volante")`, de `"chaise volante" ("fliegender Stuhl")`), so non-French players understand the reference without losing the historical term.
 
 #### 4e. Wait for user approval
 
@@ -295,7 +297,7 @@ curl -s "{baseUrl}/admin/questions/{questionId}" \
   - **Retry**: go back to step 4d (translation case) or step 4g case 2 (French-only case), re-PATCH and re-verify.
   - **Skip**: record this question as skipped (with reason: "incomplete after patch"), output `✗ Question {id} skipped (incomplete)`, and move to the next question.
   - **Halt**: record this question as halted (with reason: "incomplete after patch"), output `✗ Question {id} halted (incomplete)`, and stop the entire command.
-  Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
+    Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
 - If complete → output `✓ Question {id} fully translated` (translation case) or `✓ Question {id} marked as French-only` (French-only case), increment `translated_count` (translation case) or `french_only_count` (French-only case) by exactly 1, then move to the next question.
 
 ### 5. Completion
@@ -337,11 +339,11 @@ Then list each problematic question with its ID and reason:
 After the finish report, run a short retrospective and offer to improve **this command**:
 
 1. **Collect findings** from the session:
-   - Translations the user accepted as-is or rewrote manually (candidate style entries: tone, terminology, locale conventions).
-   - Decisions to mark questions as French-only that the user later reversed (candidate heuristic entries: when to suggest French-only proactively).
-   - Per-question choices the user rejected (translate vs French-only vs skip) and the reasoning they gave.
-   - Loop friction: ambiguous wording, misleading verification outputs, partial API responses that the agent had to re-interpret.
-   - Any explicit user feedback during approval questions or issue reviews.
+  - Translations the user accepted as-is or rewrote manually (candidate style entries: tone, terminology, locale conventions).
+  - Decisions to mark questions as French-only that the user later reversed (candidate heuristic entries: when to suggest French-only proactively).
+  - Per-question choices the user rejected (translate vs French-only vs skip) and the reasoning they gave.
+  - Loop friction: ambiguous wording, misleading verification outputs, partial API responses that the agent had to re-interpret.
+  - Any explicit user feedback during approval questions or issue reviews.
 2. **Propose improvements** — map each finding to a concrete edit of `.opencode/commands/translate-questions.md` (step wording, verification logic, summary format, locale list, French-only heuristics). Present them as a table: improvement → lessons addressed, then ask via the question tool which to apply.
 3. **Never modify the command without explicit user approval.**
 4. **Apply approved edits** directly, verify each landed by re-reading/grepping the edited sections, and report where each change lives.

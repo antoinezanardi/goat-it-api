@@ -57,17 +57,16 @@ describe("Auth Helpers", () => {
 
     it("should throw InvalidApiKeyError when received API key is invalid because not same length.", () => {
       const expectedError = new InvalidApiKeyError();
-      const validApiKey = "valid-api-key";
       const hmacKey = "test-hmac";
-      const hashedValidApiKey = hashApiKey(validApiKey, hmacKey);
+      const hashedValidApiKey = "abcdef";
 
-      expect(() => validateReceivedApiKey(hashedValidApiKey, "short", hmacKey)).toThrow(expectedError);
+      expect(() => validateReceivedApiKey(hashedValidApiKey, "valid-api-key", hmacKey)).toThrow(expectedError);
     });
 
     it("should throw InvalidApiKeyError when received API key is invalid because content does not match.", () => {
       const expectedError = new InvalidApiKeyError();
       const hmacKey = "test-hmac";
-      const hashedValidApiKey = "hashed-api-key-for-comparison";
+      const hashedValidApiKey = hashApiKey("valid-api-key", hmacKey);
 
       expect(() => validateReceivedApiKey(hashedValidApiKey, "invalid-key-2", hmacKey)).toThrow(expectedError);
     });
