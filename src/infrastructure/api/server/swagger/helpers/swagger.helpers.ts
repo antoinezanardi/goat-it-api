@@ -9,11 +9,15 @@ import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 function getSwaggerUrl(appUrl: string): string {
-  return new URL(SWAGGER_DOCUMENTATION_PATH, appUrl).toString();
+  const url = new URL(SWAGGER_DOCUMENTATION_PATH, appUrl);
+
+  return url.href;
 }
 
 function getSwaggerConfig(): Omit<OpenAPIObject, "paths"> {
-  return new DocumentBuilder()
+  const documentBuilder = new DocumentBuilder();
+
+  return documentBuilder
     .setTitle(SWAGGER_DOCUMENTATION_TITLE)
     .setDescription(packageJson.description)
     .setVersion(packageJson.version)

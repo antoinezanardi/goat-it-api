@@ -39,6 +39,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import-x/no-mutable-exports": "error",
     "import-x/no-named-as-default": "error",
     "import-x/no-named-as-default-member": "error",
+    "import-x/no-rename-default": "off",
     "import-x/no-unused-modules": "off",
     // - Module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
     "import-x/no-amd": "error",
@@ -84,6 +85,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
     "import-x/no-namespace": "error",
     "import-x/no-unassigned-import": ["error", { allow: ["reflect-metadata"] }],
     "import-x/prefer-default-export": "off",
+    "import-x/prefer-namespace-import": "error",
     "import-x/order": [
       "error",
       {

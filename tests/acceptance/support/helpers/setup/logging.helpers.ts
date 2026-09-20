@@ -79,7 +79,7 @@ function generateRunId(): string {
   const workerPrefix = workerId === undefined ? "" : `worker-${workerId}-`;
   const now = new Date();
 
-  return `${workerPrefix}${now.toISOString().replaceAll(":", "-").replaceAll(".", "-")}`;
+  return `${workerPrefix}${now.toISOString().replaceAll(/[:.]/gu, "-")}`;
 }
 
 /**

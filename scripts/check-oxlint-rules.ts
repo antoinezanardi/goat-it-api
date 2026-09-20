@@ -153,15 +153,15 @@ function printReport(available: Map<string, string>, configured: Set<string>, mi
 
   console.log(`\u{1F4E6} Oxlint version: ${version}`);
   console.log(`\u{1F4CB} Available rules (included plugins): ${available.size}`);
-  console.log(`\u2699\uFE0F  Configured rules: ${configured.size}\n`);
+  console.log(`\u{2699}\u{FE0F}  Configured rules: ${configured.size}\n`);
 
   if (missing.size === 0) {
-    console.log("\u2705 All rules are covered!");
+    console.log("\u{2705} All rules are covered!");
 
     return;
   }
 
-  console.log(`\u26A0\uFE0F  Missing rules (${missing.size}):\n`);
+  console.log(`\u{26A0}\u{FE0F}  Missing rules (${missing.size}):\n`);
 
   const grouped = groupByPlugin(missing);
   const sortedPlugins = [...grouped.keys()].toSorted((left, right) => left.localeCompare(right));
@@ -170,7 +170,7 @@ function printReport(available: Map<string, string>, configured: Set<string>, mi
     const rules = grouped.get(plugin) ?? [];
     const sortedRules = rules.toSorted((left, right) => left.name.localeCompare(right.name));
 
-    console.log(`\u2500\u2500 ${plugin} (${sortedRules.length}) \u2500\u2500`);
+    console.log(`\u{2500}\u{2500} ${plugin} (${sortedRules.length}) \u{2500}\u{2500}`);
 
     for (const rule of sortedRules) {
       console.log(`   ${plugin}/${rule.name} (${rule.docsUrl})`);
@@ -199,10 +199,10 @@ try {
   main();
 } catch(error: unknown) {
   if (error instanceof ScriptError) {
-    console.error(`\u274C ${error.message}`);
+    console.error(`\u{274C} ${error.message}`);
     process.exitCode = error.exitCode;
   } else {
-    console.error("\u274C Unexpected error:", error);
+    console.error("\u{274C} Unexpected error:", error);
     process.exitCode = EXIT_CODE_ERROR;
   }
 }

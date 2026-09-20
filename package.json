@@ -72,6 +72,7 @@
     "lint:eslint:fix": "eslint --config eslint.config.ts --fix",
     "lint:eslint:staged:fix": "lint-staged -c configs/lint-staged/.lintstagedrc.eslint.json",
     "lint:eslint:inspect-config": "config-inspector",
+    "lint:eslint:check-rules": "tsx scripts/check-eslint-rules.ts",
     "lint:oxlint": "oxlint -c oxlint.config.jsonc",
     "lint:oxlint:fix": "oxlint -c oxlint.config.jsonc --fix --fix-suggestions",
     "lint:oxlint:staged:fix": "lint-staged -c configs/lint-staged/.lintstagedrc.oxlint.json",

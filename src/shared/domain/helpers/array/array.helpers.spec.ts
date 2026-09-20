@@ -84,7 +84,7 @@ describe(shuffleArray, () => {
 
     const shuffled = shuffleArray(items, createDeterministicRandomIndexGenerator([1, 0, 2, 0]));
 
-    expect([...shuffled].toSorted()).toStrictEqual<string[]>(["a", "b", "c", "d", "e"]);
+    expect([...shuffled].toSorted((first, second) => first.localeCompare(second))).toStrictEqual<string[]>(["a", "b", "c", "d", "e"]);
   });
 
   it("should use the crypto randomInt generator by default when no generator is provided.", () => {
@@ -92,6 +92,6 @@ describe(shuffleArray, () => {
 
     const shuffled = shuffleArray(items);
 
-    expect([...shuffled].toSorted()).toStrictEqual<string[]>(["a", "b", "c", "d", "e"]);
+    expect([...shuffled].toSorted((first, second) => first.localeCompare(second))).toStrictEqual<string[]>(["a", "b", "c", "d", "e"]);
   });
 });

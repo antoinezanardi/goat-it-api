@@ -385,7 +385,8 @@ describe(GlobalExceptionFilter, () => {
     it("should send InternalServerErrorException response using FastifyReply when called.", () => {
       const globalExceptionFilter = new GlobalExceptionFilter();
       const error = new Error("Unknown error occurred");
-      const expectedResponse = new InternalServerErrorException().getResponse();
+      const internalServerError = new InternalServerErrorException();
+      const expectedResponse = internalServerError.getResponse();
 
       globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.fastifyReply);
 
