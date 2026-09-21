@@ -120,7 +120,7 @@ Translation rules:
 - Keep proper nouns, brand names, and game-specific terminology consistent.
 - **Proper-noun localization:** verify person names, place names, and historical terms per locale (web check when unsure) — spelling may differ by locale (e.g., `Nabuchodonosor` → en `Nebuchadnezzar`, de `Nebukadnezar`, es/it/pt `Nabucodonosor`). Use the localized spelling in every field.
 - **Local acronyms/institutions:** expand locale-specific acronyms in the target language in both `statement` and `context` (e.g., `BnF` → en `French National Library (BnF)`, es `Biblioteca Nacional de Francia (BnF)`), so non-French players understand the reference.
-- **Historical nicknames/terms:** translate the literal meaning in every target locale and keep the French original in parentheses (e.g., `chaise volante` → en `"chaise volante" ("flying chair")`, es `"chaise volante" ("silla volante")`, de `"chaise volante" ("fliegender Stuhl")`), so non-French players understand the reference without losing the historical term.
+- **Historical nicknames/terms:** translate the literal meaning in every target locale and keep the French original in parentheses (e.g., `chaise volante` → en `"flying chair" ("chaise volante")`, es `"silla volante" ("chaise volante")`, de `"fliegender Stuhl" ("chaise volante")`), so non-French players understand the reference without losing the historical term.
 
 #### 4e. Wait for user approval
 
@@ -297,7 +297,7 @@ curl -s "{baseUrl}/admin/questions/{questionId}" \
   - **Retry**: go back to step 4d (translation case) or step 4g case 2 (French-only case), re-PATCH and re-verify.
   - **Skip**: record this question as skipped (with reason: "incomplete after patch"), output `✗ Question {id} skipped (incomplete)`, and move to the next question.
   - **Halt**: record this question as halted (with reason: "incomplete after patch"), output `✗ Question {id} halted (incomplete)`, and stop the entire command.
-    Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
+  - Record the selected outcome (and question ID) in a running list of issues to include in the final summary.
 - If complete → output `✓ Question {id} fully translated` (translation case) or `✓ Question {id} marked as French-only` (French-only case), increment `translated_count` (translation case) or `french_only_count` (French-only case) by exactly 1, then move to the next question.
 
 ### 5. Completion
