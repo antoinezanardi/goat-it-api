@@ -78,7 +78,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (exception instanceof Error) {
+    if (Error.isError(exception)) {
       const DomainHttpExceptionFactory = GlobalExceptionFilter.domainErrorHttpExceptionFactories[exception.name];
       if (DomainHttpExceptionFactory) {
         const domainHttpException = new DomainHttpExceptionFactory();
@@ -100,7 +100,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   private sendUnknownException(exception: unknown, response: FastifyReply | ServerResponse): void {
-    const errorMessage = exception instanceof Error ? exception.message : String(exception);
+    const errorMessage = Error.isError(exception) ? exception.message : String(exception);
     this.logger.error(errorMessage);
     const internalServerErrorException = new InternalServerErrorException();
 

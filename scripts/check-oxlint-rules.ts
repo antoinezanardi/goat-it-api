@@ -164,7 +164,7 @@ function printReport(available: Map<string, string>, configured: Set<string>, mi
   console.log(`\u{26A0}\u{FE0F}  Missing rules (${missing.size}):\n`);
 
   const grouped = groupByPlugin(missing);
-  const sortedPlugins = [...grouped.keys()].toSorted((left, right) => left.localeCompare(right));
+  const sortedPlugins = grouped.keys().toArray().toSorted((left, right) => left.localeCompare(right));
 
   for (const plugin of sortedPlugins) {
     const rules = grouped.get(plugin) ?? [];

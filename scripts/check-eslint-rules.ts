@@ -161,11 +161,11 @@ function isEnabledSeverity(severity: Linter.RuleSeverity): boolean {
 }
 
 function filterDeprecatedConfigured(available: Map<string, EslintRuleInfo>, severities: Map<string, Linter.RuleSeverity[]>): EslintRuleInfo[] {
-  return [...available.values()].filter(info => info.isDeprecated && (severities.get(info.fullName) ?? []).some(isEnabledSeverity));
+  return available.values().filter(info => info.isDeprecated && (severities.get(info.fullName) ?? []).some(isEnabledSeverity)).toArray();
 }
 
 function filterUnsetRules(available: Map<string, EslintRuleInfo>, configured: Set<string>): EslintRuleInfo[] {
-  return [...available.values()].filter(info => !info.isDeprecated && !configured.has(info.fullName));
+  return available.values().filter(info => !info.isDeprecated && !configured.has(info.fullName)).toArray();
 }
 
 function groupByPlugin(rules: EslintRuleInfo[]): Map<string, EslintRuleInfo[]> {
@@ -178,7 +178,7 @@ function sortByRuleName(rules: EslintRuleInfo[]): EslintRuleInfo[] {
 
 function printGroupedRules(title: string, rules: EslintRuleInfo[]): void {
   const grouped = groupByPlugin(rules);
-  const plugins = [...grouped.keys()].toSorted((left, right) => left.localeCompare(right));
+  const plugins = grouped.keys().toArray().toSorted((left, right) => left.localeCompare(right));
 
   console.log(`\n\u{26A0}\u{FE0F}  ${title} (${rules.length}):\n`);
 
