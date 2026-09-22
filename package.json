@@ -128,7 +128,7 @@
     "eslint": "^10.11.0",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-oxlint": "1.84.0",
+    "eslint-plugin-oxlint": "1.85.0",
     "eslint-plugin-unicorn": "^76.0.0",
     "expect": "^30.5.2",
     "husky": "^9.1.7",
