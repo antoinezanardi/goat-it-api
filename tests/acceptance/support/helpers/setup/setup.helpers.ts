@@ -4,18 +4,22 @@ import { prettyJsonStringify } from "@test-helpers/json/json.helpers";
 
 import { waitForAppToBeReady } from "@acceptance-support/helpers/setup/http.helpers";
 import { attachBuffersToProcessStreams, createFlushLogsHandler, generateRunId, RingBuffer } from "@acceptance-support/helpers/setup/logging.helpers";
+import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
 
-import type { ChildProcessWithoutNullStreams, SpawnOptionsWithoutStdio } from "node:child_process";
+import type { ChildProcessWithoutNullStreams } from "node:child_process";
 import type { ITestCaseHookParameter as TestCaseHookParameter } from "@cucumber/cucumber";
 
 import type { AppLogsManager } from "@acceptance-support/types/hooks.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWithoutNullStreams; appLogs: AppLogsManager }> {
-  const spawnOptions: SpawnOptionsWithoutStdio = {
-    shell: true,
-  };
-  const serverProcess = spawn("pnpm run start:prod:test", spawnOptions);
+  const serverProcess = spawn(process.execPath, ["dist/main"], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+    },
+    detached: true,
+  });
 
   const stdoutBuffer = new RingBuffer();
   const stderrBuffer = new RingBuffer();
@@ -36,7 +40,7 @@ async function serveAppForAcceptanceTests(): Promise<{ process: ChildProcessWith
       },
     };
   } catch(error) {
-    serverProcess.kill("SIGTERM");
+    await killAppProcess(serverProcess);
     throw error;
   }
 }

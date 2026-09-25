@@ -125,7 +125,7 @@ All hooks live in `tests/acceptance/support/hooks.ts`. They execute in this orde
 1. Loads `env/.env.test` via `loadEnvTestConfig()`.
 2. Builds the app.
 3. Connects to MongoDB via `connectToTestDatabase()`.
-4. Spawns `pnpm run start:prod:test` and waits for the HTTP health endpoint to respond (`serveAppForAcceptanceTests()`). The app listens on `http://0.0.0.0:4242`.
+4. Spawns the built app directly (`node dist/main` with `NODE_ENV=test`, detached) and waits for the HTTP health endpoint to respond (`serveAppForAcceptanceTests()`). The app listens on `http://0.0.0.0:4242`.
 5. Stores the child process reference and log manager in the `processes` object.
 
 ### `Before` (each scenario)
@@ -141,7 +141,7 @@ All hooks live in `tests/acceptance/support/hooks.ts`. They execute in this orde
 ### `AfterAll`
 
 1. Disconnects MongoDB via `closeTestDatabaseConnection()`.
-2. Kills the app process via `killAppProcess()`.
+2. Kills the app process via `killAppProcess()` — sends `SIGTERM` to the app's process group and escalates to `SIGKILL` after `APP_FORCE_KILL_TIMEOUT_MS`. The hook itself runs with an explicit `HOOKS_AFTER_ALL_TIMEOUT_MS` budget so the force-kill cannot collide with Cucumber's default 5s hook timeout.
 
 ---
 

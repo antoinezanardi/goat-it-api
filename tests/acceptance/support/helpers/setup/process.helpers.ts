@@ -2,6 +2,29 @@ import { APP_FORCE_KILL_TIMEOUT_MS } from "@acceptance-support/constants/app.con
 
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 
+import type { AppProcessSignal } from "@acceptance-support/types/setup.types";
+
+function hasAppProcessExited(serverProcess: ChildProcessWithoutNullStreams): boolean {
+  return serverProcess.exitCode !== null || serverProcess.signalCode !== null;
+}
+
+function killAppProcessTree(serverProcess: ChildProcessWithoutNullStreams, signal: AppProcessSignal): void {
+  if (hasAppProcessExited(serverProcess)) {
+    return;
+  }
+
+  const { pid } = serverProcess;
+  if (pid === undefined) {
+    return;
+  }
+
+  try {
+    process.kill(-pid, signal);
+  } catch {
+    serverProcess.kill(signal);
+  }
+}
+
 async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
   return new Promise<void>(resolve => {
     let isSettled = false;
@@ -15,9 +38,7 @@ async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithou
     }
 
     const forceKillTimeout = setTimeout(() => {
-      if (!serverProcess.killed) {
-        serverProcess.kill("SIGKILL");
-      }
+      killAppProcessTree(serverProcess, "SIGKILL");
       settlePromise();
     }, APP_FORCE_KILL_TIMEOUT_MS);
 
@@ -29,7 +50,7 @@ async function forceKillAppProcessAfterTimeout(serverProcess: ChildProcessWithou
 }
 
 async function killAppProcess(serverProcess: ChildProcessWithoutNullStreams): Promise<void> {
-  serverProcess.kill("SIGTERM");
+  killAppProcessTree(serverProcess, "SIGTERM");
 
   await forceKillAppProcessAfterTimeout(serverProcess);
 }
