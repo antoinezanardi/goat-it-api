@@ -21,6 +21,7 @@ function createFakeQuestionModificationContract(overrides: Partial<QuestionModif
   return {
     category: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_CATEGORIES)),
     cognitiveDifficulty: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)),
+    isAdultContent: faker.helpers.maybe(faker.datatype.boolean),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     content: faker.helpers.maybe(createFakeQuestionContentModificationContract),
     applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),

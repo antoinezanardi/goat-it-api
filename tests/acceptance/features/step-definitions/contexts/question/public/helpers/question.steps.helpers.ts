@@ -46,6 +46,9 @@ function expectQuestionDtoToMatch(questionDto: QuestionDto, expectedQuestionDto:
   expect(questionDto.cognitiveDifficulty).toBe(expectedQuestionDto.cognitiveDifficulty);
   expect(questionDto.status).toBe(expectedQuestionDto.status);
   expect(questionDto.sourceUrls).toStrictEqual(expectedQuestionDto.sourceUrls);
+  if (expectedQuestionDto.isAdultContent !== undefined) {
+    expect(questionDto.isAdultContent).toBe(expectedQuestionDto.isAdultContent);
+  }
 }
 
 function expectQuestionContentDtoToMatch(questionDto: QuestionDto, expectedContent: z.infer<typeof QUESTION_CONTENT_DATATABLE_ROW_SCHEMA>): void {

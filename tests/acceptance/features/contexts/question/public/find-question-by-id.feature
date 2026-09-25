@@ -9,8 +9,8 @@ Feature: Find Question by ID
     When the client retrieves the question with id "a1b2c3d4e5f6012345678901"
     Then the request should have succeeded with status code 200
     And the response should contain the following question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
     And the response should contain the following content for the question:
       | statement                                              | answer           | context                                                                                                           |

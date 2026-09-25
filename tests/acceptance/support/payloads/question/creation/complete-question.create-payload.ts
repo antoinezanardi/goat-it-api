@@ -73,6 +73,7 @@ const COMPLETE_QUESTION_CREATION_PAYLOAD = Object.freeze(createFakeQuestionCreat
     }),
   }),
   cognitiveDifficulty: "medium",
+  isAdultContent: false,
   author: createFakeQuestionAuthorCreationDto({
     role: "admin",
     name: "Antoine ZANARDI",

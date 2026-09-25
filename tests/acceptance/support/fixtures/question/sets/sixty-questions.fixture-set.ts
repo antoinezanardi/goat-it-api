@@ -19,6 +19,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY._id,
@@ -59,6 +60,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MUSIC_ENTRY._id,
@@ -96,6 +98,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id,
@@ -134,6 +137,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id,
@@ -174,6 +178,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_GEOGRAPHY_ENTRY._id,
@@ -211,6 +216,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_LITERATURE_ENTRY._id,
@@ -249,6 +255,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ANIMALS_ENTRY._id,
@@ -286,6 +293,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_SPACE_ENTRY._id,
@@ -326,6 +334,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ART_ENTRY._id,
@@ -364,6 +373,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_FOOD_ENTRY._id,
@@ -404,6 +414,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MEDICINE_ENTRY._id,
@@ -441,6 +452,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ASTRONOMY_ENTRY._id,
@@ -479,6 +491,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_BIOLOGY_ENTRY._id,
@@ -516,6 +529,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "pending",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CHEMISTRY_ENTRY._id,
@@ -553,6 +567,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_PHYSICS_ENTRY._id,
@@ -591,6 +606,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_TECHNOLOGY_ENTRY._id,
@@ -625,6 +641,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_PSYCHOLOGY_ENTRY._id,
@@ -667,6 +684,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_COFFEE_ENTRY._id,
@@ -708,6 +726,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_TECHNOLOGY_ENTRY._id,
@@ -742,6 +761,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_GAMING_ENTRY._id,
@@ -788,6 +808,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_POLITICS_ENTRY._id,
@@ -825,6 +846,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CARS_ENTRY._id,
@@ -870,6 +892,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_NUTRITION_ENTRY._id,
@@ -905,6 +928,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_FITNESS_ENTRY._id,
@@ -942,6 +966,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_PSYCHOLOGY_ENTRY._id,
@@ -992,6 +1017,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_POKER_ENTRY._id,
@@ -1030,6 +1056,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CRYPTOGRAPHY_ENTRY._id,
@@ -1067,6 +1094,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "archived",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ANIME_ENTRY._id,
@@ -1109,6 +1137,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_AVIATION_ENTRY._id,
@@ -1147,6 +1176,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_WINE_ENTRY._id,
@@ -1197,6 +1227,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MARITIME_ENTRY._id,
@@ -1232,6 +1263,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_TEA_ENTRY._id,
@@ -1269,6 +1301,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_GARDENING_ENTRY._id,
@@ -1311,6 +1344,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_DANCE_ENTRY._id,
@@ -1349,6 +1383,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_THEATER_ENTRY._id,
@@ -1391,6 +1426,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_FASHION_ENTRY._id,
@@ -1425,6 +1461,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ARCHITECTURE_ENTRY._id,
@@ -1463,6 +1500,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CINEMA_ENTRY._id,
@@ -1505,6 +1543,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MYTHOLOGY_ENTRY._id,
@@ -1553,6 +1592,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MILITARY_ENTRY._id,
@@ -1590,6 +1630,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MATHEMATICS_ENTRY._id,
@@ -1632,6 +1673,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_YOGA_ENTRY._id,
@@ -1670,6 +1712,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_TRAVEL_ENTRY._id,
@@ -1712,6 +1755,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CLIMATE_ENTRY._id,
@@ -1749,6 +1793,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ENERGY_ENTRY._id,
@@ -1787,6 +1832,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_PALEONTOLOGY_ENTRY._id,
@@ -1837,6 +1883,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CHESS_ENTRY._id,
@@ -1874,6 +1921,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_PHOTOGRAPHY_ENTRY._id,
@@ -1917,6 +1965,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MAGIC_ENTRY._id,
@@ -1951,6 +2000,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_SPORTS_ENTRY._id,
@@ -2001,6 +2051,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_LITERATURE_ENTRY._id,
@@ -2041,6 +2092,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_SPACE_ENTRY._id,
@@ -2083,6 +2135,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CHEMISTRY_ENTRY._id,
@@ -2125,6 +2178,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "rejected",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id,
@@ -2162,6 +2216,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_POKER_ENTRY._id,
@@ -2205,6 +2260,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "riddle",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_TECHNOLOGY_ENTRY._id,
@@ -2247,6 +2303,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_MEDITATION_ENTRY._id,
@@ -2294,6 +2351,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "trivia",
     status: "active",
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_COFFEE_ENTRY._id,
@@ -2337,6 +2395,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "lexicon",
     status: "active",
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_CARS_ENTRY._id,
@@ -2384,6 +2443,7 @@ const SIXTY_QUESTIONS_FIXTURE_SET = [
     category: "explanation",
     status: "active",
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     themes: [
       createFakeQuestionThemeAssignmentDocument({
         themeId: SIXTY_QUESTION_THEMES_FIXTURE_ARCHITECTURE_ENTRY._id,
