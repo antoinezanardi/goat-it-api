@@ -42,7 +42,7 @@ function deduplicateDependencies(dependencies) {
   for (const dep of dependencies) {
     seen.set(dep.name, dep.version);
   }
-  return [...seen.entries()].map(([name, version]) => ({ name, version }));
+  return [...seen].map(([name, version]) => ({ name, version }));
 }
 
 function buildDependencyTable(dependencies) {
@@ -91,7 +91,7 @@ function removeDepsLinesAndCleanSections(lines) {
       hasContent = false;
       filtered.push(line);
     } else if (!isDepsLine(line)) {
-      if (line.startsWith("* ") && sectionStartIndex !== -1) {
+      if (sectionStartIndex !== -1 && line.startsWith("* ")) {
         hasContent = true;
       }
 

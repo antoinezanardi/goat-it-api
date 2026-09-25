@@ -29,7 +29,11 @@ function zCreateFilterArray<T extends ZodType>(
     arraySchema = arraySchema.max(maxItems);
   }
   return z.preprocess(normalizeToArray, arraySchema)
-    .refine(array => new Set(array).size === array.length, { message: uniquenessMessage })
+    .refine(array => {
+      const uniqueValues = new Set(array);
+
+      return uniqueValues.size === array.length;
+    }, { message: uniquenessMessage })
     .optional()
     .describe(description);
 }

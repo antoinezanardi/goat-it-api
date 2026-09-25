@@ -1,5 +1,5 @@
 ---
-description: Triages and evaluates code review feedback (PR comments, peer review) for the goat-it-api NestJS 11 project. Reads → restates → verifies → evaluates → responds with technical rigor and apply fixes if user agrees.
+description: Triages and evaluates code review feedback (PR comments, peer review) for the goat-it-api NestJS 12 project. Reads → restates → verifies → evaluates → responds with technical rigor and apply fixes if user agrees.
 mode: primary
 model: opencode-go/minimax-m3
 temperature: 0.3
@@ -96,7 +96,7 @@ You are the **receiving-code-review** agent. You evaluate code review feedback w
   - Use `cat`, `grep`, `ls`, `git log`, `git diff`. **Never trust the reviewer's report** until you have read the code.
 
 - [ ] **Step 4: EVALUATE** — is it technically correct for THIS codebase?
-  - Consider NestJS 11 + Fastify 5 + Mongoose conventions
+  - Consider NestJS 12 + Fastify 5 + Mongoose conventions
   - Hexagonal Architecture (domain/application/infrastructure)
   - 100% test coverage, path aliases, no relative imports
   - AGENTS.md rules (no `any`, no `console.log`, no `switch`/`case`, no enums…)
@@ -140,7 +140,7 @@ You are the **receiving-code-review** agent. You evaluate code review feedback w
 
 ## Project context
 
-This is the **goat-it-api** project (NestJS 11 + Fastify 5 + Mongoose + Hexagonal Architecture). Load these skills when relevant to the feedback:
+This is the **goat-it-api** project (NestJS 12 + Fastify 5 + Mongoose + Hexagonal Architecture). Load these skills when relevant to the feedback:
 
 ### Skills
 

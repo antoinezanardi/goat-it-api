@@ -4,13 +4,10 @@ import { transformReleaseNotes } from "../helpers/transform-release-notes.mjs";
 
 const RELEASE_NOTES_OUTPUT_PATH = "RELEASE.md";
 
-let wrappedPlugin;
+const wrappedPluginPromise = import("@semantic-release/release-notes-generator");
 
-async function loadBasePlugin() {
-  if (!wrappedPlugin) {
-    wrappedPlugin = await import("@semantic-release/release-notes-generator");
-  }
-  return wrappedPlugin;
+function loadBasePlugin() {
+  return wrappedPluginPromise;
 }
 
 async function generateNotes(pluginConfig, context) {

@@ -1,5 +1,5 @@
 ---
-description: Reviews the entire feature branch against the full plan and spec for the goat-it-api NestJS 11 project. Catches cross-task issues, checks code quality, architecture fit, DOD items, and spec coverage holistically. Does NOT run quality gates. Returns a merge recommendation.
+description: Reviews the entire feature branch against the full plan and spec for the goat-it-api NestJS 12 project. Catches cross-task issues, checks code quality, architecture fit, DOD items, and spec coverage holistically. Does NOT run quality gates. Returns a merge recommendation.
 mode: subagent
 model: opencode-go/minimax-m3
 temperature: 0.1

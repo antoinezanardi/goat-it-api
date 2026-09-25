@@ -1,5 +1,5 @@
 ---
-description: Implements one very detailed task from an implementation plan for the goat-it-api NestJS 11 project (hexagonal architecture, 100% test coverage).
+description: Implements one very detailed task from an implementation plan for the goat-it-api NestJS 12 project (hexagonal architecture, 100% test coverage).
 mode: subagent
 model: opencode-go/muse-spark-1.3-contributor
 temperature: 0.2

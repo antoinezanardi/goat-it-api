@@ -9,11 +9,11 @@ const CORS_URL_OPTIONS: $ZodURLParams = {
 
 const CORS_URL_SCHEMA = z.url(CORS_URL_OPTIONS);
 
-function validateCorsOrigin(value: string): boolean {
+function isCorsOriginValid(value: string): boolean {
   if (value === "*") {
     return true;
   }
   return CORS_URL_SCHEMA.validate(value);
 }
 
-export { validateCorsOrigin };
+export { isCorsOriginValid };

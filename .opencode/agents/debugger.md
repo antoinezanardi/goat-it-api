@@ -1,5 +1,5 @@
 ---
-description: Investigates a bug, test failure, or unexpected behavior using systematic 4-phase debugging for the goat-it-api NestJS 11 project. Returns root cause and minimal fix.
+description: Investigates a bug, test failure, or unexpected behavior using systematic 4-phase debugging for the goat-it-api NestJS 12 project. Returns root cause and minimal fix.
 mode: subagent
 model: opencode-go/minimax-m3
 temperature: 0.2

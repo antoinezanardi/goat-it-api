@@ -11,9 +11,9 @@ conventions, and other repo-specific rules).
   - Unlike npm, `pnpm` does NOT require an extra `--` before flags. Pass arguments directly:
     `pnpm run test:unit -t "should create"` (correct) vs ~~`pnpm run test:unit -- -t "should create"`~~ (unnecessary).
 - Node requirement: see `package.json` -> `engines.node` and `configs/node/.node-version`.
-- Stack: NestJS 11 + Fastify 5, MongoDB/Mongoose, Zod + nestjs-zod, SWC builder.
-- Dev server: `pnpm run start:dev` (nest start --watch)
-- Build: `pnpm run build` (nest build via SWC); production: `pnpm run start:prod`
+- Stack: NestJS 12 + Fastify 5, MongoDB/Mongoose, Zod + nestjs-zod, SWC builder, ESM (`"type": "module"`).
+- Dev server: `pnpm run start:dev` (`nest start --watch`; the SWC output is executed through the `tsx/esm` loader, see `exec` in `configs/nest/nest-cli.config.json`)
+- Build: `pnpm run build` (`nest build` via SWC, then `tsc-alias --resolve-full-paths` to append the `.js` extensions ESM requires); production: `pnpm run start:prod` (`node dist/main`)
 - Typecheck: `pnpm run typecheck` (tsgo -b --clean && tsgo -b --noEmit, native TS compiler)
 
 - Linting (always run both linters):
@@ -129,7 +129,7 @@ No relative `../` or `./` imports are permitted. Use path aliases everywhere.
 
 | Alias                    | Resolves to                       |
 |--------------------------|-----------------------------------|
-| `@package-json`          | `package.json`                    |
+| `@package-json`          | `package.json` (test-only, see note) |
 | `@src/*`                 | `src/*`                           |
 | `@app/*`                 | `src/app/*`                       |
 | `@shared/*`              | `src/shared/*`                    |
@@ -146,12 +146,15 @@ No relative `../` or `./` imports are permitted. Use path aliases everywhere.
 
 When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json`, and `configs/vitest/vitest.config.ts`.
 
+> `@package-json` only works inside specs (Vitest resolves JSON imports). In `src/`, ESM requires an import attribute (`with { type: "json" }`) which SWC drops on emit — read the file with `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers` instead.
+
 ## Project conventions & style
 
 ### TypeScript
 - Strict mode — no `any`, no non-null assertions (`!`)
+- Module system: ESM (`"type": "module"`) — never turn a class that Nest reads from `design:paramtypes` metadata into an `import type`: constructor-injected classes **and** DTOs used in decorated method params (`@Body()`, `@Query()`) must stay value imports, otherwise DI/`ZodValidationPipe` silently stop working. Both linters keep `consistent-type-imports` **off** for that reason.
 - Prefer `type` over `interface` (`consistent-type-definitions: type`)
-- Use `type` imports for type-only symbols (`consistent-type-imports`)
+- Use `type` imports only for type-only symbols (never for injected classes)
 - All functions must have explicit return types (`explicit-function-return-type`)
 - All class members must have explicit accessibility (`explicit-member-accessibility`)
 - Constructor injection parameters use `private readonly` shorthand

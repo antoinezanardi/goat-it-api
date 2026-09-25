@@ -39,8 +39,8 @@ function validateReceivedApiKey(expectedHashedApiKey: string, receivedApiKey: un
   }
   const receivedHashedApiKey = hashApiKey(receivedApiKey, hmacSecret);
 
-  const expectedBuffer = Buffer.from(expectedHashedApiKey, "hex");
-  const receivedBuffer = Buffer.from(receivedHashedApiKey, "hex");
+  const expectedBuffer = Uint8Array.fromHex(expectedHashedApiKey);
+  const receivedBuffer = Uint8Array.fromHex(receivedHashedApiKey);
 
   const areKeysSameLength = expectedBuffer.length === receivedBuffer.length;
   if (!areKeysSameLength) {
@@ -65,7 +65,7 @@ function canActivateApiKeyGuardHandler(context: ExecutionContext, configService:
   try {
     validator(receivedApiKey);
   } catch(error) {
-    const message = error instanceof Error ? error.message : "Unauthorized";
+    const message = Error.isError(error) ? error.message : "Unauthorized";
 
     throw new UnauthorizedException(message);
   }

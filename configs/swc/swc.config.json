@@ -1,7 +1,7 @@
 {
   "$schema": "https://swc.rs/schema.json",
   "jsc": {
-    "target": "es2024",
+    "target": "esnext",
     "parser": {
       "syntax": "typescript",
       "decorators": true,
@@ -25,7 +25,7 @@
     "keepClassNames": true
   },
   "module": {
-    "type": "commonjs",
+    "type": "es6",
     "strict": true
   },
   "sourceMaps": true,

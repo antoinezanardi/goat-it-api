@@ -12,8 +12,10 @@ function expectLocalizedTextFieldToBe<K extends string>(
   if (!localizedTexts) {
     throw new Error(`Localized texts are undefined when they were expected to be defined for field: ${field}`);
   }
-  for (const { locale, [field]: value } of expected) {
-    expect(localizedTexts[locale]).toBe(value.trim() || undefined);
+  for (const entry of expected) {
+    const value = entry[field];
+
+    expect(localizedTexts[entry.locale]).toBe(value.trim() || undefined);
   }
 }
 
@@ -22,10 +24,11 @@ function expectLocalizedTextsFieldToBe<K extends string>(
   expected: ExpectedLocalizedValue<K>[],
   field: K,
 ): void {
-  for (const { locale, [field]: valueAsString } of expected) {
+  for (const entry of expected) {
+    const valueAsString = entry[field];
     const expectedValues = valueAsString.trim() ? valueAsString.split(",").map(value => value.trim()) : undefined;
 
-    expect(localizedTexts[locale]).toStrictEqual(expectedValues);
+    expect(localizedTexts[entry.locale]).toStrictEqual(expectedValues);
   }
 }
 

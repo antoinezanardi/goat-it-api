@@ -106,6 +106,7 @@ const ESLINT_UNIT_TESTS_FLAT_CONFIG: Linter.Config = {
     "vitest/require-to-throw-message": "error",
     "vitest/require-test-timeout": "off",
     "vitest/require-top-level-describe": "error",
+    "vitest/unbound-method": "off",
     "vitest/valid-describe-callback": "error",
     "vitest/valid-expect-in-promise": "error",
     "vitest/valid-expect": "error",

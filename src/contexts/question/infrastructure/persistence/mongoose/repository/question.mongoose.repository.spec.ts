@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 
 import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
+import * as arrayHelpers from "@shared/domain/helpers/array/array.helpers";
 
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
@@ -622,6 +623,10 @@ describe(QuestionMongooseRepository, () => {
       ],
     });
 
+    beforeEach(() => {
+      vi.spyOn(arrayHelpers, "shuffleArray").mockImplementation(items => [...items]);
+    });
+
     it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
       const locale = LOCALES[0];
       const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
@@ -906,6 +911,67 @@ describe(QuestionMongooseRepository, () => {
       const actualQuestions = await repositories.question.findRandom(options);
 
       expect(actualQuestions).toStrictEqual(expectedQuestions);
+    });
+
+    it("should shuffle the mapped questions when called.", async() => {
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 2,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale: LOCALES[0],
+      });
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+      const mappedQuestions = [
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000a1" }),
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000a2" }),
+      ];
+      const shuffledQuestions = [
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000a3" }),
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000a4" }),
+      ];
+
+      vi.mocked(createQuestionFromAggregate)
+        .mockReturnValueOnce(mappedQuestions[0])
+        .mockReturnValueOnce(mappedQuestions[1]);
+      vi.mocked(arrayHelpers.shuffleArray).mockReturnValueOnce(shuffledQuestions);
+
+      const actualQuestions = await repositories.question.findRandom(options);
+
+      expect(actualQuestions).toStrictEqual(shuffledQuestions);
+    });
+
+    it("should call shuffleArray with the mapped questions when called.", async() => {
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 2,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale: LOCALES[0],
+      });
+      const questionAggregates = [
+        createFakeQuestionAggregate(),
+        createFakeQuestionAggregate(),
+      ];
+      mocks.models.question.aggregate.mockResolvedValueOnce(questionAggregates);
+      const mappedQuestions = [
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000b1" }),
+        createFakeQuestion({ id: "618c1f4b3a2f0000000000b2" }),
+      ];
+
+      vi.mocked(createQuestionFromAggregate)
+        .mockReturnValueOnce(mappedQuestions[0])
+        .mockReturnValueOnce(mappedQuestions[1]);
+
+      await repositories.question.findRandom(options);
+
+      expect(vi.mocked(arrayHelpers.shuffleArray)).toHaveBeenCalledExactlyOnceWith(mappedQuestions);
     });
   });
 

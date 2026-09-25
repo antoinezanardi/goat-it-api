@@ -77,7 +77,7 @@ describe("Localization Zod Validators", () => {
       {
         test: "should return false when localized text entry is spaces only for \"en\" locale.",
         locale: "en",
-        value: "      ",
+        value: " ".repeat(6),
         expected: false,
       },
       {
@@ -173,7 +173,7 @@ describe("Localization Zod Validators", () => {
       {
         test: "should return false when localized texts entry has a spaces only string for \"en\" locale.",
         locale: "en",
-        value: ["      ", "      "],
+        value: [" ".repeat(6), " ".repeat(6)],
         expected: false,
       },
       {

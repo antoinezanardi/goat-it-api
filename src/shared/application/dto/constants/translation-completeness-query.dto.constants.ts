@@ -1,3 +1,3 @@
-const IS_FULLY_TRANSLATED_QUERY_KEY = "is-fully-translated";
+const FULLY_TRANSLATED_QUERY_KEY = "is-fully-translated";
 
-export { IS_FULLY_TRANSLATED_QUERY_KEY };
+export { FULLY_TRANSLATED_QUERY_KEY };

@@ -70,13 +70,13 @@ pnpm install
 pnpm run start:dev
 ```
 
-The above command will start the app in development mode and watch for changes on local.
+The above command will start the app in development mode and watch for changes on local. The dev server compiles with `SWC` and executes the output through the `tsx/esm` loader, so the path aliases and extensionless imports resolve on Node ESM.
 
 ## <a name="build">🚀 Build</a>
 
 ![SWC](https://img.shields.io/badge/-swc-black?style=for-the-badge&logoColor=white&logo=swc&color=orange)
 
-The API is built using `SWC` to provide faster and more reliable builds.
+The API is built using `SWC` to provide faster and more reliable builds, and runs as native ESM (`"type": "module"`). The build also runs `tsc-alias` to resolve the path aliases and append the `.js` extensions ESM requires.
 
 To build the app for production, run the following command :
 

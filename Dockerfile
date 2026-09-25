@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:26.9.0-alpine AS base
+FROM --platform=$BUILDPLATFORM node:26.10.0-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -56,7 +56,7 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM node:26.9.0-alpine AS production
+FROM node:26.10.0-alpine AS production
 
 USER node
 
@@ -68,6 +68,7 @@ WORKDIR /app
 COPY --chown=node:node package.json ./
 COPY --chown=node:node --from=build /app/node_modules node_modules/
 COPY --chown=node:node --from=build /app/dist dist/
+COPY --chown=node:node public/ public/
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${SERVER_PORT}/health || exit 1

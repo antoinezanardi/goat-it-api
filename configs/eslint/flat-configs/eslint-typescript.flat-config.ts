@@ -60,7 +60,8 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/consistent-type-assertions": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "@typescript-eslint/consistent-type-exports": "error",
-    "@typescript-eslint/consistent-type-imports": "error",
+    // Disabled for now because of false positives because of decorators' usage
+    "@typescript-eslint/consistent-type-imports": "off",
     "@typescript-eslint/default-param-last": "error",
     "@typescript-eslint/dot-notation": [
       "error",
@@ -102,12 +103,12 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/no-for-in-array": "error",
+    "@typescript-eslint/no-generated-empty-object-type": "error",
     "@typescript-eslint/no-implied-eval": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/no-inferrable-types": ["error", { ignoreProperties: true }],
     "@typescript-eslint/no-invalid-this": "error",
     "@typescript-eslint/no-invalid-void-type": "error",
-    "@typescript-eslint/no-loop-func": "error",
     "@typescript-eslint/no-magic-numbers": [
       "error",
       {
@@ -130,21 +131,6 @@ const ESLINT_TYPESCRIPT_FLAT_CONFIG: Linter.Config = {
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-redundant-type-constituents": "error",
     "@typescript-eslint/no-require-imports": "error",
-    "@typescript-eslint/no-restricted-imports": [
-      "error",
-      {
-        patterns: [
-          {
-            group: ["./"],
-            message: "Relative imports to children directories are not allowed.",
-          },
-          {
-            group: ["../"],
-            message: "Relative imports from parent directories are not allowed.",
-          },
-        ],
-      },
-    ],
     "@typescript-eslint/no-restricted-types": "error",
     "@typescript-eslint/no-shadow": [
       "error",

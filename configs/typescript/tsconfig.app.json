@@ -15,11 +15,11 @@
     "removeComments": true,
     "rootDir": "../../src",
     "skipLibCheck": true,
-    "lib": ["ES2024"],
+    "lib": ["ESNext"],
     "sourceMap": true,
     "strict": true,
     "strictBindCallApply": true,
-    "target": "ES2021",
+    "target": "ES2023",
     "resolveJsonModule": true,
     "strictPropertyInitialization": true,
     "paths": {

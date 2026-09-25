@@ -2,6 +2,8 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
+  "entryFile": "main",
+  "exec": "node --import tsx/esm",
   "compilerOptions": {
     "builder": {
       "type": "swc",

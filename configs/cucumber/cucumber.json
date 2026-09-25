@@ -4,7 +4,7 @@
       "tests/acceptance/features/**/*.feature"
     ],
     "requireModule": [
-      "tsx/cjs"
+      "tsx/esm"
     ],
     "require": [
       "tests/acceptance/support/**/*.ts",

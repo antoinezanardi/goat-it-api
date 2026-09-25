@@ -37,17 +37,21 @@ async function getApiHealth(): Promise<number> {
   });
 }
 
+async function getApiHealthStatus(): Promise<number | undefined> {
+  try {
+    return await getApiHealth();
+  } catch {
+    return undefined;
+  }
+}
+
 async function waitForAppToBeReady(serverProcess: ChildProcessWithoutNullStreams): Promise<ChildProcessWithoutNullStreams> {
   for (let attempt = 1; attempt <= APP_HEALTH_RETRY_ATTEMPTS; attempt++) {
-    try {
-      // Acceptable as health check retries must run sequentially with delay between attempts
-      // oxlint-disable-next-line no-await-in-loop
-      const status = await getApiHealth();
-      if (status === APP_HEALTH_OK_STATUS) {
-        return serverProcess;
-      }
-    } catch(error) {
-      void error;
+    // Acceptable as health check retries must run sequentially with delay between attempts
+    // oxlint-disable-next-line no-await-in-loop
+    const status = await getApiHealthStatus();
+    if (status === APP_HEALTH_OK_STATUS) {
+      return serverProcess;
     }
 
     if (attempt < APP_HEALTH_RETRY_ATTEMPTS) {

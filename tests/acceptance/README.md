@@ -37,7 +37,7 @@ Feature files live under `tests/acceptance/features/`. Support code (hooks, worl
 ## Stack & Config
 
 - **Framework**: [Cucumber.js](https://github.com/cucumber/cucumber-js) with BDD/Gherkin `.feature` files.
-- **TypeScript transpilation**: `tsx/cjs` (via `requireModule` in Cucumber config) — no separate compilation step required.
+- **TypeScript transpilation**: `tsx/esm` (via `requireModule` in Cucumber config) — no separate compilation step required.
 - **HTTP client**: `ofetch` (auto-serializes JSON, captures responses regardless of HTTP status).
 - **Assertions**: `expect` from the `expect` package (same API as Vitest/Jest).
 - **Payload patching**: `radashi` (`crush` + `construct`) for deep-path overrides.
