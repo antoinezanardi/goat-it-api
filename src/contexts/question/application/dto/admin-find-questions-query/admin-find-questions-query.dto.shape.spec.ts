@@ -28,6 +28,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
     "theme-ids"?: string | string[];
     "ids"?: string | string[];
     "is-fully-translated"?: string;
+    "is-adult-content"?: string;
   };
 
   beforeEach(() => {
@@ -341,6 +342,47 @@ describe("Admin Find Questions Query DTO Shape", () => {
 
     it("should have is-fully-translated as optional when checking the input type.", () => {
       expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["is-fully-translated"]>().toEqualTypeOf<string | undefined>();
+    });
+  });
+
+  describe("is-adult-content", () => {
+    it.each<string>(["true", "false"])("should pass validation when is-adult-content is '%s'.", isAdultContent => {
+      const dto = { ...validDto, "is-adult-content": isAdultContent };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should parse is-adult-content to the boolean false when the value is 'false'.", () => {
+      const dto = { ...validDto, "is-adult-content": "false" };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
+
+      expect(result["is-adult-content"]).toBeFalsy();
+    });
+
+    it("should parse is-adult-content case-insensitively when the value is 'TRUE'.", () => {
+      const dto = { ...validDto, "is-adult-content": "TRUE" };
+
+      const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
+
+      expect(result["is-adult-content"]).toBeTruthy();
+    });
+
+    it("should throw zod error when is-adult-content is invalid.", () => {
+      const dtoWithInvalidValue = { ...validDto, "is-adult-content": "maybe" };
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidValue)).toThrow(ZodError);
+    });
+
+    it("should pass validation when is-adult-content is not provided.", () => {
+      const dtoWithoutIsAdultContent: Record<string, unknown> = { ...validDto };
+      delete dtoWithoutIsAdultContent["is-adult-content"];
+
+      expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithoutIsAdultContent)).not.toThrow();
+    });
+
+    it("should have is-adult-content as optional when checking the input type.", () => {
+      expectTypeOf<z.input<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>["is-adult-content"]>().toEqualTypeOf<string | undefined>();
     });
   });
 

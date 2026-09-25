@@ -1,9 +1,11 @@
 import { z } from "zod";
 
+import { zStringBoolean } from "@shared/infrastructure/http/zod/validators/boolean/boolean.zod.validators";
+
 import type { ZodBoolean, ZodCodec, ZodNumber, ZodObject, ZodOptional, ZodString } from "zod";
 
 function zIsFullyTranslated(): ZodOptional<ZodCodec<ZodString, ZodBoolean>> {
-  return z.stringbool({ truthy: ["true"], falsy: ["false"] })
+  return zStringBoolean()
     .optional()
     .describe("Filters resources by translation completeness: 'true' returns only fully translated resources, 'false' returns only incomplete ones. " +
       "A resource is fully translated when all mandatory LocalizedText/LocalizedTexts fields have a value " +

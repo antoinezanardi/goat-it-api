@@ -26,6 +26,9 @@ const FIND_RANDOM_QUESTIONS_BODY_DTO = z.object({
   categories: zQuestionCategoriesFilter(),
   cognitiveDifficulties: zQuestionCognitiveDifficultiesFilter(),
   themeIds: zQuestionThemeIdsFilter(),
+  isAdultContent: z.boolean()
+    .optional()
+    .describe("Filters random questions by adult content: true returns only adult content questions, false returns only non-adult ones; omit to include both."),
 });
 
 type FindRandomQuestionsBodyDto = z.infer<typeof FIND_RANDOM_QUESTIONS_BODY_DTO>;

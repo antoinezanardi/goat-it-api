@@ -1,6 +1,7 @@
+import { ZodError } from "zod";
 import { faker } from "@faker-js/faker";
 
-import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionIsAdultContent, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionIsAdultContent, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionAuthorRole, () => {
@@ -798,6 +799,38 @@ describe("Question DTO Zod Validators", () => {
       const schema = zQuestionIsAdultContent();
 
       expect(schema.description).toBe("Whether the question contains adult content");
+    });
+  });
+
+  describe(zQuestionIsAdultContentFilter, () => {
+    it.each<{ input: string; expected: boolean }>([
+      { input: "true", expected: true },
+      { input: "TRUE", expected: true },
+      { input: "false", expected: false },
+      { input: "FALSE", expected: false },
+    ])("should parse '$input' to $expected when the input is a valid boolean string.", ({ input, expected }) => {
+      const isAdultContent = zQuestionIsAdultContentFilter().parse(input);
+
+      expect(isAdultContent).toBe(expected);
+    });
+
+    it("should return undefined when input is undefined.", () => {
+      const isAdultContent = zQuestionIsAdultContentFilter().parse(undefined);
+
+      expect(isAdultContent).toBeUndefined();
+    });
+
+    it.each<unknown>(["maybe", "yes", "no", ""])("should throw a zod error when the input is '%s'.", input => {
+      expect(() => zQuestionIsAdultContentFilter().parse(input)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionIsAdultContentFilter();
+      const expectedDescription =
+        "Filters questions by adult content: 'true' returns only questions flagged as adult content, " +
+        "'false' returns only questions without it; omit to include both.";
+
+      expect(schema.description).toBe(expectedDescription);
     });
   });
 });
