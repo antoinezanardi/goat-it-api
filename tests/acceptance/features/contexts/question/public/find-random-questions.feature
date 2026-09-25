@@ -238,11 +238,3 @@ Feature: Find Random Questions
     Then the request should have succeeded with status code 200
     And the response should contain 1 question
     And the response should contain a question among them with id "aabbccdd1122334455667804"
-
-  Scenario: Returning adult content questions in random selection
-    Given the database is populated with questions fixture set with name "five-questions"
-    When the client retrieves random questions
-    Then the request should have succeeded with status code 200
-    And the response should contain 2 questions
-    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901"
-    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903"

@@ -52,9 +52,7 @@ function expectAdminQuestionDtoToMatch(questionDto: AdminQuestionDto, expectedQu
   if (expectedQuestionDto.applicableLocales !== undefined) {
     expect(questionDto.applicableLocales).toStrictEqual(expectedQuestionDto.applicableLocales);
   }
-  if (expectedQuestionDto.isAdultContent !== undefined) {
-    expect(questionDto.isAdultContent).toBe(expectedQuestionDto.isAdultContent);
-  }
+  expect(questionDto.isAdultContent).toBe(expectedQuestionDto.isAdultContent);
 }
 
 function expectAdminQuestionThemeAssignmentsDtoToMatch(

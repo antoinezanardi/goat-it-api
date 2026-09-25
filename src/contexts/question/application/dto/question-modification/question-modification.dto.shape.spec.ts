@@ -165,8 +165,8 @@ describe("Question Modification DTO Shape", () => {
     });
 
     it("should have correct description when accessing the description.", () => {
-      expect(QUESTION_MODIFICATION_DTO.shape.isAdultContent.description)
-        .toBe("Whether the question contains adult content; omit to keep the current value");
+      expect(QUESTION_MODIFICATION_DTO.shape.isAdultContent.unwrap().description)
+        .toBe("Whether the question contains adult content");
     });
   });
 });

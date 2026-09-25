@@ -12,12 +12,12 @@ Feature: Sort Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
 
   Scenario: Sorting questions by createdAt in descending order (default behavior)
     Given the database is populated with questions fixture set with name "five-questions"
@@ -27,12 +27,12 @@ Feature: Sort Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
   Scenario: Sorting questions by category in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
@@ -42,12 +42,12 @@ Feature: Sort Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
   Scenario: Sorting questions by cognitiveDifficulty in ascending order
     Given the database is populated with questions fixture set with name "five-questions"
@@ -57,12 +57,12 @@ Feature: Sort Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
 
   Scenario: Sorting questions by cognitiveDifficulty in descending order
     Given the database is populated with questions fixture set with name "five-questions"
@@ -72,12 +72,12 @@ Feature: Sort Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
 
   Scenario: Trying to sort questions with an invalid sort-by field
     Given the database is populated with questions fixture set with name "five-questions"

@@ -55,6 +55,8 @@ permission:
     "rg *": "allow"
     "sort *": "allow"
     "uniq *": "allow"
+    "od *": "allow"
+    "fd *": "allow"
     "docker info *": "allow"
     "docker ps *": "allow"
   task: deny

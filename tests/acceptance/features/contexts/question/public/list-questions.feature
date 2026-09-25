@@ -96,12 +96,12 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
       | statement                                              | answer           | context                                                                                                           |
@@ -182,12 +182,12 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 5 questions
     And the response should contain the following questions:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                                                                                  |
-      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
-      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
-      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington                                                             |
-      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                                                                                  |
+      | a1b2c3d4e5f6012345678901 | riddle      | medium              | active   | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film)                                                            |
+      | b2c3d4e5f6a7012345678902 | trivia      | hard                | pending  | true           | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon                                                     |
+      | c3d4e5f6a7b8012345678903 | lexicon     | easy                | active   | true           | https://en.wikipedia.org/wiki/2018_FIFA_World_Cup                                                           |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington                                                             |
+      | efd39a4ac3bdfd03d2f8cdf1 | trivia      | easy                | archived | false          | https://www.nationalgeographic.com/animals/article/elephants-bees-fear-wildlife-conservation-africa-science |
 
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
       | statement                                         | answer           | context                                                                                                                   |
@@ -268,9 +268,9 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 2 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status  | sourceUrls                                              |
-      | aa11bb22cc33dd44ee55ff01 | riddle   | medium              | active  | https://en.wikipedia.org/wiki/Vertigo_(film)            |
-      | bb22cc33dd44ee55ff660102 | trivia   | hard                | pending | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon |
+      | id                       | category | cognitiveDifficulty | status  | isAdultContent | sourceUrls                                              |
+      | aa11bb22cc33dd44ee55ff01 | riddle   | medium              | active  | false          | https://en.wikipedia.org/wiki/Vertigo_(film)            |
+      | bb22cc33dd44ee55ff660102 | trivia   | hard                | pending | false          | https://en.wikipedia.org/wiki/The_Dark_Side_of_the_Moon |
 
     And the response should contain a question among them with id "aa11bb22cc33dd44ee55ff01" and the following content:
       | statement                                             | answer           | context                                                                                                  |
@@ -331,11 +331,11 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 4 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
-      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
-      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
-      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
-      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                      |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | false          | https://example.com/en-fr       |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | false          | https://example.com/french-only |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | false          | https://example.com/empty       |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | false          | https://example.com/absent      |
 
   Scenario: Listing questions includes those with empty applicableLocales when locale is provided
     Given the database is populated with questions fixture set with name "applicable-locales-questions"
@@ -343,11 +343,11 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 4 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
-      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
-      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
-      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
-      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                      |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | false          | https://example.com/en-fr       |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | false          | https://example.com/french-only |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | false          | https://example.com/empty       |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | false          | https://example.com/absent      |
 
   Scenario: Listing questions includes those whose applicableLocales contains the client's locale
     Given the database is populated with questions fixture set with name "applicable-locales-questions"
@@ -355,11 +355,11 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 4 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
-      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
-      | aabbccdd1122334455667703 | trivia   | easy                | active | https://example.com/french-only   |
-      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
-      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                      |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | false          | https://example.com/en-fr       |
+      | aabbccdd1122334455667703 | trivia   | easy                | active | false          | https://example.com/french-only |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | false          | https://example.com/empty       |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | false          | https://example.com/absent      |
 
   Scenario: Listing questions excludes those whose applicableLocales does not contain the client's locale
     Given the database is populated with questions fixture set with name "applicable-locales-questions"
@@ -367,10 +367,10 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 3 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
-      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
-      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
-      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                 |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | false          | https://example.com/en-fr  |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | false          | https://example.com/empty  |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | false          | https://example.com/absent |
     And the response should not contain a question with id "aabbccdd1122334455667703"
 
   Scenario: Listing questions falls back to configured locale when no Accept-Language header is sent
@@ -379,8 +379,8 @@ Feature: List Questions
     Then the request should have succeeded with status code 200
     And the response should contain 3 questions
     And the response should contain the following questions:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                        |
-      | aabbccdd1122334455667704 | trivia   | easy                | active | https://example.com/en-fr         |
-      | aabbccdd1122334455667702 | trivia   | easy                | active | https://example.com/empty         |
-      | aabbccdd1122334455667701 | trivia   | easy                | active | https://example.com/absent        |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                 |
+      | aabbccdd1122334455667704 | trivia   | easy                | active | false          | https://example.com/en-fr  |
+      | aabbccdd1122334455667702 | trivia   | easy                | active | false          | https://example.com/empty  |
+      | aabbccdd1122334455667701 | trivia   | easy                | active | false          | https://example.com/absent |
     And the response should not contain a question with id "aabbccdd1122334455667703"

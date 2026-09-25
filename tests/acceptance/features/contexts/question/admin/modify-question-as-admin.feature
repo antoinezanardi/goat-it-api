@@ -76,8 +76,8 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category    | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | explanation | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category    | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | explanation | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
   Scenario: Modifying only the English statement of a question with deep merge
     Given the database is populated with questions fixture set with name "five-questions"
@@ -232,8 +232,8 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       | applicableLocales |
-      | a1b2c3d4e5f6012345678901 | trivia   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) | fr, en            |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       | applicableLocales |
+      | a1b2c3d4e5f6012345678901 | trivia   | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) | fr, en            |
 
   Scenario: Removing applicable locales from an existing question as admin
     Given the database is populated with questions fixture set with name "five-questions"
@@ -248,8 +248,8 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
     And the response should contain an empty applicable locales array for the admin question
 
   Scenario: Clearing the adult content flag of a question as admin

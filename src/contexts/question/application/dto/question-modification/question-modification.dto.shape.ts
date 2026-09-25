@@ -9,8 +9,7 @@ const QUESTION_MODIFICATION_DTO = z.object({
   cognitiveDifficulty: zQuestionCognitiveDifficulty()
     .optional(),
   isAdultContent: zQuestionIsAdultContent()
-    .optional()
-    .describe("Whether the question contains adult content; omit to keep the current value"),
+    .optional(),
   sourceUrls: zQuestionSourceUrls()
     .optional(),
   content: QUESTION_CONTENT_MODIFICATION_DTO
