@@ -7,6 +7,7 @@ describe("Question Modification DTO Shape", () => {
   let validDto: {
     category?: string;
     cognitiveDifficulty?: string;
+    isAdultContent?: boolean;
     sourceUrls?: string[];
     content?: {
       statement?: { en: string };
@@ -21,6 +22,7 @@ describe("Question Modification DTO Shape", () => {
     validDto = {
       category: "trivia",
       cognitiveDifficulty: "easy",
+      isAdultContent: false,
       sourceUrls: ["https://example.com/source1"],
       content: {
         statement: { en: "What is the capital of France?" },
@@ -135,6 +137,36 @@ describe("Question Modification DTO Shape", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_MODIFICATION_DTO.shape.applicableLocales.description)
         .toBe("Subset of locales this question is relevant for; submit an empty array to clear the restriction (all locales required again)");
+    });
+  });
+
+  describe("isAdultContent", () => {
+    it.each<{ isAdultContent: boolean }>([
+      { isAdultContent: true },
+      { isAdultContent: false },
+    ])("should pass validation when isAdultContent is $isAdultContent.", ({ isAdultContent }) => {
+      const dto = { ...validDto, isAdultContent };
+
+      expect(() => QUESTION_MODIFICATION_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when isAdultContent is omitted.", () => {
+      const dtoWithoutIsAdultContent: Partial<typeof validDto> = { ...validDto };
+
+      delete dtoWithoutIsAdultContent.isAdultContent;
+
+      expect(() => QUESTION_MODIFICATION_DTO.parse(dtoWithoutIsAdultContent)).not.toThrow();
+    });
+
+    it("should throw a zod error when isAdultContent is not a boolean.", () => {
+      const invalidDto = { ...validDto, isAdultContent: "true" };
+
+      expect(() => QUESTION_MODIFICATION_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(QUESTION_MODIFICATION_DTO.shape.isAdultContent.unwrap().description)
+        .toBe("Whether the question contains adult content");
     });
   });
 });

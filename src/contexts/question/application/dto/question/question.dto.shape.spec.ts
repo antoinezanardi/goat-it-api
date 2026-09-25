@@ -11,6 +11,7 @@ describe("Question DTO Shape", () => {
     themes: { theme: Record<string, unknown>; isPrimary: boolean; isHint: boolean }[];
     content: { statement: string; answer: string; context?: string; trivia?: string[] };
     cognitiveDifficulty: string;
+    isAdultContent: boolean;
     author: { role: string; gameId?: string; name?: string };
     status: string;
     rejection?: { type: string; comment?: string };
@@ -42,6 +43,7 @@ describe("Question DTO Shape", () => {
       ],
       content: { statement: "What is the capital of France?", answer: "Paris" },
       cognitiveDifficulty: "easy",
+      isAdultContent: false,
       author: { role: "admin", name: "TestAuthor" },
       status: "active",
       sourceUrls: ["https://example.com/source1"],
@@ -311,6 +313,40 @@ describe("Question DTO Shape", () => {
       const expectedMetadata = {
         description: "Question's last update date",
         example: ISO_DATE_TIME_EXAMPLE,
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("isAdultContent", () => {
+    it.each<{ isAdultContent: boolean }>([
+      { isAdultContent: true },
+      { isAdultContent: false },
+    ])("should pass validation when isAdultContent is $isAdultContent.", ({ isAdultContent }) => {
+      const dto = { ...validQuestionDto, isAdultContent };
+
+      expect(() => QUESTION_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should throw zod error when isAdultContent is omitted.", () => {
+      const dtoWithoutIsAdultContent: Partial<typeof validQuestionDto> = { ...validQuestionDto };
+
+      delete dtoWithoutIsAdultContent.isAdultContent;
+
+      expect(() => QUESTION_DTO.parse(dtoWithoutIsAdultContent)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when isAdultContent is not a boolean.", () => {
+      const dtoWithInvalidIsAdultContent = { ...validQuestionDto, isAdultContent: "true" };
+
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidIsAdultContent)).toThrow(ZodError);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = QUESTION_DTO.shape.isAdultContent.meta();
+      const expectedMetadata = {
+        description: "Whether the question contains adult content",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);

@@ -47,6 +47,7 @@ function createFakeQuestionAggregate(questionAggregate: Partial<QuestionAggregat
     content: createFakeQuestionContentAggregate(),
     themes: [createFakeQuestionThemeAssignmentAggregate()],
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),

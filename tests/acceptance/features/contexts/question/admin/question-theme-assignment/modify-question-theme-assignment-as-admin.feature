@@ -11,8 +11,8 @@ Feature: Modify Question Theme Assignment As Admin
     When the admin modifies the theme assignment with id "9adeceb41db80ab7ec49b457" with the request payload on the question with id "d4e5f6a7b8c9012345678904"
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                      |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                      |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington |
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |
@@ -33,8 +33,8 @@ Feature: Modify Question Theme Assignment As Admin
     When the admin modifies the theme assignment with id "9adeceb41db80ab7ec49b457" with an empty request payload on the question with id "d4e5f6a7b8c9012345678904"
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category    | cognitiveDifficulty | status   | sourceUrls                                      |
-      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | https://en.wikipedia.org/wiki/George_Washington |
+      | id                       | category    | cognitiveDifficulty | status   | isAdultContent | sourceUrls                                      |
+      | d4e5f6a7b8c9012345678904 | explanation | medium              | rejected | false          | https://en.wikipedia.org/wiki/George_Washington |
 
     And the response should contain the following themes for the admin question:
       | slug    | isPrimary | isHint |

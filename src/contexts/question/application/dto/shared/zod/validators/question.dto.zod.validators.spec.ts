@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionAuthorRole, zQuestionCognitiveDifficulty, zQuestionStatus, zQuestionCategory, zQuestionApplicableLocales, zQuestionSourceUrls, zQuestionThemeIdsFilter, zQuestionIdsFilter, zQuestionId, zQuestionCreatedAt, zQuestionUpdatedAt, zQuestionIsAdultContent, zQuestionExcludedIdsFilter, zQuestionCategoriesFilter, zQuestionCognitiveDifficultiesFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
 describe("Question DTO Zod Validators", () => {
   describe(zQuestionAuthorRole, () => {
@@ -764,6 +764,40 @@ describe("Question DTO Zod Validators", () => {
       const result = schema.safeParse(["fr", "fr"]);
 
       expect(result.error?.issues[0].message).toBe("Locales must be unique");
+    });
+  });
+
+  describe(zQuestionIsAdultContent, () => {
+    it.each<{
+      test: string;
+      value: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when a boolean true is provided",
+        value: true,
+        expected: true,
+      },
+      {
+        test: "should return true when a boolean false is provided",
+        value: false,
+        expected: true,
+      },
+      {
+        test: "should return false when a string is provided",
+        value: "true",
+        expected: false,
+      },
+    ])("$test", ({ value, expected }) => {
+      const result = zQuestionIsAdultContent().safeParse(value);
+
+      expect(result.success).toBe(expected);
+    });
+
+    it("should have the correct description when called.", () => {
+      const schema = zQuestionIsAdultContent();
+
+      expect(schema.description).toBe("Whether the question contains adult content");
     });
   });
 });
