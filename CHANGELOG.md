@@ -1,5 +1,40 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.24.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.24.0...v1.24.1) (2026-09-25)
+
+### 🐛 Bug Fixes
+
+* **question:** shuffle random search results to remove order bias ([#1128](https://github.com/antoinezanardi/goat-it-api/issues/1128)) ([816c54f](https://github.com/antoinezanardi/goat-it-api/commit/816c54ffb5ceb08b4df430ba9bfb105273d55fc1)), references [#1126](https://github.com/antoinezanardi/goat-it-api/issues/1126) [#1126](https://github.com/antoinezanardi/goat-it-api/issues/1126) [#1126](https://github.com/antoinezanardi/goat-it-api/issues/1126)
+
+### 🧹 Chore
+
+* **eslint:** cover all unset rules and fix new violations ([#1135](https://github.com/antoinezanardi/goat-it-api/issues/1135)) ([ef098d8](https://github.com/antoinezanardi/goat-it-api/commit/ef098d88adfeaac8a50c8ab84d5ca5fdf41d8b66))
+* **lib:** bump ts lib to esnext ([#1137](https://github.com/antoinezanardi/goat-it-api/issues/1137)) ([49302eb](https://github.com/antoinezanardi/goat-it-api/commit/49302eb9e69414d06f3901de75c42b9b562fedd1)), closes [#1132](https://github.com/antoinezanardi/goat-it-api/issues/1132)
+* sync release v1.24.0 from main ([bdc4cac](https://github.com/antoinezanardi/goat-it-api/commit/bdc4cac9d149e9dcc42a9d76889e564de705b764))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@nestjs/platform-fastify` | `^12.1.0` |
+| `@nestjs/swagger` | `^12.0.2` |
+| `@nestjs/terminus` | `^12.1.0` |
+| `mongoose` | `^9.10.2` |
+| `nestjs-pino` | `^5.2.1` |
+| `radashi` | `^12.9.6` |
+| `nest monorepo` | `^12.0.4` |
+| `commitlint monorepo` | `^21.2.3` |
+| `@nestjs/cli` | `^12.0.7` |
+| `dotenv` | `^18.0.3` |
+| `eslint-plugin-oxlint` | `v1.85.0` |
+| `oxlint-tsgolint` | `^7.0.2003` |
+| `tsx` | `^4.23.15` |
+| `unplugin-swc` | `v2` |
+| `node.js` | `v26.10.0` |
+| `oxlint monorepo` |  |
+| `pnpm` | `v12.6.0` |
+| `typescript-eslint monorepo` | `^8.70.1` |
+
 ## [1.24.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.23.1...v1.24.0) (2026-09-19)
 
 ### 🚀 Features
