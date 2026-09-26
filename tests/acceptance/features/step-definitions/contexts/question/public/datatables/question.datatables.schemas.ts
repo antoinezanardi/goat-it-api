@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
 
-import { QUESTION_IDS_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
+import { QUESTION_IDS_QUERY_KEY, QUESTION_IS_ADULT_CONTENT_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
 
 import { zCoerceOptionalBoolean, zCoerceOptionalString, zCoerceOptionalStringArray } from "@acceptance-support/helpers/datatable.helpers";
 
@@ -53,6 +53,7 @@ const PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA = z.strictObject({
   "author-role": zCoerceOptionalString(),
   [QUESTION_THEME_IDS_QUERY_KEY]: zCoerceOptionalStringArray(),
   [QUESTION_IDS_QUERY_KEY]: zCoerceOptionalStringArray(),
+  [QUESTION_IS_ADULT_CONTENT_QUERY_KEY]: zCoerceOptionalString(),
   [LIMIT_QUERY_KEY]: zCoerceOptionalString(),
 });
 
@@ -62,6 +63,7 @@ const RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA = z.strictObject({
   categories: zCoerceOptionalStringArray(),
   cognitiveDifficulties: zCoerceOptionalStringArray(),
   themeIds: zCoerceOptionalStringArray(),
+  isAdultContent: zCoerceOptionalBoolean(),
 });
 
 export {

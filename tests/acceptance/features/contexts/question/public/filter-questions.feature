@@ -177,3 +177,46 @@ Feature: Filter Questions
     And the failed request's response should contain the following validation details:
       | code   | message            | path |
       | custom | IDs must be unique | ids  |
+
+  Scenario: Filtering questions by adult content "true"
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions with the following query:
+      | is-adult-content |
+      | true             |
+    Then the request should have succeeded with status code 200
+    And the response should contain 2 questions
+    And the response should contain a question among them with id "b2c3d4e5f6a7012345678902"
+    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903"
+
+  Scenario: Filtering questions by adult content "false"
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions with the following query:
+      | is-adult-content |
+      | false            |
+    Then the request should have succeeded with status code 200
+    And the response should contain 3 questions
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901"
+    And the response should contain a question among them with id "d4e5f6a7b8c9012345678904"
+    And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1"
+
+  Scenario: Returning adult and non-adult questions when the adult content filter is omitted
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions with the following query:
+      | is-adult-content |
+      |                  |
+    Then the request should have succeeded with status code 200
+    And the response should contain 5 questions
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901"
+    And the response should contain a question among them with id "c3d4e5f6a7b8012345678903"
+
+  Scenario: Filtering questions with invalid is-adult-content value
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions with the following query:
+      | is-adult-content |
+      | maybe            |
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                       | path             | expected   | values      |
+      | invalid_value | Invalid option: expected one of "true"\|"false" | is-adult-content | stringbool | true, false |

@@ -9,7 +9,7 @@ import {
 import { FIND_RANDOM_QUESTIONS_BODY_DTO } from "@question/application/dto/find-random-questions-body/find-random-questions-body.dto.shape";
 
 describe("Find Random Questions Body DTO Shape", () => {
-  let validDto: { limit?: number; excludedIds?: string[]; categories?: string[]; cognitiveDifficulties?: string[]; themeIds?: string[] };
+  let validDto: { limit?: number; excludedIds?: string[]; categories?: string[]; cognitiveDifficulties?: string[]; themeIds?: string[]; isAdultContent?: boolean };
 
   beforeEach(() => {
     validDto = {
@@ -239,6 +239,34 @@ describe("Find Random Questions Body DTO Shape", () => {
       const schema = FIND_RANDOM_QUESTIONS_BODY_DTO.shape.themeIds;
 
       expect(schema.description).toBe("List of theme IDs to filter questions by (OR logic)");
+    });
+  });
+
+  describe("isAdultContent", () => {
+    it.each<boolean>([true, false])("should pass validation when isAdultContent is %s.", isAdultContent => {
+      const dto = { ...validDto, isAdultContent };
+
+      expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should pass validation when isAdultContent is omitted.", () => {
+      const dtoWithoutIsAdultContent: Record<string, unknown> = { ...validDto };
+      delete dtoWithoutIsAdultContent.isAdultContent;
+
+      expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dtoWithoutIsAdultContent)).not.toThrow();
+    });
+
+    it("should throw zod error when isAdultContent is not a boolean.", () => {
+      const dtoWithInvalidIsAdultContent = { ...validDto, isAdultContent: "true" };
+
+      expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dtoWithInvalidIsAdultContent)).toThrow(ZodError);
+    });
+
+    it("should have the correct description when accessing the metadata.", () => {
+      const schema = FIND_RANDOM_QUESTIONS_BODY_DTO.shape.isAdultContent;
+
+      expect(schema.description)
+        .toBe("Filters random questions by adult content: true returns only adult content questions, false returns only non-adult ones; omit to include both.");
     });
   });
 });

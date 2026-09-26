@@ -16,6 +16,7 @@ type QuestionFilterOptions = {
   themeIds: string[];
   ids: string[];
   isFullyTranslated: boolean;
+  isAdultContent?: boolean;
   locale?: Locale;
 };
 
@@ -27,6 +28,7 @@ type FindRandomQuestionsOptions = {
   categories?: QuestionCategory[];
   cognitiveDifficulties?: QuestionCognitiveDifficulty[];
   themeIds?: string[];
+  isAdultContent?: boolean;
   locale: Locale;
 };
 

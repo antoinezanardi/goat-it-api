@@ -5,13 +5,14 @@ import { normalizeToArray } from "@shared/application/dto/zod/preprocessors/arra
 import { zCreateFilterArray } from "@shared/application/dto/zod/validators/array/array.zod.validators";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import { zIsoDateTime, zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zStringBoolean } from "@shared/infrastructure/http/zod/validators/boolean/boolean.zod.validators";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_STATUSES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
 import { FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM, FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MINIMUM } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 import { QUESTION_IDS_FILTER_MAXIMUM, QUESTION_IDS_FILTER_MINIMUM } from "@question/application/dto/shared/constants/question-ids-filter-query.dto.constants";
 import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
-import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess, ZodBoolean } from "zod";
+import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess, ZodBoolean, ZodCodec } from "zod";
 
 import type { LocaleEnum } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -102,6 +103,12 @@ function zQuestionIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
     .describe("List of question IDs to filter by (OR logic)");
 }
 
+function zQuestionIsAdultContentFilter(): ZodOptional<ZodCodec<ZodString, ZodBoolean>> {
+  return zStringBoolean()
+    .optional()
+    .describe("Filters questions by adult content: 'true' returns only questions flagged as adult content, 'false' returns only questions without it; omit to include both.");
+}
+
 function zQuestionId(): ZodString {
   return zMongoId()
     .describe("Question's unique identifier");
@@ -134,6 +141,7 @@ export {
   zQuestionCognitiveDifficultiesFilter,
   zQuestionThemeIdsFilter,
   zQuestionIdsFilter,
+  zQuestionIsAdultContentFilter,
   zQuestionId,
   zQuestionCreatedAt,
   zQuestionUpdatedAt,
