@@ -1,12 +1,14 @@
 import { z } from "zod";
 
-import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionSourceUrls } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIsAdultContent, zQuestionSourceUrls } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 import { QUESTION_CONTENT_MODIFICATION_DTO } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
 
 const QUESTION_MODIFICATION_DTO = z.object({
   category: zQuestionCategory()
     .optional(),
   cognitiveDifficulty: zQuestionCognitiveDifficulty()
+    .optional(),
+  isAdultContent: zQuestionIsAdultContent()
     .optional(),
   sourceUrls: zQuestionSourceUrls()
     .optional(),

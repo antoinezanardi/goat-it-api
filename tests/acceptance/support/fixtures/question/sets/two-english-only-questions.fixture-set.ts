@@ -54,6 +54,7 @@ const TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "admin",
       name: "Test Author",
@@ -110,6 +111,7 @@ const TWO_ENGLISH_ONLY_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Music AI",

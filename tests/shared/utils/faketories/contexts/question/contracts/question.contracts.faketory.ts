@@ -15,6 +15,7 @@ function createFakeQuestionCreationContract(contract: Partial<QuestionCreationCo
     themes: [createFakeQuestionThemeAssignmentCreationContract()],
     content: createFakeQuestionContentCreationContract(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorCreationContract(),
     status: faker.helpers.arrayElement(QUESTION_CREATION_STATUSES),
     sourceUrls: new Set(faker.helpers.uniqueArray(() => faker.internet.url(), 2)),

@@ -42,6 +42,7 @@ function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregat
     content: questionMongooseAggregate.content,
     category: questionMongooseAggregate.category,
     cognitiveDifficulty: questionMongooseAggregate.cognitiveDifficulty,
+    isAdultContent: questionMongooseAggregate.isAdultContent,
     author: createQuestionAuthorFromAggregate(questionMongooseAggregate),
     status: questionMongooseAggregate.status,
     rejection: questionMongooseAggregate.rejection,

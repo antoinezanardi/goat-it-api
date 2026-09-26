@@ -76,6 +76,7 @@ const LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_ITALIAN_COMPLETE_ENTRY = createFakeQ
     trivia: createItalianLocalizedTexts(["Il film ha ricevuto due premi Oscar."]),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Completeness Test Author",
@@ -105,6 +106,7 @@ const LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_CONTEXT_ENGLISH_ONLY_ENTRY = createF
     trivia: createItalianLocalizedTexts(["Il film è stato girato in bianco e nero."]),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Completeness Test Author",
@@ -134,6 +136,7 @@ const LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_OPTIONAL_FIELDS_ABSENT_ENTRY = creat
     trivia: undefined,
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Completeness Test Author",
@@ -163,6 +166,7 @@ const LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_ENGLISH_ONLY_ENTRY = createFakeQuest
     trivia: createEnglishLocalizedTexts(["The film is loosely based on a short story."]),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Completeness Test Author",
@@ -192,6 +196,7 @@ const LOCALE_COMPLETENESS_QUESTIONS_FIXTURE_FRENCH_RESTRICTED_ENTRY = createFake
     trivia: createFrenchLocalizedTexts(["Le film est librement inspiré d'une nouvelle."]),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Completeness Test Author",

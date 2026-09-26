@@ -22,6 +22,7 @@ function createFakeQuestionModificationDto(overrides: Partial<QuestionModificati
   return {
     category: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_CATEGORIES)),
     cognitiveDifficulty: faker.helpers.maybe(() => faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)),
+    isAdultContent: faker.helpers.maybe(faker.datatype.boolean),
     sourceUrls: faker.helpers.maybe(() => [faker.internet.url(), faker.internet.url()]),
     content: faker.helpers.maybe(createFakeQuestionContentModificationDto),
     applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),

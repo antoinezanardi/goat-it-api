@@ -11,6 +11,7 @@ const QUESTION_DATATABLE_ROW_SCHEMA = z.strictObject({
   category: z.string(),
   cognitiveDifficulty: z.string(),
   status: z.string(),
+  isAdultContent: zCoerceOptionalBoolean(),
   sourceUrls: zCoerceOptionalStringArray(),
   applicableLocales: zCoerceOptionalStringArray(),
 });

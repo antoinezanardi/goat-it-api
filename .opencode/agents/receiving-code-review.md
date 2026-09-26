@@ -42,6 +42,8 @@ permission:
     "cut *": "allow"
     "xargs *": "allow"
     "mkdir *": "allow"
+    "fd *": "allow"
+    "od *": "allow"
   task:
     "*": "deny"
     "gatekeeper": "allow"

@@ -38,6 +38,7 @@ const APPLICABLE_LOCALES_QUESTIONS_FIXTURE_ABSENT_ENTRY = createFakeQuestionDocu
     }),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Test Author",
@@ -79,6 +80,7 @@ const APPLICABLE_LOCALES_QUESTIONS_FIXTURE_EMPTY_ENTRY = createFakeQuestionDocum
     }),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Test Author",
@@ -120,6 +122,7 @@ const APPLICABLE_LOCALES_QUESTIONS_FIXTURE_FRENCH_ONLY_ENTRY = createFakeQuestio
     }),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Test Author",
@@ -161,6 +164,7 @@ const APPLICABLE_LOCALES_QUESTIONS_FIXTURE_ENGLISH_AND_FRENCH_ENTRY = createFake
     }),
   }),
   cognitiveDifficulty: "easy",
+  isAdultContent: false,
   author: createFakeQuestionAuthorAggregate({
     role: "admin",
     name: "Locale Test Author",

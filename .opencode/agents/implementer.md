@@ -1,7 +1,7 @@
 ---
 description: Implements one very detailed task from an implementation plan for the goat-it-api NestJS 12 project (hexagonal architecture, 100% test coverage).
 mode: subagent
-model: opencode-go/muse-spark-1.3-contributor
+model: opencode-go/deepseek-v4.1-flash
 temperature: 0.2
 hidden: true
 steps: 80
@@ -19,6 +19,8 @@ permission:
     "pnpm run build *": "allow"
     "pnpm run lint *": "allow"
     "pnpm lint *": "allow"
+    "pnpm exec oxlint *": "allow"
+    "pnpm exec eslint *": "allow"
     "pnpm run lint:fix *": "allow"
     "pnpm run lint:eslint *": "allow"
     "pnpm run lint:eslint:fix *": "allow"
@@ -31,6 +33,7 @@ permission:
     "git stash *": "allow"
     "git log *": "allow"
     "git diff *": "allow"
+    "git --no-pager *": "allow"
     "printf *": "allow"
     "git add *": "deny"
     "git commit *": "deny"
@@ -49,6 +52,11 @@ permission:
     "which *": "allow"
     "wc *": "allow"
     "file *": "allow"
+    "rg *": "allow"
+    "sort *": "allow"
+    "uniq *": "allow"
+    "od *": "allow"
+    "fd *": "allow"
     "docker info *": "allow"
     "docker ps *": "allow"
   task: deny

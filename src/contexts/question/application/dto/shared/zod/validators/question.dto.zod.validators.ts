@@ -11,7 +11,7 @@ import { FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MAXIMUM, FIND_RANDOM_QUESTIONS_
 import { QUESTION_IDS_FILTER_MAXIMUM, QUESTION_IDS_FILTER_MINIMUM } from "@question/application/dto/shared/constants/question-ids-filter-query.dto.constants";
 import type { QuestionAuthorRoleEnum, QuestionCategoryEnum, QuestionStatusEnum, QuestionCognitiveDifficultyEnum } from "@question/domain/types/question.value-objects";
 
-import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess } from "zod";
+import type { ZodEnum, ZodURL, ZodArray, ZodString, ZodISODateTime, ZodOptional, ZodPreprocess, ZodBoolean } from "zod";
 
 import type { LocaleEnum } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -117,6 +117,11 @@ function zQuestionUpdatedAt(): ZodISODateTime {
     .describe("Question's last update date");
 }
 
+function zQuestionIsAdultContent(): ZodBoolean {
+  return z.boolean()
+    .describe("Whether the question contains adult content");
+}
+
 export {
   zQuestionAuthorRole,
   zQuestionCognitiveDifficulty,
@@ -132,4 +137,5 @@ export {
   zQuestionId,
   zQuestionCreatedAt,
   zQuestionUpdatedAt,
+  zQuestionIsAdultContent,
 };
