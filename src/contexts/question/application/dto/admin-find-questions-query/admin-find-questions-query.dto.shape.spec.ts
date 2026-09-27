@@ -324,7 +324,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
 
       const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
 
-      expect(result["is-fully-translated"]).toBeTruthy();
+      expect(result["is-fully-translated"]).toBe(true);
     });
 
     it("should throw zod error when is-fully-translated is invalid.", () => {
@@ -357,7 +357,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
 
       const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
 
-      expect(result["is-adult-content"]).toBeFalsy();
+      expect(result["is-adult-content"]).toBe(false);
     });
 
     it("should parse is-adult-content case-insensitively when the value is 'TRUE'.", () => {
@@ -365,7 +365,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
 
       const result = ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto);
 
-      expect(result["is-adult-content"]).toBeTruthy();
+      expect(result["is-adult-content"]).toBe(true);
     });
 
     it("should throw zod error when is-adult-content is invalid.", () => {

@@ -93,23 +93,6 @@ describe(createQuestionFilterOptionsFromQueryDto, () => {
 
     expect(result).toBeUndefined();
   });
-
-  it("should keep isAdultContent set to false when the admin dto provides is-adult-content false.", () => {
-    const dto = createFakeAdminFindQuestionsQueryDto({
-      "status": undefined,
-      "category": undefined,
-      "cognitive-difficulty": undefined,
-      "author-role": undefined,
-      "theme-ids": undefined,
-      "ids": undefined,
-      "is-fully-translated": undefined,
-      "is-adult-content": false,
-    });
-
-    const result = createQuestionFilterOptionsFromQueryDto(dto);
-
-    expect(result).toStrictEqual<Partial<QuestionFilterOptions>>({ isAdultContent: false });
-  });
 });
 
 describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
@@ -215,20 +198,5 @@ describe(createPublicQuestionFilterOptionsFromQueryDto, () => {
     const result = createPublicQuestionFilterOptionsFromQueryDto(dto, locale);
 
     expect(result).toMatchObject({ locale: "it" });
-  });
-
-  it("should keep isAdultContent set to false when the public dto provides is-adult-content false.", () => {
-    const dto = createFakeFindQuestionsQueryDto({
-      "category": undefined,
-      "cognitive-difficulty": undefined,
-      "author-role": undefined,
-      "theme-ids": undefined,
-      "ids": undefined,
-      "is-adult-content": false,
-    });
-
-    const result = createPublicQuestionFilterOptionsFromQueryDto(dto, "fr");
-
-    expect(result).toStrictEqual<Partial<PublicQuestionFilterOptions>>({ isAdultContent: false, locale: "fr" });
   });
 });

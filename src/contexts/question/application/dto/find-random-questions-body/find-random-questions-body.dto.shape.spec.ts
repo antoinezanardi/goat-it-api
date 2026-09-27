@@ -265,8 +265,7 @@ describe("Find Random Questions Body DTO Shape", () => {
     it("should have the correct description when accessing the metadata.", () => {
       const schema = FIND_RANDOM_QUESTIONS_BODY_DTO.shape.isAdultContent;
 
-      expect(schema.description)
-        .toBe("Filters random questions by adult content: true returns only adult content questions, false returns only non-adult ones; omit to include both.");
+      expect(schema.description).toBe("Filters questions by adult content");
     });
   });
 });

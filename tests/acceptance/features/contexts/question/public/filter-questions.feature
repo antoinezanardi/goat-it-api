@@ -178,7 +178,7 @@ Feature: Filter Questions
       | code   | message            | path |
       | custom | IDs must be unique | ids  |
 
-  Scenario: Filtering questions by adult content "true"
+  Scenario: Filtering questions that contain adult content
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves all questions with the following query:
       | is-adult-content |
@@ -188,7 +188,7 @@ Feature: Filter Questions
     And the response should contain a question among them with id "b2c3d4e5f6a7012345678902"
     And the response should contain a question among them with id "c3d4e5f6a7b8012345678903"
 
-  Scenario: Filtering questions by adult content "false"
+  Scenario: Filtering questions that do not contain adult content
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves all questions with the following query:
       | is-adult-content |
@@ -199,7 +199,7 @@ Feature: Filter Questions
     And the response should contain a question among them with id "d4e5f6a7b8c9012345678904"
     And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1"
 
-  Scenario: Returning adult and non-adult questions when the adult content filter is omitted
+  Scenario: Returning both adult content and non-adult questions when the adult content filter is omitted
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves all questions with the following query:
       | is-adult-content |

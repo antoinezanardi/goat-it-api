@@ -239,7 +239,7 @@ Feature: Find Random Questions
     And the response should contain 1 question
     And the response should contain a question among them with id "aabbccdd1122334455667804"
 
-  Scenario: Filtering random questions by adult content "true"
+  Scenario: Filtering random questions that contain adult content
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves random questions with the following body:
       | isAdultContent | limit |
@@ -249,7 +249,7 @@ Feature: Find Random Questions
     And the response should contain a question among them with id "c3d4e5f6a7b8012345678903"
     And the response should not contain a question with id "a1b2c3d4e5f6012345678901"
 
-  Scenario: Filtering random questions by adult content "false"
+  Scenario: Filtering random questions that do not contain adult content
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves random questions with the following body:
       | isAdultContent | limit |
@@ -259,7 +259,7 @@ Feature: Find Random Questions
     And the response should contain a question among them with id "a1b2c3d4e5f6012345678901"
     And the response should not contain a question with id "c3d4e5f6a7b8012345678903"
 
-  Scenario: Returning both adult and non-adult questions when the adult content filter is omitted
+  Scenario: Returning both adult content and non-adult questions when the adult content filter is omitted
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves random questions with the following body:
       | limit |
