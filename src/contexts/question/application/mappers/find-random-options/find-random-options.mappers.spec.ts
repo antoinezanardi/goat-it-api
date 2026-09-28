@@ -46,6 +46,18 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       expectedField: "themeIds",
       expectedValue: ["507f1f77bcf86cd799439011"],
     },
+    {
+      test: "should map isAdultContent when isAdultContent is true.",
+      bodyDto: createFakeFindRandomQuestionsBodyDto({ isAdultContent: true }),
+      expectedField: "isAdultContent",
+      expectedValue: true,
+    },
+    {
+      test: "should map isAdultContent when isAdultContent is false.",
+      bodyDto: createFakeFindRandomQuestionsBodyDto({ isAdultContent: false }),
+      expectedField: "isAdultContent",
+      expectedValue: false,
+    },
   ])("$test", ({ bodyDto, expectedField, expectedValue }) => {
     const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, "fr");
 
@@ -60,6 +72,7 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       categories: ["trivia"],
       cognitiveDifficulties: ["easy"],
       themeIds: ["507f1f77bcf86cd799439011"],
+      isAdultContent: undefined,
     });
 
     const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
@@ -70,11 +83,12 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       categories: ["trivia"],
       cognitiveDifficulties: ["easy"],
       themeIds: ["507f1f77bcf86cd799439011"],
+      isAdultContent: undefined,
       locale: "fr",
     });
   });
 
-  it.each<{ test: string; field: "excludedIds" | "categories" | "cognitiveDifficulties" | "themeIds" }>([
+  it.each<{ test: string; field: "excludedIds" | "categories" | "cognitiveDifficulties" | "themeIds" | "isAdultContent" }>([
     {
       test: "should keep excludedIds undefined when excludedIds is omitted.",
       field: "excludedIds" as const,
@@ -90,6 +104,10 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
     {
       test: "should keep themeIds undefined when themeIds is omitted.",
       field: "themeIds" as const,
+    },
+    {
+      test: "should keep isAdultContent undefined when isAdultContent is omitted.",
+      field: "isAdultContent" as const,
     },
   ])("$test", ({ field }) => {
     const bodyDto = createFakeFindRandomQuestionsBodyDto({ [field]: undefined });

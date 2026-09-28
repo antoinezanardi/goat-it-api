@@ -17,6 +17,7 @@ function createFakeFindRandomQuestionsBodyDto(overrides: Partial<FindRandomQuest
     categories: faker.helpers.maybe(() => [faker.helpers.arrayElement(QUESTION_CATEGORIES)]),
     cognitiveDifficulties: faker.helpers.maybe(() => [faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES)]),
     themeIds: faker.helpers.maybe(() => [faker.database.mongodbObjectId()]),
+    isAdultContent: faker.helpers.maybe(() => faker.datatype.boolean()),
     ...overrides,
   };
 }
