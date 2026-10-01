@@ -115,7 +115,7 @@
     "@stryker-mutator/vitest-runner": "^10.0.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.16.12",
+    "@swc/core": "^1.16.13",
     "@types/node": "^24.19.0",
     "@typescript-eslint/eslint-plugin": "^8.71.0",
     "@typescript-eslint/parser": "^8.71.0",
