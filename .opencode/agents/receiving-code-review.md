@@ -1,7 +1,7 @@
 ---
 description: Triages and evaluates code review feedback (PR comments, peer review) for the goat-it-api NestJS 12 project. Reads → restates → verifies → evaluates → responds with technical rigor and apply fixes if user agrees.
 mode: primary
-model: opencode-go/minimax-m3
+model: opencode-go/deepseek-v4.1-flash
 temperature: 0.3
 steps: 80
 hidden: false
