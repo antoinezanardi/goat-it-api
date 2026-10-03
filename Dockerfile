@@ -21,6 +21,7 @@ WORKDIR /app
 COPY --chown=node:node package.json ./
 COPY --chown=node:node pnpm-lock.yaml ./
 COPY --chown=node:node pnpm-workspace.yaml ./
+COPY --chown=node:node packages/schemas/package.json ./packages/schemas/package.json
 COPY --chown=node:node tsconfig*.json ./
 COPY --chown=node:node configs/typescript ./configs/typescript/
 COPY --chown=node:node scripts/post-install-prepare.sh ./scripts/post-install-prepare.sh
@@ -42,6 +43,7 @@ WORKDIR /app
 COPY --chown=node:node package.json ./
 COPY --chown=node:node pnpm-lock.yaml ./
 COPY --chown=node:node pnpm-workspace.yaml ./
+COPY --chown=node:node packages/schemas/package.json ./packages/schemas/package.json
 COPY --chown=node:node tsconfig*.json ./
 COPY --chown=node:node configs/typescript ./configs/typescript/
 COPY --chown=node:node configs/nest ./configs/nest/

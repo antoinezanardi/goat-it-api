@@ -15,6 +15,7 @@ function createFakeQuestionCreationDto(creationDto: Partial<QuestionCreationDto>
     themes: [createFakeQuestionThemeAssignmentCreationDto()],
     content: createFakeQuestionContentCreationDto(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorCreationDto(),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
     applicableLocales: faker.helpers.maybe(() => faker.helpers.arrayElements(LOCALES, { min: 1, max: LOCALES.length })),

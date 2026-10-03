@@ -5,9 +5,7 @@
 type MockRule<TInput, TOutput> = readonly [TInput, TOutput];
 
 /**
- * Creates a mock implementation function that matches inputs against predefined rules
- * and returns the corresponding output. This eliminates the need for conditional logic
- * in test mock implementations.
+ * Creates a mock implementation function that matches inputs against predefined rules and returns the corresponding output. This eliminates the need for conditional logic in test mock implementations.
  *
  * @param rules - An array of [input, output] tuples defining the mock behavior
  * @param defaultValue - Optional default value to return when no rule matches (defaults to undefined)

@@ -90,6 +90,7 @@ describe(createQuestionDtoFromEntity, () => {
     const questionRejection = createFakeQuestionRejection();
     const questionEntity = createFakeQuestion({
       rejection: questionRejection,
+      isAdultContent: true,
     });
     const expectedQuestionDto = createFakeQuestionDto({
       id: questionEntity.id,
@@ -97,6 +98,7 @@ describe(createQuestionDtoFromEntity, () => {
       themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
       content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
       cognitiveDifficulty: questionEntity.cognitiveDifficulty,
+      isAdultContent: questionEntity.isAdultContent,
       author: questionEntity.author,
       status: questionEntity.status,
       rejection: questionEntity.rejection,
@@ -112,6 +114,7 @@ describe(createQuestionDtoFromEntity, () => {
     const localizationOptions = createFakeLocalizationOptions({ locale: "en" });
     const questionEntity = createFakeQuestion({
       rejection: undefined,
+      isAdultContent: false,
     });
     const expectedQuestionDto = createFakeQuestionDto({
       id: questionEntity.id,
@@ -119,6 +122,7 @@ describe(createQuestionDtoFromEntity, () => {
       themes: questionEntity.themes.map(themeAssignment => createQuestionThemeAssignmentDtoFromEntity(themeAssignment, localizationOptions)),
       content: createQuestionContentDtoFromEntity(questionEntity.content, localizationOptions),
       cognitiveDifficulty: questionEntity.cognitiveDifficulty,
+      isAdultContent: questionEntity.isAdultContent,
       author: questionEntity.author,
       status: questionEntity.status,
       rejection: undefined,
@@ -150,6 +154,7 @@ describe(createAdminQuestionDtoFromEntity, () => {
     const questionRejection = createFakeQuestionRejection();
     const questionEntity = createFakeQuestion({
       rejection: questionRejection,
+      isAdultContent: true,
     });
     const expectedAdminQuestionDto = createFakeAdminQuestionDto({
       id: questionEntity.id,
@@ -157,6 +162,7 @@ describe(createAdminQuestionDtoFromEntity, () => {
       themes: questionEntity.themes.map(themeAssignment => createAdminQuestionThemeAssignmentDtoFromEntity(themeAssignment)),
       content: questionEntity.content,
       cognitiveDifficulty: questionEntity.cognitiveDifficulty,
+      isAdultContent: questionEntity.isAdultContent,
       author: questionEntity.author,
       status: questionEntity.status,
       rejection: questionEntity.rejection,
@@ -220,7 +226,7 @@ describe(createQuestionContentCreationContractFromDto, () => {
 
 describe(createQuestionCreationCommandFromDto, () => {
   it("should map a QuestionCreationDto to a QuestionCreationCommand when called.", () => {
-    const dto = createFakeQuestionCreationDto();
+    const dto = createFakeQuestionCreationDto({ isAdultContent: true });
 
     const command = createQuestionCreationCommandFromDto(dto);
 
@@ -239,6 +245,7 @@ describe(createQuestionCreationCommandFromDto, () => {
           trivia: dto.content.trivia,
         },
         cognitiveDifficulty: dto.cognitiveDifficulty,
+        isAdultContent: dto.isAdultContent,
         author: {
           role: dto.author.role,
           name: dto.author.name,
@@ -256,12 +263,13 @@ describe(createQuestionCreationCommandFromDto, () => {
 describe(createQuestionModificationCommandFromDto, () => {
   it("should return mapped QuestionModificationCommand when called.", () => {
     const questionId = createFakeObjectId().toString();
-    const questionModificationDto = createFakeQuestionModificationDto();
+    const questionModificationDto = createFakeQuestionModificationDto({ isAdultContent: true });
     const expectedCommand = createFakeQuestionModificationCommand({
       questionId,
       payload: {
         category: questionModificationDto.category,
         cognitiveDifficulty: questionModificationDto.cognitiveDifficulty,
+        isAdultContent: questionModificationDto.isAdultContent,
         sourceUrls: questionModificationDto.sourceUrls,
         content: questionModificationDto.content,
         applicableLocales: questionModificationDto.applicableLocales,

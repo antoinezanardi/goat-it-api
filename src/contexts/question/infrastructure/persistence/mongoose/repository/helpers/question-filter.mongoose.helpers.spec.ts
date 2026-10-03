@@ -38,10 +38,20 @@ describe(buildQuestionAggregationFilterStages, () => {
     { filter: { category: "trivia" }, expectedMatch: { category: "trivia" } },
     { filter: { cognitiveDifficulty: "easy" }, expectedMatch: { cognitiveDifficulty: "easy" } },
     { filter: { authorRole: "admin" }, expectedMatch: { "author.role": "admin" } },
+    { filter: { isAdultContent: true }, expectedMatch: { isAdultContent: true } },
+    { filter: { isAdultContent: false }, expectedMatch: { isAdultContent: false } },
   ])("should return a match stage with expected conditions when filter is $filter.", ({ filter, expectedMatch }) => {
     const result = buildQuestionAggregationFilterStages(filter);
 
     expect(result).toStrictEqual([{ $match: expectedMatch }]);
+  });
+
+  it("should not add isAdultContent condition when isAdultContent is undefined.", () => {
+    const filters: Partial<QuestionFilterOptions> = { status: "active", isAdultContent: undefined };
+
+    const result = buildQuestionAggregationFilterStages(filters);
+
+    expect(result).toStrictEqual([{ $match: { status: "active" } }]);
   });
 
   it("should return a match stage with themes.themeId $in ObjectIds when themeIds is defined.", () => {

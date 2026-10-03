@@ -25,6 +25,7 @@ function createFakeQuestionMongooseInsertPayload(override: Partial<QuestionMongo
     themes: [createFakeQuestionThemeAssignmentMongooseInsertPayload()],
     content: createFakeQuestionContentAggregate(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),

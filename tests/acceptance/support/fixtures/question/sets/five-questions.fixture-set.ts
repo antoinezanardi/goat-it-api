@@ -71,6 +71,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "admin",
       name: "Antoine ZANARDI",
@@ -127,6 +128,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "hard",
+    isAdultContent: true,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Music AI",
@@ -169,6 +171,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       trivia: undefined,
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: true,
     author: createFakeQuestionAuthorAggregate({
       role: "game",
       name: undefined,
@@ -231,6 +234,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "History AI",
@@ -290,6 +294,7 @@ const FIVE_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "AI Question Generator",

@@ -1,7 +1,7 @@
 ---
 description: Orchestrates the full superpowers development cycle for the goat-it-api NestJS 12 project. Coordinates specialist subagents per task (plan → TDD implementation → final review → finish). Default primary agent.
 mode: primary
-model: opencode-go/minimax-m3
+model: opencode-go/deepseek-v4.1-flash
 temperature: 0.3
 steps: 200
 permission:

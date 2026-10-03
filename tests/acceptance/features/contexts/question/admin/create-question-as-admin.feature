@@ -10,8 +10,8 @@ Feature: Create Question as Admin
     When the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         |
-      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+      | id    | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | active | false          | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
 
     And the response should contain the following question statement for the admin question:
       | locale | statement                        |
@@ -109,8 +109,8 @@ Feature: Create Question as Admin
     And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | category | cognitiveDifficulty | status  | sourceUrls                                                                                         |
-      | <SET> | trivia   | medium              | pending | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+      | id    | category | cognitiveDifficulty | status  | isAdultContent | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | pending | false          | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
     And the response should contain the following author for the admin question:
       | role | name      | gameId |
       | ai   | GoatItGPT |        |
@@ -377,6 +377,7 @@ Feature: Create Question as Admin
       | invalid_type  | Invalid input: expected array, received undefined                            | array    | themes              |                                   |
       | invalid_type  | Invalid input: expected object, received undefined                           | object   | content             |                                   |
       | invalid_value | Invalid option: expected one of "easy"\|"medium"\|"hard"                     |          | cognitiveDifficulty | easy,medium,hard                  |
+      | invalid_type  | Invalid input: expected boolean, received undefined                          | boolean  | isAdultContent      |                                   |
       | invalid_type  | Invalid input: expected object, received undefined                           | object   | author              |                                   |
       | invalid_type  | Invalid input: expected array, received undefined                            | array    | sourceUrls          |                                   |
 
@@ -625,8 +626,8 @@ Feature: Create Question as Admin
     And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         | applicableLocales |
-      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ | fr, en            |
+      | id    | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                                         | applicableLocales |
+      | <SET> | trivia   | medium              | active | false          | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ | fr, en            |
 
   Scenario: Trying to create a question without any applicable locale
     Given the database is populated with question themes fixture set with name "five-question-themes"
@@ -679,6 +680,34 @@ Feature: Create Question as Admin
     And the admin creates a new question with the request payload
     Then the request should have succeeded with status code 201
     And the response should contain the following admin question:
-      | id    | category | cognitiveDifficulty | status | sourceUrls                                                                                         |
-      | <SET> | trivia   | medium              | active | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
+      | id    | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                                         |
+      | <SET> | trivia   | medium              | active | false          | https://en.wikipedia.org/wiki/Penicillin, https://www.nobelprize.org/prizes/medicine/1945/summary/ |
     And the response should contain no applicable locales for the admin question
+
+  Scenario: Trying to create a question without the adult content flag
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type      | value |
+      | isAdultContent | undefined |       |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code         | message                                             | expected | path           |
+      | invalid_type | Invalid input: expected boolean, received undefined | boolean  | isAdultContent |
+
+  Scenario: Trying to create a question with a non-boolean adult content flag
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type   | value |
+      | isAdultContent | string | true  |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code         | message                                          | expected | path           |
+      | invalid_type | Invalid input: expected boolean, received string | boolean  | isAdultContent |

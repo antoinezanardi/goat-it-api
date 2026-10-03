@@ -13,6 +13,7 @@ const ESLINT_CONFIG_FILES_FLAT_CONFIG: Linter.Config = {
     "import-x/no-default-export": "off",
     "import-x/no-internal-modules": "off",
     "import-x/no-anonymous-default-export": "off",
+    "unicorn/no-top-level-side-effects": "off",
   },
 } as const;
 
