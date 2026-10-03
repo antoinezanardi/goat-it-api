@@ -15,8 +15,7 @@ import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/
  *
  * This function is only for hashing API keys for comparison purposes. Not for storing passwords.
  *
- * This is a high-entropy API token validated using HMAC-SHA256,
- * which is the recommended approach for server-side API key authentication.
+ * This is a high-entropy API token validated using HMAC-SHA256, which is the recommended approach for server-side API key authentication.
  */
 function hashApiKey(apiKey: string, hmacKey: string): string {
   return createHmac("sha256", hmacKey)
