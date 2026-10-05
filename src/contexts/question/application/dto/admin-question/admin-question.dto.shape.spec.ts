@@ -271,6 +271,19 @@ describe("Admin Question DTO Shape", () => {
 
       expect(() => ADMIN_QUESTION_DTO.parse(dtoWithInvalidSourceUrls)).toThrow(ZodError);
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = ADMIN_QUESTION_DTO.shape.sourceUrls.meta();
+      const expectedMetadata = {
+        description: "List of unique source URLs for the question",
+        example: [
+          "https://example.com/source1",
+          "https://example.com/source2",
+        ],
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
   });
 
   describe("createdAt / updatedAt", () => {

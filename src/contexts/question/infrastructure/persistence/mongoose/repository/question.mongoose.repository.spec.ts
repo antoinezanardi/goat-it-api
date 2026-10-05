@@ -6,7 +6,7 @@ import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persi
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import * as arrayHelpers from "@shared/domain/helpers/array/array.helpers";
 
-import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import * as questionMongooseMappers from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
@@ -36,8 +36,6 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
-vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
-
 describe(QuestionMongooseRepository, () => {
   let repositories: { question: QuestionMongooseRepository };
   let mocks: {
@@ -60,9 +58,12 @@ describe(QuestionMongooseRepository, () => {
       },
       mappers: {
         question: {
-          createQuestionFromAggregate: vi.mocked(createQuestionFromAggregate),
-          createQuestionMongooseInsertPayloadFromContract: vi.mocked(createQuestionMongooseInsertPayloadFromContract),
-          createQuestionThemeAssignmentMongooseInsertPayloadFromContract: vi.mocked(createQuestionThemeAssignmentMongooseInsertPayloadFromContract),
+          createQuestionFromAggregate: vi.spyOn(questionMongooseMappers, "createQuestionFromAggregate").mockImplementation(vi.fn()),
+          createQuestionMongooseInsertPayloadFromContract: vi.spyOn(questionMongooseMappers, "createQuestionMongooseInsertPayloadFromContract").mockImplementation(vi.fn()),
+          createQuestionThemeAssignmentMongooseInsertPayloadFromContract: vi.spyOn(
+            questionMongooseMappers,
+            "createQuestionThemeAssignmentMongooseInsertPayloadFromContract",
+          ).mockImplementation(vi.fn()),
         },
       },
     };
@@ -150,7 +151,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion(),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(expectedQuestions[0])
         .mockReturnValueOnce(expectedQuestions[1])
         .mockReturnValueOnce(expectedQuestions[2]);
@@ -1003,7 +1004,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion(),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(expectedQuestions[0])
         .mockReturnValueOnce(expectedQuestions[1]);
 
@@ -1036,7 +1037,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion({ id: "618c1f4b3a2f0000000000a4" }),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(mappedQuestions[0])
         .mockReturnValueOnce(mappedQuestions[1]);
       vi.mocked(arrayHelpers.shuffleArray).mockReturnValueOnce(shuffledQuestions);
@@ -1066,7 +1067,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion({ id: "618c1f4b3a2f0000000000b2" }),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(mappedQuestions[0])
         .mockReturnValueOnce(mappedQuestions[1]);
 

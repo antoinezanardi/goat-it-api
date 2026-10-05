@@ -28,7 +28,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-by", () => {
-    it.each(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
+    it.each<(typeof ADMIN_QUESTION_THEME_SORTABLE_FIELDS)[number]>(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
       const dto = { ...validDto, "sort-by": sortBy };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -63,7 +63,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("sort-order", () => {
-    it.each(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
+    it.each<(typeof SORT_ORDERS)[number]>(SORT_ORDERS)("should pass validation when sort-order is '%s'.", sortOrder => {
       const dto = { ...validDto, "sort-order": sortOrder };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -121,7 +121,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
   });
 
   describe("status", () => {
-    it.each(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
+    it.each<(typeof QUESTION_THEME_STATUSES)[number]>(QUESTION_THEME_STATUSES)("should pass validation when status is '%s'.", status => {
       const dto = { ...validDto, status };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
@@ -141,6 +141,13 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
     it("should have correct description when accessing the description.", () => {
       expect(ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.status.unwrap().description).toBe("Question Theme's status");
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.shape.status.unwrap().meta();
+      const expectedMetadata = { description: "Question Theme's status", example: QUESTION_THEME_STATUSES[0] };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
