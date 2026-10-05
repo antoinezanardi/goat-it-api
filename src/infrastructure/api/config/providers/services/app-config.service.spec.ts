@@ -91,18 +91,22 @@ describe(AppConfigService, () => {
       expect(services.appConfig.serverBaseUrl).toBe("http://127.0.0.1:8080");
     });
 
-    it("should return server base url with https when host includes https scheme.", () => {
-      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("https://0.0.0.0");
+    it.each<{ test: string; host: string; expectedUrl: string }>([
+      {
+        test: "should return server base url with https when host includes https scheme.",
+        host: "https://0.0.0.0",
+        expectedUrl: "https://0.0.0.0:8080",
+      },
+      {
+        test: "should return server base url with http when host includes http scheme.",
+        host: "http://127.0.0.0",
+        expectedUrl: "http://127.0.0.0:8080",
+      },
+    ])("$test", ({ host, expectedUrl }) => {
+      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce(host);
       mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("8080");
 
-      expect(services.appConfig.serverBaseUrl).toBe("https://0.0.0.0:8080");
-    });
-
-    it("should return server base url with http when host includes http scheme.", () => {
-      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("http://127.0.0.0");
-      mocks.services.nestConfig.getOrThrow.mockReturnValueOnce("8080");
-
-      expect(services.appConfig.serverBaseUrl).toBe("http://127.0.0.0:8080");
+      expect(services.appConfig.serverBaseUrl).toBe(expectedUrl);
     });
   });
 
@@ -186,36 +190,53 @@ describe(AppConfigService, () => {
       expect(() => services.appConfig["computeAuthenticationConfigCache"]()).toThrow("API_KEY_HMAC_SECRET is not defined");
     });
 
-    it("should call hashApiKey for adminApiKey when config service is created.", () => {
-      expect(mocks.helpers.hashApiKey).toHaveBeenNthCalledWith(1, "valid-admin-api-key-of-sufficient-length", "valid-hmac-secret-of-sufficient-length");
+    it.each<{ test: string; callIndex: number; expectedApiKey: string }>([
+      {
+        test: "should call hashApiKey for adminApiKey when config service is created.",
+        callIndex: 1,
+        expectedApiKey: "valid-admin-api-key-of-sufficient-length",
+      },
+      {
+        test: "should call hashApiKey for gameApiKey when config service is created.",
+        callIndex: 2,
+        expectedApiKey: "valid-game-api-key-of-sufficient-length",
+      },
+    ])("$test", ({ callIndex, expectedApiKey }) => {
+      expect(mocks.helpers.hashApiKey).toHaveBeenNthCalledWith(callIndex, expectedApiKey, "valid-hmac-secret-of-sufficient-length");
     });
 
-    it("should call hashApiKey for gameApiKey when config service is created.", () => {
-      expect(mocks.helpers.hashApiKey).toHaveBeenNthCalledWith(2, "valid-game-api-key-of-sufficient-length", "valid-hmac-secret-of-sufficient-length");
-    });
-
-    it("should call createApiKeyValidator for adminApiKey when config service is created.", () => {
-      expect(mocks.helpers.createApiKeyValidator).toHaveBeenNthCalledWith(1, "hashed-api-key", "valid-hmac-secret-of-sufficient-length");
-    });
-
-    it("should call createApiKeyValidator for gameApiKey when config service is created.", () => {
-      expect(mocks.helpers.createApiKeyValidator).toHaveBeenNthCalledWith(2, "hashed-api-key", "valid-hmac-secret-of-sufficient-length");
+    it.each<{ test: string; callIndex: number }>([
+      {
+        test: "should call createApiKeyValidator for adminApiKey when config service is created.",
+        callIndex: 1,
+      },
+      {
+        test: "should call createApiKeyValidator for gameApiKey when config service is created.",
+        callIndex: 2,
+      },
+    ])("$test", ({ callIndex }) => {
+      expect(mocks.helpers.createApiKeyValidator).toHaveBeenNthCalledWith(callIndex, "hashed-api-key", "valid-hmac-secret-of-sufficient-length");
     });
   });
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
   describe(AppConfigService["deleteSensitiveEnvVariables"], () => {
-    it("should delete api key hmac secret when computing authentication config cache.", () => {
-      expect(process.env.API_KEY_HMAC_SECRET).toBeUndefined();
-    });
-
-    it("should delete admin api key when computing authentication config cache.", () => {
-      expect(process.env.ADMIN_API_KEY).toBeUndefined();
-    });
-
-    it("should delete game api key when computing authentication config cache.", () => {
-      expect(process.env.GAME_API_KEY).toBeUndefined();
+    it.each<{ test: string; envVarName: string }>([
+      {
+        test: "should delete api key hmac secret when computing authentication config cache.",
+        envVarName: "API_KEY_HMAC_SECRET",
+      },
+      {
+        test: "should delete admin api key when computing authentication config cache.",
+        envVarName: "ADMIN_API_KEY",
+      },
+      {
+        test: "should delete game api key when computing authentication config cache.",
+        envVarName: "GAME_API_KEY",
+      },
+    ])("$test", ({ envVarName }) => {
+      expect(process.env[envVarName]).toBeUndefined();
     });
   });
 });

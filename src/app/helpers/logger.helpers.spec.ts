@@ -7,27 +7,29 @@ describe(getLoggerConfiguration, () => {
     process.env.NODE_ENV = "TEST";
   });
 
-  it("should return logger production configuration when env is production.", () => {
-    process.env.NODE_ENV = "production";
+  it.each<{ test: string; nodeEnv: string; expectedConfig: PinoParameters }>([
+    {
+      test: "should return logger production configuration when env is production.",
+      nodeEnv: "production",
+      expectedConfig: {
+        pinoHttp: {
+          transport: undefined,
+        },
+      },
+    },
+    {
+      test: "should return logger development configuration when env is not production.",
+      nodeEnv: "development",
+      expectedConfig: {
+        pinoHttp: {
+          transport: { target: "pino-pretty" },
+        },
+      },
+    },
+  ])("$test", ({ nodeEnv, expectedConfig }) => {
+    process.env.NODE_ENV = nodeEnv;
 
     const config = getLoggerConfiguration();
-    const expectedConfig: PinoParameters = {
-      pinoHttp: {
-        transport: undefined,
-      },
-    };
-
-    expect(config).toStrictEqual(expectedConfig);
-  });
-
-  it("should return logger development configuration when env is not production.", () => {
-    process.env.NODE_ENV = "development";
-    const config = getLoggerConfiguration();
-    const expectedConfig: PinoParameters = {
-      pinoHttp: {
-        transport: { target: "pino-pretty" },
-      },
-    };
 
     expect(config).toStrictEqual(expectedConfig);
   });

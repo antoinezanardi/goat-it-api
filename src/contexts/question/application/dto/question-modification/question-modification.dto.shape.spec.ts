@@ -86,6 +86,19 @@ describe("Question Modification DTO Shape", () => {
     it("should have correct description when accessing the description.", () => {
       expect(QUESTION_MODIFICATION_DTO.shape.sourceUrls.unwrap().description).toBe("List of unique source URLs for the question");
     });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = QUESTION_MODIFICATION_DTO.shape.sourceUrls.unwrap().meta();
+      const expectedMetadata = {
+        description: "List of unique source URLs for the question",
+        example: [
+          "https://example.com/source1",
+          "https://example.com/source2",
+        ],
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
   });
 
   describe("content", () => {

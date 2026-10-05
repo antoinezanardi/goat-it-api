@@ -7,7 +7,7 @@ vi.mock(import("@src/infrastructure/api/server/server"), () => ({
 describe("Main", () => {
   describe("Root", () => {
     it("should call bootstrap when file is imported.", async() => {
-      await import("./main");
+      await import("@src/main");
 
       expect(Server.bootstrap).toHaveBeenCalledExactlyOnceWith();
     });

@@ -3,22 +3,21 @@ import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/applicati
 import { createFakeFindRandomQuestionsBodyDto } from "@faketories/contexts/question/dto/find-random-questions-body/find-random-questions-body.dto.faketory";
 
 describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
-  it("should return find random options with the limit and locale from body dto when called.", () => {
-    const locale = "fr";
-    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: 5 });
+  it.each<{ test: string; limit: number }>([
+    {
+      test: "should return find random options with the limit and locale from body dto when called.",
+      limit: 5,
+    },
+    {
+      test: "should return find random options with a different limit and the same locale when body dto has a different limit.",
+      limit: 10,
+    },
+  ])("$test", ({ limit }) => {
+    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit });
 
-    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
+    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, "fr");
 
-    expect(result).toMatchObject({ limit: 5, locale: "fr" });
-  });
-
-  it("should return find random options with a different limit and locale when body dto has a different limit.", () => {
-    const locale = "fr";
-    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: 10 });
-
-    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
-
-    expect(result).toMatchObject({ limit: 10, locale: "fr" });
+    expect(result).toMatchObject({ limit, locale: "fr" });
   });
 
   it.each<{ test: string; bodyDto: ReturnType<typeof createFakeFindRandomQuestionsBodyDto>; expectedField: string; expectedValue: unknown }>([
