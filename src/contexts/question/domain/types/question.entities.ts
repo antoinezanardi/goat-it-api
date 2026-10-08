@@ -8,6 +8,7 @@ type Question = {
   themes: QuestionThemeAssignment[];
   content: QuestionContent;
   cognitiveDifficulty: QuestionCognitiveDifficulty;
+  isAdultContent: boolean;
   author: QuestionAuthor;
   status: QuestionStatus;
   rejection?: QuestionRejection;

@@ -6,7 +6,7 @@ import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persi
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 import * as arrayHelpers from "@shared/domain/helpers/array/array.helpers";
 
-import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import * as questionMongooseMappers from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
@@ -36,8 +36,6 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
 import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
-vi.mock(import("@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers"));
-
 describe(QuestionMongooseRepository, () => {
   let repositories: { question: QuestionMongooseRepository };
   let mocks: {
@@ -60,9 +58,12 @@ describe(QuestionMongooseRepository, () => {
       },
       mappers: {
         question: {
-          createQuestionFromAggregate: vi.mocked(createQuestionFromAggregate),
-          createQuestionMongooseInsertPayloadFromContract: vi.mocked(createQuestionMongooseInsertPayloadFromContract),
-          createQuestionThemeAssignmentMongooseInsertPayloadFromContract: vi.mocked(createQuestionThemeAssignmentMongooseInsertPayloadFromContract),
+          createQuestionFromAggregate: vi.spyOn(questionMongooseMappers, "createQuestionFromAggregate").mockImplementation(vi.fn()),
+          createQuestionMongooseInsertPayloadFromContract: vi.spyOn(questionMongooseMappers, "createQuestionMongooseInsertPayloadFromContract").mockImplementation(vi.fn()),
+          createQuestionThemeAssignmentMongooseInsertPayloadFromContract: vi.spyOn(
+            questionMongooseMappers,
+            "createQuestionThemeAssignmentMongooseInsertPayloadFromContract",
+          ).mockImplementation(vi.fn()),
         },
       },
     };
@@ -150,7 +151,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion(),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(expectedQuestions[0])
         .mockReturnValueOnce(expectedQuestions[1])
         .mockReturnValueOnce(expectedQuestions[2]);
@@ -195,6 +196,20 @@ describe(QuestionMongooseRepository, () => {
       const expectedMatchStage = {
         $match: { _id: { $in: ids.map(id => new Types.ObjectId(id)) } },
       };
+      const expectedPipeline = [expectedMatchStage, ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
+    it("should aggregate with pipeline including an isAdultContent match stage when filters.isAdultContent is false.", async() => {
+      findAllOptions = createFakeFindAllOptions(QUESTION_SORTABLE_FIELDS, {
+        sort: { sortOrder: "asc", sortBy: "createdAt" },
+        limit: undefined,
+        filters: { isAdultContent: false },
+      });
+      await repositories.question.findAll(findAllOptions);
+      const expectedSortStages = buildMongooseAggregationSortStages(findAllOptions.sort, QUESTION_SEMANTIC_SORT_ORDERS);
+      const expectedMatchStage = { $match: { isAdultContent: false } };
       const expectedPipeline = [expectedMatchStage, ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE, ...expectedSortStages];
 
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
@@ -629,7 +644,15 @@ describe(QuestionMongooseRepository, () => {
 
     it.each<number>([5, 10])("should aggregate with match, sample and pipeline stages when limit is %s.", async limit => {
       const locale = LOCALES[0];
-      const options = createFakeFindRandomQuestionsOptions({ limit, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -651,6 +674,39 @@ describe(QuestionMongooseRepository, () => {
       expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
     });
 
+    it.each<boolean>([true, false])("should add isAdultContent %s to the match stage when provided.", async isAdultContent => {
+      const locale = LOCALES[0];
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        isAdultContent,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        locale,
+      });
+      const expectedPipeline = [
+        {
+          $match: {
+            status: QUESTION_STATUS_ACTIVE,
+            isAdultContent,
+            $or: [
+              { applicableLocales: { $exists: false } },
+              { applicableLocales: { $size: 0 } },
+              { applicableLocales: locale },
+            ],
+            ...expectedLocaleCompletenessCondition(locale),
+          },
+        },
+        { $sample: { size: 5 } },
+        ...QUESTION_MONGOOSE_REPOSITORY_PIPELINE,
+      ];
+
+      await repositories.question.findRandom(options);
+
+      expect(mocks.models.question.aggregate).toHaveBeenCalledExactlyOnceWith(expectedPipeline);
+    });
+
     it("should build locale conditions with the requested locale when it is not the first supported locale.", async() => {
       const locale: Locale = "it";
       const options = createFakeFindRandomQuestionsOptions({
@@ -659,6 +715,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale,
       });
       const expectedPipeline = [
@@ -685,7 +742,15 @@ describe(QuestionMongooseRepository, () => {
     it("should add excluded ids to match stage as ObjectId $nin when provided.", async() => {
       const locale = LOCALES[0];
       const excludedIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        excludedIds,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -711,7 +776,15 @@ describe(QuestionMongooseRepository, () => {
     it("should add categories to match stage as $in when provided.", async() => {
       const locale = LOCALES[0];
       const categories: QuestionCategory[] = ["trivia", "riddle"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, categories, excludedIds: undefined, cognitiveDifficulties: undefined, themeIds: undefined, locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        categories,
+        excludedIds: undefined,
+        cognitiveDifficulties: undefined,
+        themeIds: undefined,
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -737,7 +810,15 @@ describe(QuestionMongooseRepository, () => {
     it("should add cognitive difficulties to match stage as $in when provided.", async() => {
       const locale = LOCALES[0];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy", "hard"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, cognitiveDifficulties, excludedIds: undefined, categories: undefined, themeIds: undefined, locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        cognitiveDifficulties,
+        excludedIds: undefined,
+        categories: undefined,
+        themeIds: undefined,
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -763,7 +844,15 @@ describe(QuestionMongooseRepository, () => {
     it("should add theme ids to match stage as ObjectId $in on nested themeId when provided.", async() => {
       const locale = LOCALES[0];
       const themeIds = ["618c1f4b3a2f000000000001", "618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, themeIds, excludedIds: undefined, categories: undefined, cognitiveDifficulties: undefined, locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        themeIds,
+        excludedIds: undefined,
+        categories: undefined,
+        cognitiveDifficulties: undefined,
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -792,7 +881,7 @@ describe(QuestionMongooseRepository, () => {
       const categories: QuestionCategory[] = ["trivia"];
       const cognitiveDifficulties: QuestionCognitiveDifficulty[] = ["easy"];
       const themeIds = ["618c1f4b3a2f000000000002"];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds, locale });
+      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds, categories, cognitiveDifficulties, themeIds, isAdultContent: undefined, locale });
       const expectedPipeline = [
         {
           $match: {
@@ -820,7 +909,15 @@ describe(QuestionMongooseRepository, () => {
 
     it("should not add filter to match stage when provided array is empty.", async() => {
       const locale = LOCALES[0];
-      const options = createFakeFindRandomQuestionsOptions({ limit: 5, excludedIds: [], categories: [], cognitiveDifficulties: [], themeIds: [], locale });
+      const options = createFakeFindRandomQuestionsOptions({
+        limit: 5,
+        excludedIds: [],
+        categories: [],
+        cognitiveDifficulties: [],
+        themeIds: [],
+        isAdultContent: undefined,
+        locale,
+      });
       const expectedPipeline = [
         {
           $match: {
@@ -849,6 +946,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale: LOCALES[0],
       });
       const questionAggregates = [
@@ -869,6 +967,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale: LOCALES[0],
       });
       const questionAggregates = [
@@ -892,6 +991,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale: LOCALES[0],
       });
       const questionAggregates = [
@@ -904,7 +1004,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion(),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(expectedQuestions[0])
         .mockReturnValueOnce(expectedQuestions[1]);
 
@@ -920,6 +1020,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale: LOCALES[0],
       });
       const questionAggregates = [
@@ -936,7 +1037,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion({ id: "618c1f4b3a2f0000000000a4" }),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(mappedQuestions[0])
         .mockReturnValueOnce(mappedQuestions[1]);
       vi.mocked(arrayHelpers.shuffleArray).mockReturnValueOnce(shuffledQuestions);
@@ -953,6 +1054,7 @@ describe(QuestionMongooseRepository, () => {
         categories: undefined,
         cognitiveDifficulties: undefined,
         themeIds: undefined,
+        isAdultContent: undefined,
         locale: LOCALES[0],
       });
       const questionAggregates = [
@@ -965,7 +1067,7 @@ describe(QuestionMongooseRepository, () => {
         createFakeQuestion({ id: "618c1f4b3a2f0000000000b2" }),
       ];
 
-      vi.mocked(createQuestionFromAggregate)
+      mocks.mappers.question.createQuestionFromAggregate
         .mockReturnValueOnce(mappedQuestions[0])
         .mockReturnValueOnce(mappedQuestions[1]);
 

@@ -74,6 +74,7 @@ When(/^the client retrieves random questions with the following body:$/u, async 
     categories: bodyRow.categories,
     cognitiveDifficulties: bodyRow.cognitiveDifficulties,
     themeIds: bodyRow.themeIds,
+    isAdultContent: bodyRow.isAdultContent,
   };
   const fetchOptions = createFetchOptions({
     apiKey: APP_GAME_API_KEY,

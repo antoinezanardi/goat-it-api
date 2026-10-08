@@ -30,6 +30,7 @@ function createFakeQuestionDocument(questionDocument: Partial<QuestionMongooseDo
     themes: [createFakeQuestionThemeAssignmentDocument()],
     content: createFakeQuestionContentAggregate(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorAggregate(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.helpers.maybe(createFakeQuestionRejection),

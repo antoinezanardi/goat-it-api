@@ -1,7 +1,7 @@
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 import { createQuestionThemeStatsDtoFromStats } from "@question-theme/application/mappers/question-theme-stats/question-theme-stats.mappers";
 
-import { createFakeQuestionThemeStats } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
+import { createFakeQuestionThemeStats, createFakeThemeActiveQuestionCount } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
 
 describe(createQuestionThemeStatsDtoFromStats, () => {
   it("should return total when stats are provided.", () => {
@@ -32,7 +32,7 @@ describe(createQuestionThemeStatsDtoFromStats, () => {
   });
 
   it("should return byQuestionCount when stats contain question count data.", () => {
-    const byQC = [{ themeId: "a", themeSlug: "cinema", activeQuestionCount: 2 }];
+    const byQC = [createFakeThemeActiveQuestionCount({ themeId: "a", themeSlug: "cinema", activeQuestionCount: 2 })];
     const stats = createFakeQuestionThemeStats({ total: 0, byStatus: {}, byQuestionCount: byQC });
     const result = createQuestionThemeStatsDtoFromStats(stats);
 

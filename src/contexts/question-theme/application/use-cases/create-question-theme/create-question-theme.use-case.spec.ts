@@ -10,6 +10,7 @@ import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/ent
 import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 
 import type { Mock } from "vitest";
+import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 describe(CreateQuestionThemeUseCase, () => {
   let createQuestionThemeUseCase: CreateQuestionThemeUseCase;
@@ -62,6 +63,16 @@ describe(CreateQuestionThemeUseCase, () => {
       await createQuestionThemeUseCase.create(questionThemeCreationCommand);
 
       expect(mocks.repositories.questionTheme.create).toHaveBeenCalledExactlyOnceWith(questionThemeCreationCommand.payload);
+    });
+
+    it("should return created question theme from repository when called.", async() => {
+      const questionThemeCreationCommand = createFakeQuestionThemeCreationCommand();
+      const expectedQuestionTheme = createFakeQuestionTheme();
+      mocks.repositories.questionTheme.create.mockResolvedValueOnce(expectedQuestionTheme);
+
+      const actualQuestionTheme = await createQuestionThemeUseCase.create(questionThemeCreationCommand);
+
+      expect(actualQuestionTheme).toStrictEqual<QuestionTheme>(expectedQuestionTheme);
     });
   });
 

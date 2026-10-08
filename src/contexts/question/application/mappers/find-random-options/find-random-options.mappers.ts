@@ -10,6 +10,7 @@ function createFindRandomQuestionsOptionsFromBodyDto(bodyDto: FindRandomQuestion
     categories: bodyDto.categories,
     cognitiveDifficulties: bodyDto.cognitiveDifficulties,
     themeIds: bodyDto.themeIds,
+    isAdultContent: bodyDto.isAdultContent,
     locale,
   };
 }

@@ -87,32 +87,28 @@ describe("Auth Helpers", () => {
       appConfigService = createMockedAppConfigService();
     });
 
-    it("should return true when API key is valid for admin auth type.", () => {
+    it.each<{ test: string; authType: "admin" | "game"; apiKey: string }>([
+      {
+        test: "should return true when API key is valid for admin auth type.",
+        authType: "admin",
+        apiKey: "valid-admin-api-key-of-sufficient-length",
+      },
+      {
+        test: "should return true when API key is valid for game auth type.",
+        authType: "game",
+        apiKey: "valid-game-api-key-of-sufficient-length",
+      },
+    ])("$test", ({ authType, apiKey }) => {
       const fakeContext = {
         switchToHttp: (): unknown => ({
           getRequest: (): unknown => ({
             headers: {
-              [API_KEY_HEADER]: "valid-admin-api-key-of-sufficient-length",
+              [API_KEY_HEADER]: apiKey,
             },
           }),
         }),
       } as unknown as ExecutionContext;
-      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin");
-
-      expect(isValid).toBeTruthy();
-    });
-
-    it("should return true when API key is valid for game auth type.", () => {
-      const fakeContext = {
-        switchToHttp: (): unknown => ({
-          getRequest: (): unknown => ({
-            headers: {
-              [API_KEY_HEADER]: "valid-game-api-key-of-sufficient-length",
-            },
-          }),
-        }),
-      } as unknown as ExecutionContext;
-      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game");
+      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, authType);
 
       expect(isValid).toBeTruthy();
     });
