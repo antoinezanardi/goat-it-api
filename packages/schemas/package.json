@@ -22,11 +22,11 @@
     "@arethetypeswrong/core": "^0.18.5",
     "tsdown": "^0.23.1",
     "typescript": "^6.0.3",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
     "@faker-js/faker": ">=10.6.0",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   },
   "publishConfig": {
     "access": "public",
