@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:26.10.0-alpine AS base
+FROM --platform=$BUILDPLATFORM node:26.11.1-alpine AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -58,7 +58,7 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM node:26.10.0-alpine AS production
+FROM node:26.11.1-alpine AS production
 
 USER node
 
