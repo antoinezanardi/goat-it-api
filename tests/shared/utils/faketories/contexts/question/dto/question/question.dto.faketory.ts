@@ -15,6 +15,7 @@ function createFakeQuestionDto(questionDto: Partial<QuestionDto> = {}): Question
     themes: [createFakeQuestionThemeAssignmentDto()],
     content: createFakeQuestionContentDto(),
     cognitiveDifficulty: faker.helpers.arrayElement(QUESTION_COGNITIVE_DIFFICULTIES),
+    isAdultContent: faker.datatype.boolean(),
     author: createFakeQuestionAuthorDto(),
     status: faker.helpers.arrayElement(QUESTION_STATUSES),
     rejection: faker.helpers.maybe(createFakeQuestionRejectionDto),

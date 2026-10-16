@@ -3,7 +3,7 @@ packages:
   - 'packages/schemas'
 
 overrides:
-  conventional-changelog-writer: ^9.2.1
+  conventional-changelog-writer: ^9.3.0
 
 allowBuilds:
   '@nestjs/core': true

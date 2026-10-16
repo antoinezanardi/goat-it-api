@@ -4,6 +4,7 @@ import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/s
 const COMPLETE_QUESTION_MODIFICATION_PAYLOAD = Object.freeze(createFakeQuestionModificationDto({
   category: "trivia",
   cognitiveDifficulty: "hard",
+  isAdultContent: true,
   sourceUrls: [
     "https://en.wikipedia.org/wiki/Psycho_(1960_film)",
     "https://www.imdb.com/title/tt0054215/",

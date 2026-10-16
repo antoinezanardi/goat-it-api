@@ -15,6 +15,7 @@ function createFakeFindRandomQuestionsOptions(overrides: Partial<FindRandomQuest
     categories: faker.helpers.maybe(() => [faker.helpers.arrayElement<QuestionCategory>(QUESTION_CATEGORIES)]),
     cognitiveDifficulties: faker.helpers.maybe(() => [faker.helpers.arrayElement<QuestionCognitiveDifficulty>(QUESTION_COGNITIVE_DIFFICULTIES)]),
     themeIds: faker.helpers.maybe(() => [faker.database.mongodbObjectId()]),
+    isAdultContent: faker.helpers.maybe(() => faker.datatype.boolean()),
     locale: LOCALES[0],
     ...overrides,
   };

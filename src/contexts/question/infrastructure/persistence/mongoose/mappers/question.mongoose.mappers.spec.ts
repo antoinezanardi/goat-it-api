@@ -90,13 +90,14 @@ describe(createQuestionThemeAssignmentFromQuestionThemeAggregate, () => {
 
 describe(createQuestionFromAggregate, () => {
   it("should correctly map a question from aggregate when called.", () => {
-    const questionAggregate = createFakeQuestionAggregate();
+    const questionAggregate = createFakeQuestionAggregate({ isAdultContent: true });
     const expectedQuestion = createFakeQuestion({
       id: questionAggregate._id.toString(),
       themes: questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
       content: questionAggregate.content,
       category: questionAggregate.category,
       cognitiveDifficulty: questionAggregate.cognitiveDifficulty,
+      isAdultContent: questionAggregate.isAdultContent,
       author: createQuestionAuthorFromAggregate(questionAggregate),
       status: questionAggregate.status,
       rejection: questionAggregate.rejection,
@@ -127,7 +128,7 @@ describe(createQuestionThemeAssignmentMongooseInsertPayloadFromContract, () => {
 
 describe(createQuestionMongooseInsertPayloadFromContract, () => {
   it("should map a question creation contract to mongoose insert payload correctly when called.", () => {
-    const questionCreationContract = createFakeQuestionCreationContract();
+    const questionCreationContract = createFakeQuestionCreationContract({ isAdultContent: false });
     const expectedMongooseInsertPayload = createFakeQuestionMongooseInsertPayload({
       ...questionCreationContract,
       sourceUrls: [...questionCreationContract.sourceUrls],

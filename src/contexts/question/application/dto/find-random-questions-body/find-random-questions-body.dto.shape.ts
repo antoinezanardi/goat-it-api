@@ -10,6 +10,7 @@ import {
   zQuestionCategoriesFilter,
   zQuestionCognitiveDifficultiesFilter,
   zQuestionExcludedIdsFilter,
+  zQuestionIsAdultContentBooleanFilter,
   zQuestionThemeIdsFilter,
 } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 
@@ -26,6 +27,7 @@ const FIND_RANDOM_QUESTIONS_BODY_DTO = z.object({
   categories: zQuestionCategoriesFilter(),
   cognitiveDifficulties: zQuestionCognitiveDifficultiesFilter(),
   themeIds: zQuestionThemeIdsFilter(),
+  isAdultContent: zQuestionIsAdultContentBooleanFilter(),
 });
 
 type FindRandomQuestionsBodyDto = z.infer<typeof FIND_RANDOM_QUESTIONS_BODY_DTO>;

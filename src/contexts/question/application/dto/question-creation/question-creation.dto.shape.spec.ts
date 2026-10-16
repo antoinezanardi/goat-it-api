@@ -8,6 +8,7 @@ describe("Question Creation DTO Shape", () => {
     themes: { themeId: string; isPrimary: boolean; isHint: boolean }[];
     content: { statement: { en: string }; answer: { en: string } };
     cognitiveDifficulty: string;
+    isAdultContent: boolean;
     author: { role: string; name: string };
     sourceUrls: string[];
     applicableLocales?: string[];
@@ -19,6 +20,7 @@ describe("Question Creation DTO Shape", () => {
       themes: [{ themeId: "60af924f4f1a2563f8e8b456", isPrimary: true, isHint: false }],
       content: { statement: { en: "What is the capital of France?" }, answer: { en: "Paris" } },
       cognitiveDifficulty: "easy",
+      isAdultContent: false,
       author: { role: "admin", name: "TestAuthor" },
       sourceUrls: ["https://example.com/source1"],
     };
@@ -252,6 +254,39 @@ describe("Question Creation DTO Shape", () => {
       const metadata = QUESTION_CREATION_DTO.shape.applicableLocales.meta();
       const expectedMetadata = {
         description: "Subset of locales this question is relevant for; omit if relevant for all locales",
+      };
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("isAdultContent", () => {
+    it.each<{ isAdultContent: boolean }>([
+      { isAdultContent: true },
+      { isAdultContent: false },
+    ])("should pass validation when isAdultContent is $isAdultContent.", ({ isAdultContent }) => {
+      const dto = { ...validDto, isAdultContent };
+
+      expect(() => QUESTION_CREATION_DTO.parse(dto)).not.toThrow();
+    });
+
+    it("should throw zod error when isAdultContent is omitted.", () => {
+      const dtoWithoutIsAdultContent: Partial<typeof validDto> = { ...validDto };
+      delete dtoWithoutIsAdultContent.isAdultContent;
+
+      expect(() => QUESTION_CREATION_DTO.parse(dtoWithoutIsAdultContent)).toThrow(ZodError);
+    });
+
+    it("should throw zod error when isAdultContent is not a boolean.", () => {
+      const invalid = { ...validDto, isAdultContent: "true" };
+
+      expect(() => QUESTION_CREATION_DTO.parse(invalid)).toThrow(ZodError);
+    });
+
+    it("should have correct metadata when accessing the metadata.", () => {
+      const metadata = QUESTION_CREATION_DTO.shape.isAdultContent.meta();
+      const expectedMetadata = {
+        description: "Whether the question contains adult content",
       };
 
       expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);

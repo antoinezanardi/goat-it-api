@@ -3,29 +3,30 @@ import { ZodError } from "zod";
 import { QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 
 describe("Question Theme Assignment Modification DTO Shape", () => {
-  it("should pass validation when a valid QuestionThemeAssignmentModificationDto is provided.", () => {
-    const validDto = {
+  let validDto: {
+    isPrimary?: boolean;
+    isHint?: boolean;
+  };
+
+  beforeEach(() => {
+    validDto = {
       isPrimary: true,
       isHint: true,
     };
+  });
 
+  it("should pass validation when a valid QuestionThemeAssignmentModificationDto is provided.", () => {
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(validDto)).not.toThrow();
   });
 
   it("should pass validation when only isPrimary is provided.", () => {
-    const dto = {
-      isPrimary: true,
-      isHint: undefined,
-    };
+    const dto = { ...validDto, isHint: undefined };
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });
 
   it("should pass validation when only isHint is provided.", () => {
-    const dto = {
-      isHint: false,
-      isPrimary: undefined,
-    };
+    const dto = { ...validDto, isPrimary: undefined };
 
     expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(dto)).not.toThrow();
   });
@@ -36,13 +37,13 @@ describe("Question Theme Assignment Modification DTO Shape", () => {
 
   describe("isPrimary", () => {
     it("should throw zod error when isPrimary is false.", () => {
-      const invalid = { isPrimary: false };
+      const invalid = { ...validDto, isPrimary: false };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(invalid)).toThrow(ZodError);
     });
 
     it("should throw zod error when isPrimary is not a boolean.", () => {
-      const invalid = { isPrimary: "not-boolean" };
+      const invalid = { ...validDto, isPrimary: "not-boolean" };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(invalid)).toThrow(ZodError);
     });
@@ -59,7 +60,7 @@ describe("Question Theme Assignment Modification DTO Shape", () => {
 
   describe("isHint", () => {
     it("should throw zod error when isHint is not a boolean.", () => {
-      const invalid = { isHint: "not-boolean" };
+      const invalid = { ...validDto, isHint: "not-boolean" };
 
       expect(() => QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO.parse(invalid)).toThrow(ZodError);
     });

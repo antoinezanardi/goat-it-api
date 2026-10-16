@@ -12,26 +12,11 @@ import { createFakeQuestionStats } from "@faketories/contexts/question/domain/qu
 import type { QuestionStats } from "@question/domain/types/question.types";
 
 describe(createQuestionStatsDtoFromStats, () => {
-  const emptyStats = createFakeQuestionStats({
-    total: 0,
-    byStatus: {},
-    byCategory: {},
-    byCognitiveDifficulty: {},
-    byAuthorRole: {},
-    byRejectionType: {},
-  });
-
   it("should return total from stats when stats are provided.", () => {
     const stats = createFakeQuestionStats({ total: 7 });
     const result = createQuestionStatsDtoFromStats(stats);
 
     expect(result.total).toBe(7);
-  });
-
-  it("should include all status keys when byStatus is empty.", () => {
-    const result = createQuestionStatsDtoFromStats(emptyStats);
-
-    expect(Object.keys(result.byStatus)).toStrictEqual([...QUESTION_STATUSES]);
   });
 
   it("should preserve active status value when byStatus contains it.", () => {
@@ -49,6 +34,7 @@ describe(createQuestionStatsDtoFromStats, () => {
   });
 
   it.each<{ fieldName: keyof QuestionStats; keysArray: readonly string[] }>([
+    { fieldName: "byStatus", keysArray: QUESTION_STATUSES },
     { fieldName: "byCategory", keysArray: QUESTION_CATEGORIES },
     { fieldName: "byCognitiveDifficulty", keysArray: QUESTION_COGNITIVE_DIFFICULTIES },
     { fieldName: "byAuthorRole", keysArray: QUESTION_AUTHOR_ROLES },

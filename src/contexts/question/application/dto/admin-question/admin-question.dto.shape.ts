@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
 import { ADMIN_QUESTION_THEME_ASSIGNMENT_DTO } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
-import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionCreatedAt, zQuestionId, zQuestionSourceUrls, zQuestionStatus, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionCreatedAt, zQuestionId, zQuestionIsAdultContent, zQuestionSourceUrls, zQuestionStatus, zQuestionUpdatedAt } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
@@ -16,6 +16,7 @@ const ADMIN_QUESTION_DTO = z.strictObject({
     .describe("Question's themes"),
   content: ADMIN_QUESTION_CONTENT_DTO,
   cognitiveDifficulty: zQuestionCognitiveDifficulty(),
+  isAdultContent: zQuestionIsAdultContent(),
   author: QUESTION_AUTHOR_DTO,
   status: zQuestionStatus(),
   rejection: QUESTION_REJECTION_DTO

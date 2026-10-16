@@ -1,7 +1,7 @@
 ---
 description: Interactive brainstorming partner for the goat-it-api project. Explores user intent, asks clarifying questions one at a time, proposes 2-3 approaches, presents design sections for approval. Never implements — only designs. At the end of a session, instructs the user to switch back to the `orchestrator` agent. Switch with Tab key to use.
 mode: primary
-model: opencode-go/minimax-m3
+model: opencode-go/gpt-6-luna
 temperature: 0.7
 steps: 100
 permission:

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Types } from "mongoose";
+import { shake } from "radashi";
 
 import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
@@ -35,6 +36,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
     addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
     addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
     addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+    Object.assign(matchStage, shake({ isAdultContent: options.isAdultContent }));
     Object.assign(
       matchStage,
       buildIsApplicableForLocaleMatchCondition(options.locale),

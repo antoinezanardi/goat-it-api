@@ -37,6 +37,9 @@ Thumbs.db
 *.njsproj
 *.sln
 
+# Playwright MCP
+.playwright-mcp/
+
 # Semantic release files
 RELEASE.md
 

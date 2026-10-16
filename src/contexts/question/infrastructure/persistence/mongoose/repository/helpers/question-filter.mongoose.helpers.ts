@@ -31,6 +31,7 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
     "category": filters.category,
     "cognitiveDifficulty": filters.cognitiveDifficulty,
     "author.role": filters.authorRole,
+    "isAdultContent": filters.isAdultContent,
   });
 
   addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));

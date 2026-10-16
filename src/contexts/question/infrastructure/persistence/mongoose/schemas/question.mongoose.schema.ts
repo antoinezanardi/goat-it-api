@@ -52,6 +52,12 @@ class QuestionMongooseSchema {
 
   @Prop({
     required: true,
+    type: Boolean,
+  })
+  public isAdultContent!: boolean;
+
+  @Prop({
+    required: true,
     type: QUESTION_AUTHOR_MONGOOSE_SCHEMA,
   })
   public author!: QuestionAuthorMongooseSchema;

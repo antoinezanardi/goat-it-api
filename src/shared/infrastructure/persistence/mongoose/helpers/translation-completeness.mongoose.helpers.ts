@@ -176,8 +176,7 @@ function buildIsFullyTranslatedMatchCondition(
 }
 
 /**
- * Build the Mongo match clause that restricts a resource to those whose localized fields
- * are fully translated **in one single locale**.
+ * Build the Mongo match clause that restricts a resource to those whose localized fields are fully translated **in one single locale**.
  *
  * Unlike {@link buildIsFullyTranslatedMatchCondition}, which either checks every supported
  * locale or resolves each document's own `applicableLocales`, this builder takes one concrete

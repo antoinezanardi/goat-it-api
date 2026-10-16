@@ -30,6 +30,7 @@ type QuestionCreationContract = {
   themes: QuestionThemeAssignmentCreationContract[];
   content: QuestionContentCreationContract;
   cognitiveDifficulty: QuestionCognitiveDifficulty;
+  isAdultContent: boolean;
   author: QuestionAuthorCreationContract;
   status: QuestionCreationStatus;
   sourceUrls: Set<string>;
@@ -46,6 +47,7 @@ type QuestionContentModificationContract = {
 type QuestionModificationContract = {
   category?: QuestionCategory;
   cognitiveDifficulty?: QuestionCognitiveDifficulty;
+  isAdultContent?: boolean;
   sourceUrls?: string[];
   content?: QuestionContentModificationContract;
   applicableLocales?: Locale[];

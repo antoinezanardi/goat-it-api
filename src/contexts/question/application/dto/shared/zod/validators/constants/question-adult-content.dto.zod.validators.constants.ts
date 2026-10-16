@@ -1,0 +1,3 @@
+const QUESTION_IS_ADULT_CONTENT_FILTER_DESCRIPTION = "Filters questions by adult content";
+
+export { QUESTION_IS_ADULT_CONTENT_FILTER_DESCRIPTION };

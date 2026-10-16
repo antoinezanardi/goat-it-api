@@ -3,22 +3,21 @@ import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/applicati
 import { createFakeFindRandomQuestionsBodyDto } from "@faketories/contexts/question/dto/find-random-questions-body/find-random-questions-body.dto.faketory";
 
 describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
-  it("should return find random options with the limit and locale from body dto when called.", () => {
-    const locale = "fr";
-    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: 5 });
+  it.each<{ test: string; limit: number }>([
+    {
+      test: "should return find random options with the limit and locale from body dto when called.",
+      limit: 5,
+    },
+    {
+      test: "should return find random options with a different limit and the same locale when body dto has a different limit.",
+      limit: 10,
+    },
+  ])("$test", ({ limit }) => {
+    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit });
 
-    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
+    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, "fr");
 
-    expect(result).toMatchObject({ limit: 5, locale: "fr" });
-  });
-
-  it("should return find random options with a different limit and locale when body dto has a different limit.", () => {
-    const locale = "fr";
-    const bodyDto = createFakeFindRandomQuestionsBodyDto({ limit: 10 });
-
-    const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
-
-    expect(result).toMatchObject({ limit: 10, locale: "fr" });
+    expect(result).toMatchObject({ limit, locale: "fr" });
   });
 
   it.each<{ test: string; bodyDto: ReturnType<typeof createFakeFindRandomQuestionsBodyDto>; expectedField: string; expectedValue: unknown }>([
@@ -46,6 +45,18 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       expectedField: "themeIds",
       expectedValue: ["507f1f77bcf86cd799439011"],
     },
+    {
+      test: "should map isAdultContent when isAdultContent is true.",
+      bodyDto: createFakeFindRandomQuestionsBodyDto({ isAdultContent: true }),
+      expectedField: "isAdultContent",
+      expectedValue: true,
+    },
+    {
+      test: "should map isAdultContent when isAdultContent is false.",
+      bodyDto: createFakeFindRandomQuestionsBodyDto({ isAdultContent: false }),
+      expectedField: "isAdultContent",
+      expectedValue: false,
+    },
   ])("$test", ({ bodyDto, expectedField, expectedValue }) => {
     const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, "fr");
 
@@ -60,6 +71,7 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       categories: ["trivia"],
       cognitiveDifficulties: ["easy"],
       themeIds: ["507f1f77bcf86cd799439011"],
+      isAdultContent: undefined,
     });
 
     const result = createFindRandomQuestionsOptionsFromBodyDto(bodyDto, locale);
@@ -70,11 +82,12 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
       categories: ["trivia"],
       cognitiveDifficulties: ["easy"],
       themeIds: ["507f1f77bcf86cd799439011"],
+      isAdultContent: undefined,
       locale: "fr",
     });
   });
 
-  it.each<{ test: string; field: "excludedIds" | "categories" | "cognitiveDifficulties" | "themeIds" }>([
+  it.each<{ test: string; field: "excludedIds" | "categories" | "cognitiveDifficulties" | "themeIds" | "isAdultContent" }>([
     {
       test: "should keep excludedIds undefined when excludedIds is omitted.",
       field: "excludedIds" as const,
@@ -90,6 +103,10 @@ describe(createFindRandomQuestionsOptionsFromBodyDto, () => {
     {
       test: "should keep themeIds undefined when themeIds is omitted.",
       field: "themeIds" as const,
+    },
+    {
+      test: "should keep isAdultContent undefined when isAdultContent is omitted.",
+      field: "isAdultContent" as const,
     },
   ])("$test", ({ field }) => {
     const bodyDto = createFakeFindRandomQuestionsBodyDto({ [field]: undefined });

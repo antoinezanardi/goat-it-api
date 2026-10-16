@@ -4,7 +4,7 @@ import { QUESTION_THEME_CREATION_DTO } from "@question-theme/application/dto/que
 
 import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-describe("Question Theme Creation Dto Shape", () => {
+describe("Question Theme Creation DTO Shape", () => {
   let validQuestionThemeCreationDto: { slug: string; label: Record<string, string>; aliases: Record<string, string[]>; description: Record<string, string>; color?: string };
 
   beforeEach(() => {

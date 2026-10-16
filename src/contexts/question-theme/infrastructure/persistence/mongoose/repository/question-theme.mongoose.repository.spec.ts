@@ -1,7 +1,7 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 
-import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
+import * as questionThemeMongooseMappers from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
@@ -21,8 +21,6 @@ import type { TestingModule } from "@nestjs/testing";
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-
-vi.mock(import("@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers"));
 
 describe(QuestionThemeMongooseRepository, () => {
   let repositories: { questionTheme: QuestionThemeMongooseRepository };
@@ -44,7 +42,7 @@ describe(QuestionThemeMongooseRepository, () => {
       },
       mappers: {
         questionTheme: {
-          createQuestionThemeFromDocument: vi.mocked(createQuestionThemeFromDocument),
+          createQuestionThemeFromDocument: vi.spyOn(questionThemeMongooseMappers, "createQuestionThemeFromDocument").mockImplementation(vi.fn()),
         },
       },
     };
@@ -108,7 +106,7 @@ describe(QuestionThemeMongooseRepository, () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      vi.mocked(createQuestionThemeFromDocument)
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument
         .mockReturnValueOnce(expectedQuestionThemes[0])
         .mockReturnValueOnce(expectedQuestionThemes[1])
         .mockReturnValueOnce(expectedQuestionThemes[2]);
@@ -196,7 +194,7 @@ describe(QuestionThemeMongooseRepository, () => {
         createFakeQuestionTheme(),
         createFakeQuestionTheme(),
       ];
-      vi.mocked(createQuestionThemeFromDocument)
+      mocks.mappers.questionTheme.createQuestionThemeFromDocument
         .mockReturnValueOnce(expectedQuestionThemes[0])
         .mockReturnValueOnce(expectedQuestionThemes[1])
         .mockReturnValueOnce(expectedQuestionThemes[2]);

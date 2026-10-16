@@ -33,20 +33,25 @@ describe(zIsFullyTranslated, () => {
     expect(isFullyTranslated).toBeUndefined();
   });
 
-  it("should throw a zod error when input is not a valid boolean string.", () => {
-    expect(() => zIsFullyTranslated().parse("maybe")).toThrow(ZodError);
-  });
-
-  it("should throw a zod error when input is an empty string.", () => {
-    expect(() => zIsFullyTranslated().parse("")).toThrow(ZodError);
-  });
-
-  it("should throw a zod error when input is a non-boolean truthy string like 'yes'.", () => {
-    expect(() => zIsFullyTranslated().parse("yes")).toThrow(ZodError);
-  });
-
-  it("should throw a zod error when input is a non-boolean falsy string like 'no'.", () => {
-    expect(() => zIsFullyTranslated().parse("no")).toThrow(ZodError);
+  it.each<{ test: string; input: string }>([
+    {
+      test: "should throw a zod error when input is not a valid boolean string.",
+      input: "maybe",
+    },
+    {
+      test: "should throw a zod error when input is an empty string.",
+      input: "",
+    },
+    {
+      test: "should throw a zod error when input is a non-boolean truthy string like 'yes'.",
+      input: "yes",
+    },
+    {
+      test: "should throw a zod error when input is a non-boolean falsy string like 'no'.",
+      input: "no",
+    },
+  ])("$test", ({ input }) => {
+    expect(() => zIsFullyTranslated().parse(input)).toThrow(ZodError);
   });
 
   it("should have the correct description when describing the schema.", () => {

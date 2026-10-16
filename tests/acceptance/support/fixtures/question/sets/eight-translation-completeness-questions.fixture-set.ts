@@ -62,6 +62,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "admin",
       name: "Antoine ZANARDI",
@@ -112,6 +113,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Travel AI",
@@ -162,6 +164,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Nature AI",
@@ -220,6 +223,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "admin",
       name: "Antoine ZANARDI",
@@ -262,6 +266,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "game",
       name: undefined,
@@ -313,6 +318,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "medium",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Geography AI",
@@ -363,6 +369,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "easy",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "admin",
       name: "Antoine ZANARDI",
@@ -421,6 +428,7 @@ const EIGHT_TRANSLATION_COMPLETENESS_QUESTIONS_FIXTURE_SET = [
       }),
     }),
     cognitiveDifficulty: "hard",
+    isAdultContent: false,
     author: createFakeQuestionAuthorAggregate({
       role: "ai",
       name: "Literature AI",

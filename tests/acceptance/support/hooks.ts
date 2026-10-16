@@ -2,7 +2,7 @@ import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from 
 
 import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
 import { DEFAULT_SERVER_PORT } from "@acceptance-support/constants/app.constants";
-import { HOOKS_BEFORE_ALL_TIMEOUT_MS } from "@acceptance-support/constants/hooks.constants";
+import { HOOKS_AFTER_ALL_TIMEOUT_MS, HOOKS_BEFORE_ALL_TIMEOUT_MS } from "@acceptance-support/constants/hooks.constants";
 import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
 import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
 import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@acceptance-support/helpers/setup/setup.helpers";
@@ -51,7 +51,7 @@ After(async function(this: GoatItWorld, scenario): Promise<void> {
   printDebugOnScenarioFailure(this, scenario);
 });
 
-AfterAll(async() => {
+AfterAll({ timeout: HOOKS_AFTER_ALL_TIMEOUT_MS }, async() => {
   await closeTestDatabaseConnection();
   if (processes.app) {
     await killAppProcess(processes.app);

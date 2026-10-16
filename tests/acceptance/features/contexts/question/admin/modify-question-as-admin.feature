@@ -10,8 +10,8 @@ Feature: Modify Question as Admin
     When the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                                                      |
-      | a1b2c3d4e5f6012345678901 | trivia   | hard                | active | https://en.wikipedia.org/wiki/Psycho_(1960_film), https://www.imdb.com/title/tt0054215/ |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                      |
+      | a1b2c3d4e5f6012345678901 | trivia   | hard                | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film), https://www.imdb.com/title/tt0054215/ |
 
     And the response should contain the following question statement for the admin question:
       | locale | statement                                                         |
@@ -76,8 +76,8 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category    | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | explanation | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category    | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | explanation | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
 
   Scenario: Modifying only the English statement of a question with deep merge
     Given the database is populated with questions fixture set with name "five-questions"
@@ -232,8 +232,8 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       | applicableLocales |
-      | a1b2c3d4e5f6012345678901 | trivia   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) | fr, en            |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       | applicableLocales |
+      | a1b2c3d4e5f6012345678901 | trivia   | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) | fr, en            |
 
   Scenario: Removing applicable locales from an existing question as admin
     Given the database is populated with questions fixture set with name "five-questions"
@@ -248,6 +248,44 @@ Feature: Modify Question as Admin
     And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
     Then the request should have succeeded with status code 200
     And the response should contain the following admin question:
-      | id                       | category | cognitiveDifficulty | status | sourceUrls                                       |
-      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                       |
+      | a1b2c3d4e5f6012345678901 | riddle   | medium              | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film) |
     And the response should contain an empty applicable locales array for the admin question
+
+  Scenario: Clearing the adult content flag of a question as admin
+    Given the database is populated with questions fixture set with name "five-questions"
+    And the request payload is set from scope "question", type "modification" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type    | value |
+      | isAdultContent | boolean | false |
+    And the admin modifies the question with id "c3d4e5f6a7b8012345678903" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following admin question:
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                      |
+      | c3d4e5f6a7b8012345678903 | trivia   | hard                | active | false          | https://en.wikipedia.org/wiki/Psycho_(1960_film), https://www.imdb.com/title/tt0054215/ |
+
+  Scenario: Preserving the adult content flag when it is omitted from a modification
+    Given the database is populated with questions fixture set with name "five-questions"
+    And the request payload is set from scope "question", type "modification" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type      | value |
+      | isAdultContent | undefined |       |
+    And the admin modifies the question with id "c3d4e5f6a7b8012345678903" with the request payload
+    Then the request should have succeeded with status code 200
+    And the response should contain the following admin question:
+      | id                       | category | cognitiveDifficulty | status | isAdultContent | sourceUrls                                                                      |
+      | c3d4e5f6a7b8012345678903 | trivia   | hard                | active | true           | https://en.wikipedia.org/wiki/Psycho_(1960_film), https://www.imdb.com/title/tt0054215/ |
+
+  Scenario: Trying to modify a question with a non-boolean adult content flag
+    Given the database is populated with questions fixture set with name "five-questions"
+    And the request payload is set from scope "question", type "modification" and name "complete"
+    When the request payload is overridden with the following values:
+      | path           | type   | value |
+      | isAdultContent | string | true  |
+    And the admin modifies the question with id "a1b2c3d4e5f6012345678901" with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code         | message                                          | expected | path           |
+      | invalid_type | Invalid input: expected boolean, received string | boolean  | isAdultContent |
