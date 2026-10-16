@@ -1,5 +1,56 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.25.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.24.1...v1.25.0) (2026-10-16)
+
+### 🚀 Features
+
+* **question:** add adult content filter to question list and random endpoints ([#1159](https://github.com/antoinezanardi/goat-it-api/issues/1159)) ([18f0508](https://github.com/antoinezanardi/goat-it-api/commit/18f05085471b6a9c25e8beddf82237c3e4a0234d))
+* **question:** add isAdultContent flag to questions ([#1156](https://github.com/antoinezanardi/goat-it-api/issues/1156)) ([69444f7](https://github.com/antoinezanardi/goat-it-api/commit/69444f715ac597ccd4f00d03248866b19f647d66))
+
+### 🐛 Bug Fixes
+
+* **acceptance:** harden teardown to avoid hook timeouts and orphaned app processes ([#1158](https://github.com/antoinezanardi/goat-it-api/issues/1158)) ([0561f0a](https://github.com/antoinezanardi/goat-it-api/commit/0561f0a0fcdb5a0ce3166c61baed36df7ddf132b))
+
+### ✅ Tests
+
+* align unit test specs with repository testing conventions ([#1184](https://github.com/antoinezanardi/goat-it-api/issues/1184)) ([7bdfe20](https://github.com/antoinezanardi/goat-it-api/commit/7bdfe203d91c2d5d7c9e9a172e05e24e6b585b37))
+
+### 🧹 Chore
+
+* sync release v1.24.1 from main ([82377c4](https://github.com/antoinezanardi/goat-it-api/commit/82377c4afe4dc8cbb325b93cf30ed146639cd54a))
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `fastify` | `^5.12.7` |
+| `mongoose` | `^9.11.2` |
+| `nestjs-pino` | `^5.3.1` |
+| `zod` | `^4.6.7` |
+| `nest monorepo` | `^12.1.2` |
+| `@cucumber/cucumber` | `^13.3.0` |
+| `@swc/core` | `^1.16.18` |
+| `@types/node` | `^24.19.2` |
+| `conventional-changelog-conventionalcommits` | `^10.4.1` |
+| `conventional-changelog-writer` | `^9.3.0` |
+| `dotenv` | `^18.0.8` |
+| `eslint` | `^10.12.0` |
+| `eslint-plugin-oxlint` | `v1.87.0` |
+| `eslint-plugin-unicorn` | `v78` |
+| `lint-staged` | `^17.6.0` |
+| `oxlint` | `^1.87.0` |
+| `oxlint-tsgolint` | `^7.0.2004` |
+| `pino-pretty` | `^13.2.0` |
+| `tsc-alias` | `^1.9.7` |
+| `tsdown` | `^0.23.1` |
+| `mongo docker tag` | `v9.0.4` |
+| `node.js` | `v26.12.0` |
+| `oxlint monorepo` | `v1.88.0` |
+| `pnpm` | `v12.9.1` |
+| `sonarsource/sonarqube-scan-action action` | `v8.3` |
+| `typescript-eslint monorepo` | `^8.71.2` |
+| `vitest monorepo` | `^4.1.12` |
+
 ## [1.24.1](https://github.com/antoinezanardi/goat-it-api/compare/v1.24.0...v1.24.1) (2026-09-25)
 
 ### 🐛 Bug Fixes
