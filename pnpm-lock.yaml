@@ -171,7 +171,7 @@ importers:
     dependencies:
       '@nestjs/axios':
         specifier: ^12.0.1
-        version: 12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)
+        version: 12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)
       '@nestjs/common':
         specifier: ^12.2.0
         version: 12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
@@ -195,10 +195,10 @@ importers:
         version: 12.0.4(@fastify/static@10.1.3)(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.2.0(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)(typescript@6.0.3)
       '@nestjs/terminus':
         specifier: ^12.1.0
-        version: 12.1.0(14d8e1cfe150a956e67460fe38f9ea59)
+        version: 12.1.0(cfd813e0a49c9bdaf7d013173ccf06f7)
       axios:
-        specifier: ^1.20.0
-        version: 1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
+        specifier: ^1.21.0
+        version: 1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -3161,8 +3161,8 @@ packages:
   avvio@9.2.0:
     resolution: {integrity: sha512-2t/sy01ArdHHE0vRH5Hsay+RtCZt3dLPji7W7/MMOCEgze5b7SNDC4j5H6FnVgPkI1MTNFGzHdHrVXDDl7QSSQ==}
 
-  axios@1.20.0:
-    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
+  axios@1.21.0:
+    resolution: {integrity: sha512-YCzXMB53Q9PZBsh7yN7wtapit4WepwcHS2fP8QhGsBxSz5YtgYobV7GGlWlAJi+RxfU77GQTQi2DSLUma42EYA==}
 
   b4a@1.8.1:
     resolution: {integrity: sha512-aiqre1Nr0B/6DgE2N5vwTc+2/oQZ4Wh1t4NznYY4E00y8LCt6NqdRv81so00oo27D8MVKTpUa/MwUUtBLXCoDw==}
@@ -7714,10 +7714,10 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@nestjs/axios@12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)':
+  '@nestjs/axios@12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)':
     dependencies:
       '@nestjs/common': 12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
-      axios: 1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
+      axios: 1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
       rxjs: 7.8.2
 
   '@nestjs/cli@12.0.10(@swc/cli@0.8.1(@swc/core@1.16.20)(chokidar@5.0.0)(supports-color@11.0.0))(@swc/core@1.16.20)(@types/node@26.6.6)(fork-ts-checker-webpack-plugin@9.1.0(typescript@6.0.3)(webpack@5.106.2(@swc/core@1.16.20)(esbuild@0.28.0)))(tsconfig-paths-webpack-plugin@4.2.0)(webpack-node-externals@3.0.0)(webpack@5.106.2(@swc/core@1.16.20)(esbuild@0.28.0))':
@@ -7850,14 +7850,14 @@ snapshots:
       class-transformer: 0.5.1
       typescript: 6.0.3
 
-  '@nestjs/terminus@12.1.0(14d8e1cfe150a956e67460fe38f9ea59)':
+  '@nestjs/terminus@12.1.0(cfd813e0a49c9bdaf7d013173ccf06f7)':
     dependencies:
       '@nestjs/common': 12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
       '@nestjs/core': 12.2.0(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
     optionalDependencies:
-      '@nestjs/axios': 12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)
+      '@nestjs/axios': 12.0.1(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)
       '@nestjs/mongoose': 12.0.0(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.2.0(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.11.4)(rxjs@7.8.2)
       '@nestjs/swagger': 12.0.4(@fastify/static@10.1.3)(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.2.0(@nestjs/common@12.2.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)(typescript@6.0.3)
       mongoose: 9.11.4
@@ -9175,7 +9175,7 @@ snapshots:
       '@fastify/error': 4.2.0
       fastq: 1.20.1
 
-  axios@1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0):
+  axios@1.21.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@11.0.0))
       form-data: 4.0.6
