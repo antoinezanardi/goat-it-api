@@ -158,7 +158,7 @@
     "@nestjs/core": "^12.2.0",
     "@nestjs/mongoose": "^12.0.0",
     "@nestjs/platform-fastify": "^12.2.0",
-    "@nestjs/serve-static": "^12.0.0",
+    "@nestjs/serve-static": "^12.1.1",
     "@nestjs/swagger": "^12.0.4",
     "@nestjs/terminus": "^12.1.0",
     "axios": "^1.21.0",
