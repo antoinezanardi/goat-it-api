@@ -3,7 +3,9 @@
   "model": "opencode-go/deepseek-v4.1-flash",
   "small_model": "opencode-go/deepseek-v4.1-flash",
   "default_agent": "orchestrator",
-  "subagent_depth": 2,
+  "experimental": {
+    "subagent_depth": 2
+  },
   "agent": {
     "explore": {
       "model": "opencode-go/deepseek-v4.1-flash"

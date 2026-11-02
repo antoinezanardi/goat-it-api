@@ -20,7 +20,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/infrast
 
 ## Key Conventions
 
-- Factory signature: prefer `createMockedX(overrides?: Partial<MockedX> = {})`.
+- Factory signature: prefer `createMockedX(overrides: Partial<MockedX> = {})`.
   - `MockedX` is a mapped type where each function is a `Mock<...>` from Vitest.
   - `overrides` lets tests replace specific methods to simulate errors or alternative scenarios.
 - Use Vitest's global `vi` for mocks (the repo provides `vi` globally in test runs). Factories must return typed objects and rely on `vi.fn()` for functions.

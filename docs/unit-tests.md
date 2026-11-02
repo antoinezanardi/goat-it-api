@@ -291,16 +291,31 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
     });
 
     describe(QuestionThemeMongooseRepository.prototype.findAll, () => {
-      it("should call model.find and map results.", async () => {
-        const doc = createFakeQuestionThemeDocument();
-        const entity = createFakeQuestionTheme();
+      let doc: ReturnType<typeof createFakeQuestionThemeDocument>;
+      let entity: ReturnType<typeof createFakeQuestionTheme>;
+
+      beforeEach(() => {
+        doc = createFakeQuestionThemeDocument();
+        entity = createFakeQuestionTheme();
         mocks.models.questionTheme.find.mockResolvedValue([doc]);
         mocks.mappers.questionTheme.createQuestionThemeFromDocument.mockReturnValue(entity);
+      });
 
-        const result = await repository.findAll();
+      it("should call model.find when called.", async () => {
+        await repository.findAll();
 
         expect(mocks.models.questionTheme.find).toHaveBeenCalledExactlyOnceWith();
+      });
+
+      it("should map documents with the mapper when called.", async () => {
+        await repository.findAll();
+
         expect(mocks.mappers.questionTheme.createQuestionThemeFromDocument).toHaveBeenCalledExactlyOnceWith(doc);
+      });
+
+      it("should return mapped entities when called.", async () => {
+        const result = await repository.findAll();
+
         expect(result).toStrictEqual([entity]);
       });
     });

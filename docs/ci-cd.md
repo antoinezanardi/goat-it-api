@@ -31,9 +31,11 @@ File placement, naming and dependency rules belong to [architecture.md](architec
 
 - Integration branch: `develop`. All contributions start from `develop` and open pull requests targeting `develop`.
 - `main` is release-only and protected. Do not open feature pull requests against `main`; only the release PR from `develop` is allowed.
-- Branch naming pattern: `<type>/<scope>-<short-desc>`, where `type` is one of `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `perf`, `build`, `ci`, `chore`, `revert`, `copilot` or `renovate`.
+- Branch naming convention: `<type>/<scope>-<short-desc>`, where `type` is one of `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `perf`, `build`, `ci`, `chore`, `revert`, `copilot` or `renovate`.
 - Example: `feat/add-user-endpoint`.
-- The pattern is enforced by `configs/validate-branch-name/.validate-branch-namerc.json` through `pnpm run validate:branch-name`.
+- The validator (`configs/validate-branch-name/.validate-branch-namerc.json`, run through
+  `pnpm run validate:branch-name`) only enforces `<type>/<non-empty suffix>`; the optional
+  `<scope>-<short-desc>` part is a convention, not enforced.
 - Create a correctly named branch interactively with `pnpm run script:create-branch`.
 
 ## Commits
@@ -64,8 +66,9 @@ Never bypass the hooks with `--no-verify`.
 - Target `develop`; `main` is reserved for releases. The only PR allowed to target `main` is the release PR from `develop`.
 - The description must include the summary, the testing steps and any migration or configuration notes.
 - Apply the label matching the change type (`feat`, `fix`, `docs`, `chore`, …).
-- PR titles are validated against the Conventional Commits regex by `lint-pr-name-into-develop.yml`:
+- PR titles targeting `develop` are validated against the Conventional Commits regex by `lint-pr-name-into-develop.yml`:
   `^(?<type>build|tech|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$`.
+- The release PR targeting `main` uses the title `Release v<version>` and is not validated by this workflow.
 - `pnpm run script:create-pull-request` and `pnpm run script:clean-pr-description` automate the common PR workflow.
 - `clean-pr-description.yml` strips numbered diffhunk links from PR descriptions automatically.
 
@@ -115,17 +118,26 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 
 1. Install dependencies.
 2. Merge `main` into `develop` locally and compute the next version/changelog with `pnpm run script:create-release-changelog`.
-3. Find an open PR to `main` whose title starts with `Release`.
-4. Create or update the PR titled `Release v<version>` with the generated changelog, the `🏷️ release` label and the maintainer as assignee.
+3. Find an open PR to `main` whose title contains `Release` (the workflow takes the first search result;
+   it does not require a `Release` prefix).
+4. Create the PR titled `Release v<version>` with the generated changelog, the `🏷️ release` label and the
+   maintainer as assignee. When the PR already exists, only its title and body are updated; the label and
+   assignee are not reapplied.
 
 ### Release creation (main)
 
 `release-creation.yml` runs on every push to `main`:
 
-1. Run CodeQL analysis.
-2. Install dependencies.
-3. Run `semantic-release` with `configs/semantic-release/release.config.mjs` using `SEMANTIC_RELEASE_TOKEN`.
-4. When a new release is published, merge `origin/main` back into `develop` with a `chore: sync release v<version> from main` merge commit and push `develop`.
+1. Run CodeQL analysis (`code-ql`).
+2. Install dependencies (`install`).
+3. Run `semantic-release` with `configs/semantic-release/release.config.mjs` using `SEMANTIC_RELEASE_TOKEN`
+   (`release`, needs `install`).
+4. When a new release is published, merge `origin/main` back into `develop` with a
+   `chore: sync release v<version> from main` merge commit and push `develop` (`sync-develop`, needs `release`).
+
+In parallel, the workflow runs `unit-tests`, `mutation-tests` and `acceptance-tests` (all after `install`),
+`badges` (after `unit-tests` and `acceptance-tests`) and `sonarcloud` (after `unit-tests`). The `release` job
+needs only `install`; CodeQL and the test, badge and SonarCloud jobs do not gate publishing.
 
 Creating the GitHub release triggers the production deployment workflow.
 
@@ -204,6 +216,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 | `SEMANTIC_RELEASE_TOKEN`                                                                                                                             | secret    | Release creation and `develop` sync |
 | `STRYKER_DASHBOARD_API_KEY`                                                                                                                          | secret    | Mutation tests dashboard            |
 | `SONARCLOUD_TOKEN`                                                                                                                                   | secret    | SonarCloud analysis                 |
+| `BYOB_TOKEN`                                                                                                                                         | secret    | Badge generation (`badges` action)  |
 | `DOCKER_HUB_USERNAME`, `DOCKER_HUB_PASSWORD`                                                                                                         | secrets   | Docker image publication            |
 | `PREPRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PREPRODUCTION_SERVER_SSH_USER`, `PREPRODUCTION_SERVER_SSH_ADDRESS`, `PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH` | secrets   | Staging/preproduction deployment    |
 | `PRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PRODUCTION_SERVER_SSH_USER`, `PRODUCTION_SERVER_SSH_ADDRESS`, `PRODUCTION_UPDATE_SCRIPT_FULL_PATH`             | secrets   | Production deployment               |

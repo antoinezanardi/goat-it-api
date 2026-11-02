@@ -302,10 +302,13 @@ The `tests/**/README.md` files are short pointers to these guides.
 
 MemPalace stores project context as searchable embeddings through the
 `@rvboris/opencode-mempalace` plugin (`mempalace_memory` and `mempalace_status`).
-All data stays on your machine.
+All data stays on your machine. The plugin requires OpenCode V2 (V2 plugin API and the plural
+`plugins` key); OpenCode V1 is incompatible.
 
 - Project wing: `wing_project_goat-it-api` | Rooms: `architecture`, `workflow`, `decisions`, `bugs`, `setup`
-- For codebase context: `mempalace_memory` with `mode: "search"`, `scope: "project"`, `query: "..."`
+- For codebase context: `mempalace_memory` with `mode: "search"`, `scope: "project"`, `room: "<room>"`,
+  `query: "..."`. Omitting `room` searches only `workflow`; pass `architecture`, `decisions`, `bugs` or
+  `setup` explicitly when relevant.
 - File learnings after decisions: `mempalace_memory` with `mode: "save"` or `mode: "kg_add"`
 - Write diary entries at session end: `mempalace_memory` with `mode: "diary_write"`
 

@@ -144,7 +144,8 @@ Adapters that translate HTTP and MongoDB into domain calls.
 | `persistence/mongoose/mappers/`                        | `<aggregate>.mongoose.mappers.ts` (document ↔ entity)                                                                                                   |
 | `persistence/mongoose/constants/`, `types/`, `errors/` | Persistence-private constants, types and infrastructure errors                                                                                          |
 
-Use the plural `schemas/` directory.
+Use the plural `schemas/` directory. `src/contexts/question-theme/infrastructure/persistence/mongoose/schema/`
+still uses the singular directory; treat it as a legacy exception and migrate it when that context is next touched.
 
 ### 3.4 Application shell (`src/app/`)
 

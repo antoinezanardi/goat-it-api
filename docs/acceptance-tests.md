@@ -283,7 +283,9 @@ When the request payload is overridden with the following values:
 - `array` values must be valid JSON arrays (e.g., `["a", "b"]`).
 - `string` values wrapped in `"..."` or `'...'` have their quotes stripped.
 
-Patching uses `crush` (flatten to dot paths) and `construct` (rebuild nested object) from `radashi`, so you can target deeply nested fields and array indices safely.
+Patching uses `crush` (flatten to dot paths) from `radashi`, then rebuilds the nested object with the local
+`reconstructPayloadWithUndefined` helper from `request.steps.helpers.ts` (which preserves explicit `undefined`
+values, unlike `construct`), so you can target deeply nested fields and array indices safely.
 
 ---
 
@@ -361,7 +363,9 @@ Then(/^the response should contain the following admin question:$/u, function (t
 
 **The `<SET>` placeholder:**
 
-When a DataTable cell contains `<SET>`, it means the field is expected to be present and truthy (non-null, non-empty), and its actual value is captured for reuse in later steps of the same scenario. This is used for generated IDs where the exact value cannot be known at authoring time.
+When a DataTable cell contains `<SET>`, it means the field is expected to be present (defined, non-null and
+non-undefined), and its actual value is captured for reuse in later steps of the same scenario. This is used
+for generated IDs where the exact value cannot be known at authoring time.
 
 ### Shared Steps
 
@@ -559,7 +563,7 @@ And the failed request's response should contain the following validation detail
 
 In a Then DataTable, `<SET>` in a cell means:
 
-- The field must be present (non-null, non-undefined).
+- The field must be present (defined, non-null and non-undefined).
 - The actual value is captured and can be reused by subsequent steps (e.g. referencing the generated `id` in a follow-up `When` step).
 
 ---
