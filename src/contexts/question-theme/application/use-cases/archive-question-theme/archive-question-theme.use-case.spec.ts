@@ -5,7 +5,7 @@ import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/dom
 
 import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 import { createMockedCountLiveQuestionsByThemeIdUseCase } from "@mocks/contexts/question/application/use-cases/count-live-questions-by-theme-id.use-case.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";

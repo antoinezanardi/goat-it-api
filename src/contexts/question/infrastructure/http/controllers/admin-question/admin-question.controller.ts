@@ -10,11 +10,11 @@ import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/cont
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
 import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
-import { QuestionModificationNestZodDto } from "@question/application/dto/question-modification/question-modification.dto";
-import { QuestionCreationNestZodDto } from "@question/application/dto/question-creation/question-creation.dto";
-import { QuestionThemeAssignmentCreationNestZodDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
-import { QuestionThemeAssignmentModificationNestZodDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto";
-import { AdminFindQuestionsQueryNestZodDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto";
+import { QuestionModificationNestZodDto } from "@question/infrastructure/http/dto/question-modification/question-modification.dto";
+import { QuestionCreationNestZodDto } from "@question/infrastructure/http/dto/question-creation/question-creation.dto";
+import { QuestionThemeAssignmentCreationNestZodDto } from "@question/infrastructure/http/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto";
+import { QuestionThemeAssignmentModificationNestZodDto } from "@question/infrastructure/http/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto";
+import { AdminFindQuestionsQueryNestZodDto } from "@question/infrastructure/http/dto/admin-find-questions-query/admin-find-questions-query.dto";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { createQuestionThemeAssignmentCreationCommandFromDto, createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment.mappers";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
@@ -25,8 +25,8 @@ import { createQuestionModificationCommandFromDto, createQuestionCreationCommand
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-question-stats/get-question-stats.use-case";
-import { AdminQuestionNestZodDto } from "@question/application/dto/admin-question/admin-question.dto";
-import { QuestionStatsNestZodDto } from "@question/application/dto/question-stats/question-stats.dto";
+import { AdminQuestionNestZodDto } from "@question/infrastructure/http/dto/admin-question/admin-question.dto";
+import { QuestionStatsNestZodDto } from "@question/infrastructure/http/dto/question-stats/question-stats.dto";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";

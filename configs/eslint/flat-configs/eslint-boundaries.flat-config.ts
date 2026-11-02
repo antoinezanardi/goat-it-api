@@ -4,6 +4,8 @@ const DOMAIN_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: domain is framework
 
 const DOMAIN_NODE_BAN_MESSAGE = "Architecture boundary: domain must not perform Node I/O; use a shared or infrastructure helper instead. See docs/architecture.md §12.2.";
 
+const APPLICATION_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: application is framework-free; no NestJS, Mongoose, Fastify or nestjs-zod. See docs/architecture.md §12.2.";
+
 const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
   name: "boundaries",
   rules: {
@@ -95,8 +97,12 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
           {
             target: "src/contexts/question/question.module.ts",
             from: ["src/contexts/question-theme"],
-            except: ["question-theme.module.ts"],
-            message: "Architecture boundary: the question module may only import question-theme.module.ts from the question-theme context.",
+            except: [
+              "question-theme.module.ts",
+              "application/use-cases/find-question-theme-by-id",
+              "application/use-cases/get-question-themes-by-ids-or-throw",
+            ],
+            message: "Architecture boundary: the question module may only import question-theme.module.ts and the published question-theme use cases.",
           },
           {
             target: "src/contexts/question-theme/application/**/!(*.spec).ts",
@@ -107,8 +113,11 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
           {
             target: "src/contexts/question-theme/question-theme.module.ts",
             from: ["src/contexts/question"],
-            except: ["question-usage.module.ts"],
-            message: "Architecture boundary: the question-theme module may only import question-usage.module.ts from the question context.",
+            except: [
+              "question-usage.module.ts",
+              "application/use-cases/count-live-questions-by-theme-id",
+            ],
+            message: "Architecture boundary: the question-theme module may only import question-usage.module.ts and the published count use case.",
           },
         ],
       },
@@ -154,7 +163,42 @@ const ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
   },
 } as const;
 
+// Compose after the Oxlint bridge: it turns `no-restricted-imports` off for `**/*.ts`.
+const ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
+  name: "boundaries-application-package-bans",
+  files: [
+    "src/contexts/*/application/**/*.ts",
+    "src/shared/application/**/*.ts",
+  ],
+  ignores: [
+    "**/*.spec.ts",
+    "**/*.d.ts",
+  ],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: [
+              "@nestjs/*",
+              "mongoose",
+              "mongoose/*",
+              "fastify",
+              "fastify/*",
+              "nestjs-zod",
+              "nestjs-zod/*",
+            ],
+            message: APPLICATION_FRAMEWORK_BAN_MESSAGE,
+          },
+        ],
+      },
+    ],
+  },
+} as const;
+
 export {
   ESLINT_BOUNDARIES_FLAT_CONFIG,
   ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG,
+  ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG,
 };

@@ -9,7 +9,7 @@ All shared mock factories used by unit tests live under:
 Use path-alias imports from test files when referencing them, for example:
 
 ```ts
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 ```
 
 ## Purpose

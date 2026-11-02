@@ -147,24 +147,14 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
 
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        GetQuestionThemesByIdsOrThrowUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
-
-    getQuestionThemesByIdsOrThrowUseCase = testingModule.get<GetQuestionThemesByIdsOrThrowUseCase>(GetQuestionThemesByIdsOrThrowUseCase);
+    getQuestionThemesByIdsOrThrowUseCase = new GetQuestionThemesByIdsOrThrowUseCase(mocks.repositories.questionTheme);
   });
 
   describe(GetQuestionThemesByIdsOrThrowUseCase.prototype.getByIdsOrThrow, () => {
@@ -560,7 +550,7 @@ describe(QuestionNotFoundError, () => {
 
 ### Mocking modules vs instances
 
-- Instance collaborators (use-cases/repositories/services): create mock factories and inject via Nest `useValue` providers.
+- Instance collaborators (use-cases/repositories/services): use mock factories. Controllers and other Nest providers inject them via `useValue`; plain use cases are instantiated with `new`.
 - Module-level functions (mappers/helpers/third-party exports): **prefer `vi.spyOn()` over `vi.mock()`**. The config uses `isolate: false`, which shares a single module registry across all test files in a thread. `vi.mock()` only applies if the module hasn't been loaded yet — if another spec file (e.g. the module's own `*.spec.ts`) imports the real module first, the mock silently fails and tests become intermittently unstable.
   - `vi.spyOn()` modifies the live module exports at runtime, so it works regardless of load order. `restoreMocks: true` in the config cleans up spies between tests automatically.
   - Import the module as a namespace: `import * as fooHelpers from "@src/.../foo.helpers"`, then `vi.spyOn(fooHelpers, "barFn").mockReturnValue(...)` in `beforeEach`.

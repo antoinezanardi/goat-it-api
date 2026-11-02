@@ -140,5 +140,5 @@ const failingRepo = createMockedFooRepository({
 - Architecture and placement rules: `docs/architecture.md` (read before creating or moving any file)
 - Related skill: `create-faketory` (for test data, as opposed to behaviour mocks)
 - Existing mocks to copy from:
-  - `tests/unit/utils/mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock.ts`
-  - `tests/unit/utils/mocks/contexts/question/modules/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock.ts`
+  - `tests/unit/utils/mocks/contexts/question/domain/repositories/question.repository.mock.ts`
+  - `tests/unit/utils/mocks/contexts/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock.ts`

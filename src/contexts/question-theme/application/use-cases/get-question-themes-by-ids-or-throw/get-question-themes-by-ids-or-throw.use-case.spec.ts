@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
@@ -16,24 +13,14 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
 
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        GetQuestionThemesByIdsOrThrowUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
-
-    getQuestionThemesByIdsOrThrowUseCase = testingModule.get<GetQuestionThemesByIdsOrThrowUseCase>(GetQuestionThemesByIdsOrThrowUseCase);
+    getQuestionThemesByIdsOrThrowUseCase = new GetQuestionThemesByIdsOrThrowUseCase(mocks.repositories.questionTheme);
   });
 
   describe(GetQuestionThemesByIdsOrThrowUseCase.prototype.getByIdsOrThrow, () => {

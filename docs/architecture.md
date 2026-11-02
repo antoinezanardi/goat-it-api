@@ -334,11 +334,13 @@ This table is the **published surface register** and the allowlist is **per cons
 | `question/domain` | theme `domain/types`, `domain/constants`, `domain/rules`, `domain/errors` (read-only published domain) |
 | `question/application` | the above, plus theme `application/use-cases/find-question-theme-by-id/**`, `application/use-cases/get-question-themes-by-ids-or-throw/**`, and theme `contracts/**` |
 | `question/infrastructure` | theme `contracts/**` (DTO and persistence) and published theme domain types; **not** theme application use cases |
-| `question/<context>.module.ts` | `question-theme.module.ts` |
+| `question/<context>.module.ts` | `question-theme.module.ts` and the two published theme use-case class tokens it injects |
 | `question-theme/domain` | nothing from `question` |
 | `question-theme/application` | `question/application/use-cases/count-live-questions-by-theme-id/**` |
 | `question-theme/infrastructure` | `question/contracts/persistence/**` |
-| `question-theme/<context>.module.ts` | `question-usage.module.ts` |
+| `question-theme/<context>.module.ts` | `question-usage.module.ts` and the published count use-case class token it injects |
+
+A module that wires a use case with `useFactory` MUST import the published use-case class to use it as the `inject` token. That is wiring, not an application dependency; the application layer still imports only the published use case it calls.
 
 Prefer pure published predicates/helpers. Do not call another context's `ensure*` policies: they throw provider errors and make the consumer depend on provider error semantics.
 
@@ -725,10 +727,10 @@ Path and package boundaries are enforced by ESLint. Relative imports are enforce
 | 11a | `src/contexts/question/domain/**/!(*.spec).ts` | `src/contexts/question-theme/**` except published theme domain | 0 |
 | 11b | `src/contexts/question/application/**/!(*.spec).ts` | `src/contexts/question-theme/{domain,application,infrastructure}/**` except published theme domain and the two theme use cases | 4 |
 | 11c | `src/contexts/question/infrastructure/**/!(*.spec).ts` | `src/contexts/question-theme/{domain,application,infrastructure}/**` except published theme domain | 4 |
-| 11d | `src/contexts/question/question.module.ts` | `src/contexts/question-theme/**` except `question-theme.module.ts` | 0 |
+| 11d | `src/contexts/question/question.module.ts` | `src/contexts/question-theme/**` except `question-theme.module.ts` and the two published theme use cases | 0 |
 | 12a | `src/contexts/question-theme/application/**/!(*.spec).ts` | `src/contexts/question/{application,contracts,domain,infrastructure}/**` except the count use case | 1 |
 | 12b | `src/contexts/question-theme/infrastructure/**/!(*.spec).ts` | `src/contexts/question/{application,contracts,domain,infrastructure}/**` except `contracts/persistence/**` | 4 |
-| 12c | `src/contexts/question-theme/question-theme.module.ts` | `src/contexts/question/**` except `question-usage.module.ts` | 1 |
+| 12c | `src/contexts/question-theme/question-theme.module.ts` | `src/contexts/question/**` except `question-usage.module.ts` and the published count use case | 1 |
 
 Only add a zone in the phase that makes it pass. Do not add production boundary-rule disables. The existing `unicorn/no-keyword-prefix` disables in the stats pipelines are not boundary rules and are out of scope.
 
@@ -747,7 +749,7 @@ Zone 1 also catches any context's `application/**` or `infrastructure/**` import
 
 `zod` and type-only `type-fest` remain allowed in application/domain. `shared/types` is type-only and usable everywhere.
 
-Package bans use ESLint core `no-restricted-imports` in a scoped flat-config block. The block MUST be composed **after** `oxlint.buildFromOxlintConfigFile(...)` in `eslint.config.ts`: the Oxlint bridge emits a later `"no-restricted-imports": "off"` for `**/*.ts`, so a block placed before it is a silent no-op. Ban subpaths as well (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude `**/*.spec.ts` / `**/*.d.ts` from the production ban block.
+Package bans use ESLint core `no-restricted-imports` in scoped flat-config blocks. Every block MUST be composed **after** `oxlint.buildFromOxlintConfigFile(...)` in `eslint.config.ts`: the Oxlint bridge emits a later `"no-restricted-imports": "off"` for `**/*.ts`, so a block placed before it is a silent no-op. Ban subpaths as well (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude `**/*.spec.ts` / `**/*.d.ts` from the production ban blocks. The domain block covers `contexts/*/domain` and `shared/domain`; the application block covers `contexts/*/application` and `shared/application`.
 
 ### 12.3 Rules
 

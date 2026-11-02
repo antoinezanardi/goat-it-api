@@ -1,5 +1,3 @@
-import { Inject, Injectable } from "@nestjs/common";
-
 import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { isQuestionThemeArchived } from "@question-theme/domain/rules/question-theme.rules";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
@@ -10,15 +8,13 @@ import type { QuestionThemeAssignmentCreationContract } from "@question/domain/t
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
 import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
-@Injectable()
 export class AssignThemeToQuestionUseCase {
   public constructor(
-    @Inject(QUESTION_REPOSITORY_TOKEN) private readonly questionRepository: QuestionRepository,
+    private readonly questionRepository: QuestionRepository,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}

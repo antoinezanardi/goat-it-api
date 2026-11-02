@@ -1,4 +1,4 @@
-import type { ApiResponseExceptionValidationDetailsDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
+import type { ApiResponseExceptionValidationDetailsDto } from "@shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
 
 import type { REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 

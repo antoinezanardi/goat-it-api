@@ -2,11 +2,11 @@ import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-import { QuestionThemeNestZodDto } from "@question-theme/application/dto/question-theme/question-theme.dto";
+import { QuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme/question-theme.dto";
 import { createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
-import { FindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto";
+import { FindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/find-question-themes-query/find-question-themes-query.dto";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";

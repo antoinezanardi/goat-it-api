@@ -1,8 +1,5 @@
-import { Inject, Injectable } from "@nestjs/common";
-
 import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 import { ensureNoLiveQuestionsReferenceTheme } from "@question-theme/domain/rules/question-theme.rules";
 
@@ -12,10 +9,8 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
-@Injectable()
 export class ArchiveQuestionThemeUseCase {
   public constructor(
-    @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
     private readonly questionThemeRepository: QuestionThemeRepository,
     private readonly countLiveQuestionsByThemeIdUseCase: CountLiveQuestionsByThemeIdUseCase,
   ) {}

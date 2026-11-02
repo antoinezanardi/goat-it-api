@@ -2,8 +2,8 @@ import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query } from "@n
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-import { AdminQuestionThemeNestZodDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import { QuestionThemeStatsNestZodDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto";
+import { AdminQuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/admin-question-theme/admin-question-theme.dto";
+import { QuestionThemeStatsNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-stats/question-theme-stats.dto";
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
@@ -12,9 +12,9 @@ import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-ca
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
-import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
-import { QuestionThemeCreationNestZodDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
-import { QuestionThemeModificationNestZodDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
+import { QuestionThemeCreationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-creation/question-theme-creation.dto";
+import { QuestionThemeModificationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-modification/question-theme-modification.dto";
 
 import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";

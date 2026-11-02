@@ -1,6 +1,6 @@
 import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
 describe(CountLiveQuestionsByThemeIdUseCase, () => {
   let countLiveQuestionsByThemeIdUseCase: CountLiveQuestionsByThemeIdUseCase;

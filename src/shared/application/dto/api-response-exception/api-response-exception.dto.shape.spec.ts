@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 
 describe("Api Response Exception DTO Shape", () => {
   let validApiResponseExceptionDto: {

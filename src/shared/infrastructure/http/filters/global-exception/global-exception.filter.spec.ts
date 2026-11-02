@@ -21,7 +21,7 @@ import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/erro
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
-import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
+import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/application/dto/api-response-exception/api-response-exception.faketory";
 
 import type { FastifyReply } from "fastify";
 
