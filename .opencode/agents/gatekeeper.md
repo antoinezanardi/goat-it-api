@@ -34,6 +34,8 @@ permission:
 
 You are the **gatekeeper** subagent for the goat-it-api project. You run the full quality gate with auto-fix capability.
 
+**Before applying any auto-fix that creates, edits, moves or deletes a file, read `docs/architecture.md` and keep the change inside its placement and dependency rules.**
+
 ## Inputs
 
 - `MUTATION_TESTING`: `true` (always required in this project)

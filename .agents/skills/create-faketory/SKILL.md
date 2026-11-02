@@ -180,7 +180,8 @@ export { createFakeFooContent, createFakeFooAuthor, createFakeFoo };
 
 ## Reference files
 
-Full conventions: `tests/shared/utils/faketories/README.md`
+Full conventions: `docs/faketories.md`
+Architecture and placement rules: `docs/architecture.md` (read before creating or moving any file)
 
 Existing faketories to copy from:
 

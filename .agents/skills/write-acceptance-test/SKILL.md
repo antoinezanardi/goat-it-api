@@ -1,6 +1,6 @@
 ---
 name: write-acceptance-test
-description: Write or complete a Cucumber/Gherkin acceptance test scenario for any feature in the Goat It API, following the conventions in tests/acceptance/README.md (fixtures, payloads, step definitions, DataTable schemas, locale helpers).
+description: Write or complete a Cucumber/Gherkin acceptance test scenario for any feature in the Goat It API, following the conventions in docs/acceptance-tests.md (fixtures, payloads, step definitions, DataTable schemas, locale helpers).
 disable-model-invocation: true
 ---
 
@@ -23,7 +23,7 @@ disable-model-invocation: true
 
 ## Golden rule
 
-**Always read `tests/acceptance/README.md` before writing or completing any acceptance test.** It contains authoritative templates, conventions, and reference links for every part of the acceptance test system.
+**Always read `docs/acceptance-tests.md` before writing or completing any acceptance test.** It contains authoritative templates, conventions, and reference links for every part of the acceptance test system.
 
 ## Lifecycle recap
 
@@ -226,11 +226,11 @@ The command `.opencode/commands/lint-acceptance-tests.md` is the **final audit c
 
 ## Reference
 
-- **Primary authoritative guide (read first):** `tests/acceptance/README.md`
+- **Primary authoritative guide (read first):** `docs/acceptance-tests.md`
 - Lifecycle and World: `tests/acceptance/support/hooks.ts`, `tests/acceptance/support/types/world.types.ts`
 - Fixture registry: `tests/acceptance/support/fixtures/constants/fixture.constants.ts`
 - Payload registry: `tests/acceptance/support/payloads/constants/payload.constants.ts`
 - Shared steps: `tests/acceptance/features/step-definitions/shared/request/`
 - DataTable helpers: `tests/acceptance/support/helpers/datatable.helpers.ts`
-- Architecture and data-flow: `docs/ARCHITECTURE.md`
-- Faketory conventions: `tests/shared/utils/faketories/README.md`
+- Architecture and data-flow: `docs/architecture.md` (read before creating or moving any file)
+- Faketory conventions: `docs/faketories.md`

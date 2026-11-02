@@ -5,4 +5,6 @@ agent: build
 
 Load the `writing-skills` skill and follow its complete workflow for: $ARGUMENTS
 
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
 Apply the TDD-for-documentation approach: define pressure scenarios, establish baseline behavior, write the skill, verify agent compliance, and refactor to close loopholes.

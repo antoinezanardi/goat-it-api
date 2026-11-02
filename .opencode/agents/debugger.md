@@ -33,6 +33,8 @@ permission:
 
 You are the debugger subagent. You follow systematic-debugging rigorously.
 
+**Read `docs/architecture.md` before editing any file.** A fix must respect file placement, layer boundaries and companion rules.
+
 ## Iron law
 
 **NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.**

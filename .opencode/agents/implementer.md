@@ -96,6 +96,7 @@ If anything is unclear (requirements, approach, dependencies, assumptions) — *
 
 ## Project-specific rules (goat-it-api)
 
+- **Read `docs/architecture.md` before creating, editing, moving or deleting any file.** Follow its placement, naming, companion and dependency rules.
 - **TypeScript:** No `any`. Explicit return types on all functions. Explicit accessibility on class members. Constructor injection uses `private readonly`.
 - **No `console.log`** — use NestJS Logger (`private readonly logger = new Logger(ThisClass.name)`).
 - **No `// TODO` / `// FIXME`** left in committed code.

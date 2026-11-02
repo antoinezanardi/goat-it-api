@@ -5,4 +5,6 @@ agent: build
 
 Load the `create-faketory` skill and follow its complete workflow to scaffold the faketory for: $ARGUMENTS
 
+**Architecture first:** read `docs/architecture.md` before creating or moving any file.
+
 Derive the correct faketory path by mirroring the source path as described in the skill, generate the typed factory function(s), then run the full checklist before finishing.

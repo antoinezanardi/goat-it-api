@@ -39,6 +39,7 @@
 - [☑️ Code analysis and consistency](#code-analysis-and-consistency)
 - [📈 Releases & Changelog](#versions)
 - [✨ Misc commands](#misc-commands)
+- [📚 Documentation](#documentation)
 - [©️ License](#license)
 - [❤️ Contributors](#contributors)
 
@@ -255,6 +256,18 @@ This script removes numbered diffhunk links (e.g., `[[1]](diffhunk://...)`) from
 All the above commands are available in the **[.run/](.run/)** directory as run configurations.
 
 You can add them as **run configurations** in your IDE.
+
+## <a name="documentation">📚 Documentation</a>
+
+- **[Architecture and file-placement conventions](docs/architecture.md)** — where every file belongs, how it is named and what may depend on it.
+- **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
+- **[Bruno collection](docs/bruno.md)** — API collection setup and usage.
+- **[Unit tests](docs/unit-tests.md)** — Vitest conventions per file type.
+- **[Acceptance tests](docs/acceptance-tests.md)** — Cucumber, fixtures, payloads and steps.
+- **[Faketories](docs/faketories.md)** — shared test-data factories.
+- **[Mocks](docs/mocks.md)** — typed unit-test mock factories.
+
+The `tests/**/README.md` files are short pointers to these guides.
 
 ## <a name="license">©️ License</a>
 

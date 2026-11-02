@@ -1,6 +1,6 @@
 ---
 name: write-unit-test
-description: Write or complete a colocated Vitest unit test for any source file in the Goat It API, following the per-file-type conventions in tests/unit/README.md (controllers, use-cases, repositories, DTOs, helpers, errors).
+description: Write or complete a colocated Vitest unit test for any source file in the Goat It API, following the per-file-type conventions in docs/unit-tests.md (controllers, use-cases, repositories, DTOs, helpers, errors).
 disable-model-invocation: true
 ---
 
@@ -20,7 +20,7 @@ disable-model-invocation: true
 
 ## Golden rule
 
-**Always read `tests/unit/README.md` before writing or completing any test.** It contains authoritative templates and edge-case patterns for every file type. This skill summarises the most important conventions but is not a replacement for that guide.
+**Always read `docs/unit-tests.md` before writing or completing any test.** It contains authoritative templates and edge-case patterns for every file type. This skill summarises the most important conventions but is not a replacement for that guide.
 
 ## Per-file-type quick reference
 
@@ -302,9 +302,9 @@ verify it against section 4 of that command before considering the task done.
 
 ## Reference
 
-- **Primary authoritative guide (read first):** `tests/unit/README.md`
-- Mock conventions: `tests/unit/utils/mocks/README.md` and `docs/MOCKS.md`
-- Faketory conventions: `tests/shared/utils/faketories/README.md` and `docs/FAKETORIES.md`
-- Architecture and data-flow: `docs/ARCHITECTURE.md`
+- **Primary authoritative guide (read first):** `docs/unit-tests.md`
+- Mock conventions: `docs/mocks.md`
+- Faketory conventions: `docs/faketories.md`
+- Architecture and data-flow: `docs/architecture.md` (read before creating or moving any file)
 - Coverage config: `configs/vitest/vitest.config.ts`
 - Related skills: `create-mock`, `create-faketory`

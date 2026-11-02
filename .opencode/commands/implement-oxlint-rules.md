@@ -2,6 +2,8 @@
 
 ## Task
 
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
 Interactively implement all missing oxlint rules into `oxlint.config.jsonc` by running the checker script, fetching documentation for each rule, cross-referencing with ESLint configs, and inserting after user validation.
 
 ## Instructions

@@ -5,4 +5,6 @@ agent: build
 
 Load the `create-mock` skill and follow its workflow to scaffold the mock factory for: $ARGUMENTS
 
+**Architecture first:** read `docs/architecture.md` before creating or moving any file.
+
 Derive the correct mock path by mirroring the source path as described in the skill, then generate the typed factory and run the checklist before finishing.

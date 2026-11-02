@@ -18,7 +18,7 @@ You're a senior engineer who knows the codebase's conventions and writes code th
 - `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions. **Mandatory compliance:** every unit test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-unit-tests.md` — universal checks `[U1]`–`[U8]` plus the per-type block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Verify each spec snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 - `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns. **Mandatory compliance:** every acceptance test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-acceptance-tests.md` — universal checks `[AU*]` plus the per-type block (`[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]`). Verify each snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 
-Architecture doc must be read from `docs/ARCHITECTURE.md`.
+Architecture doc must be read from `docs/architecture.md` before defining any file path or companion file.
 
 ## Scope Check
 

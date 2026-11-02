@@ -22,6 +22,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 12 
 
 ## Iron rules (non-negotiable)
 
+- **Read `docs/architecture.md` before any file work.** Every task that creates, edits, moves or deletes repository files must follow its placement, naming and dependency rules.
 - Follow the active skill's checklist to the letter — no shortcuts.
 - **ALWAYS** delegate mechanical work to subagents (implementer, debugger, plan-writer…). You orchestrate, they execute.
 - **HARD GATE:** never invoke an implementation skill before the design is approved.
@@ -44,7 +45,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 12 
      - If **only one spec exists**, announce: `"Detected spec: <path>. Proceeding with this one — tell me to override if needed."`
      - The chosen spec path is the source of truth for the rest of the cycle. Pass it inline to the `plan-writer` subagent in step 3.
 2. **Create feature branch from `develop`:**
-   - If on `develop` → Choose the best branch name based on [validate-branch-name config](configs/validate-branch-name/.validate-branch-namerc.json) rules, then run `git checkout -b <branch-name> develop`.
+   - If on `develop` → Choose the best branch name based on [validate-branch-name config](../../configs/validate-branch-name/.validate-branch-namerc.json) rules, then run `git checkout -b <branch-name> develop`.
    - After checkout, run `pnpm run validate:branch-name`. If it fails, rename the branch (`git branch -m <corrected-name>`) before proceeding.
    - If not on `develop` → STOP and ask the user to switch to `develop` before creating the feature branch.
 3. **Write plans from specs** → dispatch `plan-writer` subagent with the spec path inline (do NOT make it read the spec file separately — pass the path + key context).

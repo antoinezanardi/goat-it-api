@@ -23,6 +23,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 - The integration branch is `develop`. All contributions must be based on `develop` and opened as PRs targeting `develop`.
 - Every PR must pass the full CI pipeline before it can be merged (linting, type checks, unit tests, mutation tests, acceptance tests).
 - Branch names and commit messages must follow the defined conventions (see below).
+- Before your first change, read the [architecture and file-placement conventions](../docs/architecture.md). The full branching, commit and CI reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
 
 > [!IMPORTANT]
 > Please always target `develop` for PRs. `main` is protected and reserved for releases; PRs to `main` will be rejected.
@@ -133,6 +134,8 @@ pnpm run validate:branch-name
 
 ## 🌿 Branching rules
 
+The canonical branching, commit, hook, PR and deployment reference is [docs/ci-cd.md](../docs/ci-cd.md).
+
 - Always branch from the latest `develop`.
 - `main` is protected for production; do not open PRs against `main`.
 - Branch names must follow the validation config at `configs/validate-branch-name/.validate-branch-namerc.json`.
@@ -233,6 +236,8 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 
 ## 🚦 CI & merging
 
+The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
+
 - All PRs must pass the CI checks before merge (lint, typecheck, unit tests, mutation tests, acceptance tests).
 - If CI fails, fix locally, push, and wait for re-run. Your PR won't be merged until CI is green.
 - Maintainers will merge into `develop` once reviews pass and CI is green. Release automation handles promotion to `main`.
@@ -251,7 +256,7 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 
 ## 🐕 Husky & git hooks
 
-This repository uses Husky hooks stored in the `.husky/` directory to enforce some checks before commits are accepted locally.
+This repository uses Husky hooks stored in the `.husky/` directory to enforce some checks before commits are accepted locally. The hook order is documented in [docs/ci-cd.md](../docs/ci-cd.md).
 
 > [!NOTE]
 > Husky is configured in the repo and the hook scripts live in `.husky/` — you can inspect them directly if needed.
