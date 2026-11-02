@@ -68,10 +68,10 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 3. **Acceptance Test Scenarios**: API behavior changed → add/update Cucumber scenarios covering happy path and key error cases.
 4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`.
 5. **Schemas Package — New Export Candidate**: New DTO shape/constant/value-object → **ask the user** whether to export. If yes: add re-export, update `package.json` exports + `tsdown.config.ts` entries, bump patch version.
-6. **GlobalExceptionFilter**: New domain error class → add mapping in `GlobalExceptionFilter.domainErrorHttpExceptionFactories` at `src/shared/infrastructure/http/filters/global-exception/global-exception.filter.ts`.
+6. **GlobalExceptionFilter**: New domain error class → classify it: add a mapping when a specific 4xx status is required, otherwise record why it intentionally falls through to 500. See `docs/architecture.md` §7.4.
 7. **Faketories for New Types**: New entity/DTO/command/contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
 8. **Mock Factories for New Ports**: New repository port or use case → create mock factory under `tests/unit/utils/mocks/` named `createMocked<What>(overrides)`.
-9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. See `docs/architecture.md` for DI patterns.
+9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `useFactory` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
 10. **Acceptance Test Infrastructure for New Domains**: New domain/MongoDB collection → update world types, fixture registry, payload types, fixture inserters.
 
 ## Repository structure
@@ -81,14 +81,17 @@ src/
   app/                  # App module, root controller
   contexts/
     question/           # Question bounded context (single aggregate)
-      domain/           # constants/, types/, rules/, errors/, repositories/
-      application/
-      infrastructure/
+      domain/           # constants/, types/ (entities, VOs, contracts), rules/, errors/, repositories/
+      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
+      infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-persistence.module.ts
+      contracts/        # published DTO shapes/mappers/validators/persistence contracts (only when shared)
       question.module.ts
+      question-usage.module.ts
     question-theme/     # Question-Theme bounded context
       domain/           # constants/, types/, rules/, errors/, repositories/
-      application/
-      infrastructure/
+      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
+      infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-theme-persistence.module.ts
+      contracts/        # published DTO shapes/mappers/validators/persistence contracts
       question-theme.module.ts
   infrastructure/       # Cross-cutting (auth, health, config, database)
   shared/               # Shared domain, application, infrastructure utilities
@@ -108,11 +111,14 @@ The canonical file-placement, naming and dependency guide is [`docs/architecture
 
 Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters):
 
-- `domain/` — entities, value-objects, errors, commands, contracts, repository interfaces (ports)
-- `application/` — use-cases, DTOs (Zod shapes + nestjs-zod wrappers), mappers
-- `infrastructure/` — controllers, Mongoose repositories (adapters), HTTP pipes/filters/guards
+- `domain/` — entities, value objects, errors, repository contracts, repository interfaces (ports). No framework, I/O or Zod.
+- `application/` — commands, use-cases, DTO shapes, mappers. No `@nestjs/*`, Mongoose, Fastify or `nestjs-zod`.
+- `infrastructure/` — controllers, DTO wrappers, Mongoose adapters, HTTP pipes/filters/guards, persistence modules.
+- `contracts/` — optional published cross-context DTO shapes, pure mappers, validators and persistence contracts.
 
-**Data flow**: `Controller` → validates with Zod DTO → maps to domain command → `UseCase` → calls repository port → maps result to response DTO. Domain errors bubble up and are converted by `GlobalExceptionFilter`.
+A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR.
+
+**Data flow**: `Controller` → validates with Zod DTO → maps to application command → `UseCase` → calls repository port → maps result to response shape. Domain errors bubble up and are converted by `GlobalExceptionFilter`.
 
 ### Domain rules (`domain/rules/`)
 
@@ -125,11 +131,12 @@ Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters):
 - Interface in `domain/repositories/*.repository.types.ts`
 - Symbol injection token in `domain/repositories/*.repository.constants.ts`
 - Mongoose implementation in `infrastructure/persistence/mongoose/repository/`
-- Use `@Inject(TOKEN)` in use-cases; register with `{ provide: TOKEN, useClass: Implementation }`
+- Register the adapter in `infrastructure/persistence/<context>-persistence.module.ts` and export the token.
+- Use cases are plain classes; wire them with `useFactory` and `inject: [TOKEN]`. Do not use `@Inject`/`@Injectable` in application code.
 
 ## Path aliases
 
-No relative `../` or `./` imports are permitted. Use path aliases everywhere.
+No relative `../` or `./` imports are permitted in `src/`, `tests/` and `packages/schemas/src/`. Use path aliases there. `configs/` and `scripts/` may use relative imports to reach neighbouring files.
 
 | Alias                    | Resolves to                          |
 |--------------------------|--------------------------------------|
@@ -187,8 +194,10 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 ### DTOs
 
-- Zod schema in `*.dto.shape.ts`: export `const FOO_DTO = z.object(...)` and `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })`.
-- nestjs-zod wrapper in `*.dto.ts`: `class FooNestZodDto extends createZodDto(FOO_DTO) {}`
+- Zod shape in `application/dto/<feature>/<feature>.dto.shape.ts`: export `const FOO_DTO = z.object(...)` and `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })`.
+- nestjs-zod wrapper in `infrastructure/http/dto/<feature>/<feature>.dto.ts`: `class FooNestZodDto extends createZodDto(FOO_DTO) {}`
+- Only controllers import wrappers; mappers and use cases import shapes only.
+- Wrappers may wrap an application or published-contract shape. The shared API exception shape lives in `shared/application/dto`; its wrapper stays in `shared/infrastructure/http/dto`.
 - DTO shape tests cover every field with positive + negative tests.
 
 ### Errors
@@ -196,6 +205,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - Custom error classes extend `Error`, set `this.name` in constructor
 - Each error class in its own subdirectory: `domain/errors/<error-name>/<error-name>.error.ts`
 - Never throw strings or non-Error objects
+- Map a domain error only when the client can act on it (4xx); otherwise let it fall through to 500 and record why. The four write/read-back errors are intentionally 500.
 
 ### Constants
 
@@ -234,8 +244,9 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 ### Mocks (`@mocks/*`)
 
 - Named `createMocked<What>(overrides: Partial<MockedWhat> = {})`, return `vi.fn()`-based typed objects
-- Mock at the port level (repository/use-case interface), not internal Mongoose details
-- Inject via Nest `useValue` providers in `createTestingModule`
+- Mock at the boundary the SUT depends on: port for use cases, use case for controllers, Mongoose model for repositories
+- Repository mocks live at `tests/unit/utils/mocks/contexts/<context>/domain/repositories/`
+- Inject via `useValue` in `createTestingModule` for Nest classes; plain use cases are instantiated with `new`
 
 - Infrastructure registration checklist:
   - New mock factory → inject via `useValue` in test module (no global registry)
@@ -289,6 +300,7 @@ Slash commands available in OpenCode sessions:
 
 - `docs/superpowers/`        – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules.
+- `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/bruno.md`            – Bruno API collection setup.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.
