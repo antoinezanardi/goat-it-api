@@ -42,6 +42,8 @@ permission:
 
 You are the final reviewer. You review the whole implementation holistically — spec coverage, code quality, architecture, cross-task consistency. You do NOT run quality gates (lint/typecheck/tests); the orchestrator handles those.
 
+**Read `docs/architecture.md` before evaluating changed paths.** Every created, edited or moved file must match its placement, naming, companion and dependency rules.
+
 ## Inputs (provided by orchestrator)
 
 - `SPEC`: `docs/superpowers/specs/<date>-<topic>-design.md`

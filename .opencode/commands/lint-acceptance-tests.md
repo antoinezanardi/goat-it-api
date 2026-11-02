@@ -2,7 +2,9 @@
 
 ## Task
 
-Audit acceptance test files against the repository conventions defined in `tests/acceptance/README.md`.
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
+Audit acceptance test files against the repository conventions defined in `docs/acceptance-tests.md`.
 
 - If the prompt specifies file paths, audit only those files.
 - Otherwise, audit every file under `tests/acceptance/`.
@@ -18,7 +20,7 @@ Report all violations once in-chat, then use the question tool to validate with 
 ### 1. Load context
 
 1. Load the `write-acceptance-test` skill from `.agents/skills/write-acceptance-test/SKILL.md`.
-2. Read `tests/acceptance/README.md` in full.
+2. Read `docs/acceptance-tests.md` in full.
 
 ### 2. Determine scope
 
@@ -150,7 +152,7 @@ During the audit phase the main agent must NOT read acceptance test files itself
     1. Read `.opencode/commands/lint-acceptance-tests.md` section 4 IN FULL and apply the
        Universal check, the "Established patterns — do NOT flag" block, the exact
        "<Type> checks" block named for this group's type — to every listed file.
-    2. Read each listed file completely. Consult `tests/acceptance/README.md` only when
+    2. Read each listed file completely. Consult `docs/acceptance-tests.md` only when
        needed to judge a pattern against the conventions.
     3. Record every violation with its tag + line number(s). Multiple occurrences of
        the same rule in one file collapse into a single entry listing all lines.
@@ -247,8 +249,8 @@ Work through approved categories ONE at a time. **NO parallel work across catego
 
 - **Direct fix allowance** — a mechanical category touching at most 2 files may be applied directly by the main agent (read + edit + scoped verification per section 9) instead of dispatching subagents.
 - For each remaining category, dispatch ONE `general` subagent per category via the Task tool. The subagent receives ALL files for that category in a single prompt and fixes them sequentially. **NEVER split a category into parallel batches**. The subagent must NOT run `pnpm run test:acceptance` — verification is done by the main agent after the subagent returns. **NEVER run acceptance tests in subagents.**
-- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `tests/acceptance/README.md`, the current working-tree state, and the structured `FILE / STATUS / NOTES` return format.
-- Apply corrections following the exact patterns from `tests/acceptance/README.md` — never invent alternatives.
+- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `docs/acceptance-tests.md`, the current working-tree state, and the structured `FILE / STATUS / NOTES` return format.
+- Apply corrections following the exact patterns from `docs/acceptance-tests.md` — never invent alternatives.
 - When a category is done, run focused lint across its modified files, and fix forward until green BEFORE moving to the next category.
 - After each completed category, report its outcome (files changed, violations fixed, verification results) and ask the user whether to proceed to the next approved/pending category.
 - Do NOT touch anything beyond the approved categories' violations.

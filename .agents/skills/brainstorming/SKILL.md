@@ -22,7 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
 You MUST create a task for each of these items and complete them in order:
 
 1. **Query the MemPalace MCP server** to give you better context based on the user's intent and the current project codebase
-2. **Explore project context** — check files, docs, recent commits
+2. **Explore project context** — check files, docs (including `docs/architecture.md` for placement and dependency rules), recent commits
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section

@@ -16,13 +16,7 @@
       }
     }
   },
-  "plugin": [
-    ["opencode-mempalace", {
-      "mcpCommand": ["mempalace-mcp"],
-      "palacePath": ".mempalace",
-      "threshold": 20
-    }]
-  ],
+  "plugins": ["@rvboris/opencode-mempalace"],
   "permission": {
     "skill": { "*": "allow" },
     "bash": {

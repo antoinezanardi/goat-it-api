@@ -5,4 +5,6 @@ agent: build
 
 Load the `write-unit-test` skill and follow its workflow to write or complete the spec for: $ARGUMENTS
 
-Read `tests/unit/README.md` first as instructed by the skill, identify the file type, apply the matching template, wire up mocks and faketories, then run the checks until the suite is green at 100% coverage.
+**Architecture first:** read `docs/architecture.md` before creating or moving any file.
+
+Read `docs/unit-tests.md` first as instructed by the skill, identify the file type, apply the matching template, wire up mocks and faketories, then run the checks until the suite is green at 100% coverage.

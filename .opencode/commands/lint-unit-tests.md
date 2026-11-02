@@ -2,7 +2,9 @@
 
 ## Task
 
-Audit unit test spec files against the repository conventions defined in `tests/unit/README.md`.
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
+Audit unit test spec files against the repository conventions defined in `docs/unit-tests.md`.
 
 - If the prompt specifies file paths, audit only those specs (accept both spec paths and source paths — for a source path, lint its colocated spec).
 - Otherwise, audit every `*.spec.ts` under `src/`.
@@ -18,7 +20,7 @@ Report all violations once in-chat, then use the question tool to validate with 
 ### 1. Load context
 
 1. Load the `write-unit-test` skill from `.agents/skills/write-unit-test/SKILL.md`.
-2. Read `tests/unit/README.md` in full.
+2. Read `docs/unit-tests.md` in full.
 
 ### 2. Determine scope
 
@@ -59,7 +61,7 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 
 These recurring shapes are accepted codebase conventions. Auditors must not report them as violations or warnings:
 
-- `vi.spyOn()` for module-level functions (preferred over `vi.mock()` due to `isolate: false` — see `tests/unit/README.md` "Mocking modules vs instances").
+- `vi.spyOn()` for module-level functions (preferred over `vi.mock()` due to `isolate: false` — see `docs/unit-tests.md` "Mocking modules vs instances").
 - `vi.mock()` for third-party modules not imported as real by other specs (e.g. `nestjs-zod`).
 - Private method testing via `ClassName["privateMethod"](...)`.
 - `import type { ... }` for type-only imports.
@@ -138,7 +140,7 @@ During the audit phase the main agent must NOT read spec files itself — that i
    1. Read `.opencode/commands/lint-unit-tests.md` section 4 IN FULL and apply the
       Universal checks, the "Established patterns — do NOT flag" block, the exact
       "<Type> checks" block named for this group's type — to every listed file.
-   2. Read each listed spec file completely. Consult `tests/unit/README.md` only when
+   2. Read each listed spec file completely. Consult `docs/unit-tests.md` only when
       needed to judge a pattern against the conventions.
    3. Record every violation with its tag + line number(s). Multiple occurrences of
       the same rule in one file collapse into a single entry listing all lines.
@@ -195,8 +197,8 @@ Work through approved categories ONE at a time. **NO parallel work across catego
 
 - **Direct fix allowance** — a mechanical category touching at most 2 files may be applied directly by the main agent (read + edit + scoped verification per section 9) instead of dispatching subagents.
 - For each remaining category, dispatch ONE `general` subagent per category via the Task tool. The subagent receives ALL files for that category in a single prompt and fixes them sequentially. This avoids concurrent write races and inconsistent cross-batch state. **NEVER split a category into parallel batches** — multiple subagents writing to different files in the same category causes revert races and lost edits. The subagent must NOT run `pnpm run lint:fix` or `pnpm run test:unit:cov` — verification is done by the main agent after the subagent returns. **NEVER run mutation testing or acceptance tests in subagents.**
-- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `tests/unit/README.md`, the current working-tree state (pre-existing modifications), and the structured `FILE / STATUS / NOTES` return format.
-- Apply corrections following the exact patterns from `tests/unit/README.md` — never invent alternatives.
+- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `docs/unit-tests.md`, the current working-tree state (pre-existing modifications), and the structured `FILE / STATUS / NOTES` return format.
+- Apply corrections following the exact patterns from `docs/unit-tests.md` — never invent alternatives.
 - Judgmental items may require adding or removing test cases; write them per the file-type pattern.
 - Respect repo conventions: no comments (except allowed lint-disable/JSDoc forms), correct import grouping/order, no `any`.
 - When a category is done, run focused lint + tests across its modified files **plus** `pnpm run test:unit:cov` (full coverage gate — fixes may add or reshape tests), and fix forward until green BEFORE moving to the next category.

@@ -46,6 +46,7 @@ You are the plan writer. You turn an approved spec into a complete, executable i
 
 ## Iron rules
 
+- **Read `docs/architecture.md` before writing any step.** Every planned path, companion file and module registration must follow that guide.
 - ALWAYS load the `writing-plans` skill before any response. Load the skills written in the `writing-plans` skill as they provide the necessary context for the implementation plan.
 - When the plan contains ANY unit-test step: load the `write-unit-test` skill **before writing those steps**, follow the exact pattern for the file type under test, and self-verify every planned test snippet against section 4 of `.opencode/commands/lint-unit-tests.md` (rule tags `[U1]`–`[U8]` plus the per-type block `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) before it enters the plan. A step violating a checklist tag must not be written.
 - When the plan contains ANY acceptance-test step: load the `write-acceptance-test` skill **before writing those steps**, follow the exact pattern for the file type, and self-verify every planned snippet against section 4 of `.opencode/commands/lint-acceptance-tests.md` (rule tags `[AU*]` plus the per-type block `[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]`) before it enters the plan. A step violating a checklist tag must not be written.

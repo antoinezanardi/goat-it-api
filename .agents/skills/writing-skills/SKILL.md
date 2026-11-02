@@ -13,6 +13,8 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
 
+**Before creating, editing or moving any skill file, read `docs/architecture.md`.** Skill files follow the repository's placement and naming conventions.
+
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
 **REQUIRED BACKGROUND:** This skill adapts the RED-GREEN-REFACTOR cycle to documentation.
