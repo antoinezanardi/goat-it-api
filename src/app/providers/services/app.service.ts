@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { readPackageJson } from "@shared/domain/helpers/package-json/package-json.helpers";
+import { readPackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers";
 
 import type { AppMetadata } from "@app/types/app.types";
 

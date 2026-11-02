@@ -4,8 +4,8 @@ import { Types } from "mongoose";
 
 import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
-import * as arrayHelpers from "@shared/domain/helpers/array/array.helpers";
 
+import * as arrayHelpers from "@question/infrastructure/persistence/mongoose/repository/helpers/array.mongoose.helpers";
 import * as questionMongooseMappers from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";

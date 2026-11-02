@@ -588,7 +588,6 @@ Each validator owns its constants and its spec. Do not create a generic `utils` 
 | Persistence module | `infrastructure/persistence/` | `<context>-persistence.module.ts` | — (excluded from coverage) |
 | Context module | `src/contexts/<context>/` | `<context>.module.ts` | — (excluded from coverage) |
 | Usage module | `src/contexts/<context>/` | `<context>-usage.module.ts` | — (excluded from coverage) |
-| Shared helper | `shared/domain/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
 | Shared infrastructure helper | `shared/infrastructure/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
 | Shared mapper/helper | `shared/application/mappers/<unit>/` | `<unit>.mappers.ts` / `<unit>.helpers.ts` | `.spec.ts` |
 | Shared Zod validator | `shared/application/dto/zod/validators/<kind>/` | `<kind>.zod.validators.ts` | `.spec.ts`, constants in `constants/` |
@@ -767,7 +766,6 @@ Package bans use ESLint core `no-restricted-imports` in a scoped flat-config blo
 | Exception | Rule | Removal condition |
 |---|---|---|
 | `GlobalExceptionFilter` imports context errors | Zone 9 is deferred | #1265 lands |
-| `server.ts` imports `AppModule` | Zone 8 is deferred | D4 lands |
 | Cross-context `$lookup` | Published persistence contracts only | Denormalization/read-model follow-up |
 | question / question-theme bidirectional partnership | §5.2 per-layer allowlist | Third context or growing surface → merge |
 

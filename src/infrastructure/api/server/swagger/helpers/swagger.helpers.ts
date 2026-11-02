@@ -3,7 +3,7 @@ import { cleanupOpenApiDoc } from "nestjs-zod";
 
 import { SWAGGER_DOCUMENTATION_PATH, SWAGGER_DOCUMENTATION_TITLE } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
-import { readPackageJson } from "@shared/domain/helpers/package-json/package-json.helpers";
+import { readPackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers";
 
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { OpenAPIObject, SwaggerCustomOptions } from "@nestjs/swagger";

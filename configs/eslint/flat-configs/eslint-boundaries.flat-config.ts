@@ -2,6 +2,8 @@ import type { Linter } from "eslint";
 
 const DOMAIN_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: domain is framework-free and must not import NestJS, Mongoose, Fastify or nestjs-zod. See docs/architecture.md §12.2.";
 
+const DOMAIN_NODE_BAN_MESSAGE = "Architecture boundary: domain must not perform Node I/O; use a shared or infrastructure helper instead. See docs/architecture.md §12.2.";
+
 const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
   name: "boundaries",
   rules: {
@@ -55,6 +57,14 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             target: "src/**/!(*.spec).ts",
             from: ["tests/**"],
             message: "Architecture boundary: production source must not import test code.",
+          },
+          {
+            target: "src/infrastructure/**/!(*.spec).ts",
+            from: [
+              "src/contexts/**",
+              "src/app/**",
+            ],
+            message: "Architecture boundary: cross-cutting infrastructure must not import a bounded context or the application shell.",
           },
           {
             target: "src/contexts/*/domain/**/!(*.spec).ts",
@@ -133,6 +143,10 @@ const ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
               "nestjs-zod/*",
             ],
             message: DOMAIN_FRAMEWORK_BAN_MESSAGE,
+          },
+          {
+            group: ["node:*"],
+            message: DOMAIN_NODE_BAN_MESSAGE,
           },
         ],
       },

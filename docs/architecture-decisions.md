@@ -11,9 +11,9 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 | # | Decision | Choice | Phase | Status |
 |---|---|---|---|---|
 | D1 | Application framework independence | Strict plain TypeScript | 3 | Accepted |
-| D2 | Domain purity | I/O and randomness move to infrastructure | 2 | Accepted |
+| D2 | Domain purity | I/O and randomness move to infrastructure | 2 | Implemented (Phase 2) |
 | D3 | Shared semantics | Layered shared kernel | 0 | Accepted |
-| D4 | Composition root | `main.ts` owns `AppModule` | 2 | Accepted |
+| D4 | Composition root | `main.ts` owns `AppModule` | 2 | Implemented (Phase 2) |
 | D5 | Error mapping | Conditional mapping; write failures 500 | 0 | Accepted |
 | D6 | DTO ownership | Shapes application/contracts, wrappers infrastructure | 3 | Accepted |
 | D7 | Validator homes | `shared/application/dto/zod` | 1 | Implemented (Phase 1) |

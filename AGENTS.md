@@ -157,7 +157,7 @@ No relative `../` or `./` imports are permitted in `src/`, `tests/` and `package
 
 When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json`, and `configs/vitest/vitest.config.ts`.
 
-> `@package-json` only works inside specs (Vitest resolves JSON imports). In `src/`, ESM requires an import attribute (`with { type: "json" }`) which SWC drops on emit — read the file with `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers` instead.
+> `@package-json` only works inside specs (Vitest resolves JSON imports). In `src/`, ESM requires an import attribute (`with { type: "json" }`) which SWC drops on emit — read the file with `readPackageJson()` from `@shared/infrastructure/helpers/package-json/package-json.helpers` instead.
 
 ## Project conventions & style
 

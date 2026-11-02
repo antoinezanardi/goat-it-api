@@ -1,4 +1,4 @@
-import { shuffleArray } from "@shared/domain/helpers/array/array.helpers";
+import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.mongoose.helpers";
 
 type RandomIndexGenerator = (maxExclusive: number) => number;
 
