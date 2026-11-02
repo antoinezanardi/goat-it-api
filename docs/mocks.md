@@ -6,7 +6,7 @@ All shared mock factories used by unit tests live under:
 
 `tests/unit/utils/mocks/`
 
-Use path-alias imports from tests and code when referencing them, for example:
+Use path-alias imports from test files when referencing them, for example:
 
 ```ts
 import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
@@ -71,7 +71,7 @@ const useCase = createMockedCreateQuestionUseCase({
 ## Naming
 
 - Factories are named `createMocked<What>()` to make intent explicit and avoid ambiguity with faketory helpers (which use `createFake<Thing>`).
-- Mock types follow `Mocked<What>` naming and are exported implicitly by the mock file.
+- Mock types follow `Mocked<What>` naming and stay file-local; only the factory is exported.
 
 ## Best Practices
 
@@ -90,12 +90,13 @@ const useCase = createMockedCreateQuestionUseCase({
 ## PR Checklist when touching mocks
 
 1. Ensure any behavioral changes are covered by unit tests that use the mocks.
-2. Keep the `createMockedX(overrides?)` pattern. If you need a different API, update this README first and explain the reasoning in the PR description.
+2. Keep the `createMockedX(overrides?)` pattern. If you need a different API, update this guide first and explain the reasoning in the PR description.
 3. Run linters and unit tests locally: `pnpm run lint` and `pnpm run test:unit:cov`.
 4. Run type checking and the build: `pnpm run typecheck` and `pnpm run build`.
 5. Run mutation tests: `pnpm run test:mutation` (recommended locally; CI will also run mutation tests).
 
 ## Contacts & References
 
-- See `AGENTS.md` for repository editing rules and conventions.
+- See `../AGENTS.md` for repository editing rules and conventions.
+- See [architecture.md](architecture.md) for file placement and dependency rules.
 - When adding a new bounded context mock, follow the repo's file layout conventions under `tests/unit/utils/mocks/contexts/<context>/...`.

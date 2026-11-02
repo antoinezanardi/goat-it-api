@@ -126,8 +126,9 @@ fields that are always required, use `faker.datatype.boolean()` directly:
 ### Arrays
 
 ```ts
-  // Fixed-size unique arrays
-  sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2), // Pick a random subset from an explicit set
+  // Fixed-size unique array of generated values
+  sourceUrls: faker.helpers.uniqueArray(() => faker.internet.url(), 2),
+  // Random subset from an explicit set
   methods: faker.helpers.arrayElements([
     "GET",
     "POST",
@@ -198,7 +199,7 @@ Keep all exports in a single `export { ... }` block at the bottom of the file.
 Compose faketories instead of duplicating faker calls. Import from the `@faketories/*` alias:
 
 ```ts
-import { createFakeQuestionTheme } from "@faketories/contexts/question/question-theme/entity/question-theme.entity.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeLocalizedText } from "@faketories/shared/locale/locale.faketory";
 ```
 
@@ -266,11 +267,11 @@ Follow the project-wide import order:
 5. All fields populated with `@faker-js/faker` values (or `createFakeObjectId` for ObjectId).
 6. Optional fields use `faker.helpers.maybe(...)`.
 7. Factory is pure — no DB calls, no network.
-8. Run: `pnpm lint && pnpm typecheck && pnpm test:unit:cov`
+8. Run: `pnpm run lint && pnpm run typecheck && pnpm run test:unit:cov`
 
 ## References
 
-- `docs/FAKETORIES.md` — short pointer to this file.
-- `AGENTS.md` — repository-level conventions.
+- [architecture.md](architecture.md) — file placement, naming and dependency direction.
+- `../AGENTS.md` — repository-level conventions.
 - Path alias registration when adding a new context: `configs/swc/swc.config.json`,
   `configs/typescript/tsconfig.app.json`, `configs/vitest/vitest.config.ts`.

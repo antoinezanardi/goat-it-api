@@ -122,7 +122,7 @@ describe(HealthController, () => {
 ```
 
 - More references:
-  - `src/contexts/question/modules/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller.spec.ts`
+  - `src/contexts/question-theme/infrastructure/http/controllers/question-theme/question-theme.controller.spec.ts`
   - `src/contexts/question/infrastructure/http/controllers/admin-question/admin-question.controller.spec.ts`
 
 ### Use-case tests (application layer) or Services
@@ -243,8 +243,8 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 ```
 
 - More references: 
-  - `src/contexts/question/modules/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case.spec.ts`
-  - `src/contexts/question/modules/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case.spec.ts`
+  - `src/contexts/question-theme/application/use-cases/create-question-theme/create-question-theme.use-case.spec.ts`
+  - `src/contexts/question-theme/application/use-cases/find-question-themes/find-question-themes.use-case.spec.ts`
 
 ### Repository tests (persistence adapters)
 
@@ -330,7 +330,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 - More references:
   - `src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.spec.ts`
-  - `src/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
+  - `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
 
 ### DTOs and Zod validators
 
@@ -340,45 +340,75 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   - Cover every DTO field with at least one positive (accepts) and one negative (rejects) test.
   - For `*.dto.shape.spec.ts` files, `validDto` must be an **inline literal** — never a faketory call. Declare with a structural type (e.g., `let validDto: { field: type; ... };`) and assign in `beforeEach`. Negative tests use `{ ...validDto, field: badValue }` (spread copy). Remove all `@faketories/*` imports and all `as SomeDto` casts from shape spec files.
   - Prefer `DTO.parse(valid)` or `expect(() => DTO.parse(valid)).not.toThrow()` for positive tests; use `safeParse` when you need to inspect `success` / `error` details.
-  - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrow(ZodError)`) and inspect `parsed.error.errors` when necessary.
+  - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrow(ZodError)`) and inspect `parsed.error.issues` when necessary.
   - Assert Zod metadata (`.meta()`) and property metadata (`DTO.shape.field.meta()`) exactly with `toStrictEqual` so OpenAPI generation expectations are maintained.
   - For refinements and small validators (slugs, mongo ids, ISO datetimes) use `it.each` to enumerate valid/invalid inputs and assert `schema.safeParse(value).success`.
 
-- DTO shape spec template (DT5-compliant):
+- DTO shape spec template:
 
 ```ts
 import { ZodError } from "zod";
 import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
 
-import { QUESTION_DTO } from "@question/application/dto/question/question.dto";
+import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
 describe("Question DTO Shape", () => {
-  let validDto: {
+  let validQuestionDto: {
     id: string;
-    content: { statement: { en: string }; answer: { en: string } };
+    category: string;
+    themes: { theme: Record<string, unknown>; isPrimary: boolean; isHint: boolean }[];
+    content: { statement: string; answer: string; context?: string; trivia?: string[] };
+    cognitiveDifficulty: string;
+    isAdultContent: boolean;
+    author: { role: string; gameId?: string; name?: string };
     status: string;
+    rejection?: { type: string; comment?: string };
+    sourceUrls: string[];
     createdAt: string;
     updatedAt: string;
   };
 
   beforeEach(() => {
-    validDto = {
+    validQuestionDto = {
       id: "60af924f4f1a2563f8e8b456",
-      content: { statement: { en: "What is the capital of France?" }, answer: { en: "Paris" } },
+      category: "trivia",
+      themes: [
+        {
+          theme: {
+            id: "60af924f4f1a2563f8e8b457",
+            slug: "general-knowledge",
+            label: "General Knowledge",
+            aliases: ["gk", "trivia"],
+            description: "General knowledge questions",
+            color: "#FF5733",
+            status: "active",
+            updatedAt: "2026-04-14T00:00:00.000Z",
+            createdAt: "2026-04-14T00:00:00.000Z",
+          },
+          isPrimary: true,
+          isHint: false,
+        },
+      ],
+      content: { statement: "What is the capital of France?", answer: "Paris" },
+      cognitiveDifficulty: "easy",
+      isAdultContent: false,
+      author: { role: "admin", name: "TestAuthor" },
       status: "active",
+      sourceUrls: ["https://example.com/source1"],
       createdAt: "2026-04-14T00:00:00.000Z",
       updatedAt: "2026-04-14T00:00:00.000Z",
     };
   });
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
-    expect(() => QUESTION_DTO.parse(validDto)).not.toThrow();
+    expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrow();
   });
 
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
-      const invalid = { ...validDto, id: "invalid" };
-      expect(() => QUESTION_DTO.parse(invalid)).toThrow(ZodError);
+      const dtoWithInvalidId = { ...validQuestionDto, id: "invalid" };
+
+      expect(() => QUESTION_DTO.parse(dtoWithInvalidId)).toThrow(ZodError);
     });
 
     it("should have correct metadata when accessing the metadata.", () => {
@@ -387,7 +417,8 @@ describe("Question DTO Shape", () => {
         description: "Question's unique identifier",
         example: "60af924f4f1a2563f8e8b456",
       };
-      expect(metadata).toStrictEqual(expectedMetadata);
+
+      expect(metadata).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 
@@ -481,37 +512,36 @@ describe(formatDate, () => {
 
 - Purpose: ensure custom error classes expose the expected `name` and message and are distinguishable in the global filter.
 - What to test: constructor message formatting, `name` property and instanceof checks where applicable.
- - Template (`question.errors.spec.ts`):
+- Template (`question-not-found.error.spec.ts`):
 
- ```ts
-import { QuestionNotFoundError } from "./question.errors";
+```ts
+import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 
-describe("Question Domain Errors", () => {
-  describe(QuestionNotFoundError, () => {
-    it("should set name when instantiated.", () => {
-      const error = new QuestionNotFoundError("123");
-      
-      expect(error.name).toBe("QuestionNotFoundError");
-    });
-    
-    it("should format message correctly.", () => {
-      const error = new QuestionNotFoundError("123");
-      
-      expect(error.message).toBe("Question with ID 123 not found.");
-    });
+describe(QuestionNotFoundError, () => {
+  it("should set message when constructed.", () => {
+    const id = "abc123";
+    const error = new QuestionNotFoundError(id);
+
+    expect(error.message).toBe(`Question with id ${id} not found`);
+  });
+
+  it("should have correct name when constructed.", () => {
+    const error = new QuestionNotFoundError("x");
+
+    expect(error.name).toBe("QuestionNotFoundError");
   });
 });
 ```
 
-- Reference: `src/contexts/question/modules/question-theme/domain/errors/question-theme.errors.spec.ts`
+- Reference: `src/contexts/question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error.spec.ts`
 
 ### Mocks & Faketories (where and how)
 
 - Mocks live in `tests/unit/utils/mocks/` and mirror source paths. Use factory functions like `createMockedFindQuestionThemesUseCase()` returning `vi.fn()`-based fields.
 - Faketories live in `tests/shared/utils/faketories/` and produce domain entities, DTOs and mongoose documents using `@faker-js/faker`.
 - When adding a new feature, add matching mock/faketory files following the repository mirroring pattern.
-- You can refer to the [Faketories documentation](../../docs/FAKETORIES.md) for detailed guidance on creating and organizing faketories.
-- You can refer to the [Mocks documentation](../../docs/MOCKS.md) for detailed guidance on creating and organizing mocks.
+- You can refer to the [Faketories documentation](faketories.md) for detailed guidance on creating and organizing faketories.
+- You can refer to the [Mocks documentation](mocks.md) for detailed guidance on creating and organizing mocks.
 
 ### Mocking modules vs instances
 

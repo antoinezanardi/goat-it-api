@@ -23,6 +23,7 @@
 - [Logging & Debugging](#logging--debugging)
 - [Path Aliases](#path-aliases)
 - [How To: Add a New Acceptance Test](#how-to-add-a-new-acceptance-test)
+- [Contacts & References](#contacts--references)
 
 ---
 
@@ -43,7 +44,7 @@ Feature files live under `tests/acceptance/features/`. Support code (hooks, worl
 - **Payload patching**: `radashi` (`crush` + `construct`) for deep-path overrides.
 - **Cucumber config**: `configs/cucumber/cucumber.json`.
 - **TypeScript config**: `configs/typescript/tsconfig.acceptance.json` (extends `tsconfig.app.json`; includes `src/**`, faketories, shared helpers, mock type stubs, and `tests/acceptance/**`).
-- **Parallelism**: serial only (`"parallel": 1`) — scenarios share a single app process and database.
+- **Parallelism**: 4 Cucumber workers (`"parallel": 4`). Each worker spawns its own app process on port `4242 + CUCUMBER_WORKER_ID` and uses its own `goat-it-test-<workerId>` database; scenarios within a worker share that app process and database.
 - **Reports output**: `tests/acceptance/reports/` — JUnit XML (`junit.xml`), JSON (`report.json`), and Cucumber message format (`message.json`).
 
 ---
@@ -109,7 +110,7 @@ tests/acceptance/
 
 ```bash
 # Full acceptance test suite (requires Docker services)
-pnpm test:acceptance
+pnpm run test:acceptance
 ```
 
 > **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test`. The suite builds the app (`pnpm build`) by default before spawning the server process.
@@ -123,10 +124,9 @@ All hooks live in `tests/acceptance/support/hooks.ts`. They execute in this orde
 ### `BeforeAll`
 
 1. Loads `env/.env.test` via `loadEnvTestConfig()`.
-2. Builds the app.
-3. Connects to MongoDB via `connectToTestDatabase()`.
-4. Spawns the built app directly (`node dist/main` with `NODE_ENV=test`, detached) and waits for the HTTP health endpoint to respond (`serveAppForAcceptanceTests()`). The app listens on `http://0.0.0.0:4242`.
-5. Stores the child process reference and log manager in the `processes` object.
+2. Connects to MongoDB via `connectToTestDatabase()`.
+3. Spawns the built app directly (`node dist/main` with `NODE_ENV=test`, detached) and waits for the HTTP health endpoint to respond (`serveAppForAcceptanceTests()`). The app listens on `getAppBaseUrl()` (`http://0.0.0.0:<4242 + CUCUMBER_WORKER_ID>`). The build itself is produced by the `pnpm run test:acceptance` script before Cucumber starts.
+4. Stores the child process reference and log manager in the `processes` object.
 
 ### `Before` (each scenario)
 
@@ -171,7 +171,7 @@ All step function bodies must declare `this: GoatItWorld`.
 
 ### Internal details
 
-- The `ofetch` instance is created once per world with `baseURL: http://0.0.0.0:4242`.
+- The `ofetch` instance is created once per world with `baseURL` from `getAppBaseUrl()` (`http://0.0.0.0:<4242 + CUCUMBER_WORKER_ID>`).
 - The `onRequest` hook clears `lastFetchResponse`, snapshots `payload` into `lastPayload`, and resets `payload` to `{}`.
 - The `onResponse` hook stores the raw response in `lastFetchResponse`.
 - Mongoose models are registered directly from source schemas (`QUESTION_MONGOOSE_SCHEMA`, `QUESTION_THEME_MONGOOSE_SCHEMA`) so the same schema definitions used by the app are reused.
@@ -205,6 +205,8 @@ await loadFixture(world, "question", "five-questions"); // auto-loads its questi
 - The `loadedKeys` parameter is internal — never pass it when calling externally.
 
 ### Available fixture sets
+
+The registry in `tests/acceptance/support/fixtures/constants/fixture.constants.ts` is authoritative; the table below lists the common sets used in the examples.
 
 | Domain           | Name                               | Dependencies                                      | Description                                              |
 |------------------|------------------------------------|---------------------------------------------------|----------------------------------------------------------|
@@ -247,6 +249,8 @@ Record<PayloadScope, Record<PayloadType, Record<string, object>>>
 Addressed in feature files by three coordinates: **scope**, **type**, and **name**.
 
 ### Available payloads
+
+The registry in `tests/acceptance/support/payloads/constants/payload.constants.ts` is authoritative; the table below lists the common payloads used in the examples.
 
 | Scope                       | Type       | Name             | Description                                                                                                         |
 |-----------------------------|------------|------------------|---------------------------------------------------------------------------------------------------------------------|
@@ -645,7 +649,7 @@ For non-trivial response assertions:
 ### 7. Run the suite
 
 ```bash
-pnpm test:acceptance
+pnpm run test:acceptance
 ```
 
 Fix any failures before merging. Acceptance tests must pass in CI alongside lint, typecheck, and unit tests.
@@ -654,8 +658,8 @@ Fix any failures before merging. Acceptance tests must pass in CI alongside lint
 
 ## Contacts & References
 
-- `AGENTS.md` — repository-wide conventions and stack overview.
-- `docs/ARCHITECTURE.md` — hexagonal architecture and data flow.
-- `tests/unit/README.md` — unit test guidelines.
-- `tests/shared/utils/faketories/README.md` — faketory conventions.
-- `tests/unit/utils/mocks/README.md` — mock factory conventions.
+- `../AGENTS.md` — repository-wide conventions and stack overview.
+- [architecture.md](architecture.md) — file placement, naming and dependency direction.
+- [unit-tests.md](unit-tests.md) — unit test guidelines.
+- [faketories.md](faketories.md) — faketory conventions.
+- [mocks.md](mocks.md) — mock factory conventions.
