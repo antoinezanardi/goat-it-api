@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zTranslationCompletenessStats } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
+import { zTranslationCompletenessStats } from "@shared/application/dto/zod/validators/translation-completeness/translation-completeness.zod.validators";
 
 import {
   QUESTION_AUTHOR_ROLES,

@@ -66,6 +66,11 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             message: "Architecture boundary: a context domain may only import the shared domain and its own domain.",
           },
           {
+            target: "src/contexts/*/application/**/!(*.spec).ts",
+            from: ["src/shared/infrastructure/**"],
+            message: "Architecture boundary: a context application layer must not import shared infrastructure.",
+          },
+          {
             target: "src/contexts/question/domain/**/!(*.spec).ts",
             from: ["src/contexts/question-theme"],
             except: [
@@ -82,6 +87,18 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             from: ["src/contexts/question-theme"],
             except: ["question-theme.module.ts"],
             message: "Architecture boundary: the question module may only import question-theme.module.ts from the question-theme context.",
+          },
+          {
+            target: "src/contexts/question-theme/application/**/!(*.spec).ts",
+            from: ["src/contexts/question"],
+            except: ["application/use-cases/count-live-questions-by-theme-id"],
+            message: "Architecture boundary: the question-theme application may only import the count-live-questions-by-theme-id use case from the question context.",
+          },
+          {
+            target: "src/contexts/question-theme/question-theme.module.ts",
+            from: ["src/contexts/question"],
+            except: ["question-usage.module.ts"],
+            message: "Architecture boundary: the question-theme module may only import question-usage.module.ts from the question context.",
           },
         ],
       },

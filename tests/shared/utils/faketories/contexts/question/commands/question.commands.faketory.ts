@@ -1,4 +1,4 @@
-import type { QuestionCreationCommand } from "@question/domain/types/question.commands";
+import type { QuestionCreationCommand } from "@question/application/commands/question.commands";
 
 import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
 

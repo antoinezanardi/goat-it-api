@@ -4,7 +4,7 @@ import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/err
 import { findArchivedQuestionTheme } from "@question-theme/domain/rules/question-theme.rules";
 import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 
-import type { QuestionCreationCommand } from "@question/domain/types/question.commands";
+import type { QuestionCreationCommand } from "@question/application/commands/question.commands";
 import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import type { Question } from "@question/domain/types/question.entities";

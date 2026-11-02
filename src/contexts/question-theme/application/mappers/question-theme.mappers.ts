@@ -4,7 +4,7 @@ import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admi
 import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
 import type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
-import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/domain/types/question-theme.commands";
+import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";

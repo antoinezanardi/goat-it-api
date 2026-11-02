@@ -5,7 +5,7 @@ import { QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants
 import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import type { z } from "zod";
 import type { FindQuestionThemesQueryDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";

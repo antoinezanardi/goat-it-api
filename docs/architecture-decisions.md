@@ -16,12 +16,12 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 | D4 | Composition root | `main.ts` owns `AppModule` | 2 | Accepted |
 | D5 | Error mapping | Conditional mapping; write failures 500 | 0 | Accepted |
 | D6 | DTO ownership | Shapes application/contracts, wrappers infrastructure | 3 | Accepted |
-| D7 | Validator homes | `shared/application/dto/zod` | 1 | Accepted |
+| D7 | Validator homes | `shared/application/dto/zod` | 1 | Implemented (Phase 1) |
 | D8 | Value-object modeling | Hybrid with promotion criteria | 0 | Accepted |
-| D9 | Commands and contracts | Commands application, contracts domain | 1 | Accepted |
+| D9 | Commands and contracts | Commands application, contracts domain | 1 | Implemented (Phase 1) |
 | D10 | Cross-context collaboration | B-lite published API + contracts | 4 | Accepted |
-| D11 | Module wiring | Persistence modules (both contexts) + usage module | 1 | Accepted |
-| D12 | Naming consistency | All four naming rules | 1 | Accepted |
+| D11 | Module wiring | Persistence modules (both contexts) + usage module | 1 | Implemented (Phase 1) |
+| D12 | Naming consistency | All four naming rules | 1 | Implemented (Phase 1) |
 | D13 | Testing architecture | Port-level mocks | 3 | Accepted |
 | D14 | Package boundary | Keep facade, document public API | 0 | Accepted |
 | D15 | Enforcement | Aliases + lint zones and package bans | 0–5 | Accepted |

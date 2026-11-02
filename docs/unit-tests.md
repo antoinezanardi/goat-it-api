@@ -363,7 +363,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 ```ts
 import { ZodError } from "zod";
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
@@ -441,11 +441,11 @@ describe("Question DTO Shape", () => {
 });
 ```
 
-- Zod validator tests (based on `src/shared/infrastructure/http/zod/validators/string/string.zod.validators.spec.ts`):
+- Zod validator tests (based on `src/shared/application/dto/zod/validators/string/string.zod.validators.spec.ts`):
 
 ```ts
-import { zSlug, zMongoId, zIsoDateTime } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { zSlug, zMongoId, zIsoDateTime } from "@shared/application/dto/zod/validators/string/string.zod.validators";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -483,7 +483,7 @@ describe("String Zod Validators", () => {
 - References:
   - `src/contexts/question/application/dto/question/question.dto.shape.spec.ts`
   - `src/contexts/question/application/dto/admin-question/admin-question.dto.shape.spec.ts`
-  - `src/shared/infrastructure/http/zod/validators/string/string.zod.validators.spec.ts`
+  - `src/shared/application/dto/zod/validators/string/string.zod.validators.spec.ts`
 
 Notes:
 - Prefer `DTO.parse` for positive tests and `safeParse` when you need to inspect `error` details.

@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
 
 import { QuestionThemeModule } from "@question-theme/question-theme.module";
 
@@ -13,20 +12,13 @@ import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-qu
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
-import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
-import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+import { QuestionPersistenceModule } from "@question/infrastructure/persistence/question-persistence.module";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: QuestionMongooseSchema.name,
-        schema: QUESTION_MONGOOSE_SCHEMA,
-      },
-    ]),
+    QuestionPersistenceModule,
     QuestionThemeModule,
   ],
   controllers: [
@@ -44,10 +36,6 @@ import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infr
     GetQuestionStatsUseCase,
     RemoveThemeFromQuestionUseCase,
     ModifyQuestionThemeAssignmentUseCase,
-    {
-      provide: QUESTION_REPOSITORY_TOKEN,
-      useClass: QuestionMongooseRepository,
-    },
   ],
 })
 export class QuestionModule {}

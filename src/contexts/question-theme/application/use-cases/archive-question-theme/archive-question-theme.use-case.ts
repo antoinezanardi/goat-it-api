@@ -6,20 +6,18 @@ import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/reposito
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 import { ensureNoLiveQuestionsReferenceTheme } from "@question-theme/domain/rules/question-theme.rules";
 
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
-import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Injectable()
 export class ArchiveQuestionThemeUseCase {
   public constructor(
     @Inject(QUESTION_THEME_REPOSITORY_TOKEN)
     private readonly questionThemeRepository: QuestionThemeRepository,
-    @Inject(QUESTION_REPOSITORY_TOKEN)
-    private readonly questionRepository: QuestionRepository,
+    private readonly countLiveQuestionsByThemeIdUseCase: CountLiveQuestionsByThemeIdUseCase,
   ) {}
 
   public async archive(id: string): Promise<QuestionTheme> {
@@ -43,7 +41,7 @@ export class ArchiveQuestionThemeUseCase {
   }
 
   private async throwIfLiveQuestionsReferenceTheme(id: string): Promise<void> {
-    const liveQuestionCount = await this.questionRepository.countLiveByThemeId(id);
+    const liveQuestionCount = await this.countLiveQuestionsByThemeIdUseCase.execute(id);
     ensureNoLiveQuestionsReferenceTheme(liveQuestionCount, id);
   }
 }

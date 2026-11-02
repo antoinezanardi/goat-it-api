@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
+import { isGameIdSetOnGameRole } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinement";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
 describe("Question Author DTO Shape", () => {

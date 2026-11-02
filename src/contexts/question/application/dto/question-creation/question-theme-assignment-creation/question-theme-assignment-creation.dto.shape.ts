@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zMongoId } from "@shared/application/dto/zod/validators/string/string.zod.validators";
 
 import {
   zQuestionThemeAssignmentIsPrimary,
   zQuestionThemeAssignmentIsHint,
-} from "@question/application/dto/shared/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
 
 const QUESTION_THEME_ASSIGNMENT_CREATION_DTO = z.object({
   themeId: zMongoId()

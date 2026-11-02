@@ -5,7 +5,7 @@ import { QUESTION_THEME_DTO } from "@question-theme/application/dto/question-the
 import {
   zQuestionThemeAssignmentIsPrimary,
   zQuestionThemeAssignmentIsHint,
-} from "@question/application/dto/shared/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
 
 const QUESTION_THEME_ASSIGNMENT_DTO = z.strictObject({
   theme: QUESTION_THEME_DTO

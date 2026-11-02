@@ -2,13 +2,13 @@ import { z } from "zod";
 
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
-import { zLimit } from "@shared/infrastructure/http/zod/validators/limit/limit.zod.validators";
-import { zSortOrder } from "@shared/infrastructure/http/zod/validators/sort/sort.zod.validators";
+import { zLimit } from "@shared/application/dto/zod/validators/limit/limit.zod.validators";
+import { zSortOrder } from "@shared/application/dto/zod/validators/sort/sort.zod.validators";
 
 import { QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_IDS_QUERY_KEY, QUESTION_IS_ADULT_CONTENT_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
-import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
-import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionThemeIdsFilter } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/zod/validators/constants/question-sort.dto.zod.validators.constants";
+import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionThemeIdsFilter } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
 const FIND_QUESTIONS_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_SORTABLE_FIELDS)

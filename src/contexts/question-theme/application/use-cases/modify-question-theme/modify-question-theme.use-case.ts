@@ -4,7 +4,7 @@ import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/questi
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 
-import type { QuestionThemeModificationCommand } from "@question-theme/domain/types/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
