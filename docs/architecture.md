@@ -676,9 +676,9 @@ Path aliases are mandatory in `src/`, `tests/` and `packages/schemas/src/`; rela
 
 ### 10.2 Coverage and mutation excludes
 
-- Coverage includes `*.module.ts`. Every module has a `.spec.ts` that imports it; context and persistence specs compile the real module graph with mocked Mongoose model tokens, while declarative cross-cutting modules are imported and asserted without opening a database connection.
-- Coverage excludes `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts` and `*.value-objects.ts`.
-- Mutation keeps `*.module.ts` in scope. Stryker instruments no mutants for declarative Nest module metadata (imports, providers, exports arrays); the Vitest module specs and acceptance tests guard the graph instead. Mutation keeps `*.dto.ts` under testing and excludes every `*.schema.ts` file, including `src/infrastructure/api/config/types/env.schema.ts`.
+- Coverage and mutation exclude patterns are authoritative in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`; this guide states the policy and does not copy the lists.
+- `*.module.ts` is in both coverage and mutation scope: every module has a colocated `.module.spec.ts` — see [unit-tests.md § Module wiring tests](unit-tests.md#module-wiring-tests).
+- `*.dto.ts` stays under mutation testing; every `*.schema.ts` file, including `src/infrastructure/api/config/types/env.schema.ts`, is excluded from mutation.
 
 Writing guide per file type: [unit-tests.md](unit-tests.md). Acceptance guide: [acceptance-tests.md](acceptance-tests.md). Faketories: [faketories.md](faketories.md). Mocks: [mocks.md](mocks.md).
 

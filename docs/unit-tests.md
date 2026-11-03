@@ -342,7 +342,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 - Purpose: compile a real Nest module graph and prove that every provider, export and `useFactory` `inject` entry resolves without opening a MongoDB connection.
 - Describe label: `describe(ModuleClass, ...)`.
-- Override every Mongoose model token with a mock from `@mocks/...`; never call `MongooseModule.forRoot`.
+- Override every Mongoose model token registered by the module and its imports with a mock from `@mocks/...`; never call `MongooseModule.forRoot`.
 - Resolve every use case and controller by its class token. For multi-dependency use cases, assert the constructed instance received the expected dependency via bracket notation.
 - Global providers used by guards or middleware (for example `AppConfigService`) are supplied by `tests/unit/utils/helpers/nest/app-config-testing.module.ts`.
 - Declarative cross-cutting modules (app shell, auth, health, database) are imported and asserted without compiling a database connection.
@@ -356,6 +356,8 @@ describe(QuestionModule, () => {
     module = await Test.createTestingModule({ imports: [AppConfigTestingModule, QuestionModule] })
       .overrideProvider(getModelToken(QuestionMongooseSchema.name))
       .useValue(createMockedQuestionMongooseModel())
+      .overrideProvider(getModelToken(QuestionThemeMongooseSchema.name))
+      .useValue(createMockedQuestionThemeMongooseModel())
       .compile();
   });
 

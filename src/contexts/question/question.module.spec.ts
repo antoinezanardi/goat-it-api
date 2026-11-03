@@ -6,7 +6,6 @@ import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/applicatio
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
-import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
@@ -20,7 +19,6 @@ import { AdminQuestionController } from "@question/infrastructure/http/controlle
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QuestionModule } from "@question/question.module";
-import { QuestionUsageModule } from "@question/question-usage.module";
 
 import { AppConfigTestingModule } from "@unit-tests/utils/helpers/nest/app-config-testing.module";
 
@@ -96,24 +94,5 @@ describe(QuestionModule, () => {
     const removeThemeFromQuestionUseCase = module.get<RemoveThemeFromQuestionUseCase>(RemoveThemeFromQuestionUseCase);
 
     expect(removeThemeFromQuestionUseCase["findQuestionByIdUseCase"]).toBe(module.get(FindQuestionByIdUseCase));
-  });
-});
-
-describe(QuestionUsageModule, () => {
-  let module: TestingModule;
-
-  beforeEach(async() => {
-    module = await Test.createTestingModule({ imports: [QuestionUsageModule] })
-      .overrideProvider(getModelToken(QuestionMongooseSchema.name))
-      .useValue(createMockedQuestionMongooseModel())
-      .compile();
-  });
-
-  afterEach(async() => {
-    await module.close();
-  });
-
-  it("should resolve CountLiveQuestionsByThemeIdUseCase when the usage module is compiled.", () => {
-    expect(module.get(CountLiveQuestionsByThemeIdUseCase)).toBeInstanceOf(CountLiveQuestionsByThemeIdUseCase);
   });
 });
