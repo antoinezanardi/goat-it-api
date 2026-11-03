@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
 
-import { createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
+import { createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
@@ -23,7 +23,7 @@ import type { Mock } from "vitest";
 import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 
-vi.mock(import("@question-theme/application/mappers/question-theme.mappers"));
+vi.mock(import("@question-theme/contracts/dto/question-theme.dto.mappers"));
 vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe(QuestionThemeController, () => {

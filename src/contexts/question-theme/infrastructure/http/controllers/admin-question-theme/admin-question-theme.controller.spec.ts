@@ -1,6 +1,7 @@
 import { Test } from "@nestjs/testing";
 
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
+import { createAdminQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
@@ -33,6 +34,7 @@ import type { Mock } from "vitest";
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
+vi.mock(import("@question-theme/contracts/dto/question-theme.dto.mappers"));
 vi.mock(import("@question-theme/application/mappers/question-theme.mappers"));
 vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 

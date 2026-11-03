@@ -4,7 +4,8 @@ import { ZodResponse } from "nestjs-zod";
 
 import { AdminQuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/admin-question-theme/admin-question-theme.dto";
 import { QuestionThemeStatsNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-stats/question-theme-stats.dto";
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
+import { createAdminQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
@@ -23,7 +24,7 @@ import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mo
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
-import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+import type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
 
 @AdminAuth()

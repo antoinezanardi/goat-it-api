@@ -1,6 +1,6 @@
 import oxlint from "eslint-plugin-oxlint";
 
-import { ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG, ESLINT_BOUNDARIES_FLAT_CONFIG, ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-boundaries.flat-config";
+import { ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG, ESLINT_BOUNDARIES_CONTRACTS_PACKAGE_BANS_FLAT_CONFIG, ESLINT_BOUNDARIES_FLAT_CONFIG, ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-boundaries.flat-config";
 import { ESLINT_FIXTURES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-fixtures.flat-config";
 import { ESLINT_UNIT_TESTS_MOCKS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unit-tests-mocks.flat-config";
 import { ESLINT_DECORATORS_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-decorators.flat-config";
@@ -46,6 +46,7 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
   // Must come after the Oxlint bridge: it turns `no-restricted-imports` off for `**/*.ts`.
   ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG,
   ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG,
+  ESLINT_BOUNDARIES_CONTRACTS_PACKAGE_BANS_FLAT_CONFIG,
 ];
 
 export default ESLINT_FLAT_CONFIGS;

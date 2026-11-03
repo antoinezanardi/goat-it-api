@@ -1,4 +1,3 @@
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { isQuestionThemeArchived } from "@question-theme/domain/rules/question-theme.rules";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
@@ -9,6 +8,7 @@ import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/erro
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
 import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import type { Question } from "@question/domain/types/question.entities";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 

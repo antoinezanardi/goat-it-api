@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 
-import { QUESTION_THEME_ALIASES_EXAMPLE, QUESTION_THEME_DESCRIPTION_EXAMPLE, QUESTION_THEME_LABEL_EXAMPLE } from "@question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
-import { QUESTION_THEME_DTO } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import { QUESTION_THEME_ALIASES_EXAMPLE, QUESTION_THEME_DESCRIPTION_EXAMPLE, QUESTION_THEME_LABEL_EXAMPLE } from "@question-theme/contracts/dto/zod/validators/question-theme/constants/question-theme.zod.validators.constants";
+import { QUESTION_THEME_DTO } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 import { HEX_COLOR_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 

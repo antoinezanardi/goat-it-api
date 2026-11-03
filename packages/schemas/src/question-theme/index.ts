@@ -7,21 +7,21 @@ export {
 } from "@question-theme/domain/constants/question-theme.constants";
 
 export { ADMIN_FIND_QUESTION_THEMES_QUERY_DTO } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
-export { ADMIN_QUESTION_THEME_DTO } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+export { ADMIN_QUESTION_THEME_DTO } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 export { FIND_QUESTION_THEMES_QUERY_DTO } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";
 export { QUESTION_THEME_CREATION_DTO } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 export { QUESTION_THEME_MODIFICATION_DTO } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 export { QUESTION_THEME_STATS_DTO } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
-export { QUESTION_THEME_DTO } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+export { QUESTION_THEME_DTO } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 export type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
 
 export type { AdminFindQuestionThemesQueryDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
-export type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+export type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 export type { FindQuestionThemesQueryDto } from "@question-theme/application/dto/find-question-themes-query/find-question-themes-query.dto.shape";
 export type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 export type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 export type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
-export type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+export type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 export { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_ORDER_DEFAULT } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";

@@ -66,7 +66,7 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 1. **Quality Gate**: Any code change → run all 5 gate commands above.
 2. **Bruno Collection**: Endpoint added/changed/deleted → update `.bru` files in `configs/bruno/Goat It/` following naming convention `<scope>-<verb>-<resource>[-by-id].bru`. See `docs/bruno.md`.
 3. **Acceptance Test Scenarios**: API behavior changed → add/update Cucumber scenarios covering happy path and key error cases.
-4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`.
+4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`. Moving a shape from `application/dto` to `contracts/dto` while keeping the exported symbol stable is not a breaking package change and does not require a bump.
 5. **Schemas Package — New Export Candidate**: New DTO shape/constant/value-object → **ask the user** whether to export. If yes: add re-export, update `package.json` exports + `tsdown.config.ts` entries, bump patch version.
 6. **GlobalExceptionFilter**: New domain error class → classify it: add a mapping when a specific 4xx status is required, otherwise record why it intentionally falls through to 500. See `docs/architecture.md` §7.4.
 7. **Faketories for New Types**: New entity/DTO/command/contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
@@ -116,7 +116,7 @@ Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters):
 - `infrastructure/` — controllers, DTO wrappers, Mongoose adapters, HTTP pipes/filters/guards, persistence modules.
 - `contracts/` — optional published cross-context DTO shapes, pure mappers, validators and persistence contracts.
 
-A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR.
+A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR. A consuming module may import the published use-case class token it injects in a `useFactory`; that is wiring, not an application dependency.
 
 **Data flow**: `Controller` → validates with Zod DTO → maps to application command → `UseCase` → calls repository port → maps result to response shape. Domain errors bubble up and are converted by `GlobalExceptionFilter`.
 
@@ -301,6 +301,7 @@ Slash commands available in OpenCode sessions:
 - `docs/superpowers/`        – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules.
 - `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
+- `docs/architecture-follow-ups.md` – Residual risks, accepted limitations and follow-up ownership.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/bruno.md`            – Bruno API collection setup.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.

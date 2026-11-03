@@ -12,19 +12,19 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 |---|---|---|---|---|
 | D1 | Application framework independence | Strict plain TypeScript | 3 | Implemented (Phase 3) |
 | D2 | Domain purity | I/O and randomness move to infrastructure | 2 | Implemented (Phase 2) |
-| D3 | Shared semantics | Layered shared kernel | 0 | Accepted |
+| D3 | Shared semantics | Layered shared kernel | 0 | Implemented (Phases 1–3) |
 | D4 | Composition root | `main.ts` owns `AppModule` | 2 | Implemented (Phase 2) |
-| D5 | Error mapping | Conditional mapping; write failures 500 | 0 | Accepted |
+| D5 | Error mapping | Conditional mapping; write failures 500 | 0 | Implemented (existing behavior, locked by tests) |
 | D6 | DTO ownership | Shapes application/contracts, wrappers infrastructure | 3 | Implemented (Phase 3) |
 | D7 | Validator homes | `shared/application/dto/zod` | 1 | Implemented (Phase 1) |
-| D8 | Value-object modeling | Hybrid with promotion criteria | 0 | Accepted |
+| D8 | Value-object modeling | Hybrid with promotion criteria | 0 | Implemented (existing behavior) |
 | D9 | Commands and contracts | Commands application, contracts domain | 1 | Implemented (Phase 1) |
-| D10 | Cross-context collaboration | B-lite published API + contracts | 4 | Accepted |
+| D10 | Cross-context collaboration | B-lite published API + contracts | 4 | Implemented (Phase 4) |
 | D11 | Module wiring | Persistence modules (both contexts) + usage module | 1 | Implemented (Phase 1) |
 | D12 | Naming consistency | All four naming rules | 1 | Implemented (Phase 1) |
 | D13 | Testing architecture | Port-level mocks | 3 | Implemented (Phase 3) |
-| D14 | Package boundary | Keep facade, document public API | 0 | Accepted |
-| D15 | Enforcement | Aliases + lint zones and package bans | 0–5 | Accepted |
+| D14 | Package boundary | Keep facade, document public API | 0 | Implemented (Phase 5) |
+| D15 | Enforcement | Aliases + lint zones and package bans | 0–5 | Implemented (Phases 0–5) |
 
 ## D1 — Application framework independence
 
@@ -163,7 +163,13 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 
 **Phase 0 finding:** ESLint core `no-restricted-imports` must be re-enabled in a scoped block composed **after** `oxlint.buildFromOxlintConfigFile(...)`; the bridge emits `"no-restricted-imports": "off"` for `**/*.ts` and a block placed before it is a silent no-op. Ban subpaths (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude specs/declarations. Prove each new zone with a temporary forbidden import plus a temporary allowed import.
 
+**Final state (Phase 5):** zones 1–12c are active, including the per-subtree cross-context zones 11b/11c/12b and the contracts package ban. Only zone 9 remains deferred behind #1265. The module-token imports required by `useFactory` are explicitly allowed in zones 11d/12c. The residual risks and follow-ups are in [architecture-follow-ups.md](architecture-follow-ups.md).
+
 **Rejected:** Adding `@infrastructure/*` and deprecating `@src/*` (61-file churn, no enforcement by itself); aliases only.
+
+## Final status
+
+All D1–D15 decisions are implemented. The only deferred enforcement item is zone 9, owned by #1265. The architecture is a two-context B-lite modular monolith: published use cases and contracts, no cross-context ports/adapters, acyclic module graph, pure application/domain layers, and lint-enforced boundaries. See [architecture-follow-ups.md](architecture-follow-ups.md) for accepted limitations and the merge/denormalization triggers.
 
 ## Adding a decision
 

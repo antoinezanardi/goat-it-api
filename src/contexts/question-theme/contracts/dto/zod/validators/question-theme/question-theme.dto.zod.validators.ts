@@ -5,7 +5,7 @@ import {
   QUESTION_THEME_DESCRIPTION_EXAMPLE,
   QUESTION_THEME_LABEL_EXAMPLE,
   QUESTION_THEME_SLUG_EXAMPLE,
-} from "@question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
+} from "@question-theme/contracts/dto/zod/validators/question-theme/constants/question-theme.zod.validators.constants";
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
 import { zLocalizedText, zLocalizedTexts } from "@shared/application/dto/zod/validators/localization/localization.zod.validators";

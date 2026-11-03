@@ -2,7 +2,7 @@ import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-t
 
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
-import { QUESTION_STATUS_ACTIVE } from "@question/domain/constants/question.constants";
+import { QUESTION_MONGOOSE_COLLECTION_NAME, QUESTION_STATUS_ACTIVE, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts";
 
 // Acceptable as MongoDB query syntax — null matches missing grouped field values
 // oxlint-disable-next-line unicorn/no-null
@@ -18,15 +18,15 @@ const ROWS_TO_RECORD_STAGES = [
 
 const QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE = {
   $lookup: {
-    from: "questions",
+    from: QUESTION_MONGOOSE_COLLECTION_NAME,
     let: { themeId: "$_id" },
     pipeline: [
       {
         $match: {
           $expr: {
             $and: [
-              { $in: ["$$themeId", "$themes.themeId"] },
-              { $eq: ["$status", QUESTION_STATUS_ACTIVE] },
+              { $in: ["$$themeId", `$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId}`] },
+              { $eq: [`$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status}`, QUESTION_STATUS_ACTIVE] },
             ],
           },
         },
@@ -79,4 +79,4 @@ const QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE = [
   QUESTION_THEME_STATS_FACET_STAGE,
 ];
 
-export { QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE };
+export { QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE, QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE };

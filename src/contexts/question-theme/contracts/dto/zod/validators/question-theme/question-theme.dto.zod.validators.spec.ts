@@ -3,7 +3,7 @@ import {
   QUESTION_THEME_DESCRIPTION_EXAMPLE,
   QUESTION_THEME_LABEL_EXAMPLE,
   QUESTION_THEME_SLUG_EXAMPLE,
-} from "@question-theme/application/dto/zod/validators/constants/question-theme.zod.validators.constants";
+} from "@question-theme/contracts/dto/zod/validators/question-theme/constants/question-theme.zod.validators.constants";
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 import {
   zQuestionThemeId,
@@ -18,7 +18,7 @@ import {
   zQuestionThemeStatus,
   zQuestionThemeCreatedAt,
   zQuestionThemeUpdatedAt,
-} from "@question-theme/application/dto/zod/validators/question-theme.dto.zod.validators";
+} from "@question-theme/contracts/dto/zod/validators/question-theme/question-theme.dto.zod.validators";
 
 describe("Question Theme DTO Zod Validators", () => {
   describe(zQuestionThemeId, () => {

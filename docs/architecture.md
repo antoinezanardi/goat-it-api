@@ -736,6 +736,8 @@ Only add a zone in the phase that makes it pass. Do not add production boundary-
 
 When `from` is a glob, `except` entries MUST be glob patterns. Prefer directory-based `from` plus relative `except` entries for exact allowlists. The table is based on repository inspection; the Phase 0 plan MUST validate it with the actual `pnpm run lint:eslint` run before merge. New contexts add per-layer zones; see §9.1.
 
+Zones 10c, 11b, 11c and 12b are implemented as one zone per provider subtree when the allowlist differs by subtree. Directory-based `from` keeps `except` relative and readable; the table states the logical rule, not the exact number of zone objects.
+
 Zone 1 also catches any context's `application/**` or `infrastructure/**` imported from any context `domain/**`, including `question-theme`. Zone 11a is therefore specifically about the published **theme domain** surface; an import of a theme use case legitimately reports both zone 1 and zone 11a. Overlap is expected, not a configuration bug.
 
 ### 12.2 Package bans
@@ -749,7 +751,7 @@ Zone 1 also catches any context's `application/**` or `infrastructure/**` import
 
 `zod` and type-only `type-fest` remain allowed in application/domain. `shared/types` is type-only and usable everywhere.
 
-Package bans use ESLint core `no-restricted-imports` in scoped flat-config blocks. Every block MUST be composed **after** `oxlint.buildFromOxlintConfigFile(...)` in `eslint.config.ts`: the Oxlint bridge emits a later `"no-restricted-imports": "off"` for `**/*.ts`, so a block placed before it is a silent no-op. Ban subpaths as well (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude `**/*.spec.ts` / `**/*.d.ts` from the production ban blocks. The domain block covers `contexts/*/domain` and `shared/domain`; the application block covers `contexts/*/application` and `shared/application`.
+Package bans use ESLint core `no-restricted-imports` in scoped flat-config blocks. Every block MUST be composed **after** `oxlint.buildFromOxlintConfigFile(...)` in `eslint.config.ts`: the Oxlint bridge emits a later `"no-restricted-imports": "off"` for `**/*.ts`, so a block placed before it is a silent no-op. Ban subpaths as well (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude `**/*.spec.ts` / `**/*.d.ts` from the production ban blocks. The domain block covers `contexts/*/domain` and `shared/domain`; the application block covers `contexts/*/application` and `shared/application`; the contracts block covers `contexts/*/contracts`.
 
 ### 12.3 Rules
 
@@ -773,6 +775,8 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 
 Every temporary exception MUST name an owner issue or a removal condition. Do not add a silent exception to the guide. Existing non-boundary lint disables (for example `unicorn/no-keyword-prefix` in the stats pipelines) are tracked by the lint policy, not this register.
 
+The full residual-risk and follow-up register lives in [architecture-follow-ups.md](architecture-follow-ups.md). Update it when an exception is removed or a new accepted limitation appears.
+
 ## 14. Decision log
 
 The durable decisions and their rationale live in [architecture-decisions.md](architecture-decisions.md). The summary:
@@ -795,7 +799,7 @@ The durable decisions and their rationale live in [architecture-decisions.md](ar
 | D14 | Package boundary | Keep facade, document public API | 0 |
 | D15 | Enforcement | Aliases + lint zones and package bans | 0–5 |
 
-This guide owns the rules. The decision log owns the rationale, rejected alternatives and migration phases.
+This guide owns the rules. The decision log owns the rationale, rejected alternatives and migration phases. All D1–D15 decisions are implemented; only zone 9 is deferred behind #1265. Residual risks are in [architecture-follow-ups.md](architecture-follow-ups.md).
 
 ## 15. Framework references
 

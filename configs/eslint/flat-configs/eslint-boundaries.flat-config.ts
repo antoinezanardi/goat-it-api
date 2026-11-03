@@ -6,6 +6,8 @@ const DOMAIN_NODE_BAN_MESSAGE = "Architecture boundary: domain must not perform 
 
 const APPLICATION_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: application is framework-free; no NestJS, Mongoose, Fastify or nestjs-zod. See docs/architecture.md §12.2.";
 
+const CONTRACTS_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: a published contract must stay pure; no NestJS, Mongoose, Fastify or nestjs-zod. See docs/architecture.md §12.2.";
+
 const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
   name: "boundaries",
   rules: {
@@ -83,6 +85,15 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             message: "Architecture boundary: a context application layer must not import shared infrastructure.",
           },
           {
+            target: "src/contexts/*/contracts/**/!(*.spec).ts",
+            from: [
+              "src/contexts/*/application/**",
+              "src/contexts/*/infrastructure/**",
+              "src/shared/infrastructure/**",
+            ],
+            message: "Architecture boundary: a published contract must not import application or infrastructure code.",
+          },
+          {
             target: "src/contexts/question/domain/**/!(*.spec).ts",
             from: ["src/contexts/question-theme"],
             except: [
@@ -93,6 +104,54 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
               "domain/errors/question-theme-not-found",
             ],
             message: "Architecture boundary: the question domain may only import the published question-theme domain surface.",
+          },
+          {
+            target: "src/contexts/question/application/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/application",
+            except: [
+              "use-cases/find-question-theme-by-id",
+              "use-cases/get-question-themes-by-ids-or-throw",
+            ],
+            message: "Architecture boundary: the question application may only import the published question-theme use cases.",
+          },
+          {
+            target: "src/contexts/question/application/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/infrastructure",
+            message: "Architecture boundary: the question application must not import question-theme infrastructure.",
+          },
+          {
+            target: "src/contexts/question/application/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/domain",
+            except: [
+              "types/question-theme.entities.ts",
+              "types/question-theme.value-objects.ts",
+              "constants/question-theme.constants.ts",
+              "rules/question-theme.rules.ts",
+              "errors/question-theme-not-found",
+            ],
+            message: "Architecture boundary: the question application may only import the published question-theme domain surface.",
+          },
+          {
+            target: "src/contexts/question/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/application",
+            message: "Architecture boundary: the question infrastructure must not import question-theme application code.",
+          },
+          {
+            target: "src/contexts/question/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/infrastructure",
+            message: "Architecture boundary: the question infrastructure must not import question-theme infrastructure.",
+          },
+          {
+            target: "src/contexts/question/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question-theme/domain",
+            except: [
+              "types/question-theme.entities.ts",
+              "types/question-theme.value-objects.ts",
+              "constants/question-theme.constants.ts",
+              "rules/question-theme.rules.ts",
+              "errors/question-theme-not-found",
+            ],
+            message: "Architecture boundary: the question infrastructure may only import the published question-theme domain surface.",
           },
           {
             target: "src/contexts/question/question.module.ts",
@@ -109,6 +168,27 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             from: ["src/contexts/question"],
             except: ["application/use-cases/count-live-questions-by-theme-id"],
             message: "Architecture boundary: the question-theme application may only import the count-live-questions-by-theme-id use case from the question context.",
+          },
+          {
+            target: "src/contexts/question-theme/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question/application",
+            message: "Architecture boundary: the question-theme infrastructure must not import question application code.",
+          },
+          {
+            target: "src/contexts/question-theme/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question/domain",
+            message: "Architecture boundary: the question-theme infrastructure must not import question domain code.",
+          },
+          {
+            target: "src/contexts/question-theme/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question/infrastructure",
+            message: "Architecture boundary: the question-theme infrastructure must not import question infrastructure.",
+          },
+          {
+            target: "src/contexts/question-theme/infrastructure/**/!(*.spec).ts",
+            from: "src/contexts/question/contracts",
+            except: ["persistence"],
+            message: "Architecture boundary: the question-theme infrastructure may only import the published question persistence contract.",
           },
           {
             target: "src/contexts/question-theme/question-theme.module.ts",
@@ -197,8 +277,39 @@ const ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
   },
 } as const;
 
+const ESLINT_BOUNDARIES_CONTRACTS_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
+  name: "boundaries-contracts-package-bans",
+  files: ["src/contexts/*/contracts/**/*.ts"],
+  ignores: [
+    "**/*.spec.ts",
+    "**/*.d.ts",
+  ],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: [
+              "@nestjs/*",
+              "mongoose",
+              "mongoose/*",
+              "fastify",
+              "fastify/*",
+              "nestjs-zod",
+              "nestjs-zod/*",
+            ],
+            message: CONTRACTS_FRAMEWORK_BAN_MESSAGE,
+          },
+        ],
+      },
+    ],
+  },
+} as const;
+
 export {
   ESLINT_BOUNDARIES_FLAT_CONFIG,
   ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG,
   ESLINT_BOUNDARIES_APPLICATION_PACKAGE_BANS_FLAT_CONFIG,
+  ESLINT_BOUNDARIES_CONTRACTS_PACKAGE_BANS_FLAT_CONFIG,
 };

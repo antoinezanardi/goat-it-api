@@ -1,8 +1,8 @@
 import type { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
 import type { HydratedDocument, Model } from "mongoose";
+import type { QuestionThemePersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.contracts";
 
-import type { QuestionThemeMongooseSchemaShape } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { MongooseCollectionSchemaBase } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
 
 type QuestionMongooseDocument = HydratedDocument<QuestionMongooseSchema>;
@@ -11,11 +11,13 @@ type QuestionAggregatePipeline = Parameters<Model<QuestionMongooseDocument>["agg
 
 type QuestionMongooseSchemaShape = QuestionMongooseSchema & MongooseCollectionSchemaBase;
 
+type QuestionThemeAggregate = QuestionThemePersistenceShape;
+
 type QuestionThemeAssignmentAggregate = Omit<
   QuestionMongooseSchemaShape["themes"][number],
   "themeId"
 > & {
-  theme: QuestionThemeMongooseSchemaShape;
+  theme: QuestionThemeAggregate;
 };
 
 type QuestionAggregate = Omit<
@@ -43,6 +45,7 @@ type QuestionStatsAggregationResult = {
 export type {
   QuestionMongooseDocument,
   QuestionAggregatePipeline,
+  QuestionThemeAggregate,
   QuestionThemeAssignmentAggregate,
   QuestionAggregate,
   QuestionMongooseInsertPayload,

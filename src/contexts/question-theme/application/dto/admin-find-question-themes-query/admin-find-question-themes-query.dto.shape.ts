@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
-import { zQuestionThemeStatus } from "@question-theme/application/dto/zod/validators/question-theme.dto.zod.validators";
+import { zQuestionThemeStatus } from "@question-theme/contracts/dto/zod/validators/question-theme/question-theme.dto.zod.validators";
 import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
 
 import { FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";

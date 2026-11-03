@@ -1,9 +1,9 @@
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { findArchivedQuestionTheme } from "@question-theme/domain/rules/question-theme.rules";
 import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 
 import type { QuestionCreationCommand } from "@question/application/commands/question.commands";
 import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";

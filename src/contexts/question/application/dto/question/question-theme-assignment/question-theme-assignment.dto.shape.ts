@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { QUESTION_THEME_DTO } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import { QUESTION_THEME_DTO } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 import {
   zQuestionThemeAssignmentIsPrimary,

@@ -4,10 +4,10 @@ import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/questi
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
-import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+import type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 import type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
-import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 function createFakeQuestionThemeDto(questionThemeDto: Partial<QuestionThemeDto> = {}): QuestionThemeDto {
   return {

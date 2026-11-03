@@ -1,4 +1,4 @@
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 
 import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts } from "@shared/application/mappers/localization/localization.mappers";
 
