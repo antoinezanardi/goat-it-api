@@ -7,7 +7,7 @@ import { createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/find-question-themes-query/find-question-themes-query.dto";
-import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.constants";
+import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/constants/question-theme.constants";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";

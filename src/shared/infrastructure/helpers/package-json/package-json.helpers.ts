@@ -1,11 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-type PackageJson = {
-  description: string;
-  name: string;
-  version: string;
-};
+import type { PackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers.types";
 
 function readPackageJson(): PackageJson {
   const packageJsonPath = path.join(process.cwd(), "package.json");
@@ -20,8 +16,4 @@ function readPackageJson(): PackageJson {
 
 export {
   readPackageJson,
-};
-
-export type {
-  PackageJson,
 };

@@ -24,7 +24,9 @@ import { createMockedGetQuestionThemeStatsUseCase } from "@mocks/contexts/questi
 import { createMockedModifyQuestionThemeUseCase } from "@mocks/contexts/question-theme/application/use-cases/modify-question-theme.use-case.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
+import { createFakeAdminQuestionThemeDto } from "@faketories/contexts/question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.faketory";
+import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question-theme/dto/question-theme-creation/question-theme-creation.dto.faketory";
+import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme-modification/question-theme-modification.dto.faketory";
 import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 import { createFakeAdminFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.faketory";
 import { createFakeQuestionThemeStatsDto } from "@faketories/contexts/question-theme/dto/question-theme-stats/question-theme-stats.dto.faketory";

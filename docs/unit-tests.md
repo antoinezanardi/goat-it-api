@@ -340,7 +340,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 ### Module wiring tests
 
-- Purpose: compile a real Nest module graph and prove that every provider, export and `useFactory` `inject` entry resolves without opening a MongoDB connection.
+- Purpose: compile a real Nest module graph and prove that every provider, export and `createUseCaseProvider` dependency token resolves without opening a MongoDB connection.
 - Describe label: `describe(ModuleClass, ...)`.
 - Override every Mongoose model token registered by the module and its imports with a mock from `@mocks/...`; never call `MongooseModule.forRoot`.
 - Resolve every use case and controller by its class token. For multi-dependency use cases, assert the constructed instance received the expected dependency via bracket notation.

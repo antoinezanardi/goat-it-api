@@ -9,7 +9,7 @@ import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/fi
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 
-import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/question.constants";
+import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/constants/question.constants";
 import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FindRandomQuestionsBodyNestZodDto } from "@question/infrastructure/http/dto/find-random-questions-body/find-random-questions-body.dto";
 import { FindQuestionsQueryNestZodDto } from "@question/infrastructure/http/dto/find-questions-query/find-questions-query.dto";

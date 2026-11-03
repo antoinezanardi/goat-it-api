@@ -1,4 +1,4 @@
-import { createStatsZeroFilledRecord } from "@shared/application/mappers/stats/stats.helpers";
+import { createStatsZeroFilledRecord } from "@shared/application/helpers/stats/stats.helpers";
 
 import {
   QUESTION_AUTHOR_ROLES,

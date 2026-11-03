@@ -13,7 +13,7 @@ import { createMockedQuestionThemeMongooseModel, createQuestionThemeMongooseFind
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/repository-contracts/question-theme.repository-contracts.faketory";
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 
 import type { Mock } from "vitest";

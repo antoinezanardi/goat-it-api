@@ -2,7 +2,7 @@ import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-t
 
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
-import { QUESTION_MONGOOSE_COLLECTION_NAME, QUESTION_STATUS_ACTIVE, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts";
+import { QUESTION_MONGOOSE_COLLECTION_NAME, QUESTION_STATUS_ACTIVE, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 
 // Acceptable as MongoDB query syntax — null matches missing grouped field values
 // oxlint-disable-next-line unicorn/no-null

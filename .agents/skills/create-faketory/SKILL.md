@@ -1,12 +1,12 @@
 ---
 name: create-faketory
-description: Scaffold a new faketory (test data factory) for a domain entity, DTO, command, contract, or Mongoose document following Goat It API conventions, including correct placement, typing, faker usage and export style.
+description: Scaffold a new faketory (test data factory) for a domain entity, DTO, command, repository contract, or Mongoose document following Goat It API conventions, including correct placement, typing, faker usage and export style.
 disable-model-invocation: true
 ---
 
 ## What I do
 
-1. Identify the source type (entity, DTO, command, contract, Mongoose document) from the input.
+1. Identify the source type (entity, DTO, command, repository contract, Mongoose document) from the input.
 2. Derive the correct faketory file path under `tests/shared/utils/faketories/` by mirroring the source path.
 3. Generate the typed factory function(s) using `@faker-js/faker` with an `overrides` parameter.
 4. Ensure the file is pure, uses path aliases, has no default export, and passes lint/typecheck.
@@ -14,7 +14,7 @@ disable-model-invocation: true
 
 ## When to use me
 
-- A new domain entity, DTO, command, contract, or Mongoose document was added and needs a faketory.
+- A new domain entity, DTO, command, repository contract, or Mongoose document was added and needs a faketory.
 - An existing inline test object should be extracted into a reusable shared factory.
 - You need realistic, randomized test data that still allows deterministic overrides.
 
@@ -29,7 +29,8 @@ Mirror the **source** path, replacing the layer segment with the faketory catego
 | `src/contexts/<ctx>/…/domain/types/foo.entities.ts`            | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/entity/foo.entity.faketory.ts`                                            |
 | `src/contexts/<ctx>/…/application/dto/foo.dto.shape.ts`        | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/dto/foo.dto.faketory.ts`                                                  |
 | `src/contexts/<ctx>/…/application/commands/foo.commands.ts`    | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/commands/foo.commands.faketory.ts`                                        |
-| `src/contexts/<ctx>/…/domain/types/foo.contracts.ts`           | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/contracts/foo.contracts.faketory.ts`                                      |
+| `src/contexts/<ctx>/domain/repositories/<aggregate>.repository-contracts.types.ts` | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/repository-contracts/<concept>.repository-contracts.faketory.ts`                 |
+| `src/contexts/<ctx>/contracts/dto/<concept>/<concept>.dto.shape.ts` (published) | `tests/shared/utils/faketories/contexts/<ctx>/contracts/dto/<concept>/<concept>.dto.faketory.ts`                                   |
 | `src/contexts/<ctx>/…/persistence/mongoose/…` (document)       | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/mongoose/mongoose-document/foo.mongoose-document.faketory.ts`             |
 | `src/contexts/<ctx>/…/persistence/mongoose/…` (insert payload) | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/mongoose/mongoose-insert-payload/foo.mongoose-insert-payload.faketory.ts` |
 | `src/shared/…`                                                 | `tests/shared/utils/faketories/shared/…`                                                                                          |
@@ -40,7 +41,7 @@ Export function name: `createFake<ConceptName>` (PascalCase concept, camelCase f
 
 ## Implementation pattern
 
-### Standard factory (entity, DTO, command, contract)
+### Standard factory (entity, DTO, command, repository contract)
 
 ```typescript
 import { faker } from "@faker-js/faker";
@@ -194,6 +195,7 @@ Existing faketories to copy from:
 | DTO (response)         | `tests/shared/utils/faketories/contexts/question/dto/question/question.dto.faketory.ts`                                                  |
 | DTO (creation)         | `tests/shared/utils/faketories/contexts/question/dto/question-creation/question-creation.dto.faketory.ts`                                |
 | Commands               | `tests/shared/utils/faketories/contexts/question/commands/question.commands.faketory.ts`                                                 |
-| Contracts              | `tests/shared/utils/faketories/contexts/question/contracts/question.contracts.faketory.ts`                                               |
+| Repository contracts   | `tests/shared/utils/faketories/contexts/question/repository-contracts/question.repository-contracts.faketory.ts`                          |
+| Published DTO          | `tests/shared/utils/faketories/contexts/question-theme/contracts/dto/question-theme/question-theme.dto.faketory.ts`                       |
 | Shared locale          | `tests/shared/utils/faketories/shared/locale/locale.faketory.ts`                                                                         |
 | Shared ObjectId helper | `tests/shared/utils/faketories/infrastructure/database/database.faketory.ts`                                                             |

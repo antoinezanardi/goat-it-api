@@ -16,7 +16,7 @@ import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-case
 import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
 import { QuestionThemeCreationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-creation/question-theme-creation.dto";
 import { QuestionThemeModificationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-modification/question-theme-modification.dto";
-import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.constants";
+import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/constants/question-theme.constants";
 
 import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";

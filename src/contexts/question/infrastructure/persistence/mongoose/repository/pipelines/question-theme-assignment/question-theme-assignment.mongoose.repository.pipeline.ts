@@ -1,4 +1,4 @@
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts";
+import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.constants";
 
 import type { QuestionAggregatePipeline } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 

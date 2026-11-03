@@ -86,7 +86,7 @@ You may dispatch helper subagents when reviewing:
 
 ### 3. Code review (NestJS/Hexagonal conventions)
 - **Single responsibility:** each file has one clear purpose.
-- **Layered architecture:** domain (types, value-objects, errors, contracts, repository ports) → application (commands, use-cases, DTOs, mappers) → infrastructure (controllers, DTO wrappers, Mongoose repositories, persistence modules).
+- **Layered architecture:** domain (types, value-objects, errors, repository contracts in `domain/repositories/`, repository ports) → application (commands, use-cases, DTOs, mappers) → infrastructure (controllers, DTO wrappers, Mongoose repositories, persistence modules).
 - **Repository pattern:** port interface + injection token in `domain/repositories/`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`, registered with `{ provide: TOKEN, useClass: Impl }`.
 - **DTO pattern:** `*.dto.shape.ts` (Zod schema) + `*.dto.ts` (nestjs-zod wrapper). Response shapes use `z.strictObject`. Fields have `.describe()` and `.meta({ example })`.
 - **Errors:** Custom errors extend `Error` with `this.name` set. Each is either mapped in `GlobalExceptionFilter`'s `domainErrorHttpExceptionFactories` or intentionally falls through to 500 with a documented justification.

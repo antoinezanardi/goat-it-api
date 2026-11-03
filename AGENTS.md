@@ -71,9 +71,9 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`. Moving a shape from `application/dto` to `contracts/dto` while keeping the exported symbol stable is not a breaking package change and does not require a bump.
 5. **Schemas Package — New Export Candidate**: New DTO shape/constant/value-object → **ask the user** whether to export. If yes: add re-export, update `package.json` exports + `tsdown.config.ts` entries, bump patch version.
 6. **GlobalExceptionFilter**: New domain error class → classify it: add a mapping when a specific 4xx status is required, otherwise record why it intentionally falls through to 500. See `docs/architecture.md` §7.4.
-7. **Faketories for New Types**: New entity/DTO/command/contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
+7. **Faketories for New Types**: New entity/DTO/command/repository contract/published contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
 8. **Mock Factories for New Ports**: New repository port or use case → create mock factory under `tests/unit/utils/mocks/` named `createMocked<What>(overrides)`.
-9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `useFactory` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
+9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `createUseCaseProvider` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
 10. **Acceptance Test Infrastructure for New Domains**: New domain/MongoDB collection → update world types, fixture registry, payload types, fixture inserters.
 
 ## Repository structure
@@ -83,15 +83,15 @@ src/
   app/                  # App module, root controller
   contexts/
     question/           # Question bounded context (single aggregate)
-      domain/           # constants/, types/ (entities, VOs, contracts), rules/, errors/, repositories/
-      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
+      domain/           # constants/, types/ (entities, VOs), rules/, errors/, repositories/ (ports, tokens, repository contracts)
+      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, helpers/, mappers/
       infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-persistence.module.ts
-      contracts/        # published DTO shapes/mappers/validators/persistence contracts (only when shared)
+      contracts/        # published DTO shapes/mappers/validators/persistence contracts
       question.module.ts
       question-usage.module.ts
     question-theme/     # Question-Theme bounded context
-      domain/           # constants/, types/, rules/, errors/, repositories/
-      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
+      domain/           # constants/, types/ (entities, VOs), rules/, errors/, repositories/ (ports, tokens, repository contracts)
+      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, helpers/, mappers/
       infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-theme-persistence.module.ts
       contracts/        # published DTO shapes/mappers/validators/persistence contracts
       question-theme.module.ts
@@ -113,12 +113,12 @@ The canonical file-placement, naming and dependency guide is [`docs/architecture
 
 Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters):
 
-- `domain/` — entities, value objects, errors, repository contracts, repository interfaces (ports). No framework, I/O or Zod.
+- `domain/` — entities, value objects, errors, repository interfaces (ports), injection tokens and repository contracts (`domain/repositories/*.repository-contracts.types.ts`). No framework, I/O or Zod.
 - `application/` — commands, use-cases, DTO shapes, mappers. No `@nestjs/*`, Mongoose, Fastify or `nestjs-zod`.
 - `infrastructure/` — controllers, DTO wrappers, Mongoose adapters, HTTP pipes/filters/guards, persistence modules.
 - `contracts/` — optional published cross-context DTO shapes, pure mappers, validators and persistence contracts.
 
-A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR. A consuming module may import the published use-case class token it injects in a `useFactory`; that is wiring, not an application dependency.
+A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR. A consuming module may import the published use-case class token it passes to `createUseCaseProvider`; that is wiring, not an application dependency.
 
 **Data flow**: `Controller` → validates with Zod DTO → maps to application command → `UseCase` → calls repository port → maps result to response shape. Domain errors bubble up and are converted by `GlobalExceptionFilter`.
 
@@ -131,10 +131,11 @@ A published use case accepts and returns primitives, published domain types or p
 ### Repository pattern
 
 - Interface in `domain/repositories/*.repository.types.ts`
+- Repository contracts (port input shapes) in `domain/repositories/*.repository-contracts.types.ts`
 - Symbol injection token in `domain/repositories/*.repository.constants.ts`
 - Mongoose implementation in `infrastructure/persistence/mongoose/repository/`
 - Register the adapter in `infrastructure/persistence/<context>-persistence.module.ts` and export the token.
-- Use cases are plain classes; wire them with `useFactory` and `inject: [TOKEN]`. Do not use `@Inject`/`@Injectable` in application code.
+- Use cases are plain classes; wire them with `createUseCaseProvider` and the dependency token tuple. Do not use `@Inject`/`@Injectable` in application code.
 
 ## Path aliases
 
@@ -199,7 +200,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - Zod shape in `application/dto/<feature>/<feature>.dto.shape.ts`: export `const FOO_DTO = z.object(...)` and `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })`.
 - nestjs-zod wrapper in `infrastructure/http/dto/<feature>/<feature>.dto.ts`: `class FooNestZodDto extends createZodDto(FOO_DTO) {}`
 - Only controllers import wrappers; mappers and use cases import shapes only.
-- Wrappers may wrap an application or published-contract shape. The shared API exception shape lives in `shared/application/dto`; its wrapper stays in `shared/infrastructure/http/dto`.
+- Wrappers may wrap an application or published-contract shape. The shared API exception shape lives in `shared/application/dto`; it has no HTTP wrapper.
 - DTO shape tests cover every field with positive + negative tests.
 
 ### Errors
@@ -227,9 +228,9 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`)
 - 100% coverage required (all branches, lines, functions)
-- Excluded from coverage: `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
+- Excluded from coverage: `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.entities.ts`, `*.value-objects.ts`
 - `*.module.ts` files are **included** in coverage. Every module has a `.spec.ts` that imports it; context and persistence specs compile the real module graph with mocked Mongoose model tokens.
-- **Stryker mutation excludes**: mutation excludes `*.pipeline.ts`, `*.constants.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts` plus **every** `*.schema.ts`, but keeps `*.dto.ts` under mutation testing. `*.module.ts` files stay in scope; Stryker instruments no mutants for declarative Nest module metadata, so the module specs and acceptance tests guard the graph.
+- **Stryker mutation excludes**: mutation excludes `*.pipeline.ts`, `*.constants.ts`, `*.types.ts`, `*.commands.ts`, `*.entities.ts`, `*.value-objects.ts` plus **every** `*.schema.ts`, but keeps `*.dto.ts` under mutation testing. `*.module.ts` files stay in scope; Stryker instruments no mutants for declarative Nest module metadata, so the module specs and acceptance tests guard the graph.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; `it.each` for parametrized cases — always typed: `it.each<T>([...])`
 - Private methods tested via `ClassName["privateMethod"](...)`
@@ -261,7 +262,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 - Named `createFake<EntityName>(overrides: Partial<T> = {})`, spread overrides last
 - Use `@faker-js/faker` for randomized values; randomize optional fields
-- Organized by layer: `entity/`, `dto/`, `mongoose/`, `commands/`, `contracts/`
+- Organized by layer: `aggregate/`, `entity/`, `dto/`, `mongoose/{mongoose-document,mongoose-insert-payload}/`, `commands/`, `domain/`, `repository-contracts/`, `contracts/dto/`
 - **DTO shape specs** (`*.dto.shape.spec.ts`): use inline literals for `validDto`, never faketories. Negative tests use `{ ...validDto, field: badValue }` (spread copy). No `as SomeDto` casts — use structural type on `let` declaration.
 
 ## Git / commit / PR expectations
@@ -303,8 +304,6 @@ Slash commands available in OpenCode sessions:
 
 - `docs/superpowers/`        – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules.
-- `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
-- `docs/architecture-follow-ups.md` – Residual risks, accepted limitations and follow-up ownership.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/bruno.md`            – Bruno API collection setup.

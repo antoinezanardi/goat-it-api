@@ -12,10 +12,10 @@ import { AdminQuestionThemeController } from "@question-theme/infrastructure/htt
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 import { QuestionThemePersistenceModule } from "@question-theme/infrastructure/persistence/question-theme-persistence.module";
 
+import { createUseCaseProvider } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers";
+
 import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
 import { QuestionUsageModule } from "@question/question-usage.module";
-
-import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
 @Module({
   imports: [
@@ -27,44 +27,13 @@ import type { QuestionThemeRepository } from "@question-theme/domain/repositorie
     AdminQuestionThemeController,
   ],
   providers: [
-    {
-      provide: FindQuestionThemesUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): FindQuestionThemesUseCase => new FindQuestionThemesUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: GetQuestionThemesByIdsOrThrowUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): GetQuestionThemesByIdsOrThrowUseCase => new GetQuestionThemesByIdsOrThrowUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: FindQuestionThemeByIdUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): FindQuestionThemeByIdUseCase => new FindQuestionThemeByIdUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: CreateQuestionThemeUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): CreateQuestionThemeUseCase => new CreateQuestionThemeUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: ModifyQuestionThemeUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): ModifyQuestionThemeUseCase => new ModifyQuestionThemeUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: GetQuestionThemeStatsUseCase,
-      useFactory: (questionThemeRepository: QuestionThemeRepository): GetQuestionThemeStatsUseCase => new GetQuestionThemeStatsUseCase(questionThemeRepository),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN],
-    },
-    {
-      provide: ArchiveQuestionThemeUseCase,
-      useFactory: (
-        questionThemeRepository: QuestionThemeRepository,
-        countLiveQuestionsByThemeIdUseCase: CountLiveQuestionsByThemeIdUseCase,
-      ): ArchiveQuestionThemeUseCase => new ArchiveQuestionThemeUseCase(questionThemeRepository, countLiveQuestionsByThemeIdUseCase),
-      inject: [QUESTION_THEME_REPOSITORY_TOKEN, CountLiveQuestionsByThemeIdUseCase],
-    },
+    createUseCaseProvider(FindQuestionThemesUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(GetQuestionThemesByIdsOrThrowUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(FindQuestionThemeByIdUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(CreateQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(ModifyQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(GetQuestionThemeStatsUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(ArchiveQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN, CountLiveQuestionsByThemeIdUseCase]),
   ],
   exports: [
     FindQuestionThemeByIdUseCase,

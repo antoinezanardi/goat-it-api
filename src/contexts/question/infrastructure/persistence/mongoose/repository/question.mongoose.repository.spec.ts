@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 import { buildMongooseAggregationSortStages } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-import * as arrayHelpers from "@question/infrastructure/persistence/mongoose/repository/helpers/array.mongoose.helpers";
+import * as arrayHelpers from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import * as questionMongooseMappers from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
@@ -20,10 +20,10 @@ import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infr
 import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
-import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
-import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
+import { createFakeQuestionCreationContract } from "@faketories/contexts/question/repository-contracts/question.repository-contracts.faketory";
+import { createFakeQuestionModificationContract } from "@faketories/contexts/question/repository-contracts/question-modification/question-modification.repository-contracts.faketory";
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
-import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
+import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/repository-contracts/question-theme-assignment/question-theme-assignment.repository-contracts.faketory";
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 import { createFakeFindRandomQuestionsOptions } from "@faketories/contexts/question/domain/find-random-questions-options.faketory";
 

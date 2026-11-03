@@ -181,7 +181,7 @@ If you find issues, fix them inline. If a spec requirement has no task, add the 
 
 ## Project-Specific Conventions (goat-it-api)
 
-- **Hexagonal layers:** `domain/` (types, value-objects, errors, contracts, repository ports), `application/` (commands, use-cases, DTOs, mappers), `infrastructure/` (controllers, DTO wrappers, Mongoose repositories, persistence modules)
+- **Hexagonal layers:** `domain/` (types, value-objects, errors, repository contracts in `domain/repositories/`, repository ports), `application/` (commands, use-cases, DTOs, mappers), `infrastructure/` (controllers, DTO wrappers, Mongoose repositories, persistence modules)
 - **Path aliases:** `@src/*`, `@shared/*`, `@question/*`, `@question-theme/*`, `@faketories/*`, `@mocks/*`, `@unit-tests/*` — no relative imports
 - **DTO pattern:** `*.dto.shape.ts` (Zod schema with `.describe()` and `.meta({ example })`) + `*.dto.ts` (nestjs-zod wrapper)
 - **Repository pattern:** Port interface in `domain/repositories/*.repository.types.ts`, injection token in `*.repository.constants.ts`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`
