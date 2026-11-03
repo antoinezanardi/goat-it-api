@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
-import { zTranslationCompletenessStats } from "@shared/infrastructure/http/zod/validators/translation-completeness/translation-completeness.zod.validators";
+import { zTranslationCompletenessStats } from "@shared/application/dto/zod/validators/translation-completeness/translation-completeness.zod.validators";
 
 const QUESTION_THEME_STATS_DTO = z.strictObject({
   total: z.number().int().nonnegative().describe("Total number of question themes"),

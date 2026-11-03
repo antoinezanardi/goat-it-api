@@ -11,7 +11,7 @@ export class AppConfigService {
 
   public constructor(private readonly configService: ConfigService) {
     this.authenticationConfigCache = this.computeAuthenticationConfigCache();
-    AppConfigService.deleteSensitiveEnvVariables();
+    AppConfigService.removeSensitiveEnvVariables();
   }
 
   public get serverConfig(): ServerConfigFromEnv {
@@ -54,7 +54,7 @@ export class AppConfigService {
     return this.authenticationConfigCache;
   }
 
-  private static deleteSensitiveEnvVariables(): void {
+  private static removeSensitiveEnvVariables(): void {
     delete process.env.API_KEY_HMAC_SECRET;
     delete process.env.ADMIN_API_KEY;
     delete process.env.GAME_API_KEY;

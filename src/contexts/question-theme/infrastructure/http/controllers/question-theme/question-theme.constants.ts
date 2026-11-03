@@ -1,0 +1,3 @@
+const QUESTION_THEME_ROUTE_PREFIX = "question-themes";
+
+export { QUESTION_THEME_ROUTE_PREFIX };

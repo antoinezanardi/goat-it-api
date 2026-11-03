@@ -7,8 +7,6 @@ import * as corsHelpers from "@src/infrastructure/api/server/cors/helpers/cors.h
 import * as swaggerHelpers from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
-import type { AppModule } from "@app/app.module";
-
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
 import { mockByRules } from "@unit-tests/utils/helpers/mock-by-rules.helpers";
@@ -22,11 +20,8 @@ import { createFakeCorsConfig } from "@faketories/infrastructure/api/server/cors
 import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
 vi.mock(import("@nestjs/core"));
-vi.mock(import("@app/app.module"), () => ({
-  AppModule: {
-    name: "MockedModule",
-  } as typeof AppModule,
-}));
+
+class MockedAppModule {}
 
 describe(bootstrap, () => {
   let mocks: {
@@ -75,10 +70,10 @@ describe(bootstrap, () => {
     const expectedOptions: NestApplicationOptions = {
       bufferLogs: true,
     };
-    await bootstrap();
+    await bootstrap(MockedAppModule);
 
     expect(NestCore.NestFactory.create).toHaveBeenCalledExactlyOnceWith(
-      { name: "MockedModule" },
+      MockedAppModule,
       expect.any(Fastify.FastifyAdapter),
       expectedOptions,
     );
@@ -88,7 +83,7 @@ describe(bootstrap, () => {
     const corsConfigFromEnv = createFakeCorsConfigFromEnv({
       origin: "*",
     });
-    await bootstrap();
+    await bootstrap(MockedAppModule);
 
     expect(corsHelpers.createCorsConfig).toHaveBeenCalledExactlyOnceWith(corsConfigFromEnv);
   });
@@ -101,32 +96,32 @@ describe(bootstrap, () => {
       allowedHeaders: ["Content-Type", "Authorization"],
     });
     vi.mocked(corsHelpers.createCorsConfig).mockReturnValue(expectedCorsConfig);
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.enableCors).toHaveBeenCalledExactlyOnceWith(expectedCorsConfig);
   });
 
   it("should enable shutdown hooks when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.enableShutdownHooks).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("should use logger when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
     const mockLogger = getMockedLoggerInstance();
 
     expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);
   });
 
   it("should use global exception filter when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.useGlobalFilters).toHaveBeenCalledExactlyOnceWith(expect.any(GlobalExceptionFilter));
   });
 
   it("should setup swagger module when called.", async() => {
-    await bootstrap();
+    await bootstrap(MockedAppModule);
 
     expect(swaggerHelpers.setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
   });
@@ -149,38 +144,38 @@ describe(bootstrap, () => {
   ])("$test", async({ serverConfig, expected }) => {
     mocks.services.config.serverConfig = serverConfig;
 
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.listen).toHaveBeenCalledExactlyOnceWith(expected);
   });
 
   it("should get app url when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.getUrl).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("should get swagger url when called.", async() => {
-    await bootstrap();
+    await bootstrap(MockedAppModule);
 
     expect(swaggerHelpers.getSwaggerUrl).toHaveBeenCalledExactlyOnceWith("http://mocked-host:9090");
   });
 
   it("should log the app url when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.get(Logger).log).toHaveBeenNthCalledWith(1, "🐐 Goat It API is running on: http://mocked-host:9090");
   });
 
   it("should log the swagger documentation path when called.", async() => {
     vi.mocked(swaggerHelpers.getSwaggerUrl).mockReturnValue("http://mocked-host:9090/docs");
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
 
     expect(app.get(Logger).log).toHaveBeenNthCalledWith(2, "📚 Swagger documentation is available on: http://mocked-host:9090/docs");
   });
 
   it("should return the app when called.", async() => {
-    const app = await bootstrap();
+    const app = await bootstrap(MockedAppModule);
     const expectedApp = {
       enableCors: expect.any(Function) as () => INestApplication,
       enableShutdownHooks: expect.any(Function) as () => INestApplication,

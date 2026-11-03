@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zQuestionThemeAssignmentIsHint } from "@question/application/dto/shared/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
+import { zQuestionThemeAssignmentIsHint } from "@question/application/dto/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
 
 const QUESTION_THEME_ASSIGNMENT_MODIFICATION_DTO = z.object({
   isPrimary: z.literal(true)

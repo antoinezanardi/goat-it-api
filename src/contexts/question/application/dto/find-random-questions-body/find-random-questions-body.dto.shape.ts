@@ -12,7 +12,7 @@ import {
   zQuestionExcludedIdsFilter,
   zQuestionIsAdultContentBooleanFilter,
   zQuestionThemeIdsFilter,
-} from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
 const FIND_RANDOM_QUESTIONS_BODY_DTO = z.object({
   limit: z.number()

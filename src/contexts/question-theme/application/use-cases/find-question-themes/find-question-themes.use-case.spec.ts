@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
@@ -21,23 +18,14 @@ describe(FindQuestionThemesUseCase, () => {
   };
   let findAllOptions: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>;
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        FindQuestionThemesUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
 
-    findQuestionThemesUseCase = testingModule.get<FindQuestionThemesUseCase>(FindQuestionThemesUseCase);
+    findQuestionThemesUseCase = new FindQuestionThemesUseCase(mocks.repositories.questionTheme);
     findAllOptions = createFakeFindAllOptions(ADMIN_QUESTION_THEME_SORTABLE_FIELDS);
   });
 

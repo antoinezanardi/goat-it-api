@@ -8,20 +8,25 @@ import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
+import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
+import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
+import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment-modification/question-theme-assignment-modification.error";
+import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
-import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/infrastructure/http/dto/api-response-exception/api-response-exception.faketory";
+import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/application/dto/api-response-exception/api-response-exception.faketory";
 
 import type { FastifyReply } from "fastify";
 
@@ -280,6 +285,16 @@ describe(GlobalExceptionFilter, () => {
         }, HttpStatus.BAD_REQUEST),
       },
       {
+        test: "should map domain error to http exception and send it when called with QuestionMaximumThemesError.",
+        exception: new QuestionMaximumThemesError("question-id"),
+        expectedSentException: new HttpException({
+          error: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Question with id question-id cannot have more than 3 themes assigned",
+          errorCode: "question-maximum-themes",
+        }, HttpStatus.BAD_REQUEST),
+      },
+      {
         test: "should map domain error to http exception and send it when called with QuestionMinimumThemesError.",
         exception: new QuestionMinimumThemesError("question-id"),
         expectedSentException: new HttpException({
@@ -328,6 +343,26 @@ describe(GlobalExceptionFilter, () => {
           message: "Question theme with id question-theme-id is referenced by 5 live question(s) and cannot be archived",
           errorCode: "question-theme-referenced-by-live-questions",
         }, HttpStatus.CONFLICT),
+      },
+      {
+        test: "should send QuestionCreationError as internal server error when called.",
+        exception: new QuestionCreationError(),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should send QuestionThemeAssignmentCreationError as internal server error when called.",
+        exception: new QuestionThemeAssignmentCreationError("question-theme-id", "question-id"),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should send QuestionThemeAssignmentModificationError as internal server error when called.",
+        exception: new QuestionThemeAssignmentModificationError("question-theme-id", "question-id"),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should send QuestionThemeAssignmentRemovalError as internal server error when called.",
+        exception: new QuestionThemeAssignmentRemovalError("question-theme-id", "question-id"),
+        expectedSentException: new InternalServerErrorException(),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",

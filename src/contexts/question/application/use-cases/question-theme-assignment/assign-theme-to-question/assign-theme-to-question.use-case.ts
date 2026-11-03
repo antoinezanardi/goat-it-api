@@ -1,24 +1,20 @@
-import { Inject, Injectable } from "@nestjs/common";
-
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { isQuestionThemeArchived } from "@question-theme/domain/rules/question-theme.rules";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import type { QuestionThemeAssignmentCreationCommand } from "@question/domain/types/question.commands";
+import type { QuestionThemeAssignmentCreationCommand } from "@question/application/commands/question.commands";
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
-import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { ensureQuestionThemeAssignmentsLimit, findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import type { Question } from "@question/domain/types/question.entities";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
-@Injectable()
 export class AssignThemeToQuestionUseCase {
   public constructor(
-    @Inject(QUESTION_REPOSITORY_TOKEN) private readonly questionRepository: QuestionRepository,
+    private readonly questionRepository: QuestionRepository,
     private readonly findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}
@@ -41,6 +37,7 @@ export class AssignThemeToQuestionUseCase {
     if (existingThemeAssignment) {
       throw new QuestionThemeAssignmentAlreadyExistsError(questionTheme.id, questionId);
     }
+    ensureQuestionThemeAssignmentsLimit(question);
     if (isQuestionThemeArchived(questionTheme)) {
       throw new ReferencedQuestionThemeArchivedError(questionTheme.id);
     }

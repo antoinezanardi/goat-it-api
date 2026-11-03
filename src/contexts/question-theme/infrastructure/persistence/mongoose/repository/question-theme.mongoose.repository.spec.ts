@@ -3,8 +3,9 @@ import { Test } from "@nestjs/testing";
 
 import * as questionThemeMongooseMappers from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
-import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS } from "@question-theme/domain/constants/question-theme.constants";
+import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
 import { getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
@@ -257,6 +258,30 @@ describe(QuestionThemeMongooseRepository, () => {
 
       expect(actualQuestionTheme).toStrictEqual(createdQuestionTheme);
     });
+
+    it("should throw QuestionThemeSlugAlreadyExistsError when model rejects with a duplicate key error.", async() => {
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract({ slug: "duplicate-slug" });
+      mocks.models.questionTheme.create.mockRejectedValueOnce(Object.assign(new Error("duplicate key"), { code: 11_000 }));
+      const expectedError = new QuestionThemeSlugAlreadyExistsError(questionThemeCreationContract.slug);
+
+      await expect(repositories.questionTheme.create(questionThemeCreationContract)).rejects.toThrow(expectedError);
+    });
+
+    it("should rethrow the original error when model rejects with a non-duplicate error.", async() => {
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
+      const expectedError = new Error("database error");
+      mocks.models.questionTheme.create.mockRejectedValueOnce(expectedError);
+
+      await expect(repositories.questionTheme.create(questionThemeCreationContract)).rejects.toThrow(expectedError);
+    });
+
+    it("should rethrow the original error when model rejects with a non-duplicate error code.", async() => {
+      const questionThemeCreationContract = createFakeQuestionThemeCreationContract();
+      const expectedError = Object.assign(new Error("database error"), { code: 500 });
+      mocks.models.questionTheme.create.mockRejectedValueOnce(expectedError);
+
+      await expect(repositories.questionTheme.create(questionThemeCreationContract)).rejects.toThrow(expectedError);
+    });
   });
 
   describe(QuestionThemeMongooseRepository.prototype.modify, () => {
@@ -304,6 +329,33 @@ describe(QuestionThemeMongooseRepository, () => {
       const actualQuestionTheme = await repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract);
 
       expect(actualQuestionTheme).toBeUndefined();
+    });
+
+    it("should throw QuestionThemeSlugAlreadyExistsError when model rejects with a duplicate key error and a slug is provided.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract({ slug: "duplicate-slug" });
+      mocks.models.questionTheme.findByIdAndUpdate.mockRejectedValueOnce(Object.assign(new Error("duplicate key"), { code: 11_000 }));
+      const expectedError = new QuestionThemeSlugAlreadyExistsError("duplicate-slug");
+
+      await expect(repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract)).rejects.toThrow(expectedError);
+    });
+
+    it("should rethrow the original error when model rejects with a duplicate key error and no slug is provided.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract({ slug: undefined });
+      const expectedError = Object.assign(new Error("duplicate key"), { code: 11_000 });
+      mocks.models.questionTheme.findByIdAndUpdate.mockRejectedValueOnce(expectedError);
+
+      await expect(repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract)).rejects.toThrow(expectedError);
+    });
+
+    it("should rethrow the original error when model rejects with a non-duplicate error.", async() => {
+      const questionThemeId = "question-theme-id";
+      const questionThemeModificationContract = createFakeQuestionThemeModificationContract();
+      const expectedError = new Error("database error");
+      mocks.models.questionTheme.findByIdAndUpdate.mockRejectedValueOnce(expectedError);
+
+      await expect(repositories.questionTheme.modify(questionThemeId, questionThemeModificationContract)).rejects.toThrow(expectedError);
     });
   });
 

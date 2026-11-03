@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
@@ -16,23 +13,14 @@ describe(FindQuestionThemeByIdUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        FindQuestionThemeByIdUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
 
-    findQuestionThemeByIdUseCase = testingModule.get<FindQuestionThemeByIdUseCase>(FindQuestionThemeByIdUseCase);
+    findQuestionThemeByIdUseCase = new FindQuestionThemeByIdUseCase(mocks.repositories.questionTheme);
   });
 
   describe(FindQuestionThemeByIdUseCase.prototype.getById, () => {

@@ -26,10 +26,10 @@ Mirror the **source** path, replacing the layer segment with the faketory catego
 
 | Source location                                                | Faketory path                                                                                                                     |
 |----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `src/contexts/<ctx>/…/domain/entities/foo.types.ts`            | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/entity/foo.entity.faketory.ts`                                            |
+| `src/contexts/<ctx>/…/domain/types/foo.entities.ts`            | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/entity/foo.entity.faketory.ts`                                            |
 | `src/contexts/<ctx>/…/application/dto/foo.dto.shape.ts`        | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/dto/foo.dto.faketory.ts`                                                  |
-| `src/contexts/<ctx>/…/domain/commands/foo.commands.ts`         | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/commands/foo.commands.faketory.ts`                                        |
-| `src/contexts/<ctx>/…/domain/contracts/foo.contracts.ts`       | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/contracts/foo.contracts.faketory.ts`                                      |
+| `src/contexts/<ctx>/…/application/commands/foo.commands.ts`    | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/commands/foo.commands.faketory.ts`                                        |
+| `src/contexts/<ctx>/…/domain/types/foo.contracts.ts`           | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/contracts/foo.contracts.faketory.ts`                                      |
 | `src/contexts/<ctx>/…/persistence/mongoose/…` (document)       | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/mongoose/mongoose-document/foo.mongoose-document.faketory.ts`             |
 | `src/contexts/<ctx>/…/persistence/mongoose/…` (insert payload) | `tests/shared/utils/faketories/contexts/<ctx>/<feature>/mongoose/mongoose-insert-payload/foo.mongoose-insert-payload.faketory.ts` |
 | `src/shared/…`                                                 | `tests/shared/utils/faketories/shared/…`                                                                                          |
@@ -47,7 +47,7 @@ import { faker } from "@faker-js/faker";
 
 import { FOO_STATUSES } from "@question/domain/value-objects/foo-status/foo-status.constants";
 
-import type { Foo } from "@question/domain/entities/foo.types";
+import type { Foo } from "@question/domain/types/foo.entities";
 
 function createFakeFoo(overrides: Partial<Foo> = {}): Foo {
   return {
@@ -188,8 +188,8 @@ Existing faketories to copy from:
 | Type                   | File                                                                                                                                     |
 |------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | Entity                 | `tests/shared/utils/faketories/contexts/question/entity/question.entity.faketory.ts`                                                     |
-| Sub-feature entity     | `tests/shared/utils/faketories/contexts/question/question-theme/entity/question-theme.entity.faketory.ts`                                |
-| Mongoose document      | `tests/shared/utils/faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory.ts` |
+| Sibling-context entity | `tests/shared/utils/faketories/contexts/question-theme/entity/question-theme.entity.faketory.ts`                                         |
+| Mongoose document      | `tests/shared/utils/faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory.ts`          |
 | Insert payload         | `tests/shared/utils/faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory.ts`          |
 | DTO (response)         | `tests/shared/utils/faketories/contexts/question/dto/question/question.dto.faketory.ts`                                                  |
 | DTO (creation)         | `tests/shared/utils/faketories/contexts/question/dto/question-creation/question-creation.dto.faketory.ts`                                |

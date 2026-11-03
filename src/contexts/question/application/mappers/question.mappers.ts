@@ -1,8 +1,9 @@
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 
 import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts } from "@shared/application/mappers/localization/localization.mappers";
 
 import { computeQuestionStatusFromAuthorRole } from "@question/domain/rules/question.rules";
+import { createQuestionThemeAssignmentCreationContractFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment.mappers";
 import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
@@ -11,12 +12,11 @@ import type { QuestionDto } from "@question/application/dto/question/question.dt
 import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 import type { QuestionContentCreationDto } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
-import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 import type { QuestionContent, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 import type { Question } from "@question/domain/types/question.entities";
-import type { QuestionCreationCommand, QuestionModificationCommand } from "@question/domain/types/question.commands";
-import type { QuestionAuthorCreationContract, QuestionContentCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import type { QuestionCreationCommand, QuestionModificationCommand } from "@question/application/commands/question.commands";
+import type { QuestionAuthorCreationContract, QuestionContentCreationContract } from "@question/domain/types/question.contracts";
 
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
@@ -83,14 +83,6 @@ function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto 
   };
 }
 
-function createQuestionThemeAssignmentCreationContractFromDto(questionThemeAssignmentDto: QuestionThemeAssignmentCreationDto): QuestionThemeAssignmentCreationContract {
-  return {
-    themeId: questionThemeAssignmentDto.themeId,
-    isPrimary: questionThemeAssignmentDto.isPrimary,
-    isHint: questionThemeAssignmentDto.isHint,
-  };
-}
-
 function createQuestionAuthorCreationContractFromDto(questionAuthorDto: QuestionAuthorCreationDto): QuestionAuthorCreationContract {
   return {
     role: questionAuthorDto.role,
@@ -143,7 +135,6 @@ export {
   createQuestionDtoFromEntity,
   createAdminQuestionThemeAssignmentDtoFromEntity,
   createAdminQuestionDtoFromEntity,
-  createQuestionThemeAssignmentCreationContractFromDto,
   createQuestionAuthorCreationContractFromDto,
   createQuestionContentCreationContractFromDto,
   createQuestionCreationCommandFromDto,

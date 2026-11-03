@@ -1,41 +1,8 @@
-import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts } from "@shared/application/mappers/localization/localization.mappers";
+import { DEFAULT_QUESTION_THEME_STATUS } from "@question-theme/domain/constants/question-theme.constants";
 
-import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
-import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
 import type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
-import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/domain/types/question-theme.commands";
-import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-
-import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
-
-function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme, localizationOptions: LocalizationOptions): QuestionThemeDto {
-  return {
-    id: questionTheme.id,
-    slug: questionTheme.slug,
-    label: createTranslationFromLocalizedText(questionTheme.label, localizationOptions),
-    aliases: createTranslationsFromLocalizedTexts(questionTheme.aliases, localizationOptions),
-    description: createTranslationFromLocalizedText(questionTheme.description, localizationOptions),
-    color: questionTheme.color,
-    status: questionTheme.status,
-    createdAt: questionTheme.createdAt.toISOString(),
-    updatedAt: questionTheme.updatedAt.toISOString(),
-  };
-}
-
-function createAdminQuestionThemeDtoFromEntity(questionTheme: QuestionTheme): AdminQuestionThemeDto {
-  return {
-    id: questionTheme.id,
-    slug: questionTheme.slug,
-    label: questionTheme.label,
-    aliases: questionTheme.aliases,
-    description: questionTheme.description,
-    color: questionTheme.color,
-    status: questionTheme.status,
-    createdAt: questionTheme.createdAt.toISOString(),
-    updatedAt: questionTheme.updatedAt.toISOString(),
-  };
-}
+import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 
 function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: QuestionThemeCreationDto): QuestionThemeCreationCommand {
   return {
@@ -45,7 +12,7 @@ function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: Que
       aliases: questionThemeCreationDto.aliases,
       description: questionThemeCreationDto.description,
       color: questionThemeCreationDto.color,
-      status: "active",
+      status: DEFAULT_QUESTION_THEME_STATUS,
     },
   };
 }
@@ -64,8 +31,6 @@ function createQuestionThemeModificationCommandFromDto(questionThemeId: string, 
 }
 
 export {
-  createQuestionThemeDtoFromEntity,
-  createAdminQuestionThemeDtoFromEntity,
   createQuestionThemeCreationCommandFromDto,
   createQuestionThemeModificationCommandFromDto,
 };

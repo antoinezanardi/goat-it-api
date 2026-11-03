@@ -7,7 +7,7 @@ disable-model-invocation: true
 ## What I do
 
 - Identify the source file type and apply the matching test template
-- Wire up the Nest testing module with typed mock factories from `@mocks/*`
+- Instantiate plain use cases with `new`; wire Nest classes with `Test.createTestingModule` and typed mock factories from `@mocks/*`
 - Populate test data with faketories from `@faketories/*`
 - Write focused `it` blocks (one assertion each) covering success paths, error branches and edge cases
 - Ensure the spec compiles and `pnpm run test:unit:cov` stays green at 100%
@@ -68,18 +68,9 @@ describe(CreateFooUseCase, () => {
   let useCase: CreateFooUseCase;
   let mocks: { repositories: { foo: ReturnType<typeof createMockedFooRepository> } };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mocks = { repositories: { foo: createMockedFooRepository() } };
-    const module = await Test.createTestingModule({
-      providers: [
-        CreateFooUseCase,
-        {
-          provide: FOO_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.foo
-        },
-      ],
-    }).compile();
-    useCase = module.get(CreateFooUseCase);
+    useCase = new CreateFooUseCase(mocks.repositories.foo);
   });
 
   describe(CreateFooUseCase.prototype.create, () => {
@@ -253,7 +244,7 @@ Patterns:
 - Namespace functions: `import * as mod from "..."` → `vi.spyOn(mod, "fn")`
 - Class static methods: `vi.spyOn(SomeModule, "staticMethod")`
 - Class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`
-- Package metadata: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions. Inside `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers`.
+- Package metadata: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions. Inside `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/infrastructure/helpers/package-json/package-json.helpers`.
 
 `vi.mock()` is still safe for third-party modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Always check with a grep first.
 
@@ -261,17 +252,17 @@ Patterns:
 
 ### Describe labels by file type
 
-- Controllers: `"<Name> Controller"`
-- Use-cases: `"<Name> Use Case"`
-- Repositories: `"<Name> Mongoose Repository"` or `"<Name> Repository"`
-- Services: `"<Name> Service"`
+- Controllers: symbol reference `describe(ControllerClass, ...)`
+- Use-cases: symbol reference `describe(UseCaseClass, ...)`
+- Repositories: symbol reference `describe(RepositoryClass, ...)`
+- Services: symbol reference `describe(ServiceClass, ...)`
 - DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"`
 - Errors: symbol reference `describe(ClassName, ...)`
 - Helpers/mappers: symbol reference `describe(functionName, ...)`
 
 ### Assertion rules
 
-- Top-level `describe`: `"<ClassName> <Role>"` (e.g. `"Create Foo Use Case"`)
+- Top-level `describe`: class or function symbol; DTO shape specs use `"<DTOName> DTO Shape"`
 - Nested `describe`: reference the method directly — `describe(FooClass.prototype.myMethod, ...)`
 - Test name pattern: `"should <expected behavior> when <condition>."`
 - One assertion per `it` — split multiple assertions into separate `it` blocks

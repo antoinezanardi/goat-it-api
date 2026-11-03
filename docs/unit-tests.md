@@ -147,24 +147,14 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
 
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        GetQuestionThemesByIdsOrThrowUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
-
-    getQuestionThemesByIdsOrThrowUseCase = testingModule.get<GetQuestionThemesByIdsOrThrowUseCase>(GetQuestionThemesByIdsOrThrowUseCase);
+    getQuestionThemesByIdsOrThrowUseCase = new GetQuestionThemesByIdsOrThrowUseCase(mocks.repositories.questionTheme);
   });
 
   describe(GetQuestionThemesByIdsOrThrowUseCase.prototype.getByIdsOrThrow, () => {
@@ -257,7 +247,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 - Template (`question-theme.mongoose.repository.spec.ts`):
 ```ts
-  describe("Question Theme Mongoose Repository", () => {
+  describe(QuestionThemeMongooseRepository, () => {
     let repository: QuestionThemeMongooseRepository;
 
     const mocks = {
@@ -363,7 +353,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 ```ts
 import { ZodError } from "zod";
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
@@ -441,11 +431,11 @@ describe("Question DTO Shape", () => {
 });
 ```
 
-- Zod validator tests (based on `src/shared/infrastructure/http/zod/validators/string/string.zod.validators.spec.ts`):
+- Zod validator tests (based on `src/shared/application/dto/zod/validators/string/string.zod.validators.spec.ts`):
 
 ```ts
-import { zSlug, zMongoId, zIsoDateTime } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { zSlug, zMongoId, zIsoDateTime } from "@shared/application/dto/zod/validators/string/string.zod.validators";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("String Zod Validators", () => {
   describe(zSlug, () => {
@@ -483,7 +473,7 @@ describe("String Zod Validators", () => {
 - References:
   - `src/contexts/question/application/dto/question/question.dto.shape.spec.ts`
   - `src/contexts/question/application/dto/admin-question/admin-question.dto.shape.spec.ts`
-  - `src/shared/infrastructure/http/zod/validators/string/string.zod.validators.spec.ts`
+  - `src/shared/application/dto/zod/validators/string/string.zod.validators.spec.ts`
 
 Notes:
 - Prefer `DTO.parse` for positive tests and `safeParse` when you need to inspect `error` details.
@@ -560,14 +550,14 @@ describe(QuestionNotFoundError, () => {
 
 ### Mocking modules vs instances
 
-- Instance collaborators (use-cases/repositories/services): create mock factories and inject via Nest `useValue` providers.
+- Instance collaborators (use-cases/repositories/services): use mock factories. Controllers and other Nest providers inject them via `useValue`; plain use cases are instantiated with `new`.
 - Module-level functions (mappers/helpers/third-party exports): **prefer `vi.spyOn()` over `vi.mock()`**. The config uses `isolate: false`, which shares a single module registry across all test files in a thread. `vi.mock()` only applies if the module hasn't been loaded yet — if another spec file (e.g. the module's own `*.spec.ts`) imports the real module first, the mock silently fails and tests become intermittently unstable.
   - `vi.spyOn()` modifies the live module exports at runtime, so it works regardless of load order. `restoreMocks: true` in the config cleans up spies between tests automatically.
   - Import the module as a namespace: `import * as fooHelpers from "@src/.../foo.helpers"`, then `vi.spyOn(fooHelpers, "barFn").mockReturnValue(...)` in `beforeEach`.
   - For class static methods: `vi.spyOn(SomeModule, "staticMethod").mockReturnValue(...)`.
   - For class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`.
   - `vi.mock()` is still safe for modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Check with a grep before using it.
-  - For package metadata: import the real file (`import packageJson from "@package-json" with { type: "json" }`) and reference `packageJson.field` in assertions — do not mock it. In `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers` instead.
+  - For package metadata: import the real file (`import packageJson from "@package-json" with { type: "json" }`) and reference `packageJson.field` in assertions — do not mock it. In `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/infrastructure/helpers/package-json/package-json.helpers` instead.
 
 ### Assertion style and helpers
 

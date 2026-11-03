@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
 
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 import { QuestionThemeModule } from "@question-theme/question-theme.module";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
@@ -16,17 +17,13 @@ import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/
 import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
-import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
-import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+import { QuestionPersistenceModule } from "@question/infrastructure/persistence/question-persistence.module";
+
+import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: QuestionMongooseSchema.name,
-        schema: QUESTION_MONGOOSE_SCHEMA,
-      },
-    ]),
+    QuestionPersistenceModule,
     QuestionThemeModule,
   ],
   controllers: [
@@ -34,19 +31,68 @@ import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infr
     AdminQuestionController,
   ],
   providers: [
-    FindRandomQuestionsUseCase,
-    FindQuestionsUseCase,
-    FindQuestionByIdUseCase,
-    CreateQuestionUseCase,
-    ArchiveQuestionUseCase,
-    ModifyQuestionUseCase,
-    AssignThemeToQuestionUseCase,
-    GetQuestionStatsUseCase,
-    RemoveThemeFromQuestionUseCase,
-    ModifyQuestionThemeAssignmentUseCase,
     {
-      provide: QUESTION_REPOSITORY_TOKEN,
-      useClass: QuestionMongooseRepository,
+      provide: FindRandomQuestionsUseCase,
+      useFactory: (questionRepository: QuestionRepository): FindRandomQuestionsUseCase => new FindRandomQuestionsUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: FindQuestionsUseCase,
+      useFactory: (questionRepository: QuestionRepository): FindQuestionsUseCase => new FindQuestionsUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: FindQuestionByIdUseCase,
+      useFactory: (questionRepository: QuestionRepository): FindQuestionByIdUseCase => new FindQuestionByIdUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: CreateQuestionUseCase,
+      useFactory: (
+        questionRepository: QuestionRepository,
+        getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase,
+      ): CreateQuestionUseCase => new CreateQuestionUseCase(questionRepository, getQuestionThemesByIdsOrThrowUseCase),
+      inject: [QUESTION_REPOSITORY_TOKEN, GetQuestionThemesByIdsOrThrowUseCase],
+    },
+    {
+      provide: ArchiveQuestionUseCase,
+      useFactory: (questionRepository: QuestionRepository): ArchiveQuestionUseCase => new ArchiveQuestionUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: ModifyQuestionUseCase,
+      useFactory: (questionRepository: QuestionRepository): ModifyQuestionUseCase => new ModifyQuestionUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: AssignThemeToQuestionUseCase,
+      useFactory: (
+        questionRepository: QuestionRepository,
+        findQuestionThemeByIdUseCase: FindQuestionThemeByIdUseCase,
+        findQuestionByIdUseCase: FindQuestionByIdUseCase,
+      ): AssignThemeToQuestionUseCase => new AssignThemeToQuestionUseCase(questionRepository, findQuestionThemeByIdUseCase, findQuestionByIdUseCase),
+      inject: [QUESTION_REPOSITORY_TOKEN, FindQuestionThemeByIdUseCase, FindQuestionByIdUseCase],
+    },
+    {
+      provide: GetQuestionStatsUseCase,
+      useFactory: (questionRepository: QuestionRepository): GetQuestionStatsUseCase => new GetQuestionStatsUseCase(questionRepository),
+      inject: [QUESTION_REPOSITORY_TOKEN],
+    },
+    {
+      provide: RemoveThemeFromQuestionUseCase,
+      useFactory: (
+        questionRepository: QuestionRepository,
+        findQuestionByIdUseCase: FindQuestionByIdUseCase,
+      ): RemoveThemeFromQuestionUseCase => new RemoveThemeFromQuestionUseCase(questionRepository, findQuestionByIdUseCase),
+      inject: [QUESTION_REPOSITORY_TOKEN, FindQuestionByIdUseCase],
+    },
+    {
+      provide: ModifyQuestionThemeAssignmentUseCase,
+      useFactory: (
+        questionRepository: QuestionRepository,
+        findQuestionByIdUseCase: FindQuestionByIdUseCase,
+      ): ModifyQuestionThemeAssignmentUseCase => new ModifyQuestionThemeAssignmentUseCase(questionRepository, findQuestionByIdUseCase),
+      inject: [QUESTION_REPOSITORY_TOKEN, FindQuestionByIdUseCase],
     },
   ],
 })

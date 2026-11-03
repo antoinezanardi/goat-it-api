@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_MINIMUM } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import { createFakeSortOptions } from "@faketories/shared/domain/sort-options.faketory";
 

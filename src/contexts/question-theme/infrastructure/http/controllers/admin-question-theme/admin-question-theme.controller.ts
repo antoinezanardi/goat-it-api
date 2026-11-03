@@ -2,9 +2,10 @@ import { Body, Controller, Get, HttpStatus, Param, Patch, Post, Query } from "@n
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-import { AdminQuestionThemeNestZodDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto";
-import { QuestionThemeStatsNestZodDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto";
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
+import { AdminQuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/admin-question-theme/admin-question-theme.dto";
+import { QuestionThemeStatsNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-stats/question-theme-stats.dto";
+import { createAdminQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
+import { createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 import { createAdminQuestionThemeFilterOptionsFromQueryDto } from "@question-theme/application/mappers/question-theme-filter-query-dto/question-theme-filter-query-dto.mappers";
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
@@ -12,22 +13,23 @@ import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-ca
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
-import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
-import { QuestionThemeCreationNestZodDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto";
-import { QuestionThemeModificationNestZodDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto";
+import { AdminFindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto";
+import { QuestionThemeCreationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-creation/question-theme-creation.dto";
+import { QuestionThemeModificationNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme-modification/question-theme-modification.dto";
+import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.constants";
 
-import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
 
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
-import type { AdminQuestionThemeDto } from "@question-theme/application/dto/admin-question-theme/admin-question-theme.dto.shape";
+import type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
 
 @AdminAuth()
-@Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTION_THEMES}`)
+@Controller(`${ControllerPrefixes.ADMIN}/${QUESTION_THEME_ROUTE_PREFIX}`)
 export class AdminQuestionThemeController {
   public constructor(
     private readonly findQuestionThemesUseCase: FindQuestionThemesUseCase,
@@ -41,8 +43,8 @@ export class AdminQuestionThemeController {
   @Get()
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Get all question themes for backend administration",
     description: "Get the list of all question themes available in the database with detailed structure for backend administration.",
@@ -61,8 +63,8 @@ export class AdminQuestionThemeController {
   @Get("/stats")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Get question theme statistics for dashboard",
     description: "Returns aggregated statistics about question themes including counts by status and active question counts per theme.",
@@ -78,8 +80,8 @@ export class AdminQuestionThemeController {
   @Get("/:id")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Get question theme by ID for backend administration",
     description: "Get a specific question theme by its unique identifier with detailed structure for backend administration.",
@@ -97,8 +99,8 @@ export class AdminQuestionThemeController {
   @Post()
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Create a new question theme",
     description: "Create a new question theme with the provided details. Returns the created question theme with detailed structure for backend administration.",
@@ -117,8 +119,8 @@ export class AdminQuestionThemeController {
   @Patch("/:id")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Update an existing question theme",
     description: "Update an existing question theme with the provided details. Returns the updated question theme with detailed structure for backend administration.",
@@ -127,7 +129,7 @@ export class AdminQuestionThemeController {
     status: HttpStatus.OK,
     type: AdminQuestionThemeNestZodDto,
   })
-  public async patchQuestionTheme(
+  public async modifyQuestionTheme(
     @Param("id", MongoIdPipe) id: string,
     @Body() questionThemeModificationDto: QuestionThemeModificationNestZodDto,
   ): Promise<AdminQuestionThemeDto> {
@@ -140,8 +142,8 @@ export class AdminQuestionThemeController {
   @Post("/:id/archive")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTION_THEMES,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTION_THEMES,
     ],
     summary: "Archive a question theme",
     description: `Archive a specific question theme by its unique identifier. Returns the archived question theme with detailed structure for backend administration. An already archived question theme cannot be archived again.`,
