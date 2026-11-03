@@ -24,4 +24,4 @@ export type { QuestionThemeModificationDto } from "@question-theme/application/d
 export type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
 export type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
-export { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_ORDER_DEFAULT } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
+export { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_ORDER_DEFAULT } from "@question-theme/application/dto/shared/constants/question-theme-sort.dto.constants";

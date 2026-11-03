@@ -27,7 +27,7 @@ For repository ports, use the established repository-mock location pattern shown
 
 | Source location                                                    | Mock location                                                                                               |
 |--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| `src/contexts/<ctx>/…/repositories/foo.repository.types.ts`        | `tests/unit/utils/mocks/contexts/<ctx>/infrastructure/persistence/mongoose/foo.mongoose.repository.mock.ts` |
+| `src/contexts/<ctx>/…/repositories/foo.repository.types.ts`        | `tests/unit/utils/mocks/contexts/<ctx>/domain/repositories/foo.repository.mock.ts`                         |
 | `src/contexts/<ctx>/…/use-cases/create-foo/create-foo.use-case.ts` | `tests/unit/utils/mocks/contexts/<ctx>/application/use-cases/create-foo.use-case.mock.ts`                   |
 | `src/infrastructure/…/foo.service.ts`                              | `tests/unit/utils/mocks/infrastructure/…/foo.service.mock.ts`                                               |
 
@@ -72,23 +72,18 @@ Key rules:
 - Default return values must match the method's return type (use faketories from `@faketories/*` for realistic defaults)
 - Mock the **port** (interface), not the Mongoose model internals — except in repository unit tests
 
-## Inject in tests via Nest testing module
+## Use in tests
+
+Plain use cases are instantiated with `new`; only Nest classes (controllers, repositories, services, guards, pipes) use `Test.createTestingModule`.
 
 ```typescript
-import { createMockedFooRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/foo.mongoose.repository.mock";
+import { createMockedFooRepository } from "@mocks/contexts/question/domain/repositories/foo.repository.mock";
 
-const mocks = { repositories: { foo: createMockedFooRepository() } };
-
-const module = await Test.createTestingModule({
-  providers: [
-    FooUseCase,
-    {
-      provide: FOO_REPOSITORY_TOKEN,
-      useValue: mocks.repositories.foo
-    },
-  ],
-}).compile();
+const repository = createMockedFooRepository();
+const useCase = new FooUseCase(repository);
 ```
+
+For a controller or repository spec, provide the mock with `{ provide: TOKEN, useValue: mock }` in `Test.createTestingModule`.
 
 ## Override per test
 
@@ -109,7 +104,7 @@ const failingRepo = createMockedFooRepository({
 
 | File type under test | What to mock                                                        |
 |----------------------|---------------------------------------------------------------------|
-| Use-case             | Repository ports via injection tokens                               |
+| Use-case             | Repository ports passed to the constructor (`new UseCase(port)`)    |
 | Controller           | Use-case classes via `useValue` providers                           |
 | Repository           | Mongoose `Model` methods (`find`, `findOne`, `create`, `updateOne`) |
 | Guard / Pipe         | Collaborating services via `useValue`                               |

@@ -12,6 +12,7 @@ import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/erro
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
@@ -31,6 +32,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [QuestionThemeAlreadyArchivedError.name]: BadRequestException,
     [ReferencedQuestionThemeArchivedError.name]: BadRequestException,
     [QuestionAlreadyArchivedError.name]: BadRequestException,
+    [QuestionMaximumThemesError.name]: BadRequestException,
     [QuestionMinimumThemesError.name]: BadRequestException,
     [QuestionPrimaryThemeAssignmentNotRemovableError.name]: BadRequestException,
     [QuestionThemeSlugAlreadyExistsError.name]: ConflictException,

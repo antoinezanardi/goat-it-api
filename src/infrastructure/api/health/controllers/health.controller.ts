@@ -7,7 +7,7 @@ import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health
 import { AppHealthNestZodDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
 import { createAppHealthDtoFromHealthCheckResult } from "@src/infrastructure/api/health/mappers/health.mappers";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
-import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
@@ -17,7 +17,7 @@ export class HealthController {
 
   @Get()
   @ApiOperation({
-    tags: [SwaggerTags.APP],
+    tags: [SWAGGER_TAGS.APP],
     summary: "Check application health",
     description: `Check the health status of the application by performing various checks on database and documentation endpoint.`,
   })

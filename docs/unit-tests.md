@@ -247,7 +247,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 - Template (`question-theme.mongoose.repository.spec.ts`):
 ```ts
-  describe("Question Theme Mongoose Repository", () => {
+  describe(QuestionThemeMongooseRepository, () => {
     let repository: QuestionThemeMongooseRepository;
 
     const mocks = {

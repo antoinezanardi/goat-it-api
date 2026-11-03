@@ -3,13 +3,13 @@ import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
-import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
-import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
+import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/question.constants";
 import { createPublicQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FindRandomQuestionsBodyNestZodDto } from "@question/infrastructure/http/dto/find-random-questions-body/find-random-questions-body.dto";
 import { FindQuestionsQueryNestZodDto } from "@question/infrastructure/http/dto/find-questions-query/find-questions-query.dto";
@@ -25,7 +25,7 @@ import type { FindQuestionsQueryDto } from "@question/application/dto/find-quest
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 @GameAuth()
-@Controller(ControllerPrefixes.QUESTIONS)
+@Controller(QUESTION_ROUTE_PREFIX)
 export class QuestionController {
   public constructor(
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
@@ -35,7 +35,7 @@ export class QuestionController {
 
   @Get()
   @ApiOperation({
-    tags: [SwaggerTags.QUESTIONS],
+    tags: [SWAGGER_TAGS.QUESTIONS],
     summary: "Get all questions",
     description: "Get the list of all questions available in the database in the desired localization.",
   })
@@ -55,7 +55,7 @@ export class QuestionController {
 
   @Post("/search/random")
   @ApiOperation({
-    tags: [SwaggerTags.QUESTIONS],
+    tags: [SWAGGER_TAGS.QUESTIONS],
     summary: "Get random questions",
     description: "Get a random set of active questions for the game in the desired localization.",
   })
@@ -75,7 +75,7 @@ export class QuestionController {
 
   @Get("/:id")
   @ApiOperation({
-    tags: [SwaggerTags.QUESTIONS],
+    tags: [SWAGGER_TAGS.QUESTIONS],
     summary: "Get question by ID",
     description: "Get a specific question by its unique identifier in the desired localization.",
   })

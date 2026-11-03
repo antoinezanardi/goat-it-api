@@ -37,12 +37,8 @@ tests/shared/utils/faketories/
       mongoose/
         mongoose-document/               # Mongoose document stubs (include _id + id)
         mongoose-insert-payload/         # Raw insert payloads (no _id / id)
-      <sub-feature>/                     # Sub-feature with its own layers (e.g. question-theme/)
-        commands/
-        contracts/
-        dto/
-        entity/
-        mongoose/
+      # question-theme is a top-level context, not a sub-feature of question:
+      # tests/shared/utils/faketories/contexts/question-theme/{commands,contracts,dto,entity,mongoose}/
   infrastructure/                        # Config, health, CORS, database helpers
   shared/                                # Cross-context shared shapes (locale, HTTP errors…)
 ```
@@ -60,7 +56,7 @@ Every file is named `<concept>.<category>.faketory.ts`:
 
 ## Function signature
 
-Every factory function follows this exact signature:
+Every factory function follows this signature:
 
 ```ts
 function createFakeConceptName(overrides: Partial<ConceptName> = {}): ConceptName {
@@ -70,6 +66,8 @@ function createFakeConceptName(overrides: Partial<ConceptName> = {}): ConceptNam
   };
 }
 ```
+
+Generic option factories (`createFakeFindAllOptions(sortableFields, overrides)`, `createFakeSortOptions(sortableFields, overrides)`) take their required domain input first; `overrides` is still the last parameter and the last spread.
 
 Key rules:
 

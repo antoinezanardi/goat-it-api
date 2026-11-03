@@ -9,7 +9,7 @@ import { zSortOrder } from "@shared/application/dto/zod/validators/sort/sort.zod
 
 import { ADMIN_QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_COGNITIVE_DIFFICULTY_QUERY_KEY, QUESTION_IDS_QUERY_KEY, QUESTION_IS_ADULT_CONTENT_QUERY_KEY, QUESTION_STATUS_QUERY_KEY, QUESTION_THEME_IDS_QUERY_KEY } from "@question/application/dto/shared/constants/question-filter-query.dto.constants";
-import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/zod/validators/constants/question-sort.dto.zod.validators.constants";
+import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/constants/question-sort.dto.constants";
 import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionStatus, zQuestionThemeIdsFilter } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
 const ADMIN_FIND_QUESTIONS_QUERY_DTO = z.object({

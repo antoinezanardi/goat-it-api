@@ -159,8 +159,8 @@ export { MY_ROW_SCHEMA };
 ## Fixture set template
 
 ```typescript
-import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question/modules/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
-import { createFakeQuestionThemeDocument } from "@faketories/contexts/question/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
+import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 
 const MY_FIXTURE_ENTRY = createFakeQuestionThemeDocument({

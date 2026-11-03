@@ -1,3 +1,5 @@
+import { DEFAULT_QUESTION_THEME_STATUS } from "@question-theme/domain/constants/question-theme.constants";
+
 import type { QuestionThemeCreationDto } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
@@ -10,7 +12,7 @@ function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: Que
       aliases: questionThemeCreationDto.aliases,
       description: questionThemeCreationDto.description,
       color: questionThemeCreationDto.color,
-      status: "active",
+      status: DEFAULT_QUESTION_THEME_STATUS,
     },
   };
 }

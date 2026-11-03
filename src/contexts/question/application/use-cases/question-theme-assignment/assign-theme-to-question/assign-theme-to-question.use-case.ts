@@ -6,7 +6,7 @@ import type { QuestionThemeAssignmentCreationCommand } from "@question/applicati
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
-import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
+import { ensureQuestionThemeAssignmentsLimit, findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import type { Question } from "@question/domain/types/question.entities";
 import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
@@ -37,6 +37,7 @@ export class AssignThemeToQuestionUseCase {
     if (existingThemeAssignment) {
       throw new QuestionThemeAssignmentAlreadyExistsError(questionTheme.id, questionId);
     }
+    ensureQuestionThemeAssignmentsLimit(question);
     if (isQuestionThemeArchived(questionTheme)) {
       throw new ReferencedQuestionThemeArchivedError(questionTheme.id);
     }

@@ -40,7 +40,7 @@ Normative keywords: **MUST**, **MUST NOT**, **SHOULD**, **MAY**.
 
 Agents MUST read this guide before creating, editing, moving or deleting a repository file. Plans name exact paths and companions; implementers stop and surface a mismatch instead of inventing a rule; reviewers check placement, companions, aliases, layer dependencies and module registration.
 
-This guide describes the **target** architecture. Some existing files still violate it until their migration phase lands; [architecture-decisions.md](architecture-decisions.md) tracks those phases. Do not copy a pre-existing violation as a precedent.
+This guide describes the **target** architecture. The #1264 migration is complete; any remaining accepted exception is listed in §13 and [architecture-follow-ups.md](architecture-follow-ups.md). Do not copy a pre-existing violation as a precedent.
 
 | Term | Meaning |
 |---|---|
@@ -170,7 +170,7 @@ configs/, scripts/  -> standalone
 | `contracts/` | own domain, `shared/domain`, `shared/application` (pure), `zod`, type-only `type-fest`. Never own application or infrastructure. |
 | `shared/domain` | `shared/domain`, `shared/types`, type-only `type-fest` |
 | `shared/application` | `shared/domain`, `shared/application`, `shared/types`, `zod`, type-only `type-fest` |
-| `shared/infrastructure` | all shared layers, framework packages |
+| `shared/infrastructure` | all shared layers, framework packages, plus the documented localization `AppConfigService` exception in §13 |
 | `src/app` | contexts, all shared layers, `src/infrastructure` |
 | `src/infrastructure` | all shared layers, framework packages |
 | `tests` | `src` through aliases |
@@ -270,7 +270,7 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 | `contracts/dto/<feature>/` | Published DTO shapes |
 | `contracts/dto/<feature>.dto.mappers.ts` | Pure mappers for published shapes |
 | `contracts/dto/zod/validators/<kind>/` | Validators owned by a published shape |
-| `contracts/persistence/` | Published persistence contracts: collection names, field shapes and status values |
+| `contracts/persistence/` | Published persistence contracts: collection names, field shapes, status values and pure persistence-to-domain mappers (`<concept>.persistence.mappers.ts`) |
 
 - `contracts/` is a facade, not a layer. It may import own domain, `shared/domain`, `shared/application` (pure) and `zod`. It MUST NOT import own application or infrastructure.
 - `contracts/` holds **published contracts**. Repository contracts stay in `domain/types/<aggregate>.contracts.ts`; do not mix the two.
@@ -293,6 +293,7 @@ Rules:
 - Promotion rule: code moves to `src/shared` only when it is used by at least two contexts, or is framework-wide by nature. Otherwise it stays owner-private.
 - Pure Zod preprocessors, refinements and validators live under `shared/application/dto/zod/`.
 - I/O and framework helpers live under `shared/infrastructure/`.
+- **Accepted exception:** the localization middleware under `shared/infrastructure/http/middlewares/` imports `AppConfigService` from `src/infrastructure` because the repository has a single infrastructure area. This is recorded in §13; do not add new `shared → src/infrastructure` edges. If a second infrastructure area appears, move the middleware or introduce a narrow shared-owned config token.
 
 ### 4.6 Application shell and cross-cutting infrastructure
 
@@ -348,20 +349,21 @@ Exact published paths:
 
 ```text
 question-theme publishes:
-  domain/types/question-theme.entities.ts
-  domain/types/question-theme.value-objects.ts
-  domain/constants/question-theme.constants.ts
-  domain/rules/question-theme.rules.ts
-  domain/errors/question-theme-not-found/**
-  application/use-cases/find-question-theme-by-id/**
-  application/use-cases/get-question-themes-by-ids-or-throw/**
-  contracts/**
+  src/contexts/question-theme/domain/types/question-theme.entities.ts
+  src/contexts/question-theme/domain/types/question-theme.value-objects.ts
+  src/contexts/question-theme/domain/constants/question-theme.constants.ts
+  src/contexts/question-theme/domain/rules/question-theme.rules.ts
+  src/contexts/question-theme/domain/errors/question-theme-not-found/**
+  src/contexts/question-theme/application/use-cases/find-question-theme-by-id/**
+  src/contexts/question-theme/application/use-cases/get-question-themes-by-ids-or-throw/**
+  src/contexts/question-theme/contracts/**
 
 question publishes:
-  domain/... only when a consumer exists (none today)
-  application/use-cases/count-live-questions-by-theme-id/**
-  contracts/persistence/**
+  src/contexts/question/application/use-cases/count-live-questions-by-theme-id/**
+  src/contexts/question/contracts/persistence/**
 ```
+
+`QUESTION_STATUS_ACTIVE` is published by the question persistence contract as a re-export of the question domain constant.
 
 This is a deliberate partnership, not a general license. `QuestionModule` imports `QuestionThemeModule`; `QuestionThemeModule` imports `QuestionUsageModule`; `QuestionUsageModule` imports `QuestionPersistenceModule`. The module graph is acyclic.
 
@@ -375,11 +377,12 @@ This is a deliberate partnership, not a general license. `QuestionModule` import
 ### 5.4 Persistence
 
 - Cross-context persistence joins are discouraged. When one remains, it MUST use a published persistence contract from `contracts/persistence/`, not a bare collection name.
-- **Theme contract:** `question-theme/contracts/persistence/question-theme.persistence.contracts.ts` publishes `QUESTION_THEME_MONGOOSE_COLLECTION_NAME` and `QuestionThemePersistenceShape` (structural shape, no Mongoose import).
-- **Question contract:** `question/contracts/persistence/question.persistence.contracts.ts` publishes `QUESTION_MONGOOSE_COLLECTION_NAME`, `QUESTION_STATUS_ACTIVE` and `QUESTION_THEME_USAGE_PERSISTENCE_FIELDS` (`status`, `themes`, `themes.themeId`).
-- Question persistence uses `QuestionThemePersistenceShape` and `createQuestionThemeFromAggregate`; it MUST NOT import the theme schema or mapper.
+- **Theme contract:** `src/contexts/question-theme/contracts/persistence/question-theme.persistence.contracts.ts` publishes `QUESTION_THEME_MONGOOSE_COLLECTION_NAME` and `QuestionThemePersistenceShape` (structural shape, no Mongoose import).
+- **Question contract:** `src/contexts/question/contracts/persistence/question.persistence.contracts.ts` publishes `QUESTION_MONGOOSE_COLLECTION_NAME`, `QUESTION_STATUS_ACTIVE` and `QUESTION_THEME_USAGE_PERSISTENCE_FIELDS` (`status`, `themeId`).
+- Question persistence uses `QuestionThemePersistenceShape` and the pure `createQuestionThemeFromPersistenceShape` mapper from the theme persistence contract; it MUST NOT import the theme schema or Mongoose mapper.
 - The theme stats pipeline imports the question contract; it MUST NOT hardcode `"questions"`, `"status"` or `"themes.themeId"`.
-- Contract tests MUST guard the published shapes against the owning schemas (a test-only schema import is allowed). A schema change that breaks the join must fail a unit or acceptance test.
+- Contract tests MUST guard the published shapes and literal field paths against the owning schemas (a test-only schema import is allowed). They are type-level and literal-level guards; runtime join semantics are covered by acceptance tests.
+- **Live vs active:** `CountLiveQuestionsByThemeIdUseCase` counts `pending + active` questions and protects theme archive. Theme stats `activeQuestionCount` counts only `active` questions. The names are intentionally different; do not use “live” and “active” interchangeably.
 - The follow-up is denormalization or a provider-owned read model.
 
 ### 5.5 Consistency
@@ -387,7 +390,9 @@ This is a deliberate partnership, not a general license. `QuestionModule` import
 - Cross-context calls are read-only validation/query calls. They do not create a distributed transaction.
 - Write invariants are enforced by the context that writes the aggregate.
 - Check-then-write is not atomic. If strict consistency is required, use a MongoDB transaction or a conditional update, and add a concurrency test.
-- The current question/theme invariants (theme archive vs live questions, question creation vs theme status) are best-effort. Document the limitation and test the race where it matters.
+- The current cross-context invariants (theme archive vs live questions, question creation/assignment vs theme status) are best-effort. Document the limitation and test the race where it matters.
+- Intra-context writes are also not atomic today. `assignNewPrimaryTheme` and `promoteToPrimaryThemeAssignment` perform two operations in one `bulkWrite` without a transaction, and assign/remove/modify are check-then-write. Treat the same transaction/conditional-update rule as applying to those operations.
+- The 3-theme maximum is enforced in the domain policy and at the persistence validator; concurrent assignment is still covered by the atomicity follow-up.
 
 ### 5.6 Ceremony budget
 
@@ -497,7 +502,7 @@ For context-bound DTOs, the two-file pattern is:
 - `<feature>.dto.shape.ts` — pure Zod schema and inferred type, in `application/dto/<feature>/` or `contracts/dto/<feature>/`.
 - `<feature>.dto.ts` — `createZodDto` wrapper, in `infrastructure/http/dto/<feature>/`.
 
-Nested shapes that are only composed by a parent may stay shape-only.
+Nested shapes that are only composed by a parent may stay shape-only. Wrappers are required only when a controller binds the DTO or when Swagger must reference it as a named component. `nestjs-zod` inlines nested shapes into the parent OpenAPI schema; an unused wrapper class cannot affect Swagger because it is never imported. This was verified by generating a document from `QuestionNestZodDto` — its `themes`, `content`, `author` and `rejection` schemas were fully present inline without nested wrappers.
 
 ```ts
 const QUESTION_DTO = z.strictObject({
@@ -519,7 +524,7 @@ export { QuestionNestZodDto };
 
 - Response shapes use `z.strictObject`. Add `.describe()` and `.meta({ example })` to public fields.
 - Reuse shared validators and nested shapes instead of redefining fields.
-- Request shapes that intentionally accept extra properties use a non-strict object and document that choice.
+- All request shapes use a non-strict `z.object` deliberately: the API performs permissive parsing, and Zod strips unknown properties, so extra fields are not retained or persisted. Response shapes remain `z.strictObject`.
 - A wrapper may import a shape; a shape MUST NOT import a wrapper.
 - A mapper or use case MUST NOT import a wrapper.
 - The wrapper class MUST remain a value import in controllers (`@Body()`, `@Query()`); `import type` breaks `ZodValidationPipe`.
@@ -534,7 +539,7 @@ export { QuestionNestZodDto };
 | API exception | `src/shared/application/dto/api-response-exception/` | `src/shared/infrastructure/http/dto/api-response-exception/` |
 | Health | `src/infrastructure/api/health/dto/` | `src/infrastructure/api/health/dto/` (health-adapter exception) |
 
-Only pure shapes, constants, value objects, pure helpers and faketories may be re-exported by `@goat-it/schemas`. The shared API exception shape is pure and lives in `shared/application/dto`; its wrapper stays HTTP-side.
+Only pure shapes, constants, value objects, pure helpers and faketories may be re-exported by `@goat-it/schemas`. The shared API exception shape is pure and lives in `shared/application/dto`; its wrapper stays HTTP-side. The shared API-exception wrappers and the two nested health wrappers are retained as the Swagger-facing wrapper surface even when no controller binds them; they are not runtime dependencies. A wrapper only affects generated documentation when a controller or Swagger decorator references it.
 
 ### 7.3 Validator homes
 
@@ -544,7 +549,7 @@ Only pure shapes, constants, value objects, pure helpers and faketories may be r
 - Context-internal validators: `<context>/application/dto/zod/{refinements,validators}/`.
 - Published contract validators: `<context>/contracts/dto/zod/validators/<kind>/`.
 
-Each validator owns its constants and its spec. Do not create a generic `utils` bucket.
+Each validator owns its constants and its spec. Shape-owned constants that are not validator-specific live under `<context>/application/dto/<feature>/constants/` (for example `src/contexts/question/application/dto/shared/constants/question-sort.dto.constants.ts`). Do not create a generic `utils` bucket.
 
 ### 7.4 Errors and HTTP mapping
 
@@ -574,12 +579,13 @@ Each validator owns its constants and its spec. Do not create a generic `utils` 
 | Repository port | `domain/repositories/` | `<aggregate>.repository.types.ts` | `<aggregate>.repository.constants.ts` token |
 | Use case | `application/use-cases/<verb>-<aggregate>/` or `<feature-group>/<verb>-<aggregate>/` | `<verb>-<aggregate>.use-case.ts` | `.spec.ts`, module provider |
 | DTO shape | `application/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` |
-| DTO wrapper | `infrastructure/http/dto/<feature>/` | `<feature>.dto.ts` | Required only when NestJS binds the DTO |
+| DTO wrapper | `infrastructure/http/dto/<feature>/` | `<feature>.dto.ts` | Required only when NestJS binds the DTO or Swagger must reference it as a named component |
 | Mapper | `application/mappers/` | `<aggregate>.mappers.ts` at the root; `<unit>/<unit>.mappers.ts` in subfolders | `.spec.ts` |
 | Published contract shape | `contracts/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` when it owns logic |
 | Published contract mapper | `contracts/dto/` | `<feature>.dto.mappers.ts` | `.spec.ts` |
 | Published contract validator | `contracts/dto/zod/validators/<kind>/` | `<kind>.dto.zod.validators.ts` | `.spec.ts`, constants in `constants/` |
 | Published persistence contract | `contracts/persistence/` | `<concept>.persistence.contracts.ts` | Contract test against the owning schema |
+| Published persistence mapper | `contracts/persistence/` | `<concept>.persistence.mappers.ts` | `.spec.ts` |
 | Shared pure DTO shape | `shared/application/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` |
 | Controller | `infrastructure/http/controllers/<audience>-<aggregate>/` | `<audience>-<aggregate>.controller.ts` | `.spec.ts`, module registration |
 | Mongoose schema | `infrastructure/persistence/mongoose/schemas/` | `<aggregate>.mongoose.schema.ts` / `<name>.mongoose.schema.ts` | — (excluded from coverage) |
@@ -603,7 +609,7 @@ Each validator owns its constants and its spec. Do not create a generic `utils` 
 - Do not create empty or ceremonial companions. Add `<unit>.types.ts` or `<unit>.constants.ts` only when the unit owns a private contract or constant.
 - Owner-private types and constants stay beside their owner. Promote them to the context root only when multiple production units consume them.
 - Context and domain directory names are never pluralized, even when the exported symbols name a collection.
-- `ControllerPrefixes` remains the single enum exception, consumed for route string building.
+- `ControllerPrefixes` remains the single enum exception. It holds only truly shared segments (`ADMIN`, `HEALTH`); context-specific route prefixes live in the owning context's controller constants.
 - Mongoose schemas always use the plural `schemas/` directory.
 - Pipeline groups use `pipelines/<feature>/` without a `-pipeline` suffix.
 - Context-internal Zod lives under `application/dto/zod/`; published contract Zod lives under `contracts/dto/zod/`.
@@ -706,7 +712,7 @@ Rules:
 
 ## 12. Enforcement
 
-Path and package boundaries are enforced by ESLint. Relative imports are enforced by Oxlint's `typescript/no-restricted-imports`. `pnpm run lint` runs both.
+Path and package boundaries are enforced by ESLint. Relative imports are enforced by Oxlint's `eslint/no-restricted-imports` with `^\\./` and `^\\.\\./` regex patterns, scoped to `src/**`, `tests/**` and `packages/schemas/src/**`; `configs/` and `scripts/` may use relative imports. `pnpm run lint` runs both.
 
 ### 12.1 Path zones
 
@@ -720,17 +726,21 @@ Path and package boundaries are enforced by ESLint. Relative imports are enforce
 | 6 | `src/shared/domain/**/!(*.spec).ts`, `src/shared/application/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 0 |
 | 7 | `src/**/!(*.spec).ts` | `tests/**` | 0 |
 | 8 | `src/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 2 |
-| 9 | `src/shared/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 2 |
+| 9 | `src/shared/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | deferred (#1265) |
 | 10a | `src/contexts/*/domain/**/!(*.spec).ts` | `src/shared/application/**`, `src/shared/infrastructure/**`, `src/contexts/*/contracts/**` | 0 |
 | 10b | `src/contexts/*/application/**/!(*.spec).ts` | `src/shared/infrastructure/**` | 1 |
 | 10c | `src/contexts/*/contracts/**/!(*.spec).ts` | `src/contexts/*/application/**`, `src/contexts/*/infrastructure/**`, `src/shared/infrastructure/**` | 4 |
 | 11a | `src/contexts/question/domain/**/!(*.spec).ts` | `src/contexts/question-theme/**` except published theme domain | 0 |
 | 11b | `src/contexts/question/application/**/!(*.spec).ts` | `src/contexts/question-theme/{domain,application,infrastructure}/**` except published theme domain and the two theme use cases | 4 |
 | 11c | `src/contexts/question/infrastructure/**/!(*.spec).ts` | `src/contexts/question-theme/{domain,application,infrastructure}/**` except published theme domain | 4 |
-| 11d | `src/contexts/question/question.module.ts` | `src/contexts/question-theme/**` except `question-theme.module.ts` and the two published theme use cases | 0 |
+| 11d | `src/contexts/question/question.module.ts`, `src/contexts/question/question-usage.module.ts` | `src/contexts/question-theme/**` except `question-theme.module.ts` and the two published theme use cases | 0 |
 | 12a | `src/contexts/question-theme/application/**/!(*.spec).ts` | `src/contexts/question/{application,contracts,domain,infrastructure}/**` except the count use case | 1 |
 | 12b | `src/contexts/question-theme/infrastructure/**/!(*.spec).ts` | `src/contexts/question/{application,contracts,domain,infrastructure}/**` except `contracts/persistence/**` | 4 |
 | 12c | `src/contexts/question-theme/question-theme.module.ts` | `src/contexts/question/**` except `question-usage.module.ts` and the published count use case | 1 |
+| 13 | `src/contexts/question-theme/domain/**/!(*.spec).ts` | `src/contexts/question/**` | 5 |
+| 14 | `src/contexts/question/contracts/**/!(*.spec).ts` | `src/contexts/question-theme/**` | 5 |
+| 15 | `src/contexts/question-theme/contracts/**/!(*.spec).ts` | `src/contexts/question/**` | 5 |
+| 16 | `src/contexts/*/application/**/!(*.spec).ts`, `src/contexts/*/domain/**/!(*.spec).ts`, `src/shared/application/**/!(*.spec).ts`, `src/shared/domain/**/!(*.spec).ts` | `src/infrastructure/**` | 5 |
 
 Only add a zone in the phase that makes it pass. Do not add production boundary-rule disables. The existing `unicorn/no-keyword-prefix` disables in the stats pipelines are not boundary rules and are out of scope.
 
@@ -744,12 +754,12 @@ Zone 1 also catches any context's `application/**` or `infrastructure/**` import
 
 | Scope | Forbidden | Phase |
 |---|---|---|
-| `src/contexts/*/domain/**`, `src/shared/domain/**` | `@nestjs/*`, `mongoose`, `fastify`, `nestjs-zod` | 0 |
+| `src/contexts/*/domain/**`, `src/shared/domain/**` | `@nestjs/*`, `mongoose`, `fastify`, `nestjs-zod`, `zod` | 0 |
 | `src/contexts/*/domain/**`, `src/shared/domain/**` | `node:*` | 2 |
 | `src/contexts/*/application/**`, `src/shared/application/**` | `@nestjs/*`, `mongoose`, `fastify`, `nestjs-zod` | 3 |
 | `src/contexts/*/contracts/**` | `@nestjs/*`, `mongoose`, `fastify`, `nestjs-zod`, own `application/**`, own `infrastructure/**` | 4 |
 
-`zod` and type-only `type-fest` remain allowed in application/domain. `shared/types` is type-only and usable everywhere.
+`zod` remains allowed in application and contracts; it is forbidden in domain. Type-only `type-fest` is allowed in pure layers. `shared/types` is type-only and usable everywhere.
 
 Package bans use ESLint core `no-restricted-imports` in scoped flat-config blocks. Every block MUST be composed **after** `oxlint.buildFromOxlintConfigFile(...)` in `eslint.config.ts`: the Oxlint bridge emits a later `"no-restricted-imports": "off"` for `**/*.ts`, so a block placed before it is a silent no-op. Ban subpaths as well (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude `**/*.spec.ts` / `**/*.d.ts` from the production ban blocks. The domain block covers `contexts/*/domain` and `shared/domain`; the application block covers `contexts/*/application` and `shared/application`; the contracts block covers `contexts/*/contracts`.
 
@@ -763,6 +773,7 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 - The Phase 0 plan MUST validate the zone table with the actual `pnpm run lint:eslint` run before merge.
 - Do not move the Oxlint bridge above the package-ban block. That silently disables package bans.
 - Prove a new zone with a temporary forbidden import and a temporary allowed import; a clean lint alone does not prove the rule resolves aliases.
+- Prove the relative-import ban separately: `./foo` and `../foo` must fail in `src/`, while the same imports in `configs/` and `scripts/` must pass.
 - No dependency-cruiser, custom architecture script or separate CI job. Enforcement runs through the existing `pnpm run lint` / `pnpm run lint:eslint`.
 
 ## 13. Temporary exceptions
@@ -770,6 +781,7 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 | Exception | Rule | Removal condition |
 |---|---|---|
 | `GlobalExceptionFilter` imports context errors | Zone 9 is deferred | #1265 lands |
+| `shared/infrastructure` localization middleware imports `src/infrastructure` `AppConfigService` | Accepted because there is one infrastructure area | A second infrastructure area appears; then move the middleware or introduce a narrow shared-owned token |
 | Cross-context `$lookup` | Published persistence contracts only | Denormalization/read-model follow-up |
 | question / question-theme bidirectional partnership | §5.2 per-layer allowlist | Third context or growing surface → merge |
 

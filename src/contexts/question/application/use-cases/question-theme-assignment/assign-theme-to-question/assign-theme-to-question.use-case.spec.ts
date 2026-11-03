@@ -4,6 +4,7 @@ import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-ca
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
@@ -119,6 +120,23 @@ describe(AssignThemeToQuestionUseCase, () => {
         status: QUESTION_THEME_STATUS_ARCHIVED,
       }));
       const expectedError = new ReferencedQuestionThemeArchivedError(command.payload.themeId);
+
+      await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionMaximumThemesError when the question already has the maximum number of themes.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-1",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-new" }),
+      });
+      const themes = [
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-3" }) }),
+      ];
+      mocks.useCases.findQuestionById.getById.mockResolvedValue(createFakeQuestion({ id: "q-1", themes }));
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: command.payload.themeId }));
+      const expectedError = new QuestionMaximumThemesError(command.questionId);
 
       await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrow(expectedError);
     });

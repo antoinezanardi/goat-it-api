@@ -70,7 +70,7 @@ Flag immediately. Help decompose into sub-projects. Each sub-project gets its ow
 - Always question yourself if acceptance scenarios are needed (mostly they are). If so, add a BDD section with the list of scenarios names and description to create or update. Don't write the scenarios themselves, they will be detailed in the plan phase. Your job is to identify the need for them and define their high-level scope.
 - Every source code addition / change must be accompanied by a test addition / change as the coverage is 100%.
 - If code is added/modified on any TS files, add a "Mutation testing" section to the plan.
-- Reference hexagonal architecture: domain/application/infrastructure layers, repository pattern (port + adapter), DTO shapes, Zod validation, GlobalExceptionFilter error registration.
+- Reference hexagonal architecture: domain/application/infrastructure layers, repository pattern (port + adapter), DTO shapes, Zod validation, and error classification (mapped to a specific 4xx or intentionally 500).
 
 ## Skills to load
 

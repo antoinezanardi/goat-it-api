@@ -1,13 +1,13 @@
 import { Test } from "@nestjs/testing";
 
-import { createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
+import * as questionThemeContractMappers from "@question-theme/contracts/dto/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+import * as sortQueryDtoMappers from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
@@ -22,9 +22,6 @@ import type { Mock } from "vitest";
 
 import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
-
-vi.mock(import("@question-theme/contracts/dto/question-theme.dto.mappers"));
-vi.mock(import("@shared/application/mappers/sort-query-dto/sort-query-dto.mappers"));
 
 describe(QuestionThemeController, () => {
   let questionThemeController: QuestionThemeController;
@@ -52,8 +49,8 @@ describe(QuestionThemeController, () => {
         findQuestionThemeById: createMockedFindQuestionThemeByIdUseCase(),
       },
       mappers: {
-        createQuestionThemeDtoFromEntity: vi.mocked(createQuestionThemeDtoFromEntity),
-        createSortOptionsFromSortQueryDto: vi.mocked(createSortOptionsFromSortQueryDto),
+        createQuestionThemeDtoFromEntity: vi.spyOn(questionThemeContractMappers, "createQuestionThemeDtoFromEntity").mockImplementation(vi.fn()),
+        createSortOptionsFromSortQueryDto: vi.spyOn(sortQueryDtoMappers, "createSortOptionsFromSortQueryDto").mockImplementation(vi.fn()),
       },
     };
     const testingModule = await Test.createTestingModule({

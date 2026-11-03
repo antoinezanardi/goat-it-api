@@ -1,6 +1,7 @@
 import type { Linter } from "eslint";
 
-const DOMAIN_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: domain is framework-free and must not import NestJS, Mongoose, Fastify or nestjs-zod. See docs/architecture.md §12.2.";
+const DOMAIN_FRAMEWORK_BAN_MESSAGE = "Architecture boundary: domain is framework-free and must not import NestJS, Mongoose, Fastify, nestjs-zod or Zod. " +
+  "See docs/architecture.md §12.2.";
 
 const DOMAIN_NODE_BAN_MESSAGE = "Architecture boundary: domain must not perform Node I/O; use a shared or infrastructure helper instead. See docs/architecture.md §12.2.";
 
@@ -199,6 +200,41 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             ],
             message: "Architecture boundary: the question-theme module may only import question-usage.module.ts and the published count use case.",
           },
+          {
+            target: "src/contexts/question-theme/domain/**/!(*.spec).ts",
+            from: ["src/contexts/question"],
+            message: "Architecture boundary: the question-theme domain must not import the question context.",
+          },
+          {
+            target: "src/contexts/question/contracts/**/!(*.spec).ts",
+            from: ["src/contexts/question-theme"],
+            message: "Architecture boundary: the question contracts must not import the question-theme context.",
+          },
+          {
+            target: "src/contexts/question-theme/contracts/**/!(*.spec).ts",
+            from: ["src/contexts/question"],
+            message: "Architecture boundary: the question-theme contracts must not import the question context.",
+          },
+          {
+            target: [
+              "src/contexts/*/application/**/!(*.spec).ts",
+              "src/contexts/*/domain/**/!(*.spec).ts",
+              "src/shared/application/**/!(*.spec).ts",
+              "src/shared/domain/**/!(*.spec).ts",
+            ],
+            from: ["src/infrastructure/**"],
+            message: "Architecture boundary: pure application and domain layers must not import cross-cutting infrastructure.",
+          },
+          {
+            target: "src/contexts/question/question-usage.module.ts",
+            from: ["src/contexts/question-theme"],
+            except: [
+              "question-theme.module.ts",
+              "application/use-cases/find-question-theme-by-id",
+              "application/use-cases/get-question-themes-by-ids-or-throw",
+            ],
+            message: "Architecture boundary: the question usage module may only import question-theme.module.ts and the published question-theme use cases.",
+          },
         ],
       },
     ],
@@ -230,6 +266,8 @@ const ESLINT_BOUNDARIES_PACKAGE_BANS_FLAT_CONFIG: Linter.Config = {
               "fastify/*",
               "nestjs-zod",
               "nestjs-zod/*",
+              "zod",
+              "zod/*",
             ],
             message: DOMAIN_FRAMEWORK_BAN_MESSAGE,
           },

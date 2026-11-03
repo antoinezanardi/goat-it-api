@@ -1,5 +1,7 @@
 import { isObject, mapKeys, shake } from "radashi";
 
+import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+
 import type { PipelineStage } from "mongoose";
 
 import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
@@ -66,7 +68,7 @@ function getDefinedFieldsForMongoArrayElementUpdate(data: Record<string, unknown
 type MongoSortDirection = 1 | -1;
 
 function getMongoSortDirectionFromSortOrder(sortOrder: SortOrder): MongoSortDirection {
-  return sortOrder === "asc" ? 1 : -1;
+  return sortOrder === SORT_ORDERS[0] ? 1 : -1;
 }
 
 /**

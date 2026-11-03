@@ -1,3 +1,4 @@
+import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
 import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
 type QuestionAuthorDtoZodRefinement = {
@@ -8,7 +9,7 @@ type QuestionAuthorDtoZodRefinement = {
 
 function isGameIdSetOnGameRole(questionAuthorDtoZodRefinement: QuestionAuthorDtoZodRefinement): boolean {
   const { role, gameId } = questionAuthorDtoZodRefinement;
-  if (role === "game") {
+  if (role === QUESTION_AUTHOR_ROLE_GAME) {
     return typeof gameId === "string" && gameId.length > 0;
   }
   return gameId === undefined;

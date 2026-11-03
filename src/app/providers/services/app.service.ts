@@ -1,21 +1,19 @@
 import { Injectable } from "@nestjs/common";
 
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
+
 import { readPackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers";
-
-import type { AppMetadata } from "@app/types/app.types";
-
-const packageJson = readPackageJson();
 
 @Injectable()
 export class AppService {
-  public getApiMeta(): AppMetadata {
-    void this;
+  private readonly packageJson = readPackageJson();
 
+  public getApiMeta(): AppMetadataDto {
     return {
-      packageName: packageJson.name,
+      packageName: this.packageJson.name,
       name: "Goat It API",
-      description: packageJson.description,
-      version: packageJson.version,
+      description: this.packageJson.description,
+      version: this.packageJson.version,
     };
   }
 }

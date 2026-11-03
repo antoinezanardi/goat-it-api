@@ -130,7 +130,7 @@ This project follows **Hexagonal Architecture** with NestJS 12 + Fastify 5 + Mon
 - **Architecture**: Structure around bounded contexts under `src/contexts/<domain>/`, each with `domain/` (entities, errors, commands, contracts, repository ports), `application/` (use-cases, DTOs, mappers), `infrastructure/` (controllers, Mongoose repositories).
 - **Repository pattern**: Port interface + injection token in `domain/repositories/`, Mongoose implementation in `infrastructure/persistence/mongoose/repository/`.
 - **DTO pattern**: Zod schema in `*.dto.shape.ts` (with `.describe()` and `.meta({ example })`), nestjs-zod wrapper in `*.dto.ts`.
-- **Errors**: Custom error classes extending `Error` in `domain/errors/`, registered in `GlobalExceptionFilter`.
+- **Errors**: Custom error classes extending `Error` in `domain/errors/`; each is either mapped to a specific 4xx in `GlobalExceptionFilter` or intentionally falls through to 500 with a recorded justification.
 - **Testing**: 100% coverage required. Colocated `*.spec.ts`, `@nestjs/testing` for providers, Vitest + SWC. Faketories in `tests/shared/utils/faketories/`, mocks in `tests/unit/utils/mocks/`.
 - **Quality gates**: 5-step mandatory: `lint:fix` → `typecheck` → `test:unit:cov` → `test:acceptance` → `test:mutation`.
 

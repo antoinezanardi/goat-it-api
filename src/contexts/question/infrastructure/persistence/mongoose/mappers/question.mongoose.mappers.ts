@@ -1,5 +1,8 @@
 import { Types } from "mongoose";
 
+import { createQuestionThemeFromPersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.mappers";
+
+import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
 import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
 import type { Question } from "@question/domain/types/question.entities";
@@ -10,22 +13,12 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAggregate, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 function createQuestionThemeFromAggregate(questionThemeAggregate: QuestionThemeAggregate): QuestionTheme {
-  return {
-    id: questionThemeAggregate._id.toString(),
-    slug: questionThemeAggregate.slug,
-    label: questionThemeAggregate.label,
-    aliases: questionThemeAggregate.aliases,
-    description: questionThemeAggregate.description,
-    color: questionThemeAggregate.color,
-    status: questionThemeAggregate.status,
-    createdAt: questionThemeAggregate.createdAt,
-    updatedAt: questionThemeAggregate.updatedAt,
-  };
+  return createQuestionThemeFromPersistenceShape(questionThemeAggregate);
 }
 
 function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate): QuestionAuthor {
   const { _id, author: questionAuthor } = questionAggregate;
-  if (questionAuthor.role !== "game") {
+  if (questionAuthor.role !== QUESTION_AUTHOR_ROLE_GAME) {
     return {
       role: questionAuthor.role,
       name: questionAuthor.name,

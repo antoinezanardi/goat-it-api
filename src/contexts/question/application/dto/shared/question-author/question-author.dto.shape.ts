@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { zMongoId } from "@shared/application/dto/zod/validators/string/string.zod.validators";
 
-import { isGameIdSetOnGameRole } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinement";
+import { isGameIdSetOnGameRole } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinements";
 import { QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
 
 const QUESTION_AUTHOR_DTO = z.strictObject({

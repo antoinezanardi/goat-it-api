@@ -3,12 +3,13 @@ import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
 import { AdminAuth } from "@src/infrastructure/api/auth/providers/decorators/admin-auth/admin-auth.decorator";
-import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
+import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/question.constants";
 import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { QuestionModificationNestZodDto } from "@question/infrastructure/http/dto/question-modification/question-modification.dto";
 import { QuestionCreationNestZodDto } from "@question/infrastructure/http/dto/question-creation/question-creation.dto";
@@ -32,7 +33,7 @@ import type { AdminQuestionDto } from "@question/application/dto/admin-question/
 import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
 @AdminAuth()
-@Controller(`${ControllerPrefixes.ADMIN}/${ControllerPrefixes.QUESTIONS}`)
+@Controller(`${ControllerPrefixes.ADMIN}/${QUESTION_ROUTE_PREFIX}`)
 export class AdminQuestionController {
   public constructor(
     private readonly findQuestionsUseCase: FindQuestionsUseCase,
@@ -49,8 +50,8 @@ export class AdminQuestionController {
   @Get()
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Get all questions for backend administration",
     description: "Get the list of all questions available in the database with detailed structure for backend administration.",
@@ -69,8 +70,8 @@ export class AdminQuestionController {
   @Get("/stats")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Get question statistics for dashboard",
     description: "Returns aggregated statistics about questions including counts by status, category, cognitive difficulty, author role, and rejection type.",
@@ -86,8 +87,8 @@ export class AdminQuestionController {
   @Get("/:id")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Get question by ID for backend administration",
     description: "Get a specific question by its unique identifier with detailed structure for backend administration.",
@@ -105,8 +106,8 @@ export class AdminQuestionController {
   @Post()
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Create a new question for backend administration",
     description: "Create a new question in the database with the provided details for backend administration.",
@@ -125,8 +126,8 @@ export class AdminQuestionController {
   @Patch("/:id")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Modify a question",
     description: "Partially modify a question's fields. Only provided fields are updated. Content fields support deep merge at the locale level.",
@@ -148,8 +149,8 @@ export class AdminQuestionController {
   @Post("/:id/archive")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Archive a question",
     description: `Archive a specific question by its unique identifier. Returns the archived question with detailed structure for backend administration. An already archived question cannot be archived again.`,
@@ -167,8 +168,8 @@ export class AdminQuestionController {
   @Post("/:id/themes")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Assign a theme to a question",
     description: `Assign a specific theme to a question by its unique identifier. Returns the updated question with detailed structure for backend administration.`,
@@ -190,8 +191,8 @@ export class AdminQuestionController {
   @Delete("/:id/themes/:themeId")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Remove a theme from a question",
     description: `Remove a specific theme from a question by its unique identifier. Returns the updated question with detailed structure for backend administration.`,
@@ -215,8 +216,8 @@ export class AdminQuestionController {
   @Patch("/:id/themes/:themeId")
   @ApiOperation({
     tags: [
-      SwaggerTags.ADMIN,
-      SwaggerTags.QUESTIONS,
+      SWAGGER_TAGS.ADMIN,
+      SWAGGER_TAGS.QUESTIONS,
     ],
     summary: "Modify a theme assignment on a question",
     description: `Modify a specific theme assignment on a question. Can change isPrimary and isHint flags. Setting isPrimary to true will automatically demote the current primary theme.`,

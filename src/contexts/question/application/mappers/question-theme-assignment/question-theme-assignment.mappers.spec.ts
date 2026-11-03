@@ -1,5 +1,6 @@
 import {
   createQuestionThemeAssignmentCreationCommandFromDto,
+  createQuestionThemeAssignmentCreationContractFromDto,
   createQuestionThemeAssignmentModificationCommandFromDto,
 } from "@question/application/mappers/question-theme-assignment/question-theme-assignment.mappers";
 
@@ -7,6 +8,22 @@ import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/co
 import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
 import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.faketory";
 import { createFakeQuestionThemeAssignmentModificationDto } from "@faketories/contexts/question/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.faketory";
+
+describe(createQuestionThemeAssignmentCreationContractFromDto, () => {
+  it("should map a QuestionThemeAssignmentCreationDto to a contract when called.", () => {
+    const dto = createFakeQuestionThemeAssignmentCreationDto();
+
+    const result = createQuestionThemeAssignmentCreationContractFromDto(dto);
+
+    const expected = createFakeQuestionThemeAssignmentCreationContract({
+      themeId: dto.themeId,
+      isPrimary: dto.isPrimary,
+      isHint: dto.isHint,
+    });
+
+    expect(result).toStrictEqual(expected);
+  });
+});
 
 describe(createQuestionThemeAssignmentCreationCommandFromDto, () => {
   it("should create a command with questionId and payload from dto when called.", () => {

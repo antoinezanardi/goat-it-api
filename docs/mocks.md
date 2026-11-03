@@ -23,6 +23,7 @@ import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/
 - Factory signature: prefer `createMockedX(overrides: Partial<MockedX> = {})`.
   - `MockedX` is a mapped type where each function is a `Mock<...>` from Vitest.
   - `overrides` lets tests replace specific methods to simulate errors or alternative scenarios.
+  - `createMockedNestConfigService(appEnv, overrides)` is the documented exception: the first argument seeds the fake environment, and `overrides` remains the last spread.
 - Use Vitest's global `vi` for mocks (the repo provides `vi` globally in test runs). Factories must return typed objects and rely on `vi.fn()` for functions.
 - Always return objects that match the public interface used by the system under test (ports), not the internal implementation details.
 
@@ -71,7 +72,7 @@ const useCase = createMockedCreateQuestionUseCase({
 ## Naming
 
 - Factories are named `createMocked<What>()` to make intent explicit and avoid ambiguity with faketory helpers (which use `createFake<Thing>`).
-- Mock types follow `Mocked<What>` naming and stay file-local; only the factory is exported.
+- Mock types follow `Mocked<What>` naming. A file may export its `Mocked<What>` type when tests need to reference the shape; otherwise keep it file-local.
 
 ## Best Practices
 

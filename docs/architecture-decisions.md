@@ -112,8 +112,8 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 - `question/application` uses the two theme lookup use cases, published theme domain, and `question-theme/contracts/**`.
 - `question/infrastructure` uses theme `contracts/**` and published domain types, not theme use cases.
 - `question-theme/application` uses `CountLiveQuestionsByThemeIdUseCase`; `question-theme/infrastructure` uses `question/contracts/persistence/**`.
-- Theme DTO shapes/mappers/validators move to `question-theme/contracts/dto/`; both persistence contracts are published under `contracts/persistence/`.
-- `QuestionThemePersistenceShape`, `QUESTION_STATUS_ACTIVE` and `QUESTION_THEME_USAGE_PERSISTENCE_FIELDS` guard the `$lookup` and stats joins.
+- Only the two consumed theme DTO shapes, their mappers and validators move to `question-theme/contracts/dto/`; the other five theme DTO shapes stay internal. Both persistence contracts are published under `contracts/persistence/`.
+- `QuestionThemePersistenceShape`, `QUESTION_STATUS_ACTIVE` and `QUESTION_THEME_USAGE_PERSISTENCE_FIELDS` (`status`, `themeId`) guard the `$lookup` and stats joins.
 - `ReferencedQuestionThemeArchivedError` moves to `question/domain/errors/`; `QuestionThemeNotFoundError` remains published by `question-theme/domain/errors/`.
 - Cross-context calls are read-only; write invariants are writer-owned; check-then-write is not atomic. Strict consistency requires a transaction or conditional update. The current invariants are best-effort and must be tested for the race where it matters.
 
@@ -143,7 +143,7 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 
 **Decision:** Use-case and controller tests mock the boundary the SUT depends on. Repository mocks live under `domain/repositories`; adapter mocks stay under infrastructure. Acceptance tests may import Mongoose schemas for fixtures only.
 
-**Rationale:** Test doubles should name the boundary, not the adapter. The current path says "Mongoose repository" even in use-case tests.
+**Rationale:** Test doubles should name the boundary, not the adapter. Before this decision, the path said "Mongoose repository" even in use-case tests; repository mocks now live at the port path.
 
 **Rejected:** Keeping adapter-mirrored mock paths; hybrid documented.
 
@@ -163,7 +163,7 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 
 **Phase 0 finding:** ESLint core `no-restricted-imports` must be re-enabled in a scoped block composed **after** `oxlint.buildFromOxlintConfigFile(...)`; the bridge emits `"no-restricted-imports": "off"` for `**/*.ts` and a block placed before it is a silent no-op. Ban subpaths (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude specs/declarations. Prove each new zone with a temporary forbidden import plus a temporary allowed import.
 
-**Final state (Phase 5):** zones 1–12c are active, including the per-subtree cross-context zones 11b/11c/12b and the contracts package ban. Only zone 9 remains deferred behind #1265. The module-token imports required by `useFactory` are explicitly allowed in zones 11d/12c. The residual risks and follow-ups are in [architecture-follow-ups.md](architecture-follow-ups.md).
+**Final state (Phase 5):** zones 1–16 are active, including the per-subtree cross-context zones 11b/11c/12b, the theme-domain/contracts zones 13–15 and the pure-layer `src/infrastructure` ban 16. Only zone 9 remains deferred behind #1265. The module-token imports required by `useFactory` are explicitly allowed in zones 11d/12c. The relative-import ban is an Oxlint `eslint/no-restricted-imports` regex scoped to first-party source/tests. The residual risks and follow-ups are in [architecture-follow-ups.md](architecture-follow-ups.md).
 
 **Rejected:** Adding `@infrastructure/*` and deprecating `@src/*` (61-file churn, no enforcement by itself); aliases only.
 
