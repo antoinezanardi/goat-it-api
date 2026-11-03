@@ -11,7 +11,6 @@ export default {
     "!**/*.spec.ts",
     "!**/*.schema.ts",
     "!**/*.constants.ts",
-    "!**/*.module.ts",
     "!**/*.types.ts",
     "!**/*.commands.ts",
     "!**/*.contracts.ts",

@@ -225,8 +225,9 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`)
 - 100% coverage required (all branches, lines, functions)
-- Excluded from coverage: `*.module.ts`, `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
-- **Stryker mutation excludes**: mutation excludes the same set as coverage (`*.pipeline.ts`, `*.constants.ts`, `*.module.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`) plus **every** `*.schema.ts`, but keeps `*.dto.ts` under mutation testing.
+- Excluded from coverage: `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
+- `*.module.ts` files are **included** in coverage. Every module has a `.spec.ts` that imports it; context and persistence specs compile the real module graph with mocked Mongoose model tokens.
+- **Stryker mutation excludes**: mutation excludes `*.pipeline.ts`, `*.constants.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts` plus **every** `*.schema.ts`, but keeps `*.dto.ts` under mutation testing. `*.module.ts` files stay in scope; Stryker instruments no mutants for declarative Nest module metadata, so the module specs and acceptance tests guard the graph.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; `it.each` for parametrized cases — always typed: `it.each<T>([...])`
 - Private methods tested via `ClassName["privateMethod"](...)`

@@ -776,7 +776,8 @@
     // ---- Override for modules -----
     {
       "files": [
-        "**/src/**/*.module.ts"
+        "**/src/**/*.module.ts",
+        "**/tests/**/*.module.ts"
       ],
       "rules": {
         "eslint/class-methods-use-this": "off",

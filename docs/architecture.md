@@ -105,7 +105,7 @@ docker/                           # acceptance-test containers
 | `src/contexts/<context>/infrastructure` | HTTP controllers, DTO wrappers, Mongoose schemas/repositories, persistence mappers and pipelines. |
 | `src/contexts/<context>/contracts` | Published cross-context DTO shapes, pure mappers, validators and persistence contracts. A facade, not a layer. |
 | `src/shared` | Shared kernel with layer subfolders plus type-only `types`. |
-| `src/app` | Application shell and composition root. Owns no business logic. |
+| `src/app` | Application shell and composition root. Owns no business logic; wires cross-context concerns such as the global HTTP exception filter. |
 | `src/infrastructure` | Cross-cutting adapters: auth, config, health, server bootstrap, database. |
 | `packages/schemas` | Publishable facade over pure contracts and faketories. |
 | `tests` | Unit, shared utilities, acceptance and mutation state. |
@@ -122,7 +122,7 @@ Apply the first matching rule:
 3. **Cross-context published contract?** `<context>/contracts/` when another context actually consumes it.
 4. **Cross-cutting infrastructure plumbing?** `src/infrastructure/api/**` or `src/infrastructure/database/**`.
 5. **Reusable, context-free building block?** `src/shared/**`, following the shared-kernel layer rules and the two-context promotion rule.
-6. **Application shell?** `src/app/**` — root controller, app metadata, logger, shell service.
+6. **Application shell?** `src/app/**` — root controller, app metadata, logger, shell service, global HTTP exception filter.
 7. **Test or test infrastructure?** Colocated `*.spec.ts`; shared faketories, mocks and helpers under `tests/`.
 8. **Tooling, configuration or documentation?** `configs/`, `scripts/`, `docs/`, `env/`, `docker/`, `.github/`, `.opencode/` or `.agents/`.
 9. **Nothing fits?** Stop and propose the new boundary through an approved design. Do not invent a new top-level folder or a `misc` bucket.
@@ -297,14 +297,14 @@ Rules:
 
 ### 4.6 Application shell and cross-cutting infrastructure
 
-- `src/app/`: root controller, app metadata DTO, logger helpers, shell service, `app.module.ts`.
+- `src/app/`: root controller, app metadata DTO, global HTTP exception filter, logger helpers, shell service, `app.module.ts`.
 - `src/infrastructure/api/auth/`: API-key guards, auth decorators, auth errors and helpers.
 - `src/infrastructure/api/config/`: environment schema, config module, validators and services.
 - `src/infrastructure/api/health/`: health controller, DTOs, mappers and service.
 - `src/infrastructure/api/server/`: Fastify bootstrap, CORS, Swagger.
 - `src/infrastructure/database/`: Mongoose connection module and service.
 
-`src/app` wires every context and cross-cutting module. `src/infrastructure` imports `@shared/*` only, and `server.ts` receives the application module as a parameter.
+`src/app` wires every context and cross-cutting module. It is the only area allowed to compose context domain errors into cross-context HTTP responses: `GlobalExceptionFilter` lives in `src/app/filters/global-exception/` and is registered with `APP_FILTER`. `src/infrastructure` imports `@shared/*` only, and `server.ts` receives the application module as a parameter.
 
 ## 5. Cross-context collaboration
 
@@ -560,7 +560,7 @@ Each validator owns its constants and its spec. Shape-owned constants that are n
 - Every new domain error must be classified in the PR: mapped, or intentionally 500 with a one-line justification.
 - The four write/read-back errors are intentionally 500: `QuestionCreationError`, `QuestionThemeAssignmentCreationError`, `QuestionThemeAssignmentModificationError`, `QuestionThemeAssignmentRemovalError`.
 - The filter MUST have tests asserting the 500 behaviour for those four errors, so the intent is locked.
-- `GlobalExceptionFilter` is the single cross-context HTTP error composition point until #1265. It lives at `src/shared/infrastructure/http/filters/global-exception/global-exception.filter.ts`.
+- `GlobalExceptionFilter` is the single cross-context HTTP error composition point. It lives at `src/app/filters/global-exception/global-exception.filter.ts` and is registered with `APP_FILTER` in `AppModule`, so `src/shared` stays context-free.
 
 ## 8. Naming and placement
 
@@ -593,9 +593,9 @@ Each validator owns its constants and its spec. Shape-owned constants that are n
 | Mongoose mapper | `infrastructure/persistence/mongoose/mappers/` | `<aggregate>.mongoose.mappers.ts` | `.spec.ts` |
 | Mongoose pipeline | `infrastructure/persistence/mongoose/repository/pipelines/` for the root, or `pipelines/<feature>/` | `<aggregate>.mongoose.repository.pipeline.ts` for the root, `<unit>.mongoose.repository.pipeline.ts` for grouped | — (excluded from coverage) |
 | Mongoose helper | `infrastructure/persistence/mongoose/repository/helpers/` | `<unit>.mongoose.helpers.ts` | `.spec.ts` |
-| Persistence module | `infrastructure/persistence/` | `<context>-persistence.module.ts` | — (excluded from coverage) |
-| Context module | `src/contexts/<context>/` | `<context>.module.ts` | — (excluded from coverage) |
-| Usage module | `src/contexts/<context>/` | `<context>-usage.module.ts` | — (excluded from coverage) |
+| Persistence module | `infrastructure/persistence/` | `<context>-persistence.module.ts` | `.spec.ts` (module wiring) |
+| Context module | `src/contexts/<context>/` | `<context>.module.ts` | `.spec.ts` (provider graph) |
+| Usage module | `src/contexts/<context>/` | `<context>-usage.module.ts` | `.spec.ts` (provider graph) |
 | Shared infrastructure helper | `shared/infrastructure/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
 | Shared mapper/helper | `shared/application/mappers/<unit>/` | `<unit>.mappers.ts` / `<unit>.helpers.ts` | `.spec.ts` |
 | Shared Zod validator | `shared/application/dto/zod/validators/<kind>/` | `<kind>.zod.validators.ts` | `.spec.ts`, constants in `constants/` |
@@ -676,8 +676,9 @@ Path aliases are mandatory in `src/`, `tests/` and `packages/schemas/src/`; rela
 
 ### 10.2 Coverage and mutation excludes
 
-- Coverage excludes `*.module.ts`, `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts` and `*.value-objects.ts`.
-- Mutation excludes the same set except `*.dto.ts` (which stays under mutation testing) and excludes every `*.schema.ts` file, including `src/infrastructure/api/config/types/env.schema.ts`.
+- Coverage and mutation exclude patterns are authoritative in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`; this guide states the policy and does not copy the lists.
+- `*.module.ts` is in both coverage and mutation scope: every module has a colocated `.module.spec.ts` — see [unit-tests.md § Module wiring tests](unit-tests.md#module-wiring-tests).
+- `*.dto.ts` stays under mutation testing; every `*.schema.ts` file, including `src/infrastructure/api/config/types/env.schema.ts`, is excluded from mutation.
 
 Writing guide per file type: [unit-tests.md](unit-tests.md). Acceptance guide: [acceptance-tests.md](acceptance-tests.md). Faketories: [faketories.md](faketories.md). Mocks: [mocks.md](mocks.md).
 
@@ -726,7 +727,7 @@ Path and package boundaries are enforced by ESLint. Relative imports are enforce
 | 6 | `src/shared/domain/**/!(*.spec).ts`, `src/shared/application/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 0 |
 | 7 | `src/**/!(*.spec).ts` | `tests/**` | 0 |
 | 8 | `src/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 2 |
-| 9 | `src/shared/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | deferred (#1265) |
+| 9 | `src/shared/infrastructure/**/!(*.spec).ts` | `src/contexts/**`, `src/app/**` | 5 |
 | 10a | `src/contexts/*/domain/**/!(*.spec).ts` | `src/shared/application/**`, `src/shared/infrastructure/**`, `src/contexts/*/contracts/**` | 0 |
 | 10b | `src/contexts/*/application/**/!(*.spec).ts` | `src/shared/infrastructure/**` | 1 |
 | 10c | `src/contexts/*/contracts/**/!(*.spec).ts` | `src/contexts/*/application/**`, `src/contexts/*/infrastructure/**`, `src/shared/infrastructure/**` | 4 |
@@ -780,7 +781,6 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 
 | Exception | Rule | Removal condition |
 |---|---|---|
-| `GlobalExceptionFilter` imports context errors | Zone 9 is deferred | #1265 lands |
 | `shared/infrastructure` localization middleware imports `src/infrastructure` `AppConfigService` | Accepted because there is one infrastructure area | A second infrastructure area appears; then move the middleware or introduce a narrow shared-owned token |
 | Cross-context `$lookup` | Published persistence contracts only | Denormalization/read-model follow-up |
 | question / question-theme bidirectional partnership | §5.2 per-layer allowlist | Third context or growing surface → merge |
@@ -811,7 +811,7 @@ The durable decisions and their rationale live in [architecture-decisions.md](ar
 | D14 | Package boundary | Keep facade, document public API | 0 |
 | D15 | Enforcement | Aliases + lint zones and package bans | 0–5 |
 
-This guide owns the rules. The decision log owns the rationale, rejected alternatives and migration phases. All D1–D15 decisions are implemented; only zone 9 is deferred behind #1265. Residual risks are in [architecture-follow-ups.md](architecture-follow-ups.md).
+This guide owns the rules. The decision log owns the rationale, rejected alternatives and migration phases. All D1–D15 decisions and all lint zones are implemented. Residual risks are in [architecture-follow-ups.md](architecture-follow-ups.md).
 
 ## 15. Framework references
 

@@ -6,8 +6,6 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
-import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
-
 import type { Type } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
@@ -22,8 +20,6 @@ async function bootstrap(appModule: Type<unknown>): Promise<NestFastifyApplicati
 
   app.enableShutdownHooks();
   app.useLogger(logger);
-
-  app.useGlobalFilters(new GlobalExceptionFilter());
 
   setupSwaggerModule(app);
 

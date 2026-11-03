@@ -26,7 +26,6 @@ export default defineConfig({
       provider: "v8",
       include: ["src/**/*.ts"],
       exclude: [
-        "src/**/*.module.ts",
         "src/**/mongoose/**/*.schema.ts",
         "src/**/*.constants.ts",
         "src/**/*.pipeline.ts",
