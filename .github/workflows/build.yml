@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   GH_TOKEN: ${{ github.token }}
 
@@ -23,7 +26,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Perform CodeQL Analysis ❇️
         uses: ./.github/actions/code-ql
@@ -36,10 +39,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Lint GitHub Workflows 🐙
-        uses: raven-actions/actionlint@v2.2.0
+        uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7 # v2.2.0
         with:
           matcher: true
           fail-on-error: true
@@ -54,7 +57,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Install project 📦
         uses: ./.github/actions/install-project
@@ -69,7 +72,7 @@ jobs:
         platform: ["linux/amd64", "linux/arm64"]
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Docker Build 🐳
         uses: ./.github/actions/docker-build
@@ -84,7 +87,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Build application ✨
         uses: ./.github/actions/build
@@ -97,7 +100,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Build @goat-it/schemas 📚
         uses: ./.github/actions/build-schemas-package
@@ -110,11 +113,24 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Lint Codebase 🔍
         id: lint-codebase
         uses: ./.github/actions/lint
+
+  audit-dependencies:
+    name: Audit Dependencies 🛡️
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Audit Dependencies 🛡️
+        uses: ./.github/actions/audit-dependencies
 
   unit-tests:
     name: Unit Tests 🧪
@@ -124,7 +140,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Unit Tests 🧪
         id: unit-tests
@@ -141,7 +157,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Mutation Tests 👽
         id: mutation-tests
@@ -157,7 +173,7 @@ jobs:
       - build
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Acceptance Tests 🥒
         id: acceptance-tests
@@ -175,7 +191,7 @@ jobs:
     if: github.actor != 'renovate[bot]'
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: SonarCloud Analysis 🌥️
         uses: ./.github/actions/sonarcloud

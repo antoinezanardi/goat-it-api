@@ -18,15 +18,31 @@ inputs:
   strict-host-key-checking:
     description: Whether to enable StrictHostKeyChecking for SSH ("yes" or "no")
     required: false
-    default: "no"
+    default: "yes"
   known-hosts:
-    description: (Optional) Known hosts content to write into ~/.ssh/known_hosts. If set, it will be written before connecting.
+    description: Known hosts content to write into ~/.ssh/known_hosts. Required when strict-host-key-checking is "yes".
     required: false
     default: ""
 
 runs:
   using: composite
   steps:
+    - name: Validate known hosts input
+      shell: bash
+      env:
+        STRICT_HOST_KEY_CHECKING: ${{ inputs.strict-host-key-checking }}
+        KNOWN_HOSTS: ${{ inputs.known-hosts }}
+      run: |
+        if [[ "$STRICT_HOST_KEY_CHECKING" != "yes" && "$STRICT_HOST_KEY_CHECKING" != "no" ]]; then
+          echo "::error::strict-host-key-checking must be either \"yes\" or \"no\" (got \"$STRICT_HOST_KEY_CHECKING\")."
+          exit 1
+        fi
+
+        if [[ "$STRICT_HOST_KEY_CHECKING" == "yes" && -z "$KNOWN_HOSTS" ]]; then
+          echo "::error::known-hosts must be provided when strict-host-key-checking is \"yes\"."
+          exit 1
+        fi
+
     - name: Create .ssh directory
       shell: bash
       run: |
@@ -52,10 +68,10 @@ runs:
     - name: Deploy script over SSH
       shell: bash
       run: |
-        if [[ "${{ inputs.strict-host-key-checking }}" == "no" ]]; then
-          SSH_OPTIONS="-o StrictHostKeyChecking=no"
+        if [[ "${{ inputs.strict-host-key-checking }}" == "yes" ]]; then
+          SSH_OPTIONS="-o StrictHostKeyChecking=yes"
         else
-          SSH_OPTIONS=""
+          SSH_OPTIONS="-o StrictHostKeyChecking=no"
         fi
 
         ssh $SSH_OPTIONS ${{ inputs.ssh-user }}@${{ inputs.ssh-server-ip }} << EOF

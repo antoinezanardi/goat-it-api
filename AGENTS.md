@@ -59,6 +59,8 @@ If any gate fails, fix the issue and re-run from that gate onward until all five
 
 > Gates 4 (mutation) and 5 (acceptance) are CI/post-commit gates. Pre-commit hooks run: `typecheck` → `validate:branch-name` → `lint:staged:fix` → `test:unit:staged`.
 
+**Incremental test state must be saved, never restored.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (Stryker incremental state, committed on purpose — see the structure note). The file produced by a gate run MUST stay in the working tree and be reported with the change so the user can commit it. Never revert it with `git checkout --`, `git restore`, `rm`, or by copying an older blob back — this also applies after gate 5 (acceptance) has run. A large diff is expected (test-ID renumbering); report its size with `git diff --stat` instead of discarding it.
+
 ### Definition of Done (DOD) — Conditional Checklist
 
 Evaluate all items at the end of implementation. Each applies only if its condition is met.
@@ -304,6 +306,7 @@ Slash commands available in OpenCode sessions:
 - `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
 - `docs/architecture-follow-ups.md` – Residual risks, accepted limitations and follow-up ownership.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
+- `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/bruno.md`            – Bruno API collection setup.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.
 - `docs/mocks.md`            – Mock factory conventions.

@@ -813,6 +813,7 @@
               "ApiResponse",
               "ZodResponse",
               "HealthCheck",
+              "Header",
               "Localization",
               "Param",
               "Body",

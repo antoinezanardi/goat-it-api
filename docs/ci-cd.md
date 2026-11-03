@@ -14,6 +14,7 @@ File placement, naming and dependency rules belong to [architecture.md](architec
   - [Trigger and concurrency](#trigger-and-concurrency)
   - [Job graph](#job-graph)
   - [Acceptance test job](#acceptance-test-job)
+  - [Supply-chain security](#supply-chain-security)
 - [Release workflow](#release-workflow)
   - [Release PR (develop → main)](#release-pr-develop--main)
   - [Release creation (main)](#release-creation-main)
@@ -22,6 +23,7 @@ File placement, naming and dependency rules belong to [architecture.md](architec
   - [Staging](#staging)
   - [Production](#production)
   - [Docker image publication](#docker-image-publication)
+  - [Post-deploy verification](#post-deploy-verification)
 - [Schemas package publication](#schemas-package-publication)
 - [Repository hygiene workflows](#repository-hygiene-workflows)
 - [Local CI reproduction](#local-ci-reproduction)
@@ -91,6 +93,7 @@ Never bypass the hooks with `--no-verify`.
 | `build`                 | `install`    | Typecheck, build the NestJS application and verify `dist/main.js`.                                     |
 | `build-schemas-package` | `install`    | Typecheck `@goat-it/schemas`, build it with tsdown, run a `pnpm pack` sanity check and upload `dist/`. |
 | `lint-codebase`         | `install`    | Run Oxlint and ESLint.                                                                                 |
+| `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` against the production dependency surface.                   |
 | `unit-tests`            | `install`    | Run `pnpm run test:unit:cov` and export test/coverage counts.                                          |
 | `mutation-tests`        | `install`    | Run `pnpm run test:mutation:ci`, publish to the Stryker Dashboard and upload reports.                  |
 | `acceptance-tests`      | `build`      | Run the Cucumber suite through the `acceptance-tests` composite action.                                |
@@ -109,6 +112,17 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 5. Upload the acceptance reports and logs as artifacts (retention: 2 days).
 6. Fail the job if the acceptance run failed.
 7. `pnpm run docker:acceptance-tests:stop` in an `always()` step.
+
+### Supply-chain security
+
+- **Action pinning.** Every third-party `uses:` entry in `.github/workflows/**` and `.github/actions/**` is pinned to a full 40-character commit SHA with a trailing version comment (`# vX.Y.Z`). Local composite actions (`./.github/actions/...`) are referenced by path. Renovate maintains the pins: `pinDigests: true` enables digest pinning, and `minimumReleaseAge: "3 days"` enforces a supply-chain cooldown before a new release is proposed. `baseBranchPatterns: ["develop"]` is unchanged.
+- **Least-privilege permissions.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`.
+- **Dependency audit.** `.github/actions/audit-dependencies` installs the project and runs `pnpm audit --prod --audit-level=high`. The `audit-dependencies` job fails the build on high or critical production advisories. Development-only advisories do not block the pipeline.
+- **Built-output secret scan.** `scripts/check-secrets-in-built-output.sh` (exposed as `pnpm run check:secrets-in-built-output`) scans `dist/` for the values of environment variables whose names contain `SECRET`, `TOKEN`, `PASSWORD`, `PRIVATE_KEY` or `API_KEY`. It runs in the `build` composite action and in the Docker build stage before `pnpm prune --prod`. It fails closed when the scan itself errors, and it never prints the secret value. Multiline values are only scanned through their first line; that limitation is documented in the script.
+- **Mutation testing stays in place.** The `mutation-tests` action and job, including the Stryker Dashboard integration, are retained. Its artifact upload steps follow the same SHA-pinning rule as every other third-party action.
+- **Deploy host verification.** See [Deployment](#deployment) for the `known_hosts` requirement and strict host-key checking.
+
+Health semantics and the post-deploy probe are documented in [operations.md](operations.md).
 
 ## Release workflow
 
@@ -159,16 +173,18 @@ The changelog is grouped by commit type (features, bug fixes, docs, styles, refa
 
 - Trigger: push to `develop`.
 - Docker images are published with the `develop` tag for `linux/amd64` and `linux/arm64` in the `Docker Image Staging` environment.
-- After publication, the `deploy-to-preproduction` job connects to the preproduction server over SSH and runs the remote update script. It uses the `PREPRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PREPRODUCTION_SERVER_SSH_USER`, `PREPRODUCTION_SERVER_SSH_ADDRESS` and `PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH` secrets.
+- After publication, the `deploy-to-preproduction` job connects to the preproduction server over SSH and runs the remote update script. It uses the `PREPRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PREPRODUCTION_SERVER_SSH_USER`, `PREPRODUCTION_SERVER_SSH_ADDRESS`, `PREPRODUCTION_SERVER_KNOWN_HOSTS` and `PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH` secrets.
+- After the deploy, it probes `PREPRODUCTION_API_URL` with the post-deploy health check.
 - The workflow is named "Deploy To Staging"; the target server is the preproduction one.
 
 ### Production
 
 - Trigger: GitHub `release: created` event (a release is created by semantic-release when `main` is updated).
 - Docker images are published with the release tag and `latest` for `linux/amd64` and `linux/arm64` in the `Docker Image Production` environment.
-- After publication, the `deploy-to-production` job connects to the production server over SSH and runs the remote update script using the `PRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PRODUCTION_SERVER_SSH_USER`, `PRODUCTION_SERVER_SSH_ADDRESS` and `PRODUCTION_UPDATE_SCRIPT_FULL_PATH` secrets.
+- After publication, the `deploy-to-production` job connects to the production server over SSH and runs the remote update script using the `PRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PRODUCTION_SERVER_SSH_USER`, `PRODUCTION_SERVER_SSH_ADDRESS`, `PRODUCTION_SERVER_KNOWN_HOSTS` and `PRODUCTION_UPDATE_SCRIPT_FULL_PATH` secrets.
+- After the deploy, it probes `PRODUCTION_API_URL` with the post-deploy health check.
 
-The shared `deploy` composite action starts an SSH agent, optionally writes `known_hosts`, runs the remote update script and always cleans up the key material. `strict-host-key-checking` defaults to `no` and the current deploy workflows do not pass `known-hosts`; hardening this is tracked separately.
+The shared `deploy` composite action validates that `strict-host-key-checking` is `yes` or `no` and defaults it to `yes`. When strict checking is enabled, `known-hosts` is required; the action writes it to `~/.ssh/known_hosts` and connects with `StrictHostKeyChecking=yes`. Passing `strict-host-key-checking: "no"` explicitly keeps the legacy behavior for an environment without known hosts. The action always cleans up the key material.
 
 ### Docker image publication
 
@@ -179,6 +195,16 @@ The shared `deploy` composite action starts an SSH agent, optionally writes `kno
 - Digests are uploaded as artifacts.
 - A second job merges the per-platform digests into a multi-architecture manifest list per tag and inspects the result.
 - Authentication uses `DOCKER_HUB_USERNAME` / `DOCKER_HUB_PASSWORD`; the image name comes from the `DOCKER_REGISTRY_IMAGE` variable.
+
+### Post-deploy verification
+
+After the SSH deploy step, staging and production run `.github/actions/health-check`, which executes `scripts/post-deploy-health-check.sh` against `vars.PREPRODUCTION_API_URL` or `vars.PRODUCTION_API_URL`:
+
+- 5 attempts, 5 seconds apart, with a 3-second request timeout each;
+- only HTTP `200` passes; other statuses, timeouts and connection errors retry;
+- the step fails the deployment job after the last failed attempt.
+
+The probe targets the root liveness URL (`GET /`). It proves the deployed process answers; it does not prove MongoDB readiness, verify a build SHA or roll back. See [operations.md](operations.md#post-deploy-smoke-verification) for the operational contract.
 
 ## Schemas package publication
 
@@ -197,7 +223,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - `clean-pr-description.yml`: on opened/edited PRs targeting `develop`, removes numbered diffhunk links from the description.
 - `lint-pr-name-into-develop.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates the PR title against Conventional Commits.
 - `protect-main-branch.yml`: on PRs targeting `main`, comments and fails unless the head branch is `develop`.
-- `renovate.json` configures dependency updates; Renovate PRs still go through the standard CI pipeline.
+- `renovate.json` configures dependency updates; Renovate PRs still go through the standard CI pipeline. It enables digest pinning (`pinDigests: true`), enforces a three-day minimum release age (`minimumReleaseAge: "3 days"`), and keeps `baseBranchPatterns: ["develop"]`.
 
 ## Local CI reproduction
 
@@ -208,6 +234,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - Docker services: `pnpm run docker:acceptance-tests:start`, `pnpm run docker:acceptance-tests:stop`, `pnpm run docker:acceptance-tests:reset`.
 - Lint and typecheck: `pnpm run lint` and `pnpm run typecheck`.
 - App build: `pnpm run build`; schemas build: `pnpm --filter @goat-it/schemas build`.
+- Built-output secret scan: `pnpm run check:secrets-in-built-output` after a build.
 
 ## Secrets and environments
 
@@ -218,9 +245,10 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 | `SONARCLOUD_TOKEN`                                                                                                                                   | secret    | SonarCloud analysis                 |
 | `BYOB_TOKEN`                                                                                                                                         | secret    | Badge generation (`badges` action)  |
 | `DOCKER_HUB_USERNAME`, `DOCKER_HUB_PASSWORD`                                                                                                         | secrets   | Docker image publication            |
-| `PREPRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PREPRODUCTION_SERVER_SSH_USER`, `PREPRODUCTION_SERVER_SSH_ADDRESS`, `PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH` | secrets   | Staging/preproduction deployment    |
-| `PRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PRODUCTION_SERVER_SSH_USER`, `PRODUCTION_SERVER_SSH_ADDRESS`, `PRODUCTION_UPDATE_SCRIPT_FULL_PATH`             | secrets   | Production deployment               |
+| `PREPRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PREPRODUCTION_SERVER_SSH_USER`, `PREPRODUCTION_SERVER_SSH_ADDRESS`, `PREPRODUCTION_SERVER_KNOWN_HOSTS`, `PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH` | secrets   | Staging/preproduction deployment    |
+| `PRODUCTION_SERVER_SSH_PRIVATE_KEY`, `PRODUCTION_SERVER_SSH_USER`, `PRODUCTION_SERVER_SSH_ADDRESS`, `PRODUCTION_SERVER_KNOWN_HOSTS`, `PRODUCTION_UPDATE_SCRIPT_FULL_PATH`             | secrets   | Production deployment               |
 | `DOCKER_REGISTRY_IMAGE`                                                                                                                              | variable  | Docker image name                   |
 | `DOCKER_HUB_STAGING_IMAGE_URL`, `DOCKER_HUB_PRODUCTION_IMAGE_URL`                                                                                    | variables | Environment URLs                    |
+| `PREPRODUCTION_API_URL`, `PRODUCTION_API_URL`                                                                                                         | variables | Post-deploy liveness probe base URLs |
 
 GitHub environments: `Stryker Dashboard`, `Docker Image Staging`, `Docker Image Production`.
