@@ -14,3 +14,11 @@ Then(/^the application good health should be returned$/u, function(this: GoatItW
   expect(health.details[MONGOOSE_HEALTH_KEY].status).toBe("up");
   expect(health.details[DOCS_ENDPOINT_HEALTH_KEY].status).toBe("up");
 });
+
+Then(/^the application health response should not be cached$/u, function(this: GoatItWorld): void {
+  expect(this.lastFetchResponse?.headers.get("cache-control")).toBe("no-store");
+});
+
+Then(/^the application health response body should be empty$/u, function(this: GoatItWorld): void {
+  this.expectLastResponseBodyToBeEmpty();
+});

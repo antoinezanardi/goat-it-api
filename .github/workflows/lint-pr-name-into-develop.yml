@@ -10,14 +10,21 @@ on:
       - reopened
       - synchronize
 
+permissions:
+  contents: read
+
 jobs:
   develop-pr-lint:
     name: Lint Pull Request Name 🔃
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     steps:
       - name: Lint Pull Request Name 🔃
-        uses: morrisoncole/pr-lint-action@v1.7.1
+        uses: morrisoncole/pr-lint-action@51f3cfabaf5d46f94e54524214e45685f0401b2a # v1.7.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           title-regex: '^(?<type>build|tech|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$'

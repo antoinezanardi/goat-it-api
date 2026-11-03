@@ -261,6 +261,7 @@ You can add them as **run configurations** in your IDE.
 
 - **[Architecture and file-placement conventions](docs/architecture.md)** — where every file belongs, how it is named and what may depend on it.
 - **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
+- **[Operations](docs/operations.md)** — health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - **[Bruno collection](docs/bruno.md)** — API collection setup and usage.
 - **[Unit tests](docs/unit-tests.md)** — Vitest conventions per file type.
 - **[Acceptance tests](docs/acceptance-tests.md)** — Cucumber, fixtures, payloads and steps.

@@ -26,7 +26,7 @@ runs:
       uses: ./.github/actions/install-project
 
     - name: Restore tests coverage from cache 🥡
-      uses: actions/cache/restore@v6
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       id: cache-unit-tests-coverage
       with:
         path: ${{ inputs.unit-tests-coverage-reports-path }}
@@ -37,7 +37,7 @@ runs:
           ${{ inputs.unit-tests-coverage-base-cache-key }}
 
     - name: SonarCloud Scan 🌥️
-      uses: SonarSource/sonarqube-scan-action@v8.4
+      uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4
       env:
         SONAR_HOST_URL: https://sonarcloud.io
         SONAR_TOKEN: ${{ inputs.sonarcloud-token }}

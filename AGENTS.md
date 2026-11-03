@@ -304,6 +304,7 @@ Slash commands available in OpenCode sessions:
 - `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
 - `docs/architecture-follow-ups.md` – Residual risks, accepted limitations and follow-up ownership.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
+- `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/bruno.md`            – Bruno API collection setup.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.
 - `docs/mocks.md`            – Mock factory conventions.

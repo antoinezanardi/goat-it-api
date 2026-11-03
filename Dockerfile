@@ -49,10 +49,11 @@ COPY --chown=node:node configs/typescript ./configs/typescript/
 COPY --chown=node:node configs/nest ./configs/nest/
 COPY --chown=node:node configs/swc ./configs/swc/
 COPY --chown=node:node scripts/post-install-prepare.sh ./scripts/post-install-prepare.sh
+COPY --chown=node:node scripts/check-secrets-in-built-output.sh ./scripts/check-secrets-in-built-output.sh
 COPY --chown=node:node src/ src/
 COPY --chown=node:node --from=development /app/node_modules node_modules/
 
-RUN pnpm run build
+RUN pnpm run build && pnpm run check:secrets-in-built-output
 
 ENV NODE_ENV="production"
 
@@ -73,6 +74,6 @@ COPY --chown=node:node --from=build /app/dist dist/
 COPY --chown=node:node public/ public/
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:${SERVER_PORT}/health || exit 1
+  CMD wget --no-verbose --tries=1 -O /dev/null http://localhost:${SERVER_PORT}/ || exit 1
 
 CMD [ "node", "dist/main.js" ]
