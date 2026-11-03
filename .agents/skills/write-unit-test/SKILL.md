@@ -274,7 +274,9 @@ Patterns:
 
 ## Coverage exclusions (no spec needed)
 
-`*.module.ts`, `*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
+`*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
+
+`*.module.ts` is covered: add a colocated `.module.spec.ts` that imports the module and, for context/persistence modules, compiles its real provider graph with mocked Mongoose model tokens.
 
 ## Checks to run when done
 

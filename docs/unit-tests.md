@@ -10,6 +10,7 @@
   - [Controller tests](#controller-tests)
   - [Use-case tests (application layer) or Services](#use-case-tests-application-layer-or-services)
   - [Repository tests (persistence adapters)](#repository-tests-persistence-adapters)
+  - [Module wiring tests](#module-wiring-tests)
   - [DTOs and Zod validators](#dtos-and-zod-validators)
   - [Helpers and utilities (pure functions)](#helpers-and-utilities-pure-functions)
   - [Errors (domain & infra)](#errors-domain--infra)
@@ -336,6 +337,43 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 - More references:
   - `src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.spec.ts`
   - `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
+
+### Module wiring tests
+
+- Purpose: compile a real Nest module graph and prove that every provider, export and `useFactory` `inject` entry resolves without opening a MongoDB connection.
+- Describe label: `describe(ModuleClass, ...)`.
+- Override every Mongoose model token with a mock from `@mocks/...`; never call `MongooseModule.forRoot`.
+- Resolve every use case and controller by its class token. For multi-dependency use cases, assert the constructed instance received the expected dependency via bracket notation.
+- Global providers used by guards or middleware (for example `AppConfigService`) are supplied by `tests/unit/utils/helpers/nest/app-config-testing.module.ts`.
+- Declarative cross-cutting modules (app shell, auth, health, database) are imported and asserted without compiling a database connection.
+- The compile itself is the assertion that no `forwardRef` or module cycle is required.
+
+```ts
+describe(QuestionModule, () => {
+  let module: TestingModule;
+
+  beforeEach(async() => {
+    module = await Test.createTestingModule({ imports: [AppConfigTestingModule, QuestionModule] })
+      .overrideProvider(getModelToken(QuestionMongooseSchema.name))
+      .useValue(createMockedQuestionMongooseModel())
+      .compile();
+  });
+
+  afterEach(async() => {
+    await module.close();
+  });
+
+  it("should resolve CreateQuestionUseCase when the module graph is compiled.", () => {
+    expect(module.get(CreateQuestionUseCase)).toBeInstanceOf(CreateQuestionUseCase);
+  });
+
+  it("should inject the published theme lookup use case into CreateQuestionUseCase when the module graph is compiled.", () => {
+    const createQuestionUseCase = module.get<CreateQuestionUseCase>(CreateQuestionUseCase);
+
+    expect(createQuestionUseCase["getQuestionThemesByIdsOrThrowUseCase"]).toBe(module.get(GetQuestionThemesByIdsOrThrowUseCase));
+  });
+});
+```
 
 ### DTOs and Zod validators
 

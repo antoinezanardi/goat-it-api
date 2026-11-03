@@ -72,6 +72,14 @@ const ESLINT_BOUNDARIES_FLAT_CONFIG: Linter.Config = {
             message: "Architecture boundary: cross-cutting infrastructure must not import a bounded context or the application shell.",
           },
           {
+            target: "src/shared/infrastructure/**/!(*.spec).ts",
+            from: [
+              "src/contexts/**",
+              "src/app/**",
+            ],
+            message: "Architecture boundary: the shared infrastructure must not import a bounded context or the application shell.",
+          },
+          {
             target: "src/contexts/*/domain/**/!(*.spec).ts",
             from: [
               "src/shared/application/**",

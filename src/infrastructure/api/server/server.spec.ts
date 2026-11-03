@@ -7,8 +7,6 @@ import * as corsHelpers from "@src/infrastructure/api/server/cors/helpers/cors.h
 import * as swaggerHelpers from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
-import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
-
 import { mockByRules } from "@unit-tests/utils/helpers/mock-by-rules.helpers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
@@ -52,7 +50,6 @@ describe(bootstrap, () => {
     vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
-      useGlobalFilters: vi.fn<() => INestApplication>(),
       get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(mockByRules<typeof AppConfigService | typeof Logger, object>(
         [
           [AppConfigService, mocks.services.config],
@@ -114,12 +111,6 @@ describe(bootstrap, () => {
     expect(app.useLogger).toHaveBeenCalledExactlyOnceWith(mockLogger);
   });
 
-  it("should use global exception filter when called.", async() => {
-    const app = await bootstrap(MockedAppModule);
-
-    expect(app.useGlobalFilters).toHaveBeenCalledExactlyOnceWith(expect.any(GlobalExceptionFilter));
-  });
-
   it("should setup swagger module when called.", async() => {
     await bootstrap(MockedAppModule);
 
@@ -179,7 +170,6 @@ describe(bootstrap, () => {
     const expectedApp = {
       enableCors: expect.any(Function) as () => INestApplication,
       enableShutdownHooks: expect.any(Function) as () => INestApplication,
-      useGlobalFilters: expect.any(Function) as () => INestApplication,
       useLogger: expect.any(Function) as () => void,
       get: expect.any(Function) as () => never,
       listen: expect.any(Function) as () => void,

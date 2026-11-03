@@ -163,13 +163,13 @@ This log records the durable architecture decisions behind [`architecture.md`](a
 
 **Phase 0 finding:** ESLint core `no-restricted-imports` must be re-enabled in a scoped block composed **after** `oxlint.buildFromOxlintConfigFile(...)`; the bridge emits `"no-restricted-imports": "off"` for `**/*.ts` and a block placed before it is a silent no-op. Ban subpaths (`mongoose/*`, `fastify/*`, `nestjs-zod/*`) and exclude specs/declarations. Prove each new zone with a temporary forbidden import plus a temporary allowed import.
 
-**Final state (Phase 5):** zones 1–16 are active, including the per-subtree cross-context zones 11b/11c/12b, the theme-domain/contracts zones 13–15 and the pure-layer `src/infrastructure` ban 16. Only zone 9 remains deferred behind #1265. The module-token imports required by `useFactory` are explicitly allowed in zones 11d/12c. The relative-import ban is an Oxlint `eslint/no-restricted-imports` regex scoped to first-party source/tests. The residual risks and follow-ups are in [architecture-follow-ups.md](architecture-follow-ups.md).
+**Final state (Phase 5):** zones 1–16 are active, including the per-subtree cross-context zones 11b/11c/12b, the theme-domain/contracts zones 13–15, the pure-layer `src/infrastructure` ban 16, and zone 9 after #1265 moved `GlobalExceptionFilter` to the composition root. The module-token imports required by `useFactory` are explicitly allowed in zones 11d/12c. The relative-import ban is an Oxlint `eslint/no-restricted-imports` regex scoped to first-party source/tests. The residual risks and follow-ups are in [architecture-follow-ups.md](architecture-follow-ups.md).
 
 **Rejected:** Adding `@infrastructure/*` and deprecating `@src/*` (61-file churn, no enforcement by itself); aliases only.
 
 ## Final status
 
-All D1–D15 decisions are implemented. The only deferred enforcement item is zone 9, owned by #1265. The architecture is a two-context B-lite modular monolith: published use cases and contracts, no cross-context ports/adapters, acyclic module graph, pure application/domain layers, and lint-enforced boundaries. See [architecture-follow-ups.md](architecture-follow-ups.md) for accepted limitations and the merge/denormalization triggers.
+All D1–D15 decisions and all lint zones are implemented. The architecture is a two-context B-lite modular monolith: published use cases and contracts, no cross-context ports/adapters, acyclic module graph, pure application/domain layers, and lint-enforced boundaries. See [architecture-follow-ups.md](architecture-follow-ups.md) for accepted limitations and the merge/denormalization triggers.
 
 ## Adding a decision
 

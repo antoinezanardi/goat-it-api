@@ -15,15 +15,15 @@ IFS=$'\n\t'
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "❌ Not a git repository." >&2; exit 1; }
 
 PS3="What kind of job are you starting? "
-select option in "feat" "fix" "docs" "style" "refactor" "test" "perf" "build" "ci" "chore" "revert";
+select option in "feat" "fix" "docs" "style" "refactor" "test" "perf" "build" "ci" "chore" "revert" "copilot" "renovate";
 do
   case $option in
-  feat | fix | docs | style | refactor | test | perf | build | ci | chore | revert)
+  feat | fix | docs | style | refactor | test | perf | build | ci | chore | revert | copilot | renovate)
     SELECTED_OPTION=$option
     break
     ;;
   *)
-    echo "❌  Invalid option: \"$REPLY\". Please choose between 1 to 11."
+    echo "❌  Invalid option: \"$REPLY\". Please choose between 1 to 13."
     ;;
   esac
 done

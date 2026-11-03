@@ -9,7 +9,7 @@ import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/questi
 import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
-import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
+import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";

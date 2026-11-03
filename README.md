@@ -281,4 +281,4 @@ There is no contributor yet. Want to be the first?
 
 Don't hesitate to browse the **[issues](https://github.com/antoinezanardi/goat-it-api/issues)** and **[pull requests](https://github.com/antoinezanardi/goat-it-api/pulls)** to see what's coming up next.
 
-If you want to contribute to this project, please read the **[CONTRIBUTING.md](.github/CONTRIBUTING.md)** file for guidelines.
+If you want to contribute to this project, please read the **[CONTRIBUTING.md](.github/CONTRIBUTING.md)** file for guidelines and our **[Code of Conduct](CODE_OF_CONDUCT.md)**.
