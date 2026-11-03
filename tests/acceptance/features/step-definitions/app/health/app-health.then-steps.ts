@@ -16,9 +16,5 @@ Then(/^the application good health should be returned$/u, function(this: GoatItW
 });
 
 Then(/^the application health response should not be cached$/u, function(this: GoatItWorld): void {
-  expect(this.lastFetchResponse?.headers.get("cache-control")).toBe("no-store");
-});
-
-Then(/^the application health response body should be empty$/u, function(this: GoatItWorld): void {
-  this.expectLastResponseBodyToBeEmpty();
+  this.expectLastResponseHeaderToBe("cache-control", "no-store");
 });

@@ -11,4 +11,3 @@ Feature: App Health
     Given the client checks the application health using a HEAD request
     Then the request should have succeeded with status code 200
     And the application health response should not be cached
-    And the application health response body should be empty

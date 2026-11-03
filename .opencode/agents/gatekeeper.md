@@ -75,6 +75,7 @@ You are the **gatekeeper** subagent for the goat-it-api project. You run the ful
 
 - All edits are to the working tree only.
 - Never run `git add`, `git commit`, or `git push`.
+- **Never restore or delete incremental test state.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (committed Stryker incremental state). Keep the regenerated file in the working tree through the acceptance gate and report it: do NOT run `git checkout -- tests/mutation/incremental/...`, `git restore`, `rm`, or copy an older blob over it. The diff is expected to be large; report it with `git diff --stat` instead of discarding it.
 
 ## Report format
 

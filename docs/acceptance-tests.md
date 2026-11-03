@@ -163,12 +163,12 @@ All step function bodies must declare `this: GoatItWorld`.
 
 ### Methods
 
-| Method                                           | Description                                                                                                                                               |
-|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `fetchAndStoreResponse(endpoint, fetchOptions?)` | Fires the request via the `ofetch` instance. Swallows `ofetch` errors so that non-2xx responses are still stored in `lastFetchResponse` without throwing. |
-| `expectLastResponseJson<T>(schema)`              | Parses `lastFetchResponse._data` through the provided Zod schema and returns typed `T`. Throws if no response is stored.                                  |
-| `expectLastResponseText()`                       | Returns `lastFetchResponse._data` as a raw string. Throws if the data is not a string.                                                                    |
-| `expectLastResponseBodyToBeEmpty()`              | Throws when the last response carries a body. Used by HEAD scenarios to prove that no body was sent.                                                      |
+| Method                                            | Description                                                                                                                                                            |
+|---------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `fetchAndStoreResponse(endpoint, fetchOptions?)`  | Fires the request via the `ofetch` instance. Swallows `ofetch` errors so that non-2xx responses are still stored in `lastFetchResponse` without throwing.              |
+| `expectLastResponseJson<T>(schema)`               | Parses `lastFetchResponse._data` through the provided Zod schema and returns typed `T`. Throws if no response is stored.                                               |
+| `expectLastResponseText()`                        | Returns `lastFetchResponse._data` as a raw string. Throws if the data is not a string.                                                                                 |
+| `expectLastResponseHeaderToBe(headerName, value)` | Reads the stored response's header and throws when it differs from the expected value, or when no response is stored. Used by HEAD scenarios that cannot parse a body. |
 
 ### Internal details
 
