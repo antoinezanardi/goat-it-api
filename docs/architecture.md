@@ -288,7 +288,7 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 
 ### 4.5 Shared (`src/shared/`)
 
-- `domain/`: `constants/`, `helpers/`, `rules/`, `types/`, `value-objects/`.
+- `domain/`: `constants/`, `rules/`, `types/`, `value-objects/`.
 - `types/`: generic type-only utilities (`enum.types.ts`, `tuple.types.ts`) usable by any layer.
 - `application/`: `dto/zod/` (preprocessors, refinements, validators), `mappers/` (find-all, localization, sort), `helpers/` (stats).
 - `infrastructure/http/`: controllers, decorators, errors, middlewares, pipes, types.

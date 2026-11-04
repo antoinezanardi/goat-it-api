@@ -287,7 +287,7 @@ These techniques are part of systematic debugging and available in this director
 
 **Related skills:**
 
-- **superpowers:verification-before-completion** - Verify fix worked before claiming success
+- **Verification before completion** - Run the `AGENTS.md` quality gates before claiming success
 
 ## Real-World Impact
 
