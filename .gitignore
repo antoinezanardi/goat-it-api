@@ -68,6 +68,9 @@ opencode.json.tui-migration.bak
 .agents/plans
 docs/superpowers
 
+# GOAT audit reports (list unfixed weaknesses; the repository is public)
+docs/audits
+
 # MemPalace files
 mempalace.yaml
 entities.json

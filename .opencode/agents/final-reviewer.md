@@ -132,6 +132,17 @@ You may dispatch helper subagents when reviewing:
 - Entries under "Established patterns — do NOT flag" are conventions, not violations.
 - Report every violation as `` `[tag]` `file:line` — expected pattern ``.
 
+### 12. GOAT audit (diff mode)
+
+- **Trigger:** every review, in addition to sections 10 and 11.
+- Load the `goat-audit` skill and follow its diff-mode procedure (`.agents/skills/goat-audit/SKILL.md` — category index, Core tier, decision-note protocol §7, §10 diff-mode procedure): list the changed paths; match them against the category index's diff triggers **and Decision doc column** (§6) and state the triggered categories in the report; for each triggered category read only the sections that contain in-scope checks (use `## Contents` and the `Look` globs), then the mapped decision doc (GOAT section + documented decisions).
+- Evaluate the **Core** `Diff: ✓` checks **whose `Look` globs match a changed path**, plus the category-wide Core `Diff: ✓` checks carrying no `Look`, against the changed files and the code directly affected inside them. For Core `Diff: ✗` checks whose `Look` globs match a changed file, emit a non-blocking ⚠️ "verify in next /goat-audit". Non-Core checks are not evaluated in diff mode.
+- Honor decision notes and documented decisions: `DECIDED` findings are not reported; a met revisit trigger is reported with `decision revisit triggered — <doc>:<line>`.
+- Library-behavior claims → `docs-fetcher` (one library per dispatch). TEST in diff mode applies only its strategy checks — `[TEST-23]`, `[TEST-24]` and `[TEST-25]`; per-file spec and step conventions stay with sections 10 and 11.
+- **Static analysis only**; never run builds, tests or servers.
+- Severity mapping: critical → Critical; high → Important; medium/low/info → Minor. Only Critical and Important GOAT findings force "Needs changes before merge"; medium/low are listed but never block on their own.
+- Report every finding as `` `[ID]` `file:line` — expected pattern (severity) ``.
+
 ## Return format
 
 **Evidence discipline:** every ✅/❌ claim MUST cite `file:line` (or command output). A claim you could not verify is marked ⚠️ unverified — never silently omitted, never asserted without proof.
@@ -161,6 +172,12 @@ You may dispatch helper subagents when reviewing:
 
 **DOD items:** [Bruno ✅ | Acceptance ✅ | Faketories ✅ | Mocks ✅ | ...]
 
+**GOAT audit (diff mode):**
+- Triggered categories: <codes>
+- `[ID]` `file:line` — violation description (severity)
+- ⚠️ `[ID]` `file` — verify in next /goat-audit (requires <evidence type>)
+- (or "No GOAT findings in triggered categories")
+
 **Security:**
 - [issues or "No security concerns"]
 
@@ -170,11 +187,12 @@ You may dispatch helper subagents when reviewing:
 **Assessment:** Ready to merge | Ready with minor follow-ups | Needs changes before merge
 ```
 
-**Hard verdict gate:** the assessment MUST be `Needs changes before merge` if ANY of the following holds — one or more Critical issues; a spec requirement unimplemented; a security finding; any unit-test `[U*]`–`[T*]` violation. Only a fully clean report (or Minor-only findings) may yield `Ready to merge` / `Ready with minor follow-ups`.
+**Hard verdict gate:** the assessment MUST be `Needs changes before merge` if ANY of the following holds — one or more Critical issues; a spec requirement unimplemented; a security finding; any unit-test `[U*]`–`[T*]` violation; any GOAT audit finding of severity **high or critical** on a **Core** check (`[<CODE>-NN]`). Medium, low and info GOAT findings are Minor and never block on their own. Only a fully clean report (or Minor-only findings) may yield `Ready to merge` / `Ready with minor follow-ups`.
 
 ## Skills to load
 
 - `create-faketory` / `create-mock` / `write-unit-test` / `write-acceptance-test` — to evaluate test quality
+- `goat-audit` — **mandatory for every review** (section 12): diff-mode procedure, category index triggers, decision notes and finding format
 
 ## Convention authority
 
