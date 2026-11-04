@@ -32,7 +32,7 @@ Both schemas use `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`timestamps: true`, `version
 
 ### Write patterns
 
-- Question writes (`create`, `archive`, `assignTheme`, `removeTheme`, `modifyThemeAssignment`, `modify`) all re-read the question afterwards with `findById` to return a fully mapped entity — a deliberate read-after-write double round trip (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts`). Atomic multi-updates (primary promotion/demotion) use `bulkWrite` with two `updateOne` operations (same file), matching the "atomic via conditional updates and update pipelines, not transactions" decision in `file:docs/architecture.md` §5.5.
+- Question writes (`create`, `archive`, `assignTheme`, `removeTheme`, `modifyThemeAssignment`, `modify`) all re-read the question afterwards with `findById` to return a fully mapped entity — a deliberate read-after-write double round trip (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts`). Primary promotion/demotion uses `bulkWrite` with two ordered `updateOne` operations whose operations are individually atomic but whose batch is not (same file), so a reader may observe the intermediate state and a mid-batch failure leaves the earlier operation committed; this matches the "conditional updates and update pipelines, not transactions" target in `file:docs/architecture.md` §5.5.
 - Question-theme writes return the updated document directly with `findByIdAndUpdate(..., { returnDocument: "after" })` (no extra read) and map duplicate-key errors (`file:src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.ts`).
 
 ### N+1 risk assessment

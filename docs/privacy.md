@@ -67,4 +67,6 @@ None today. MongoDB is self-hosted rather than a managed service: configuration 
 
 ## GDPR and legal posture
 
+**This section records the maintainer's current understanding, not legal advice; it must be reviewed by counsel before being relied on.**
+
 Because the API's business data holds no personal data, it carries no consent, access/erasure or data-transfer obligations of its own for that data; no consent management, DPO duties or processing records follow from what it stores, and cross-border transfer rules do not apply. The author display names are quiz content, not personal data, and the adult-content flag is metadata about content, not about users. The one exception is request metadata in logs (IP address, user-agent, headers) while the `pino-http` default request logging remains: that metadata is personal data in the GDPR sense, it is retained under the host's log-retention policy for operational logging, and it must be removed at the logger configuration. Until it is, the API's no-personal-data posture is not fully true and this gap must be disclosed in any processing record. Compliance responsibilities for player interactions sit with the consuming web game, which is the data controller for its users. If the API ever starts storing player data, this posture changes and this document must be revisited before the data model changes — not after.

@@ -56,7 +56,7 @@ Conformance of the repository to its canonical architecture guide, `docs/archite
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/**/*.module.ts`, `src/**/*.module.spec.ts` · Src: [4], project: docs/architecture.md §8.1, project: docs/architecture.md §10
 - **[ARCH-17] Specs are colocated and data-only files carry none** — A unit spec sits next to its source as `<source-basename>.spec.ts`; constants and types have no spec; shared mocks, faketories and acceptance assets live under `tests/` rather than beside production code.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/**/*.spec.ts`, `tests/unit/**`, `tests/shared/**` · Src: project: docs/architecture.md §8.2, project: docs/architecture.md §10
-- **[ARCH-18] Entrypoints stay thin** — `src/main.ts` only imports `AppModule` and calls `bootstrap(AppModule)`; `server.ts` only creates the Fastify application, wires CORS, logger, Swagger and shutdown, and listens; `<context>.module.ts` and `<context>-usage.module.ts` only declare imports, controllers, providers and exports, with behaviour delegated to owned units.
+- **[ARCH-18] Entrypoints stay thin** — Each entrypoint only composes the application and delegates to the shell or server; it contains no business logic, routing or persistence; the current file names and bootstrap shape are recorded in `docs/architecture.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/main.ts`, `src/infrastructure/api/server/server.ts`, `src/contexts/*/*.module.ts` · Src: project: docs/architecture.md §2.2, project: docs/architecture.md §6.1
 
 ## 3. Module wiring
@@ -114,6 +114,8 @@ Conformance of the repository to its canonical architecture guide, `docs/archite
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/question/domain/errors/**` · Src: project: docs/architecture.md §7.4
 
 ## 7. Test placement
+
+Placement only: spec structure, per-file-type templates, mock and faketory factories, and acceptance step conventions are owned by `docs/unit-tests.md`, `docs/mocks.md`, `docs/faketories.md` and `docs/acceptance-tests.md`; read the relevant guide before judging a test file and do not duplicate its rules here.
 
 - **[ARCH-40] Unit specs sit beside their source** — A unit spec is `<source-basename>.spec.ts` in the same folder as its source; there is no mirrored `tests/unit/src/...` tree and no production file is tested from a distant folder.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/**/*.spec.ts` · Src: [4], project: docs/architecture.md §10

@@ -52,7 +52,7 @@ Correct use of the framework and library APIs this API is built on: NestJS 12 de
 
 ## 3. Mongoose 9 usage
 
-- **[STACK-14] One root connection is created through `MongooseModule.forRootAsync`** — `DatabaseModule` configures the root connection with `MongooseModule.forRootAsync({ useClass: DatabaseService })`, `DatabaseService` implements `MongooseOptionsFactory` and returns `uri`, `dbName`, `serverSelectionTimeoutMS`, `connectTimeoutMS`, `retryAttempts` and `retryDelay`; no second `forRoot` exists in a feature module.
+- **[STACK-14] One root connection is created through the asynchronous root-connection mechanism** — The database module configures exactly one root ODM connection from validated configuration, and no feature module creates a second root connection; the current factory shape lives in `Look`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/database/**`, `src/app/app.module.ts` · Src: [5], project: docs/architecture.md §4.6
 - **[STACK-15] Feature schemas are registered only by persistence modules** — `MongooseModule.forFeature` appears only in `<context>-persistence.module.ts`, registers the compiled schema under `Schema.name`, and the collection name comes from the published persistence contract rather than a literal in the module.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/*/infrastructure/persistence/*-persistence.module.ts`, `src/contexts/*/infrastructure/persistence/mongoose/schemas/**` · Src: [5], [13], project: docs/architecture.md §6.2

@@ -45,7 +45,7 @@ Runtime platform of the Goat It API: the multi-stage `Dockerfile` that turns the
 
 - **[PLAT-11] No credential in ARG or ENV** — No `ARG`/`ENV` of any stage carries a token, key or password (hadolint DL3064); a build step that needs a credential uses `RUN --mount=type=secret,id=<id>,required=true`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: critical · Look: `Dockerfile`, `.github/workflows/deploy-*.yml` · Src: [2], [3], [6]
-- **[PLAT-12] No secret files in the final image** — `docker run --rm --entrypoint sh <image> -c 'find / -xdev \( -name ".env*" -o -name ".npmrc" -o -name "*.pem" -o -name "*.key" \) 2>/dev/null'` prints nothing.
+- **[PLAT-12] No secret files matching the scan patterns in the final image** — The documented scan for its own secret filename patterns prints nothing; a filename outside that pattern list is not covered by the check, and the pattern list is the check's contract.
   Evidence: `command` · Diff: ✗ · Core: ✓ · Severity: critical · Src: [3], [7]
 - **[PLAT-13] Dockerfile lint clean** — `hadolint --failure-threshold warning Dockerfile` exits 0 and every inline `# hadolint ignore=` carries a written justification.
   Evidence: `command` · Diff: ✗ · Severity: medium · Src: [6]
@@ -63,9 +63,9 @@ Runtime platform of the Goat It API: the multi-stage `Dockerfile` that turns the
 
 ## 4. Environment and configuration
 
-- **[PLAT-18] Environment schema covers every variable** — The boot schema declares every environment variable the application reads, with a type, validation and documented default, so an undeclared value cannot silently reach application code.
+- **[PLAT-18] Environment schema covers every variable** — The boot schema declares every environment variable the application reads, with a type, validation and either a documented default or a documented no-default rule that fails at boot; the variable inventory is in `.env.example`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/config/schemas/env.schema.ts`, `src/infrastructure/api/config/**` · Src: [19], project: docs/architecture.md
-- **[PLAT-19] Invalid configuration fails fast at boot** — The configuration module validates the parsed environment through the schema and throws when it fails, so a missing or invalid required variable (empty API keys, out-of-range port, unknown locale) exits non-zero at boot and the log names the offending variable.
+- **[PLAT-19] Invalid configuration fails fast at boot** — The configuration module validates the parsed environment through the schema and throws when it fails, so a missing or invalid required variable exits non-zero at boot and the log names the offending variable.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/config/**` · Src: [10], [19]
 - **[PLAT-20] .env.example parity** — `.env.example` lists every schema key with a placeholder and documents its meaning, and lists no stale variable.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `env/.env.example`, `env/.env.test`, `src/infrastructure/api/config/schemas/env.schema.ts` · Src: [10]
@@ -106,7 +106,7 @@ Runtime platform of the Goat It API: the multi-stage `Dockerfile` that turns the
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/**`, `src/infrastructure/api/config/validators/cors.validator.ts` · Src: [10], [19]
 - **[PLAT-34] Shutdown hooks enabled and documented** — The bootstrap calls `app.enableShutdownHooks()`, the MongoDB connection closes through the Nest lifecycle on `SIGTERM`/`SIGINT`, and the stop grace period contract is documented.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/server/server.ts`, `docs/operations.md` · Src: [9], [18], project: docs/operations.md
-- **[PLAT-35] Server listens on validated host and port** — The listen call uses the host and port from the validated server configuration (defaults `0.0.0.0:3000`), and the container environment and the container health check use that same port.
+- **[PLAT-35] Server listens on validated host and port** — The listen call uses the host and port from the validated server configuration; the container environment and the container health check use that same port; the current defaults live in the validated server configuration.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/server.ts`, `src/infrastructure/api/config/**`, `Dockerfile` · Src: [14], [19]
 - **[PLAT-36] Production start command sets NODE_ENV** — The production start script sets `NODE_ENV=production` before starting Node, and the image `ENV` provides the same value.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `Dockerfile` · Src: [12]

@@ -21,7 +21,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 
 ## 1. Authentication and authorization
 
-- **[SEC-01] Every business route is guarded by the audience API key** — Every business controller route is protected by exactly one API-key guard matching its audience: the game guard on game controllers and the admin guard on admin controllers; the only unauthenticated routes are app metadata (`GET /`), health (`GET /health`), Swagger/static assets and framework-generated 404/OPTIONS responses.
+- **[SEC-01] Every business route is guarded by the audience API key** — Every business controller route is protected by exactly one API-key guard matching its audience; only the routes documented as public in `docs/api-contract.md` are unguarded, and the public-route inventory is the document's, not the check's.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/http/controllers/**`, `src/contexts/question-theme/infrastructure/http/controllers/**`, `src/infrastructure/api/auth/providers/**` · Src: [11], [19], [2], project: docs/security.md
 - **[SEC-02] API keys are compared in constant time** — Received keys are HMAC-SHA256 hashed with the boot secret and compared to a cached hash with `node:crypto` `timingSafeEqual`; byte lengths are compared first and no `===`, `==`, `Buffer.compare` or plaintext comparison touches key material (verified: node:crypto 26.13.0).
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/auth/helpers/**`, `src/infrastructure/api/auth/providers/**` · Src: [12], [37], project: docs/security.md
@@ -37,7 +37,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/config/providers/**` · Src: [38], [8], project: docs/security.md
 - **[SEC-08] API-key hashing is scoped to high-entropy tokens** — API-key hashing is documented and used only for API keys; no password, passphrase or user credential is hashed with HMAC-SHA256 or stored by the API.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `src/infrastructure/api/auth/helpers/**` · Src: [12], [8]
-- **[SEC-09] Admin routes are mounted under `/admin`** — Every admin-guarded controller is mounted under the `/admin` prefix and every game-guarded controller is mounted outside it, so route prefixes and guard audiences cannot drift apart.
+- **[SEC-09] Admin routes are mounted under the documented admin namespace** — Every admin-guarded controller is mounted under the documented admin namespace and every game-guarded controller outside it, so route prefixes and guard audiences cannot drift apart; the namespace is recorded in `docs/api-contract.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/infrastructure/http/controllers/**`, `src/contexts/question-theme/infrastructure/http/controllers/**`, `src/shared/infrastructure/http/controllers/**` · Src: [19], project: docs/architecture.md
 
 ## 2. Input validation and injection
@@ -48,7 +48,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/application/dto/**`, `src/contexts/question-theme/application/dto/**`, `src/shared/application/dto/**` · Src: [33], [1], project: docs/security.md
 - **[SEC-12] Response schemas are strict** — Every response shape is a `z.strictObject` or a composition of strict objects, so serialization emits only declared fields and cannot expose an entity field added later.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/contexts/question-theme/application/dto/**`, `src/shared/application/dto/**` · Src: [33], [32], project: docs/architecture.md
-- **[SEC-13] Input sizes and collection counts are bounded** — Every string, array and numeric request field has explicit bounds sourced from domain/DTO constants: author name 3–30 characters, 1–5 source URLs, 1–3 theme assignments, and random-question `limit` within its declared minimum and maximum.
+- **[SEC-13] Input sizes and collection counts are bounded** — Every string, array and numeric request field has an explicit bound sourced from domain or DTO constants; the current bounds are recorded in `docs/api-contract.md` and `docs/domain-logic.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/contexts/question/domain/constants/**`, `src/shared/application/dto/zod/**` · Src: [1], [2], project: docs/security.md
 - **[SEC-14] Path identifiers are validated as Mongo ObjectIds** — Every `:id` parameter is validated as a Mongo ObjectId before any Mongoose query is built; a missing, non-string or non-ObjectId value returns 400.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/infrastructure/http/pipes/**`, `src/contexts/question/infrastructure/http/controllers/**`, `src/contexts/question-theme/infrastructure/http/controllers/**` · Src: [23], [29], [36]
@@ -80,7 +80,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 
 ## 4. Rate limiting and abuse prevention
 
-- **[SEC-26] Every business route is rate limited** — Every business route (`/questions/**`, `/question-themes/**`, `/admin/**`) is covered by a throttler with an explicit window and budget (for example 60 requests per 60 000 ms), configurable through validated integer environment variables ≥ 1; no business route is exempt.
+- **[SEC-26] Every business route is rate limited** — Every business route is covered by a throttler with an explicit window and budget configurable through validated integer environment variables; no business route is exempt; the current posture, including the documented gap when rate limiting is absent, is recorded in `docs/security.md`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `src/app/app.module.ts`, `env/.env.example` · Src: [22], [10], project: docs/security.md
 - **[SEC-27] Throttled responses follow a stable 429 contract** — A throttled request returns HTTP 429 with `Retry-After` in seconds and the shared error envelope (`statusCode: 429`, `errorCode`), never a 500, an empty body or a silent drop.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `src/infrastructure/api/server/**`, `src/app/filters/global-exception/**` · Src: [22], [5]
@@ -97,9 +97,9 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 
 ## 5. Secrets and configuration
 
-- **[SEC-33] Secrets abort startup when missing; other configuration is validated with documented defaults** — The three secret variables (`API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY`) have no default, so a missing or too-short value aborts startup; every other schema-backed variable is validated and falls back to its documented default (including `CORS_ORIGIN`, whose default is `*`); the bootstrap-only `NODE_ENV` read is a documented exception and is not part of `APP_ENV_SCHEMA`.
+- **[SEC-33] Secrets abort startup when missing; other configuration is validated with documented defaults** — Every secret variable has no default, so a missing or too-short value aborts startup; every other schema-backed variable is validated and falls back to its documented default. The current variable inventory is recorded in `docs/security.md` and `.env.example`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/config/schemas/**`, `src/infrastructure/api/config/helpers/**`, `src/infrastructure/api/config/config.module.ts` · Src: [25], [33], [3], project: docs/security.md
-- **[SEC-34] Secrets have no defaults** — `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY` and `GAME_API_KEY` have no default in the schema, constants or tracked env template; a boot without them fails instead of falling back to a known value.
+- **[SEC-34] Secrets have no defaults** — Every secret variable has no default in the schema, constants or tracked env template; a boot without it fails instead of falling back to a known value; the current variable inventory is recorded in `docs/security.md` and `.env.example`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/config/schemas/**`, `src/infrastructure/api/config/constants/**`, `env/.env.example` · Src: [8], project: docs/security.md
 - **[SEC-35] Config getters never return plaintext secrets** — The application configuration facade exposes only non-secret configuration through getters; plaintext API keys are consumed once into HMAC validators and are never returned by a public getter, DTO, controller or mapper.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/config/providers/**`, `src/infrastructure/api/config/types/**` · Src: [8], project: docs/security.md

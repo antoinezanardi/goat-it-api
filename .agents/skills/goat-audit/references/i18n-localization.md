@@ -35,7 +35,7 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
 
 ## 2. Locale domain
 
-- **[I18N-08] LOCALES are exactly the six supported codes** — `LOCALES` holds exactly `en, fr, es, de, it, pt`, the `Locale` type derives from it, and every other locale definition in the repository references this single constant.
+- **[I18N-08] The locale set has one source** — The supported locale list is declared once, the `Locale` type derives from it, and every other locale definition references that constant; the current set is recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/domain/value-objects/locale/**` · Src: [4], project: docs/i18n.md
 - **[I18N-09] One locale membership rule** — The `isValidLocale` guard performs the same membership check against `LOCALES` as the middleware; no second locale list or divergent check exists anywhere.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/domain/value-objects/locale/**` · Src: [4], project: docs/i18n.md
@@ -44,11 +44,11 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
 
 ## 3. Per-locale content storage and retrieval
 
-- **[I18N-11] Localized values are partial per-locale records** — Localized values persist as partial per-locale objects: one optional field per locale key (`en..pt`), `undefined` (absent) when untranslated, in both text and text-array schemas.
+- **[I18N-11] Localized values are partial per-locale records** — Localized values persist as partial per-locale objects: one optional field per locale in the documented set, `undefined` (absent) when untranslated, in both text and text-array schemas.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/infrastructure/persistence/mongoose/schemas/localization/**`, `src/shared/domain/value-objects/locale/**` · Src: [4], project: docs/i18n.md
-- **[I18N-12] Question content localization** — Question content localizes `statement` and `answer` (mandatory) and `context` and `trivia` (optional), each a localized subdocument.
+- **[I18N-12] Question content localization is complete** — Every question content field the domain marks localized is a localized subdocument with the documented required/optional status; the current fields are recorded in `docs/i18n.md` and `docs/data-model.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/infrastructure/persistence/mongoose/schemas/question-content/**` · Src: [4], project: docs/i18n.md
-- **[I18N-13] Theme content localization** — Theme content localizes `label`, `aliases` and `description`, all mandatory localized subdocuments.
+- **[I18N-13] Theme content localization is complete** — Every theme content field the domain marks localized is a mandatory localized subdocument; the current fields are recorded in `docs/i18n.md` and `docs/data-model.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question-theme/infrastructure/persistence/mongoose/schemas/**` · Src: [4], project: docs/i18n.md
 - **[I18N-14] Locale then fallback resolution** — `pickLocalizedValue` returns `localizedValue[locale] ?? localizedValue[fallbackLocale]`, and the warning string `⚠️ No Translation found for desired locale (…) and fallback locale (…)` is emitted only when both are missing.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/shared/application/mappers/localization/**` · Src: [4], project: docs/i18n.md
@@ -59,9 +59,9 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
 
 - **[I18N-16] One definition of fully translated** — Fully translated means every mandatory localized field has a value in every applicable locale and every optional field is either absent or has a value in every applicable locale; the definition lives in the `zIsFullyTranslated` OpenAPI description and matches what the filters implement.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/shared/application/dto/zod/validators/translation-completeness/**`, `src/shared/infrastructure/persistence/mongoose/helpers/**` · Src: [7], project: docs/i18n.md
-- **[I18N-17] Field specs live in persistence constants** — Questions spec `content.statement` and `content.answer` mandatory with `content.context` and `content.trivia` optional; themes spec `label`, `aliases`, `description` all mandatory; both specs live in the persistence constants the pipelines consume.
+- **[I18N-17] Field specs live in persistence constants** — Every completeness spec is declared in the persistence constants the pipelines consume, and each entity's spec matches the documented mandatory/optional fields; the current specs are recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/infrastructure/persistence/mongoose/constants/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/constants/**` · Src: [4], project: docs/i18n.md
-- **[I18N-18] Dynamic vs static evaluation** — Questions evaluate completeness in dynamic mode against the document's own `applicableLocales` (all 6 locales when absent or empty); themes evaluate in static mode against all `LOCALES`.
+- **[I18N-18] Dynamic vs static evaluation** — The dynamic mode evaluates against the document's own applicable set (the full locale set when absent or empty); the static mode evaluates against the full locale set; the current modes are recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/infrastructure/persistence/mongoose/helpers/**`, `src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/helpers/**` · Src: [4], project: docs/i18n.md
 - **[I18N-19] is-fully-translated filter semantics** — The admin list endpoints accept `is-fully-translated` (`FULLY_TRANSLATED_QUERY_KEY`): `true` returns only complete resources and `false` only incomplete ones.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/shared/application/dto/constants/**`, `src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/helpers/**` · Src: [7], project: docs/i18n.md
@@ -74,24 +74,24 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
 
 ## 5. Applicable-locales policy
 
-- **[I18N-23] Absent or empty means all six** — `applicableLocales` absent or empty applies all 6 locales, baked identically into the completeness expression and the public locale filter; the two implementations can never diverge.
+- **[I18N-23] Absent or empty means all locales** — The applied set absent or empty applies the full locale set, baked identically into the completeness expression and the public locale filter; the two implementations can never diverge.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/**`, `src/shared/infrastructure/persistence/mongoose/helpers/**` · Src: [4], project: docs/i18n.md
-- **[I18N-24] Creation and modification bounds** — Creation accepts `applicableLocales` as optional, min 1, max `LOCALES.length = 6`, unique values; modification accepts min 0, where an empty array clears the restriction and makes all locales applicable again.
+- **[I18N-24] Creation and modification bounds** — Creation accepts the locale restriction as optional with the documented minimum and maximum and unique values; modification accepts an empty array to clear the restriction. The current bounds are recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/zod/validators/**`, `src/contexts/question/application/dto/question-modification/**` · Src: [7], project: docs/i18n.md
 - **[I18N-25] Public endpoints filter by requested locale** — The public list and random endpoints match a question only when `applicableLocales` is absent, empty, or contains the requested locale, so French-only questions never surface to other locales.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/**`, `src/contexts/question/application/mappers/**` · Src: [4], project: docs/i18n.md
-- **[I18N-26] Locale restriction is question-only** — `applicableLocales` exists only on questions; themes have no per-locale restriction and are localized in all locales.
+- **[I18N-26] Locale restriction is entity-specific** — Only the entities the domain documents as restrictable carry a per-locale restriction; every other entity is localized in all locales. The current scope is recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `src/contexts/question/domain/types/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/schemas/**` · Src: [4], project: docs/i18n.md
 
 ## 6. Translation maintenance
 
 - **[I18N-27] Command fetches incomplete questions** — The `/translate-questions` command fetches not-fully-translated questions with `GET /admin/questions?is-fully-translated=false&limit=100&sort-by=createdAt&sort-order=asc`, which already accounts for `applicableLocales`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-28] French is the source of truth** — French is never included in PATCH payloads; targets are `en`, `es`, `de`, `it`, `pt`, mandatory fields are filled for all 5 and optional fields only when the French source is non-null.
+- **[I18N-28] The source locale is never patched** — The translation command never includes the source locale in PATCH payloads; the target set and required fields are the documented ones, and optional fields are filled only when the source value is non-null. The current policy is recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-29] All-or-nothing translation** — Translation is all-or-nothing: all 5 target locales, or French-only via `PATCH` with `{ "applicableLocales": ["fr"] }`; there is no per-locale exclusion.
+- **[I18N-29] All-or-nothing translation** — Translation is all-or-nothing: every target locale is filled in one pass, or the resource is restricted to the source locale; there is no per-locale exclusion. The current target set is recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-30] Every PATCH is verified** — Each PATCH is verified by re-fetching the question and diffing French values against the pre-PATCH snapshot, and the command ends with a summary and a lessons-learned retrospective without modifying itself unless explicitly approved.
+- **[I18N-30] Every PATCH is verified** — Each PATCH is verified by re-fetching the resource and diffing the source values against the pre-PATCH snapshot, and the command ends with a summary and a lessons-learned retrospective without modifying itself unless explicitly approved.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
 
 ## Sources

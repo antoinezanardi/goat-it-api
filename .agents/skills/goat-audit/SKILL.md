@@ -58,7 +58,7 @@ A full audit is expensive: 18 explorer dispatches in waves of six over 695 check
 - **Src** — `[n]` indexes into the file's `## Sources`, and/or `project: <repo path>` (optionally `§<n>`).
 - `(verified: <library> <x.y[.z]>)` marks a library-dependent criterion. Re-verify when the installed major or minor differs.
 - A removed check leaves no line (§11); the category's IDs are compacted in the same change.
-- **Criterion scope.** A criterion states an outcome that stays true as the product grows: it prescribes no single component, route, controller or feature as the only acceptable implementation, and component or file names belong in `Look` and `Src`, never inside the criterion.
+- **Criterion scope.** A criterion states an outcome that stays true as the product grows: it prescribes no single component, route, controller or feature as the only acceptable implementation, and component or file names belong in `Look` and `Src`, never inside the criterion. Business rules, value sets and field, collection or route inventories belong in the mapped decision doc, never inside the criterion; an example may illustrate a rule but must stay non-exhaustive.
 
 ### 4.2 IDs
 
@@ -233,8 +233,8 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 ## 10. Diff-mode procedure (final-reviewer)
 
 1. List changed paths (commit range, or `git status` + `git diff HEAD` when no commits exist).
-2. Match paths against the diff triggers **and the Decision doc column** (§6) → triggered categories; always state them in the report.
-3. For each triggered category: read only the sections that contain in-scope checks (use the reference's `## Contents` and the `Look` globs), then the decision doc (GOAT section + documented decisions).
+2. Match paths against the diff triggers **and the Decision doc column** (§6) → triggered categories; always state them in the report. Also detect changed import lines (`git diff -U0 <range> | grep -E '^[+-][^+-].*(import|from)'`) and trigger ARCH when any exist.
+3. For each triggered category: read only the sections that contain in-scope checks (use the reference's `## Contents` and the `Look` globs), then read the mapped decision doc **in full** (iron rule (e)), applying its `## GOAT audit decisions` section and documented decisions.
 4. Evaluate the **Core** `Diff: ✓` checks **whose `Look` globs match a changed path**, plus the category-wide Core `Diff: ✓` checks that carry no `Look`, against the changed files and the code directly affected inside them. For Core `Diff: ✗` checks whose `Look` globs match a changed file, emit a non-blocking ⚠️ "verify in next /goat-audit". Non-Core checks are not evaluated in diff mode.
 5. Library-behavior claims → `docs-fetcher` (§8).
 6. TEST in diff mode applies only its strategy checks — `[TEST-23]`, `[TEST-24]` and `[TEST-25]`; per-file spec and step conventions stay with `final-reviewer` §10/§11 and `/lint-unit-tests` / `/lint-acceptance-tests`.

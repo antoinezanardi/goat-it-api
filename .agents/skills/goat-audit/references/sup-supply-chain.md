@@ -72,9 +72,9 @@ Third-party code and automation that enter the Goat It API repository, the CI in
 
 - **[SUP-20] Renovate uses a hardened preset and pins digests** — The Renovate configuration extends a curated preset set such as `config:best-practices`, keeps `pinDigests: true`, and schedules lockfile maintenance weekly.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/renovate.json` · Src: [9], [10]
-- **[SUP-21] Renovate vulnerability alerts are not disabled** — `vulnerabilityAlerts` is not `false`, and `osvVulnerabilityAlerts: true` is set so OSV advisories and malicious-package alerts produce Renovate pull requests.
+- **[SUP-21] Vulnerability alerts are enabled** — The Renovate configuration must set `osvVulnerabilityAlerts: true` (the option defaults to `false`) so advisories for direct dependencies produce fix pull requests when a fix exists; malicious-package detection warns and blocks rather than opening pull requests, and an absent option is a finding.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `.github/renovate.json` · Src: [10], [25]
-- **[SUP-22] Automerge has release-age and check guardrails** — When Renovate automerge is enabled for third-party packages, it waits at least 14 days after release and merges only through required checks or a merge queue; majors are never automerged.
+- **[SUP-22] Automerge has release-age and check guardrails** — When Renovate automerge is enabled for third-party packages, it waits the documented release age and merges only through required checks or a merge queue; majors are never automerged, and the current age is recorded in `docs/security.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/renovate.json` · Src: [9], [10]
 - **[SUP-23] Off-manifest versions are tracked** — Every pinned version outside the manifest and lockfile (package manager, Node version file, container base image) is updated by a built-in Renovate manager or a `customManagers` entry.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/renovate.json`, `Dockerfile`, `configs/node/.node-version`, `package.json` · Src: [10], [14]

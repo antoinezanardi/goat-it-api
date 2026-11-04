@@ -2,7 +2,7 @@
 
 How the API behaves when a dependency is slow, failing or overloaded: graceful shutdown on SIGTERM/SIGINT and the Docker stop
 grace, named timeouts and the single retry layer at the MongoDB boundary, MongoDB resilience and what `/health` reports when the
-database is down, failure modes and error containment (one exception filter, no partial writes, atomic multi-updates, deterministic
+database is down, failure modes and error containment (one exception filter, no partial writes, per-document atomic writes with documented multi-operation guarantees, deterministic
 status mapping), concurrency and races on slug uniqueness and theme assignment, and bounded resource use (page-size caps,
 request-size posture, no unbounded queries or state).
 
@@ -35,7 +35,7 @@ request-size posture, no unbounded queries or state).
 
 ## 2. Timeouts & retries
 
-- **[REL-06] Named connection timeouts** — The MongoDB connection carries explicit named constants — 5000 ms connection and server-selection timeouts, 3000 ms retry delay, 5 retry attempts — instead of relying on the driver's 30-second server-selection default (verified: mongoose 9.11.4).
+- **[REL-06] Named connection timeouts** — The database connection carries explicit named constants for connection/server-selection timeouts, retry delay and retry attempts instead of relying on the driver's default; the current values are recorded in `docs/data-model.md`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/database/constants/**`, `src/infrastructure/database/providers/**` · Src: [9], [1], project: docs/data-model.md
 - **[REL-07] Every hop's timeout posture deliberate** — Each boundary's timeout is an explicit value or a recorded decision: the inbound request timeout and the MongoDB socket timeout are framework defaults (0 = no limit) (verified: fastify 5.12.8; verified: mongoose 9.11.4), and any reliance on them is a documented decision naming the bound.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `src/infrastructure/database/**`, `docs/security.md` · Src: [12], [9], [1], project: docs/security.md
@@ -58,7 +58,7 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/database/**`, `docs/data-model.md` · Src: [9], project: docs/data-model.md
 - **[REL-15] Readiness reflects database availability** — `/health` answers 503 when the MongoDB ping fails while the liveness root keeps answering 200, so routing and monitoring distinguish a database outage from a dead process (verified: @nestjs/terminus 12.1.0).
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/health/**`, `src/app/controllers/**` · Src: [8], [13], project: docs/operations.md
-- **[REL-16] Status contract explicit** — The aggregated status maps to the documented contract — 200 for `ok`/`degraded`, 503 for `error`/`shutting_down` — and acceptance tests cover the healthy and unhealthy responses.
+- **[REL-16] Status contract explicit** — The aggregated status maps to the documented health contract in `docs/operations.md`, and acceptance tests cover the healthy and unhealthy responses.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**`, `tests/acceptance/features/**` · Src: [8], project: docs/operations.md
 - **[REL-17] Outage drill** — With MongoDB stopped: `/health` answers 503 with the sanitized body, the liveness root answers 200, business endpoints fail with the generic 500, and the process stays alive until the database returns.
   Evidence: `runtime` · Diff: ✗ · Severity: medium · Src: [4], project: docs/operations.md
@@ -69,39 +69,39 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**` · Src: [4], project: docs/security.md
 - **[REL-19] Deterministic domain-error mapping** — Every domain error maps to exactly one client-actionable status (404 not-found, 400 invalid-state, 409 conflict), or is intentionally 500 with a recorded one-line justification; the intentionally-500 mappings are locked by filter tests.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/*/domain/errors/**` · Src: [4], project: docs/architecture.md §7.4, project: AGENTS.md
-- **[REL-20] No partial writes on failure paths** — Question writes re-read the document after writing and surface a failure when the read-back fails; theme writes use a single returning update, so a client never sees a torn or half-applied state as success.
+- **[REL-20] No partial writes on failure paths** — Write methods that re-read return the mapped entity or `undefined`, and callers treat `undefined` as a failed write; a single-reply write is never reported as success when it did not apply, so a client never sees a torn or half-applied state as success.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/*/infrastructure/persistence/mongoose/repository/**` · Src: [4], project: docs/performance.md
-- **[REL-21] Atomic multi-updates without transactions** — Primary assignment promotion/demotion runs as one bulkWrite of conditional updates so no intermediate state (two primaries, none) is observable, and MongoDB transactions are deliberately not used.
+- **[REL-21] Multi-operation writes state their real guarantee** — A batch of ordered writes runs serially and fail-fast, but it is not atomic as a batch: each operation is atomic per document, a reader can observe the intermediate state, and a mid-batch failure leaves earlier operations committed. The domain doc records the guarantee and the tracked limitation; transactions are deliberately not used.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/**` · Src: [4], project: docs/architecture.md §5.5, project: docs/data-model.md
-- **[REL-22] Write failures signal correctly** — A duplicate-key write on the slug index is translated to the slug-already-exists error and answered 409; every other persistence failure surfaces as a logged 500 and is never swallowed or converted into success.
+- **[REL-22] Write failures signal correctly** — A duplicate-key write on a unique index is translated to the owning domain's conflict error and answered with the documented status; every other persistence failure surfaces as a logged 500 and is never swallowed or converted into success.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/**`, `src/shared/infrastructure/persistence/mongoose/constants/**` · Src: [9], project: docs/domain-logic.md
 - **[REL-23] Degradation matrix documented** — The operations guide maps each dependency failure (MongoDB down, documentation endpoint unreachable, slow queries) to its HTTP status, user-visible effect and detection signal.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docs/operations.md` · Src: [4], project: docs/operations.md
 
 ## 5. Concurrency & races
 
-- **[REL-24] Slug uniqueness race-safe** — Theme slug uniqueness is double-enforced: a pre-check in the create and modify flows plus a unique MongoDB index whose duplicate-key error (code 11000) maps to the 409 slug-already-exists response, so concurrent creations cannot both win.
+- **[REL-24] Natural-key uniqueness race-safe** — Every natural key is double-enforced: a pre-check in the create and modify flows plus a unique index whose duplicate-key error maps to the documented conflict response, so concurrent creations cannot both win.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question-theme/application/use-cases/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/**`, `src/shared/infrastructure/persistence/mongoose/constants/**` · Src: [11], project: docs/domain-logic.md
 - **[REL-25] Concurrent modify semantics deliberate** — Partial updates are flattened into field-scoped `$set` writes, so two concurrent modifications of different fields merge instead of one overwriting the other; the semantics are documented.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/infrastructure/persistence/mongoose/repository/**`, `src/shared/infrastructure/persistence/mongoose/helpers/**` · Src: project: docs/data-model.md
-- **[REL-26] Invariant-critical writes atomic** — The exactly-one-primary invariant is enforced by one atomic bulkWrite (demote all, then set the target) and no write invariant is enforced by check-then-act alone; every invariant-critical write is an atomic conditional update.
+- **[REL-26] Invariant-critical writes are explicit about atomicity** — Every write that must preserve a cross-field or cross-operation invariant is a single conditional operation, or the multi-operation path is documented as best-effort with its tracked limitation; no check-then-act is described as atomic.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/**`, `src/contexts/question/application/use-cases/question-theme-assignment/**` · Src: [4], project: docs/architecture.md §5.5, project: docs/domain-logic.md
-- **[REL-27] Cross-context consistency best-effort by design** — The race between archiving a theme and assigning it to a question is best-effort by documented decision, and the race is tested where it matters.
+- **[REL-27] Cross-context consistency best-effort by design** — The archive-vs-assign race is best-effort by documented decision, and the race is tested where it matters.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question-theme/application/use-cases/archive-question-theme/**`, `docs/architecture.md` · Src: project: docs/architecture.md §5.5
 - **[REL-28] Duplicate assignment race contained** — Concurrent assignment of the same theme to one question cannot create duplicate assignments: the duplicate check is enforced by an atomic conditional write, or the check-then-act is a documented best-effort decision.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/question/application/use-cases/question-theme-assignment/**`, `src/contexts/question/infrastructure/persistence/mongoose/repository/**` · Src: [11], project: docs/domain-logic.md
-- **[REL-29] Race coverage in tests** — The races that matter (concurrent slug creation, primary promotion atomicity, archive-vs-assign) have unit or acceptance coverage asserting the atomic outcome.
+- **[REL-29] Race coverage matches the documented guarantee** — Every race the domain doc treats as correctness-critical (for example archive-vs-assign) has unit or acceptance coverage asserting its documented outcome (atomic or best-effort), and the test names which.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `tests/acceptance/features/**`, `src/contexts/**` · Src: project: docs/architecture.md §5.5
 
 ## 6. Bounded resource use
 
 - **[REL-30] List page size bounded** — Every list endpoint enforces a maximum page size on its limit parameter, or the unlimited `limit=0` behavior is a recorded known limitation in the performance guide with a revisit trigger.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/shared/application/dto/zod/validators/limit/**`, `docs/performance.md` · Src: [5], project: docs/performance.md
-- **[REL-31] Random endpoint bounded** — The random-questions endpoint caps its result size with named constants (1..50, default 20) validated before the sample query runs.
+- **[REL-31] Random endpoint bounded** — Every random-result size is capped with named constants validated before the sample query runs; the current bounds are recorded in `docs/performance.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/find-random-questions-body/**` · Src: [5], project: docs/performance.md
-- **[REL-32] Filter arrays capped** — Every request array filter is bounded by a named maximum before any query — at most 100 ids and 5000 excluded ids — so a client cannot push unbounded work into a query.
+- **[REL-32] Filter arrays capped** — Every request array filter is bounded by a named maximum before any query, so a client cannot push unbounded work into a query; the current bounds are recorded in `docs/performance.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/shared/application/dto/zod/validators/array/**` · Src: [5], project: docs/performance.md
-- **[REL-33] Documents structurally bounded** — Documents are bounded by domain constants — at most 3 theme assignments, 5 source URLs, 500-character localized texts, 10-item text arrays across at most 6 locales — so responses and payloads stay within fixed bounds.
+- **[REL-33] Documents structurally bounded** — Documents are bounded by domain constants on assignments, list entries, text lengths and locales, so responses and payloads stay within fixed bounds; the current bounds are recorded in `docs/performance.md` and `docs/domain-logic.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/domain/constants/**`, `src/shared/application/dto/zod/validators/localization/**` · Src: [5], project: docs/performance.md, project: docs/domain-logic.md
 - **[REL-34] Request-size posture deliberate** — A request-size limit is configured explicitly, or the reliance on Fastify's 1 MiB body limit default is a recorded decision naming the bound (verified: fastify 5.12.8).
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `docs/security.md` · Src: [12], project: docs/security.md

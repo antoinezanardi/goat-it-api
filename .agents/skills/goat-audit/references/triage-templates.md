@@ -44,7 +44,7 @@ Counts: PASS n · FAIL n · N/A n · UNVERIFIED n · DECIDED n
 Explorer prompt contract:
 
 - Give it: the category code, the paths of `SKILL.md`, the category reference file (read **in full**), `decisions.md`, `evidence/INDEX.md`, and the repository root.
-- Rules: evaluate **every** check of the reference with an outcome and evidence; verify each `Look` glob still exists (missing → "Stale Look hints"); tag library-behavior claims `needs-docs: <library>`; never modify any file except `categories/<CODE>.md`; if writing fails, return the full result inline; reply in ≤ 150 words (path + outcome counts).
+- Rules: evaluate **every** check of the reference with an outcome and evidence; verify each `Look` glob still exists (missing → "Stale Look hints"); tag library-behavior claims `needs-docs: <library>`; never modify any file; return the complete category document inline and reply with a separate summary line of ≤ 150 words (path + outcome counts); the word limit applies to that summary, never to the inline document.
 
 If the conductor receives an inline result, it writes `categories/<CODE>.md` itself.
 
@@ -104,7 +104,7 @@ GOAT audit `<report-name>` on `<branch>` @ `<short-sha>` — **[<ID>] <check tit
 
 ## Private advisory payload
 
-Written to `advisories/<ID>.json`, then `gh api -X POST repos/antoinezanardi/goat-it-api/security-advisories --input docs/audits/.work/<report-name>/advisories/<ID>.json`. Record the returned `ghsa_id` and `html_url`. Drafts stay private until published — required because the repository is public. Private vulnerability reporting is enabled, but the audit files draft advisories through the repository advisories endpoint. Requires admin or security-manager in the repository.
+Written to `advisories/<ID>.json`, then `gh api -X POST repos/antoinezanardi/goat-it-api/security-advisories --input docs/audits/.work/<report-name>/advisories/<ID>.json`. Record the returned `ghsa_id` and `html_url`. Drafts stay private until published — required because the repository is public. Private vulnerability reporting is enabled, but the audit files draft advisories through the repository advisories endpoint. Requires admin or security-manager in the repository; the command verifies `.permissions.admin`, so a security manager who is not an admin is handled manually.
 
 ```json
 {

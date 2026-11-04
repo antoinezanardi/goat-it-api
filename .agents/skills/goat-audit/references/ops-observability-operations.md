@@ -21,9 +21,9 @@ checks that failures are detected, attributed and actionable, not what data may 
 
 ## 1. Health & readiness contract
 
-- **[OPS-01] Single readiness contract** — `GET /health` and `HEAD /health` are public, unauthenticated and answer at the application root; there is no `/healthz`/`/readyz` split and the root `GET /` remains the lightweight metadata endpoint. Both methods answer `200` when the process is ready and `503` when it is not.
+- **[OPS-01] Single readiness contract** — The readiness endpoint is public, unauthenticated and answers at the documented path; there is no split readiness namespace, and the root metadata endpoint stays lightweight. Both methods answer 200 when ready and 503 when not; the paths are recorded in `docs/operations.md`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/health/**`, `src/app/controllers/**` · Src: [1], [11], project: docs/operations.md, project: docs/api-contract.md
-- **[OPS-02] Readiness checks only real dependencies** — Readiness is computed from two ping checks — the MongoDB connection and the in-process documentation endpoint — and nothing else; no disk, memory, CPU, queue or external-service checks pollute the signal, and a check is added only when it represents a dependency the process cannot serve without.
+- **[OPS-02] Readiness checks only real dependencies** — Readiness is computed from the documented dependency checks and nothing else; no disk, memory, CPU, queue or external-service checks pollute the signal, and a check is added only when it represents a dependency the process cannot serve without.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/health/**` · Src: [1], project: docs/operations.md
 - **[OPS-03] Sanitized 503 body** — When readiness fails, `503` carries only the generic `statusCode`/`message`/`error` body; MongoDB or documentation error text, URLs, connection strings, stack traces and component details are never sent, and the detailed cause is logged server-side before the sanitized response.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/health/**` · Src: [1], [11], project: docs/operations.md
@@ -31,7 +31,7 @@ checks that failures are detected, attributed and actionable, not what data may 
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**` · Src: [1], project: docs/operations.md
 - **[OPS-05] HEAD performs the same checks as GET** — `HEAD /health` runs the identical readiness checks and returns the same status and application headers as `GET` with no body, because Fastify 5 auto-exposes HEAD routes for GET handlers (verified: fastify 5.12.8).
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**` · Src: [12], project: docs/operations.md
-- **[OPS-06] Health checks complete in bounded time** — Every readiness check finishes within a bounded window: the MongoDB ping is capped by the 5000 ms server-selection timeout (verified: mongoose 9.11.4) and the documentation ping is a same-process HTTP call, so `/health` never hangs on an unreachable dependency.
+- **[OPS-06] Health checks complete in bounded time** — Every readiness check has an explicit timeout or a documented bound, so `/health` cannot hang on an unreachable dependency; the bounds belong in `docs/operations.md`, and a missing bound is a finding.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**`, `src/infrastructure/database/constants/**` · Src: [11], project: docs/operations.md
 - **[OPS-07] Readiness stays keyless and leak-free** — The health endpoint is not protected by an API key and its response contains no sensitive operational data; authentication applies to business endpoints only.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**`, `src/infrastructure/api/auth/**` · Src: [1], project: docs/operations.md
@@ -63,7 +63,7 @@ checks that failures are detected, attributed and actionable, not what data may 
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/security.md`, `docs/privacy.md` · Src: [2], [5], project: docs/security.md
 - **[OPS-18] Error attribution structure** — Every server-side error log carries enough structure — the error message and the source context — to count and attribute failures per type when logs are aggregated.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/infrastructure/database/**` · Src: [9], [8]
-- **[OPS-19] Uptime monitor inventory documented** — The operations guide lists one external monitor per environment probing the readiness endpoint with method, URL, expected result and cadence — production `GET https://api.goat-it.fr/health` expecting `200` plus `"status":"ok"` every 5 minutes, and the staging equivalent.
+- **[OPS-19] Uptime monitor inventory documented** — The operations guide lists one external monitor per environment probing the documented readiness endpoint with method, URL, expected result and cadence; the current inventory is in `docs/operations.md`.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/operations.md` · Src: [2], [1], project: docs/operations.md
 - **[OPS-20] Monitor assertions match the probe contract** — A monitor asserts HTTP 200 plus the `"status":"ok"` body keyword — never an open port — and the documented keyword matches what the readiness endpoint actually returns.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docs/operations.md`, `src/infrastructure/api/health/**` · Src: [1], [11], project: docs/operations.md
@@ -76,7 +76,7 @@ checks that failures are detected, attributed and actionable, not what data may 
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `docs/operations.md` · Src: [6], [7], project: docs/operations.md
 - **[OPS-23] Post-deploy gate in every deploy workflow** — Both deploy workflows run a health-check verification step as a separate job step after the SSH deploy, probing their environment's API URL, and a gate failure fails the deployment job.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `.github/workflows/deploy-*.yml`, `.github/actions/health-check/**` · Src: [6], [1], project: docs/ci-cd.md
-- **[OPS-24] Bounded gate with strict success** — The post-deploy verification script uses a bounded budget (5 attempts, 5 seconds apart, 3-second request timeout), treats only HTTP 200 as success, retries every other status, timeout or connection error, and exits non-zero with an error annotation after the last attempt.
+- **[OPS-24] Bounded gate with strict success** — The post-deploy verification script uses a bounded budget from documented constants, treats only the documented success status as success, retries every other status, timeout or connection error, and exits non-zero with an error annotation after the last attempt.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `scripts/post-deploy-health-check.sh` · Src: [1], project: docs/operations.md
 - **[OPS-25] Gate probes the documented liveness target** — The gate probes the root liveness URL (`GET /`), matching the container health-check signal, and the operations guide states exactly what the probe proves and does not prove (MongoDB readiness, build SHA, rollback).
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/actions/health-check/**`, `docs/operations.md` · Src: [1], [14], project: docs/operations.md
@@ -89,9 +89,9 @@ checks that failures are detected, attributed and actionable, not what data may 
 
 ## 5. Docker & database operational checks
 
-- **[OPS-29] Container liveness separated from readiness** — The production image's `HEALTHCHECK` probes the liveness root with a real GET (30-second interval, 5-second timeout, 3 retries, 10-second start period) and is never pointed at the readiness endpoint while that endpoint drives readiness monitoring.
+- **[OPS-29] Container liveness separated from readiness** — The production image's health check probes the liveness root with a real GET and documented interval, timeout, retries and start period, and is never pointed at the readiness endpoint while that endpoint drives readiness monitoring.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `Dockerfile`, `docs/operations.md` · Src: [1], [14], project: docs/operations.md
-- **[OPS-30] Acceptance database is probed and disposable** — The acceptance compose defines a `mongosh` ping healthcheck for the database service with bounded interval, timeout, retries and start period, pins the Mongo image and mounts a named data volume, so the test database fails visibly when unhealthy and stays disposable.
+- **[OPS-30] Acceptance database is probed and disposable** — The acceptance compose declares a bounded healthcheck for the database service, pins the image, and the teardown removes the data it created or the suite resets it per run, so the test database fails visibly when unhealthy and stays disposable.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docker/goat-it-api-acceptance-tests/**`, `package.json` · Src: [13], project: docs/data-model.md
 
 ## Sources
