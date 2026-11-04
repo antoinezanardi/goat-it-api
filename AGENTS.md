@@ -1,9 +1,23 @@
 # AGENTS
 
 This file is a concise, actionable guide for automated agents working in this repository.
-It explains how to build, lint and run tests (including running a single test), plus
-the coding conventions agents must follow (imports, types, naming, architecture, NestJS
-conventions, and other repo-specific rules).
+It explains how to build, lint and run tests (including running a single test), the workflow
+gates, and the code-style conventions that are not owned by another guide.
+
+## Architecture — mandatory reading before any file change
+
+[`docs/architecture.md`](docs/architecture.md) is the **single source of truth** for the top-level map,
+file placement, naming, layer rules, dependency direction, cross-context published surface, module
+wiring, DTO and error placement, and path aliases. This file does not restate those rules.
+
+**Before planning work, or creating, editing, moving or deleting any repository file, you MUST read
+`docs/architecture.md` in full.**
+
+- Plan writers name exact paths and companion files from it.
+- Implementers stop and surface a mismatch instead of inventing a rule.
+- Reviewers check placement, companions, aliases, layer dependencies and module registration against it.
+
+If this file and the guide disagree, the guide wins.
 
 ## Build / Run / Lint / Test commands
 
@@ -38,8 +52,8 @@ Running a single unit test or file:
 Running acceptance tests:
 
 - Full run:                 `pnpm run test:acceptance`
-- Specific feature:         `pnpm run test:acceptance tests/acceptance/features/question/admin-create-question.feature`
-- Specific scenario (line): `pnpm run test:acceptance tests/acceptance/features/question/admin-create-question.feature:8`
+- Specific feature:         `pnpm run test:acceptance tests/acceptance/features/contexts/question/admin/create-question-as-admin.feature`
+- Specific scenario (line): `pnpm run test:acceptance tests/acceptance/features/contexts/question/admin/create-question-as-admin.feature:8`
 - By scenario name:         `pnpm run test:acceptance --name "should create a question"`
 - By tag:                   `pnpm run test:acceptance --tags "@question-theme"`
 - Multiple tags (OR):       `pnpm run test:acceptance --tags "@question-theme or @question"`
@@ -59,7 +73,7 @@ If any gate fails, fix the issue and re-run from that gate onward until all five
 
 > Gates 4 (mutation) and 5 (acceptance) are CI/post-commit gates. Pre-commit hooks run: `typecheck` → `validate:branch-name` → `lint:staged:fix` → `test:unit:staged`.
 
-**Incremental test state must be saved, never restored.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (Stryker incremental state, committed on purpose — see the structure note). The file produced by a gate run MUST stay in the working tree and be reported with the change so the user can commit it. Never revert it with `git checkout --`, `git restore`, `rm`, or by copying an older blob back — this also applies after gate 5 (acceptance) has run. A large diff is expected (test-ID renumbering); report its size with `git diff --stat` instead of discarding it.
+**Incremental test state must be saved, never restored.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (Stryker incremental state, committed on purpose under `tests/mutation/`). The file produced by a gate run MUST stay in the working tree and be reported with the change so the user can commit it. Never revert it with `git checkout --`, `git restore`, `rm`, or by copying an older blob back — this also applies after gate 5 (acceptance) has run. A large diff is expected (test-ID renumbering); report its size with `git diff --stat` instead of discarding it.
 
 ### Definition of Done (DOD) — Conditional Checklist
 
@@ -71,95 +85,10 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`. Moving a shape from `application/dto` to `contracts/dto` while keeping the exported symbol stable is not a breaking package change and does not require a bump.
 5. **Schemas Package — New Export Candidate**: New DTO shape/constant/value-object → **ask the user** whether to export. If yes: add re-export, update `package.json` exports + `tsdown.config.ts` entries, bump patch version.
 6. **GlobalExceptionFilter**: New domain error class → classify it: add a mapping when a specific 4xx status is required, otherwise record why it intentionally falls through to 500. See `docs/architecture.md` §7.4.
-7. **Faketories for New Types**: New entity/DTO/command/contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
+7. **Faketories for New Types**: New entity/DTO/command/repository contract/published contract/Mongoose document → create faketory under `tests/shared/utils/faketories/` named `createFake<ConceptName>(<role>Overrides = {})` (the overrides parameter is role-named).
 8. **Mock Factories for New Ports**: New repository port or use case → create mock factory under `tests/unit/utils/mocks/` named `createMocked<What>(overrides)`.
-9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `useFactory` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
+9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `createUseCaseProvider` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
 10. **Acceptance Test Infrastructure for New Domains**: New domain/MongoDB collection → update world types, fixture registry, payload types, fixture inserters.
-
-## Repository structure
-
-```
-src/
-  app/                  # App module, root controller
-  contexts/
-    question/           # Question bounded context (single aggregate)
-      domain/           # constants/, types/ (entities, VOs, contracts), rules/, errors/, repositories/
-      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
-      infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-persistence.module.ts
-      contracts/        # published DTO shapes/mappers/validators/persistence contracts (only when shared)
-      question.module.ts
-      question-usage.module.ts
-    question-theme/     # Question-Theme bounded context
-      domain/           # constants/, types/, rules/, errors/, repositories/
-      application/      # commands/, use-cases/, dto/ shapes, dto/zod/, mappers/
-      infrastructure/   # http/controllers/, http/dto/ wrappers, persistence/mongoose/, persistence/question-theme-persistence.module.ts
-      contracts/        # published DTO shapes/mappers/validators/persistence contracts
-      question-theme.module.ts
-  infrastructure/       # Cross-cutting (auth, health, config, database)
-  shared/               # Shared domain, application, infrastructure utilities
-
-tests/
-  unit/                 # Shared test setup, mocks, coverage output (specs are colocated under src/)
-  shared/utils/
-    faketories/         # Factory functions (uses @faker-js/faker)
-    helpers/            # Shared test helpers
-  acceptance/           # Cucumber feature files + step definitions
-  mutation/             # Stryker incremental results (committed)
-```
-
-## Architecture
-
-The canonical file-placement, naming and dependency guide is [`docs/architecture.md`](docs/architecture.md). **Read it before creating, editing, moving or deleting any repository file** — it defines where files belong and which companion files they need.
-
-Each bounded context follows Clean Architecture / Hexagonal (Ports & Adapters):
-
-- `domain/` — entities, value objects, errors, repository contracts, repository interfaces (ports). No framework, I/O or Zod.
-- `application/` — commands, use-cases, DTO shapes, mappers. No `@nestjs/*`, Mongoose, Fastify or `nestjs-zod`.
-- `infrastructure/` — controllers, DTO wrappers, Mongoose adapters, HTTP pipes/filters/guards, persistence modules.
-- `contracts/` — optional published cross-context DTO shapes, pure mappers, validators and persistence contracts.
-
-A published use case accepts and returns primitives, published domain types or published contract types — never commands or internal types. Published domain types are read-only. Cross-context imports are limited to the provider's published surface; `docs/architecture.md` §5.2 is the register, and it must be updated with the lint allowlist in the same PR. A consuming module may import the published use-case class token it injects in a `useFactory`; that is wiring, not an application dependency.
-
-**Data flow**: `Controller` → validates with Zod DTO → maps to application command → `UseCase` → calls repository port → maps result to response shape. Domain errors bubble up and are converted by `GlobalExceptionFilter`.
-
-### Domain rules (`domain/rules/`)
-
-- *Predicates* (`is*`, `has*`, `can*`): pure boolean functions
-- *Policies* (`ensure*`): enforce business rules, throw domain errors
-- *Helpers*: descriptive names for pure transformation functions
-
-### Repository pattern
-
-- Interface in `domain/repositories/*.repository.types.ts`
-- Symbol injection token in `domain/repositories/*.repository.constants.ts`
-- Mongoose implementation in `infrastructure/persistence/mongoose/repository/`
-- Register the adapter in `infrastructure/persistence/<context>-persistence.module.ts` and export the token.
-- Use cases are plain classes; wire them with `useFactory` and `inject: [TOKEN]`. Do not use `@Inject`/`@Injectable` in application code.
-
-## Path aliases
-
-No relative `../` or `./` imports are permitted in `src/`, `tests/` and `packages/schemas/src/`. Use path aliases there. `configs/` and `scripts/` may use relative imports to reach neighbouring files.
-
-| Alias                    | Resolves to                          |
-|--------------------------|--------------------------------------|
-| `@package-json`          | `package.json` (test-only, see note) |
-| `@src/*`                 | `src/*`                              |
-| `@app/*`                 | `src/app/*`                          |
-| `@shared/*`              | `src/shared/*`                       |
-| `@configs/*`             | `configs/*`                          |
-| `@question/*`            | `src/contexts/question/*`            |
-| `@question-theme/*`      | `src/contexts/question-theme/*`      |
-| `@unit-tests/*`          | `tests/unit/*`                       |
-| `@mocks/*`               | `tests/unit/utils/mocks/*`           |
-| `@faketories/*`          | `tests/shared/utils/faketories/*`    |
-| `@test-helpers/*`        | `tests/shared/utils/helpers/*`       |
-| `@acceptance-tests/*`    | `tests/acceptance/*`                 |
-| `@acceptance-features/*` | `tests/acceptance/features/*`        |
-| `@acceptance-support/*`  | `tests/acceptance/support/*`         |
-
-When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json`, and `configs/vitest/vitest.config.ts`.
-
-> `@package-json` only works inside specs (Vitest resolves JSON imports). In `src/`, ESM requires an import attribute (`with { type: "json" }`) which SWC drops on emit — read the file with `readPackageJson()` from `@shared/infrastructure/helpers/package-json/package-json.helpers` instead.
 
 ## Project conventions & style
 
@@ -194,21 +123,6 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - CRUD verbs: `Create`, `Modify` (not Update for patches), `Archive` (soft-delete), `Find`, `Remove` (detach)
 - Import groups (blank line separated): (1) node:*, (2) external, (3) internal aliases, (4) test aliases, (5) `import type`
 
-### DTOs
-
-- Zod shape in `application/dto/<feature>/<feature>.dto.shape.ts`: export `const FOO_DTO = z.object(...)` and `type FooDto = z.infer<typeof FOO_DTO>`. Use `z.strictObject` for response shapes. Add `.describe()` and `.meta({ example })`.
-- nestjs-zod wrapper in `infrastructure/http/dto/<feature>/<feature>.dto.ts`: `class FooNestZodDto extends createZodDto(FOO_DTO) {}`
-- Only controllers import wrappers; mappers and use cases import shapes only.
-- Wrappers may wrap an application or published-contract shape. The shared API exception shape lives in `shared/application/dto`; its wrapper stays in `shared/infrastructure/http/dto`.
-- DTO shape tests cover every field with positive + negative tests.
-
-### Errors
-
-- Custom error classes extend `Error`, set `this.name` in constructor
-- Each error class in its own subdirectory: `domain/errors/<error-name>/<error-name>.error.ts`
-- Never throw strings or non-Error objects
-- Map a domain error only when the client can act on it (4xx); otherwise let it fall through to 500 and record why. The four write/read-back errors are intentionally 500.
-
 ### Constants
 
 - No magic numbers (0, 1, -1 excepted) — extract to `*.constants.ts`
@@ -227,9 +141,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 - Framework: Vitest with globals enabled (`describe`, `it`, `expect`, `vi`, `beforeEach`, `afterEach`)
 - 100% coverage required (all branches, lines, functions)
-- Excluded from coverage: `**/mongoose/**/*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
-- `*.module.ts` files are **included** in coverage. Every module has a `.spec.ts` that imports it; context and persistence specs compile the real module graph with mocked Mongoose model tokens.
-- **Stryker mutation excludes**: mutation excludes `*.pipeline.ts`, `*.constants.ts`, `*.types.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts` plus **every** `*.schema.ts`, but keeps `*.dto.ts` under mutation testing. `*.module.ts` files stay in scope; Stryker instruments no mutants for declarative Nest module metadata, so the module specs and acceptance tests guard the graph.
+- Coverage and mutation exclusion lists are authoritative in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`; do not copy or re-derive them. `*.module.ts` files are included in coverage and mutation scope, so every module has a colocated `.module.spec.ts`.
 - Use `@nestjs/testing` `Test.createTestingModule` for NestJS providers
 - One assertion per `it` block; `it.each` for parametrized cases — always typed: `it.each<T>([...])`
 - Private methods tested via `ClassName["privateMethod"](...)`
@@ -243,6 +155,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
   - Helpers/mappers: symbol reference `describe(functionName, ...)`
 - Assertion style: `toStrictEqual<T>(expected)` for value equality, `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions, `expect(() => synchronousCall()).toThrow(exactErrorInstance)` for synchronous errors (e.g., `DTO.parse(...)`) and `await expect(promise).rejects.toThrow(exactErrorInstance)` for async errors
 - Vitest test callbacks (`describe`, `it`, `it.each`, `beforeEach`, `beforeAll`, `afterEach`, `afterAll`) do NOT need an explicit `: void` return-type annotation — oxlint's type-aware analysis automatically treats them as `void`-returning, even though the global `explicit-function-return-type` rule applies elsewhere. External reviewers may flag these as missing `: void`; this is a false positive for this codebase.
+- Full per-file-type templates and edge cases live in `docs/unit-tests.md`.
 
 ### Mocks (`@mocks/*`)
 
@@ -250,6 +163,7 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 - Mock at the boundary the SUT depends on: port for use cases, use case for controllers, Mongoose model for repositories
 - Repository mocks live at `tests/unit/utils/mocks/contexts/<context>/domain/repositories/`
 - Inject via `useValue` in `createTestingModule` for Nest classes; plain use cases are instantiated with `new`
+- Full conventions live in `docs/mocks.md`.
 
 - Infrastructure registration checklist:
   - New mock factory → inject via `useValue` in test module (no global registry)
@@ -261,8 +175,9 @@ When adding a new bounded context, register its alias in `configs/swc/swc.config
 
 - Named `createFake<EntityName>(overrides: Partial<T> = {})`, spread overrides last
 - Use `@faker-js/faker` for randomized values; randomize optional fields
-- Organized by layer: `entity/`, `dto/`, `mongoose/`, `commands/`, `contracts/`
+- Organized by layer: `aggregate/`, `entity/`, `dto/`, `mongoose/{mongoose-document,mongoose-insert-payload}/`, `commands/`, `domain/`, `repository-contracts/`, `contracts/dto/`
 - **DTO shape specs** (`*.dto.shape.spec.ts`): use inline literals for `validDto`, never faketories. Negative tests use `{ ...validDto, field: badValue }` (spread copy). No `as SomeDto` casts — use structural type on `let` declaration.
+- Full conventions live in `docs/faketories.md`.
 
 ## Git / commit / PR expectations
 
@@ -288,23 +203,16 @@ Available skills: `brainstorming`, `context7`, `create-faketory`, `create-mock`,
 Slash commands available in OpenCode sessions:
 
 - `/brainstorming`         – Explore intent, requirements and design before implementation
-- `/create-faketory`       – Scaffold a faketory for an entity, DTO, command or Mongoose document
-- `/create-mock`           – Scaffold a typed Vitest mock factory for a repository or use-case port
 - `/implement-eslint-rules` – Reconcile the ESLint flat configs with available and deprecated rules
 - `/implement-oxlint-rules` – Implement missing oxlint rules into `oxlint.config.jsonc`
 - `/translate-questions`   – Translate not-fully-translated questions or mark them French-only
-- `/write-acceptance-test` – Write or complete a Cucumber acceptance test scenario
 - `/lint-unit-tests`       – Audit spec files against unit testing conventions, then fix user-approved violations
 - `/lint-acceptance-tests` – Audit acceptance test files against repository conventions, then fix user-approved violations
-- `/write-unit-test`       – Write or complete a unit test file following 100%-coverage conventions
-- `/writing-skills`        – Create, edit, or verify an agent skill
 
 ## Useful docs (`docs/`)
 
 - `docs/superpowers/`        – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
-- `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules.
-- `docs/architecture-decisions.md` – Durable architecture decisions, rationale and migration phases.
-- `docs/architecture-follow-ups.md` – Residual risks, accepted limitations and follow-up ownership.
+- `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules. Read before any file change.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/bruno.md`            – Bruno API collection setup.

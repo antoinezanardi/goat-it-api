@@ -1,11 +1,6 @@
 import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
-import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
-type QuestionAuthorDtoZodRefinement = {
-  role: QuestionAuthorRole;
-  gameId?: string;
-  name?: string;
-};
+import type { QuestionAuthorDtoZodRefinement } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinements.types";
 
 function isGameIdSetOnGameRole(questionAuthorDtoZodRefinement: QuestionAuthorDtoZodRefinement): boolean {
   const { role, gameId } = questionAuthorDtoZodRefinement;

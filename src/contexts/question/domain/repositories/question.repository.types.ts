@@ -1,6 +1,6 @@
-import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/types/question.contracts";
 import type { Question } from "@question/domain/types/question.entities";
 
+import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 

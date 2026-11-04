@@ -1,10 +1,10 @@
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeStats } from "@faketories/contexts/question-theme/domain/question-theme-stats/question-theme-stats.faketory";
 
-import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import type { Mock } from "vitest";
 
+import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/repositories/question-theme.repository-contracts.types";
 import type { QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 
 type QuestionThemeRepositoryStub = {

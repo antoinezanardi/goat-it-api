@@ -13,7 +13,6 @@ export default {
     "!**/*.constants.ts",
     "!**/*.types.ts",
     "!**/*.commands.ts",
-    "!**/*.contracts.ts",
     "!**/*.pipeline.ts",
     "!**/*.entities.ts",
     "!**/*.value-objects.ts",

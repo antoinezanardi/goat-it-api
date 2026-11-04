@@ -1,7 +1,8 @@
 import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import type { QuestionThemeAssignmentModificationDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 import type { QuestionThemeAssignmentCreationCommand, QuestionThemeAssignmentModificationCommand } from "@question/application/commands/question.commands";
-import type { QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+
+import type { QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 
 function createQuestionThemeAssignmentCreationContractFromDto(questionThemeAssignmentDto: QuestionThemeAssignmentCreationDto): QuestionThemeAssignmentCreationContract {
   return {

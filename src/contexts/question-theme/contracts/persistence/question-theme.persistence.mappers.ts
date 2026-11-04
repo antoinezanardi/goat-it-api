@@ -1,5 +1,6 @@
-import type { QuestionThemePersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.contracts";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+
+import type { QuestionThemePersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.types";
 
 function createQuestionThemeFromPersistenceShape(questionThemePersistenceShape: QuestionThemePersistenceShape): QuestionTheme {
   return {

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import type { QuestionThemeAssignmentCreationCommand, QuestionThemeAssignmentRemovalCommand } from "@question/application/commands/question.commands";
 
-import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
+import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/repository-contracts/question-theme-assignment/question-theme-assignment.repository-contracts.faketory";
 
 function createFakeQuestionThemeAssignmentCreationCommand(overrides: Partial<QuestionThemeAssignmentCreationCommand> = {}): QuestionThemeAssignmentCreationCommand {
   return {

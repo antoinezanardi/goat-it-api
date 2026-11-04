@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts";
+import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.constants";
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";

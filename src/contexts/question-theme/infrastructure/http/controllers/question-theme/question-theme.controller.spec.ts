@@ -14,7 +14,7 @@ import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/questi
 import { createMockedFindQuestionThemesUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-themes.use-case.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
+import { createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/contracts/dto/question-theme/question-theme.dto.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-query/find-question-themes-query.dto.faketory";
 

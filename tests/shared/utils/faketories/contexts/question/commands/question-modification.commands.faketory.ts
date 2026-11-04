@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import type { QuestionModificationCommand } from "@question/application/commands/question.commands";
 
-import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
+import { createFakeQuestionModificationContract } from "@faketories/contexts/question/repository-contracts/question-modification/question-modification.repository-contracts.faketory";
 
 function createFakeQuestionModificationCommand(overrides: Partial<QuestionModificationCommand> = {}): QuestionModificationCommand {
   return {

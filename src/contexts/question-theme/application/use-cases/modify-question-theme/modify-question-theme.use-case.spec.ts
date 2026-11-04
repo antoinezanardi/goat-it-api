@@ -5,7 +5,7 @@ import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/erro
 import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/repository-contracts/question-theme.repository-contracts.faketory";
 import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 
 describe(ModifyQuestionThemeUseCase, () => {

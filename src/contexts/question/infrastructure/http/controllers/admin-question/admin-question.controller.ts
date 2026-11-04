@@ -9,7 +9,7 @@ import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/fi
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/question.constants";
+import { QUESTION_ROUTE_PREFIX } from "@question/infrastructure/http/controllers/question/constants/question.constants";
 import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { QuestionModificationNestZodDto } from "@question/infrastructure/http/dto/question-modification/question-modification.dto";
 import { QuestionCreationNestZodDto } from "@question/infrastructure/http/dto/question-creation/question-creation.dto";

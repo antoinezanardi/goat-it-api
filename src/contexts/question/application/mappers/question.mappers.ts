@@ -16,8 +16,8 @@ import type { QuestionModificationDto } from "@question/application/dto/question
 import type { QuestionContent, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionCreationCommand, QuestionModificationCommand } from "@question/application/commands/question.commands";
-import type { QuestionAuthorCreationContract, QuestionContentCreationContract } from "@question/domain/types/question.contracts";
 
+import type { QuestionAuthorCreationContract, QuestionContentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 function createQuestionContentDtoFromEntity(questionContent: QuestionContent, localizationOptions: LocalizationOptions): QuestionContentDto {

@@ -1,4 +1,4 @@
-import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
+import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/repositories/question-theme.repository-contracts.types";
 
 type QuestionThemeCreationCommand = {
   payload: QuestionThemeCreationContract;

@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 
-import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionThemeCreationContract, createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/repository-contracts/question-theme.repository-contracts.faketory";
 
 import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 

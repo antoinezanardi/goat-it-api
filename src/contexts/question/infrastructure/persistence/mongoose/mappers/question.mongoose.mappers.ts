@@ -3,13 +3,13 @@ import { Types } from "mongoose";
 import { createQuestionThemeFromPersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.mappers";
 
 import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
-import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
 import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionAuthor, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
+import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAggregate, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 function createQuestionThemeFromAggregate(questionThemeAggregate: QuestionThemeAggregate): QuestionTheme {

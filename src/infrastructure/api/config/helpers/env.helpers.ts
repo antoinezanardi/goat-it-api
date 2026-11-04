@@ -1,4 +1,4 @@
-import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/types/env.schema";
+import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 

@@ -2,40 +2,23 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
-import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
 import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
+import { throwIfDuplicateKeyError } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers";
 import { QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question-theme/infrastructure/persistence/mongoose/repository/pipelines/question-theme-stats/question-theme-stats.mongoose.repository.pipeline";
 
 import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import { MONGO_DUPLICATE_KEY_ERROR_CODE } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
 import type { Model, UpdateQuery } from "mongoose";
 
+import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/repositories/question-theme.repository-contracts.types";
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 import type { QuestionThemeMongooseDocument, QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
-
-type MongoDuplicateKeyError = Error & { code: number };
-
-function isMongoDuplicateKeyError(error: unknown): error is MongoDuplicateKeyError {
-  if (!(error instanceof Object) || !("code" in error) || !Error.isError(error)) {
-    return false;
-  }
-  return error.code === MONGO_DUPLICATE_KEY_ERROR_CODE;
-}
-
-function throwIfDuplicateKeyError(error: unknown, slug?: string): never {
-  if (slug !== undefined && isMongoDuplicateKeyError(error)) {
-    throw new QuestionThemeSlugAlreadyExistsError(slug);
-  }
-  throw error;
-}
 
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {

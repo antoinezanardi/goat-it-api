@@ -31,7 +31,6 @@ export default defineConfig({
         "src/**/*.pipeline.ts",
         "src/**/*.types.ts",
         "src/**/*.commands.ts",
-        "src/**/*.contracts.ts",
         "src/**/*.dto.ts",
         "src/**/*.entities.ts",
         "src/**/*.value-objects.ts",

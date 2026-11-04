@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-import { QUESTION_MONGOOSE_COLLECTION_NAME } from "@question/contracts/persistence/question.persistence.contracts";
+import { QUESTION_MONGOOSE_COLLECTION_NAME } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { QUESTION_CATEGORIES, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 import type { QuestionRejectionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
 import { QUESTION_REJECTION_MONGOOSE_SCHEMA } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";

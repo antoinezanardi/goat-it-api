@@ -21,8 +21,8 @@ import { createFakeQuestionDto } from "@faketories/contexts/question/dto/questio
 import { createFakeQuestion, createFakeQuestionContent, createFakeQuestionRejection, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeLocalizationOptions, createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 import { createFakeQuestionCreationCommand } from "@faketories/contexts/question/commands/question.commands.faketory";
-import { createFakeQuestionContentCreationContract } from "@faketories/contexts/question/contracts/question-content/question-content.contracts.faketory";
-import { createFakeQuestionAuthorCreationContract } from "@faketories/contexts/question/contracts/question-author/question-author.contracts.faketory";
+import { createFakeQuestionContentCreationContract } from "@faketories/contexts/question/repository-contracts/question-content/question-content.repository-contracts.faketory";
+import { createFakeQuestionAuthorCreationContract } from "@faketories/contexts/question/repository-contracts/question-author/question-author.repository-contracts.faketory";
 import { createFakeQuestionCreationDto } from "@faketories/contexts/question/dto/question-creation/question-creation.dto.faketory";
 import { createFakeQuestionContentCreationDto } from "@faketories/contexts/question/dto/question-creation/question-content-creation/question-content-creation.dto.faketory";
 import { createFakeQuestionAuthorCreationDto } from "@faketories/contexts/question/dto/question-creation/question-author-creation/question-author-creation.dto.faketory";

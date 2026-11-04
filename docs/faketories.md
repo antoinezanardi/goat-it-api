@@ -17,8 +17,8 @@ import { createFakeQuestion } from "@faketories/contexts/question/entity/questio
 ## Purpose
 
 Faketories produce ready-to-use, realistically randomized test objects for domain entities, DTOs,
-commands, contracts, Mongoose documents, and infrastructure types. They are shared across unit and
-acceptance tests to eliminate duplication and keep data realistic by default.
+commands, repository contracts, Mongoose documents, and infrastructure types. They are shared across
+unit and acceptance tests to eliminate duplication and keep data realistic by default.
 
 ## Directory layout
 
@@ -29,16 +29,21 @@ tests/shared/utils/faketories/
     <context>/                           # One folder per bounded context (e.g. question/)
       aggregate/                         # Mongoose aggregate projections (joined documents)
       commands/                          # Domain command objects passed to use-cases
-      contracts/                         # Cross-layer contract / input shapes
+      contracts/                         # Published (cross-context) faketories
+        dto/                             # Published contract DTO shapes
+          <feature>/                     # One sub-folder per published DTO group
       dto/                               # Application-layer DTO shapes
         shared/                          # DTOs reused across multiple sub-features
         <feature>/                       # One sub-folder per DTO group
+      domain/                            # Domain option/stats shapes
       entity/                            # Full domain entity objects
       mongoose/
         mongoose-document/               # Mongoose document stubs (include _id + id)
         mongoose-insert-payload/         # Raw insert payloads (no _id / id)
+      repository-contracts/              # Repository input contract shapes (no published DTOs)
+        <concept>/                       # Optional sub-folder when a contract spans several files
       # question-theme is a top-level context, not a sub-feature of question:
-      # tests/shared/utils/faketories/contexts/question-theme/{commands,contracts,dto,entity,mongoose}/
+      # tests/shared/utils/faketories/contexts/question-theme/{commands,contracts/dto,domain,dto,entity,mongoose,repository-contracts}/
   infrastructure/                        # Config, health, CORS, database helpers
   shared/                                # Cross-context shared shapes (locale, HTTP errors…)
 ```
@@ -50,9 +55,22 @@ Every file is named `<concept>.<category>.faketory.ts`:
 | `entity`                  | `question.entity.faketory.ts`                  |
 | `dto`                     | `admin-question.dto.faketory.ts`               |
 | `commands`                | `question.commands.faketory.ts`                |
-| `contracts`               | `question.contracts.faketory.ts`               |
+| `repository-contracts`    | `question.repository-contracts.faketory.ts`    |
 | `mongoose-document`       | `question.mongoose-document.faketory.ts`       |
 | `mongoose-insert-payload` | `question.mongoose-insert-payload.faketory.ts` |
+
+### Contract vs application DTO faketories
+
+- **Repository contracts** (repository port input shapes from
+  `src/contexts/<context>/domain/repositories/<aggregate>.repository-contracts.types.ts`) live under
+  `repository-contracts/<concept>/`, in files named `<concept>.repository-contracts.faketory.ts`.
+- **Published contract DTOs** live under `contracts/dto/<feature>/`, mirroring
+  `src/contexts/<context>/contracts/dto/<feature>/`.
+- **Internal application DTOs** live under `dto/<feature>/`, mirroring
+  `src/contexts/<context>/application/dto/<feature>/`.
+- A single faketory file must **not** mix the two boundaries: published contract DTO factories and
+  internal application DTO factories belong in separate files. Repository contract factories stay in
+  their own `repository-contracts/` tree, never in `contracts/dto/`.
 
 ## Function signature
 
@@ -96,7 +114,7 @@ import { createFakeObjectId } from "@faketories/infrastructure/database/database
 Always use `faker.helpers.arrayElement` with the exported constant array — never hardcode values:
 
 ```ts
-import { QUESTION_STATUSES } from "@question/domain/value-objects/question-status/question-status.constants";
+import { QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 status: faker.helpers.arrayElement(QUESTION_STATUSES),
 ```

@@ -5,7 +5,7 @@ description: Write comprehensive implementation plans from an approved spec with
 
 # Writing Implementation Plans
 
-Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code in every step. Assume the executor knows TypeScript but nothing about this codebase's conventions.
+Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code for every change: create steps contain the whole file, modify steps contain the complete changed snippet. Assume the executor knows TypeScript but nothing about this codebase's conventions.
 
 You're a senior engineer who knows the codebase's conventions and writes code that is simple, elegant, and reviewable. The produced plan should be executable by a junior engineer without further guidance.
 
@@ -70,7 +70,7 @@ Every plan MUST start with:
 **Files:**
 - Create: `src/contexts/<domain>/domain/types/<entity>.entities.ts`
 - Modify: `src/contexts/<domain>/domain/repositories/<repo>.repository.types.ts`
-- Test: `src/contexts/<domain>/domain/types/<entity>.entities.spec.ts` (only when the type owns logic; otherwise no spec)
+- Test: only for artifacts that own logic and have a companion spec in `docs/architecture.md` §8.1 (entities, constants and types have none)
 
 **Interfaces:**
 - Consumes: [what this task uses from earlier tasks — exact signatures]
@@ -181,13 +181,8 @@ If you find issues, fix them inline. If a spec requirement has no task, add the 
 
 ## Project-Specific Conventions (goat-it-api)
 
-- **Hexagonal layers:** `domain/` (types, value-objects, errors, contracts, repository ports), `application/` (commands, use-cases, DTOs, mappers), `infrastructure/` (controllers, DTO wrappers, Mongoose repositories, persistence modules)
-- **Path aliases:** `@src/*`, `@shared/*`, `@question/*`, `@question-theme/*`, `@faketories/*`, `@mocks/*`, `@unit-tests/*` — no relative imports
-- **DTO pattern:** `*.dto.shape.ts` (Zod schema with `.describe()` and `.meta({ example })`) + `*.dto.ts` (nestjs-zod wrapper)
-- **Repository pattern:** Port interface in `domain/repositories/*.repository.types.ts`, injection token in `*.repository.constants.ts`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`
-- **Errors:** Extend `Error` in `domain/errors/<error-name>/<error-name>.error.ts`; classify each as mapped to a specific 4xx or intentionally 500 in `GlobalExceptionFilter`
+- **Architecture, placement, naming, aliases and error mapping:** follow `docs/architecture.md` — read it before naming any path, companion file or layer. Do not restate its rules in the plan.
 - **CRUD verbs:** `Create`, `Modify` (not `Update`), `Archive` (soft-delete), `Find`, `Remove` (detach)
-- **Rules:** `is*`/`has*`/`can*` predicates, `ensure*` policies, helpers — in `domain/rules/`
 - **Tests:** Colocated `*.spec.ts`, 100% coverage, one assertion per `it`. Plain use cases use `new UseCase(...)`; `Test.createTestingModule` is only for Nest classes (controllers, repositories, services, guards, pipes).
 - **Private methods:** Tested via `ClassName["privateMethod"](...)` syntax
 - **TypeScript:** No `any`, explicit return types, explicit accessibility, constructor injection `private readonly`, no enums (use `as const`), no `switch`/`case`

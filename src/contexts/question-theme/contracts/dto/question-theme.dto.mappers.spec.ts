@@ -1,7 +1,8 @@
 import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeAdminQuestionThemeDto, createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
+import { createFakeAdminQuestionThemeDto } from "@faketories/contexts/question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.faketory";
+import { createFakeQuestionThemeDto } from "@faketories/contexts/question-theme/contracts/dto/question-theme/question-theme.dto.faketory";
 import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.faketory";
 
 describe(createQuestionThemeDtoFromEntity, () => {

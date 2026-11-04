@@ -1,6 +1,7 @@
 import { createQuestionThemeCreationCommandFromDto, createQuestionThemeModificationCommandFromDto } from "@question-theme/application/mappers/question-theme.mappers";
 
-import { createFakeQuestionThemeCreationDto, createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme.dto.faketory";
+import { createFakeQuestionThemeCreationDto } from "@faketories/contexts/question-theme/dto/question-theme-creation/question-theme-creation.dto.faketory";
+import { createFakeQuestionThemeModificationDto } from "@faketories/contexts/question-theme/dto/question-theme-modification/question-theme-modification.dto.faketory";
 import { createFakeQuestionThemeCreationCommand, createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 

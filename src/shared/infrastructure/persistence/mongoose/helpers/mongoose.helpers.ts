@@ -5,6 +5,7 @@ import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import type { PipelineStage } from "mongoose";
 
 import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers.types";
 import type { SemanticSortOrders } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
 
 function crushDataObjectEntry(entry: [string, unknown], parentKey: string, result: Record<string, unknown>): Record<string, unknown> {
@@ -64,8 +65,6 @@ function getCrushedDataForMongoPatchUpdate(data: Record<string, unknown>): Recor
 function getDefinedFieldsForMongoArrayElementUpdate(data: Record<string, unknown>, arrayPath: string): Record<string, unknown> {
   return mapKeys(shake(data), key => `${arrayPath}.${key}`);
 }
-
-type MongoSortDirection = 1 | -1;
 
 function getMongoSortDirectionFromSortOrder(sortOrder: SortOrder): MongoSortDirection {
   return sortOrder === SORT_ORDERS[0] ? 1 : -1;
@@ -129,5 +128,3 @@ export {
   getDefinedFieldsForMongoArrayElementUpdate,
   getMongoSortDirectionFromSortOrder,
 };
-
-export type { MongoSortDirection };
