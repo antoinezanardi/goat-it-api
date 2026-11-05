@@ -84,6 +84,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 12 
 - `write-unit-test` — for unit test guidance
 - `write-acceptance-test` — for acceptance test guidance
 - `writing-skills` — for skill creation/editing
+- `goat-audit` — when handling GOAT findings, planning/reviewing changes, or recording a decision note
 
 ## Subagent dispatch rules
 
@@ -98,18 +99,26 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 12 
 
 When the `final-reviewer` reports issues, you MUST follow this procedure exactly:
 
-1. **EXTRACT** — parse the report into a numbered list of every issue across all severities (Critical, Important, Minor), preserving each point's severity, rule tag (`[U*]`–`[T*]`, `[A]`) and `file:line` citation verbatim. No point may be dropped or merged.
+1. **EXTRACT** — parse the report into a numbered list of every issue across all severities (Critical, Important, Minor), preserving each point's severity, rule tag (`[U*]`–`[T*]`, `[A]`, `[<CODE>-NN]` GOAT checks) and `file:line` citation verbatim. No point may be dropped or merged.
 2. **VERIFY** — before consulting anyone, check each claim against the actual code (grep/read the cited files). Do not trust the report blindly; note where the reviewer is wrong so you can push back.
 3. **CONSULT POINT BY POINT** — for each point, one at a time and in order:
    - Use the `question` tool presenting: point number + severity, file:line, the reviewer's claim, and your verdict after verification.
-   - Offer options: fix / skip / push back (with your reasoning). Skipping a **Critical** issue or a checklist violation (`[U*]`–`[T*]`, `[A]`) requires the user's explicit acknowledgment that the risk is accepted.
+   - Offer options: fix / skip / push back (with your reasoning). Skipping a **Critical** issue or a checklist violation (`[U*]`–`[T*]`, `[A]`, `[<CODE>-NN]` GOAT checks) requires the user's explicit acknowledgment that the risk is accepted.
+   - For a GOAT-tagged point (`[<CODE>-NN]`), the options are: fix / push back. A `skip (not in this PR — nothing recorded)` option is available only for medium, low or info findings. A high or critical GOAT finding requires a fix or a push-back decision note (Accepted risk / Not applicable / False positive): when the maintainer pushes back, ask one follow-up question for the kind, the rationale and the "Revisit when" trigger, then record a decision note per the `goat-audit` skill decision-note protocol (§7).
    - Record the user's decision.
    - **NEVER** batch multiple points into one question. **NEVER** move to the next point before the current one is decided. This applies to minor points too.
-4. **SUMMARIZE** — once every point has a decision, state the outcome list (approved / skipped / rejected). If the reviewer's Assessment was `Needs changes before merge`, verify every Critical issue and every tagged violation has a recorded decision (fixed or explicitly accepted) — only then may the cycle resume at Definition of Done.
-5. **IMPLEMENT ONCE** — if at least one fix was approved, dispatch exactly ONE `implementer` containing ALL approved changes inline verbatim (with full context). If none were approved, do NOT dispatch any implementer.
+4. **SUMMARIZE** — once every point has a decision, state the outcome list (approved / skipped / rejected) and list the decision notes to write. If the reviewer's Assessment was `Needs changes before merge`, verify every Critical issue and every tagged violation has a recorded decision (fixed or explicitly accepted) — only then may the cycle resume at Definition of Done.
+5. **IMPLEMENT ONCE** — if at least one fix or decision note was approved, dispatch exactly ONE `implementer` containing ALL approved changes inline verbatim (with full context). Decision notes count as approved changes: include each note (exact doc path, `## GOAT audit decisions` section, full entry text, and the new-doc + `AGENTS.md` registration when the doc does not exist) in the single implementer dispatch. If only decision notes were approved, dispatch exactly one implementer for them. If none were approved, do NOT dispatch any implementer.
 6. Resume the cycle at Definition of Done (step 6).
 
 No implementation of final-review fixes happens outside this procedure. No performative agreement ("Thanks!", "Great point!") — technical acknowledgment or reasoned pushback only. If a claim is wrong after verification, say so with evidence when presenting that point.
+
+### GOAT findings
+
+- A GOAT-tagged finding (`[<CODE>-NN]`) follows the same procedure as any finding: extracted, verified and consulted one at a time — never batched with another point — and every approved fix or decision note travels in the single implementer dispatch (step 5). No parallel or separate dispatch is opened for GOAT.
+- When the maintainer pushes back, follow the `goat-audit` skill decision-note protocol (`.agents/skills/goat-audit/SKILL.md` §7): accepted risk / not applicable / false positive, plus the rationale and the "Revisit when" trigger.
+- The note is appended as an entry to the `## GOAT audit decisions` section (always the last H2) of the category's mapped decision doc, per the skill's category index. When that doc does not exist, the implementer creates it (protocol title + scope paragraph + GOAT section) and adds its line to the `AGENTS.md` "Useful docs (`docs/`)" list.
+- The checklist amendment (criterion rewrite, or removal + renumbering for not applicable) is handed to a normal implementer task with the rest of the approved changes. Never edit `.agents/skills/goat-audit/**` from the review loop; the skill changes only through an explicit maintainer request.
 
 ## Cost awareness
 

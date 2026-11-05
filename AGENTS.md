@@ -192,7 +192,7 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 
 Each skill has a `SKILL.md` entry point. Load only the relevant skill for the task.
 
-Available skills: `brainstorming`, `context7`, `create-faketory`, `create-mock`, `receiving-code-review`, `systematic-debugging`, `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
+Available skills: `brainstorming`, `context7`, `create-faketory`, `create-mock`, `goat-audit`, `receiving-code-review`, `systematic-debugging`, `write-acceptance-test`, `write-unit-test`, `writing-plans`, `writing-skills`.
 
 - **When writing unit tests** (including inside plans): always load the `write-unit-test` skill first and verify the result against the `.opencode/commands/lint-unit-tests.md` §4 checklist.
 - **When writing acceptance tests** (including inside plans): always load the `write-acceptance-test` skill first and verify the result against the `.opencode/commands/lint-acceptance-tests.md` §4 checklist.
@@ -203,11 +203,21 @@ Available skills: `brainstorming`, `context7`, `create-faketory`, `create-mock`,
 Slash commands available in OpenCode sessions:
 
 - `/brainstorming`         – Explore intent, requirements and design before implementation
+- `/goat-audit`            – Run the GOAT audit (full or partial across the 18 categories), then triage findings into GitHub issues, private advisories or decision notes
 - `/implement-eslint-rules` – Reconcile the ESLint flat configs with available and deprecated rules
 - `/implement-oxlint-rules` – Implement missing oxlint rules into `oxlint.config.jsonc`
 - `/translate-questions`   – Translate not-fully-translated questions or mark them French-only
 - `/lint-unit-tests`       – Audit spec files against unit testing conventions, then fix user-approved violations
 - `/lint-acceptance-tests` – Audit acceptance test files against repository conventions, then fix user-approved violations
+
+## GOAT audit (`.agents/skills/goat-audit/`)
+
+The GOAT audit ("Greatest Of All Time" × Goat It) is the repository-wide, evidence-based audit across 18 categories. `goat-audit` is the audit contract; `/goat-audit` runs it through the read-only `goat-auditor` agent, and `final-reviewer`, `plan-writer` and `brainstormer` consume it in diff, plan and design modes.
+
+- Reports live in gitignored `docs/audits/` because the repository is public and a report lists unfixed weaknesses. Never commit a report; never overwrite an existing one.
+- Decisions recorded in a decision doc's `## GOAT audit decisions` section (category → doc mapping in the skill §6) are binding for later audits, reviews and plans until their revisit condition is met. Record one only with the maintainer's approval, through the skill §7 protocol.
+- The audit never fixes anything. Findings are triaged into public issues, private draft security advisories (🔒 findings) or decision notes; fixes go through the normal orchestrator cycle.
+- Never edit `.agents/skills/goat-audit/**` from an audit or review run: checklist amendments are handed off as ready-to-apply payloads and implemented through the normal cycle.
 
 ## Useful docs (`docs/`)
 
@@ -215,6 +225,14 @@ Slash commands available in OpenCode sessions:
 - `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules. Read before any file change.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
+- `docs/security.md`         – Security posture: authentication, validation, CORS, secrets, disclosure and known limitations.
+- `docs/privacy.md`          – Data inventory, logging/telemetry PII policy, retention and legal posture.
+- `docs/domain-logic.md`     – Question and question-theme domain rules, invariants and error contracts.
+- `docs/performance.md`      – Indexing, query patterns, pagination and payload bounds.
+- `docs/i18n.md`             – `Accept-Language` pipeline, locales, fallback and translation completeness.
+- `docs/api-contract.md`     – HTTP surface, DTO/error conventions, Swagger, versioning and the published schemas package.
+- `docs/data-model.md`       – MongoDB collections, fields, indexes, references and migration posture.
+- `docs/audits/`             – Gitignored GOAT audit reports and run directories. Never committed.
 - `docs/bruno.md`            – Bruno API collection setup.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.
 - `docs/mocks.md`            – Mock factory conventions.
