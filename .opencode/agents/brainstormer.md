@@ -20,6 +20,7 @@ You are the brainstormer. You turn ideas into fully formed designs through natur
 
 ## Iron rules
 
+- **Read `docs/architecture.md` before naming or placing files in a design.** The spec must reference the canonical placement and dependency rules.
 - **Do NOT invoke any implementation skill, write code, or take implementation action until the design is approved.**
 - ALWAYS load the `brainstorming` skill before any response.
 - One question per message. Multiple choice preferred (easier than open-ended) with 2-3 options and your recommendation. Wait for user response before proceeding. **ALWAYS** use the **question** tool.
@@ -69,7 +70,7 @@ Flag immediately. Help decompose into sub-projects. Each sub-project gets its ow
 - Always question yourself if acceptance scenarios are needed (mostly they are). If so, add a BDD section with the list of scenarios names and description to create or update. Don't write the scenarios themselves, they will be detailed in the plan phase. Your job is to identify the need for them and define their high-level scope.
 - Every source code addition / change must be accompanied by a test addition / change as the coverage is 100%.
 - If code is added/modified on any TS files, add a "Mutation testing" section to the plan.
-- Reference hexagonal architecture: domain/application/infrastructure layers, repository pattern (port + adapter), DTO shapes, Zod validation, GlobalExceptionFilter error registration.
+- Reference hexagonal architecture: domain/application/infrastructure layers, repository pattern (port + adapter), DTO shapes, Zod validation, and error classification (mapped to a specific 4xx or intentionally 500).
 
 ## Skills to load
 

@@ -2,6 +2,8 @@
 
 ## Task
 
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
 Interactively reconcile the ESLint flat configs with the rules available from ESLint core and its installed plugins, by running the checker script and handling two distinct categories:
 
 - **Section A — Deprecated rules currently configured**: rules whose `meta.deprecated` is set and which are still present in a flat config. Present them so the user can turn each one `"off"`.

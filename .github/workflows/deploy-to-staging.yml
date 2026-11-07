@@ -9,6 +9,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   upload-and-merge-images:
     name: Build and publish Docker images 🐳
@@ -32,7 +35,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository 📡
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Deploy to preproduction server 🚀
         uses: ./.github/actions/deploy
@@ -41,3 +44,9 @@ jobs:
           ssh-user: ${{ secrets.PREPRODUCTION_SERVER_SSH_USER }}
           ssh-server-ip: ${{ secrets.PREPRODUCTION_SERVER_SSH_ADDRESS }}
           update-script-full-path: ${{ secrets.PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH }}
+          known-hosts: ${{ secrets.PREPRODUCTION_SERVER_KNOWN_HOSTS }}
+
+      - name: Health check deployed API 🩺
+        uses: ./.github/actions/health-check
+        with:
+          health-check-url: ${{ vars.PREPRODUCTION_API_URL }}

@@ -64,7 +64,7 @@ export {
   FIND_RANDOM_QUESTIONS_BODY_EXCLUDED_IDS_MINIMUM,
 } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 
-export { QUESTION_SORT_BY_DEFAULT } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
+export { QUESTION_SORT_BY_DEFAULT } from "@question/application/dto/shared/constants/question-sort.dto.constants";
 
 export {
   QUESTION_IDS_FILTER_MAXIMUM,

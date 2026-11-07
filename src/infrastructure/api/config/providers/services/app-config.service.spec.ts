@@ -221,7 +221,7 @@ describe(AppConfigService, () => {
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
-  describe(AppConfigService["deleteSensitiveEnvVariables"], () => {
+  describe(AppConfigService["removeSensitiveEnvVariables"], () => {
     it.each<{ test: string; envVarName: string }>([
       {
         test: "should delete api key hmac secret when computing authentication config cache.",

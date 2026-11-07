@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
-import { DOCS_ENDPOINT_HEALTH_KEY, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
+import { DOCS_ENDPOINT_HEALTH_KEY, HEALTH_CHECK_UNAVAILABLE_MESSAGE, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
 import { getSwaggerUrl } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
 import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
@@ -17,10 +17,17 @@ export class HealthService {
   ) {}
 
   public async checkAppHealth(): Promise<HealthCheckResult> {
-    return this.healthCheckService.check([
-      async() => this.checkMongooseConnection(),
-      async() => this.checkGoatItDocs(),
-    ]);
+    try {
+      return await this.healthCheckService.check([
+        async() => this.checkMongooseConnection(),
+        async() => this.checkGoatItDocs(),
+      ]);
+    } catch(error) {
+      if (error instanceof ServiceUnavailableException) {
+        throw new ServiceUnavailableException(HEALTH_CHECK_UNAVAILABLE_MESSAGE);
+      }
+      throw error;
+    }
   }
 
   private async checkMongooseConnection(): Promise<HealthIndicatorResult<typeof MONGOOSE_HEALTH_KEY>> {

@@ -1,17 +1,12 @@
-import { Inject, Injectable } from "@nestjs/common";
-
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/constants/question.constants";
 import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
-@Injectable()
 export class ArchiveQuestionUseCase {
-  public constructor(@Inject(QUESTION_REPOSITORY_TOKEN)
-  private readonly questionRepository: QuestionRepository) {}
+  public constructor(private readonly questionRepository: QuestionRepository) {}
 
   public async archive(id: string): Promise<Question> {
     await this.throwIfQuestionNotArchivable(id);

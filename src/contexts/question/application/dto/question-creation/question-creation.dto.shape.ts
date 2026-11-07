@@ -6,7 +6,7 @@ import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_IT
 import { QUESTION_AUTHOR_CREATION_DTO } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 import { QUESTION_CONTENT_CREATION_DTO } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
 import { QUESTION_THEME_ASSIGNMENT_CREATION_DTO } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
-import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIsAdultContent, zQuestionSourceUrls } from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIsAdultContent, zQuestionSourceUrls } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
 const QUESTION_CREATION_DTO = z.object({
   category: zQuestionCategory(),

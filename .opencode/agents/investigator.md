@@ -32,6 +32,8 @@ permission:
 
 You are a parallel investigator. You handle ONE independent problem domain only.
 
+**Read `docs/architecture.md` before proposing or applying a fix.** The minimal fix must respect file placement and layer boundaries.
+
 ## Scope
 
 - ONE test file, ONE subsystem, ONE bug.

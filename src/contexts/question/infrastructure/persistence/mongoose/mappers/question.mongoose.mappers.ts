@@ -1,17 +1,24 @@
 import { Types } from "mongoose";
 
-import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
+import { createQuestionThemeFromPersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.mappers";
 
-import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
 import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionAuthor, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
-import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+
+import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
+import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAggregate, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+
+function createQuestionThemeFromAggregate(questionThemeAggregate: QuestionThemeAggregate): QuestionTheme {
+  return createQuestionThemeFromPersistenceShape(questionThemeAggregate);
+}
 
 function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate): QuestionAuthor {
   const { _id, author: questionAuthor } = questionAggregate;
-  if (questionAuthor.role !== "game") {
+  if (questionAuthor.role !== QUESTION_AUTHOR_ROLE_GAME) {
     return {
       role: questionAuthor.role,
       name: questionAuthor.name,
@@ -29,7 +36,7 @@ function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate)
 
 function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate: QuestionThemeAssignmentAggregate): QuestionThemeAssignment {
   return {
-    theme: createQuestionThemeFromDocument(questionThemeAssignmentAggregate.theme),
+    theme: createQuestionThemeFromAggregate(questionThemeAssignmentAggregate.theme),
     isPrimary: questionThemeAssignmentAggregate.isPrimary,
     isHint: questionThemeAssignmentAggregate.isHint,
   };
@@ -71,6 +78,7 @@ function createQuestionMongooseInsertPayloadFromContract(questionCreateContract:
 }
 
 export {
+  createQuestionThemeFromAggregate,
   createQuestionAuthorFromAggregate,
   createQuestionThemeAssignmentFromQuestionThemeAggregate,
   createQuestionFromAggregate,

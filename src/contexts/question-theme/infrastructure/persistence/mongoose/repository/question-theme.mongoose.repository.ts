@@ -3,17 +3,18 @@ import { InjectModel } from "@nestjs/mongoose";
 
 import { QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
 import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
-import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 import { buildQuestionThemeFilterQuery } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme-filter.mongoose.helpers";
-import { QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question-theme/infrastructure/persistence/mongoose/repository/pipelines/question-theme-stats-pipeline/question-theme-stats.mongoose.repository.pipeline";
+import { throwIfDuplicateKeyError } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers";
+import { QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question-theme/infrastructure/persistence/mongoose/repository/pipelines/question-theme-stats/question-theme-stats.mongoose.repository.pipeline";
 
 import { buildMongooseSortCriteria, getCrushedDataForMongoPatchUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/types/question-theme.contracts";
 import type { Model, UpdateQuery } from "mongoose";
 
+import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/repositories/question-theme.repository-contracts.types";
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 import type { QuestionThemeMongooseDocument, QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
@@ -65,9 +66,13 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
   }
 
   public async create(questionThemeCreationContract: QuestionThemeCreationContract): Promise<QuestionTheme> {
-    const createdQuestionThemeDocument = await this.questionThemeModel.create(questionThemeCreationContract);
+    try {
+      const createdQuestionThemeDocument = await this.questionThemeModel.create(questionThemeCreationContract);
 
-    return createQuestionThemeFromDocument(createdQuestionThemeDocument);
+      return createQuestionThemeFromDocument(createdQuestionThemeDocument);
+    } catch(error) {
+      return throwIfDuplicateKeyError(error, questionThemeCreationContract.slug);
+    }
   }
 
   public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
@@ -75,7 +80,7 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
       $set: questionThemeUpdateData,
     };
-    const modifiedQuestionThemeDocument = await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { returnDocument: "after" });
+    const modifiedQuestionThemeDocument = await this.updateQuestionThemeDocument(id, updateQuery, questionThemeModificationContract.slug);
     if (!modifiedQuestionThemeDocument) {
       return undefined;
     }
@@ -105,5 +110,13 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
         incomplete: result.incompleteTranslationCountStage[0]?.count ?? 0,
       },
     };
+  }
+
+  private async updateQuestionThemeDocument(id: string, updateQuery: UpdateQuery<QuestionThemeMongooseDocument>, slug?: string): Promise<QuestionThemeMongooseDocument | null> {
+    try {
+      return await this.questionThemeModel.findByIdAndUpdate(id, updateQuery, { returnDocument: "after" });
+    } catch(error) {
+      return throwIfDuplicateKeyError(error, slug);
+    }
   }
 }

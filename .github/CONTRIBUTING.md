@@ -12,6 +12,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 - ✍️ [Commit messages & PR titles (Conventional Commits)](#-commit-messages--pr-titles-conventional-commits)
 - 🚦 [CI & merging](#-ci--merging)
 - 🔒 [Security](#-security)
+- 🤝 [Code of Conduct](#-code-of-conduct)
 - 🐕 [Husky & git hooks](#-husky--git-hooks)
 - 🧰 [Additional tips](#-additional-tips)
 - 📞 [Contact / Questions](#-contact--questions)
@@ -21,8 +22,10 @@ Thank you for your interest in contributing — we appreciate your time and help
 ## 📌 High-level rules
 
 - The integration branch is `develop`. All contributions must be based on `develop` and opened as PRs targeting `develop`.
-- Every PR must pass the full CI pipeline before it can be merged (linting, type checks, unit tests, mutation tests, acceptance tests).
+- Every PR must pass all required CI checks before it can be merged, including linting, type checks, unit tests with 100% coverage, mutation tests and acceptance tests.
 - Branch names and commit messages must follow the defined conventions (see below).
+- Before your first change, read the [architecture and file-placement conventions](../docs/architecture.md). The full branching, commit and CI reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
+- Project documentation lives under [`docs/`](../docs/): [architecture](../docs/architecture.md), [CI/CD](../docs/ci-cd.md), [unit tests](../docs/unit-tests.md), [acceptance tests](../docs/acceptance-tests.md), [mocks](../docs/mocks.md), [faketories](../docs/faketories.md) and [Bruno](../docs/bruno.md).
 
 > [!IMPORTANT]
 > Please always target `develop` for PRs. `main` is protected and reserved for releases; PRs to `main` will be rejected.
@@ -34,7 +37,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 - [ ] Fork the repository on GitHub
 - [ ] Clone your fork locally
 - [ ] Create a branch from `develop` following the branch naming rules
-- [ ] Run local checks (typecheck, unit tests, mutation tests if possible)
+- [ ] Run local checks (lint, typecheck, unit tests with coverage, mutation tests if possible, acceptance tests when Docker is available)
 - [ ] Use Conventional Commits for commit messages
 - [ ] Open a PR from your branch (on your fork) → target `develop` on upstream
 - [ ] Ensure CI checks pass and address review comments
@@ -86,7 +89,23 @@ pnpm run script:create-branch
 
 ## 🔍 Local checks to run before opening a PR
 
-Run these locally to speed up iteration — CI will run them again.
+Run these locally to speed up iteration — CI will run them again. The five local quality gates are:
+
+```bash
+pnpm run lint
+pnpm run typecheck
+pnpm run test:unit:cov
+pnpm run test:mutation
+pnpm run test:acceptance
+```
+
+### Lint
+
+```bash
+pnpm run lint
+# apply fixes
+pnpm run lint:fix
+```
 
 ### Type-check
 
@@ -117,6 +136,18 @@ pnpm run test:unit:cov
 pnpm run test:mutation
 ```
 
+### Acceptance tests (Docker required)
+
+> [!NOTE]
+> Acceptance tests build the app and require the Docker services defined in `docker/goat-it-api-acceptance-tests/docker-compose.yml`.
+
+```bash
+# start MongoDB
+pnpm run docker:acceptance-tests:start
+# run the suite
+pnpm run test:acceptance
+```
+
 ### Build
 
 ```bash
@@ -133,6 +164,8 @@ pnpm run validate:branch-name
 
 ## 🌿 Branching rules
 
+The canonical branching, commit, hook, PR and deployment reference is [docs/ci-cd.md](../docs/ci-cd.md).
+
 - Always branch from the latest `develop`.
 - `main` is protected for production; do not open PRs against `main`.
 - Branch names must follow the validation config at `configs/validate-branch-name/.validate-branch-namerc.json`.
@@ -143,8 +176,11 @@ pnpm run validate:branch-name
 ### Pattern (regex)
 
 ```regex
-^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert)/.+$
+^(feat|fix|docs|style|refactor|test|perf|build|ci|chore|revert|copilot|renovate)/.+$
 ```
+
+> [!NOTE]
+> `copilot/` and `renovate/` are typically used by automated tooling.
 
 ### Examples
 
@@ -233,7 +269,9 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 
 ## 🚦 CI & merging
 
-- All PRs must pass the CI checks before merge (lint, typecheck, unit tests, mutation tests, acceptance tests).
+The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
+
+- All PRs must pass every required CI job before merge, including lint, typecheck, unit tests with coverage, mutation tests and acceptance tests.
 - If CI fails, fix locally, push, and wait for re-run. Your PR won't be merged until CI is green.
 - Maintainers will merge into `develop` once reviews pass and CI is green. Release automation handles promotion to `main`.
 - Please avoid force-pushing to shared branches after reviews start, as it can disrupt the review process.
@@ -247,11 +285,19 @@ npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json 
 > [!CAUTION]
 > Committing secrets (API keys, credentials, private keys) can expose systems and cause security incidents. If you accidentally commit a secret, rotate it immediately and notify maintainers.
 
+To report a vulnerability, use the [GitHub security advisory form](https://github.com/antoinezanardi/goat-it-api/security/advisories/new) instead of opening a public issue.
+
+---
+
+## 🤝 Code of Conduct
+
+This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [antoine.zanardi@epitech.eu](mailto:antoine.zanardi@epitech.eu).
+
 ---
 
 ## 🐕 Husky & git hooks
 
-This repository uses Husky hooks stored in the `.husky/` directory to enforce some checks before commits are accepted locally.
+This repository uses Husky hooks stored in the `.husky/` directory to enforce some checks before commits are accepted locally. The hook order is documented in [docs/ci-cd.md](../docs/ci-cd.md).
 
 > [!NOTE]
 > Husky is configured in the repo and the hook scripts live in `.husky/` — you can inspect them directly if needed.
@@ -269,6 +315,7 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 - `.husky/pre-commit` — validates branch names and runs linting/tests on staged files:
 
   ```bash
+  <package-manager> run typecheck
   <package-manager> run validate:branch-name
   <package-manager> run lint:staged:fix
   <package-manager> run test:unit:staged
@@ -298,6 +345,7 @@ git commit --no-verify -m "chore: temporary commit"
 - Prefer small, focused PRs for faster review.
 - Open a draft PR early for large work to gather feedback.
 - Document any new config or runtime env in the README.
+- Use the issue templates for bug reports and feature requests, and read the [architecture guide](../docs/architecture.md) before adding a new file.
 - `CODEOWNERS` currently designates `@antoinezanardi` as the default owner for the repository — maintainers will be requested as reviewers automatically where applicable.
 
 ---

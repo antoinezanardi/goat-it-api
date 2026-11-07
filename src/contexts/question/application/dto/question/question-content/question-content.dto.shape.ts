@@ -5,7 +5,7 @@ import {
   zQuestionAnswer,
   zQuestionContext,
   zQuestionTrivia,
-} from "@question/application/dto/shared/zod/validators/question-content/question-content.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question-content/question-content.dto.zod.validators";
 
 const QUESTION_CONTENT_DTO = z.strictObject({
   statement: zQuestionStatement(),

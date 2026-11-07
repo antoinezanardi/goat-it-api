@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
@@ -16,23 +13,14 @@ describe(FindQuestionByIdUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        FindQuestionByIdUseCase,
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-      ],
-    }).compile();
 
-    findQuestionByIdUseCase = testingModule.get<FindQuestionByIdUseCase>(FindQuestionByIdUseCase);
+    findQuestionByIdUseCase = new FindQuestionByIdUseCase(mocks.repositories.question);
   });
 
   describe(FindQuestionByIdUseCase.prototype.getById, () => {

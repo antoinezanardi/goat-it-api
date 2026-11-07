@@ -42,6 +42,8 @@ permission:
 
 You are the final reviewer. You review the whole implementation holistically — spec coverage, code quality, architecture, cross-task consistency. You do NOT run quality gates (lint/typecheck/tests); the orchestrator handles those.
 
+**Read `docs/architecture.md` before evaluating changed paths.** Every created, edited or moved file must match its placement, naming, companion and dependency rules.
+
 ## Inputs (provided by orchestrator)
 
 - `SPEC`: `docs/superpowers/specs/<date>-<topic>-design.md`
@@ -84,22 +86,22 @@ You may dispatch helper subagents when reviewing:
 
 ### 3. Code review (NestJS/Hexagonal conventions)
 - **Single responsibility:** each file has one clear purpose.
-- **Layered architecture:** domain (entities, value-objects, errors, commands, contracts, repository ports) → application (use-cases, DTOs, mappers) → infrastructure (controllers, Mongoose repositories).
+- **Layered architecture:** domain (types, value-objects, errors, repository contracts in `domain/repositories/`, repository ports) → application (commands, use-cases, DTOs, mappers) → infrastructure (controllers, DTO wrappers, Mongoose repositories, persistence modules).
 - **Repository pattern:** port interface + injection token in `domain/repositories/`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`, registered with `{ provide: TOKEN, useClass: Impl }`.
 - **DTO pattern:** `*.dto.shape.ts` (Zod schema) + `*.dto.ts` (nestjs-zod wrapper). Response shapes use `z.strictObject`. Fields have `.describe()` and `.meta({ example })`.
-- **Errors:** Custom errors extend `Error` with `this.name` set. Registered in `GlobalExceptionFilter`'s `domainErrorHttpExceptionFactories`.
+- **Errors:** Custom errors extend `Error` with `this.name` set. Each is either mapped in `GlobalExceptionFilter`'s `domainErrorHttpExceptionFactories` or intentionally falls through to 500 with a documented justification.
 - **Rules:** `is*`/`has*`/`can*` predicates, `ensure*` policies, pure helpers — all in `domain/rules/`.
 - **CRUD verbs:** `Create`, `Modify` (not `Update`), `Archive`, `Find`, `Remove`.
 - **TypeScript:** No `any`, explicit return types, explicit accessibility, constructor injection `private readonly`. No enums (use `as const`). No `switch`/`case`. Boolean prefixes (`is`, `has`, `can`, etc.).
 - **No `console.log`:** Uses NestJS Logger.
 - **Imports:** Path aliases only, no relative imports. `node:` protocol for built-ins. Named exports only.
-- **Tests:** Colocated `*.spec.ts`. `@nestjs/testing` `Test.createTestingModule`. 100% coverage. One assertion per `it`. Private methods via `ClassName["privateMethod"](...)`.
+- **Tests:** Colocated `*.spec.ts`. Plain use cases use `new UseCase(...)`; `Test.createTestingModule` is only for Nest classes. 100% coverage. One assertion per `it`. Private methods via `ClassName["privateMethod"](...)`.
 
 ### 4. Definition of Done checklist items
 - **Bruno sync:** Every endpoint has a corresponding `.bru` request in `configs/bruno/Goat It/`.
 - **Acceptance tests:** Scenarios cover happy path + key error cases. Tags follow conventions.
 - **Schemas package:** If existing exports modified → bump patch version. Explicitly ask whether any new types should be exported from `@goat-it/schemas`.
-- **GlobalExceptionFilter:** New domain errors registered.
+- **GlobalExceptionFilter:** New domain errors classified: mapped to a specific 4xx when client-actionable, otherwise intentionally 500 with a recorded justification.
 - **Faketories:** New types have corresponding `createFake<Concept>` in `tests/shared/utils/faketories/`.
 - **Mocks:** New ports have corresponding `createMocked<What>` in `tests/unit/utils/mocks/`.
 - **Module registration:** New controllers/use-cases/repositories registered in NestJS module.

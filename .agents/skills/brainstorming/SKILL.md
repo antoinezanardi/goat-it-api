@@ -22,7 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
 You MUST create a task for each of these items and complete them in order:
 
 1. **Query the MemPalace MCP server** to give you better context based on the user's intent and the current project codebase
-2. **Explore project context** — check files, docs, recent commits
+2. **Explore project context** — check files, docs (including `docs/architecture.md` for placement and dependency rules), recent commits
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
@@ -125,14 +125,12 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 ## Project-Specific Context (goat-it-api)
 
-This project follows **Hexagonal Architecture** with NestJS 12 + Fastify 5 + Mongoose + Zod. When brainstorming:
+**Read `docs/architecture.md` before designing any file path, boundary or dependency**, and `AGENTS.md` for the workflow. Do not restate architecture rules in the spec — link to the guide instead. Facts that matter while brainstorming:
 
-- **Architecture**: Structure around bounded contexts under `src/contexts/<domain>/`, each with `domain/` (entities, errors, commands, contracts, repository ports), `application/` (use-cases, DTOs, mappers), `infrastructure/` (controllers, Mongoose repositories).
-- **Repository pattern**: Port interface + injection token in `domain/repositories/`, Mongoose implementation in `infrastructure/persistence/mongoose/repository/`.
-- **DTO pattern**: Zod schema in `*.dto.shape.ts` (with `.describe()` and `.meta({ example })`), nestjs-zod wrapper in `*.dto.ts`.
-- **Errors**: Custom error classes extending `Error` in `domain/errors/`, registered in `GlobalExceptionFilter`.
-- **Testing**: 100% coverage required. Colocated `*.spec.ts`, `@nestjs/testing` for providers, Vitest + SWC. Faketories in `tests/shared/utils/faketories/`, mocks in `tests/unit/utils/mocks/`.
-- **Quality gates**: 5-step mandatory: `lint:fix` → `typecheck` → `test:unit:cov` → `test:acceptance` → `test:mutation`.
+- Bounded contexts live under `src/contexts/<context>/`; commands belong in `application/commands/`, not in `domain/`.
+- Quality gates run in this order: `lint:fix` → `typecheck` → `test:unit:cov` → `test:mutation` → `test:acceptance`.
+- Testing is 100% coverage with colocated `*.spec.ts`; faketories live in `tests/shared/utils/faketories/` and mocks in `tests/unit/utils/mocks/` (details in `docs/unit-tests.md`).
+- A new cross-context dependency updates the published surface register in `docs/architecture.md` §5.2 and the lint allowlist in the same PR.
 
 ## Key Principles
 

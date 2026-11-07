@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
 
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
@@ -11,46 +10,30 @@ import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-case
 import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 import { AdminQuestionThemeController } from "@question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
-import { QuestionThemeMongooseRepository } from "@question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository";
-import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { QuestionThemePersistenceModule } from "@question-theme/infrastructure/persistence/question-theme-persistence.module";
 
-import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
-import { QuestionMongooseRepository } from "@question/infrastructure/persistence/mongoose/repository/question.mongoose.repository";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { createUseCaseProvider } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers";
+
+import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
+import { QuestionUsageModule } from "@question/question-usage.module";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: QuestionThemeMongooseSchema.name,
-        schema: QUESTION_THEME_MONGOOSE_SCHEMA,
-      },
-      {
-        name: QuestionMongooseSchema.name,
-        schema: QUESTION_MONGOOSE_SCHEMA,
-      },
-    ]),
+    QuestionThemePersistenceModule,
+    QuestionUsageModule,
   ],
   controllers: [
     QuestionThemeController,
     AdminQuestionThemeController,
   ],
   providers: [
-    FindQuestionThemesUseCase,
-    GetQuestionThemesByIdsOrThrowUseCase,
-    FindQuestionThemeByIdUseCase,
-    CreateQuestionThemeUseCase,
-    ModifyQuestionThemeUseCase,
-    GetQuestionThemeStatsUseCase,
-    ArchiveQuestionThemeUseCase,
-    {
-      provide: QUESTION_THEME_REPOSITORY_TOKEN,
-      useClass: QuestionThemeMongooseRepository,
-    },
-    {
-      provide: QUESTION_REPOSITORY_TOKEN,
-      useClass: QuestionMongooseRepository,
-    },
+    createUseCaseProvider(FindQuestionThemesUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(GetQuestionThemesByIdsOrThrowUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(FindQuestionThemeByIdUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(CreateQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(ModifyQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(GetQuestionThemeStatsUseCase, [QUESTION_THEME_REPOSITORY_TOKEN]),
+    createUseCaseProvider(ArchiveQuestionThemeUseCase, [QUESTION_THEME_REPOSITORY_TOKEN, CountLiveQuestionsByThemeIdUseCase]),
   ],
   exports: [
     FindQuestionThemeByIdUseCase,

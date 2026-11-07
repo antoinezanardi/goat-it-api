@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_PIPE } from "@nestjs/core";
+import { APP_FILTER, APP_PIPE } from "@nestjs/core";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { LoggerModule } from "nestjs-pino";
 import { ZodValidationPipe } from "nestjs-zod";
@@ -12,6 +12,7 @@ import { HealthModule } from "@src/infrastructure/api/health/health.module";
 import { DatabaseModule } from "@src/infrastructure/database/database.module";
 
 import { AppController } from "@app/controllers/app.controller";
+import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 
@@ -41,6 +42,10 @@ import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })

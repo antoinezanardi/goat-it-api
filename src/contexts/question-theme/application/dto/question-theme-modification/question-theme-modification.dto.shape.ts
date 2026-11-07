@@ -6,7 +6,7 @@ import {
   zQuestionThemeLocalizedAliases,
   zQuestionThemeLocalizedDescription,
   zQuestionThemeColor,
-} from "@question-theme/application/dto/zod/validators/question-theme.dto.zod.validators";
+} from "@question-theme/contracts/dto/zod/validators/question-theme/question-theme.dto.zod.validators";
 
 const QUESTION_THEME_MODIFICATION_DTO = z.object({
   slug: zQuestionThemeSlug()

@@ -1,6 +1,7 @@
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
-import { QUESTION_AUTHOR_ROLE_ADMIN, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
+import { QUESTION_AUTHOR_ROLE_ADMIN, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_PENDING, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS } from "@question/domain/constants/question.constants";
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionCreationAuthorRole, QuestionCreationStatus, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
@@ -32,9 +33,16 @@ function ensureQuestionThemeAssignmentIsModifiable(question: Question, themeId: 
   }
 }
 
+function ensureQuestionThemeAssignmentsLimit(question: Question): void {
+  if (question.themes.length >= QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS) {
+    throw new QuestionMaximumThemesError(question.id);
+  }
+}
+
 export {
   computeQuestionStatusFromAuthorRole,
   findQuestionThemeAssignmentInQuestionByThemeId,
   ensureQuestionThemeAssignmentIsRemovable,
   ensureQuestionThemeAssignmentIsModifiable,
+  ensureQuestionThemeAssignmentsLimit,
 };

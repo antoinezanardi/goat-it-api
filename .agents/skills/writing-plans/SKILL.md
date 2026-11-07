@@ -5,7 +5,7 @@ description: Write comprehensive implementation plans from an approved spec with
 
 # Writing Implementation Plans
 
-Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code in every step. Assume the executor knows TypeScript but nothing about this codebase's conventions.
+Write comprehensive implementation plans from an approved spec. Bite-sized tasks (2-5 min steps) with complete code for every change: create steps contain the whole file, modify steps contain the complete changed snippet. Assume the executor knows TypeScript but nothing about this codebase's conventions.
 
 You're a senior engineer who knows the codebase's conventions and writes code that is simple, elegant, and reviewable. The produced plan should be executable by a junior engineer without further guidance.
 
@@ -15,10 +15,10 @@ You're a senior engineer who knows the codebase's conventions and writes code th
 
 - `create-faketory` — for knowing faketory conventions when writing test steps
 - `create-mock` — for knowing mock conventions when writing test steps
-- `write-unit-test` — for colocated `.spec.ts`, `@nestjs/testing`, one-assertion-per-it conventions. **Mandatory compliance:** every unit test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-unit-tests.md` — universal checks `[U1]`–`[U8]` plus the per-type block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Verify each spec snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
+- `write-unit-test` — for colocated `.spec.ts`, plain `new` for use cases, `@nestjs/testing` for Nest classes, one-assertion-per-it conventions. **Mandatory compliance:** every unit test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-unit-tests.md` — universal checks `[U1]`–`[U8]` plus the per-type block (`[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Verify each spec snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 - `write-acceptance-test` — for Cucumber fixtures, payloads, step definition patterns. **Mandatory compliance:** every acceptance test written in a plan MUST pass the §4 checklist of `.opencode/commands/lint-acceptance-tests.md` — universal checks `[AU*]` plus the per-type block (`[FT*]`, `[ST*]`, `[DS*]`, `[FS*]`, `[PL*]`, `[SH*]`). Verify each snippet against it BEFORE writing it into the plan; a non-compliant snippet must not enter the plan.
 
-Architecture doc must be read from `docs/ARCHITECTURE.md`.
+Architecture doc must be read from `docs/architecture.md` before defining any file path or companion file.
 
 ## Scope Check
 
@@ -68,9 +68,9 @@ Every plan MUST start with:
 ### Task N: [Component Name]
 
 **Files:**
-- Create: `src/contexts/<domain>/domain/entities/<entity>.entity.ts`
+- Create: `src/contexts/<domain>/domain/types/<entity>.entities.ts`
 - Modify: `src/contexts/<domain>/domain/repositories/<repo>.repository.types.ts`
-- Test: `src/contexts/<domain>/domain/entities/<entity>.spec.ts`
+- Test: only for artifacts that own logic and have a companion spec in `docs/architecture.md` §8.1 (entities, constants and types have none)
 
 **Interfaces:**
 - Consumes: [what this task uses from earlier tasks — exact signatures]
@@ -137,7 +137,7 @@ Example — a step that inserts a new import:
 - [ ] **Step 2: Add new import (insert after the existing `@nestjs/common` import at line 8)**
 
 ```ts
-import { Question } from "@question/domain/entities/question.entity";
+import type { Question } from "@question/domain/types/question.entities";
 ```
 ````
 
@@ -181,14 +181,9 @@ If you find issues, fix them inline. If a spec requirement has no task, add the 
 
 ## Project-Specific Conventions (goat-it-api)
 
-- **Hexagonal layers:** `domain/` (entities, value-objects, errors, commands, contracts, repository ports), `application/` (use-cases, DTOs, mappers), `infrastructure/` (controllers, Mongoose repositories)
-- **Path aliases:** `@src/*`, `@shared/*`, `@question/*`, `@question-theme/*`, `@faketories/*`, `@mocks/*`, `@unit-tests/*` — no relative imports
-- **DTO pattern:** `*.dto.shape.ts` (Zod schema with `.describe()` and `.meta({ example })`) + `*.dto.ts` (nestjs-zod wrapper)
-- **Repository pattern:** Port interface in `domain/repositories/*.repository.types.ts`, injection token in `*.repository.constants.ts`, Mongoose impl in `infrastructure/persistence/mongoose/repository/`
-- **Errors:** Extend `Error` in `domain/errors/<error-name>/<error-name>.error.ts`, registered in `GlobalExceptionFilter`
+- **Architecture, placement, naming, aliases and error mapping:** follow `docs/architecture.md` — read it before naming any path, companion file or layer. Do not restate its rules in the plan.
 - **CRUD verbs:** `Create`, `Modify` (not `Update`), `Archive` (soft-delete), `Find`, `Remove` (detach)
-- **Rules:** `is*`/`has*`/`can*` predicates, `ensure*` policies, helpers — in `domain/rules/`
-- **Tests:** Colocated `*.spec.ts`, `@nestjs/testing` `Test.createTestingModule`, 100% coverage, one assertion per `it`
+- **Tests:** Colocated `*.spec.ts`, 100% coverage, one assertion per `it`. Plain use cases use `new UseCase(...)`; `Test.createTestingModule` is only for Nest classes (controllers, repositories, services, guards, pipes).
 - **Private methods:** Tested via `ClassName["privateMethod"](...)` syntax
 - **TypeScript:** No `any`, explicit return types, explicit accessibility, constructor injection `private readonly`, no enums (use `as const`), no `switch`/`case`
 - **No `console.log`:** Use NestJS Logger

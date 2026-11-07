@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 

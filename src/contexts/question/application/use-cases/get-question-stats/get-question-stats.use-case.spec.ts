@@ -1,9 +1,6 @@
-import { Test } from "@nestjs/testing";
-
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-question-stats/get-question-stats.use-case";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
 import { createFakeQuestionStats } from "@faketories/contexts/question/domain/question-stats/question-stats.faketory";
 
@@ -11,18 +8,9 @@ describe(GetQuestionStatsUseCase, () => {
   let useCase: GetQuestionStatsUseCase;
   let mockedRepository: ReturnType<typeof createMockedQuestionRepository>;
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mockedRepository = createMockedQuestionRepository();
-    const module = await Test.createTestingModule({
-      providers: [
-        GetQuestionStatsUseCase,
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mockedRepository,
-        },
-      ],
-    }).compile();
-    useCase = module.get(GetQuestionStatsUseCase);
+    useCase = new GetQuestionStatsUseCase(mockedRepository);
   });
 
   describe(GetQuestionStatsUseCase.prototype.getStats, () => {

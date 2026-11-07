@@ -692,25 +692,6 @@
         "typescript/no-redeclare": "error",
         "typescript/no-redundant-type-constituents": "error",
         "typescript/no-require-imports": "error",
-        "typescript/no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": [
-                  "./"
-                ],
-                "message": "Relative imports to children directories are not allowed."
-              },
-              {
-                "group": [
-                  "../"
-                ],
-                "message": "Relative imports from parent directories are not allowed."
-              }
-            ]
-          }
-        ],
         "typescript/no-restricted-types": "error",
         "typescript/no-shadow": [
           "error",
@@ -795,7 +776,8 @@
     // ---- Override for modules -----
     {
       "files": [
-        "**/src/**/*.module.ts"
+        "**/src/**/*.module.ts",
+        "**/tests/**/*.module.ts"
       ],
       "rules": {
         "eslint/class-methods-use-this": "off",
@@ -831,6 +813,7 @@
               "ApiResponse",
               "ZodResponse",
               "HealthCheck",
+              "Header",
               "Localization",
               "Param",
               "Body",
@@ -1243,6 +1226,31 @@
           "never"
         ],
         "node/no-sync": "off"
+      }
+    },
+    // ---- Override for first-party source and test relative-import ban -----
+    {
+      "files": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "packages/schemas/src/**/*.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^\\./",
+                "message": "Relative imports to children directories are not allowed."
+              },
+              {
+                "regex": "^\\.\\./",
+                "message": "Relative imports from parent directories are not allowed."
+              }
+            ]
+          }
+        ]
       }
     },
     // ---- Override for scripts files -----

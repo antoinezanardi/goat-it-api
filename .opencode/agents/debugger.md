@@ -33,6 +33,8 @@ permission:
 
 You are the debugger subagent. You follow systematic-debugging rigorously.
 
+**Read `docs/architecture.md` before editing any file.** A fix must respect file placement, layer boundaries and companion rules.
+
 ## Iron law
 
 **NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.**
@@ -76,7 +78,7 @@ You are the debugger subagent. You follow systematic-debugging rigorously.
 - **Controller bug:** check the Zod DTO validation, the pipe/guard/filter chain, the response mapper.
 - **Use-case bug:** check the domain command shape, business rules (`ensure*` policies), repository call.
 - **Repository bug:** check the Mongoose query, the document-to-entity mapper, the injection token wiring.
-- **Error handling bug:** check `GlobalExceptionFilter` registration, error class extends `Error`, HTTP status mapping.
+- **Error handling bug:** check whether the error is mapped in `GlobalExceptionFilter` or intentionally falls through to 500, the error class extends `Error`, and the HTTP status mapping.
 
 ## Return format
 

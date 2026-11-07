@@ -9,9 +9,11 @@ description: Use when creating new skills, editing existing skills, or verifying
 
 **Writing skills IS Test-Driven Development applied to process documentation.**
 
-**Personal skills live in your runtime's skills directory**. Codex, Copilot CLI, and Gemini CLI all also recognize `~/.agents/skills/` as a cross-runtime alias.
+**Repo skills live in `.agents/skills/<skill-name>/SKILL.md`.** Write them in the repository, not in a runtime-global directory.
 
 You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
+
+**Before creating, editing or moving any skill file, read `docs/architecture.md`.** Skill files follow the repository's placement and naming conventions.
 
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.
 
@@ -73,7 +75,7 @@ API docs, syntax guides, tool documentation (office docs)
 
 
 ```
-skills/
+.agents/skills/
   skill-name/
     SKILL.md              # Main reference (required)
     supporting-file.*     # Only if needed
@@ -280,7 +282,7 @@ wc -w skills/path/SKILL.md
 **When writing documentation that references other skills:**
 
 Use skill name only, with explicit requirement markers:
-- ✅ Good: `**REQUIRED SUB-SKILL:** Use superpowers:systematic-debugging`
+- ✅ Good: `**REQUIRED SUB-SKILL:** Use systematic-debugging`
 - ❌ Bad: `@skills/testing/systematic-debugging/SKILL.md` (force-loads, burns context)
 
 **Why no @ links:** `@` syntax force-loads files immediately, consuming 200k+ context before you need them.
@@ -396,7 +398,7 @@ Different skill types need different test approaches:
 
 ### Discipline-Enforcing Skills (rules/requirements)
 
-**Examples:** TDD, verification-before-completion, designing-before-coding
+**Examples:** TDD, receiving-code-review, designing-before-coding
 
 **Test with:**
 - Academic questions: Do they understand the rules?
@@ -660,7 +662,7 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 - [ ] Supporting files only for tools or heavy reference
 
 **Deployment:**
-- [ ] Commit skill to git and push to your fork (if configured)
+- [ ] Do **not** commit the skill unless the user explicitly asks (`AGENTS.md`); propose a commit message instead
 - [ ] Consider contributing back via PR (if broadly useful)
 
 ## Discovery Workflow
