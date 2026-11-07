@@ -152,7 +152,7 @@
     "validate-branch-name": "^1.3.2",
     "vitest": "^5.1.0"
   },
-  "packageManager": "pnpm@12.16.1",
+  "packageManager": "pnpm@12.18.0",
   "dependencies": {
     "@nestjs/axios": "^12.0.1",
     "@nestjs/common": "^12.3.3",
