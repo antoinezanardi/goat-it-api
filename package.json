@@ -163,7 +163,7 @@
     "@nestjs/serve-static": "^12.1.1",
     "@nestjs/swagger": "^12.1.1",
     "@nestjs/terminus": "^12.1.0",
-    "axios": "^1.21.0",
+    "axios": "^1.21.1",
     "cross-env": "^10.1.0",
     "fastify": "^5.12.8",
     "mongoose": "^9.12.1",
