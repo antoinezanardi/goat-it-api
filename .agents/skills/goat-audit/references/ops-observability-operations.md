@@ -59,16 +59,16 @@ checks that failures are detected, attributed and actionable, not what data may 
 
 - **[OPS-16] Server-side error logs are the triage path** — Every unknown 500 is logged server-side with its message before the generic response is sent, so failures are discoverable from stdout even though no error-tracking service is wired.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**` · Src: [9], project: docs/security.md
-- **[OPS-17] Error-tracker gap is a recorded decision** — An error-tracking service is wired with 5xx spike alerts, or its absence is recorded in the security guide's known limitations with the issue that tracks it, and any future tracker honors the PII-scrubbing constraint owned by the privacy guide.
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/security.md`, `docs/privacy.md` · Src: [2], [5], project: docs/security.md
+- **[OPS-17] Error tracking is wired with 5xx spike alerts** — An error-tracking service is wired with 5xx spike alerts and the tracker honors the PII-scrubbing allow-list owned by the privacy guide; a documented absence is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `package.json`, `src/app/app.module.ts`, `docs/security.md`, `docs/privacy.md` · Src: [2], [5], project: docs/security.md
 - **[OPS-18] Error attribution structure** — Every server-side error log carries enough structure — the error message and the source context — to count and attribute failures per type when logs are aggregated.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/infrastructure/database/**` · Src: [9], [8]
 - **[OPS-19] Uptime monitor inventory documented** — The operations guide lists one external monitor per environment probing the documented readiness endpoint with method, URL, expected result and cadence; the current inventory is in `docs/operations.md`.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/operations.md` · Src: [2], [1], project: docs/operations.md
 - **[OPS-20] Monitor assertions match the probe contract** — A monitor asserts HTTP 200 plus the `"status":"ok"` body keyword — never an open port — and the documented keyword matches what the readiness endpoint actually returns.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docs/operations.md`, `src/infrastructure/api/health/**` · Src: [1], [11], project: docs/operations.md
-- **[OPS-21] SLOs or explicit deferral** — The operations guide states numeric SLO targets with an owner and an error-budget policy, or an explicit deferral with its rationale and revisit trigger.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docs/operations.md` · Src: [3], [4], project: docs/operations.md
+- **[OPS-21] Numeric SLOs have an owner and an error budget** — The operations guide states numeric SLO targets with an owner and an error-budget policy; a deferral is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: medium · Look: `docs/operations.md` · Src: [3], [4], project: docs/operations.md
 
 ## 4. Runbooks & post-deploy verification
 
@@ -84,8 +84,8 @@ checks that failures are detected, attributed and actionable, not what data may 
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/workflows/deploy-*.yml`, `docs/operations.md` · Src: [1], project: docs/operations.md
 - **[OPS-27] Failure-mode table** — The operations guide states, for MongoDB unavailable, documentation endpoint unreachable, process crash or kill and host failure, the expected system behaviour and the monitor, alert or log line that detects it.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `docs/operations.md` · Src: [5], [2], project: docs/operations.md
-- **[OPS-28] Rollback after failed verification** — A failed post-deploy gate automatically redeploys the previous image tag, or the absence of automatic rollback is an explicit out-of-scope decision with a manual recovery path.
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `.github/workflows/deploy-*.yml`, `.github/actions/deploy/**`, `docs/operations.md` · Src: [7], project: docs/operations.md
+- **[OPS-28] A failed post-deploy gate rolls back automatically** — A failed post-deploy gate redeploys the previous image tag without manual intervention, and the workflow records the recovered version; an out-of-scope decision is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `.github/workflows/deploy-*.yml`, `.github/actions/deploy/**`, `docs/operations.md` · Src: [7], project: docs/operations.md
 
 ## 5. Docker & database operational checks
 

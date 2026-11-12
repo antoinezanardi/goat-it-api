@@ -1,6 +1,6 @@
 ---
 name: goat-audit
-description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (695 checks, 140 Core), [CODE-NN] check IDs, evidence and severity rules, grading and release verdict, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
+description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (681 checks, 138 Core, 13 Target: reach), [CODE-NN] check IDs, evidence, target, severity and grading rules, the release and platinum verdicts, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
 ---
 
 # GOAT audit
@@ -8,6 +8,8 @@ description: Use when the goat-auditor runs /goat-audit, when final-reviewer rev
 ## 1. Overview
 
 The GOAT audit ("Greatest Of All Time" × Goat It) is a reusable, exhaustive, evidence-based audit of the whole `goat-it-api` repository across 18 professional dimensions. The bar is a god-tier professional API, not "no obvious bug". Judge the service, not the polish: evaluate the HTTP contract as a client and an operator would; a green pipeline never masks a missing control, a silent 500, an unindexed hot path or a test that asserts nothing.
+
+A check is either a **conformance** check — the repository must match its documented decisions — or a **`Target: reach`** check — the platinum capability must exist, and a documented deferral is a `GAP`, not a pass. Conformance alone can be green while the service is not platinum-ready; §4.5 and §5.3 measure the difference.
 
 The category checklists in `references/` **are the audit contract**. Each check has a stable ID, one evidence type, a default severity, optional `Look` globs and cited sources. Four consumers read this skill:
 
@@ -24,7 +26,7 @@ The orchestrator also reads §7 when the maintainer pushes back on a GOAT findin
 
 - **(a) Evidence for every claim.** A PASS, FAIL or N/A cites `file:line`, command output, an artifact path or a URL. No evidence, no verdict.
 - **(b) No speculation.** A claim that cannot be proven is `⚠️ UNVERIFIED`, never FAIL and never PASS.
-- **(c) Read-only.** Auditors never modify project files. The only writes allowed are the report, its run directory and approved decision notes. Never bypass a permission denial; report it instead. `.agents/skills/goat-audit/**` is never writable: checklists are not auditor-editable.
+- **(c) Read-only.** Auditors never modify project files. The only writes allowed are the report, its run directory and approved decision notes. Tool-generated build and test artifacts (`dist/`, coverage output and the tracked Stryker incremental state) are expected side effects of the audit commands, not project edits: keep them and never revert or hand-edit them. Never bypass a permission denial; report it instead. `.agents/skills/goat-audit/**` is never writable: checklists are not auditor-editable.
 - **(d) Library facts are verified, not remembered.** Any finding that depends on a library default, API or behaviour is confirmed with `docs-fetcher` (or Context7/`webfetch` when the subagent is unavailable) before it is reported (§8).
 - **(e) Decisions are binding.** Read the mapped decision doc in full. A `## GOAT audit decisions` entry has already reshaped the checklist it belongs to (§7); the documented decisions listed in §7 are honored until their revisit condition is met.
 - **(f) Read `docs/architecture.md`** in full before any audit, review or plan that touches project files.
@@ -39,7 +41,7 @@ The orchestrator also reads §7 when the maintainer pushes back on a GOAT findin
 - **Plan mode (shift-left)** — `plan-writer` inherits the spec's `## GOAT constraints` when one exists, matches planned paths against the category index triggers **and the Decision doc column**, reads the triggered references' **Core** `Diff: ✓` checks and the mapped decision docs, and writes a `GOAT checks:` line in every task.
 - **Design mode (shift-left at spec time)** — `brainstormer` has no paths yet: it maps the feature's design areas to categories (§6 design triggers), reads those references' **Core** checks that actually constrain the design (10–20 of them, never a whole category), and writes `## GOAT constraints` (check ID → design decision) and `## Constraints accepted as risks` in the spec. Every other check is deferred to plan and review.
 
-A full audit is expensive: 18 explorer dispatches in waves of six over 695 checks (140 Core), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
+A full audit is expensive: 18 explorer dispatches in waves of six over 681 checks (138 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
 
 ## 4. Check format, IDs, outcomes
 
@@ -47,12 +49,13 @@ A full audit is expensive: 18 explorer dispatches in waves of six over 695 check
 
 ```markdown
 - **[SEC-01] Every business route is guarded by the audience API key** — <pass criterion with exact values, names, thresholds>.
-  Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/http/controllers/**` · Src: [11], project: docs/security.md
+  Evidence: `static` · Diff: ✓ · Core: ✓ · Target: reach · Severity: high · Look: `src/contexts/question/infrastructure/http/controllers/**` · Src: [11], project: docs/security.md
 ```
 
 - **Evidence** — exactly one of: `static` (source/config/docs/grep), `artifact` (built `dist/` or generated files), `command` (tool output: `pnpm audit`, `gh api`, lint, tests…), `runtime` (running app: acceptance suite, local server, live URL), `manual` (needs a human: legal confirmation, credential rotation, visual judgment).
 - **Diff** — `✓` only when Evidence is `static`; `✗` otherwise.
 - **Core** — `✓` marks a check in the Core tier (§4.4); omitted otherwise. The category index records each category's Core count.
+- **Target** — `reach` marks a platinum capability (§4.5); omitted means a conformance check. A reach check is never satisfied by a documented deferral.
 - **Severity** — the default when the check fails (§5). Auditors may move it **one level** with a written justification in the finding.
 - **Look** — optional repository globs; every glob matched at least one path when the file was written.
 - **Src** — `[n]` indexes into the file's `## Sources`, and/or `project: <repo path>` (optionally `§<n>`).
@@ -76,19 +79,29 @@ A full audit is expensive: 18 explorer dispatches in waves of six over 695 check
 | `FAIL` | Violated; produces a finding (§9) and a severity. |
 | `N/A` | The check does not apply (reason given). |
 | `⚠️ UNVERIFIED` | Cannot be proven (e.g. Tier 3 probe skipped); reason given. |
-| `DECIDED` | Covered by a documented decision outside the `## GOAT audit decisions` sections (e.g. a `docs/security.md` Known limitation); cite `doc:line`. A GOAT decision note never yields `DECIDED` — it amends the checklist (§7). |
+| `DECIDED` | Covered by a documented decision outside the `## GOAT audit decisions` sections (e.g. a `docs/security.md` Known limitation); cite `doc:line`. A GOAT decision note never yields `DECIDED` — it amends the checklist (§7). Not valid for a `Target: reach` check. |
+| `GAP` | A `Target: reach` capability is absent. The missing capability is recorded in the Platinum backlog (§5.3); a GAP is not a conformance FAIL and never contributes grade points. |
 
 Every check of every triggered reference gets one of these outcomes in a full or partial audit. Never omit a check.
 
 ### 4.4 Core tier
 
-`Core: ✓` marks the **140** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **695** checks.
+`Core: ✓` marks the **138** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **681** checks.
 
 - **Every critical check is Core.**
 - A high check is Core when its failure can break a core flow, expose data, break the release or corrupt persisted data.
 - A medium check is Core only when it encodes a project-wide invariant already enforced by `AGENTS.md`.
-- The tier targets roughly 10–20 % of the set; the current 140 of 695 is 20.1 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
+- The tier targets roughly 10–20 % of the set; the current 138 of 681 is 20.3 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
 - A Core check keeps its evidence type: diff mode evaluates the `Diff: ✓` ones and defers the `Diff: ✗` ones with a non-blocking ⚠️.
+
+### 4.5 Target tier
+
+`Target: reach` marks the **13** checks that define the platinum target rather than current conformance. The current set is `SEC-20`, `SEC-26`, `SEC-51`, `OPS-17`, `OPS-21`, `OPS-28`, `REL-07`, `REL-34`, `REL-35`, `API-44`, `DATA-37`, `PERF-20` and `PRIV-08`; the category index's `Reach` column states each category's count.
+
+- A reach check is evaluated in full audits and in the mapped Core paths; its outcomes are `PASS`, `GAP` or `FAIL`. `GAP` means the capability is absent, whether or not the repository documents the deferral.
+- A GAP is not a conformance FAIL: it adds no grade points and never blocks a merge by itself. It is reported in the Platinum backlog and in the `Platinum readiness` line (§5.3) so iteration reduces it over time.
+- A decision note never turns a reach check into `DECIDED` and never rewrites the criterion to accept the absence. An Accepted risk may record an expiry and the reviewer, but the GAP remains until the capability lands. `Not applicable` and `False positive` still require the checklist amendment of §7.
+- A reach check can be Core (`SEC-26`) or not. In diff mode a reach check that matches the diff reports `GAP` non-blocking; it never forces "Needs changes before merge".
 
 ## 5. Severity, grading, release verdict, priorities
 
@@ -115,39 +128,40 @@ Points over CONFIRMED findings (after verification; DECIDED excluded): critical 
 | 🟠 D | ≤ 25 points and at most 1 critical |
 | ❌ F | otherwise (> 25 points or ≥ 2 critical) |
 
-Append `⚠️ unverified` when more than 10 % of the category's checks are `⚠️ UNVERIFIED`; a category carrying that suffix is never 🐐 GOAT.
+Append `⚠️ unverified` when more than 10 % of the category's checks are `⚠️ UNVERIFIED`; a category carrying that suffix is never 🐐 GOAT. `GAP` outcomes are excluded from the points and from the GOAT condition; they are measured by the platinum verdict below.
 
-### 5.3 Release verdict and priorities
+### 5.3 Release verdict, platinum readiness and priorities
 
 - Release verdict: any confirmed critical → **Not ship-ready**; else any confirmed high → **Ship with follow-ups**; else **Ship-ready**. A partial run prefixes the verdict with `partial (n/18):`.
-- Roadmap priorities: P0 = critical, P1 = high, P2 = medium, Polish = low. Info findings appear only in their category section.
+- Platinum readiness: **platinum-ready** only when the audited categories have zero `GAP`; otherwise `n gaps (P0 n · P1 n · P2 n · Polish n)`, using the check's default severity for the priority. A partial run prefixes it with `partial (n/18):`.
+- Roadmap priorities: P0 = critical, P1 = high, P2 = medium, Polish = low. Info findings appear only in their category section. GAPs use the same priority scale and are listed in the Platinum backlog, never in the conformance remediation roadmap.
 
 ## 6. Category index
 
 Each check belongs to exactly one category. Diff triggers activate when a changed path matches them. The **Decision doc** column is part of the matching: a changed decision doc triggers every category mapped to it. Triggers may name paths that do not exist yet; they activate when such a file is added. Two triggers currently name future paths — `.npmrc` and `src/**/logging/**` — and are intentionally kept.
 
-| Code | Category | Reference file | Decision doc | Core | Diff triggers |
-|------|----------|----------------|--------------|------|---------------|
-| SEC | Application security | `references/sec-application-security.md` | `docs/security.md` | 12 | `src/infrastructure/api/auth/**`, `src/infrastructure/api/server/cors/**`, `src/shared/infrastructure/http/middlewares/**`, `src/app/filters/**`, `src/contexts/**/application/dto/**`, `src/shared/application/dto/**`, `src/infrastructure/api/config/**`, `env/**`, `src/main.ts`, `docker/**` |
-| SUP | Supply chain & dependencies | `references/sup-supply-chain.md` | `docs/security.md` | 7 | `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.github/renovate.json`, `.npmrc`, `packages/schemas/package.json`, `.github/workflows/**` |
-| CICD | CI/CD, release & repository governance | `references/cicd-ci-cd-release.md` | `docs/ci-cd.md` | 8 | `.github/**`, `configs/semantic-release/**`, `configs/commitlint/**`, `configs/validate-branch-name/**`, `configs/lint-staged/**`, `.husky/**`, `scripts/**` |
-| PLAT | Runtime platform (containers, config, deployment) | `references/plat-runtime-platform.md` | `docs/operations.md` | 8 | `Dockerfile`, `.dockerignore`, `docker/**`, `env/**`, `configs/node/**`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**`, `src/infrastructure/api/server/**`, `src/infrastructure/api/config/**`, `src/main.ts` |
-| OPS | Observability & operations | `references/ops-observability-operations.md` | `docs/operations.md` | 6 | `src/infrastructure/api/health/**`, `src/infrastructure/api/server/**`, `docs/operations.md`, `.github/workflows/deploy-*.yml`, `.github/actions/**`, `src/main.ts` |
-| REL | Reliability & resilience | `references/rel-reliability-resilience.md` | `docs/operations.md` | 7 | `src/infrastructure/**`, `src/contexts/**/infrastructure/**`, `src/shared/infrastructure/**`, `src/main.ts` |
-| LOGIC | Domain logic & data correctness | `references/logic-domain-logic.md` | `docs/domain-logic.md` | 7 | `src/contexts/**/domain/**`, `src/contexts/**/application/**`, `src/shared/domain/**` |
-| PERF | Performance | `references/perf-performance.md` | `docs/performance.md` | 7 | `src/contexts/**/infrastructure/persistence/**`, `src/contexts/**/application/use-cases/**`, `src/**/mappers/**` |
-| I18N | Localization & Accept-Language handling | `references/i18n-localization.md` | `docs/i18n.md` | 6 | `src/shared/infrastructure/http/middlewares/localization/**`, `src/shared/domain/value-objects/locale/**`, `src/shared/application/dto/zod/validators/translation-completeness/**`, `.opencode/commands/translate-questions.md` |
-| API | HTTP contract, OpenAPI, versioning, errors | `references/api-http-contract.md` | `docs/api-contract.md` | 9 | `src/contexts/**/application/dto/**`, `src/contexts/**/infrastructure/http/**`, `src/shared/application/dto/**`, `src/app/controllers/**`, `src/infrastructure/api/server/swagger/**`, `packages/schemas/**`, `configs/bruno/**` |
-| DATA | MongoDB schema, indexes, migrations, integrity | `references/data-mongodb-model.md` | `docs/data-model.md` | 8 | `src/contexts/**/infrastructure/persistence/**`, `src/infrastructure/database/**`, `src/**/mongoose/**`, `docker/**` |
-| ARCH | Architecture & design | `references/arch-architecture.md` | `docs/architecture.md` | 9 | any added, moved or deleted file under `src/`, `tests/`, `configs/`, `scripts/`, `packages/`; any changed import statement |
-| STACK | Framework & stack correctness | `references/stack-framework-stack.md` | `docs/architecture.md` | 8 | `src/**`, `package.json`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**` |
-| CODE | Code quality & conventions | `references/code-code-quality.md` | `docs/architecture.md` | 9 | any `*.ts` file, `tsconfig.json`, `eslint.config.ts`, `configs/eslint/**`, `oxlint.config.jsonc` |
-| TEST | Testing & QA | `references/test-testing-qa.md` | `docs/unit-tests.md` if the evidence is under `tests/unit/**` or a `*.spec.ts`, else `docs/acceptance-tests.md` | 10 | `**/*.spec.ts`, `tests/**`, `configs/vitest/**`, `configs/stryker/**`, `configs/cucumber/**` |
-| PRIV | Privacy & compliance | `references/priv-privacy-compliance.md` | `docs/privacy.md` | 6 | `src/**/logging/**`, `src/main.ts`, `docs/privacy.md`, `docker/**` |
-| DOCS | Documentation & DX | `references/docs-documentation-dx.md` | `.github/CONTRIBUTING.md` | 6 | `docs/**`, `README.md`, `.github/*.md`, `.github/ISSUE_TEMPLATE/**`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `env/.env.example`, `package.json` (scripts) |
-| AGENT | AI-agent tooling hygiene | `references/agent-agent-tooling.md` | `docs/architecture.md` | 7 | `AGENTS.md`, `.agents/**`, `.opencode/**`, `opencode.json`, `.github/copilot-instructions.md`, `mempalace.yaml` |
+| Code | Category | Reference file | Decision doc | Checks | Core | Reach | Diff triggers |
+|------|----------|----------------|--------------|--------|------|-------|---------------|
+| SEC | Application security | `references/sec-application-security.md` | `docs/security.md` | 55 | 12 | 3 | `src/infrastructure/api/auth/**`, `src/infrastructure/api/server/cors/**`, `src/shared/infrastructure/http/middlewares/**`, `src/app/filters/**`, `src/app/helpers/logger.helpers.ts`, `src/contexts/**/application/dto/**`, `src/shared/application/dto/**`, `src/infrastructure/api/config/**`, `env/**`, `src/main.ts`, `docker/**` |
+| SUP | Supply chain & dependencies | `references/sup-supply-chain.md` | `docs/security.md` | 35 | 7 | 0 | `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.github/renovate.json`, `.npmrc`, `packages/schemas/package.json`, `.github/workflows/**` |
+| CICD | CI/CD, release & repository governance | `references/cicd-ci-cd-release.md` | `docs/ci-cd.md` | 40 | 8 | 0 | `.github/**`, `configs/semantic-release/**`, `configs/commitlint/**`, `configs/validate-branch-name/**`, `configs/lint-staged/**`, `.husky/**`, `scripts/**` |
+| PLAT | Runtime platform (containers, config, deployment) | `references/plat-runtime-platform.md` | `docs/operations.md` | 40 | 8 | 0 | `Dockerfile`, `.dockerignore`, `docker/**`, `env/**`, `configs/node/**`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**`, `src/infrastructure/api/server/**`, `src/infrastructure/api/config/**`, `src/main.ts` |
+| OPS | Observability & operations | `references/ops-observability-operations.md` | `docs/operations.md` | 30 | 6 | 3 | `src/infrastructure/api/health/**`, `src/infrastructure/api/server/**`, `src/app/helpers/logger.helpers.ts`, `docs/operations.md`, `.github/workflows/deploy-*.yml`, `.github/actions/**`, `src/main.ts` |
+| REL | Reliability & resilience | `references/rel-reliability-resilience.md` | `docs/operations.md` | 35 | 7 | 3 | `src/infrastructure/**`, `src/contexts/**/infrastructure/**`, `src/shared/infrastructure/**`, `src/main.ts` |
+| LOGIC | Domain logic & data correctness | `references/logic-domain-logic.md` | `docs/domain-logic.md` | 35 | 7 | 0 | `src/contexts/**/domain/**`, `src/contexts/**/application/**`, `src/shared/domain/**` |
+| PERF | Performance | `references/perf-performance.md` | `docs/performance.md` | 35 | 7 | 1 | `src/contexts/**/infrastructure/persistence/**`, `src/contexts/**/application/use-cases/**`, `src/**/mappers/**` |
+| I18N | Localization & Accept-Language handling | `references/i18n-localization.md` | `docs/i18n.md` | 26 | 6 | 0 | `src/shared/infrastructure/http/middlewares/localization/**`, `src/shared/domain/value-objects/locale/**`, `src/shared/application/dto/zod/validators/translation-completeness/**` |
+| API | HTTP contract, OpenAPI, versioning, errors | `references/api-http-contract.md` | `docs/api-contract.md` | 45 | 9 | 1 | `src/contexts/**/application/dto/**`, `src/contexts/**/infrastructure/http/**`, `src/shared/application/dto/**`, `src/app/controllers/**`, `src/infrastructure/api/server/swagger/**`, `packages/schemas/**`, `configs/bruno/**` |
+| DATA | MongoDB schema, indexes, migrations, integrity | `references/data-mongodb-model.md` | `docs/data-model.md` | 40 | 8 | 1 | `src/contexts/**/infrastructure/persistence/**`, `src/infrastructure/database/**`, `src/**/mongoose/**`, `docker/**` |
+| ARCH | Architecture & design | `references/arch-architecture.md` | `docs/architecture.md` | 45 | 9 | 0 | any added, moved or deleted file under `src/`, `tests/`, `configs/`, `scripts/`, `packages/`; any changed import statement |
+| STACK | Framework & stack correctness | `references/stack-framework-stack.md` | `docs/architecture.md` | 40 | 8 | 0 | `src/**`, `package.json`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**` |
+| CODE | Code quality & conventions | `references/code-code-quality.md` | `docs/architecture.md` | 45 | 9 | 0 | any `*.ts` file, `tsconfig.json`, `eslint.config.ts`, `configs/eslint/**`, `oxlint.config.jsonc` |
+| TEST | Testing & QA | `references/test-testing-qa.md` | `docs/unit-tests.md` if the evidence is under `tests/unit/**`, a `*.spec.ts`, `configs/vitest/**` or `configs/stryker/**`; `docs/acceptance-tests.md` if it is under `tests/acceptance/**` or `configs/cucumber/**` | 42 | 10 | 0 | `**/*.spec.ts`, `tests/**`, `configs/vitest/**`, `configs/stryker/**`, `configs/cucumber/**` |
+| PRIV | Privacy & compliance | `references/priv-privacy-compliance.md` | `docs/privacy.md` | 28 | 5 | 1 | `src/**/logging/**`, `src/app/helpers/logger.helpers.ts`, `src/main.ts`, `docs/privacy.md`, `docker/**` |
+| DOCS | Documentation & DX | `references/docs-documentation-dx.md` | `.github/CONTRIBUTING.md` | 30 | 6 | 0 | `docs/**`, `README.md`, `.github/*.md`, `.github/ISSUE_TEMPLATE/**`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `env/.env.example`, `package.json` (scripts) |
+| AGENT | AI-agent tooling hygiene | `references/agent-agent-tooling.md` | `docs/architecture.md` | 35 | 6 | 0 | `AGENTS.md`, `.agents/**`, `.opencode/**`, `opencode.json`, `.github/copilot-instructions.md`, `mempalace.yaml` |
 
-The category index totals **695 checks and 140 Core**. [AGENT-31] verifies every Core count against its reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
+The category index totals **681 checks, 138 Core and 13 Target: reach checks**. [AGENT-31] verifies the `Checks`, `Core` and `Reach` columns against each reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
 
 **Decision-doc mapping.** A changed decision doc triggers every category mapped to it: `docs/security.md` → SEC + SUP; `docs/operations.md` → PLAT + OPS + REL; `docs/architecture.md` → ARCH + STACK + CODE + AGENT; `docs/unit-tests.md` / `docs/acceptance-tests.md` → TEST; `.github/CONTRIBUTING.md` → DOCS; `docs/ci-cd.md` → CICD; `docs/domain-logic.md` → LOGIC; `docs/performance.md` → PERF; `docs/i18n.md` → I18N; `docs/api-contract.md` → API; `docs/data-model.md` → DATA; `docs/privacy.md` → PRIV.
 
@@ -194,6 +208,8 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 
 **Checklist amendment.** A decision is history, never a permanent suppression: recording it also amends the checklist, through the ready-to-apply patch the run hands off (command §6.5 and §8.4; the auditor stays read-only). **Accepted risk** and **False positive** rewrite the criterion so it encodes the accepted deviation or the corrected rule and passes on the next run. **Not applicable** deletes the check, renumbers the category (§4.2, §11) and marks the note's ID `(removed)`. Until the amendment lands, the next run still reports the finding as `FAIL` with `decision recorded, checklist not yet amended — <doc>:<line>` instead of `DECIDED`. If the entry's "Revisit when" condition is observably met, evaluate the check normally and add `decision revisit triggered — <doc>:<line>` to the finding.
 
+**Target: reach checks are never suppressed.** A decision note can record an Accepted risk, its reviewer and an expiry, but it cannot turn a reach check into `DECIDED` or rewrite the criterion to accept the absence: the GAP remains until the capability lands. `Not applicable` and `False positive` follow the normal amendment path and require the maintainer's approval; a `Not applicable` note deletes the check and renumbers the category.
+
 **Existing documented decisions are binding too** (cite `file:line`, outcome `DECIDED`). Auditors therefore read each decision doc **in full**, not only its GOAT section:
 
 - `docs/security.md` — Known limitations (#1263 rate limiting, security headers, request-body guard; #1262 error tracking; `pino-http` default request logging exposing headers/credentials; missing `SECURITY.md`) and deliberate choices.
@@ -228,23 +244,35 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 - **Verification:** CONFIRMED by verifier <batch id> | ADJUSTED high → medium: <reason>
 ```
 
-**Diff mode** (`final-reviewer`): `` `[SEC-01]` `file:line` — expected pattern (severity) ``. For `Diff: ✗` checks whose `Look` matches a changed file: `` ⚠️ `[SUP-01]` `package.json` — verify in next /goat-audit (requires command) ``.
+**Platinum gap** (inside the category section and the Platinum backlog):
+
+```markdown
+#### [OPS-17] Error tracking — GAP (high)
+
+- **Evidence:** `docs/security.md:85` — the tracker is documented as absent (#1262)
+- **Missing capability:** an error-tracking service with 5xx spike alerts and PII scrubbing
+- **Target:** wire the tracker with the privacy allow-list, then re-run OPS-17 and PRIV-10
+```
+
+**Diff mode** (`final-reviewer`): `` `[SEC-01]` `file:line` — expected pattern (severity) ``. For `Diff: ✗` checks whose `Look` matches a changed file, or whose category is triggered and the check carries no `Look`: `` ⚠️ `[SUP-01]` `package.json` — verify in next /goat-audit (requires command) ``. A reach check that matches reports `` GAP `[OPS-17]` — <capability> `` and never blocks.
 
 ## 10. Diff-mode procedure (final-reviewer)
 
 1. List changed paths (commit range, or `git status` + `git diff HEAD` when no commits exist).
 2. Match paths against the diff triggers **and the Decision doc column** (§6) → triggered categories; always state them in the report. Also detect changed import lines (`git diff -U0 <range> | grep -E '^[+-][^+-].*(import|from)'`) and trigger ARCH when any exist.
 3. For each triggered category: read only the sections that contain in-scope checks (use the reference's `## Contents` and the `Look` globs), then read the mapped decision doc **in full** (iron rule (e)), applying its `## GOAT audit decisions` section and documented decisions.
-4. Evaluate the **Core** `Diff: ✓` checks **whose `Look` globs match a changed path**, plus the category-wide Core `Diff: ✓` checks that carry no `Look`, against the changed files and the code directly affected inside them. For Core `Diff: ✗` checks whose `Look` globs match a changed file, emit a non-blocking ⚠️ "verify in next /goat-audit". Non-Core checks are not evaluated in diff mode.
+4. Evaluate the **Core** `Diff: ✓` checks **whose `Look` globs match a changed path**, plus the category-wide Core `Diff: ✓` checks that carry no `Look`, against the changed files and the code directly affected inside them. For Core `Diff: ✗` checks whose `Look` globs match a changed file, or whose category is triggered and the check carries no `Look`, emit a non-blocking ⚠️ "verify in next /goat-audit". Non-Core checks are not evaluated in diff mode. A Core `Target: reach` check reports GAP, never FAIL, and never blocks.
 5. Library-behavior claims → `docs-fetcher` (§8).
-6. TEST in diff mode applies only its strategy checks — `[TEST-23]`, `[TEST-24]` and `[TEST-25]`; per-file spec and step conventions stay with `final-reviewer` §10/§11 and `/lint-unit-tests` / `/lint-acceptance-tests`.
+6. TEST in diff mode applies only its strategy checks — `[TEST-17]`, `[TEST-18]` and `[TEST-19]`; per-file spec and step conventions stay with `final-reviewer` §10/§11 and `/lint-unit-tests` / `/lint-acceptance-tests`.
 7. Static analysis only; never run builds, tests or servers.
 8. Map severities: critical → Critical, high → Important, medium/low/info → Minor. Only Critical and Important force "Needs changes before merge".
 
 ## 11. Maintaining the checklists
 
-- Adding a check: take the number after the category's last check, all fields, a fetched source (never training data), `Look` globs that exist; mark it Core only under §4.4.
+- Adding a check: take the number after the category's last check, all fields, a fetched source (never training data), `Look` globs that exist; mark it Core only under §4.4 and `Target: reach` only under §4.5.
 - Marking Core: a check loses the mark when it no longer gates a change; every change to a mark updates the category index's `Core` column in the same change.
+- Marking Target: `reach` is reserved for a platinum capability whose absence is a GAP, never for a conformance rule; every change to the mark updates the index's `Reach` column and the total in §6.
+- Version-dependent checks: a `(verified: <library> <x.y[.z]>)` criterion is re-verified on a major or minor bump, and a changed default rewrites the criterion in the same change. Exact patch/minor values belong in `(verified: …)` metadata or the decision doc, never inside a durable pass criterion.
 - Removing or merging a check: delete its line entirely, renumber the category's remaining checks in file order, and update every reference to a shifted ID in the same change; a decision note attached to a shifted check is updated to its new ID.
 - Applying a decision note: an Accepted-risk or False-positive note rewrites the criterion so it encodes the deviation or the corrected rule and passes; a Not-applicable note deletes the check and renumbers the category (§4.2). The note keeps its ID, and a deleted check's note carries `(removed)` after it so [AGENT-32] does not treat it as active.
 - Rewriting a check: rewrite the criterion in place; the ID moves only through a removal-driven renumbering. When a decision note is attached to the old criterion, the next run reports `decision revisit triggered — <doc>:<line>` so the maintainer re-decides it.

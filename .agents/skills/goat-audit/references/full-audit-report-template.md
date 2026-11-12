@@ -27,30 +27,32 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 
 **Release verdict:** Ship-ready | Ship with follow-ups | Not ship-ready (prefixed `partial (<n>/18):` when the run covered a subset)
 
+**Platinum readiness:** platinum-ready | n gaps (P0 n · P1 n · P2 n · Polish n) (prefixed `partial (<n>/18):` when the run covered a subset)
+
 ### Global scorecard
 
-| Code | Category | Grade | Critical | High | Medium | Low | Info | Unverified | Comment |
-|------|----------|-------|----------|------|--------|-----|------|------------|---------|
-| SEC | Application security | <🐐 GOAT / 🏆 A / ✅ B / ⚠️ C / 🟠 D / ❌ F[ ⚠️ unverified]> | n | n | n | n | n | n | <one line> |
-| SUP | Supply chain & dependencies | <grade> | n | n | n | n | n | n | <one line> |
-| CICD | CI/CD, release & repository governance | <grade> | n | n | n | n | n | n | <one line> |
-| PLAT | Runtime platform (containers, config, deployment) | <grade> | n | n | n | n | n | n | <one line> |
-| OPS | Observability & operations | <grade> | n | n | n | n | n | n | <one line> |
-| REL | Reliability & resilience | <grade> | n | n | n | n | n | n | <one line> |
-| LOGIC | Domain logic & data correctness | <grade> | n | n | n | n | n | n | <one line> |
-| PERF | Performance | <grade> | n | n | n | n | n | n | <one line> |
-| I18N | Localization & Accept-Language handling | <grade> | n | n | n | n | n | n | <one line> |
-| API | HTTP contract, OpenAPI, versioning, errors | <grade> | n | n | n | n | n | n | <one line> |
-| DATA | MongoDB schema, indexes, migrations, integrity | <grade> | n | n | n | n | n | n | <one line> |
-| ARCH | Architecture & design | <grade> | n | n | n | n | n | n | <one line> |
-| STACK | Framework & stack correctness | <grade> | n | n | n | n | n | n | <one line> |
-| CODE | Code quality & conventions | <grade> | n | n | n | n | n | n | <one line> |
-| TEST | Testing & QA | <grade> | n | n | n | n | n | n | <one line> |
-| PRIV | Privacy & compliance | <grade> | n | n | n | n | n | n | <one line> |
-| DOCS | Documentation & DX | <grade> | n | n | n | n | n | n | <one line> |
-| AGENT | AI-agent tooling hygiene | <grade> | n | n | n | n | n | n | <one line> |
+| Code | Category | Grade | Critical | High | Medium | Low | Info | GAP | Unverified | Comment |
+|------|----------|-------|----------|------|--------|-----|------|-----|------------|---------|
+| SEC | Application security | <🐐 GOAT / 🏆 A / ✅ B / ⚠️ C / 🟠 D / ❌ F[ ⚠️ unverified]> | n | n | n | n | n | n | n | <one line> |
+| SUP | Supply chain & dependencies | <grade> | n | n | n | n | n | n | n | <one line> |
+| CICD | CI/CD, release & repository governance | <grade> | n | n | n | n | n | n | n | <one line> |
+| PLAT | Runtime platform (containers, config, deployment) | <grade> | n | n | n | n | n | n | n | <one line> |
+| OPS | Observability & operations | <grade> | n | n | n | n | n | n | n | <one line> |
+| REL | Reliability & resilience | <grade> | n | n | n | n | n | n | n | <one line> |
+| LOGIC | Domain logic & data correctness | <grade> | n | n | n | n | n | n | n | <one line> |
+| PERF | Performance | <grade> | n | n | n | n | n | n | n | <one line> |
+| I18N | Localization & Accept-Language handling | <grade> | n | n | n | n | n | n | n | <one line> |
+| API | HTTP contract, OpenAPI, versioning, errors | <grade> | n | n | n | n | n | n | n | <one line> |
+| DATA | MongoDB schema, indexes, migrations, integrity | <grade> | n | n | n | n | n | n | n | <one line> |
+| ARCH | Architecture & design | <grade> | n | n | n | n | n | n | n | <one line> |
+| STACK | Framework & stack correctness | <grade> | n | n | n | n | n | n | n | <one line> |
+| CODE | Code quality & conventions | <grade> | n | n | n | n | n | n | n | <one line> |
+| TEST | Testing & QA | <grade> | n | n | n | n | n | n | n | <one line> |
+| PRIV | Privacy & compliance | <grade> | n | n | n | n | n | n | n | <one line> |
+| DOCS | Documentation & DX | <grade> | n | n | n | n | n | n | n | <one line> |
+| AGENT | AI-agent tooling hygiene | <grade> | n | n | n | n | n | n | n | <one line> |
 
-> **Grades:** 🐐 GOAT = 0 points, no finding of any severity and nothing unverified · 🏆 A · ✅ B · ⚠️ C · 🟠 D · ❌ F · `— not audited` for a category outside the run scope. An out-of-scope row shows `— not audited` in the Grade cell and `—` in every count cell.
+> **Grades:** 🐐 GOAT = 0 points, no finding of any severity and nothing unverified · 🏆 A · ✅ B · ⚠️ C · 🟠 D · ❌ F · `— not audited` for a category outside the run scope. An out-of-scope row shows `— not audited` in the Grade cell and `—` in every count cell. The `GAP` column counts `Target: reach` capabilities that are absent; GAPs do not change the grade and are listed in the Platinum backlog.
 
 ## 1. Top findings (P0 and P1)
 
@@ -70,6 +72,9 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 ### Polish — low
 - `[ID]` <one line>
 
+### Platinum gaps — Target: reach
+- `[ID]` <missing capability> — P0 | P1 | P2 | Polish · <evidence>
+
 ## 3. Changes since last audit
 
 - **Resolved:** `[ID]` <title> (was FAIL on YYYY-MM-DD)
@@ -77,6 +82,8 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 - **New:** `[ID]` <title>
 - **Regressed:** `[ID]` <title> (PASS or Resolved in <report>)
 - **Newly decided:** `[ID]` <title> → <doc>:<line>
+- **Still a gap:** `[ID]` <missing capability>
+- **Closed gap:** `[ID]` <capability that now passes>
 
 <On the first run: "First GOAT audit." On a partial run, state that the delta covers the audited categories only.>
 
@@ -84,7 +91,7 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 
 ### 4.1 SEC — Application security — <grade icon + letter>
 
-<Counts line: PASS n · FAIL n · N/A n · UNVERIFIED n · DECIDED n, then finding blocks in the skill's §9 format, then the N/A, unverified and decided lists with reasons. A category outside the run scope keeps its scorecard row and states "Not audited in this run." here.>
+<Counts line: PASS n · FAIL n · N/A n · GAP n · UNVERIFIED n · DECIDED n, then finding blocks in the skill's §9 format, then the N/A, GAP, unverified and decided lists with reasons. A category outside the run scope keeps its scorecard row and states "Not audited in this run." here.>
 
 ### 4.2 SUP — Supply chain & dependencies — <grade icon + letter>
 
@@ -202,6 +209,7 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 - PASS: `[SEC-01]`, `[SEC-02]`, …
 - FAIL: `[SEC-09]`, …
 - N/A: `[SEC-…]` (<reason>)
+- GAP: `[OPS-17]` (<missing capability>)
 - UNVERIFIED: `[SEC-…]` (<reason>)
 - DECIDED: `[SEC-…]` (`docs/security.md:<line>`)
 
@@ -231,11 +239,11 @@ Skeleton of `docs/audits/GOAT-AUDIT-YYYY-MM-DD[-N].md`. Replace every `<…>` pl
 - `fingerprint` — `<ID>::<subject>`; the subject is the normalized primary evidence path without line numbers (repo-relative) or a resource key (`gh:rulesets`, `live:production:/health`, `artifact:dist/main.js`).
 - `title` — the check title, or a shorter subject when the finding is narrower than the check.
 - `severity` — `critical` | `high` | `medium` | `low` | `info`. Info findings are indexed but never triaged.
-- `status` — `confirmed` | `decided` | `discarded`.
+- `status` — `confirmed` | `gap` | `decided` | `discarded`.
 - `private` — `true` when the finding carries 🔒. A 🔒 finding never pairs with `decision: issue` or `comment`; only `advisory`, `accepted-risk`, `not-applicable`, `false-positive`, `skipped` or `pending` are valid, and public handling requires the maintainer to clear the mark first (command §6).
-- `decision` — `issue` | `advisory` | `comment` | `accepted-risk` | `not-applicable` | `false-positive` | `skipped` | `pending`.
+- `decision` — `issue` | `advisory` | `comment` | `accepted-risk` | `not-applicable` | `false-positive` | `skipped` | `pending`. A `gap` uses `issue` (feature or performance) or `skipped`; it never uses a decision note.
 - `artifact` — `#612` | `GHSA-xxxx-xxxx-xxxx` | `docs/security.md:80` | `null`.
-- Delta computation against the previous report compares fingerprints: **Resolved** (was FAIL, now PASS/N/A), **Still open**, **New**, **Regressed** (Resolved in an earlier report or PASS previously, now FAIL), **Newly decided** (now DECIDED).
+- Delta computation against the previous report compares fingerprints: **Resolved** (was FAIL, now PASS/N/A), **Still open**, **New**, **Regressed** (Resolved in an earlier report or PASS previously, now FAIL), **Newly decided** (now DECIDED), **Still a gap** (was GAP, still GAP), **Closed gap** (was GAP, now PASS).
 
 ## Sources
 

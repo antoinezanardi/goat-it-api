@@ -110,8 +110,8 @@ The persisted data model of the Goat It API: the two MongoDB collections and the
 
 ## 7. Migrations and schema evolution
 
-- **[DATA-37] The migration gap is documented and every schema change carries its data plan** — No migration tool or script exists; the absence of a migration policy is recorded as a known limitation, and every schema change names its backfill, compatibility and consumer steps in the pull request until a tool is adopted.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `scripts/**`, `src/contexts/**/infrastructure/persistence/mongoose/schemas/**` · Src: [4], project: docs/data-model.md
+- **[DATA-37] Schema changes ship with a versioned migration procedure** — A migration tool or a versioned, repeatable migration procedure exists, and every schema change names its backfill, compatibility and consumer steps and runs through that procedure; a documented absence is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: medium · Look: `package.json`, `scripts/**`, `src/contexts/**/infrastructure/persistence/mongoose/schemas/**` · Src: [4], project: docs/data-model.md
 - **[DATA-38] Schema evolution stays backward-compatible by default** — New fields are optional or carry a safe default, a new required field ships only with a backfill plan, and a removed field is first made optional and left unread for a deprecation window; no code path silently transforms existing documents.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**/infrastructure/persistence/mongoose/schemas/**`, `src/contexts/**/infrastructure/persistence/mongoose/mappers/**` · Src: [4], project: docs/data-model.md
 

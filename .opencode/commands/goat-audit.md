@@ -19,7 +19,7 @@ The report lives in `docs/audits/` (gitignored because the repository is public 
 - `triage <path>` → resume triage on that report.
 - anything else → ask the maintainer what they mean.
 
-A full run is expensive: 18 explorer dispatches in waves of six over 695 checks (140 Core), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built-server header pass, live GETs). State that cost when offering the category choice; a partial run costs proportionally less.
+A full run is expensive: 18 explorer dispatches in waves of six over 681 checks (138 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built-server header pass, live GETs). State that cost when offering the category choice; a partial run costs proportionally less.
 
 ### 0. Mode and preflight
 
@@ -47,7 +47,7 @@ A full run is expensive: 18 explorer dispatches in waves of six over 695 checks 
    | ARCH  | `docs/architecture.md`                                                                                                  |
    | STACK | `docs/architecture.md`                                                                                                  |
    | CODE  | `docs/architecture.md`                                                                                                  |
-   | TEST  | `docs/unit-tests.md` if the evidence is under `tests/unit/**` or a `*.spec.ts`, else `docs/acceptance-tests.md` |
+   | TEST  | `docs/unit-tests.md` if the evidence is under `tests/unit/**`, a `*.spec.ts`, `configs/vitest/**` or `configs/stryker/**`; `docs/acceptance-tests.md` if it is under `tests/acceptance/**` or `configs/cucumber/**` |
    | PRIV  | `docs/privacy.md`                                                                                                       |
    | DOCS  | `.github/CONTRIBUTING.md`                                                                                               |
    | AGENT | `docs/architecture.md`                                                                                                  |
@@ -86,15 +86,15 @@ Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by
 
 ### 5. Synthesis and report
 
-1. Compute grades, release verdict and priorities (skill §5) from confirmed findings, over the audited categories only; a partial run labels the release verdict `partial (n/18)`.
-2. Delta against the previous Appendix B: fingerprint = `<ID>::<subject>` where the subject is the normalized primary evidence path without line numbers (repo-relative) or a resource key (`gh:rulesets`, `live:production:/health`, `artifact:dist/main.js`). Statuses: **Resolved** (was FAIL, now PASS/N/A), **Still open**, **New**, **Regressed** (was Resolved in an earlier report or PASS previously, now FAIL), **Newly decided** (now DECIDED).
+1. Compute grades, release verdict, platinum readiness and priorities (skill §5) from confirmed findings and `GAP` outcomes, over the audited categories only; a partial run labels both verdicts `partial (n/18)`.
+2. Delta against the previous Appendix B: fingerprint = `<ID>::<subject>` where the subject is the normalized primary evidence path without line numbers (repo-relative) or a resource key (`gh:rulesets`, `live:production:/health`, `artifact:dist/main.js`). Statuses: **Resolved** (was FAIL, now PASS/N/A), **Still open**, **New**, **Regressed** (was Resolved in an earlier report or PASS previously, now FAIL), **Newly decided** (now DECIDED), **Still a gap** (was GAP, still GAP), **Closed gap** (was GAP, now PASS).
 3. Assemble `docs/audits/<report-name>.md` from `references/full-audit-report-template.md`; category sections are taken from `categories/<CODE>.md` (adjusted by verification) for the audited categories only, and every other category stays a `— not audited` row in the scorecard. If a template file is missing, say so in the report and fall back to the previous report's skeleton; a first run without the template is a skill defect to report, not a reason to improvise a new format. Immediately before writing, check again that the path does not exist; if it does, take the next suffix.
 4. Print in chat: release verdict, scorecard table, counts, report path.
 
 ### 6. Triage (also the `triage` mode entry point)
 
 1. Preconditions: `gh auth status`; admin right (if not admin, 🔒 findings can only be skipped or decided). Ensure the label exists: it already exists in this repository; if `🐐 goat-audit` is absent from `gh label list`, create it once with `gh label create "🐐 goat-audit" --color D4A72C --description "Created from a GOAT audit finding"`.
-2. Order: critical → high → medium → low; within a severity, by category order of the skill §6. Info findings are never triaged. In `triage` mode, findings whose Appendix B `decision` is not `pending` are skipped.
+2. Order: critical → high → medium → low; within a severity, by category order of the skill §6. Info findings are never triaged. After the conformance findings, triage every `GAP` using its check's default severity as the priority; a GAP becomes a public `feat`/`perf` issue and is never closed by a decision note. In `triage` mode, findings whose Appendix B `decision` is not `pending` are skipped.
 3. Duplicate search per finding: `gh issue list --state open --label "🐐 goat-audit" --search "<ID>" --json number,title,url`, then `gh issue list --state open --search "<3–5 keywords>" --limit 10 --json number,title,url`; for 🔒 findings also scan `gh-draft-advisories.json` for the ID.
 4. **One question per finding** (never batched) showing: ID, title, severity, 🔒 mark, a 2–3 line evidence summary, the proposed artifact (public issue title `type(scope): imperative subject` + type label, or "private draft advisory"), and duplicate matches. Options:
    - **Create** — public issue for a public finding, private draft advisory for a 🔒 finding (recommended default);

@@ -27,6 +27,7 @@ Schema: `src/contexts/question/infrastructure/persistence/mongoose/schemas/quest
 
 | Field | Type | Constraints |
 |---|---|---|
+| `_id` | ObjectId | primary key from schema options (base type `MongooseCollectionSchemaBase`, `src/shared/infrastructure/persistence/mongoose/types/mongoose.types.ts`) |
 | `themes` | array of `QuestionThemeAssignmentMongooseSchema` | required; `minItems: 1`, `maxItems: 3` (`QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS`/`_MAX_ITEMS`) |
 | `themes[].themeId` | `Types.ObjectId` | required; `ref: "question_themes"`; `index: true` (`question-theme-assignment.mongoose.schema.ts`) |
 | `themes[].isPrimary` | Boolean | required, default `false` |
@@ -48,7 +49,7 @@ Schema: `src/contexts/question/infrastructure/persistence/mongoose/schemas/quest
 | `rejection` | `QuestionRejectionMongooseSchema` | optional (`question-rejection.mongoose.schema.ts`) |
 | `rejection.type` | String | required when present; enum `QUESTION_REJECTION_TYPES = ["inappropriate-content", "incorrect-information", "poor-quality", "duplicate-question", "other"]` |
 | `rejection.comment` | String | optional |
-| `_id`, `createdAt`, `updatedAt` | ObjectId / Date / Date | from schema options (base type `MongooseCollectionSchemaBase`, `src/shared/infrastructure/persistence/mongoose/types/mongoose.types.ts`) |
+| `createdAt`, `updatedAt` | Date / Date | from schema options (base type `MongooseCollectionSchemaBase`, `src/shared/infrastructure/persistence/mongoose/types/mongoose.types.ts`) |
 
 The shared localization sub-schemas are `LocalizedTextMongooseSchema` and `LocalizedTextsMongooseSchema` in `src/shared/infrastructure/persistence/mongoose/schemas/localization/` (per-locale optional `String` / `String[]` props for `en`, `fr`, `es`, `de`, `it`, `pt`).
 
@@ -58,13 +59,14 @@ Schema: `src/contexts/question-theme/infrastructure/persistence/mongoose/schemas
 
 | Field | Type | Constraints |
 |---|---|---|
+| `_id` | ObjectId | primary key from schema options |
 | `slug` | String | required; `unique: true`; `index: true` |
 | `label` | `LocalizedText` | required (`Partial<LocalizedText>`) |
 | `aliases` | `LocalizedTexts` | required |
 | `description` | `LocalizedText` | required |
 | `color` | String | optional (hex color validated at the API boundary; `SLUG_REGEX`/`HEX_COLOR_REGEX` live in `src/shared/application/dto/zod/validators/string/constants/string.zod.validators.constants.ts`) |
 | `status` | String | required; enum `QUESTION_THEME_STATUSES = ["active", "archived"]`; default `DEFAULT_QUESTION_THEME_STATUS = "active"` (`src/contexts/question-theme/domain/constants/question-theme.constants.ts`) |
-| `_id`, `createdAt`, `updatedAt` | ObjectId / Date / Date | from schema options |
+| `createdAt`, `updatedAt` | Date / Date | from schema options |
 
 ## Indexes
 

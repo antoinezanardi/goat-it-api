@@ -66,7 +66,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 ## 3. HTTP security headers and response hardening
 
 - **[SEC-20] Baseline security headers are sent on every response** — Every response, including JSON success, 4xx/5xx, health, Swagger and static assets, carries `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer` or `strict-origin-when-cross-origin`, and a `Permissions-Policy` denying `camera`, `microphone`, `geolocation`, `payment` and `usb`.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/**`, `src/app/app.module.ts` · Src: [7], [20], project: docs/security.md
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: medium · Look: `src/infrastructure/api/server/**`, `src/app/app.module.ts` · Src: [7], [20], project: docs/security.md
 - **[SEC-21] HSTS is scoped to HTTPS and reviewed** — `Strict-Transport-Security` is sent only on HTTPS responses with `max-age` ≥ 31536000; `includeSubDomains` and `preload` are present only when every subdomain is HTTPS-only and the domain is submitted to the preload list, otherwise the omission is documented.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/**` · Src: [7], project: docs/security.md
 - **[SEC-22] JSON responses declare an explicit content type** — Every JSON success and error response sets `Content-Type: application/json; charset=utf-8`; only Swagger UI and static files are served as `text/html`, and no error is rendered as HTML.
@@ -80,8 +80,8 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 
 ## 4. Rate limiting and abuse prevention
 
-- **[SEC-26] Every business route is rate limited** — Every business route is covered by a throttler with an explicit window and budget configurable through validated integer environment variables; no business route is exempt; the current posture, including the documented gap when rate limiting is absent, is recorded in `docs/security.md`.
-  Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `src/app/app.module.ts`, `env/.env.example` · Src: [22], [10], project: docs/security.md
+- **[SEC-26] Every business route is rate limited** — Every business route is covered by a throttler with an explicit window and budget configurable through validated integer environment variables, and no business route is exempt; a documented absence is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Core: ✓ · Target: reach · Severity: high · Look: `src/infrastructure/api/server/**`, `src/app/app.module.ts`, `env/.env.example` · Src: [22], [10], project: docs/security.md
 - **[SEC-27] Throttled responses follow a stable 429 contract** — A throttled request returns HTTP 429 with `Retry-After` in seconds and the shared error envelope (`statusCode: 429`, `errorCode`), never a 500, an empty body or a silent drop.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `src/infrastructure/api/server/**`, `src/app/filters/global-exception/**` · Src: [22], [5]
 - **[SEC-28] Client-IP trust is explicit** — When the limiter keys on client IP, proxy trust is off by default; with `trustProxy` enabled the deployment documents that the reverse proxy overwrites `X-Forwarded-For`, and an unresolvable client IP is limited under a shared fallback key rather than exempted (verified: fastify 5.12.8).
@@ -143,7 +143,7 @@ Security of the running Goat It NestJS API: API-key authentication and authoriza
 ## 8. Vulnerability disclosure
 
 - **[SEC-51] Security policy file** — A `SECURITY.md` at the repository root or in `.github/` names the supported versions, the private reporting channel (GitHub private vulnerability reporting) and the expected response time.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Src: [40], [15], project: docs/security.md
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: medium · Src: [40], [15], project: docs/security.md
 - **[SEC-52] Private vulnerability reporting is enabled** — `gh api repos/{owner}/{repo}/private-vulnerability-reporting` returns `{"enabled": true}`, and the public repository lets external reporters open a private advisory.
   Evidence: `command` · Diff: ✗ · Severity: low · Src: [39]
 - **[SEC-53] Sensitive findings are triaged as private draft advisories** — Every 🔒 finding (an exploitable path today, secret or personal-data exposure, a missing control that gives an attacker a roadmap) is filed as a private GitHub draft security advisory, or the maintainer explicitly chooses another private channel; non-sensitive findings go to public issues carrying the `🐐 goat-audit` label; the local report records the finding (its Appendix B artifact is the GHSA id and advisory URL), and no exploitable detail is referenced in any public issue, pull request, commit or other public artifact before remediation.

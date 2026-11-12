@@ -37,8 +37,8 @@ request-size posture, no unbounded queries or state).
 
 - **[REL-06] Named connection timeouts** — The database connection carries explicit named constants for connection/server-selection timeouts, retry delay and retry attempts instead of relying on the driver's default; the current values are recorded in `docs/data-model.md`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/database/constants/**`, `src/infrastructure/database/providers/**` · Src: [9], [1], project: docs/data-model.md
-- **[REL-07] Every hop's timeout posture deliberate** — Each boundary's timeout is an explicit value or a recorded decision: the inbound request timeout and the MongoDB socket timeout are framework defaults (0 = no limit) (verified: fastify 5.12.8; verified: mongoose 9.11.4), and any reliance on them is a documented decision naming the bound.
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `src/infrastructure/database/**`, `docs/security.md` · Src: [12], [9], [1], project: docs/security.md
+- **[REL-07] Every hop's timeout is an explicit bound** — The inbound request, database socket and outbound HTTP calls each set an explicit timeout; relying on a framework zero-value default is a GAP, not a pass. The current bounds are recorded in `docs/operations.md`.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `src/infrastructure/api/server/**`, `src/infrastructure/database/**`, `docs/operations.md` · Src: [12], [9], project: docs/operations.md
 - **[REL-08] One retry layer, no hand-rolled loops** — The MongoDB driver's bounded connection retries are the only retry layer: no application code re-executes a failed operation in a loop or on a timer.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**` · Src: [1], [9]
 - **[REL-09] Outbound calls bounded** — The only outbound HTTP call the application makes is the same-process readiness ping; any future outbound business call adds an explicit timeout constant instead of a library default.
@@ -69,8 +69,8 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**` · Src: [4], project: docs/security.md
 - **[REL-19] Deterministic domain-error mapping** — Every domain error maps to exactly one client-actionable status (404 not-found, 400 invalid-state, 409 conflict), or is intentionally 500 with a recorded one-line justification; the intentionally-500 mappings are locked by filter tests.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/*/domain/errors/**` · Src: [4], project: docs/architecture.md §7.4, project: AGENTS.md
-- **[REL-20] No partial writes on failure paths** — Write methods that re-read return the mapped entity or `undefined`, and callers treat `undefined` as a failed write; a single-reply write is never reported as success when it did not apply, so a client never sees a torn or half-applied state as success.
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/*/infrastructure/persistence/mongoose/repository/**` · Src: [4], project: docs/performance.md
+- **[REL-20] Write outcomes and read-back failures are distinguished** — A write method that re-reads returns the mapped entity when the read-back succeeds; when the read-back fails after a committed write, the caller surfaces an explicit failure and the domain guide states that the operation may have landed and is not idempotent. A single-reply write is never reported as success when it did not apply, and no path claims the write was rolled back.
+  Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/*/infrastructure/persistence/mongoose/repository/**` · Src: [4], project: docs/domain-logic.md
 - **[REL-21] Multi-operation writes state their real guarantee** — A batch of ordered writes runs serially and fail-fast, but it is not atomic as a batch: each operation is atomic per document, a reader can observe the intermediate state, and a mid-batch failure leaves earlier operations committed. The domain doc records the guarantee and the tracked limitation; transactions are deliberately not used.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/**` · Src: [4], project: docs/architecture.md §5.5, project: docs/data-model.md
 - **[REL-22] Write failures signal correctly** — A duplicate-key write on a unique index is translated to the owning domain's conflict error and answered with the documented status; every other persistence failure surfaces as a logged 500 and is never swallowed or converted into success.
@@ -103,10 +103,10 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/shared/application/dto/zod/validators/array/**` · Src: [5], project: docs/performance.md
 - **[REL-33] Documents structurally bounded** — Documents are bounded by domain constants on assignments, list entries, text lengths and locales, so responses and payloads stay within fixed bounds; the current bounds are recorded in `docs/performance.md` and `docs/domain-logic.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/domain/constants/**`, `src/shared/application/dto/zod/validators/localization/**` · Src: [5], project: docs/performance.md, project: docs/domain-logic.md
-- **[REL-34] Request-size posture deliberate** — A request-size limit is configured explicitly, or the reliance on Fastify's 1 MiB body limit default is a recorded decision naming the bound (verified: fastify 5.12.8).
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/server/**`, `docs/security.md` · Src: [12], project: docs/security.md
-- **[REL-35] Capacity under load** — The API has been load-tested to its breaking point on the production topology with sustainable requests per second and p95 latency recorded, or the absence of load testing is a recorded decision with a revisit trigger.
-  Evidence: `manual` · Diff: ✗ · Severity: medium · Src: [5], [3]
+- **[REL-34] Request size is explicitly bounded** — A request-size limit is configured explicitly for the API, with the bound recorded in the operations guide; relying on Fastify's 1 MiB default is a GAP, not a pass (verified: fastify 5.12.8).
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `src/infrastructure/api/server/**`, `docs/security.md` · Src: [12], project: docs/security.md
+- **[REL-35] Capacity under load is measured** — The API has been load-tested to its breaking point on the production topology, with sustainable requests per second and p95 latency recorded; an unrecorded absence is a GAP, not a pass.
+  Evidence: `manual` · Diff: ✗ · Target: reach · Severity: medium · Src: [5], [3]
 
 ## Sources
 

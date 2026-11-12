@@ -110,10 +110,10 @@ Correct use of the framework and library APIs this API is built on: NestJS 12 de
 
 ## 7. Node and pnpm runtime alignment
 
-- **[STACK-37] Node and pnpm versions agree everywhere** — `package.json` `engines.node` (`>=26.13.0`), `configs/node/.node-version` (`26.13.0`), the `Dockerfile` base image (`node:26.13.0-alpine`) and `packageManager` (`pnpm@12.16.1`) declare one Node/pnpm pair, and CI installs from those same sources.
-  Evidence: `static` · Diff: ✓ · Severity: high · Look: `package.json`, `configs/node/.node-version`, `Dockerfile` · Src: project: AGENTS.md, project: docs/architecture.md §2.3
-- **[STACK-38] The declared Node major satisfies every dependency minimum** — Node 26 covers Fastify 5 (Node 20+), Mongoose 9 (Node 20.19+), `nestjs-pino` v5 (Node 22.12+), NestJS 12 and the native TypeScript preview, and no runtime API used by the application is newer than the declared engine.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `configs/node/.node-version` · Src: [11], [12], [23]
+- **[STACK-37] Node and pnpm versions agree everywhere** — `package.json` `engines.node`, `configs/node/.node-version`, the `Dockerfile` base image and `packageManager` declare one Node/pnpm pair, and CI installs from those same sources; the current pair is recorded in `(verified: node 26.13.0; pnpm 12.16.1)`.
+  Evidence: `static` · Diff: ✓ · Severity: high · Look: `package.json`, `configs/node/.node-version`, `Dockerfile` · Src: project: AGENTS.md, project: package.json
+- **[STACK-38] The declared Node major satisfies every dependency minimum** — The `engines.node` major is at least every production dependency's engine minimum (Fastify 5, Mongoose 9, `nestjs-pino` v5, NestJS 12, the native TypeScript preview), and no runtime API used by the application is newer than the declared engine; the current combination is recorded in `(verified: node 26; nestjs 12; fastify 5; mongoose 9; nestjs-pino 5)`.
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `configs/node/.node-version` · Src: [11], [12], [23], project: package.json
 
 ## 8. Framework-version hygiene
 

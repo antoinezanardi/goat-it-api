@@ -67,7 +67,7 @@ Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"heal
 | `QuestionThemeAlreadyArchivedError`, `ReferencedQuestionThemeArchivedError`, `QuestionAlreadyArchivedError`, `QuestionMaximumThemesError`, `QuestionMinimumThemesError`, `QuestionPrimaryThemeAssignmentNotRemovableError` | 400 |
 | `QuestionThemeSlugAlreadyExistsError`, `QuestionThemeAssignmentAlreadyExistsError`, `QuestionThemeReferencedByLiveQuestionsError` | 409 |
 
-4. Anything else → logged with `this.logger.error(...)` and the stock `new InternalServerErrorException()` body is sent verbatim (filter lines 104-110). The spec pins the exact exception instance (`global-exception.filter.spec.ts:350-375`), i.e. Nest's default 500 body `{ statusCode: 500, message: "Internal server error" }`. No custom 500 body exists.
+**Anything else** → logged with `this.logger.error(...)` and the stock `new InternalServerErrorException()` body is sent verbatim (filter lines 104-110). The spec pins the exact exception instance (`global-exception.filter.spec.ts:350-375`), i.e. Nest's default 500 body `{ statusCode: 500, message: "Internal Server Error" }`. No custom 500 body exists.
 
 Four write/read-back errors are intentionally unmapped and fall through to 500: `QuestionCreationError`, `QuestionThemeAssignmentCreationError`, `QuestionThemeAssignmentModificationError`, `QuestionThemeAssignmentRemovalError` (`docs/architecture.md` §7.4).
 
@@ -106,5 +106,5 @@ There is no pagination — no `page`/`offset` parameter exists anywhere in the q
 - **No API versioning prefix.** No `setGlobalPrefix`/`enableVersioning` exists (verified by grep across `src/`); all routes live at the root, so a breaking change cannot be released alongside a v1.
 - **No pagination.** List endpoints expose only `limit` (0 = unlimited) — no `page`/`offset`; clients must sort deterministically and re-query to walk results.
 - **500 responses carry no `errorCode`.** The generic 500 body is the stock Nest `InternalServerErrorException` body passed through verbatim (see Unified error shape); frontends cannot machine-differentiate unknown failures.
-- **CORS header mismatch (observation).** CORS `allowedHeaders` is `["Content-Type", "Authorization"]` (`cors.constants.ts`) but the API authenticates through the custom header `goat-it-api-key` (`auth.constants.ts`), so a browser caller using the documented header cross-origin would fail the CORS preflight; `PUT` is also advertised in CORS methods although no PUT route exists.
+- **Browser API-key calls are unsupported.** CORS `allowedHeaders` is `["Content-Type", "Authorization"]` and deliberately excludes `goat-it-api-key` (`cors.constants.ts`, `auth.constants.ts`), so the API key stays server-side and a browser caller cannot authenticate cross-origin by design; `PUT` is still advertised in CORS methods although no PUT route exists — a minor mismatch to remove.
 - **The public list cannot page to the end of large datasets**, and `theme-ids` has no upper bound (only min 1) unlike `ids` (max 100). The random-search body's `themeIds` array has no upper bound either (only min 1), unlike `excludedIds` (1–5000).

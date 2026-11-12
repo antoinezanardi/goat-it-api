@@ -57,10 +57,6 @@ Error tracking is pending #1262 — no error-tracking service is wired (no Sentr
 - While the `pino-http` default request logging remains, request metadata (including IP addresses and the API key header) is retained for as long as the host retains logs. This is the highest-priority privacy gap in this document and must be fixed at the logger configuration, not accepted silently.
 - Last reviewed: 2026-11-04.
 
-## Cookies and local storage
-
-Not applicable to the API: it is an API consumer, not a browser application. The API sets no cookies (nothing in `src/` writes a `Set-Cookie` header) and uses no browser storage. The consuming web game is a browser application and owns its own cookie and storage decisions; the API is not party to them and must stay that way — if the API ever needs browser-stored state, that is a privacy-relevant change to be designed, not assumed.
-
 ## Third parties and data transfers
 
 None today. MongoDB is self-hosted rather than a managed service: configuration is a plain host/port/database (`env/.env.example`), the acceptance suite runs a local `mongo:9.0.4` container (`docker/goat-it-api-acceptance-tests/docker-compose.yml`), and production deploys over SSH to a self-hosted server (`.github/workflows/deploy-to-production.yml`). `package.json` contains no analytics, telemetry or error-tracking dependency. Quiz content therefore does not leave the deployment to any third-party processor, and no data-processing agreement is required today. If the deployment ever moves to a managed database or adds an error tracker, this section must be updated at the same time with the processor, the transferred data and the applicable agreement.

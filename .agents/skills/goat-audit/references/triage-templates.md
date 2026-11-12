@@ -16,7 +16,7 @@ Copy-paste formats for `/goat-audit`: the explorer and verifier return contracts
 
 ## Explorer return
 
-One `explore` subagent per category writes `categories/<CODE>.md` in the run directory:
+One `explore` subagent per category returns the complete `categories/<CODE>.md` document inline. The conductor writes it to the run directory:
 
 ````markdown
 # <CODE> — <Category> — results
@@ -50,7 +50,7 @@ If the conductor receives an inline result, it writes `categories/<CODE>.md` its
 
 ## Verifier return
 
-One fresh `explore` verifier per batch of ≤ 8 FAIL findings of one category writes `verification/<CODE>-<n>.md`. One line per finding:
+One fresh `explore` verifier per batch of ≤ 8 FAIL findings of one category returns the complete `verification/<CODE>-<n>.md` document inline. The conductor writes it to the run directory. One line per finding:
 
 ````markdown
 [SEC-01] CONFIRMED

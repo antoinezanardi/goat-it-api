@@ -63,11 +63,11 @@ Runtime platform of the Goat It API: the multi-stage `Dockerfile` that turns the
 
 ## 4. Environment and configuration
 
-- **[PLAT-18] Environment schema covers every variable** — The boot schema declares every environment variable the application reads, with a type, validation and either a documented default or a documented no-default rule that fails at boot; the variable inventory is in `.env.example`.
+- **[PLAT-18] Environment schema covers every variable** — The boot schema declares every environment variable the application reads, with a type, validation and either a documented default or a documented no-default rule that fails at boot; the variable inventory is in `env/.env.example`.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/config/schemas/env.schema.ts`, `src/infrastructure/api/config/**` · Src: [19], project: docs/architecture.md
 - **[PLAT-19] Invalid configuration fails fast at boot** — The configuration module validates the parsed environment through the schema and throws when it fails, so a missing or invalid required variable exits non-zero at boot and the log names the offending variable.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/infrastructure/api/config/**` · Src: [10], [19]
-- **[PLAT-20] .env.example parity** — `.env.example` lists every schema key with a placeholder and documents its meaning, and lists no stale variable.
+- **[PLAT-20] Environment template parity** — `env/.env.example` lists every schema key with a placeholder and documents its meaning, and lists no stale variable.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `env/.env.example`, `env/.env.test`, `src/infrastructure/api/config/schemas/env.schema.ts` · Src: [10]
 - **[PLAT-21] Environment file selected by NODE_ENV** — The environment file path derives from `NODE_ENV` (test loads the test file, production loads none), so an operator error cannot load a test or local file in production.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/config/helpers/env.helpers.ts` · Src: [10], [19]

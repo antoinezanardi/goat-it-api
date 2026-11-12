@@ -15,7 +15,7 @@ Both guards share one handler (`canActivateApiKeyGuardHandler`, `file:src/infras
 
 1. reads the `goat-it-api-key` request header (`file:src/infrastructure/api/auth/constants/auth.constants.ts`);
 2. hashes the received key with HMAC-SHA256 using the boot secret;
-3. compares it with the expected hash using `node:crypto` `timingSafeEqual` — the length is checked first so an invalid key cannot leak length information;
+3. compares the two fixed-length HMAC digests with `node:crypto` `timingSafeEqual`, checking their lengths first only because the comparison requires equal-length buffers — the digest length does not reveal the received key's length;
 4. throws `UnauthorizedException` when the key is missing or does not match (`file:src/infrastructure/api/auth/errors/auth.errors.ts`).
 
 The plaintext keys (`API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY`) are read once at boot, converted into HMAC validators, and then deleted from `process.env` (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`). Minimum lengths — 32 characters for the HMAC secret, 24 for each key — are enforced at boot by the env schema (`file:src/infrastructure/api/config/schemas/env.schema.ts`). Keys are high-entropy credentials, not passwords: `hashApiKey` documents that it must never be used for password hashing.

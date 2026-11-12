@@ -1,6 +1,6 @@
 # I18N — Internationalization & localization
 
-Internationalization of the Goat It API across its six supported locales (`en`, `fr`, `es`, `de`, `it`, `pt`): the `Accept-Language` handling pipeline (first-locale rule, wildcard and missing-header fallback, 400 on unknown locales, global middleware application), the shared locale value object, per-locale content storage and retrieval (partial locale records, locale-then-fallback resolution, game vs admin localization), translation-completeness rules (mandatory/optional field specs, dynamic vs static evaluation, filters and stats, no write-time enforcement), the applicable-locales policy (all-6 default, creation/modification bounds, public locale filtering) and the `/translate-questions` maintenance workflow. Checks verify the code implements what `docs/i18n.md` documents, and that the documented Known limitations are the only divergences.
+Internationalization of the Goat It API across its six supported locales (`en`, `fr`, `es`, `de`, `it`, `pt`): the `Accept-Language` handling pipeline (first-locale rule, wildcard and missing-header fallback, 400 on unknown locales, global middleware application), the shared locale value object, per-locale content storage and retrieval (partial locale records, locale-then-fallback resolution, game vs admin localization), translation-completeness rules (mandatory/optional field specs, dynamic vs static evaluation, filters and stats, no write-time enforcement) and the applicable-locales policy (all-6 default, creation/modification bounds, public locale filtering). Checks verify the code implements what `docs/i18n.md` documents, and that the documented Known limitations are the only divergences.
 
 **Decision doc:** `docs/i18n.md` (section `## GOAT audit decisions`). **Diff triggers:** see SKILL.md category index.
 
@@ -13,7 +13,6 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
 - [3. Per-locale content storage and retrieval](#3-per-locale-content-storage-and-retrieval)
 - [4. Translation completeness](#4-translation-completeness)
 - [5. Applicable-locales policy](#5-applicable-locales-policy)
-- [6. Translation maintenance](#6-translation-maintenance)
 - [Sources](#sources)
 
 ## 1. Accept-Language detection and fallback
@@ -82,17 +81,6 @@ Internationalization of the Goat It API across its six supported locales (`en`, 
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/**`, `src/contexts/question/application/mappers/**` · Src: [4], project: docs/i18n.md
 - **[I18N-26] Locale restriction is entity-specific** — Only the entities the domain documents as restrictable carry a per-locale restriction; every other entity is localized in all locales. The current scope is recorded in `docs/i18n.md`.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `src/contexts/question/domain/types/**`, `src/contexts/question-theme/infrastructure/persistence/mongoose/schemas/**` · Src: [4], project: docs/i18n.md
-
-## 6. Translation maintenance
-
-- **[I18N-27] Command fetches incomplete questions** — The `/translate-questions` command fetches not-fully-translated questions with `GET /admin/questions?is-fully-translated=false&limit=100&sort-by=createdAt&sort-order=asc`, which already accounts for `applicableLocales`.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-28] The source locale is never patched** — The translation command never includes the source locale in PATCH payloads; the target set and required fields are the documented ones, and optional fields are filled only when the source value is non-null. The current policy is recorded in `docs/i18n.md`.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-29] All-or-nothing translation** — Translation is all-or-nothing: every target locale is filled in one pass, or the resource is restricted to the source locale; there is no per-locale exclusion. The current target set is recorded in `docs/i18n.md`.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
-- **[I18N-30] Every PATCH is verified** — Each PATCH is verified by re-fetching the resource and diffing the source values against the pre-PATCH snapshot, and the command ends with a summary and a lessons-learned retrospective without modifying itself unless explicitly approved.
-  Evidence: `static` · Diff: ✓ · Severity: low · Look: `.opencode/commands/translate-questions.md` · Src: [4], project: docs/i18n.md, project: .opencode/commands/translate-questions.md
 
 ## Sources
 

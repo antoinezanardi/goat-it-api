@@ -52,7 +52,7 @@ The HTTP contract of the Goat It API as a NestJS 12 + Fastify 5 service: route i
 
 ## 3. Response contracts
 
-- **[API-14] Responses are strict, documented shapes** — Every response DTO is a `z.strictObject` with `.describe()`/`.meta()` on public fields; no persistence document, Mongoose type or internal mapper output is returned raw, and unknown fields cannot be serialized.
+- **[API-14] Responses are strict, documented shapes** — Every response object DTO, including each element of a list response, is a `z.strictObject` with `.describe()`/`.meta()` on public fields; no persistence document, Mongoose type or internal mapper output is returned raw, and unknown fields cannot be serialized.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/contexts/**/application/dto/**`, `src/contexts/**/contracts/dto/**`, `src/shared/application/dto/**` · Src: [11], project: docs/architecture.md §7.1
 - **[API-15] Public and admin response variants stay distinct** — Game responses expose resolved localized strings only, while admin responses expose the full per-locale records plus status and administrative detail; the two shapes are separate DTOs selected per controller audience and neither leaks the other's fields.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/contexts/question-theme/contracts/dto/**`, `src/contexts/**/application/mappers/**` · Src: [11], project: docs/api-contract.md
@@ -64,7 +64,7 @@ The HTTP contract of the Goat It API as a NestJS 12 + Fastify 5 service: route i
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**/infrastructure/http/controllers/**`, `src/shared/infrastructure/http/**` · Src: [8], project: docs/api-contract.md
 - **[API-19] A list element has the single-resource shape** — For a given audience, the element type of a list response is exactly the single-resource response type (same fields, same localization and same nullability), so a client can reuse one parser for both.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/application/dto/**`, `src/contexts/question-theme/contracts/dto/**` · Src: [11], project: docs/api-contract.md
-- **[API-20] CORS advertises the headers and methods the API actually uses** — The CORS configuration allows the custom API-key header used by the guards and lists only methods that are implemented; if browser access is not supported, CORS is disabled rather than left mismatched, and any remaining mismatch is recorded as a known limitation.
+- **[API-20] CORS advertises only the headers and methods browser clients may use** — The CORS configuration allows only `Content-Type` and `Authorization`, never the `goat-it-api-key` header, and lists only methods that are implemented; an API-key-authenticated browser call is unsupported by design, and the limitation is recorded in `docs/api-contract.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/cors/**`, `src/infrastructure/api/auth/constants/**` · Src: [8], project: docs/api-contract.md
 
 ## 4. Error contract
@@ -77,7 +77,7 @@ The HTTP contract of the Goat It API as a NestJS 12 + Fastify 5 service: route i
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**`, `src/contexts/**/domain/errors/**` · Src: [3], project: docs/api-contract.md, project: docs/architecture.md §7.4
 - **[API-24] `errorCode` is derived, stable and unique** — Every mapped domain error exposes an `errorCode` computed from the class name by stripping the `Error` suffix and kebab-casing the remainder, never hand-written; each mapped class yields a unique code and the derivation is covered by tests.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**`, `src/shared/infrastructure/http/errors/helpers/**` · Src: [3], project: docs/api-contract.md
-- **[API-25] The generic 500 body is the stock Nest shape** — An unknown or unclassified error is logged and answered with the stock `{ statusCode: 500, message: "Internal server error" }`; no domain, persistence or driver message reaches the client, and the missing `errorCode` on 500 is recorded as a known limitation.
+- **[API-25] The generic 500 body is the stock Nest shape** — An unknown or unclassified error is logged and answered with the stock `{ statusCode: 500, message: "Internal Server Error" }`; no domain, persistence or driver message reaches the client, and the missing `errorCode` on 500 is recorded as a known limitation.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**` · Src: [3], project: docs/api-contract.md
 - **[API-26] Write/read-back errors stay intentionally unmapped** — Every write/read-back error class is absent from the mapping table, falls through to 500, and is locked by filter tests; the current class list is recorded in `docs/domain-logic.md` and `docs/architecture.md` §7.4.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/question/domain/errors/**` · Src: [3], project: docs/architecture.md §7.4
@@ -88,7 +88,7 @@ The HTTP contract of the Goat It API as a NestJS 12 + Fastify 5 service: route i
 
 ## 5. OpenAPI and Swagger
 
-- **[API-29] The Swagger UI is served at `/docs`** — The application builds an OpenAPI document and serves the Swagger UI at `/docs` in every environment; the acceptance suite fetches it over real HTTP and asserts 200, and the health service uses the same URL as a readiness target.
+- **[API-29] The Swagger UI is served at `/docs` outside production** — The application builds an OpenAPI document and serves the Swagger UI at `/docs` outside production; in production availability follows [SEC-54]. The acceptance suite fetches it over real HTTP and asserts 200 outside production, and the readiness target is an endpoint that exists in the environment it probes.
   Evidence: `runtime` · Diff: ✗ · Severity: medium · Look: `src/infrastructure/api/server/swagger/**`, `tests/acceptance/features/app/docs/**` · Src: [5], project: docs/api-contract.md
 - **[API-30] Every operation has a summary, a description and a tag** — Each route declares a non-empty summary, a non-empty description and at least one tag from the shared Swagger tag constants; no route is left with framework-generated default metadata.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**/infrastructure/http/controllers/**`, `src/app/controllers/**`, `src/infrastructure/api/server/swagger/constants/**` · Src: [5], project: docs/api-contract.md
@@ -127,8 +127,8 @@ The HTTP contract of the Goat It API as a NestJS 12 + Fastify 5 service: route i
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `tests/acceptance/features/**` · Src: [8], project: docs/api-contract.md
 - **[API-43] Error paths are executable contract tests** — Acceptance suites assert the 400 validation envelope, 401 authentication failure, 404 not found and 409 conflict for the endpoints that document them, so the error table is tested and not only described.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `tests/acceptance/features/**` · Src: [3], [8], project: docs/api-contract.md
-- **[API-44] The OpenAPI document is smoke-tested** — The acceptance suite asserts that `/docs` answers 200 and serves the document; a schema-diff or snapshot check either exists or its absence is recorded as a known limitation.
-  Evidence: `static` · Diff: ✓ · Severity: low · Look: `tests/acceptance/features/app/docs/**` · Src: [5], project: docs/api-contract.md
+- **[API-44] The OpenAPI document is smoke-tested and diffed** — The acceptance suite asserts that `/docs` answers 200 and serves the document, and a schema-diff or snapshot check detects an unintended contract change; a missing diff is a GAP, not a pass.
+  Evidence: `static` · Diff: ✓ · Target: reach · Severity: low · Look: `tests/acceptance/features/app/docs/**`, `scripts/**` · Src: [5], project: docs/api-contract.md
 - **[API-45] DTO shape specs lock the request/response contract** — DTO shape specs parse valid and invalid payloads for the top-level request and response shapes, assert that response shapes reject unknown keys and that request shapes strip them, and cover nested shapes through their parents.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**/application/dto/**`, `src/contexts/**/contracts/dto/**`, `src/shared/application/dto/**` · Src: [11], project: docs/architecture.md §7.1
 
