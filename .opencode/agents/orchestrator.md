@@ -15,11 +15,6 @@ permission:
     "plan-writer": "allow"
     "gatekeeper": "allow"
     "docs-fetcher": "allow"
-  bash:
-    "gh *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
   question: "allow"
 ---
 
@@ -66,7 +61,7 @@ You are the superpowers orchestrator for the **goat-it-api** project (NestJS 12 
    - If `implementer` returns `DONE_WITH_CONCERNS`, flag the concerns to the user immediately and ask how to proceed before continuing.
    - After each task completes successfully, file a MemPalace KG fact recording what was built: use the feature name as subject, `"task_<N>_done"` as predicate, and the implementer's report summary as object. This makes past work searchable by future agents.
    - Mark task done in TodoWrite.
-5. **Final review** → dispatch the `final-reviewer` subagent with the spec path, plan path, base SHA (develop), head SHA (current HEAD), and feature description inline. Since agents never commit, feature commits may not exist yet — in that case instruct the reviewer to audit the **working tree** (`git status` + `git diff HEAD`), which its process supports. The final-reviewer checks spec coverage, code quality, architecture, cross-task consistency, unit-test conventions, and acceptance-test conventions — it does NOT run quality gates. Afterward, follow the strict "Handling final-review feedback" procedure below.
+5. **Final review** → dispatch the `final-reviewer` subagent with the spec path, plan path, base SHA (develop), head SHA (current HEAD), and feature description inline. Instruct the reviewer to inspect the commit range **and** audit the working tree (`git status --short --untracked-files=all` + `git diff HEAD`), since agents never commit and uncommitted fixes may exist. The final-reviewer checks spec coverage, code quality, architecture, cross-task consistency, unit-test conventions, and acceptance-test conventions — it does NOT run quality gates. Afterward, follow the strict "Handling final-review feedback" procedure below.
 6. **Definition of Done** (hard gate, after all previous steps pass):
    - Dispatch the `gatekeeper` subagent.
    - The gatekeeper runs all quality gates, auto-fixes failures, and reports back.

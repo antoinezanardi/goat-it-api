@@ -11,9 +11,6 @@ permission:
     "git status*": "allow"
     "git log*": "allow"
     "git diff*": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "cat *": "allow"
     "grep *": "allow"
     "ls *": "allow"
@@ -22,7 +19,6 @@ permission:
     "pnpm test:mutation*": "allow"
     "pnpm lint*": "allow"
     "pnpm typecheck*": "allow"
-    "gh *": "allow"
   read: allow
   grep: allow
   glob: allow

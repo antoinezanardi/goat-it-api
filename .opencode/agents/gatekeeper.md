@@ -25,10 +25,6 @@ permission:
     "tail *": "allow"
     "echo *": "allow"
     "wc *": "allow"
-    "gh *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
   task: deny
   webfetch: deny
 ---

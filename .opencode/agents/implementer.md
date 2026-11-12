@@ -33,11 +33,7 @@ permission:
     "git stash *": "allow"
     "git log *": "allow"
     "git diff *": "allow"
-    "git --no-pager *": "allow"
     "printf *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "ls *": "allow"
     "find *": "allow"
     "xxd *": "allow"
@@ -59,7 +55,6 @@ permission:
     "fd *": "allow"
     "docker info *": "allow"
     "docker ps *": "allow"
-    "gh *": "allow"
   task: deny
   webfetch: deny
 ---

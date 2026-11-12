@@ -8,17 +8,12 @@ hidden: false
 permission:
   bash:
     "*": "ask"
-    "git branch *": "allow"
     "git status *": "allow"
     "git log *": "allow"
     "git diff *": "allow"
     "git show *": "allow"
     "git merge-base *": "allow"
-    "git --no-pager *": "allow"
     "git blame *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "cat *": "allow"
     "grep *": "allow"
     "ls *": "allow"
@@ -30,7 +25,6 @@ permission:
     "find *": "allow"
     "echo *": "allow"
     "pnpm run lint *": "allow"
-    "pnpm exec *": "allow"
     "pnpm run lint:oxlint:fix *": "allow"
     "pnpm run lint:eslint:fix *": "allow"
     "pnpm run typecheck *": "allow"
@@ -40,17 +34,20 @@ permission:
     "pnpm run test:mutation *": "allow"
     "pnpm ls *": "allow"
     "rg *": "allow"
-    "sed *": "allow"
     "wc *": "allow"
     "sort *": "allow"
     "cut *": "allow"
-    "xargs *": "allow"
     "mkdir *": "allow"
     "fd *": "allow"
     "od *": "allow"
     "xxd *": "allow"
     "docker ps *": "allow"
-    "gh *": "allow"
+    "gh api graphql *": "allow"
+    "gh api repos/*/pulls/*/reviews *": "allow"
+    "gh api repos/*/issues/*/comments *": "allow"
+    "gh api repos/*/check-runs/*/annotations *": "allow"
+    "gh pr checks *": "allow"
+    "gh pr view *": "allow"
   task:
     "*": "deny"
     "gatekeeper": "allow"
@@ -94,10 +91,10 @@ You are the **receiving-code-review** agent. You evaluate code review feedback w
   - Read the key files that were changed with the **explore** tool to read the code here.
   - You cannot evaluate feedback about code you haven't read
   - **Collect ALL feedback before triaging any of it** — never triage from a partial paste:
-    - PR inline review threads, resolved AND unresolved: `gh api graphql` with `reviewThreads(first: 50) { isResolved isOutdated path line comments { nodes { databaseId author { login } body } } }`
-    - PR reviews and issue comments (bot summaries often carry points absent from inline threads): `gh api repos/<owner>/<repo>/pulls/<n>/reviews` and `.../issues/<n>/comments`
-    - Failing CI checks: `gh pr checks <n>` then `gh pr view <n> --json statusCheckRollup` — never assume the PR is green
-    - SonarCloud issues behind a failed `SonarCloud Analysis` check: `gh api repos/<owner>/<repo>/check-runs/<id>/annotations`, then the issue keys/rules via `https://sonarcloud.io/api/issues/search?organization=<org>&componentKeys=<key>&pullRequest=<n>&issueStatuses=OPEN,CONFIRMED&sinceLeakPeriod=true`
+    - PR inline review threads, resolved AND unresolved: `gh api graphql --paginate -f query='query($endCursor: String) { repository(owner: "<owner>", name: "<repo>") { pullRequest(number: <n>) { reviewThreads(first: 100, after: $endCursor) { pageInfo { hasNextPage endCursor } nodes { isResolved isOutdated path line startLine comments(first: 100) { pageInfo { hasNextPage endCursor } nodes { databaseId author { login } body createdAt } } } } } } }'`. If a thread's `comments.pageInfo.hasNextPage` is true, fetch the next comment page with `after`.
+    - PR reviews and issue comments (bot summaries often carry points absent from inline threads): `gh api repos/<owner>/<repo>/pulls/<n>/reviews --paginate` and `gh api repos/<owner>/<repo>/issues/<n>/comments --paginate`.
+    - Failing CI checks: `gh pr checks <n>` then `gh pr view <n> --json statusCheckRollup` — never assume the PR is green.
+    - SonarCloud issues behind a failed `SonarCloud Analysis` check: `gh api repos/<owner>/<repo>/check-runs/<id>/annotations --paginate`, then the issue keys/rules via `https://sonarcloud.io/api/issues/search?organization=<org>&componentKeys=<key>&pullRequest=<n>&issueStatuses=OPEN,CONFIRMED&sinceLeakPeriod=true` (paginate with `p`/`ps` if the result set is large).
   - Add every collected item to one global triage; a green-looking PR review does not cancel pending Sonar or CI findings
 
 - [ ] **Step 1: READ** the full feedback
@@ -144,7 +141,7 @@ You are the **receiving-code-review** agent. You evaluate code review feedback w
 
 - [ ] **Step 9: OFFER A FINAL REVIEW** when the fix set is not trivial — **before** the gatekeeper
   - Skip it when the changes are really small (roughly fewer than 3 files and no behavior change) and say so explicitly
-  - Otherwise **ask** the user whether to dispatch the `final-reviewer` on the working tree (`git status` + `git diff HEAD`), passing every input its contract declares (`SPEC` path, `PLAN` path, `BASE_SHA`, `HEAD_SHA`, `DESCRIPTION`), plus the feedback summary and the list of changed files
+  - Otherwise **ask** the user whether to dispatch the `final-reviewer` on the working tree (`git status --short --untracked-files=all` + `git diff HEAD`), passing every input its contract declares (`SPEC` path, `PLAN` path, `BASE_SHA`, `HEAD_SHA`, `DESCRIPTION`), plus the feedback summary and the list of changed files
   - Never dispatch it silently; triage the issues it reports through Steps 2–8 like any review, apply the approved fixes first, then move on to the gatekeeper so the gates validate the final code
   - It never replaces the gatekeeper
 

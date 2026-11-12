@@ -15,9 +15,6 @@ permission:
     "git diff *": "allow"
     "git ls-files *": "allow"
     "git show *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "cat *": "allow"
     "grep *": "allow"
     "ls *": "allow"
@@ -32,7 +29,6 @@ permission:
     "xxd *": "allow"
     "rg *": "allow"
     "fd *": "allow"
-    "gh *": "allow"
   task:
     "*": "deny"
     "explore": "allow"
@@ -59,7 +55,7 @@ You are the final reviewer. You review the whole implementation holistically —
 2. **Read `docs/architecture.md`** as the canonical placement, ownership, naming, alias and dependency reference
 3. **Read the spec** section by section
 4. **Read the plan** task by task
-5. **Inspect the diff** between BASE_SHA and HEAD_SHA. If the range contains no commits (agents never commit; the user commits at the end of the cycle), fall back to auditing the working tree: run `git status --short` to capture every path (including untracked new files) and `git diff HEAD` for staged/unstaged changes, then audit every reported path — including newly created implementation, test, and configuration files — against the plan's task checkboxes
+5. **Inspect the diff** between BASE_SHA and HEAD_SHA, then audit the working tree unconditionally: run `git status --short --untracked-files=all` to capture every path (including untracked new files) and `git diff HEAD` for staged/unstaged changes, then audit every reported path — including newly created implementation, test, and configuration files — against the plan's task checkboxes
 6. **Check every created, edited and moved file** in the diff against the architecture guide, the plan and the criteria below — including companion files, import paths, module registration, aliases, framework-discovered paths and test placement, not only primary production files
 7. **Return** structured report
 
@@ -83,7 +79,7 @@ You may dispatch helper subagents when reviewing:
 ### 2. Plan execution
 - Every task in the plan has a corresponding commit or set of changes
 - Verify by checking `git log BASE_SHA..HEAD_SHA` — do the commits match the task sequence?
-- If the range contains no commits, audit the working tree instead (`git status --short` to capture all paths including untracked files, `git diff HEAD` for diffs) and match changed and newly created files against each plan task's declared **Files** list — a task with no matching changes is incomplete
+- Also audit the working tree (`git status --short --untracked-files=all` to capture all paths including untracked files, `git diff HEAD` for diffs) and match changed and newly created files against each plan task's declared **Files** list — a task with no matching changes is incomplete
 - If a task appears incomplete, flag it
 
 ### 3. Code review (NestJS/Hexagonal conventions)

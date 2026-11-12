@@ -11,7 +11,6 @@ permission:
     "grep *": "allow"
     "ls *": "allow"
     "echo *": "allow"
-    "gh *": "allow"
   webfetch: deny
   task: deny
 ---

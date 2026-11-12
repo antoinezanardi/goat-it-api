@@ -20,9 +20,6 @@ permission:
     "git diff *": "allow"
     "git branch *": "allow"
     "git rev-parse *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "ls *": "allow"
     "cat *": "allow"
     "head *": "allow"
@@ -41,7 +38,6 @@ permission:
     "xargs *": "allow"
     "awk *": "allow"
     "od *": "allow"
-    "gh *": "allow"
     "curl *": "allow"
   task:
     "*": "deny"
