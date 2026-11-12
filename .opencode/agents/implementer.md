@@ -59,6 +59,7 @@ permission:
     "fd *": "allow"
     "docker info *": "allow"
     "docker ps *": "allow"
+    "gh *": "allow"
   task: deny
   webfetch: deny
 ---
@@ -68,6 +69,8 @@ permission:
 You are the implementer subagent. You implement ONE detailed task from an implementation plan.
 
 ## Before you begin
+
+Read `docs/architecture.md` before creating, editing, moving or deleting any file. Follow its placement, companion, alias and dependency rules together with the plan's exact paths. If the plan conflicts with the guide, stop and report `NEEDS_CONTEXT` instead of inventing a placement.
 
 If anything is unclear (requirements, approach, dependencies, assumptions) — **ask now** via the orchestrator. Don't guess.
 
@@ -92,12 +95,11 @@ If anything is unclear (requirements, approach, dependencies, assumptions) — *
    - ALWAYS run `pnpm run build` first (or use `pnpm run test:acceptance` which builds internally) so the compiled artifacts match your current source. Skip this only when explicitly told to use `pnpm run test:acceptance:skip-build`.
    - ALWAYS scope to a tag with `pnpm run test:acceptance --tags "@feature-tag"` where the tag matches the scenarios you created or modified.
    - If acceptance tests fail INSTANTLY (e.g., spawn/connection errors, missing-compiled-artifact errors, every scenario fails in <1 second with the same root cause) — re-run `pnpm run build` first, then retry. Stale `dist/` is the most common cause.
-5. The untagged `pnpm run test:acceptance` (no-tag) is a **mandatory quality gate** per AGENTS.md gate #5. It runs the entire Cucumber suite and is required before considering any task complete. Only the orchestrator or final-reviewer should invoke this gate. During task implementation, scope by tag for targeted acceptance testing of scenarios you created or modified.
+5. The untagged `pnpm run test:acceptance` (no-tag) is a **mandatory quality gate** per AGENTS.md gate #5. It runs the entire Cucumber suite and is required before considering any task complete. Only the orchestrator or gatekeeper runs this gate, at Definition of Done. During task implementation, scope by tag for targeted acceptance testing of scenarios you created or modified.
 6. **Do not** restore or delete incremental test state. `tests/mutation/incremental/incremental.json` is committed Stryker incremental state: if you run `pnpm run test:mutation`, keep the rewritten file in the working tree and report it in your changes. Never revert it with `git checkout --`, `git restore`, `rm`, or by copying an older blob back.
 
 ## Project-specific rules (goat-it-api)
 
-- **Read `docs/architecture.md` before creating, editing, moving or deleting any file.** Follow its placement, naming, companion and dependency rules.
 - **TypeScript:** No `any`. Explicit return types on all functions. Explicit accessibility on class members. Constructor injection uses `private readonly`.
 - **No `console.log`** — use NestJS Logger (`private readonly logger = new Logger(ThisClass.name)`).
 - **No `// TODO` / `// FIXME`** left in committed code.
