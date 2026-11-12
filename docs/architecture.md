@@ -30,6 +30,7 @@ Those guides own their detailed procedures; this guide owns architecture, placem
 - [12. Enforcement](#12-enforcement)
 - [13. Accepted exceptions](#13-accepted-exceptions)
 - [14. Framework references](#14-framework-references)
+- [15. Agent and workflow compliance](#15-agent-and-workflow-compliance)
 
 ## 1. Purpose and vocabulary
 
@@ -406,7 +407,7 @@ This is a deliberate partnership, not a general license. `QuestionModule` import
 - Write invariants are enforced by the context that writes the aggregate.
 - Cross-context consistency (theme archive vs live questions, question creation/assignment vs theme status) is best-effort. Test the race where it matters.
 - Intra-question assignment writes MUST be atomic via conditional updates and update pipelines. This is the target tracked in #1271; do not use MongoDB transactions.
-- The 3-theme maximum is enforced by the domain policy and the atomic write. The schema `maxItems` validator documents the invariant but is not the authority on updates.
+- The 3-theme maximum is enforced by the domain policy at read-check time. The schema `maxItems` validator documents the invariant but is not the authority on updates. Conditional assignment writes that make the bound race-free are the target tracked in #1271.
 
 ### 5.6 Ceremony budget
 
@@ -780,3 +781,7 @@ Every accepted exception MUST name a removal condition. Do not add a silent exce
 - [eslint-plugin-import-x `no-restricted-paths`](https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/no-restricted-paths.md).
 
 This guide owns placement, naming, dependency and boundary rules. Test mechanics live in `unit-tests.md`, `mocks.md`, `faketories.md` and `acceptance-tests.md`; CI in `ci-cd.md`; operations in `operations.md`; package usage in `packages/schemas/README.md`. Do not duplicate them here.
+
+## 15. Agent and workflow compliance
+
+The repository-wide audit contract lives in [`.agents/skills/goat-audit/SKILL.md`](../.agents/skills/goat-audit/SKILL.md): 18 categories, gap-free `[CODE-NN]` checks, diff and design triggers, and the `## GOAT audit decisions` protocol. `AGENTS.md` owns the workflow rules (DOD, quality gates, skills and commands); this guide stays the single source of truth for placement, layering and dependency direction. The GOAT reference checklists cite this document (`project: docs/architecture.md`) instead of copying its rules: when a rule here changes, the ARCH, STACK, CODE and AGENT checks are evaluated against the new text rather than amended in place. Agent definitions (`.opencode/agents/**`), commands (`.opencode/commands/**`) and skills (`.agents/skills/**`) are audited by the AGENT category.
