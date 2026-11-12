@@ -137,13 +137,15 @@ Appended to the mapped decision doc, inside its trailing `## GOAT audit decision
 ````markdown
 ### [SEC-54] <short title> — Accepted risk (2026-10-31)
 
-- **Finding:** `src/infrastructure/api/server/server.ts:24` <what violates the check>.
+- **Finding:** <one sentence with the evidence `file:line` for a public finding; for a 🔒 finding, a sanitized summary only — the exploitable detail, the vulnerable path and the secret location stay in the gitignored report or the private advisory>.
 - **Decision:** <what was decided>.
 - **Rationale:** <why>.
 - **Revisit when:** <observable trigger or date>.
 - **Checklist change:** <the exact criterion rewrite, or the removal and the renumbering it implies>.
 - **Recorded by:** /goat-audit (GOAT-AUDIT-2026-10-31)
 ````
+
+A decision note is appended to a tracked document and committed: never write 🔒 detail into it (skill §8). A public finding keeps its evidence path; a 🔒 finding cites the local report and, when one exists, the private advisory.
 
 Kinds: **Accepted risk** · **Not applicable** · **False positive** (see skill §7). When a mapped decision doc does not exist yet, create it with its H1 title and one scope paragraph, and register it in the `AGENTS.md` "Useful docs (`docs/`)" list — only when both files are on the agent's edit allowlist.
 

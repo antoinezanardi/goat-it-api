@@ -1,6 +1,6 @@
 ---
 name: goat-audit
-description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (681 checks, 138 Core, 13 Target: reach), [CODE-NN] check IDs, evidence, target, severity and grading rules, the release and platinum verdicts, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
+description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (681 checks, 139 Core, 13 Target: reach), [CODE-NN] check IDs, evidence, target, severity and grading rules, the release and platinum verdicts, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
 ---
 
 # GOAT audit
@@ -41,7 +41,7 @@ The orchestrator also reads §7 when the maintainer pushes back on a GOAT findin
 - **Plan mode (shift-left)** — `plan-writer` inherits the spec's `## GOAT constraints` when one exists, matches planned paths against the category index triggers **and the Decision doc column**, reads the triggered references' **Core** `Diff: ✓` checks and the mapped decision docs, and writes a `GOAT checks:` line in every task.
 - **Design mode (shift-left at spec time)** — `brainstormer` has no paths yet: it maps the feature's design areas to categories (§6 design triggers), reads those references' **Core** checks that actually constrain the design (10–20 of them, never a whole category), and writes `## GOAT constraints` (check ID → design decision) and `## Constraints accepted as risks` in the spec. Every other check is deferred to plan and review.
 
-A full audit is expensive: 18 explorer dispatches in waves of six over 681 checks (138 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
+A full audit is expensive: 18 explorer dispatches in waves of six over 681 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
 
 ## 4. Check format, IDs, outcomes
 
@@ -68,6 +68,7 @@ A full audit is expensive: 18 explorer dispatches in waves of six over 681 check
 - Format `<CODE>-<NN>`: two digits, zero-padded (`SEC-07`); three digits from 100 (`SEC-100`).
 - IDs are unique per category and form a **gap-free sequence** `-01`…`-NN`: no gap, no duplicate.
 - A removal or merge renumbers the category's remaining checks in file order, and every reference to them (this skill, agents, commands, templates) is updated in the same change, except a decision note attached to a removed check, which keeps the historical ID marked `(removed)` (§7).
+- Renumbering means an older `[ID]` citation can resolve to a different check: every report, issue and decision note cites the check title beside the ID, and [AGENT-32] keeps the sequence gap-free.
 - A new check takes the number after the category's last check; the next removal-driven renumbering restores file order.
 - Always cite a check as `[SEC-07]` in reports, reviews and decisions.
 
@@ -86,19 +87,19 @@ Every check of every triggered reference gets one of these outcomes in a full or
 
 ### 4.4 Core tier
 
-`Core: ✓` marks the **138** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **681** checks.
+`Core: ✓` marks the **139** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **681** checks.
 
 - **Every critical check is Core.**
 - A high check is Core when its failure can break a core flow, expose data, break the release or corrupt persisted data.
 - A medium check is Core only when it encodes a project-wide invariant already enforced by `AGENTS.md`.
-- The tier targets roughly 10–20 % of the set; the current 138 of 681 is 20.3 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
+- The tier targets roughly 10–20 % of the set; the current 139 of 681 is 20.4 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
 - A Core check keeps its evidence type: diff mode evaluates the `Diff: ✓` ones and defers the `Diff: ✗` ones with a non-blocking ⚠️.
 
 ### 4.5 Target tier
 
 `Target: reach` marks the **13** checks that define the platinum target rather than current conformance. The current set is `SEC-20`, `SEC-26`, `SEC-51`, `OPS-17`, `OPS-21`, `OPS-28`, `REL-07`, `REL-34`, `REL-35`, `API-44`, `DATA-37`, `PERF-20` and `PRIV-08`; the category index's `Reach` column states each category's count.
 
-- A reach check is evaluated in full audits and in the mapped Core paths; its outcomes are `PASS`, `GAP` or `FAIL`. `GAP` means the capability is absent, whether or not the repository documents the deferral.
+- A reach check is evaluated in full audits and in the mapped Core paths; its outcomes are `PASS`, `GAP`, `FAIL` or `⚠️ UNVERIFIED` (the capability cannot be proven, e.g. a `manual` check the human did not confirm — never a `GAP` and never a `PASS`). `GAP` means the capability is absent, whether or not the repository documents the deferral.
 - A GAP is not a conformance FAIL: it adds no grade points and never blocks a merge by itself. It is reported in the Platinum backlog and in the `Platinum readiness` line (§5.3) so iteration reduces it over time.
 - A decision note never turns a reach check into `DECIDED` and never rewrites the criterion to accept the absence. An Accepted risk may record an expiry and the reviewer, but the GAP remains until the capability lands. `Not applicable` and `False positive` still require the checklist amendment of §7.
 - A reach check can be Core (`SEC-26`) or not. In diff mode a reach check that matches the diff reports `GAP` non-blocking; it never forces "Needs changes before merge".
@@ -133,7 +134,7 @@ Append `⚠️ unverified` when more than 10 % of the category's checks are `⚠
 ### 5.3 Release verdict, platinum readiness and priorities
 
 - Release verdict: any confirmed critical → **Not ship-ready**; else any confirmed high → **Ship with follow-ups**; else **Ship-ready**. A partial run prefixes the verdict with `partial (n/18):`.
-- Platinum readiness: **platinum-ready** only when the audited categories have zero `GAP`; otherwise `n gaps (P0 n · P1 n · P2 n · Polish n)`, using the check's default severity for the priority. A partial run prefixes it with `partial (n/18):`.
+- Platinum readiness: **platinum-ready** only when the audited categories have zero `GAP` and every applicable reach check is `PASS`; otherwise the run reports `n gaps (P0 n · P1 n · P2 n · Polish n)`, using the check's default severity for the priority, plus `n unverified reach checks` when a reach check is `⚠️ UNVERIFIED`. A partial run prefixes it with `partial (n/18):`.
 - Roadmap priorities: P0 = critical, P1 = high, P2 = medium, Polish = low. Info findings appear only in their category section. GAPs use the same priority scale and are listed in the Platinum backlog, never in the conformance remediation roadmap.
 
 ## 6. Category index
@@ -156,12 +157,12 @@ Each check belongs to exactly one category. Diff triggers activate when a change
 | ARCH | Architecture & design | `references/arch-architecture.md` | `docs/architecture.md` | 45 | 9 | 0 | any added, moved or deleted file under `src/`, `tests/`, `configs/`, `scripts/`, `packages/`; any changed import statement |
 | STACK | Framework & stack correctness | `references/stack-framework-stack.md` | `docs/architecture.md` | 40 | 8 | 0 | `src/**`, `package.json`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**` |
 | CODE | Code quality & conventions | `references/code-code-quality.md` | `docs/architecture.md` | 45 | 9 | 0 | any `*.ts` file, `tsconfig.json`, `eslint.config.ts`, `configs/eslint/**`, `oxlint.config.jsonc` |
-| TEST | Testing & QA | `references/test-testing-qa.md` | `docs/unit-tests.md` if the evidence is under `tests/unit/**`, a `*.spec.ts`, `configs/vitest/**` or `configs/stryker/**`; `docs/acceptance-tests.md` if it is under `tests/acceptance/**` or `configs/cucumber/**` | 42 | 10 | 0 | `**/*.spec.ts`, `tests/**`, `configs/vitest/**`, `configs/stryker/**`, `configs/cucumber/**` |
-| PRIV | Privacy & compliance | `references/priv-privacy-compliance.md` | `docs/privacy.md` | 28 | 5 | 1 | `src/**/logging/**`, `src/app/helpers/logger.helpers.ts`, `src/main.ts`, `docs/privacy.md`, `docker/**` |
-| DOCS | Documentation & DX | `references/docs-documentation-dx.md` | `.github/CONTRIBUTING.md` | 30 | 6 | 0 | `docs/**`, `README.md`, `.github/*.md`, `.github/ISSUE_TEMPLATE/**`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `env/.env.example`, `package.json` (scripts) |
+| TEST | Testing & QA | `references/test-testing-qa.md` | `docs/unit-tests.md` if the evidence is under `tests/unit/**`, a `*.spec.ts`, `configs/vitest/**` or `configs/stryker/**`; `docs/acceptance-tests.md` if it is under `tests/acceptance/**` or `configs/cucumber/**` | 42 | 11 | 0 | `**/*.spec.ts`, `tests/**`, `configs/vitest/**`, `configs/stryker/**`, `configs/cucumber/**` |
+| PRIV | Privacy & compliance | `references/priv-privacy-compliance.md` | `docs/privacy.md` | 28 | 5 | 1 | `src/**/logging/**`, `src/app/helpers/logger.helpers.ts`, `src/main.ts`, `src/contexts/**/contracts/persistence/**`, `src/contexts/**/infrastructure/persistence/**`, `docs/privacy.md`, `docker/**` |
+| DOCS | Documentation & DX | `references/docs-documentation-dx.md` | `.github/CONTRIBUTING.md` | 30 | 6 | 0 | `docs/**`, `README.md`, `.github/*.md`, `.github/ISSUE_TEMPLATE/**`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `env/.env.example`, `src/contexts/**/infrastructure/http/**`, `src/app/controllers/**`, `src/infrastructure/api/config/**`, `package.json` (scripts) |
 | AGENT | AI-agent tooling hygiene | `references/agent-agent-tooling.md` | `docs/architecture.md` | 35 | 6 | 0 | `AGENTS.md`, `.agents/**`, `.opencode/**`, `opencode.json`, `.github/copilot-instructions.md`, `mempalace.yaml` |
 
-The category index totals **681 checks, 138 Core and 13 Target: reach checks**. [AGENT-31] verifies the `Checks`, `Core` and `Reach` columns against each reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
+The category index totals **681 checks, 139 Core and 13 Target: reach checks**. [AGENT-31] verifies the `Checks`, `Core` and `Reach` columns against each reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
 
 **Decision-doc mapping.** A changed decision doc triggers every category mapped to it: `docs/security.md` → SEC + SUP; `docs/operations.md` → PLAT + OPS + REL; `docs/architecture.md` → ARCH + STACK + CODE + AGENT; `docs/unit-tests.md` / `docs/acceptance-tests.md` → TEST; `.github/CONTRIBUTING.md` → DOCS; `docs/ci-cd.md` → CICD; `docs/domain-logic.md` → LOGIC; `docs/performance.md` → PERF; `docs/i18n.md` → I18N; `docs/api-contract.md` → API; `docs/data-model.md` → DATA; `docs/privacy.md` → PRIV.
 
@@ -174,7 +175,7 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 | New endpoint, route or controller action | API, SEC, REL, TEST (+ I18N if localized, + LOGIC if it carries a domain rule) |
 | New domain rule, state or transition | LOGIC, TEST |
 | New DTO or published contract | API, SEC, TEST |
-| New persisted model or field | DATA, LOGIC, PERF, TEST |
+| New persisted model or field | DATA, LOGIC, PERF, PRIV, TEST |
 | New dependency | SUP, ARCH, PERF |
 | New environment variable or runtime configuration | PLAT, SEC |
 | New workflow or release step | CICD, SUP |
@@ -196,17 +197,17 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 ```markdown
 ### [<CODE>-<NN>] <Short imperative title> — <Accepted risk | Not applicable | False positive> (YYYY-MM-DD)
 
-- **Finding:** <one sentence, including the original evidence `file:line` or resource>
+- **Finding:** <one sentence, including the original evidence `file:line` or resource; for a 🔒 finding, a sanitized summary only — see §8>
 - **Decision:** <what was decided>
 - **Rationale:** <why>
 - **Revisit when:** <observable trigger or date>
-- **Checklist change:** <the exact criterion rewrite, or the removal and the renumbering it implies>
+- **Checklist change:** <the exact criterion rewrite, or the removal and the renumbering it implies; for an Accepted risk or False positive, also quote the original criterion so a met revisit condition restores it>
 - **Recorded by:** /goat-audit (GOAT-AUDIT-YYYY-MM-DD) | orchestrator final review (<branch>)
 ```
 
 **Kinds.** **Accepted risk** (valid finding consciously not fixed) · **Not applicable** (the check does not apply to this product; scope reason) · **False positive** (the finding was wrong; explain so the check is evaluated correctly next time).
 
-**Checklist amendment.** A decision is history, never a permanent suppression: recording it also amends the checklist, through the ready-to-apply patch the run hands off (command §6.5 and §8.4; the auditor stays read-only). **Accepted risk** and **False positive** rewrite the criterion so it encodes the accepted deviation or the corrected rule and passes on the next run. **Not applicable** deletes the check, renumbers the category (§4.2, §11) and marks the note's ID `(removed)`. Until the amendment lands, the next run still reports the finding as `FAIL` with `decision recorded, checklist not yet amended — <doc>:<line>` instead of `DECIDED`. If the entry's "Revisit when" condition is observably met, evaluate the check normally and add `decision revisit triggered — <doc>:<line>` to the finding.
+**Checklist amendment.** A decision is history, never a permanent suppression: recording it also amends the checklist, through the ready-to-apply patch the run hands off (command §6.5 and §8.4; the auditor stays read-only). **Accepted risk** and **False positive** rewrite the criterion so it encodes the accepted deviation or the corrected rule and passes on the next run. **Not applicable** deletes the check, renumbers the category (§4.2, §11) and marks the note's ID `(removed)`. Until the amendment lands, the next run still reports the finding as `FAIL` with `decision recorded, checklist not yet amended — <doc>:<line>` instead of `DECIDED`. The note quotes the original criterion, because the rewritten criterion passes by design: if the entry's "Revisit when" condition is observably met, restore the original criterion (or reopen the recorded finding) before evaluating, then add `decision revisit triggered — <doc>:<line>` to the finding and re-decide it.
 
 **Target: reach checks are never suppressed.** A decision note can record an Accepted risk, its reviewer and an expiry, but it cannot turn a reach check into `DECIDED` or rewrite the criterion to accept the absence: the GAP remains until the capability lands. `Not applicable` and `False positive` follow the normal amendment path and require the maintainer's approval; a `Not applicable` note deletes the check and renumbers the category.
 
@@ -274,6 +275,6 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 - Marking Target: `reach` is reserved for a platinum capability whose absence is a GAP, never for a conformance rule; every change to the mark updates the index's `Reach` column and the total in §6.
 - Version-dependent checks: a `(verified: <library> <x.y[.z]>)` criterion is re-verified on a major or minor bump, and a changed default rewrites the criterion in the same change. Exact patch/minor values belong in `(verified: …)` metadata or the decision doc, never inside a durable pass criterion.
 - Removing or merging a check: delete its line entirely, renumber the category's remaining checks in file order, and update every reference to a shifted ID in the same change; a decision note attached to a shifted check is updated to its new ID.
-- Applying a decision note: an Accepted-risk or False-positive note rewrites the criterion so it encodes the deviation or the corrected rule and passes; a Not-applicable note deletes the check and renumbers the category (§4.2). The note keeps its ID, and a deleted check's note carries `(removed)` after it so [AGENT-32] does not treat it as active.
+- Applying a decision note: an Accepted-risk or False-positive note rewrites the criterion so it encodes the deviation or the corrected rule and passes, and it quotes the original criterion so a met revisit condition restores that text instead of re-evaluating the rewritten one; a Not-applicable note deletes the check and renumbers the category (§4.2). The note keeps its ID, and a deleted check's note carries `(removed)` after it so [AGENT-32] does not treat it as active.
 - Rewriting a check: rewrite the criterion in place; the ID moves only through a removal-driven renumbering. When a decision note is attached to the old criterion, the next run reports `decision revisit triggered — <doc>:<line>` so the maintainer re-decides it.
 - Every `/goat-audit` run reports stale `Look` hints as [AGENT-33] and dead source links as [AGENT-34].

@@ -104,7 +104,7 @@ There is no pagination — no `page`/`offset` parameter exists anywhere in the q
 ## Known limitations
 
 - **No API versioning prefix.** No `setGlobalPrefix`/`enableVersioning` exists (verified by grep across `src/`); all routes live at the root, so a breaking change cannot be released alongside a v1.
-- **No pagination.** List endpoints expose only `limit` (0 = unlimited) — no `page`/`offset`; clients must sort deterministically and re-query to walk results.
+- **No pagination.** List endpoints expose only `limit` (0 = unlimited) — no `page`/`offset` and no cursor; a repeated sorted and limited query returns the same first results, so `limit=0` is the only way to retrieve the full result set.
 - **500 responses carry no `errorCode`.** The generic 500 body is the stock Nest `InternalServerErrorException` body passed through verbatim (see Unified error shape); frontends cannot machine-differentiate unknown failures.
 - **Browser API-key calls are unsupported.** CORS `allowedHeaders` is `["Content-Type", "Authorization"]` and deliberately excludes `goat-it-api-key` (`cors.constants.ts`, `auth.constants.ts`), so the API key stays server-side and a browser caller cannot authenticate cross-origin by design; `PUT` is still advertised in CORS methods although no PUT route exists — a minor mismatch to remove.
 - **The public list cannot page to the end of large datasets**, and `theme-ids` has no upper bound (only min 1) unlike `ids` (max 100). The random-search body's `themeIds` array has no upper bound either (only min 1), unlike `excludedIds` (1–5000).

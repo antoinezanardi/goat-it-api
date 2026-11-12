@@ -45,7 +45,7 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**` · Src: [1]
 - **[REL-10] Retries never re-issue writes** — No retry re-issues a non-idempotent write: the API never repeats a POST/PATCH/DELETE itself after a failure — a failed write surfaces once as its mapped status and the client decides whether to repeat it.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/application/use-cases/**` · Src: [2], [9]
-- **[REL-11] Backoff with bounded delay** — Connection retries use a fixed documented delay (3000 ms) bounded by the retry count (5), and operation-level server selection is capped by the 5000 ms selection timeout, so a down database produces bounded failure latency.
+- **[REL-11] Backoff with bounded delay** — Connection retries use a fixed documented delay (3000 ms) bounded by the retry count (5), and operation-level server selection is capped by the 5000 ms selection timeout. This bounds failures to reach or select a server. An established connection that stops responding has no configured socket or operation timeout in the inspected database configuration, so its operations are not bounded.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/database/constants/**` · Src: [1], project: docs/data-model.md
 
 ## 3. MongoDB resilience

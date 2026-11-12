@@ -32,7 +32,7 @@ Third-party code and automation that enter the Goat It API repository, the CI in
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/actions/**`, `.github/workflows/**`, `package.json` · Src: [3]
 - **[SUP-06] Audit ignores are governed** — When an advisory is ignored, it is listed by GHSA ID with an owner and an expiry date, and no blanket CVE range, `auditConfig.ignoreCves` catch-all or `|| true` hides the result.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `pnpm-workspace.yaml` · Src: [3]
-- **[SUP-07] Vulnerability alerts are enabled** — `gh api repos/{owner}/{repo}/vulnerability-alerts` returns 204, or the repository documents an equivalent OSV feed used by Renovate, so vulnerability pull requests have an advisory signal.
+- **[SUP-07] Vulnerability alerts are enabled** — `gh api repos/{owner}/{repo}/vulnerability-alerts` returns 204, or the repository documents an equivalent alert source that covers transitive dependencies; Renovate's `osvVulnerabilityAlerts` covers direct dependencies only, so relying on it requires recording the transitive-coverage gap rather than treating it as equivalent.
   Evidence: `command` · Diff: ✗ · Severity: medium · Src: [11], [19]
 
 ## 2. Inventory and freshness

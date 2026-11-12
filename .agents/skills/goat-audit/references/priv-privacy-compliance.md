@@ -76,7 +76,7 @@ Personal-data and legal posture of the Goat It API: the processing inventory (tw
 
 ## 5. Legal posture
 
-- **[PRIV-24] The GDPR posture is minimal, explicit and dated** — The privacy record states that the API holds no persisted personal data (request metadata in logs is the documented exception), that no consent, access, erasure or data-transfer obligation follows from what it stores today, and the date on which that conclusion was verified.
+- **[PRIV-24] The GDPR posture is minimal, explicit and dated** — The privacy record states that the API holds no persisted personal data (request metadata in logs is the documented exception), that no consent, access, erasure or data-transfer obligation follows from the business data it stores today, that the personal request metadata in logs is assessed separately with the handling it requires, and the date on which that conclusion was verified.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `docs/*.md` · Src: [1], [2], project: docs/privacy.md
 - **[PRIV-25] Controller responsibility sits with the consuming web game** — The record states that the web game is the controller for its players' data and that the API is a headless content service, so a change that starts collecting player data must move or share that responsibility explicitly rather than silently inherit it.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/*.md` · Src: [1], [10], project: docs/privacy.md

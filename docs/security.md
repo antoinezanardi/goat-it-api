@@ -1,6 +1,6 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting, security headers, request body guard), #1262 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting, security headers, request body guard), #1262 (error tracking), #1309 (equal admin and game keys are not rejected at boot).
 
 Last reviewed: 2026-11-04.
 
@@ -18,7 +18,7 @@ Both guards share one handler (`canActivateApiKeyGuardHandler`, `file:src/infras
 3. compares the two fixed-length HMAC digests with `node:crypto` `timingSafeEqual`, checking their lengths first only because the comparison requires equal-length buffers — the digest length does not reveal the received key's length;
 4. throws `UnauthorizedException` when the key is missing or does not match (`file:src/infrastructure/api/auth/errors/auth.errors.ts`).
 
-The plaintext keys (`API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY`) are read once at boot, converted into HMAC validators, and then deleted from `process.env` (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`). Minimum lengths — 32 characters for the HMAC secret, 24 for each key — are enforced at boot by the env schema (`file:src/infrastructure/api/config/schemas/env.schema.ts`). Keys are high-entropy credentials, not passwords: `hashApiKey` documents that it must never be used for password hashing.
+The plaintext keys (`API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY`) are read once at boot, converted into HMAC validators, and then deleted from `process.env` (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`). Minimum lengths — 32 characters for the HMAC secret, 24 for each key — are enforced at boot by the env schema (`file:src/infrastructure/api/config/schemas/env.schema.ts`). The schema does not yet reject equal `ADMIN_API_KEY` and `GAME_API_KEY` values, which would make the two audiences interchangeable (#1309). Keys are high-entropy credentials, not passwords: `hashApiKey` documents that it must never be used for password hashing.
 
 ## Cross-origin resource sharing (CORS)
 
@@ -77,13 +77,14 @@ Swagger is enabled unconditionally: `setupSwaggerModule(app)` runs at bootstrap 
 
 Logging is pino via `nestjs-pino` (`file:src/app/app.module.ts`, `file:src/app/helpers/logger.helpers.ts`): pretty-printed in development, plain JSON in production, with `bufferLogs` and the pino logger installed at bootstrap (`file:src/infrastructure/api/server/server.ts`).
 
-The intended policy is that log lines never carry secrets or personal data, and that the API keys are removed from `process.env` at boot. **That policy is not enforced by configuration today.** `getLoggerConfiguration` only sets the transport, so `pino-http` runs with its defaults: request logging is enabled and the default request serializer emits the request headers (including `goat-it-api-key`), the client address and port, and the `user-agent`. No `redact` or custom serializer is configured. This is recorded as a known limitation below; treat production logs as sensitive until it is fixed.
+The intended policy is that log lines never carry secrets or personal data, and that the API keys are removed from `process.env` at boot. **That policy is not enforced by configuration today.** `getLoggerConfiguration` only sets the transport, so `pino-http` runs with its defaults: request logging is enabled and the default request serializer emits the request headers, the client address and port, and the `user-agent`. No `redact` or custom serializer is configured. This is recorded as a known limitation below; treat production logs as sensitive until it is fixed.
 
 ## Known limitations
 
 - #1263 — rate limiting, global security headers and an explicit request-body guard are missing.
 - #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
-- **Request logging leaks credentials and request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers (including `goat-it-api-key`), client address and port, and `user-agent`; no `redact` or custom serializer exists. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
+- **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
+- **Equal admin and game keys are not rejected.** `APP_ENV_SCHEMA` enforces minimum lengths only, so configuring the same value for `ADMIN_API_KEY` and `GAME_API_KEY` makes the two audiences interchangeable; the schema must reject equal values at boot (`file:src/infrastructure/api/config/schemas/env.schema.ts`, #1309).
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
 Issue #1263 (rate limiting, security headers, request body guard) will extend this document when it lands.

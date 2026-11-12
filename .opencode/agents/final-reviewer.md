@@ -187,7 +187,7 @@ You may dispatch helper subagents when reviewing:
 **Assessment:** Ready to merge | Ready with minor follow-ups | Needs changes before merge
 ```
 
-**Hard verdict gate:** the assessment MUST be `Needs changes before merge` if ANY of the following holds — one or more Critical issues; a spec requirement unimplemented; a security finding; any unit-test `[U*]`–`[T*]` violation; any GOAT audit finding of severity **high or critical** on a **Core** check (`[<CODE>-NN]`). Medium, low and info GOAT findings are Minor and never block on their own. Only a fully clean report (or Minor-only findings) may yield `Ready to merge` / `Ready with minor follow-ups`.
+**Hard verdict gate:** the assessment MUST be `Needs changes before merge` if ANY of the following holds — one or more Critical issues; a spec requirement unimplemented; a security concern from the **Security** section; any unit-test `[U*]`–`[T*]` violation; any GOAT audit finding of severity **high or critical** on a **Core** check (`[<CODE>-NN]`). GOAT findings, including GOAT security findings, follow only the GOAT severity and Core rules: medium, low and info GOAT findings are Minor and never block on their own. Only a fully clean report (or Minor-only findings) may yield `Ready to merge` / `Ready with minor follow-ups`.
 
 ## Skills to load
 
