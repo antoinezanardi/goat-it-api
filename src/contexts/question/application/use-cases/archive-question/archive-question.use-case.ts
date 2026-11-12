@@ -5,9 +5,18 @@ import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
+/**
+ * Soft-deletes a question by switching its status to archived.
+ */
 export class ArchiveQuestionUseCase {
   public constructor(private readonly questionRepository: QuestionRepository) {}
 
+  /**
+   * Returns the archived question.
+   *
+   * @throws `QuestionNotFoundError` when no question matches the id.
+   * @throws `QuestionAlreadyArchivedError` when the question is already archived.
+   */
   public async archive(id: string): Promise<Question> {
     await this.throwIfQuestionNotArchivable(id);
     const archivedQuestion = await this.questionRepository.archive(id);

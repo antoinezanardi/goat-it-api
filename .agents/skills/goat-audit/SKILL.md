@@ -1,6 +1,6 @@
 ---
 name: goat-audit
-description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (681 checks, 139 Core, 13 Target: reach), [CODE-NN] check IDs, evidence, target, severity and grading rules, the release and platinum verdicts, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
+description: Use when the goat-auditor runs /goat-audit, when final-reviewer reviews a diff, when plan-writer plans file changes, or when brainstormer designs a spec in goat-it-api. Defines the 18 GOAT audit categories (682 checks, 139 Core, 13 Target: reach), [CODE-NN] check IDs, evidence, target, severity and grading rules, the release and platinum verdicts, diff and design triggers, the "GOAT audit decisions" protocol, and the report and triage templates.
 ---
 
 # GOAT audit
@@ -41,7 +41,7 @@ The orchestrator also reads §7 when the maintainer pushes back on a GOAT findin
 - **Plan mode (shift-left)** — `plan-writer` inherits the spec's `## GOAT constraints` when one exists, matches planned paths against the category index triggers **and the Decision doc column**, reads the triggered references' **Core** `Diff: ✓` checks and the mapped decision docs, and writes a `GOAT checks:` line in every task.
 - **Design mode (shift-left at spec time)** — `brainstormer` has no paths yet: it maps the feature's design areas to categories (§6 design triggers), reads those references' **Core** checks that actually constrain the design (10–20 of them, never a whole category), and writes `## GOAT constraints` (check ID → design decision) and `## Constraints accepted as risks` in the spec. Every other check is deferred to plan and review.
 
-A full audit is expensive: 18 explorer dispatches in waves of six over 681 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
+A full audit is expensive: 18 explorer dispatches in waves of six over 682 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built server, live GETs). Say so when offering the category choice; a partial audit costs proportionally less.
 
 ## 4. Check format, IDs, outcomes
 
@@ -87,12 +87,12 @@ Every check of every triggered reference gets one of these outcomes in a full or
 
 ### 4.4 Core tier
 
-`Core: ✓` marks the **139** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **681** checks.
+`Core: ✓` marks the **139** checks that gate every change. `final-reviewer`'s diff mode, `plan-writer` and `brainstormer` evaluate the Core checks of the categories they trigger; a full audit evaluates all **682** checks.
 
 - **Every critical check is Core.**
 - A high check is Core when its failure can break a core flow, expose data, break the release or corrupt persisted data.
 - A medium check is Core only when it encodes a project-wide invariant already enforced by `AGENTS.md`.
-- The tier targets roughly 10–20 % of the set; the current 139 of 681 is 20.4 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
+- The tier targets roughly 10–20 % of the set; the current 139 of 682 is 20.4 %, the accepted ceiling. The category index's `Core` column states each category's count and [AGENT-31] checks it.
 - A Core check keeps its evidence type: diff mode evaluates the `Diff: ✓` ones and defers the `Diff: ✗` ones with a non-blocking ⚠️.
 
 ### 4.5 Target tier
@@ -156,13 +156,13 @@ Each check belongs to exactly one category. Diff triggers activate when a change
 | DATA | MongoDB schema, indexes, migrations, integrity | `references/data-mongodb-model.md` | `docs/data-model.md` | 40 | 8 | 1 | `src/contexts/**/infrastructure/persistence/**`, `src/infrastructure/database/**`, `src/**/mongoose/**`, `docker/**` |
 | ARCH | Architecture & design | `references/arch-architecture.md` | `docs/architecture.md` | 45 | 9 | 0 | any added, moved or deleted file under `src/`, `tests/`, `configs/`, `scripts/`, `packages/`; any changed import statement |
 | STACK | Framework & stack correctness | `references/stack-framework-stack.md` | `docs/architecture.md` | 40 | 8 | 0 | `src/**`, `package.json`, `configs/nest/**`, `configs/swc/**`, `configs/typescript/**` |
-| CODE | Code quality & conventions | `references/code-code-quality.md` | `docs/architecture.md` | 45 | 9 | 0 | any `*.ts` file, `tsconfig.json`, `eslint.config.ts`, `configs/eslint/**`, `oxlint.config.jsonc` |
+| CODE | Code quality & conventions | `references/code-code-quality.md` | `docs/architecture.md` | 46 | 9 | 0 | any `*.ts` file, `tsconfig.json`, `eslint.config.ts`, `configs/eslint/**`, `oxlint.config.jsonc`, `docs/jsdoc.md` |
 | TEST | Testing & QA | `references/test-testing-qa.md` | `docs/unit-tests.md` if the evidence is under `tests/unit/**`, a `*.spec.ts`, `configs/vitest/**` or `configs/stryker/**`; `docs/acceptance-tests.md` if it is under `tests/acceptance/**` or `configs/cucumber/**` | 42 | 11 | 0 | `**/*.spec.ts`, `tests/**`, `configs/vitest/**`, `configs/stryker/**`, `configs/cucumber/**` |
 | PRIV | Privacy & compliance | `references/priv-privacy-compliance.md` | `docs/privacy.md` | 28 | 5 | 1 | `src/**/logging/**`, `src/app/helpers/logger.helpers.ts`, `src/main.ts`, `src/contexts/**/contracts/persistence/**`, `src/contexts/**/infrastructure/persistence/**`, `docs/privacy.md`, `docker/**` |
 | DOCS | Documentation & DX | `references/docs-documentation-dx.md` | `.github/CONTRIBUTING.md` | 30 | 6 | 0 | `docs/**`, `README.md`, `.github/*.md`, `.github/ISSUE_TEMPLATE/**`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `env/.env.example`, `src/contexts/**/infrastructure/http/**`, `src/app/controllers/**`, `src/infrastructure/api/config/**`, `package.json` (scripts) |
 | AGENT | AI-agent tooling hygiene | `references/agent-agent-tooling.md` | `docs/architecture.md` | 35 | 6 | 0 | `AGENTS.md`, `.agents/**`, `.opencode/**`, `opencode.json`, `.github/copilot-instructions.md`, `mempalace.yaml` |
 
-The category index totals **681 checks, 139 Core and 13 Target: reach checks**. [AGENT-31] verifies the `Checks`, `Core` and `Reach` columns against each reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
+The category index totals **682 checks, 139 Core and 13 Target: reach checks**. [AGENT-31] verifies the `Checks`, `Core` and `Reach` columns against each reference file and [AGENT-32] verifies the check format, so a count change is a checklist change, not a report-only edit.
 
 **Decision-doc mapping.** A changed decision doc triggers every category mapped to it: `docs/security.md` → SEC + SUP; `docs/operations.md` → PLAT + OPS + REL; `docs/architecture.md` → ARCH + STACK + CODE + AGENT; `docs/unit-tests.md` / `docs/acceptance-tests.md` → TEST; `.github/CONTRIBUTING.md` → DOCS; `docs/ci-cd.md` → CICD; `docs/domain-logic.md` → LOGIC; `docs/performance.md` → PERF; `docs/i18n.md` → I18N; `docs/api-contract.md` → API; `docs/data-model.md` → DATA; `docs/privacy.md` → PRIV.
 

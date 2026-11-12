@@ -6,6 +6,9 @@ import type { QuestionThemeStatsDto } from "@question-theme/application/dto/ques
 
 import type { QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 
+/**
+ * Maps domain theme stats to the HTTP stats DTO, zero-filling every status so a status without matches still appears in the response.
+ */
 function createQuestionThemeStatsDtoFromStats(stats: QuestionThemeStats): QuestionThemeStatsDto {
   return {
     total: stats.total,

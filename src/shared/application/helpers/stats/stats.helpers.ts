@@ -1,3 +1,8 @@
+/**
+ * Builds one stats bucket per known key, defaulting every bucket to `0`.
+ *
+ * Counts missing from `existingValues` stay at `0`, so consumers always receive the full set of buckets derived from the key tuple.
+ */
 function createStatsZeroFilledRecord<T extends string>(
   keys: readonly T[],
   existingValues?: Partial<Record<T, number>>,

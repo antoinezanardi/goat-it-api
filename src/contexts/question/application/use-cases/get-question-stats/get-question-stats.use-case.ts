@@ -3,6 +3,9 @@ import type { QuestionStatsDto } from "@question/application/dto/question-stats/
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
+/**
+ * Aggregates the question counters and maps them to the stats response shape.
+ */
 export class GetQuestionStatsUseCase {
   public constructor(private readonly questionRepository: QuestionRepository) {}
 

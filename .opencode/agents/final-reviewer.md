@@ -104,6 +104,9 @@ You may dispatch helper subagents when reviewing:
 - **Mocks:** New ports have corresponding `createMocked<What>` in `tests/unit/utils/mocks/`.
 - **Module registration:** New controllers/use-cases/repositories registered in NestJS module.
 - **Acceptance infra:** New domains have world models, fixture registry entries, payloads.
+- **JSDoc:** Public logic surfaces added or changed carry concise TSDoc per `docs/jsdoc.md`; no explanatory, marker or commented-out comments were added.
+- **Documentation drift:** Changes to behavior, config, scripts, routes, environment variables or workflows update every maintained guide that documents them, including `docs/security.md`, `docs/operations.md` and `docs/privacy.md` where relevant.
+- **GOAT audit decisions:** A change that contradicts a documented decision updates the decision doc; a new decision note exists only with maintainer approval, per `.agents/skills/goat-audit/SKILL.md` §7.
 
 ### 5. Cross-task consistency
 - Same concept = same name across all files.

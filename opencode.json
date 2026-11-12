@@ -22,10 +22,25 @@
   "permission": {
     "skill": { "*": "allow" },
     "bash": {
+      "*": "ask",
       "git checkout -b *": "allow",
-      "git add *": "deny",
-      "git commit *": "deny",
-      "git push *": "deny"
+      "git add*": "deny",
+      "git commit*": "deny",
+      "git push*": "deny",
+      "gh pr merge*": "deny",
+      "gh release create*": "deny",
+      "gh release delete*": "deny",
+      "gh release edit*": "deny",
+      "gh release upload*": "deny",
+      "gh repo delete*": "deny",
+      "gh repo archive*": "deny",
+      "gh secret set*": "deny",
+      "gh secret delete*": "deny",
+      "* .env": "ask",
+      "* .env.*": "ask",
+      "*/.env": "ask",
+      "*/.env.*": "ask",
+      "cat env/.env.example": "allow"
     }
   },
   "lsp": {

@@ -14,6 +14,7 @@
   "plugins": [
     "eslint",
     "import",
+    "jsdoc",
     "node",
     "oxc",
     "promise",
@@ -363,6 +364,25 @@
     "import/no-webpack-loader-syntax": "error",
     "import/prefer-default-export": "off",
     "import/unambiguous": "error",
+    // ---- JSDoc Rules -----
+    "jsdoc/check-access": "error",
+    "jsdoc/check-property-names": "error",
+    "jsdoc/check-tag-names": [
+      "error",
+      {
+        "definedTags": [
+          "remarks"
+        ]
+      }
+    ],
+    "jsdoc/empty-tags": "error",
+    "jsdoc/no-blank-blocks": "error",
+    "jsdoc/no-defaults": "error",
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-param-name": "error",
+    "jsdoc/require-returns-description": "error",
+    "jsdoc/require-throws-description": "error",
+    "jsdoc/require-yields-description": "error",
     // ---- Node Rules -----
     "node/callback-return": "error",
     "node/global-require": "error",
@@ -675,6 +695,7 @@
             ]
           }
         ],
+        "typescript/no-generated-empty-object-type": "error",
         "typescript/no-meaningless-void-operator": "error",
         "typescript/no-misused-new": "error",
         "typescript/no-misused-promises": [
@@ -715,6 +736,7 @@
         "typescript/no-unsafe-assignment": "error",
         "typescript/no-unsafe-call": "error",
         "typescript/no-unsafe-declaration-merging": "error",
+        "typescript/no-unsafe-enum-assignment": "error",
         "typescript/no-unsafe-enum-comparison": "error",
         "typescript/no-unsafe-function-type": "error",
         "typescript/no-unsafe-member-access": "error",

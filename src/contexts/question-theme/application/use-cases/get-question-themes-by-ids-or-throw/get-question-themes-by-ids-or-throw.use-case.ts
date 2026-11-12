@@ -4,6 +4,9 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Resolves a set of theme ids for the `question` context and fails when any requested theme is missing.
+ */
 export class GetQuestionThemesByIdsOrThrowUseCase {
   public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 
@@ -15,6 +18,11 @@ export class GetQuestionThemesByIdsOrThrowUseCase {
     }
   }
 
+  /**
+   * Returns the found themes in no guaranteed order.
+   *
+   * @throws `QuestionThemeNotFoundError` for the first requested id that matches no theme.
+   */
   public async getByIdsOrThrow(ids: Set<string>): Promise<QuestionTheme[]> {
     const foundQuestionThemes = await this.questionThemeRepository.findByIds(ids);
     const foundQuestionThemeIds = new Set(foundQuestionThemes.map(theme => theme.id));

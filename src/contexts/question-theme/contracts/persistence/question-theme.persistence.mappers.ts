@@ -2,6 +2,9 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemePersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.types";
 
+/**
+ * Maps the published theme persistence shape to the domain entity, normalizing `_id` to a string `id` and keeping `createdAt`/`updatedAt` as dates.
+ */
 function createQuestionThemeFromPersistenceShape(questionThemePersistenceShape: QuestionThemePersistenceShape): QuestionTheme {
   return {
     id: questionThemePersistenceShape._id.toString(),

@@ -1,5 +1,5 @@
 ---
-description: 'Runs the GOAT audit of the goat-it-api repository through /goat-audit — all 18 categories (681 checks, 139 Core, 13 Target: reach) or a chosen subset — collects evidence, fans out one explore agent per category, verifies findings, writes the gitignored report, then triages findings into GitHub issues, private security advisories or decision notes. Never modifies application code. Switch with Tab or run /goat-audit.'
+description: 'Runs the GOAT audit of the goat-it-api repository through /goat-audit — all 18 categories (682 checks, 139 Core, 13 Target: reach) or a chosen subset — collects evidence, fans out one explore agent per category, verifies findings, writes the gitignored report, then triages findings into GitHub issues, private security advisories or decision notes. Never modifies application code. Switch with Tab or run /goat-audit.'
 mode: primary
 model: opencode-go/deepseek-v4.1-flash
 temperature: 0.1

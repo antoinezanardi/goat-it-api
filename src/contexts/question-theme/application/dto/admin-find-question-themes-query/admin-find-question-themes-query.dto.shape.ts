@@ -11,6 +11,9 @@ import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.d
 import { zIsFullyTranslated } from "@shared/application/dto/zod/validators/translation-completeness/translation-completeness.zod.validators";
 import { zLimit } from "@shared/application/dto/zod/validators/limit/limit.zod.validators";
 
+/**
+ * Validates an admin theme-list query: pagination, sorting and the status and translation-completeness filters, with the sort defaults applied.
+ */
 const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)
     .optional()
@@ -27,6 +30,9 @@ const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [FULLY_TRANSLATED_QUERY_KEY]: zIsFullyTranslated(),
 });
 
+/**
+ * The parsed admin theme-list query consumers receive, with the sort defaults resolved and omitted filters absent.
+ */
 type AdminFindQuestionThemesQueryDto = z.infer<typeof ADMIN_FIND_QUESTION_THEMES_QUERY_DTO>;
 
 export type { AdminFindQuestionThemesQueryDto };

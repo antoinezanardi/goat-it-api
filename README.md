@@ -260,8 +260,16 @@ You can add them as **run configurations** in your IDE.
 ## <a name="documentation">📚 Documentation</a>
 
 - **[Architecture and file-placement conventions](docs/architecture.md)** — where every file belongs, how it is named and what may depend on it.
-- **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
+- **[JSDoc guide](docs/jsdoc.md)** — JSDoc scope, concise-TSDoc style, examples and enforcement.
+- **[API contract](docs/api-contract.md)** — HTTP surface, DTO and error conventions, Swagger and the published schemas package.
+- **[Data model](docs/data-model.md)** — MongoDB collections, fields, indexes, references and migration posture.
+- **[Domain logic](docs/domain-logic.md)** — question and question-theme domain rules, invariants and error contracts.
+- **[Performance](docs/performance.md)** — indexing, query patterns, pagination and payload bounds.
+- **[Internationalization](docs/i18n.md)** — `Accept-Language` pipeline, locales, fallback and translation completeness.
+- **[Security](docs/security.md)** — authentication, validation, CORS, secrets, disclosure and known limitations.
+- **[Privacy](docs/privacy.md)** — data inventory, logging and telemetry PII policy, retention and legal posture.
 - **[Operations](docs/operations.md)** — health/readiness contract, container health check, graceful shutdown and post-deploy verification.
+- **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
 - **[Bruno collection](docs/bruno.md)** — API collection setup and usage.
 - **[Unit tests](docs/unit-tests.md)** — Vitest conventions per file type.
 - **[Acceptance tests](docs/acceptance-tests.md)** — Cucumber, fixtures, payloads and steps.

@@ -8,6 +8,9 @@ import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { zLimit } from "@shared/application/dto/zod/validators/limit/limit.zod.validators";
 
+/**
+ * Validates a public theme-list query: pagination and sorting, with the sort-field, sort-order and limit defaults applied.
+ */
 const FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_THEME_SORTABLE_FIELDS)
     .optional()
@@ -22,6 +25,9 @@ const FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [LIMIT_QUERY_KEY]: zLimit(),
 });
 
+/**
+ * The parsed public theme-list query consumers receive, ready to become repository sort and limit options.
+ */
 type FindQuestionThemesQueryDto = z.infer<typeof FIND_QUESTION_THEMES_QUERY_DTO>;
 
 export type { FindQuestionThemesQueryDto };

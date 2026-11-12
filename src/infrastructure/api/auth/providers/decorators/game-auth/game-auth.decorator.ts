@@ -3,7 +3,9 @@ import { applyDecorators, UseGuards } from "@nestjs/common";
 import { GameApiKeyGuard } from "@src/infrastructure/api/auth/providers/guards/game-api-key/game-api-key.guard";
 
 /**
- * Auth decorator that applies the GameApiKeyGuard to protect routes meant for game management access.
+ * Applies `GameApiKeyGuard` to a route or controller, so the request must carry the game `goat-it-api-key` header.
+ *
+ * A missing or invalid key is rejected with a 401 Unauthorized; the game key cannot call admin routes.
  *
  * @example
  * ```typescript

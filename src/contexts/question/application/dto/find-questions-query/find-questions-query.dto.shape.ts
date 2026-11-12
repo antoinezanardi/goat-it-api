@@ -10,6 +10,9 @@ import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_C
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/constants/question-sort.dto.constants";
 import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionThemeIdsFilter } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
+/**
+ * Validates a public question-list query: pagination, sorting and the public filters, with the sort-field, sort-order and limit defaults applied.
+ */
 const FIND_QUESTIONS_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_SORTABLE_FIELDS)
     .optional()
@@ -26,6 +29,9 @@ const FIND_QUESTIONS_QUERY_DTO = z.object({
   [QUESTION_IS_ADULT_CONTENT_QUERY_KEY]: zQuestionIsAdultContentFilter(),
 });
 
+/**
+ * The parsed public question-list query consumers receive, with the sort defaults resolved and omitted filters absent.
+ */
 type FindQuestionsQueryDto = z.infer<typeof FIND_QUESTIONS_QUERY_DTO>;
 
 export type { FindQuestionsQueryDto };

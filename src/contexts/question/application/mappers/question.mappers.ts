@@ -20,6 +20,11 @@ import type { QuestionCreationCommand, QuestionModificationCommand } from "@ques
 import type { QuestionAuthorCreationContract, QuestionContentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
+/**
+ * Maps question content to its public DTO, resolving every localized field for the requested locale.
+ *
+ * Absent `context` and `trivia` stay `undefined` rather than being replaced by a placeholder.
+ */
 function createQuestionContentDtoFromEntity(questionContent: QuestionContent, localizationOptions: LocalizationOptions): QuestionContentDto {
   const context = questionContent.context ? createTranslationFromLocalizedText(questionContent.context, localizationOptions) : undefined;
   const trivia = questionContent.trivia ? createTranslationsFromLocalizedTexts(questionContent.trivia, localizationOptions) : undefined;
@@ -32,6 +37,9 @@ function createQuestionContentDtoFromEntity(questionContent: QuestionContent, lo
   };
 }
 
+/**
+ * Maps one theme assignment to its public DTO, resolving the nested theme for the requested locale.
+ */
 function createQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: QuestionThemeAssignment, localizationOptions: LocalizationOptions): QuestionThemeAssignmentDto {
   return {
     theme: createQuestionThemeDtoFromEntity(questionThemeAssignment.theme, localizationOptions),
@@ -40,6 +48,11 @@ function createQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: Que
   };
 }
 
+/**
+ * Maps a question entity to the public question DTO, localizing content and themes and converting the timestamps to ISO strings.
+ *
+ * `sourceUrls` is copied into a new array so the response does not alias the domain `Set`.
+ */
 function createQuestionDtoFromEntity(question: Question, localizationOptions: LocalizationOptions): QuestionDto {
   return {
     id: question.id,
@@ -57,6 +70,9 @@ function createQuestionDtoFromEntity(question: Question, localizationOptions: Lo
   };
 }
 
+/**
+ * Maps one theme assignment to its admin DTO, keeping the nested theme in its localized-map form.
+ */
 function createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: QuestionThemeAssignment): AdminQuestionThemeAssignmentDto {
   return {
     theme: createAdminQuestionThemeDtoFromEntity(questionThemeAssignment.theme),
@@ -65,6 +81,11 @@ function createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment
   };
 }
 
+/**
+ * Maps a question entity to the admin DTO, exposing every localized map and the applicable locales, with timestamps as ISO strings.
+ *
+ * `sourceUrls` is copied into a new array so the response does not alias the domain `Set`.
+ */
 function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto {
   return {
     id: question.id,
@@ -83,6 +104,9 @@ function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto 
   };
 }
 
+/**
+ * Maps a question-author creation DTO to the repository contract, keeping only the fields the repository persists.
+ */
 function createQuestionAuthorCreationContractFromDto(questionAuthorDto: QuestionAuthorCreationDto): QuestionAuthorCreationContract {
   return {
     role: questionAuthorDto.role,
@@ -90,6 +114,9 @@ function createQuestionAuthorCreationContractFromDto(questionAuthorDto: Question
   };
 }
 
+/**
+ * Maps a question-content creation DTO to the repository contract, preserving the localized maps as submitted.
+ */
 function createQuestionContentCreationContractFromDto(questionContentDto: QuestionContentCreationDto): QuestionContentCreationContract {
   return {
     statement: questionContentDto.statement,
@@ -99,6 +126,9 @@ function createQuestionContentCreationContractFromDto(questionContentDto: Questi
   };
 }
 
+/**
+ * Maps a question-creation DTO to a creation command, deriving the initial status from the author role and copying the source URLs into a `Set`.
+ */
 function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): QuestionCreationCommand {
   return {
     payload: {
@@ -115,6 +145,9 @@ function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): Questio
   };
 }
 
+/**
+ * Maps a question-modification DTO and its target id to a modification command; omitted fields stay `undefined` so the repository leaves them untouched.
+ */
 function createQuestionModificationCommandFromDto(questionId: string, questionModificationDto: QuestionModificationDto): QuestionModificationCommand {
   return {
     questionId,

@@ -8,12 +8,22 @@ import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
+/**
+ * Creates a question after checking that every referenced theme exists and that none is archived.
+ */
 export class CreateQuestionUseCase {
   public constructor(
     private readonly questionRepository: QuestionRepository,
     private readonly getQuestionThemesByIdsOrThrowUseCase: GetQuestionThemesByIdsOrThrowUseCase,
   ) {}
 
+  /**
+   * Returns the stored question after the write.
+   *
+   * @throws `QuestionThemeNotFoundError` when a referenced theme id matches no theme.
+   * @throws `ReferencedQuestionThemeArchivedError` when one of the referenced themes is archived.
+   * @throws `QuestionCreationError` when the question is written but cannot be read back.
+   */
   public async create(questionCreateCommand: QuestionCreationCommand): Promise<Question> {
     await this.throwIfQuestionNotCreatable(questionCreateCommand);
     const question = await this.questionRepository.create(questionCreateCommand.payload);

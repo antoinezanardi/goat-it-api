@@ -19,7 +19,7 @@ The report lives in `docs/audits/` (gitignored because the repository is public 
 - `triage <path>` → resume triage on that report.
 - anything else → ask the maintainer what they mean.
 
-A full run is expensive: 18 explorer dispatches in waves of six over 681 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built-server header pass, live GETs). State that cost when offering the category choice; a partial run costs proportionally less.
+A full run is expensive: 18 explorer dispatches in waves of six over 682 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built-server header pass, live GETs). State that cost when offering the category choice; a partial run costs proportionally less.
 
 ### 0. Mode and preflight
 

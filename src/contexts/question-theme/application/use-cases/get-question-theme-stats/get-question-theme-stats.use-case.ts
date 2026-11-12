@@ -4,6 +4,9 @@ import type { QuestionThemeStatsDto } from "@question-theme/application/dto/ques
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Aggregates the question theme counters and maps them to the stats response shape.
+ */
 export class GetQuestionThemeStatsUseCase {
   public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 

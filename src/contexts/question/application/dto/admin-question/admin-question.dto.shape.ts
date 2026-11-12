@@ -7,6 +7,9 @@ import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/questio
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 import { ADMIN_QUESTION_CONTENT_DTO } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
 
+/**
+ * Validates a complete admin question: localized content and themes, author, status, timestamps and an optional rejection.
+ */
 const ADMIN_QUESTION_DTO = z.strictObject({
   id: zQuestionId(),
   category: zQuestionCategory(),
@@ -29,6 +32,9 @@ const ADMIN_QUESTION_DTO = z.strictObject({
   updatedAt: zQuestionUpdatedAt(),
 });
 
+/**
+ * The admin question consumers receive: every translation and the applicable-locale restriction exposed for editing.
+ */
 export type AdminQuestionDto = z.infer<typeof ADMIN_QUESTION_DTO>;
 
 export { ADMIN_QUESTION_DTO };

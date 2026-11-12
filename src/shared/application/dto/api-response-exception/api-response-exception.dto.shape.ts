@@ -2,6 +2,9 @@ import { z } from "zod";
 
 import { API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO } from "@shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
 
+/**
+ * Validates the API error response body: HTTP status, message, error label, optional validation details and an optional error code.
+ */
 const API_RESPONSE_EXCEPTION_DTO = z.strictObject({
   statusCode: z.number()
     .describe("HTTP status code of the error response")
@@ -21,6 +24,9 @@ const API_RESPONSE_EXCEPTION_DTO = z.strictObject({
     .meta({ example: "question-theme-referenced-by-live-questions" }),
 });
 
+/**
+ * The error body consumers receive; `validationDetails` appears only for request-validation failures and `errorCode` only for mapped domain errors.
+ */
 export type ApiResponseExceptionDto = z.infer<typeof API_RESPONSE_EXCEPTION_DTO>;
 
 export { API_RESPONSE_EXCEPTION_DTO };

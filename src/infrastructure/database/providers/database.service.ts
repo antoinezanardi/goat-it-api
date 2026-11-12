@@ -6,12 +6,20 @@ import { DATABASE_CONNECTION_TIMEOUT_MS, DATABASE_RETRY_ATTEMPTS, DATABASE_RETRY
 import type { MongooseModuleOptions, MongooseOptionsFactory } from "@nestjs/mongoose";
 import type { Connection } from "mongoose";
 
+/**
+ * Builds the Mongoose connection options from the environment and logs connection lifecycle events.
+ */
 @Injectable()
 export class DatabaseService implements MongooseOptionsFactory {
   private readonly logger = new Logger(DatabaseService.name);
 
   public constructor(private readonly appConfig: AppConfigService) {}
 
+  /**
+   * Builds the connection URI from the configured host, port and database name.
+   *
+   * Timeouts, retry count and retry delay are bounded and configurable only through the constants, and the call logs once per app start.
+   */
   public createMongooseOptions(): MongooseModuleOptions {
     this.logger.log("🍃 Connecting to the database...");
     const { host, port, database } = this.appConfig.mongoDbConfig;

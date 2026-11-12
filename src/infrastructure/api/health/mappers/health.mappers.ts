@@ -3,6 +3,11 @@ import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health
 
 import type { HealthCheckResult } from "@nestjs/terminus";
 
+/**
+ * Narrows a Terminus health-check result to the public health DTO.
+ *
+ * Only the Mongoose connection and docs-endpoint indicators are forwarded; any other registered indicator is dropped.
+ */
 function createAppHealthDtoFromHealthCheckResult(healthCheckResult: HealthCheckResult): AppHealthDto {
   return {
     status: healthCheckResult.status,

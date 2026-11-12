@@ -4,6 +4,9 @@ import type { QuestionThemeCreationDto } from "@question-theme/application/dto/q
 import type { QuestionThemeModificationDto } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 import type { QuestionThemeCreationCommand, QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 
+/**
+ * Maps a theme-creation DTO to a creation command, forcing the default theme status instead of accepting one from the client.
+ */
 function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: QuestionThemeCreationDto): QuestionThemeCreationCommand {
   return {
     payload: {
@@ -17,6 +20,9 @@ function createQuestionThemeCreationCommandFromDto(questionThemeCreationDto: Que
   };
 }
 
+/**
+ * Maps a theme-modification DTO and its target id to a modification command; the status is intentionally absent from the payload.
+ */
 function createQuestionThemeModificationCommandFromDto(questionThemeId: string, questionThemeModificationDto: QuestionThemeModificationDto): QuestionThemeModificationCommand {
   return {
     questionThemeId,

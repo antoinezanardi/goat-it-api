@@ -9,12 +9,22 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Archives a question theme after checking that it exists, is not archived yet and is referenced by no live question.
+ */
 export class ArchiveQuestionThemeUseCase {
   public constructor(
     private readonly questionThemeRepository: QuestionThemeRepository,
     private readonly countLiveQuestionsByThemeIdUseCase: CountLiveQuestionsByThemeIdUseCase,
   ) {}
 
+  /**
+   * Returns the archived theme.
+   *
+   * @throws `QuestionThemeNotFoundError` when no theme matches the id.
+   * @throws `QuestionThemeAlreadyArchivedError` when the theme is already archived.
+   * @throws `QuestionThemeReferencedByLiveQuestionsError` when at least one pending or active question references the theme.
+   */
   public async archive(id: string): Promise<QuestionTheme> {
     await this.throwIfQuestionThemeNotArchivable(id);
     await this.throwIfLiveQuestionsReferenceTheme(id);

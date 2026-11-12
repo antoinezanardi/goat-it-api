@@ -8,6 +8,9 @@ import { QUESTION_CONTENT_CREATION_DTO } from "@question/application/dto/questio
 import { QUESTION_THEME_ASSIGNMENT_CREATION_DTO } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import { zQuestionApplicableLocales, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIsAdultContent, zQuestionSourceUrls } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
+/**
+ * Validates a question-creation payload, including the unique-theme-id and single-primary-theme rules enforced by the array refinements.
+ */
 const QUESTION_CREATION_DTO = z.object({
   category: zQuestionCategory(),
   themes: z.array(QUESTION_THEME_ASSIGNMENT_CREATION_DTO)
@@ -24,6 +27,9 @@ const QUESTION_CREATION_DTO = z.object({
   applicableLocales: zQuestionApplicableLocales(),
 });
 
+/**
+ * The validated creation payload consumers receive, ready to be mapped into a creation command.
+ */
 export type QuestionCreationDto = z.infer<typeof QUESTION_CREATION_DTO>;
 
 export { QUESTION_CREATION_DTO };
