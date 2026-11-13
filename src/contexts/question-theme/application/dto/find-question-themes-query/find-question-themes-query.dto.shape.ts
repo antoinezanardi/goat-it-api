@@ -9,7 +9,7 @@ import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { zLimit } from "@shared/application/dto/zod/validators/limit/limit.zod.validators";
 
 /**
- * Validates a public theme-list query: pagination and sorting, with the sort-field, sort-order and limit defaults applied.
+ * Validates a public theme-list query: sorting and limiting, with the sort-field, sort-order and limit defaults applied.
  */
 const FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_THEME_SORTABLE_FIELDS)

@@ -11,7 +11,7 @@ import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@questio
 import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionThemeIdsFilter } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
 /**
- * Validates a public question-list query: pagination, sorting and the public filters, with the sort-field, sort-order and limit defaults applied.
+ * Validates a public question-list query: sorting, limiting and the public filters, with the sort-field, sort-order and limit defaults applied.
  */
 const FIND_QUESTIONS_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(QUESTION_SORTABLE_FIELDS)

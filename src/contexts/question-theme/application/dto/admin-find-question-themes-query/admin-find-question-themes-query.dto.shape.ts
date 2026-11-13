@@ -12,7 +12,7 @@ import { zIsFullyTranslated } from "@shared/application/dto/zod/validators/trans
 import { zLimit } from "@shared/application/dto/zod/validators/limit/limit.zod.validators";
 
 /**
- * Validates an admin theme-list query: pagination, sorting and the status and translation-completeness filters, with the sort defaults applied.
+ * Validates an admin theme-list query: sorting, limiting and the status and translation-completeness filters, with the sort-field, sort-order and limit defaults applied.
  */
 const ADMIN_FIND_QUESTION_THEMES_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(ADMIN_QUESTION_THEME_SORTABLE_FIELDS)

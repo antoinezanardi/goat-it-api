@@ -7,7 +7,7 @@ File placement, naming and dependency direction are owned by [`architecture.md`]
 ## Table of Contents
 
 - [1. Scope](#1-scope)
-  - [1.1 Not documented in this pass](#11-not-documented-in-this-pass)
+  - [1.1 Intentionally out of scope](#11-intentionally-out-of-scope)
 - [2. Style: concise TSDoc](#2-style-concise-tsdoc)
 - [3. Examples](#3-examples)
 - [4. Anti-patterns](#4-anti-patterns)
@@ -22,7 +22,7 @@ JSDoc is required on the logic surfaces a maintainer must understand before chan
 | **Use case** | `src/contexts/**/application/use-cases/**/*.use-case.ts` | Class purpose; `@throws` on the public entry method for every domain error that can escape. |
 | **Repository port** | `src/contexts/**/domain/repositories/**/*.repository.types.ts` | Type purpose; non-obvious method contracts, notably `undefined` return semantics and query shape. |
 | **Repository adapter** | `src/contexts/**/infrastructure/persistence/mongoose/repository/**/*.mongoose.repository.ts` | Class purpose; public methods whose behaviour differs from the port (aggregation, duplicate-key translation, `undefined` on no match). |
-| **Mapper** | `src/**/mappers/**/*.mappers.ts` and `src/contexts/**/contracts/persistence/**/*.persistence.mappers.ts` | Every exported mapper: source → target, plus localization, defaulting or date normalization. |
+| **Mapper** | `src/**/mappers/**/*.mappers.ts`, `src/contexts/**/contracts/dto/*.dto.mappers.ts` and `src/contexts/**/contracts/persistence/**/*.persistence.mappers.ts` | Every exported mapper: source → target, plus localization, defaulting or date normalization. |
 | **Domain rule** | `src/contexts/**/domain/rules/**/*.rules.ts` and `src/shared/domain/rules/**/*.rules.ts` | Every exported predicate, policy and helper; `@throws` on every `ensure*`. |
 | **Service** | `src/**/providers/**/*.service.ts` | Class purpose; public methods with side effects or failure behaviour. |
 | **HTTP boundary** | `src/infrastructure/api/auth/providers/guards/**/*.guard.ts`, `src/infrastructure/api/auth/providers/decorators/**/*.decorator.ts`, `src/shared/infrastructure/http/{decorators,middlewares,pipes}/**`, `src/app/filters/**/*.filter.ts` | Class or function purpose, and the rejection or HTTP status contract. |
@@ -30,9 +30,11 @@ JSDoc is required on the logic surfaces a maintainer must understand before chan
 | **Shared or contract type** | `src/shared/**/*.types.ts`, `src/contexts/**/domain/repositories/*.repository-contracts.types.ts`, `src/contexts/**/contracts/persistence/*.types.ts` | Type purpose; non-obvious members only. |
 | **Published DTO shape** | `*.dto.shape.ts` files re-exported by `packages/schemas/src/**/index.ts` under `src/contexts/**/application/dto/**`, `src/contexts/**/contracts/dto/**` and `src/shared/application/dto/**` | One top-level block on the schema constant and one on the inferred type. Field-level documentation stays in `.describe()` and `.meta()`; `z.infer` does not carry per-field TSDoc, so do **not** hand-write parallel interfaces or types to add per-field comments. |
 
-### 1.1 Not documented in this pass
+The table scopes surfaces, not export graphs. `packages/schemas` also re-exports constants, value objects, locale aliases and testing faketories, and its `index.ts` files are pure barrels; those stay out of scope per [§1.1](#11-intentionally-out-of-scope). A symbol is documented because its surface is listed above, never merely because the package exports it.
 
-The following surfaces are intentionally out of scope for new blocks. Each is already covered by a stronger, self-checking contract; an existing block that already adds value may stay, but do not add new ones:
+### 1.1 Intentionally out of scope
+
+The following surfaces are intentionally out of scope. Each is already covered by a stronger, self-checking contract; an existing block that adds value may stay, but do not add blocks to these surfaces:
 
 - **Domain error classes** — the class name, message and `GlobalExceptionFilter` mapping are the contract. Document `@throws` at the throwing surface instead, where a caller can act on it.
 - **Entity, value-object and helper-local type aliases** — the field names are the contract; domain semantics live in [`domain-logic.md`](domain-logic.md). Self-describing aliases such as `locale.types.ts` and `package-json.helpers.types.ts` stay out of scope; only generic, utility or contract types with non-obvious members are documented.
@@ -72,7 +74,7 @@ The following surfaces are intentionally out of scope for new blocks. Each is al
 
 ### Per-surface expectations
 
-- **`.types.ts`** — document a non-obvious member directly above the member, not in a block above the type.
+- **`.types.ts`** — document a non-obvious member directly above the member. A block above the type is for the type's overall purpose or an invariant no single member carries, such as a field deliberately absent; self-describing members stay uncommented.
 - **Use cases** — describe the orchestration and the failure behaviour. `@throws` names the error in backticks and states when it is raised, so the HTTP mapping can be predicted without reading the method body.
 - **Ports and adapters** — describe the query shape and the Mongo-specific constraints. State the `undefined` return semantics explicitly; a port that returns `undefined` and an adapter that returns `undefined` must agree on why.
 - **Mappers** — state the source and target, then the normalization: localization, defaults, and date or `_id` conversion.
