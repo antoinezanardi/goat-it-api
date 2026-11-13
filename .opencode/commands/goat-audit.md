@@ -17,6 +17,7 @@ The report lives in `docs/audits/` (gitignored because the repository is public 
 - `categories <CODES>` → run restricted to those category codes, comma-separated (e.g. `categories SEC,API,DATA`); an unknown code → ask the maintainer.
 - `triage` → resume triage on the latest `docs/audits/GOAT-AUDIT-*.md` (latest = greatest date, then greatest suffix).
 - `triage <path>` → resume triage on that report.
+- `triage --batch <5|10> [<path>]` → resume triage with one question per batch of 5 or 10 findings (phase 6 batching), on the latest report or on `<path>`.
 - anything else → ask the maintainer what they mean.
 
 A full run is expensive: 18 explorer dispatches in waves of six over 682 checks (139 Core, 13 Target: reach), adversarial verification of every FAIL, a production build with coverage and mutation, a `dist/` inventory and secrets scan, and the opt-in runtime probes (acceptance suite, local built-server header pass, live GETs). State that cost when offering the category choice; a partial run costs proportionally less.
@@ -82,7 +83,7 @@ Collect every `needs-docs` claim from FAIL findings, group by library, dispatch 
 
 ### 4. Adversarial verification
 
-Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by category, waves ≤ 6. Verifier contract (template in `references/triage-templates.md` §Verifier when present; the contract below is authoritative either way): try to **refute** each finding; re-read every cited `file:line` and confirm the line exists (line number ≤ file length) and says what the finding claims; check the criterion really applies; check `decisions.md`; check the severity. Outcome per finding: `CONFIRMED` · `REFUTED: <reason>` · `ADJUSTED: <from> → <to>, <reason>` (one level max) · `DECIDED: <doc>:<line>`. Return the verification document inline; the conductor writes `verification/<CODE>-<n>.md`. The conductor applies outcomes; REFUTED findings go to "Discarded false positives".
+Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by category, waves ≤ 6. Verifier contract (template in `references/triage-templates.md` §Verifier when present; the contract below is authoritative either way): try to **refute** each finding; re-read every cited `file:line` and confirm the line exists (line number ≤ file length) and says what the finding claims; check the criterion really applies; check `decisions.md`; check the severity — a move from the checklist default needs a written justification inside the finding; without it, restore the default and record `ADJUSTED: <moved> → <default>, no written justification`. Outcome per finding: `CONFIRMED` · `REFUTED: <reason>` · `ADJUSTED: <from> → <to>, <reason>` (one level max) · `DECIDED: <doc>:<line>`. Return the verification document inline; the conductor writes `verification/<CODE>-<n>.md`. The conductor applies outcomes; REFUTED findings go to "Discarded false positives".
 
 ### 5. Synthesis and report
 
@@ -107,7 +108,7 @@ Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by
    - **Skip (decide later)**;
    - **Stop triage here** (resume later with `/goat-audit triage`).
 
-   **Batching (opt-in).** The maintainer may request batches (`triage --batch 5`/`--batch 10`, or ask during the run). In that mode, present one question per batch of N findings with one selectable option per finding plus "Skip all N"; each selected finding still gets its own artifact and its own §10/Appendix B row, and any finding needing a different action is handled in a follow-up single question. Never batch a 🔒 finding with public ones. The default remains one question per finding.
+   **Batching (opt-in).** The maintainer may request batches (`triage --batch 5`/`--batch 10`, or ask during the run). In that mode, present one question per batch of N findings with one selectable option per finding plus "Skip all N"; resolve duplicate groups (`duplicate_of`) before creating anything, so the members of a group share one artifact and one decision while each selected finding still gets its own §10/Appendix B row, and any finding needing a different action is handled in a follow-up single question. Never batch a 🔒 finding with public ones. The default remains one question per finding.
 
 5. Push back and Deny ask **one** follow-up question (custom answer) for the rationale, the "Revisit when" trigger and the checklist change (criterion rewrite, or removal with its renumbering), then append the decision note (skill §7) to the mapped doc (creating the doc and its `AGENTS.md` line only when the file is on the agent's edit allowlist; otherwise stop and report the permission gap) and write the ready-to-apply checklist patch to `checklist-amendments.md` in the run directory — never apply it (skill §2(c)).
 6. Public issue: body written to `issues/<ID>.md` from the template; `gh issue create --title "<title>" --body-file docs/audits/.work/<report-name>/issues/<ID>.md --label "<type label>" --label "🐐 goat-audit"`.

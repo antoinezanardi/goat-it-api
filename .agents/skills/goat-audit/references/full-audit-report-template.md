@@ -246,7 +246,7 @@ This table is authoritative for triage resumability; Appendix B mirrors it.
 - `private` — `true` when the finding carries 🔒. A 🔒 finding never pairs with `decision: issue` or `comment`; only `advisory`, `accepted-risk`, `not-applicable`, `false-positive`, `skipped` or `pending` are valid, and public handling requires the maintainer to clear the mark first (command §6).
 - `decision` — `issue` | `advisory` | `comment` | `accepted-risk` | `not-applicable` | `false-positive` | `skipped` | `pending`. A `gap` uses `issue` (feature or performance) or `skipped`; it never uses a decision note.
 - `artifact` — `#612` | `GHSA-xxxx-xxxx-xxxx` | `docs/security.md:80` | `null`.
-- `duplicate_of` — `null`, or the ID of the finding that reports the same evidence path and root cause in another category (e.g. `ARCH-16` ↔ `TEST-04`, `API-17` ↔ `STACK-20`, `REL-30` ↔ `PERF-20`, `SEC-48` ↔ `PRIV-07`). Triage creates one artifact for a duplicate group and records the same artifact on every member.
+- `duplicate_of` — `null`, or the ID of the finding that reports the same evidence path and root cause in another category (e.g. `ARCH-16` ↔ `TEST-04`, `API-17` ↔ `STACK-20`, `REL-30` ↔ `PERF-20`, `SEC-48` ↔ `PRIV-07`). Resolve the group before creating any artifact: triage creates one artifact for a duplicate group and records the same artifact on every member.
 - Delta computation against the previous report compares fingerprints: **Resolved** (was FAIL, now PASS/N/A), **Still open**, **New**, **Regressed** (Resolved in an earlier report or PASS previously, now FAIL), **Newly decided** (now DECIDED), **Still a gap** (was GAP, still GAP), **Closed gap** (was GAP, now PASS).
 
 ## Sources
