@@ -6,9 +6,7 @@ vi.mock("@nestjs/common", async importActual => ({
 }));
 
 vi.mock("nestjs-zod", async importOriginal => {
-  // Acceptable as importOriginal returns a module namespace that is spreadable at runtime but not typed as an object
-  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-  const actual = await importOriginal() as Record<string, unknown>;
+  const actual = await importOriginal<Record<string, unknown>>();
 
   return {
     ...actual,
