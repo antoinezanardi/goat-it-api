@@ -115,6 +115,18 @@ pnpm run test:acceptance
 
 > **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test`. The suite builds the app (`pnpm build`) by default before spawning the server process.
 
+### Docker services
+
+The acceptance suite needs the Mongo container defined in `docker/goat-it-api-acceptance-tests/docker-compose.yml`:
+
+| Command                                      | Effect                                                                                                                                                              |
+|----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `pnpm run docker:acceptance-tests:start`     | Starts MongoDB and keeps the named `mongodb_data_container` volume.                                                                                                 |
+| `pnpm run docker:acceptance-tests:stop`      | Removes the container and network, but keeps the named volume, so a later `start` resumes with the same data.                                                       |
+| `pnpm run docker:acceptance-tests:reset`     | **Discards** the named `mongodb_data_container` volume (`docker compose down --volumes`), then starts a fresh MongoDB.                                              |
+
+`reset` is the only command that throws the acceptance database away. Per-scenario `resetTestDatabase()` still drops and recreates every collection, so scenarios never depend on data from a previous run even across a `stop`/`start`; use `reset` when the volume itself may be corrupted or was migrated unexpectedly.
+
 ---
 
 ## Lifecycle & Hooks

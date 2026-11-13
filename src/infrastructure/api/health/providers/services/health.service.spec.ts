@@ -3,7 +3,7 @@ import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from
 import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
-import { HEALTH_CHECK_UNAVAILABLE_MESSAGE } from "@src/infrastructure/api/health/constants/health.constants";
+import { DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS, HEALTH_CHECK_UNAVAILABLE_MESSAGE } from "@src/infrastructure/api/health/constants/health.constants";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
@@ -133,7 +133,11 @@ describe(HealthService, () => {
     it("should call ping check from http health indicator when called.", async() => {
       await services.health["checkGoatItDocs"]();
 
-      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith("goat-it-docs", "http://0.0.0.0:3000/docs");
+      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(
+        "goat-it-docs",
+        "http://0.0.0.0:3000/docs",
+        { timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS },
+      );
     });
   });
 });

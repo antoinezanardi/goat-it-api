@@ -16,8 +16,8 @@ const QUESTION_CREATION_DTO = z.object({
   themes: z.array(QUESTION_THEME_ASSIGNMENT_CREATION_DTO)
     .min(QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS)
     .max(QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS)
-    .refine(themes => areValuesUniqueByKey(themes, "themeId"), { message: "Theme IDs must be unique" })
-    .refine(themes => hasExactlyOneByKey(themes, "isPrimary", true), { message: "There must be exactly one primary theme" })
+    .refine(themes => areValuesUniqueByKey(themes, "themeId"), { error: "Theme IDs must be unique" })
+    .refine(themes => hasExactlyOneByKey(themes, "isPrimary", true), { error: "There must be exactly one primary theme" })
     .describe("Question's themes"),
   content: QUESTION_CONTENT_CREATION_DTO,
   cognitiveDifficulty: zQuestionCognitiveDifficulty(),

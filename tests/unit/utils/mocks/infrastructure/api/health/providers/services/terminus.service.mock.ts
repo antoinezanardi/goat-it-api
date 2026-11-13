@@ -4,7 +4,7 @@ import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus"
 import type { Mock } from "vitest";
 
 type HealthCheckIndicatorServiceStub = {
-  pingCheck: () => Promise<HealthIndicatorResult>;
+  pingCheck: (key: string, url?: string, options?: { timeout?: number }) => Promise<HealthIndicatorResult>;
 };
 
 type MockedHealthIndicatorService = {

@@ -41,7 +41,7 @@ function zQuestionApplicableLocales(minItems = 1): ZodOptional<ZodArray<ZodEnum<
   return z.array(z.enum(LOCALES))
     .min(minItems)
     .max(LOCALES.length)
-    .refine(areValuesUniqueFromStrings, { message: "Locales must be unique" })
+    .refine(areValuesUniqueFromStrings, { error: "Locales must be unique" })
     .optional()
     .describe("Subset of locales this question is relevant for; omit if relevant for all locales");
 }
@@ -50,7 +50,7 @@ function zQuestionSourceUrls(): ZodArray<ZodURL> {
   return z.array(z.url())
     .min(QUESTION_SOURCE_URLS_MIN_ITEMS)
     .max(QUESTION_SOURCE_URLS_MAX_ITEMS)
-    .refine(areValuesUniqueFromStrings, { message: "Source URLs must be unique" })
+    .refine(areValuesUniqueFromStrings, { error: "Source URLs must be unique" })
     .describe("List of unique source URLs for the question")
     .meta({ example: ["https://example.com/source1", "https://example.com/source2"] });
 }
@@ -98,7 +98,7 @@ function zQuestionIdsFilter(): ZodOptional<ZodPreprocess<ZodArray<ZodString>>> {
     z.array(zMongoId().describe("Question ID to filter by"))
       .min(QUESTION_IDS_FILTER_MINIMUM)
       .max(QUESTION_IDS_FILTER_MAXIMUM)
-      .refine(areValuesUniqueFromStrings, { message: "IDs must be unique" }),
+      .refine(areValuesUniqueFromStrings, { error: "IDs must be unique" }),
   )
     .optional()
     .describe("List of question IDs to filter by (OR logic)");
