@@ -59,7 +59,7 @@ One fresh `explore` verifier per batch of ≤ 8 FAIL findings of one category re
 [SEC-20] DECIDED: docs/security.md:80
 ````
 
-Verifier prompt contract: try to **refute** each finding; re-read every cited `file:line` and confirm the line exists (line number ≤ file length) and says what the finding claims; check the criterion really applies; check `decisions.md`; check the severity. Outcome per finding: `CONFIRMED` · `REFUTED: <reason>` · `ADJUSTED: <from> → <to>, <reason>` (one level max) · `DECIDED: <doc>:<line>`. `DECIDED` applies only to documented decisions outside the `## GOAT audit decisions` sections; a GOAT entry never suppresses a finding — return `CONFIRMED` and annotate `decision recorded, checklist not yet amended — <doc>:<line>` (skill §7).
+Verifier prompt contract: try to **refute** each finding; re-read every cited `file:line` and confirm the line exists (line number ≤ file length) and says what the finding claims; check the criterion really applies; check `decisions.md`; check the severity — a move from the checklist default needs a written justification inside the finding; without it, restore the default and record `ADJUSTED: <moved> → <default>, no written justification`. Outcome per finding: `CONFIRMED` · `REFUTED: <reason>` · `ADJUSTED: <from> → <to>, <reason>` (one level max) · `DECIDED: <doc>:<line>`. `DECIDED` applies only to documented decisions outside the `## GOAT audit decisions` sections; a GOAT entry never suppresses a finding — return `CONFIRMED` and annotate `decision recorded, checklist not yet amended — <doc>:<line>` (skill §7).
 
 ## Public issue body
 

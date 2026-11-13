@@ -26,6 +26,7 @@ The orchestrator also reads §7 when the maintainer pushes back on a GOAT findin
 
 - **(a) Evidence for every claim.** A PASS, FAIL or N/A cites `file:line`, command output, an artifact path or a URL. No evidence, no verdict.
 - **(b) No speculation.** A claim that cannot be proven is `⚠️ UNVERIFIED`, never FAIL and never PASS.
+- **(b2) Numbers are computed, not estimated.** Any count, percentage or "N packages/files" claim in a finding is produced by a command whose output is in `evidence/` (e.g. `jq 'length'`, `wc -l`, a lockfile scan), and the command is cited. An uncomputed number is `⚠️ UNVERIFIED`, never a finding.
 - **(c) Read-only.** Auditors never modify project files. The only writes allowed are the report, its run directory and approved decision notes. Tool-generated build and test artifacts (`dist/`, coverage output and the tracked Stryker incremental state) are expected side effects of the audit commands, not project edits: keep them and never revert or hand-edit them. Never bypass a permission denial; report it instead. `.agents/skills/goat-audit/**` is never writable: checklists are not auditor-editable.
 - **(d) Library facts are verified, not remembered.** Any finding that depends on a library default, API or behaviour is confirmed with `docs-fetcher` (or Context7/`webfetch` when the subagent is unavailable) before it is reported (§8).
 - **(e) Decisions are binding.** Read the mapped decision doc in full. A `## GOAT audit decisions` entry has already reshaped the checklist it belongs to (§7); the documented decisions listed in §7 are honored until their revisit condition is met.
@@ -56,7 +57,7 @@ A full audit is expensive: 18 explorer dispatches in waves of six over 682 check
 - **Diff** — `✓` only when Evidence is `static`; `✗` otherwise.
 - **Core** — `✓` marks a check in the Core tier (§4.4); omitted otherwise. The category index records each category's Core count.
 - **Target** — `reach` marks a platinum capability (§4.5); omitted means a conformance check. A reach check is never satisfied by a documented deferral.
-- **Severity** — the default when the check fails (§5). Auditors may move it **one level** with a written justification in the finding.
+- **Severity** — the default when the check fails (§5). Auditors may move it **one level** with a written justification **inside the finding** (e.g. "moved high → medium because …"), not in a summary. A severity move without that sentence is invalid: the adversarial verifier restores the checklist default and records `ADJUSTED: <moved> → <default>, no written justification`.
 - **Look** — optional repository globs; every glob matched at least one path when the file was written.
 - **Src** — `[n]` indexes into the file's `## Sources`, and/or `project: <repo path>` (optionally `§<n>`).
 - `(verified: <library> <x.y[.z]>)` marks a library-dependent criterion. Re-verify when the installed major or minor differs.
