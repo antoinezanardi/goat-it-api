@@ -40,6 +40,7 @@
     "setTimeout": "readonly",
     "clearTimeout": "readonly",
     "console": "readonly",
+    "AbortSignal": "readonly",
     "URL": "readonly"
   },
   "rules": {

@@ -46,7 +46,11 @@ export class HealthService {
 
   private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {
     const documentationUrl = getSwaggerUrl(this.appConfig.serverBaseUrl);
+    const documentationProbeRequestOptions = {
+      timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS,
+      signal: AbortSignal.timeout(DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS),
+    };
 
-    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, documentationUrl, { timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS });
+    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, documentationUrl, documentationProbeRequestOptions);
   }
 }

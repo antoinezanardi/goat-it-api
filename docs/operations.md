@@ -18,12 +18,12 @@ Architecture and file placement are owned by [Architecture](architecture.md); CI
 
 ### What is checked
 
-| Check                 | Mechanism                                                                                     | Meaning                                                                                                              |
-|-----------------------|-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
-| MongoDB               | Terminus `MongooseHealthIndicator.pingCheck("mongoose")`                                      | The application can reach the database configured through `MONGODB_HOST`, `MONGODB_PORT` and `MONGODB_DATABASE`.     |
-| Swagger documentation | Terminus `HttpHealthIndicator.pingCheck("goat-it-docs", <local docs URL>, { timeout: 1000 })` | The same process serves the Swagger module at `/docs`. This is a same-process HTTP call, not an external dependency. |
+| Check                   | Mechanism                                                                                                                        | Meaning                                                                                                                |
+|-------------------------|----------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| MongoDB                 | Terminus `MongooseHealthIndicator.pingCheck("mongoose")`                                                                         | The application can reach the database configured through `MONGODB_HOST`, `MONGODB_PORT` and `MONGODB_DATABASE`.       |
+| Swagger documentation   | Terminus `HttpHealthIndicator.pingCheck("goat-it-docs", <local docs URL>, { timeout: 1000, signal: AbortSignal.timeout(1000) })` | The same process serves the Swagger module at `/docs`. This is a same-process HTTP call, not an external dependency.   |
 
-Both probes are bounded so a stalled dependency cannot hang the readiness call: Terminus bounds the MongoDB ping to a default 1000 ms timeout, and the documentation probe passes an explicit 1000 ms timeout (`DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS`, `file:src/infrastructure/api/health/constants/health.constants.ts`). A stalled `/docs` handler therefore becomes a `503` after about one second instead of blocking `/health`.
+Both probes are bounded so a stalled dependency cannot hang the readiness call: Terminus bounds the MongoDB ping to a default 1000 ms timeout, and the documentation probe passes an explicit 1000 ms timeout plus a 1000 ms wall-clock deadline (`AbortSignal.timeout`, both from `DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS`, `file:src/infrastructure/api/health/constants/health.constants.ts`); the Axios `timeout` alone only bounds socket inactivity once headers arrive. A `/docs` handler that stalls or drip-feeds its body therefore becomes a `503` after about one second instead of blocking `/health`.
 
 Not checked: disk, memory, CPU, queues, external services, authentication configuration, migrations and data integrity. Add a check only when it represents a real dependency the process cannot serve without.
 

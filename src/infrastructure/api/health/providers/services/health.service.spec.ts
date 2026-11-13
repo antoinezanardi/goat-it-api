@@ -131,12 +131,17 @@ describe(HealthService, () => {
   // oxlint-disable-next-line typescript/dot-notation
   describe(HealthService.prototype["checkGoatItDocs"], () => {
     it("should call ping check from http health indicator when called.", async() => {
+      const expectedPingCheckOptions = {
+        timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS,
+        signal: expect.any(AbortSignal) as AbortSignal,
+      };
+
       await services.health["checkGoatItDocs"]();
 
       expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(
         "goat-it-docs",
         "http://0.0.0.0:3000/docs",
-        { timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS },
+        expectedPingCheckOptions,
       );
     });
   });
