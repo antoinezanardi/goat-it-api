@@ -6,9 +6,18 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Applies a partial theme modification and rejects a slug already used by another theme.
+ */
 export class ModifyQuestionThemeUseCase {
   public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 
+  /**
+   * Returns the theme with the modification applied.
+   *
+   * @throws `QuestionThemeSlugAlreadyExistsError` when the new slug is already used by another theme.
+   * @throws `QuestionThemeNotFoundError` when no theme matches the id.
+   */
   public async modify(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<QuestionTheme> {
     const { questionThemeId, payload } = questionThemeModificationCommand;
     await this.throwIfQuestionThemeNotModifiable(questionThemeModificationCommand);

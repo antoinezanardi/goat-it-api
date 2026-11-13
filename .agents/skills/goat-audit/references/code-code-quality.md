@@ -1,6 +1,6 @@
 # CODE — Code quality & conventions
 
-How the TypeScript source of the API is written, typed, named, exported, linted and kept clean: compiler strictness across the `src`, spec, acceptance and ESLint projects; the ban on `any`, non-null assertions, enums, `switch`, inline exports and magic values; explicit return types and accessibility; the CRUD and boolean naming rules; the five-group import order and alias-only imports; the two-line lint-disable format that keeps Oxlint and ESLint honest; dead-code hygiene; and consistent error handling. A check here fails when code violates a convention that `AGENTS.md` already owns, even if the current diff "works".
+How the TypeScript source of the API is written, typed, named, exported, linted and kept clean: compiler strictness across the `src`, spec, acceptance and ESLint projects; the ban on `any`, non-null assertions, enums, `switch`, inline exports and magic values; explicit return types and accessibility; the CRUD and boolean naming rules; the five-group import order and alias-only imports; the two-line lint-disable format that keeps Oxlint and ESLint honest; dead-code hygiene; consistent error handling; and the JSDoc policy (`docs/jsdoc.md`) that documents what TypeScript cannot express. A check here fails when code violates a convention that `AGENTS.md` already owns, even if the current diff "works".
 
 **Decision doc:** `docs/architecture.md` (section `## GOAT audit decisions`). **Diff triggers:** see SKILL.md category index.
 
@@ -16,6 +16,7 @@ How the TypeScript source of the API is written, typed, named, exported, linted 
 - [6. Dead code and hygiene](#6-dead-code-and-hygiene)
 - [7. Lint governance](#7-lint-governance)
 - [8. Error handling](#8-error-handling)
+- [9. Documentation comments](#9-documentation-comments)
 - [Sources](#sources)
 
 ## 1. Type safety
@@ -131,6 +132,11 @@ How the TypeScript source of the API is written, typed, named, exported, linted 
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/**/*.ts` · Src: [3], project: docs/architecture.md §7.4
 - **[CODE-45] Promises are never left floating** — Every promise is awaited, returned or explicitly discarded with `void`; `no-floating-promises` and `no-misused-promises` stay at `error`, `promise/catch-or-return` and `promise/always-return` stay on, and `require-await` prevents an async function that never awaits.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `src/**/*.ts`, `configs/eslint/flat-configs/eslint-typescript.flat-config.ts`, `oxlint.config.jsonc` · Src: [3], project: AGENTS.md
+
+## 9. Documentation comments
+
+- **[CODE-46] Public logic surfaces carry concise TSDoc** — Every surface in the `docs/jsdoc.md` §1 scope table carries its required block and no new block is added to a surface excluded by §1.1; each block opens with a one-sentence summary in the present tense, documents semantics the signature cannot express rather than restating syntax, carries no `{Type}` annotation and none of `@author`, `@since`, `@file` or `@type`, states its failure contract (`@throws` on logic surfaces that deliberately throw, rejection and status on HTTP boundary surfaces), and stays within the 180-character line limit.
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/application/use-cases/**`, `src/contexts/*/application/dto/**`, `src/contexts/*/contracts/dto/**`, `src/**/mappers/**`, `src/contexts/*/domain/repositories/**`, `src/contexts/*/domain/rules/**`, `src/shared/domain/rules/**`, `src/contexts/*/infrastructure/persistence/**`, `src/shared/**/*.ts`, `src/infrastructure/api/**`, `src/app/**`, `packages/schemas/src/**` · Src: [4], project: docs/jsdoc.md §1, project: docs/jsdoc.md §2, project: AGENTS.md
 
 ## Sources
 

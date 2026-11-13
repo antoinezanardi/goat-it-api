@@ -25,7 +25,7 @@ Thank you for your interest in contributing — we appreciate your time and help
 - Every PR must pass all required CI checks before it can be merged, including linting, type checks, unit tests with 100% coverage, mutation tests and acceptance tests.
 - Branch names and commit messages must follow the defined conventions (see below).
 - Before your first change, read the [architecture and file-placement conventions](../docs/architecture.md). The full branching, commit and CI reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
-- Project documentation lives under [`docs/`](../docs/): [architecture](../docs/architecture.md), [CI/CD](../docs/ci-cd.md), [unit tests](../docs/unit-tests.md), [acceptance tests](../docs/acceptance-tests.md), [mocks](../docs/mocks.md), [faketories](../docs/faketories.md) and [Bruno](../docs/bruno.md).
+- The [Documentation section of the README](../README.md#documentation) is the full guide index; start with [architecture](../docs/architecture.md), [JSDoc](../docs/jsdoc.md), [CI/CD](../docs/ci-cd.md), [unit tests](../docs/unit-tests.md), [acceptance tests](../docs/acceptance-tests.md), [mocks](../docs/mocks.md) and [faketories](../docs/faketories.md).
 
 > [!IMPORTANT]
 > Please always target `develop` for PRs. `main` is protected and reserved for releases; PRs to `main` will be rejected.

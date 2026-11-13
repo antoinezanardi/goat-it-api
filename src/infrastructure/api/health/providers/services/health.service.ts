@@ -7,6 +7,11 @@ import { getSwaggerUrl } from "@src/infrastructure/api/server/swagger/helpers/sw
 
 import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
 
+/**
+ * Runs the readiness probes exposed by the health endpoint: the Mongo connection and the Swagger documentation page.
+ *
+ * Both probes must pass; a failing probe becomes a 503 with a generic message so the response does not leak which dependency is down.
+ */
 @Injectable()
 export class HealthService {
   public constructor(
@@ -16,6 +21,11 @@ export class HealthService {
     private readonly appConfig: AppConfigService,
   ) {}
 
+  /**
+   * Runs every probe and returns their combined result.
+   *
+   * @throws `ServiceUnavailableException` when at least one probe fails, always with the same message; any other error is rethrown unchanged.
+   */
   public async checkAppHealth(): Promise<HealthCheckResult> {
     try {
       return await this.healthCheckService.check([

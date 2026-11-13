@@ -4,6 +4,9 @@ import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/questi
 
 import { zTranslationCompletenessStats } from "@shared/application/dto/zod/validators/translation-completeness/translation-completeness.zod.validators";
 
+/**
+ * Validates the theme statistics response: totals, per-status buckets and the per-theme active question counts.
+ */
 const QUESTION_THEME_STATS_DTO = z.strictObject({
   total: z.number().int().nonnegative().describe("Total number of question themes"),
   byStatus: z
@@ -24,6 +27,9 @@ const QUESTION_THEME_STATS_DTO = z.strictObject({
     .describe("Translation completeness breakdown"),
 });
 
+/**
+ * The theme statistics consumers receive, with every status bucket present and the per-theme counts sorted by slug.
+ */
 type QuestionThemeStatsDto = z.infer<typeof QUESTION_THEME_STATS_DTO>;
 
 export { QUESTION_THEME_STATS_DTO };

@@ -60,8 +60,9 @@ Running acceptance tests:
 - Exclude tag:              `pnpm run test:acceptance --tags "not @slow"`
 - By tag (AND):             `pnpm run test:acceptance --tags "@question-theme and @admin"`
 
-**Mandatory quality gates** — agents MUST run all five commands below **in order**
-before considering any task complete. **Do NOT skip any gate**, even for "trivial" changes:
+**Mandatory quality gates** — the orchestrator runs all five commands below **in order** through the
+`gatekeeper` subagent before considering any task complete. **Do NOT skip any gate**, even for
+"trivial" changes:
 
 1. `pnpm run lint:fix`
 2. `pnpm run typecheck`
@@ -69,7 +70,13 @@ before considering any task complete. **Do NOT skip any gate**, even for "trivia
 4. `pnpm run test:mutation`
 5. `pnpm run test:acceptance`
 
-If any gate fails, fix the issue and re-run from that gate onward until all five pass.
+If any gate fails, the gatekeeper fixes the issue and re-runs from that gate onward until all five pass.
+
+Per-task agents (implementers and other task agents) run focused checks only: scoped lint
+(`pnpm run lint:oxlint:fix <path>` and `pnpm run lint:eslint:fix <path>`), scoped unit tests
+(`pnpm run test:unit <path>`), and acceptance scenarios with `--tags` when relevant. They MUST NOT
+run the full `lint:fix`, `test:unit:cov`, `test:mutation` or `test:acceptance` suite; the gatekeeper
+owns that. Never claim "done" before the full gate passes.
 
 > Gates 4 (mutation) and 5 (acceptance) are CI/post-commit gates. Pre-commit hooks run: `typecheck` → `validate:branch-name` → `lint:staged:fix` → `test:unit:staged`.
 
@@ -79,7 +86,7 @@ If any gate fails, fix the issue and re-run from that gate onward until all five
 
 Evaluate all items at the end of implementation. Each applies only if its condition is met.
 
-1. **Quality Gate**: Any code change → run all 5 gate commands above.
+1. **Quality Gate**: Any code change → the orchestrator runs all 5 gate commands above through the gatekeeper.
 2. **Bruno Collection**: Endpoint added/changed/deleted → update `.bru` files in `configs/bruno/Goat It/` following naming convention `<scope>-<verb>-<resource>[-by-id].bru`. See `docs/bruno.md`.
 3. **Acceptance Test Scenarios**: API behavior changed → add/update Cucumber scenarios covering happy path and key error cases.
 4. **Schemas Package — Existing Export Modified**: DTO shape or domain constant already in `@goat-it/schemas` modified → bump **patch** version in `packages/schemas/package.json`. Moving a shape from `application/dto` to `contracts/dto` while keeping the exported symbol stable is not a breaking package change and does not require a bump.
@@ -89,6 +96,9 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 8. **Mock Factories for New Ports**: New repository port or use case → create mock factory under `tests/unit/utils/mocks/` named `createMocked<What>(overrides)`.
 9. **NestJS Module Registration**: New controller/use-case/repository → register in the appropriate module. Persistence wiring goes in `infrastructure/persistence/<context>-persistence.module.ts`; published reverse dependencies go in `<context>-usage.module.ts`. Use `createUseCaseProvider` for plain use cases. Never re-register another context's schema, repository or token. See `docs/architecture.md` §6.
 10. **Acceptance Test Infrastructure for New Domains**: New domain/MongoDB collection → update world types, fixture registry, payload types, fixture inserters.
+11. **JSDoc**: Public logic surface added or changed → add/update its concise TSDoc block per `docs/jsdoc.md`; do not add explanatory, marker or commented-out comments.
+12. **Documentation Drift**: A change to behavior, config, scripts, routes, environment variables or workflows → update every maintained guide that documents it in the same diff, including `docs/security.md`, `docs/operations.md` and `docs/privacy.md` for security, health, logging and retention changes.
+13. **GOAT Audit Decisions**: A change that contradicts a documented decision → update the decision doc in the same diff; record a new decision note only with maintainer approval, per `.agents/skills/goat-audit/SKILL.md` §7.
 
 ## Project conventions & style
 
@@ -126,6 +136,11 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 ### Constants
 
 - No magic numbers (0, 1, -1 excepted) — extract to `*.constants.ts`
+
+### Source comments
+
+- Agents must not add explanatory comments, `TODO`/`FIXME` markers, section markers or commented-out code.
+- The only allowed source comments are JSDoc on the public logic surfaces defined in `docs/jsdoc.md`, the two-line lint-disable pair below, and inline comments inside an `@example` sample.
 
 ### Lint disable comments (last resort)
 
@@ -187,6 +202,8 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 - Conventional commits enforced by commitlint: `type(scope): message`.
 - Validate branch names: `pnpm run validate:branch-name`.
 - Branches: `<type>/<scope>-<short-desc>` (e.g. `feat/add-user-endpoint`).
+- Always propose a commit message once files changed: at the end of any session that modified the working tree, hand the user a ready-to-copy conventional commit message (`type(scope): summary` plus a grouped body) covering all working-tree changes, not only the last edit. Proposing is mandatory; committing remains forbidden.
+- Use the `gh` CLI for GitHub work (issues, PRs, workflows, runs, reviews, comments, releases, secrets). Prefer `gh` subcommands and `gh api` over `curl` or the web UI. Read-only `gh` commands are allowed; destructive mutations are denied in `opencode.json`.
 
 ## Agent skills (`.agents/skills/`)
 
@@ -218,6 +235,7 @@ The GOAT audit ("Greatest Of All Time" × Goat It) is the repository-wide, evide
 - Decisions recorded in a decision doc's `## GOAT audit decisions` section (category → doc mapping in the skill §6) are binding for later audits, reviews and plans until their revisit condition is met. Record one only with the maintainer's approval, through the skill §7 protocol.
 - The audit never fixes anything. Findings are triaged into public issues, private draft security advisories (🔒 findings) or decision notes; fixes go through the normal orchestrator cycle.
 - Never edit `.agents/skills/goat-audit/**` from an audit or review run: checklist amendments are handed off as ready-to-apply payloads and implemented through the normal cycle.
+- The JSDoc requirement (surfaces, style, exclusions) is owned by `docs/jsdoc.md` and audited by `[CODE-46]`; it is not a lint-presence gate.
 
 ## Useful docs (`docs/`)
 
@@ -234,6 +252,7 @@ The GOAT audit ("Greatest Of All Time" × Goat It) is the repository-wide, evide
 - `docs/data-model.md`       – MongoDB collections, fields, indexes, references and migration posture.
 - `docs/audits/`             – Gitignored GOAT audit reports and run directories. Never committed.
 - `docs/bruno.md`            – Bruno API collection setup.
+- `docs/jsdoc.md`            – JSDoc scope, concise-TSDoc style, examples and enforcement.
 - `docs/unit-tests.md`       – Full unit test writing guide per file type.
 - `docs/mocks.md`            – Mock factory conventions.
 - `docs/faketories.md`       – Faketory conventions.

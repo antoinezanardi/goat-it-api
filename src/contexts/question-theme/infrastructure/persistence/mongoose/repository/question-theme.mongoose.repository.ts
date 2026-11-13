@@ -20,10 +20,18 @@ import type { QuestionThemeRepository } from "@question-theme/domain/repositorie
 import type { QuestionThemeMongooseDocument, QuestionThemeStatsAggregationResult } from "@question-theme/infrastructure/persistence/mongoose/types/question-theme.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
+/**
+ * Mongoose adapter for `QuestionThemeRepository`.
+ *
+ * The unique `slug` index is translated into `QuestionThemeSlugAlreadyExistsError` on create and modify; callers never see a raw `MongoServerError`.
+ */
 @Injectable()
 export class QuestionThemeMongooseRepository implements QuestionThemeRepository {
   public constructor(@InjectModel(QuestionThemeMongooseSchema.name) private readonly questionThemeModel: Model<QuestionThemeMongooseDocument>) {}
 
+  /**
+   * Applies the filter conditions with a Mongoose query, then sorts and limits in the database; a missing or `0` limit retrieves every matching theme.
+   */
   public async findAll(options: FindAllOptions<QuestionThemeSortableField, AdminQuestionThemeFilterOptions>): Promise<QuestionTheme[]> {
     const sortCriteria = buildMongooseSortCriteria(options.sort);
     const filterQuery = buildQuestionThemeFilterQuery(options.filters);
@@ -39,6 +47,9 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return questionThemeDocuments.map(createQuestionThemeFromDocument);
   }
 
+  /**
+   * Returns `undefined` when no document matches the id, leaving it to the caller to decide whether that is an error.
+   */
   public async findById(id: string): Promise<QuestionTheme | undefined> {
     const questionThemeDocument = await this.questionThemeModel.findById(id);
     if (!questionThemeDocument) {
@@ -65,6 +76,11 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(questionThemeDocument);
   }
 
+  /**
+   * Inserts the theme and returns it mapped from the created document.
+   *
+   * @throws `QuestionThemeSlugAlreadyExistsError` when the unique index rejects the insert because another theme uses the slug.
+   */
   public async create(questionThemeCreationContract: QuestionThemeCreationContract): Promise<QuestionTheme> {
     try {
       const createdQuestionThemeDocument = await this.questionThemeModel.create(questionThemeCreationContract);
@@ -75,6 +91,11 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     }
   }
 
+  /**
+   * Patches the defined fields and returns the updated theme, or `undefined` when no document matches the id.
+   *
+   * @throws `QuestionThemeSlugAlreadyExistsError` when the new slug is already used by another theme.
+   */
   public async modify(id: string, questionThemeModificationContract: QuestionThemeModificationContract): Promise<QuestionTheme | undefined> {
     const questionThemeUpdateData = getCrushedDataForMongoPatchUpdate(questionThemeModificationContract);
     const updateQuery: UpdateQuery<QuestionThemeMongooseDocument> = {
@@ -87,6 +108,9 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(modifiedQuestionThemeDocument);
   }
 
+  /**
+   * Sets the archived status and returns the document as stored after the update, or `undefined` when no theme matches the id.
+   */
   public async archive(id: string): Promise<QuestionTheme | undefined> {
     const update: UpdateQuery<QuestionThemeMongooseDocument> = {
       status: QUESTION_THEME_STATUS_ARCHIVED,
@@ -98,6 +122,9 @@ export class QuestionThemeMongooseRepository implements QuestionThemeRepository 
     return createQuestionThemeFromDocument(archivedQuestionThemeDocument);
   }
 
+  /**
+   * Returns the aggregation counts with zero fallbacks, so a missing row yields `0` or an empty breakdown instead of `undefined`.
+   */
   public async getStats(): Promise<QuestionThemeStats> {
     const [result] = await this.questionThemeModel.aggregate<QuestionThemeStatsAggregationResult>(QUESTION_THEME_STATS_MONGOOSE_REPOSITORY_PIPELINE);
 

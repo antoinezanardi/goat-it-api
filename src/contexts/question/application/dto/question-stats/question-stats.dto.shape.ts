@@ -10,6 +10,9 @@ import {
   QUESTION_STATUSES,
 } from "@question/domain/constants/question.constants";
 
+/**
+ * Validates the question statistics response: totals and per-status, per-category, per-difficulty, per-author-role and per-rejection-type buckets.
+ */
 const QUESTION_STATS_DTO = z.strictObject({
   total: z.number().int().nonnegative().describe("Total number of questions"),
   byStatus: z.record(z.enum(QUESTION_STATUSES), z.number().int().nonnegative())
@@ -26,6 +29,9 @@ const QUESTION_STATS_DTO = z.strictObject({
     .describe("Translation completeness breakdown"),
 });
 
+/**
+ * The question statistics consumers receive; every bucket key is present because the mapper zero-fills the records.
+ */
 type QuestionStatsDto = z.infer<typeof QUESTION_STATS_DTO>;
 
 export { QUESTION_STATS_DTO };

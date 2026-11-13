@@ -3,8 +3,9 @@ import { applyDecorators, UseGuards } from "@nestjs/common";
 import { AdminApiKeyGuard } from "@src/infrastructure/api/auth/providers/guards/admin-api-key/admin-api-key.guard";
 
 /**
- * Auth decorator that applies the AdminApiKeyGuard to protect routes meant for admin access.
- * Must be used on routes that starts with `/admin`.
+ * Applies `AdminApiKeyGuard` to a route or controller, so the request must carry the admin `goat-it-api-key` header.
+ *
+ * A missing or invalid key is rejected with a 401 Unauthorized; apply it to the routes served under `/admin`.
  *
  * @example
  * ```typescript

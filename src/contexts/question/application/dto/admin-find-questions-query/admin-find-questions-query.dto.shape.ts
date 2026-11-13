@@ -12,6 +12,9 @@ import { QUESTION_AUTHOR_ROLE_QUERY_KEY, QUESTION_CATEGORY_QUERY_KEY, QUESTION_C
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/constants/question-sort.dto.constants";
 import { zQuestionAuthorRole, zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionIdsFilter, zQuestionIsAdultContentFilter, zQuestionStatus, zQuestionThemeIdsFilter } from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
+/**
+ * Validates an admin question-list query: sorting, limiting and every supported filter, with the sort-field, sort-order and limit defaults applied.
+ */
 const ADMIN_FIND_QUESTIONS_QUERY_DTO = z.object({
   [SORT_BY_QUERY_KEY]: z.enum(ADMIN_QUESTION_SORTABLE_FIELDS)
     .optional()
@@ -30,6 +33,9 @@ const ADMIN_FIND_QUESTIONS_QUERY_DTO = z.object({
   [FULLY_TRANSLATED_QUERY_KEY]: zIsFullyTranslated(),
 });
 
+/**
+ * The parsed admin question-list query consumers receive, with the sort defaults resolved and omitted filters absent.
+ */
 type AdminFindQuestionsQueryDto = z.infer<typeof ADMIN_FIND_QUESTIONS_QUERY_DTO>;
 
 export type { AdminFindQuestionsQueryDto };

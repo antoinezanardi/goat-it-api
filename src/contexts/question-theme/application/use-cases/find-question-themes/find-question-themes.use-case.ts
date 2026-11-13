@@ -4,6 +4,9 @@ import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField } from
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Lists question themes for the admin and public routes using the given filter, sort and limit options.
+ */
 export class FindQuestionThemesUseCase {
   public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 

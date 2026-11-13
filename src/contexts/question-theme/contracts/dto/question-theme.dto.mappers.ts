@@ -6,6 +6,9 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
+/**
+ * Maps a theme entity to the public theme DTO, resolving the label, aliases and description for the requested locale and converting the timestamps to ISO strings.
+ */
 function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme, localizationOptions: LocalizationOptions): QuestionThemeDto {
   return {
     id: questionTheme.id,
@@ -20,6 +23,9 @@ function createQuestionThemeDtoFromEntity(questionTheme: QuestionTheme, localiza
   };
 }
 
+/**
+ * Maps a theme entity to the admin theme DTO, keeping label, aliases and description as localized maps and converting the timestamps to ISO strings.
+ */
 function createAdminQuestionThemeDtoFromEntity(questionTheme: QuestionTheme): AdminQuestionThemeDto {
   return {
     id: questionTheme.id,

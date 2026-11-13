@@ -8,12 +8,24 @@ import type { Question } from "@question/domain/types/question.entities";
 
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
+/**
+ * Removes a theme from a question after checking that the assignment exists, is not the primary one and that a theme remains.
+ */
 export class RemoveThemeFromQuestionUseCase {
   public constructor(
     private readonly questionRepository: QuestionRepository,
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}
 
+  /**
+   * Returns the question without the removed assignment.
+   *
+   * @throws `QuestionNotFoundError` when no question matches the question id.
+   * @throws `QuestionThemeAssignmentAbsentError` when the question has no assignment for the theme id.
+   * @throws `QuestionPrimaryThemeAssignmentNotRemovableError` when the assignment is the primary one.
+   * @throws `QuestionMinimumThemesError` when removing the assignment would leave the question below the minimum number of themes.
+   * @throws `QuestionThemeAssignmentRemovalError` when the question is written but cannot be read back.
+   */
   public async remove(questionAssignmentRemovalCommand: QuestionThemeAssignmentRemovalCommand): Promise<Question> {
     const { questionId, themeId } = questionAssignmentRemovalCommand;
     await this.throwIfThemeNotRemovableFromQuestion(questionId, themeId);

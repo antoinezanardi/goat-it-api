@@ -5,9 +5,17 @@ import type { QuestionTheme } from "@question-theme/domain/types/question-theme.
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
+/**
+ * Creates a question theme after rejecting a slug already used by another theme.
+ */
 export class CreateQuestionThemeUseCase {
   public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 
+  /**
+   * Returns the created theme.
+   *
+   * @throws `QuestionThemeSlugAlreadyExistsError` when another theme already uses the slug.
+   */
   public async create(questionThemeCreationCommand: QuestionThemeCreationCommand): Promise<QuestionTheme> {
     const { payload } = questionThemeCreationCommand;
     await this.throwIfQuestionThemeNotCreatable(questionThemeCreationCommand);

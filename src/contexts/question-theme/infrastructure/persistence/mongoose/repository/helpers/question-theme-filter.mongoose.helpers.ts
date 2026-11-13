@@ -5,6 +5,9 @@ import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/per
 
 import type { AdminQuestionThemeFilterOptions } from "@question-theme/domain/types/question-theme.types";
 
+/**
+ * Builds the query filter for the admin theme list from the defined filters, returning an empty query when nothing is set.
+ */
 function buildQuestionThemeFilterQuery(filters?: Partial<AdminQuestionThemeFilterOptions>): Record<string, unknown> {
   if (!filters) {
     return {};

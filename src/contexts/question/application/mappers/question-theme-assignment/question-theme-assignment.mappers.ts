@@ -4,6 +4,9 @@ import type { QuestionThemeAssignmentCreationCommand, QuestionThemeAssignmentMod
 
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 
+/**
+ * Maps a theme-assignment creation DTO to the repository contract, keeping only the fields the repository persists.
+ */
 function createQuestionThemeAssignmentCreationContractFromDto(questionThemeAssignmentDto: QuestionThemeAssignmentCreationDto): QuestionThemeAssignmentCreationContract {
   return {
     themeId: questionThemeAssignmentDto.themeId,
@@ -12,6 +15,9 @@ function createQuestionThemeAssignmentCreationContractFromDto(questionThemeAssig
   };
 }
 
+/**
+ * Wraps a theme-assignment creation DTO and its target question id into a creation command.
+ */
 function createQuestionThemeAssignmentCreationCommandFromDto(questionId: string, dto: QuestionThemeAssignmentCreationDto): QuestionThemeAssignmentCreationCommand {
   return {
     questionId,
@@ -19,6 +25,9 @@ function createQuestionThemeAssignmentCreationCommandFromDto(questionId: string,
   };
 }
 
+/**
+ * Builds a theme-assignment modification command from the question id, the theme id and the modification DTO.
+ */
 function createQuestionThemeAssignmentModificationCommandFromDto(
   questionId: string,
   themeId: string,

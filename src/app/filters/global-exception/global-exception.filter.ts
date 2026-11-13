@@ -23,6 +23,12 @@ import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/re
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
 
+/**
+ * Single composition point that turns any thrown value into the HTTP response.
+ *
+ * Zod validation errors and `HttpException`s are forwarded as they are; known domain errors are mapped to 404, 400 or 409
+ * through a class-name table; everything else is logged and answered with a 500 that never exposes the original message.
+ */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private static readonly domainErrorHttpExceptionFactories: Partial<Record<string, new () => HttpException>> = {
@@ -65,6 +71,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     this.sendNestHttpException(badRequestException, response);
   }
 
+  /**
+   * Writes the response for the first matching branch and never rethrows.
+   *
+   * A mapped domain error keeps its message and gains an error code derived from its class name; an unknown error is logged and replaced by a generic 500.
+   */
   public catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply | ServerResponse>();
 

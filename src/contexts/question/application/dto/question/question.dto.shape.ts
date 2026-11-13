@@ -7,6 +7,9 @@ import { zQuestionCategory, zQuestionCognitiveDifficulty, zQuestionCreatedAt, zQ
 import { QUESTION_REJECTION_DTO } from "@question/application/dto/shared/question-rejection/question-rejection.dto.shape";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
+/**
+ * Validates a complete public question: locale-resolved content and themes, author, status, source URLs and an optional rejection.
+ */
 const QUESTION_DTO = z.strictObject({
   id: zQuestionId(),
   category: zQuestionCategory(),
@@ -27,6 +30,9 @@ const QUESTION_DTO = z.strictObject({
   updatedAt: zQuestionUpdatedAt(),
 });
 
+/**
+ * The public question consumers receive, with every translation resolved to the request locale.
+ */
 export type QuestionDto = z.infer<typeof QUESTION_DTO>;
 
 export { QUESTION_DTO };

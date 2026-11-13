@@ -5,6 +5,7 @@ This guide is the canonical reference for **where a repository file belongs, how
 It answers placement questions for every first-party file class in `goat-it-api` (NestJS 12 + Fastify 5 + Mongoose + Zod, ESM, hexagonal architecture). Detailed mechanics live in their own guides:
 
 - [ci-cd.md](ci-cd.md) — branching, commits, hooks, pull requests, CI, deployment.
+- [jsdoc.md](jsdoc.md) — JSDoc scope and concise-TSDoc style.
 - [unit-tests.md](unit-tests.md) — Vitest unit-test conventions per file type.
 - [acceptance-tests.md](acceptance-tests.md) — Cucumber, fixtures, payloads and step definitions.
 - [faketories.md](faketories.md) — shared test-data factories.
@@ -628,6 +629,11 @@ Companion test mechanics, test naming, mock and faketory conventions live in [un
 - DTO wrappers live in `infrastructure/http/dto/`; they may wrap an `application/dto` or `contracts/dto` shape.
 - Repository contracts live in `domain/repositories/*.repository-contracts.types.ts`; published contracts live in `contracts/`. Do not use one term for both.
 
+### 8.4 Source comments and JSDoc
+
+- Source comments are limited to JSDoc on the public logic surfaces listed in [jsdoc.md](jsdoc.md) and to the two-line lint-disable pair described in [`AGENTS.md`](../AGENTS.md).
+- Do not add explanatory comments, `TODO`/`FIXME` markers, section markers or commented-out code. Rename or restructure the code when it needs an explanation.
+
 ## 9. Aliases and imports
 
 Path aliases are mandatory in `src/`, `tests/` and `packages/schemas/src/`; relative imports are forbidden there.
@@ -784,4 +790,4 @@ This guide owns placement, naming, dependency and boundary rules. Test mechanics
 
 ## 15. Agent and workflow compliance
 
-The repository-wide audit contract lives in [`.agents/skills/goat-audit/SKILL.md`](../.agents/skills/goat-audit/SKILL.md): 18 categories, gap-free `[CODE-NN]` checks, diff and design triggers, and the `## GOAT audit decisions` protocol. `AGENTS.md` owns the workflow rules (DOD, quality gates, skills and commands); this guide stays the single source of truth for placement, layering and dependency direction. The GOAT reference checklists cite this document (`project: docs/architecture.md`) instead of copying its rules: when a rule here changes, the ARCH, STACK, CODE and AGENT checks are evaluated against the new text rather than amended in place. Agent definitions (`.opencode/agents/**`), commands (`.opencode/commands/**`) and skills (`.agents/skills/**`) are audited by the AGENT category.
+The repository-wide audit contract lives in [`.agents/skills/goat-audit/SKILL.md`](../.agents/skills/goat-audit/SKILL.md): 18 categories, gap-free `[CODE-NN]` checks, diff and design triggers, and the `## GOAT audit decisions` protocol. `AGENTS.md` owns the workflow rules (DOD, quality gates, skills and commands); this guide stays the single source of truth for placement, layering and dependency direction. The GOAT reference checklists cite this document (`project: docs/architecture.md`) instead of copying its rules: when a rule here changes, the ARCH, STACK, CODE and AGENT checks are evaluated against the new text rather than amended in place. Agent definitions (`.opencode/agents/**`), commands (`.opencode/commands/**`) and skills (`.agents/skills/**`) are audited by the AGENT category. JSDoc scope and style are owned by [jsdoc.md](jsdoc.md); the CODE category audits their presence and shape (`[CODE-46]`).

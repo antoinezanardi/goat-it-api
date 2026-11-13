@@ -5,6 +5,9 @@ import { QUESTION_AUTHOR_ROLE_ADMIN, QUESTION_STATUS_ACTIVE, QUESTION_STATUS_PEN
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionCreationAuthorRole, QuestionCreationStatus, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
+/**
+ * Derives the stored status from the author role: an admin-authored question is active, every other role yields a pending question.
+ */
 function computeQuestionStatusFromAuthorRole(authorRole: QuestionCreationAuthorRole): QuestionCreationStatus {
   if (authorRole === QUESTION_AUTHOR_ROLE_ADMIN) {
     return QUESTION_STATUS_ACTIVE;
@@ -12,10 +15,19 @@ function computeQuestionStatusFromAuthorRole(authorRole: QuestionCreationAuthorR
   return QUESTION_STATUS_PENDING;
 }
 
+/**
+ * Returns the assignment carrying the given theme id, or `undefined` when the question does not use that theme.
+ */
 function findQuestionThemeAssignmentInQuestionByThemeId(question: Question, questionThemeAssignmentId: string): QuestionThemeAssignment | undefined {
   return question.themes.find(({ theme }) => theme.id === questionThemeAssignmentId);
 }
 
+/**
+ * Protects the removal invariant: a question can only drop a theme it actually uses, and never its primary theme.
+ *
+ * @throws `QuestionThemeAssignmentAbsentError` when the question has no assignment for `themeId`.
+ * @throws `QuestionPrimaryThemeAssignmentNotRemovableError` when that assignment is the primary one.
+ */
 function ensureQuestionThemeAssignmentIsRemovable(question: Question, themeId: string): void {
   const assignment = findQuestionThemeAssignmentInQuestionByThemeId(question, themeId);
   if (!assignment) {
@@ -26,6 +38,11 @@ function ensureQuestionThemeAssignmentIsRemovable(question: Question, themeId: s
   }
 }
 
+/**
+ * Protects the modification invariant: only an assignment the question already holds can be modified.
+ *
+ * @throws `QuestionThemeAssignmentAbsentError` when the question has no assignment for `themeId`.
+ */
 function ensureQuestionThemeAssignmentIsModifiable(question: Question, themeId: string): void {
   const assignment = findQuestionThemeAssignmentInQuestionByThemeId(question, themeId);
   if (!assignment) {
@@ -33,6 +50,11 @@ function ensureQuestionThemeAssignmentIsModifiable(question: Question, themeId: 
   }
 }
 
+/**
+ * Protects the theme-count ceiling: a question that already holds the maximum number of assignments cannot accept another one.
+ *
+ * @throws `QuestionMaximumThemesError` when the question already holds at least `QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS` assignments.
+ */
 function ensureQuestionThemeAssignmentsLimit(question: Question): void {
   if (question.themes.length >= QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS) {
     throw new QuestionMaximumThemesError(question.id);

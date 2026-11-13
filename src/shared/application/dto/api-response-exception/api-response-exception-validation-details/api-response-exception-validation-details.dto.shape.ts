@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+/**
+ * Validates one Zod validation issue as exposed by the API: its code, message, path and the issue-specific optional fields.
+ */
 const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
   code: z.string()
     .describe("Validation error code")
@@ -52,6 +55,9 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
     .meta({ example: ["expectedValue1", "expectedValue2"] }),
 });
 
+/**
+ * One validation detail consumers receive; the optional fields are populated only for the issue kinds that report them.
+ */
 export type ApiResponseExceptionValidationDetailsDto = z.infer<typeof API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO>;
 
 export { API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO };

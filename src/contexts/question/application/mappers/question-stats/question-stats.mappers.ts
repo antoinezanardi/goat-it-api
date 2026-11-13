@@ -11,6 +11,9 @@ import type { QuestionStatsDto } from "@question/application/dto/question-stats/
 
 import type { QuestionStats } from "@question/domain/types/question.types";
 
+/**
+ * Maps domain question stats to the HTTP stats DTO, zero-filling every status, category, difficulty, author role and rejection type so the response shape stays stable.
+ */
 function createQuestionStatsDtoFromStats(stats: QuestionStats): QuestionStatsDto {
   return {
     total: stats.total,

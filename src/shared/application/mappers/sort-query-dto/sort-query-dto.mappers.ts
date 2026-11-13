@@ -2,6 +2,11 @@ import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto
 
 import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
 
+/**
+ * Extracts the sort field and direction from a list query DTO into the repository sort options.
+ *
+ * Values are forwarded as parsed by the schema, which already applied the sort defaults.
+ */
 function createSortOptionsFromSortQueryDto<T extends string>(dto: { [SORT_BY_QUERY_KEY]: T; [SORT_ORDER_QUERY_KEY]: SortOrder }): SortOptions<T> {
   return {
     sortBy: dto[SORT_BY_QUERY_KEY],

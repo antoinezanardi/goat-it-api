@@ -12,6 +12,9 @@ import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/re
 import type { QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
+/**
+ * Assigns one theme to a question after checking that both exist, that the assignment is not a duplicate, that the question has room and that the theme is not archived.
+ */
 export class AssignThemeToQuestionUseCase {
   public constructor(
     private readonly questionRepository: QuestionRepository,
@@ -19,6 +22,16 @@ export class AssignThemeToQuestionUseCase {
     private readonly findQuestionByIdUseCase: FindQuestionByIdUseCase,
   ) {}
 
+  /**
+   * Returns the question with the new theme assignment.
+   *
+   * @throws `QuestionNotFoundError` when no question matches the question id.
+   * @throws `QuestionThemeNotFoundError` when no theme matches the assignment theme id.
+   * @throws `QuestionThemeAssignmentAlreadyExistsError` when the theme is already assigned to the question.
+   * @throws `QuestionMaximumThemesError` when the question already holds the maximum number of theme assignments.
+   * @throws `ReferencedQuestionThemeArchivedError` when the theme is archived.
+   * @throws `QuestionThemeAssignmentCreationError` when the question is written but cannot be read back.
+   */
   public async assign(questionThemeAssignmentCreationCommand: QuestionThemeAssignmentCreationCommand): Promise<Question> {
     const { questionId, payload: questionThemeAssignmentPayload } = questionThemeAssignmentCreationCommand;
     await this.throwIfThemeNotAssignableToQuestion(questionThemeAssignmentPayload, questionId);
