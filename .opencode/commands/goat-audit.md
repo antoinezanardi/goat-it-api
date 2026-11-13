@@ -54,7 +54,7 @@ A full run is expensive: 18 explorer dispatches in waves of six over 682 checks 
 
    The skill's category index is authoritative; this table mirrors it.
 8. Ask **one multi-select question** for the scope, smallest bundle first: `Docs & agents (DOCS, AGENT)`, `Security & supply chain (SEC, SUP, CICD)`, `Platform & operations (PLAT, OPS, REL)`, `Product contract & data (LOGIC, PERF, I18N, API, DATA)`, `Engineering quality (ARCH, STACK, CODE, TEST, PRIV)`, `All 18 categories (full run — most expensive)`, or explicit codes via a custom answer. Never preselect a full run: a partial audit costs proportionally less, and maintainers usually run one. Skip the question when `$ARGUMENTS` already names the categories. Write the selection to `evidence/scope.md` and into the report header.
-9. Ask **one multi-select question** (Tier 3): "Acceptance suite (starts the Docker MongoDB, then the full Cucumber build)", "Local runtime: header pass on the built test server", "Live production + staging GETs", "None". If live GETs are chosen, ask one follow-up confirming the base URLs (prefilled from `docs/operations.md`: production `https://api.goat-it.fr`, staging from `PREPRODUCTION_API_URL`; custom answer allowed). Never ask more than these two questions plus the live-URL confirmation before phase 1.
+9. Before asking, probe Tier-3 feasibility and record it in `evidence/tier3-preflight.txt`: `docker info` (daemon reachable), `lsof -nP -iTCP:27017 -sTCP:LISTEN` (the acceptance compose publishes 27017), and whether `dist/` exists. If port 27017 is held by a non-project process, do not offer the acceptance suite as if it would run: offer it with the warning "blocked by a local mongod on 27017" and recommend the local built-server header pass as the fallback. Then ask **one multi-select question** (Tier 3): "Acceptance suite (starts the Docker MongoDB, then the full Cucumber build)", "Local runtime: header pass on the built test server", "Live production + staging GETs", "None". If live GETs are chosen, ask one follow-up confirming the base URLs (prefilled from `docs/operations.md`: production `https://api.goat-it.fr`, staging from `PREPRODUCTION_API_URL`; custom answer allowed). Never ask more than these two questions plus the live-URL confirmation before phase 1.
 
 ### 1. Evidence (conductor)
 
@@ -66,7 +66,7 @@ Every command output is written to `evidence/<name>` with the **`write` tool** (
 
 **Tier 3 (only when opted in):**
 
-- **Acceptance:** `pnpm run docker:acceptance-tests:start` then `pnpm run test:acceptance` → `acceptance.txt`, then `pnpm run docker:acceptance-tests:stop` even when the run failed. Docker unavailable → ⚠️ for dependent checks.
+- **Acceptance:** `pnpm run docker:acceptance-tests:start` then `pnpm run test:acceptance` → `acceptance.txt`, then `pnpm run docker:acceptance-tests:stop` even when the run failed. Docker unavailable → ⚠️ for dependent checks. If the compose start fails twice with a port conflict, stop, record both attempts, and run the local built-server header pass instead when the maintainer accepted the fallback; never stop or reconfigure the host's database.
 - **Local runtime:** build if Tier 2 did not, start the built test server with `pnpm run start:prod:test` (`NODE_ENV=test` loads `env/.env.test`; `SERVER_PORT=4242`), and wait for `http://localhost:4242/health` with a bounded retry loop (for example 30 attempts, 1 second apart); a timeout is recorded as unavailable evidence. Then `curl -sS --connect-timeout 3 --max-time 10 -D - -o /dev/null` on `/health`, `/`, `/docs`, `/questions`, `/question-themes`, `/this-page-does-not-exist` → `local-headers.txt`. Stop the server with a trap even when a probe times out.
 - **Live:** for each confirmed base URL (production, staging), `curl -sS --connect-timeout 3 --max-time 10 -D - -o /dev/null -H "Accept-Encoding: br, gzip"` on `/health`, `/`, `/docs`, `/questions`, `/question-themes`, `/this-page-does-not-exist`; `curl -sS --connect-timeout 3 --max-time 10 -o /dev/null -w "%{http_version} %{ssl_verify_result} %{remote_ip}\n"` on `/health`; `curl -sS --connect-timeout 3 --max-time 10 -D - -o /dev/null http://<host>/` → `live-<env>.txt`. Keep the request count small, stay sequential, and respect the host's rate limits.
 
@@ -78,7 +78,7 @@ Every command output is written to `evidence/<name>` with the **`write` tool** (
 
 ### 3. Library verification
 
-Collect every `needs-docs` claim from FAIL findings, group by library, dispatch `docs-fetcher` once per library (parallel) with the exact claims to confirm. Confirmed → the finding cites the URL. Refuted → the finding moves to "Discarded false positives" with the docs URL. If the subagent is unavailable, verify with the Context7 tools or `webfetch` and cite the URL.
+Collect every `needs-docs` claim from FAIL findings, group by library, dispatch `docs-fetcher` once per library (parallel) with the exact claims to confirm. Confirmed → the finding cites the URL. Refuted → the finding moves to "Discarded false positives" with the docs URL. If the subagent is unavailable, verify with the Context7 tools or `webfetch` and cite the URL. The docs-fetcher contract forbids writing any file anywhere (including `/tmp` and scratch probe scripts); pass that rule in every dispatch.
 
 ### 4. Adversarial verification
 
@@ -96,7 +96,7 @@ Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by
 1. Preconditions: `gh auth status`; admin right (if not admin, 🔒 findings can only be skipped or decided). Ensure the label exists: it already exists in this repository; if `🐐 goat-audit` is absent from `gh label list`, create it once with `gh label create "🐐 goat-audit" --color D4A72C --description "Created from a GOAT audit finding"`.
 2. Order: critical → high → medium → low; within a severity, by category order of the skill §6. Info findings are never triaged. After the conformance findings, triage every `GAP` using its check's default severity as the priority; a GAP becomes a public `feat`/`perf` issue and is never closed by a decision note. In `triage` mode, findings whose Appendix B `decision` is neither `pending` nor `skipped` are skipped, so a finding deferred with "Skip (decide later)" is offered again on the next resume.
 3. Duplicate search per finding: `gh issue list --state open --label "🐐 goat-audit" --search "<ID>" --json number,title,url`, then `gh issue list --state open --search "<3–5 keywords>" --limit 10 --json number,title,url`; for 🔒 findings also scan `gh-draft-advisories.json` for the ID.
-4. **One question per finding** (never batched) showing: ID, title, severity, 🔒 mark, a 2–3 line evidence summary, the proposed artifact (public issue title `type(scope): imperative subject` + type label, or "private draft advisory"), and duplicate matches. Options:
+4. **One question per finding** (default) showing: ID, title, severity, 🔒 mark, a 2–3 line evidence summary, the proposed artifact (public issue title `type(scope): imperative subject` + type label, or "private draft advisory"), and duplicate matches. Options:
    - **Create** — public issue for a public finding, private draft advisory for a 🔒 finding (recommended default);
    - **Create as draft advisory** (available for any finding: the maintainer prefers a private channel);
    - **Create as public issue** (only when the finding is not 🔒);
@@ -106,10 +106,13 @@ Dispatch fresh `explore` verifiers, ≤ 8 FAIL findings per verifier, grouped by
    - **Deny — False positive / Not applicable**;
    - **Skip (decide later)**;
    - **Stop triage here** (resume later with `/goat-audit triage`).
+
+   **Batching (opt-in).** The maintainer may request batches (`triage --batch 5`/`--batch 10`, or ask during the run). In that mode, present one question per batch of N findings with one selectable option per finding plus "Skip all N"; each selected finding still gets its own artifact and its own §10/Appendix B row, and any finding needing a different action is handled in a follow-up single question. Never batch a 🔒 finding with public ones. The default remains one question per finding.
+
 5. Push back and Deny ask **one** follow-up question (custom answer) for the rationale, the "Revisit when" trigger and the checklist change (criterion rewrite, or removal with its renumbering), then append the decision note (skill §7) to the mapped doc (creating the doc and its `AGENTS.md` line only when the file is on the agent's edit allowlist; otherwise stop and report the permission gap) and write the ready-to-apply checklist patch to `checklist-amendments.md` in the run directory — never apply it (skill §2(c)).
 6. Public issue: body written to `issues/<ID>.md` from the template; `gh issue create --title "<title>" --body-file docs/audits/.work/<report-name>/issues/<ID>.md --label "<type label>" --label "🐐 goat-audit"`.
 7. Private advisory: payload written to `advisories/<ID>.json`; `gh api -X POST repos/antoinezanardi/goat-it-api/security-advisories --input docs/audits/.work/<report-name>/advisories/<ID>.json`; record the returned `ghsa_id` and `html_url`. 🔒 details never appear in a public issue, comment or commit.
-8. After **every** decision, update the report's §10 follow-up log and the Appendix B `decision`/`artifact` fields (resumability).
+8. After **every** decision, append to the report's §10 follow-up log immediately — it is the authoritative triage log. Update Appendix B's `decision`/`artifact` fields in the same batch when the batch has ≤ 5 findings; for larger runs, reconcile Appendix B in one bulk pass at the end of triage and state in §10 that it is authoritative until then. `triage` mode reads §10 first and falls back to Appendix B.
 
 **Type mapping** (title prefix → label): `fix` → `🐛 bug` · `feat` → `🚀 feature` · `perf` → `⚡️ perf` · `refactor` → `🔩 refactor` · `test` → `✅ test` · `docs` → `📖 docs` · `ci` → `🔁 ci` · `chore` → `🧹 chore`. Title: lowercase imperative subject, no trailing period, scope = domain (`security`, `auth`, `questions`, `question-themes`, `mongo`, `docker`, `deps`, …).
 
