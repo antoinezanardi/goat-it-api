@@ -59,7 +59,7 @@ Error tracking is pending #1262 — no error-tracking service is wired (no Sentr
 
 ## Third parties and data transfers
 
-None today. MongoDB is self-hosted rather than a managed service: configuration is a plain host/port/database (`env/.env.example`), the acceptance suite runs a local `mongo:9.0.4` container (`docker/goat-it-api-acceptance-tests/docker-compose.yml`), and production deploys over SSH to a self-hosted server (`.github/workflows/deploy-to-production.yml`). `package.json` contains no analytics, telemetry or error-tracking dependency. Quiz content therefore does not leave the deployment to any third-party processor, and no data-processing agreement is required today. If the deployment ever moves to a managed database or adds an error tracker, this section must be updated at the same time with the processor, the transferred data and the applicable agreement.
+None today. MongoDB is self-hosted rather than a managed service: configuration is a plain host/port/database (`env/.env.example`), the acceptance suite runs a local `mongo` container (`docker/goat-it-api-acceptance-tests/docker-compose.yml`), and production deploys over SSH to a self-hosted server (`.github/workflows/deploy-to-production.yml`). `package.json` contains no analytics, telemetry or error-tracking dependency. Quiz content therefore does not leave the deployment to any third-party processor, and no data-processing agreement is required today. If the deployment ever moves to a managed database or adds an error tracker, this section must be updated at the same time with the processor, the transferred data and the applicable agreement.
 
 ## GDPR and legal posture
 

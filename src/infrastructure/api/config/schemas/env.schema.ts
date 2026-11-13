@@ -32,6 +32,13 @@ const APP_ENV_SCHEMA = z.object({
     .min(API_KEY_MINIMAL_LENGTH, `ADMIN_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
   GAME_API_KEY: z.string()
     .min(API_KEY_MINIMAL_LENGTH, `GAME_API_KEY must be set and at least ${API_KEY_MINIMAL_LENGTH} characters long`),
-});
+})
+  .refine(
+    env => env.ADMIN_API_KEY !== env.GAME_API_KEY,
+    {
+      error: "ADMIN_API_KEY and GAME_API_KEY must be different",
+      path: ["GAME_API_KEY"],
+    },
+  );
 
 export { APP_ENV_SCHEMA };

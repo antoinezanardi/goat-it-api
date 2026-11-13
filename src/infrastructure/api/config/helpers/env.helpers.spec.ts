@@ -1,5 +1,6 @@
 import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
@@ -9,7 +10,7 @@ describe(validate, () => {
   const minimalValidEnv: Partial<AppEnv> = {
     API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
     ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
-    GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+    GAME_API_KEY: "y".repeat(API_KEY_MINIMAL_LENGTH),
   };
 
   const defaultEnv = Object.freeze(createFakeAppEnv({
@@ -365,6 +366,14 @@ describe(validate, () => {
       },
       errorMessage: "Invalid environment variables",
     },
+    {
+      test: "should throw error when ADMIN_API_KEY equals GAME_API_KEY.",
+      config: {
+        ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+        GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+      },
+      errorMessage: "ADMIN_API_KEY and GAME_API_KEY must be different",
+    },
   ])("$test", ({ config, errorMessage }) => {
     const fullConfig = {
       ...defaultEnv,
@@ -372,6 +381,21 @@ describe(validate, () => {
     };
 
     expect(() => validate(fullConfig)).toThrow(errorMessage);
+  });
+});
+
+describe("APP_ENV_SCHEMA Shape", () => {
+  it("should report the equality error on the GAME_API_KEY path when ADMIN_API_KEY equals GAME_API_KEY.", () => {
+    const result = APP_ENV_SCHEMA.safeParse({
+      API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
+      ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+      GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
+    });
+
+    expect(result.error?.issues).toContainEqual(expect.objectContaining({
+      path: ["GAME_API_KEY"],
+      message: "ADMIN_API_KEY and GAME_API_KEY must be different",
+    }));
   });
 });
 

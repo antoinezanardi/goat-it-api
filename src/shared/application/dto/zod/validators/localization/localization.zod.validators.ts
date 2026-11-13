@@ -59,7 +59,7 @@ function zLocalizedText(): ZodObject<Record<Locale, ZodOptional<ZodString>>> {
     .describe("Localized text object with translations for multiple languages")
     .refine(
       object => hasAtLeastOneLocaleValue(object),
-      { message: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
+      { error: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
     );
 }
 
@@ -70,7 +70,7 @@ function zLocalizedTexts(): ZodObject<Record<Locale, ZodOptional<ZodArray<ZodStr
     .describe("Localized texts object with translations for multiple languages")
     .refine(
       object => hasAtLeastOneLocaleValue(object),
-      { message: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
+      { error: LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE },
     );
 }
 

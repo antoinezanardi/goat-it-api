@@ -231,7 +231,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - Unit coverage: `pnpm run test:unit:cov`.
 - Mutation: `pnpm run test:mutation` (incremental) or `pnpm run test:mutation:ci` (CI config).
 - Acceptance: `pnpm run test:acceptance` (builds first) or `pnpm run test:acceptance:skip-build` when `dist/` is current.
-- Docker services: `pnpm run docker:acceptance-tests:start`, `pnpm run docker:acceptance-tests:stop`, `pnpm run docker:acceptance-tests:reset`.
+- Docker services: `pnpm run docker:acceptance-tests:start`, `pnpm run docker:acceptance-tests:stop`, `pnpm run docker:acceptance-tests:reset` (discards the named `mongodb_data_container` volume before starting).
 - Lint and typecheck: `pnpm run lint` and `pnpm run typecheck`.
 - App build: `pnpm run build`; schemas build: `pnpm --filter @goat-it/schemas build`.
 - Built-output secret scan: `pnpm run check:secrets-in-built-output` after a build.
