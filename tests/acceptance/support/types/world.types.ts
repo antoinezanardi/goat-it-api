@@ -2,7 +2,7 @@ import { World } from "@cucumber/cucumber";
 import { ofetch } from "ofetch";
 import { model } from "mongoose";
 
-import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 
 import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
@@ -65,6 +65,17 @@ class GoatItWorld extends World {
       throw new TypeError("The last response data is not of type string.");
     }
     return data;
+  }
+
+  public expectLastResponseHeaderToBe(headerName: string, expectedValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue !== expectedValue) {
+      throw new Error(`Expected the last response header "${headerName}" to be "${expectedValue}", but received: ${String(headerValue)}`);
+    }
   }
 
   public expectLastResponseJson<T>(schema: { parse: (_data: unknown) => T }): T {

@@ -15,6 +15,10 @@ runs:
       shell: bash
       run: pnpm run build
 
+    - name: Check built output for leaked secrets 🔒
+      shell: bash
+      run: pnpm run check:secrets-in-built-output
+
     - name: Verify build was successful ✅
       shell: bash
       run: test -f dist/main.js

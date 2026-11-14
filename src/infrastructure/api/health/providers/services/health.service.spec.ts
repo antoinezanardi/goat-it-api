@@ -1,7 +1,9 @@
+import { ServiceUnavailableException } from "@nestjs/common";
 import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
 import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+import { DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS, HEALTH_CHECK_UNAVAILABLE_MESSAGE } from "@src/infrastructure/api/health/constants/health.constants";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
@@ -78,6 +80,41 @@ describe(HealthService, () => {
 
       expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();
     });
+
+    it("should throw a sanitized service unavailable exception when health check service throws a service unavailable exception.", async() => {
+      mocks.services.health.check.mockRejectedValueOnce(new ServiceUnavailableException({
+        status: "error",
+        details: {
+          "mongoose": { status: "down", message: "MongoDB connection refused" },
+          "goat-it-docs": { status: "down", message: "Documentation endpoint unreachable" },
+        },
+      }));
+
+      await expect(services.health.checkAppHealth()).rejects.toThrow(new ServiceUnavailableException(HEALTH_CHECK_UNAVAILABLE_MESSAGE));
+    });
+
+    it("should not expose health check details when health check service throws a service unavailable exception.", async() => {
+      mocks.services.health.check.mockRejectedValueOnce(new ServiceUnavailableException({
+        status: "error",
+        details: {
+          mongoose: { status: "down", message: "MongoDB connection refused" },
+        },
+      }));
+      const expectedResponse = {
+        statusCode: 503,
+        message: HEALTH_CHECK_UNAVAILABLE_MESSAGE,
+        error: "Service Unavailable",
+      };
+
+      await expect(services.health.checkAppHealth()).rejects.toHaveProperty("response", expectedResponse);
+    });
+
+    it("should rethrow error when health check service throws a non service unavailable exception.", async() => {
+      const expectedError = new Error("Unexpected health check failure");
+      mocks.services.health.check.mockRejectedValueOnce(expectedError);
+
+      await expect(services.health.checkAppHealth()).rejects.toThrow(expectedError);
+    });
   });
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
@@ -94,9 +131,18 @@ describe(HealthService, () => {
   // oxlint-disable-next-line typescript/dot-notation
   describe(HealthService.prototype["checkGoatItDocs"], () => {
     it("should call ping check from http health indicator when called.", async() => {
+      const expectedPingCheckOptions = {
+        timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS,
+        signal: expect.any(AbortSignal) as AbortSignal,
+      };
+
       await services.health["checkGoatItDocs"]();
 
-      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith("goat-it-docs", "http://0.0.0.0:3000/docs");
+      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(
+        "goat-it-docs",
+        "http://0.0.0.0:3000/docs",
+        expectedPingCheckOptions,
+      );
     });
   });
 });

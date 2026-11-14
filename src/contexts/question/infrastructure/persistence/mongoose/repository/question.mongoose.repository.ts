@@ -6,25 +6,32 @@ import { shake } from "radashi";
 import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
-import { shuffleArray } from "@shared/domain/helpers/array/array.helpers";
 
+import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS, QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
-import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
+import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import type { Question } from "@question/domain/types/question.entities";
 
 import type { Model, UpdateQuery } from "mongoose";
 
+import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
 import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
+/**
+ * Mongoose adapter for `QuestionRepository`.
+ *
+ * Every read aggregates the question together with its theme assignments, resolved through a `$lookup` and ordered primary first.
+ *
+ * A primary assignment is written atomically with `bulkWrite`.
+ */
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
@@ -46,6 +53,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return matchStage;
   }
 
+  /**
+   * Applies the filters, joins the theme assignments, then sorts and limits in one aggregation, so theme data is read in the same round trip.
+   *
+   * `limit` is applied last: a missing or `0` limit returns the full filtered set.
+   */
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
@@ -60,6 +72,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return questionWithThemes.map(createQuestionFromAggregate);
   }
 
+  /**
+   * Returns `undefined` when no document matches the id; unlike `FindQuestionByIdUseCase`, it does not throw.
+   */
   public async findById(id: string): Promise<Question | undefined> {
     const questions = await this.questionModel.aggregate<QuestionAggregate>([
       { $match: { _id: new Types.ObjectId(id) } },
@@ -72,6 +87,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return createQuestionFromAggregate(questions[0]);
   }
 
+  /**
+   * Inserts the document, then re-reads it through the aggregation, so the result carries the theme assignments or is `undefined` when the read-back fails.
+   */
   public async create(questionCreationContract: QuestionCreationContract): Promise<Question | undefined> {
     const questionCreationDocument = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
     const createdQuestionDocument = await this.questionModel.create(questionCreationDocument);
@@ -79,6 +97,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(createdQuestionDocument._id.toString());
   }
 
+  /**
+   * Sets the archived status and returns the re-read question, or `undefined` when the question does not exist.
+   */
   public async archive(id: string): Promise<Question | undefined> {
     const update: UpdateQuery<QuestionMongooseDocument> = {
       status: QUESTION_STATUS_ARCHIVED,
@@ -88,6 +109,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(id);
   }
 
+  /**
+   * A primary assignment demotes the current primary theme and inserts the new one in a single `bulkWrite`; a non-primary assignment only appends the theme entry.
+   */
   public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
     const insertPayload = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
 
@@ -104,6 +128,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(questionId);
   }
 
+  /**
+   * Promoting to primary demotes the current primary assignment and sets the target one in a single `bulkWrite`; a non-primary
+   * update writes only the defined fields and skips the database when none are defined.
+   */
   public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
     if (contract.isPrimary) {
       await this.promoteToPrimaryThemeAssignment(questionId, themeId, contract);
@@ -118,6 +146,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(questionId);
   }
 
+  /**
+   * Applies only the fields present in the contract as a `$set` patch, then returns the re-read question.
+   */
   public async modify(id: string, contract: QuestionModificationContract): Promise<Question | undefined> {
     const questionUpdateData = getCrushedDataForMongoPatchUpdate(contract);
     const updateQuery: UpdateQuery<QuestionMongooseDocument> = { $set: questionUpdateData };
@@ -126,6 +157,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(id);
   }
 
+  /**
+   * Pulls the theme entry from the embedded assignments and returns the re-read question, or `undefined` when the question does not exist.
+   */
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
     const update: UpdateQuery<QuestionMongooseDocument> = {
       $pull: {
@@ -153,6 +187,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
     });
   }
 
+  /**
+   * Samples up to `options.limit` active questions with `$sample`, then shuffles them again in memory, so the returned order is
+   * not the database order and is not stable between calls.
+   */
   public async findRandom(options: FindRandomQuestionsOptions): Promise<Question[]> {
     const matchStage = QuestionMongooseRepository.composeFindRandomMatchStage(options);
 
@@ -165,6 +203,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return shuffleArray(questionWithThemes.map(createQuestionFromAggregate));
   }
 
+  /**
+   * Returns the aggregation counts with zero fallbacks, so a missing row yields `0` or an empty breakdown instead of `undefined`.
+   */
   public async getStats(): Promise<QuestionStats> {
     const [result] = await this.questionModel.aggregate<QuestionStatsAggregationResult>(QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE);
 

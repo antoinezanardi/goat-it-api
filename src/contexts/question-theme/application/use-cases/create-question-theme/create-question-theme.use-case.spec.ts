@@ -1,10 +1,7 @@
-import { Test } from "@nestjs/testing";
-
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeCreationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
@@ -20,23 +17,14 @@ describe(CreateQuestionThemeUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        CreateQuestionThemeUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
 
-    createQuestionThemeUseCase = testingModule.get<CreateQuestionThemeUseCase>(CreateQuestionThemeUseCase);
+    createQuestionThemeUseCase = new CreateQuestionThemeUseCase(mocks.repositories.questionTheme);
   });
 
   describe(CreateQuestionThemeUseCase.prototype.create, () => {

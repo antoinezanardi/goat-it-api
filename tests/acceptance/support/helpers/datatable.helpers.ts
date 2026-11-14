@@ -39,8 +39,8 @@ function zCoerceOptionalStringArray(): ZodType<string[] | undefined> {
 
 /**
  * Validates the given Cucumber DataTable against the provided Zod schema and returns all rows. Only used in acceptance tests.
- * @param dataTable
- * @param schema
+ * @param dataTable - The Cucumber DataTable whose hashed rows are validated.
+ * @param schema - The Zod schema each row must satisfy.
  */
 function validateDataTableAndGetRows<T>(
   dataTable: DataTable,
@@ -60,8 +60,8 @@ function validateDataTableAndGetRows<T>(
 
 /**
  * Validates the given Cucumber DataTable against the provided Zod schema and returns the first row. Only used in acceptance tests.
- * @param dataTable
- * @param schema
+ * @param dataTable - The Cucumber DataTable whose first hashed row is returned.
+ * @param schema - The Zod schema the row must satisfy.
  */
 function validateDataTableAndGetFirstRow<T>(
   dataTable: DataTable,

@@ -8,6 +8,11 @@ import type { FindQuestionsQueryDto } from "@question/application/dto/find-quest
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { PublicQuestionFilterOptions, QuestionFilterOptions } from "@question/domain/types/question.types";
 
+/**
+ * Maps an admin question-list query DTO to the full repository filter options, dropping filters the client did not send.
+ *
+ * Returns `undefined` when no filter remains, which the repository reads as "match every question".
+ */
 function createQuestionFilterOptionsFromQueryDto(dto: AdminFindQuestionsQueryDto): Partial<QuestionFilterOptions> | undefined {
   return pickDefinedValues({
     status: dto[QUESTION_STATUS_QUERY_KEY],
@@ -21,6 +26,9 @@ function createQuestionFilterOptionsFromQueryDto(dto: AdminFindQuestionsQueryDto
   });
 }
 
+/**
+ * Maps a public question-list query DTO to the public filter options, adding the resolved `locale` used to keep only localized questions.
+ */
 function createPublicQuestionFilterOptionsFromQueryDto(dto: FindQuestionsQueryDto, locale: Locale): Partial<PublicQuestionFilterOptions> | undefined {
   return pickDefinedValues({
     category: dto[QUESTION_CATEGORY_QUERY_KEY],

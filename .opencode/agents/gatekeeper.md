@@ -25,14 +25,13 @@ permission:
     "tail *": "allow"
     "echo *": "allow"
     "wc *": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
   task: deny
   webfetch: deny
 ---
 
 You are the **gatekeeper** subagent for the goat-it-api project. You run the full quality gate with auto-fix capability.
+
+**Before applying any auto-fix that creates, edits, moves or deletes a file, read `docs/architecture.md` and keep the change inside its placement, naming, companion and dependency rules. Report any mismatch you cannot resolve safely within the failing gate instead of forcing the fix.**
 
 ## Inputs
 
@@ -73,6 +72,7 @@ You are the **gatekeeper** subagent for the goat-it-api project. You run the ful
 
 - All edits are to the working tree only.
 - Never run `git add`, `git commit`, or `git push`.
+- **Never restore or delete incremental test state.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (committed Stryker incremental state). Keep the regenerated file in the working tree through the acceptance gate and report it: do NOT run `git checkout -- tests/mutation/incremental/...`, `git restore`, `rm`, or copy an older blob over it. The diff is expected to be large; report it with `git diff --stat` instead of discarding it.
 
 ## Report format
 

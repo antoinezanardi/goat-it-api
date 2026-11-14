@@ -1,4 +1,4 @@
-import type { QuestionThemeAssignmentCreationCommand } from "@question/domain/types/question.commands";
+import type { QuestionThemeAssignmentCreationCommand } from "@question/application/commands/question.commands";
 import type { Question } from "@question/domain/types/question.entities";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";

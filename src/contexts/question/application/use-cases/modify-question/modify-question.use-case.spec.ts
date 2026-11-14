@@ -1,13 +1,10 @@
-import { Test } from "@nestjs/testing";
-
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
-import { createFakeQuestionModificationContract } from "@faketories/contexts/question/contracts/question-modification/question-modification.contracts.faketory";
+import { createFakeQuestionModificationContract } from "@faketories/contexts/question/repository-contracts/question-modification/question-modification.repository-contracts.faketory";
 import { createFakeQuestionModificationCommand } from "@faketories/contexts/question/commands/question-modification.commands.faketory";
 
 describe(ModifyQuestionUseCase, () => {
@@ -18,23 +15,14 @@ describe(ModifyQuestionUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        ModifyQuestionUseCase,
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-      ],
-    }).compile();
 
-    modifyQuestionUseCase = testingModule.get<ModifyQuestionUseCase>(ModifyQuestionUseCase);
+    modifyQuestionUseCase = new ModifyQuestionUseCase(mocks.repositories.question);
   });
 
   describe(ModifyQuestionUseCase.prototype.modify, () => {

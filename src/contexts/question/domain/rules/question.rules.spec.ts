@@ -1,6 +1,7 @@
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
-import { computeQuestionStatusFromAuthorRole, ensureQuestionThemeAssignmentIsModifiable, ensureQuestionThemeAssignmentIsRemovable, findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
+import { computeQuestionStatusFromAuthorRole, ensureQuestionThemeAssignmentIsModifiable, ensureQuestionThemeAssignmentIsRemovable, ensureQuestionThemeAssignmentsLimit, findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import type { QuestionCreationAuthorRole, QuestionCreationStatus } from "@question/domain/types/question.value-objects";
 
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
@@ -95,5 +96,30 @@ describe(ensureQuestionThemeAssignmentIsModifiable, () => {
     });
 
     expect(() => ensureQuestionThemeAssignmentIsModifiable(question, "missing-theme")).toThrow(QuestionThemeAssignmentAbsentError);
+  });
+});
+
+describe(ensureQuestionThemeAssignmentsLimit, () => {
+  it("should not throw when the question has fewer than the maximum number of themes.", () => {
+    const question = createFakeQuestion({
+      themes: [
+        createFakeQuestionThemeAssignment(),
+        createFakeQuestionThemeAssignment(),
+      ],
+    });
+
+    expect(() => ensureQuestionThemeAssignmentsLimit(question)).not.toThrow();
+  });
+
+  it("should throw QuestionMaximumThemesError when the question already has the maximum number of themes.", () => {
+    const question = createFakeQuestion({
+      themes: [
+        createFakeQuestionThemeAssignment(),
+        createFakeQuestionThemeAssignment(),
+        createFakeQuestionThemeAssignment(),
+      ],
+    });
+
+    expect(() => ensureQuestionThemeAssignmentsLimit(question)).toThrow(QuestionMaximumThemesError);
   });
 });

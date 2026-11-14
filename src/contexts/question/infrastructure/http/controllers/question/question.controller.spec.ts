@@ -2,14 +2,14 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
+import * as findAllQueryDtoMappers from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
-import { createFindRandomQuestionsOptionsFromBodyDto } from "@question/application/mappers/find-random-options/find-random-options.mappers";
+import * as findRandomOptionsMappers from "@question/application/mappers/find-random-options/find-random-options.mappers";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { FindRandomQuestionsUseCase } from "@question/application/use-cases/find-random-questions/find-random-questions.use-case";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
-import { createQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
+import * as questionMappers from "@question/application/mappers/question.mappers";
 import * as questionFilterQueryDtoMappers from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
@@ -28,10 +28,6 @@ import type { Mock } from "vitest";
 
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
-
-vi.mock(import("@question/application/mappers/question.mappers"));
-vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
-vi.mock(import("@question/application/mappers/find-random-options/find-random-options.mappers"));
 
 describe(QuestionController, () => {
   let questionController: QuestionController;
@@ -62,9 +58,9 @@ describe(QuestionController, () => {
         findQuestionById: createMockedFindQuestionByIdUseCase(),
       },
       mappers: {
-        createQuestionDtoFromEntity: vi.mocked(createQuestionDtoFromEntity),
-        createFindAllOptionsFromQueryDto: vi.mocked(createFindAllOptionsFromQueryDto),
-        createFindRandomQuestionsOptionsFromBodyDto: vi.mocked(createFindRandomQuestionsOptionsFromBodyDto),
+        createQuestionDtoFromEntity: vi.spyOn(questionMappers, "createQuestionDtoFromEntity").mockImplementation(vi.fn()),
+        createFindAllOptionsFromQueryDto: vi.spyOn(findAllQueryDtoMappers, "createFindAllOptionsFromQueryDto").mockImplementation(vi.fn()),
+        createFindRandomQuestionsOptionsFromBodyDto: vi.spyOn(findRandomOptionsMappers, "createFindRandomQuestionsOptionsFromBodyDto").mockImplementation(vi.fn()),
       },
     };
 

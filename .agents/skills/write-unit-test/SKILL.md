@@ -1,289 +1,54 @@
 ---
 name: write-unit-test
-description: Write or complete a colocated Vitest unit test for any source file in the Goat It API, following the per-file-type conventions in tests/unit/README.md (controllers, use-cases, repositories, DTOs, helpers, errors).
+description: Write or complete a colocated Vitest unit test for any source file in the Goat It API, following the per-file-type conventions in docs/unit-tests.md (controllers, use-cases, repositories, module wiring, DTOs, helpers, errors).
 disable-model-invocation: true
 ---
 
 ## What I do
 
-- Identify the source file type and apply the matching test template
-- Wire up the Nest testing module with typed mock factories from `@mocks/*`
-- Populate test data with faketories from `@faketories/*`
-- Write focused `it` blocks (one assertion each) covering success paths, error branches and edge cases
-- Ensure the spec compiles and `pnpm run test:unit:cov` stays green at 100%
+- Identify the source file type and apply the matching template from `docs/unit-tests.md`.
+- Instantiate plain use cases with `new`; wire Nest classes with `Test.createTestingModule` and typed mock factories from `@mocks/*`.
+- Populate test data with faketories from `@faketories/*`.
+- Write focused `it` blocks (one assertion each) covering success paths, error branches and edge cases.
+- Ensure the spec compiles and `pnpm run test:unit:cov` stays green at 100%.
 
 ## When to use me
 
-- A new source file has no spec yet and needs a skeleton
-- An existing spec is missing assertions, branches, or mock/faketory wiring
-- Coverage is below 100% and you need to add the missing `it` blocks
+- A new source file has no spec yet and needs a skeleton.
+- An existing spec is missing assertions, branches, or mock/faketory wiring.
+- Coverage is below 100% and you need to add the missing `it` blocks.
 
 ## Golden rule
 
-**Always read `tests/unit/README.md` before writing or completing any test.** It contains authoritative templates and edge-case patterns for every file type. This skill summarises the most important conventions but is not a replacement for that guide.
+**Always read `docs/unit-tests.md` before writing or completing any test.** It owns the templates and edge-case patterns for every file type (controllers, use-cases, repositories, **module wiring**, DTOs/Zod validators, helpers, errors), plus assertion style and mocking rules. This skill only adds the project-specific deltas below — it does not restate the guide.
 
-## Per-file-type quick reference
+## File types and top-level describe labels
 
-### Controllers
+- Controllers: `describe(ControllerClass, ...)`, nested `describe(Controller.prototype.method, ...)`.
+- Use-cases: `describe(UseCaseClass, ...)`, nested `describe(UseCase.prototype.method, ...)`.
+- Repositories: `describe(RepositoryClass, ...)`.
+- Services: `describe(ServiceClass, ...)`.
+- Modules: `describe(ModuleClass, ...)` — compile the real module graph with mocked Mongoose model tokens (`docs/unit-tests.md` § Module wiring tests).
+- DTO shapes: `describe("<DTOName> DTO Shape", ...)` with nested per-field groups.
+- Errors: `describe(ErrorClassName, ...)`.
+- Helpers/mappers: `describe(functionName, ...)`.
 
-Purpose: verify HTTP wiring only — routing, DTO mapping, use-case delegation.
-Describe label: `describe(ControllerClass, ...)`, nested `describe(Controller.prototype.method, ...)`.
+## Project-specific deltas
 
-```typescript
-describe(FooController, () => {
-  let controller: FooController;
-  let mocks: { useCases: { createFoo: ReturnType<typeof createMockedCreateFooUseCase> } };
+- Plain use cases: `new UseCase(mockRepository)`. `Test.createTestingModule` is only for Nest classes (controllers, repositories, services, guards, pipes, modules).
+- Assertions: one per `it`; `toStrictEqual<T>(expected)`, `toHaveBeenCalledExactlyOnceWith(...)`, `rejects.toThrow(exactErrorInstance)`; typed `it.each<T>([...])` for parameterized cases.
+- Private methods: `ClassName["privateMethod"](...)`.
+- Mocking modules: the Vitest config uses `isolate: false`, so prefer `vi.spyOn()` on namespace imports over `vi.mock()`, which silently fails if another spec already loaded the real module. Use `vi.mock()` only for third-party modules no other spec imports for real.
+- `@package-json`: only importable in specs. Inside `src/`, use `readPackageJson()` from `@shared/infrastructure/helpers/package-json/package-json.helpers`.
+- DTO shape specs: `validDto` is an inline literal with a structural type (`let validDto: { ... }`), assigned in `beforeEach`; negative tests spread-copy it. Never use faketories or `as SomeDto` casts.
+- Test callbacks (`describe`, `it`, `it.each`, hooks) do not need `: void`; oxlint treats them as void-returning.
 
-  beforeEach(async () => {
-    mocks = { useCases: { createFoo: createMockedCreateFooUseCase() } };
-    const module = await Test.createTestingModule({
-      controllers: [FooController],
-      providers: [
-        {
-          provide: CreateFooUseCase,
-          useValue: mocks.useCases.createFoo
-        }
-      ],
-    }).compile();
-    controller = module.get(FooController);
-  });
+## Coverage and mutation
 
-  describe(FooController.prototype.create, () => {
-    it("should call createFoo.create with the mapped command when called.", async () => {
-      const dto = createFakeFooCreationDto();
-      await controller.create(dto);
-      expect(mocks.useCases.createFoo.create).toHaveBeenCalledExactlyOnceWith(/* expected command */);
-    });
-  });
-});
-```
+The exclusion lists are authoritative in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs` — read them instead of copying a list. Notes:
 
-### Use-cases
-
-Purpose: validate business orchestration, repository calls, and domain error propagation.
-Describe label: `describe(UseCaseClass, ...)`, nested `describe(UseCase.prototype.method, ...)`.
-
-```typescript
-describe(CreateFooUseCase, () => {
-  let useCase: CreateFooUseCase;
-  let mocks: { repositories: { foo: ReturnType<typeof createMockedFooRepository> } };
-
-  beforeEach(async () => {
-    mocks = { repositories: { foo: createMockedFooRepository() } };
-    const module = await Test.createTestingModule({
-      providers: [
-        CreateFooUseCase,
-        {
-          provide: FOO_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.foo
-        },
-      ],
-    }).compile();
-    useCase = module.get(CreateFooUseCase);
-  });
-
-  describe(CreateFooUseCase.prototype.create, () => {
-    it("should return created foo when repository returns one.", async () => {
-      const expected = createFakeFoo();
-      mocks.repositories.foo.create.mockResolvedValueOnce(expected);
-      const actual = await useCase.create(createFakeFooCreationCommand());
-      expect(actual).toStrictEqual<Foo>(expected);
-    });
-
-    it("should throw FooCreationError when repository returns undefined.", async () => {
-      mocks.repositories.foo.create.mockResolvedValueOnce(undefined);
-      await expect(useCase.create(createFakeFooCreationCommand())).rejects.toThrow(new FooCreationError());
-    });
-  });
-});
-```
-
-### Repositories
-
-Purpose: test query shapes and document→entity mapping; mock the Mongoose `Model`.
-Describe label: `describe(RepositoryClass, ...)`.
-
-```typescript
-describe(FooMongooseRepository, () => {
-  let repository: FooMongooseRepository;
-
-  const mocks = {
-    models: {
-      foo: {
-        find: vi.fn(),
-        findOne: vi.fn(),
-        create: vi.fn(),
-        updateOne: vi.fn(),
-      },
-    },
-    mappers: {
-      foo: {
-        createFooFromDocument: vi.fn(),
-      },
-    },
-  } as const;
-
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      providers: [
-        FooMongooseRepository,
-        { provide: getModelToken(FooSchema.name), useValue: mocks.models.foo },
-      ],
-    }).compile();
-    repository = module.get(FooMongooseRepository);
-  });
-
-  describe(FooMongooseRepository.prototype.findById, () => {
-    it("should return undefined when document is not found.", async () => {
-      mocks.models.foo.findOne.mockResolvedValue(null);
-      const result = await repository.findById("some-id");
-      expect(result).toBeUndefined();
-    });
-
-    it("should map and return entity when document is found.", async () => {
-      const doc = createFakeFooDocument();
-      const entity = createFakeFoo();
-      mocks.models.foo.findOne.mockResolvedValue(doc);
-      mocks.mappers.foo.createFooFromDocument.mockReturnValue(entity);
-      const result = await repository.findById(doc._id.toString());
-      expect(result).toStrictEqual(entity);
-    });
-  });
-});
-```
-
-### DTOs (`*.dto.shape.spec.ts`)
-
-**DT5 rule**: `validDto` must be an **inline literal** — never a faketory call. Negative tests use `{ ...validDto, field: badValue }` (spread copy).
-
-**DT6 rule**: `validDto` must be declared with `let` using a **structural type** (inline object type annotation) — never a DTO type annotation (e.g., `let validDto: SomeDto`) and never a cast (e.g., `as SomeDto`). Assign the value in `beforeEach`. This keeps DTO shape tests decoupled from the DTO class and avoids import circularity.
-
-```typescript
-describe("Foo DTO Shape", () => {
-  let validDto: { fieldA: string; fieldB: number; optionalField?: string };
-
-  beforeEach(() => {
-    validDto = {
-      fieldA: "valid-value",
-      fieldB: 42,
-    };
-  });
-
-  it("should pass validation when a valid FooDto is provided.", () => {
-    expect(() => FOO_DTO.parse(validDto)).not.toThrow();
-  });
-
-  describe("fieldA", () => {
-    it("should throw zod error when fieldA is invalid.", () => {
-      const invalid = { ...validDto, fieldA: 123 };
-      expect(() => FOO_DTO.parse(invalid)).toThrow(ZodError);
-    });
-
-    it("should have correct metadata when accessing the metadata.", () => {
-      const metadata = FOO_DTO.shape.fieldA.meta();
-      const expectedMetadata = { description: "…", example: "…" };
-      expect(metadata).toStrictEqual(expectedMetadata);
-    });
-  });
-});
-```
-
-### Helpers / pure functions
-
-Describe label: `describe(functionName, ...)` for named functions. Use `it.each` for parameterized input→output cases.
-
-```typescript
-describe(myHelper, () => {
-  it.each<{ input: X; expected: Y }>([
-    { input: valueA, expected: resultA },
-    { input: valueB, expected: resultB },
-  ])("should return $expected when input is $input.", ({ input, expected }) => {
-    expect(myHelper(input)).toStrictEqual(expected);
-  });
-});
-```
-
-### Errors
-
-Describe label: `describe(ErrorClassName, ...)` at top level.
-
-```typescript
-describe(MyError, () => {
-  it("should have correct name when constructed.", () => {
-    expect(new MyError("id").name).toBe("MyError");
-  });
-
-  it("should format message correctly when constructed.", () => {
-    expect(new MyError("id").message).toStrictEqual("My error for id");
-  });
-});
-```
-
-### Private methods
-
-Access via bracket notation:
-
-```typescript
-myInstance["privateMethod"](arg);
-MyClass["staticPrivateMethod"](arg);
-```
-
-## Mocking rule: prefer `vi.spyOn()` over `vi.mock()`
-
-The Vitest config uses `isolate: false`, which shares a single module registry across all test files in a thread. This means:
-
-- `vi.mock()` only applies if the target module hasn't been loaded yet. If another spec file (e.g. the module's own `*.spec.ts`) imports the real module first, the mock **silently fails** — tests become intermittently unstable.
-- `vi.spyOn()` modifies the live module exports at runtime and works regardless of load order. `restoreMocks: true` in the config cleans up spies between tests.
-
-**Always use `vi.spyOn()` for module-level functions** (mappers, helpers, third-party exports) unless you've verified with a grep that no other spec file imports the real module.
-
-```typescript
-// DO this
-import * as fooHelpers from "@src/.../foo.helpers";
-
-beforeEach(() => {
-  vi.spyOn(fooHelpers, "barFn").mockReturnValue("result");
-});
-
-// DON'T do this (unstable with isolate: false)
-vi.mock(import("@src/.../foo.helpers"));
-```
-
-Patterns:
-- Namespace functions: `import * as mod from "..."` → `vi.spyOn(mod, "fn")`
-- Class static methods: `vi.spyOn(SomeModule, "staticMethod")`
-- Class instance methods: `vi.spyOn(SomeClass.prototype, "method").mockReturnThis()`
-- Package metadata: import the real file — `import packageJson from "@package-json" with { type: "json" }` — and reference `packageJson.field` in assertions. Inside `src/`, JSON imports are not ESM-emittable by SWC: use `readPackageJson()` from `@shared/domain/helpers/package-json/package-json.helpers`.
-
-`vi.mock()` is still safe for third-party modules that **no other spec file imports as real** (e.g. `nestjs-zod`). Always check with a grep first.
-
-## Structural conventions
-
-### Describe labels by file type
-
-- Controllers: `"<Name> Controller"`
-- Use-cases: `"<Name> Use Case"`
-- Repositories: `"<Name> Mongoose Repository"` or `"<Name> Repository"`
-- Services: `"<Name> Service"`
-- DTOs (`.dto.shape.spec.ts`): `"<DTOName> DTO Shape"`
-- Errors: symbol reference `describe(ClassName, ...)`
-- Helpers/mappers: symbol reference `describe(functionName, ...)`
-
-### Assertion rules
-
-- Top-level `describe`: `"<ClassName> <Role>"` (e.g. `"Create Foo Use Case"`)
-- Nested `describe`: reference the method directly — `describe(FooClass.prototype.myMethod, ...)`
-- Test name pattern: `"should <expected behavior> when <condition>."`
-- One assertion per `it` — split multiple assertions into separate `it` blocks
-- Use `toStrictEqual<T>(expected)` for value equality (keeps type hinting)
-- Use `toHaveBeenCalledExactlyOnceWith(...)` for single-call assertions
-- Use `await expect(promise).rejects.toThrow(exactErrorInstance)` for error assertions
-- Use `it.each` instead of multiple identical `it` blocks that vary only in inputs
-- `it.each` must always be typed: `it.each<T>([...])`
-
-## Coverage exclusions (no spec needed)
-
-`*.module.ts`, `*.schema.ts`, `*.constants.ts`, `*.types.ts`, `*.dto.ts`, `*.pipeline.ts`, `*.commands.ts`, `*.contracts.ts`, `*.entities.ts`, `*.value-objects.ts`
+- `src/**/mongoose/**/*.schema.ts` is the only schema pattern excluded from coverage; other `*.schema.ts` files (for example `src/infrastructure/api/config/schemas/env.schema.ts`) are not covered by that exclusion.
+- `*.module.ts` files are included in coverage and mutation scope: every module needs a colocated `.module.spec.ts`.
 
 ## Checks to run when done
 
@@ -295,16 +60,13 @@ pnpm run lint
 
 ## Final audit checklist
 
-The command `.opencode/commands/lint-unit-tests.md` is the **final audit checklist** — its rule
-tags (`[U*]`, `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`) are mirrored in this
-skill so anything written per this skill passes that audit. After writing a test, mentally
-verify it against section 4 of that command before considering the task done.
+`.opencode/commands/lint-unit-tests.md` §4 is the **final audit checklist** (`[U*]`, `[CT*]`, `[UC*]`, `[RP*]`, `[DT*]`, `[HP*]`, `[ER*]`). Read it and verify the written spec against it before considering the task done — it is authoritative, not a mirror of this skill.
 
 ## Reference
 
-- **Primary authoritative guide (read first):** `tests/unit/README.md`
-- Mock conventions: `tests/unit/utils/mocks/README.md` and `docs/MOCKS.md`
-- Faketory conventions: `tests/shared/utils/faketories/README.md` and `docs/FAKETORIES.md`
-- Architecture and data-flow: `docs/ARCHITECTURE.md`
+- **Primary authoritative guide (read first):** `docs/unit-tests.md`
+- Mock conventions: `docs/mocks.md`
+- Faketory conventions: `docs/faketories.md`
+- Architecture and data flow: `docs/architecture.md` (read before creating or moving any file)
 - Coverage config: `configs/vitest/vitest.config.ts`
 - Related skills: `create-mock`, `create-faketory`

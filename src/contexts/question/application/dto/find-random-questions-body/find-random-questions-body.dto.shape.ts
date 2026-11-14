@@ -12,8 +12,11 @@ import {
   zQuestionExcludedIdsFilter,
   zQuestionIsAdultContentBooleanFilter,
   zQuestionThemeIdsFilter,
-} from "@question/application/dto/shared/zod/validators/question.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question.dto.zod.validators";
 
+/**
+ * Validates a random-question request body: the result limit plus the exclusion, category, difficulty, theme and adult-content filters.
+ */
 const FIND_RANDOM_QUESTIONS_BODY_DTO = z.object({
   limit: z.number()
     .int()
@@ -30,6 +33,9 @@ const FIND_RANDOM_QUESTIONS_BODY_DTO = z.object({
   isAdultContent: zQuestionIsAdultContentBooleanFilter(),
 });
 
+/**
+ * The parsed random-question filters consumers receive, with the default limit resolved.
+ */
 type FindRandomQuestionsBodyDto = z.infer<typeof FIND_RANDOM_QUESTIONS_BODY_DTO>;
 
 export type { FindRandomQuestionsBodyDto };

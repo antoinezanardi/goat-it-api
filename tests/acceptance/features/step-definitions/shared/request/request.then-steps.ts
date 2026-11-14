@@ -3,8 +3,8 @@ import { expect } from "expect";
 import { shake } from "radashi";
 import { z } from "zod";
 
-import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
+import type { ApiResponseExceptionDto } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";

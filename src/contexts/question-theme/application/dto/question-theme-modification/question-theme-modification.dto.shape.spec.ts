@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 
 import { QUESTION_THEME_MODIFICATION_DTO } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 
-import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { HEX_COLOR_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 describe("Question Theme Modification DTO Shape", () => {
   let validQuestionThemeModificationDto: {

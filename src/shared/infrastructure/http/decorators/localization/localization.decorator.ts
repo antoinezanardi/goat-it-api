@@ -5,6 +5,11 @@ import type { ExecutionContext } from "@nestjs/common";
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
+/**
+ * Reads the localization options that `LocalizationMiddleware` attached to the raw request.
+ *
+ * @throws `InternalServerErrorException` when the middleware did not run, which signals a route wiring error rather than a client error.
+ */
 function getLocalizationOptionsFromContext(_: unknown, context: ExecutionContext): LocalizationOptions {
   const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();
   const { localizationOptions } = request.raw;
@@ -16,8 +21,9 @@ function getLocalizationOptionsFromContext(_: unknown, context: ExecutionContext
 }
 
 /**
- * Parameter decorator that extracts localization options from the request.
- * Must be used on routes where LocalizationMiddleware is applied.
+ * Parameter decorator that exposes the localization options resolved by `LocalizationMiddleware`.
+ *
+ * The route must be covered by the middleware; otherwise the request fails with a 500 Internal Server Error.
  *
  * @example
  * ```typescript

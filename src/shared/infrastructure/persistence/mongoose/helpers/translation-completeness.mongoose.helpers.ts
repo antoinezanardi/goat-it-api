@@ -4,7 +4,7 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { TranslationCompletenessFieldSpec } from "@shared/infrastructure/persistence/mongoose/types/translation-completeness.mongoose.types";
 
 /**
- * Build a flat condition where every given locale of the given localized field is non-null.
+ * Builds a flat condition where every given locale of the given localized field is non-null.
  * Used for the "this field has every locale set" check in static (no `applicableLocales`) mode.
  */
 function buildLocaleNonNullConditions(path: string, locales: readonly Locale[]): Record<string, unknown> {
@@ -12,7 +12,7 @@ function buildLocaleNonNullConditions(path: string, locales: readonly Locale[]):
 }
 
 /**
- * Build an array of conditions where any one given locale of the given localized field is null.
+ * Builds an array of conditions where any one given locale of the given localized field is null.
  * Used as a `$or` array for "at least one locale is missing" in static mode.
  */
 function buildLocaleNullConditions(path: string, locales: readonly Locale[]): Record<string, unknown>[] {
@@ -20,7 +20,7 @@ function buildLocaleNullConditions(path: string, locales: readonly Locale[]): Re
 }
 
 /**
- * Build a Mongo match for "this localized field is complete across the given locales":
+ * Builds a Mongo match for "this localized field is complete across the given locales":
  * - Mandatory fields: every locale must be set (non-null).
  * - Optional fields: the entire field is null OR every locale is set.
  */
@@ -34,7 +34,7 @@ function buildFieldCompleteCondition(fieldSpec: TranslationCompletenessFieldSpec
 }
 
 /**
- * Build a Mongo match for "this localized field is incomplete across the given locales":
+ * Builds a Mongo match for "this localized field is incomplete across the given locales":
  * - Mandatory fields: at least one locale is null.
  * - Optional fields: the field is set (non-null) AND at least one locale is null.
  */
@@ -48,7 +48,7 @@ function buildFieldIncompleteCondition(fieldSpec: TranslationCompletenessFieldSp
 }
 
 /**
- * Build the `$cond` expression that resolves the locales applicable to one resource:
+ * Builds the `$cond` expression that resolves the locales applicable to one resource:
  * - If `applicableLocalesPath` is empty/absent, fall back to ALL supported locales.
  * - Otherwise, use the array stored at `applicableLocalesPath`.
  * Designed to feed a `$map` over the applicable locales.
@@ -64,7 +64,7 @@ function buildRequiredLocalesExpression(applicableLocalesPath: string): Record<s
 }
 
 /**
- * Build a `$getField` expression that dereferences `path[localeVariable]`.
+ * Builds a `$getField` expression that dereferences `path[localeVariable]`.
  * Used inside a `$map` whose `as: "locale"` variable is referenced as `$$locale`.
  */
 function buildDynamicLocaleFieldExpression(path: string, localeVariable: string): Record<string, unknown> {
@@ -77,7 +77,7 @@ function buildDynamicLocaleFieldExpression(path: string, localeVariable: string)
 }
 
 /**
- * Build a Mongo `$expr` clause for "this localized field is complete across applicable locales":
+ * Builds a Mongo `$expr` clause for "this localized field is complete across applicable locales":
  * - Mandatory fields: every applicable locale has a non-null value.
  * - Optional fields: the field is null OR every applicable locale has a non-null value.
  * Resolves applicable locales dynamically from the document's `applicableLocalesPath`.
@@ -106,7 +106,7 @@ function buildDynamicFieldCompleteCondition(fieldSpec: TranslationCompletenessFi
 }
 
 /**
- * Build a Mongo `$expr` clause for "this localized field is incomplete across applicable locales":
+ * Builds a Mongo `$expr` clause for "this localized field is incomplete across applicable locales":
  * - Mandatory fields: at least one applicable locale is null/missing.
  * - Optional fields: the field is set (non-null) AND at least one applicable locale is null/missing.
  * Resolves applicable locales dynamically from the document's `applicableLocalesPath`.
@@ -135,7 +135,7 @@ function buildDynamicFieldIncompleteCondition(fieldSpec: TranslationCompleteness
 }
 
 /**
- * Build the top-level Mongo match clause used by the `is-fully-translated` filter.
+ * Builds the top-level Mongo match clause used by the `is-fully-translated` filter.
  *
  * When `applicableLocalesPath` is omitted (static mode), each localized field is checked
  * against ALL supported locales (`LOCALES`).
@@ -176,7 +176,7 @@ function buildIsFullyTranslatedMatchCondition(
 }
 
 /**
- * Build the Mongo match clause that restricts a resource to those whose localized fields are fully translated **in one single locale**.
+ * Builds the Mongo match clause that restricts a resource to those whose localized fields are fully translated **in one single locale**.
  *
  * Unlike {@link buildIsFullyTranslatedMatchCondition}, which either checks every supported
  * locale or resolves each document's own `applicableLocales`, this builder takes one concrete

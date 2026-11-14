@@ -109,8 +109,8 @@ function printLogTail(streamName: string, filePath: string, lines: string[], tai
 /**
  * Flush logs and print tails for a failed scenario.
  * Only used in acceptance test hooks.
- * @param appLogs
- * @param scenario
+ * @param appLogs - The log manager owning the buffers and the run id.
+ * @param scenario - The failed scenario whose name is reported.
  */
 async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: TestCaseHookParameter): Promise<void> {
   try {
@@ -128,9 +128,9 @@ async function flushAndPrintLogTail(appLogs: AppLogsManager, scenario: TestCaseH
 
 /**
  * Create a handler to flush logs from buffers to files.
- * @param stdoutBuffer
- * @param stderrBuffer
- * @param runId
+ * @param stdoutBuffer - The ring buffer holding the server stdout lines.
+ * @param stderrBuffer - The ring buffer holding the server stderr lines.
+ * @param runId - The run identifier used to name the log directory.
  */
 function createFlushLogsHandler(
   stdoutBuffer: RingBuffer,

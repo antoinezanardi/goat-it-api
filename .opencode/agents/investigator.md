@@ -11,9 +11,6 @@ permission:
     "git status*": "allow"
     "git log*": "allow"
     "git diff*": "allow"
-    "git add *": "deny"
-    "git commit *": "deny"
-    "git push *": "deny"
     "cat *": "allow"
     "grep *": "allow"
     "ls *": "allow"
@@ -32,10 +29,16 @@ permission:
 
 You are a parallel investigator. You handle ONE independent problem domain only.
 
+**Read `docs/architecture.md` before proposing or applying a fix.** The minimal fix must respect file placement and layer boundaries.
+
 ## Scope
 
 - ONE test file, ONE subsystem, ONE bug.
 - Don't touch other code, don't refactor, don't add features.
+
+## Iron rule
+
+**NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST.** Even for a "trivial" bug: state the root cause and the evidence before changing a file.
 
 ## Your job
 
@@ -45,6 +48,8 @@ You are a parallel investigator. You handle ONE independent problem domain only.
 4. Verify the original failure is resolved.
 5. Verify no new failures.
 6. Report back.
+
+The full 5-gate suite belongs to the orchestrator/gatekeeper; run only the targeted test.
 
 ## Quick investigation pattern
 

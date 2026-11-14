@@ -2,7 +2,9 @@
 
 ## Task
 
-Audit unit test spec files against the repository conventions defined in `tests/unit/README.md`.
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
+
+Audit unit test spec files against the repository conventions defined in `docs/unit-tests.md`.
 
 - If the prompt specifies file paths, audit only those specs (accept both spec paths and source paths — for a source path, lint its colocated spec).
 - Otherwise, audit every `*.spec.ts` under `src/`.
@@ -18,7 +20,7 @@ Report all violations once in-chat, then use the question tool to validate with 
 ### 1. Load context
 
 1. Load the `write-unit-test` skill from `.agents/skills/write-unit-test/SKILL.md`.
-2. Read `tests/unit/README.md` in full.
+2. Read `docs/unit-tests.md` in full.
 
 ### 2. Determine scope
 
@@ -59,12 +61,12 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 
 These recurring shapes are accepted codebase conventions. Auditors must not report them as violations or warnings:
 
-- `vi.spyOn()` for module-level functions (preferred over `vi.mock()` due to `isolate: false` — see `tests/unit/README.md` "Mocking modules vs instances").
+- `vi.spyOn()` for module-level functions (preferred over `vi.mock()` due to `isolate: false` — see `docs/unit-tests.md` "Mocking modules vs instances").
 - `vi.mock()` for third-party modules not imported as real by other specs (e.g. `nestjs-zod`).
 - Private method testing via `ClassName["privateMethod"](...)`.
 - `import type { ... }` for type-only imports.
 - `toStrictEqual<T>(expected)` for value equality with explicit type annotation.
-- Nest `useValue` provider pattern for mock injection in `Test.createTestingModule`.
+- Nest `useValue` provider pattern for mock injection in `Test.createTestingModule` for controllers, repositories, services, guards and pipes.
 - `getModelToken(Schema.name)` for Mongoose model injection in repository tests.
 - `vi.fn()` with typed generic for mock factories (e.g. `vi.fn<RepositoryStub["method"]>()`).
 - `import packageJson from "@package-json" with { type: "json" }` for package.json assertions in specs (`src/` code must use `readPackageJson()` instead).
@@ -75,15 +77,15 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 #### Controller checks
 
 - **[CT1] Test module** — Uses `Test.createTestingModule` with `controllers` and `providers` arrays. Mock use-cases injected via `{ provide: UseCaseClass, useValue: mock }`.
-- **[CT2] Describe label** — String form `"<ControllerName> Controller"`, nested `describe(Controller.prototype.method, ...)`.
+- **[CT2] Describe label** — Symbol form `describe(ControllerClass, ...)`, nested `describe(Controller.prototype.method, ...)`.
 - **[CT3] Method delegation** — Each controller method asserts it calls the correct use-case method with `toHaveBeenCalledExactlyOnceWith`.
 - **[CT4] DTO mapping** — When controller maps DTOs to commands, assert the mapping with `toStrictEqual`.
 - **[CT5] Error propagation** — When use-cases throw domain errors, controller lets the exception bubble — assert rejection where appropriate.
 
 #### Use-case checks
 
-- **[UC1] Mock ports** — Repository ports mocked via `{ provide: REPOSITORY_TOKEN, useValue: mock }` in `Test.createTestingModule` providers.
-- **[UC2] Describe label** — String form `"<UseCaseName> Use Case"` at top; nested `describe(UseCase.prototype.method, ...)`.
+- **[UC1] Mock ports** — Use cases are plain classes: instantiate with `new UseCase(mockRepository)`. `Test.createTestingModule` is only for Nest classes.
+- **[UC2] Describe label** — Symbol form `describe(UseCaseClass, ...)` at top; nested `describe(UseCase.prototype.method, ...)`.
 - **[UC3] Command mapping** — Assert use-case calls repository with correctly transformed data/commands.
 - **[UC4] Domain errors** — Assert exact error class instances (not just message strings) with `rejects.toThrow(new SpecificError())`.
 - **[UC5] Return values** — Assert return types with `toStrictEqual<Entity>(expected)`.
@@ -91,7 +93,7 @@ These recurring shapes are accepted codebase conventions. Auditors must not repo
 #### Repository checks
 
 - **[RP1] Mock Model** — Mongoose Model mocked via `{ provide: getModelToken(Schema.name), useValue: mock }` with `vi.fn()` for `find`, `findOne`, `create`, `updateOne`, etc.
-- **[RP2] Describe label** — String form `"<Name> Mongoose Repository"` or `"<Name> Repository"`.
+- **[RP2] Describe label** — Symbol form `describe(RepositoryClass, ...)`.
 - **[RP3] Query shape** — Assert correct filter/query passed to Model methods with `toHaveBeenCalledExactlyOnceWith`.
 - **[RP4] Document→entity mapping** — Assert mapper is called with document, returns entity.
 - **[RP5] Error handling** — Assert `undefined` return or domain error for missing documents.
@@ -138,7 +140,7 @@ During the audit phase the main agent must NOT read spec files itself — that i
    1. Read `.opencode/commands/lint-unit-tests.md` section 4 IN FULL and apply the
       Universal checks, the "Established patterns — do NOT flag" block, the exact
       "<Type> checks" block named for this group's type — to every listed file.
-   2. Read each listed spec file completely. Consult `tests/unit/README.md` only when
+   2. Read each listed spec file completely. Consult `docs/unit-tests.md` only when
       needed to judge a pattern against the conventions.
    3. Record every violation with its tag + line number(s). Multiple occurrences of
       the same rule in one file collapse into a single entry listing all lines.
@@ -176,7 +178,7 @@ Table lists **only failing/warning files**, ordered by path — one row per file
 
 ```markdown
 **V1** `src/path/to/file.spec.ts:38` — [CT3] Missing `toHaveBeenCalledExactlyOnceWith` — use instead of `toHaveBeenCalledTimes(1)` + `toHaveBeenCalledWith(...)`
-**V2** `src/path/to/file.spec.ts:52` — [U3] Describe label should be `"<Name> Controller"` — found free-form label
+**V2** `src/path/to/file.spec.ts:52` — [U3] Describe label should be `describe(ControllerClass, ...)` — found a string label
 ```
 
 Format per violation: ID → backticked `file:line(s)` → `[rule tag]` → concise description including the expected pattern.
@@ -195,8 +197,8 @@ Work through approved categories ONE at a time. **NO parallel work across catego
 
 - **Direct fix allowance** — a mechanical category touching at most 2 files may be applied directly by the main agent (read + edit + scoped verification per section 9) instead of dispatching subagents.
 - For each remaining category, dispatch ONE `general` subagent per category via the Task tool. The subagent receives ALL files for that category in a single prompt and fixes them sequentially. This avoids concurrent write races and inconsistent cross-batch state. **NEVER split a category into parallel batches** — multiple subagents writing to different files in the same category causes revert races and lost edits. The subagent must NOT run `pnpm run lint:fix` or `pnpm run test:unit:cov` — verification is done by the main agent after the subagent returns. **NEVER run mutation testing or acceptance tests in subagents.**
-- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `tests/unit/README.md`, the current working-tree state (pre-existing modifications), and the structured `FILE / STATUS / NOTES` return format.
-- Apply corrections following the exact patterns from `tests/unit/README.md` — never invent alternatives.
+- Each subagent prompt must contain: exact file paths, the violations to fix with their tags/lines, the expected pattern from `docs/unit-tests.md`, the current working-tree state (pre-existing modifications), and the structured `FILE / STATUS / NOTES` return format.
+- Apply corrections following the exact patterns from `docs/unit-tests.md` — never invent alternatives.
 - Judgmental items may require adding or removing test cases; write them per the file-type pattern.
 - Respect repo conventions: no comments (except allowed lint-disable/JSDoc forms), correct import grouping/order, no `any`.
 - When a category is done, run focused lint + tests across its modified files **plus** `pnpm run test:unit:cov` (full coverage gate — fixes may add or reshape tests), and fix forward until green BEFORE moving to the next category.
