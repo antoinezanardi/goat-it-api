@@ -37,7 +37,7 @@ runs:
           ${{ inputs.unit-tests-coverage-base-cache-key }}
 
     - name: SonarCloud Scan 🌥️
-      uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4
+      uses: SonarSource/sonarqube-scan-action@59202af334b4ba7b5db01b701b8e79f8b3bef0f4 # v8.5
       env:
         SONAR_HOST_URL: https://sonarcloud.io
         SONAR_TOKEN: ${{ inputs.sonarcloud-token }}
