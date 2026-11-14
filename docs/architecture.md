@@ -43,26 +43,26 @@ Agents MUST read this guide before creating, editing, moving or deleting a repos
 
 This guide describes the **target** architecture. The #1264 migration is complete; any remaining accepted exception is listed in §13. Do not copy a pre-existing violation as a precedent.
 
-| Term | Meaning |
-|---|---|
-| **Area** | One of `src/app`, `src/contexts`, `src/infrastructure`, `src/shared`, `packages/schemas`, `tests`, `configs`, `scripts`. |
-| **Bounded context** | A business boundary under `src/contexts/<context>/`, with `domain`, `application`, `infrastructure` and an optional `contracts` facade. |
-| **Layer** | `domain`, `application` or `infrastructure` inside a context, or the matching `shared` layer. |
-| **Port** | A domain interface and its symbol token under `domain/repositories/`. |
-| **Adapter** | An infrastructure implementation of a port. |
-| **Repository contract** | A domain type describing input to a repository port, in `domain/repositories/<aggregate>.repository-contracts.types.ts`. |
-| **Published contract** | A pure cross-context type, DTO shape, mapper, validator or persistence constant, in `contracts/`. |
-| **Helper-local type** | A type used by a single implementation file, colocated as `<source-basename>.types.ts`. |
-| **Command** | An application-layer message consumed by a use case. |
-| **Entity** | A domain type alias with identity, modelled in `domain/types/<aggregate>.entities.ts`. |
-| **Value object** | A behaviour-bearing immutable concept. Simple unions stay type aliases. |
-| **DTO shape** | A pure Zod schema and its inferred type, in `application/dto/`. |
-| **DTO wrapper** | A `createZodDto` class used by NestJS, in `infrastructure/http/dto/`. |
-| **Published surface** | The explicit set of use cases, domain types/constants/rules/errors and `contracts/` a context exposes to other contexts. |
-| **Shared kernel** | The layered, context-free `src/shared` area. |
-| **Composition root** | `src/main.ts`, the only file that imports `AppModule`. |
-| **Persistence module** | A module that owns a context's schema, repository and token. |
-| **Usage module** | A module that exports a published use case another context consumes. |
+| Term                    | Meaning                                                                                                                                 |
+|-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| **Area**                | One of `src/app`, `src/contexts`, `src/infrastructure`, `src/shared`, `packages/schemas`, `tests`, `configs`, `scripts`.                |
+| **Bounded context**     | A business boundary under `src/contexts/<context>/`, with `domain`, `application`, `infrastructure` and an optional `contracts` facade. |
+| **Layer**               | `domain`, `application` or `infrastructure` inside a context, or the matching `shared` layer.                                           |
+| **Port**                | A domain interface and its symbol token under `domain/repositories/`.                                                                   |
+| **Adapter**             | An infrastructure implementation of a port.                                                                                             |
+| **Repository contract** | A domain type describing input to a repository port, in `domain/repositories/<aggregate>.repository-contracts.types.ts`.                |
+| **Published contract**  | A pure cross-context type, DTO shape, mapper, validator or persistence constant, in `contracts/`.                                       |
+| **Helper-local type**   | A type used by a single implementation file, colocated as `<source-basename>.types.ts`.                                                 |
+| **Command**             | An application-layer message consumed by a use case.                                                                                    |
+| **Entity**              | A domain type alias with identity, modelled in `domain/types/<aggregate>.entities.ts`.                                                  |
+| **Value object**        | A behaviour-bearing immutable concept. Simple unions stay type aliases.                                                                 |
+| **DTO shape**           | A pure Zod schema and its inferred type, in `application/dto/`.                                                                         |
+| **DTO wrapper**         | A `createZodDto` class used by NestJS, in `infrastructure/http/dto/`.                                                                   |
+| **Published surface**   | The explicit set of use cases, domain types/constants/rules/errors and `contracts/` a context exposes to other contexts.                |
+| **Shared kernel**       | The layered, context-free `src/shared` area.                                                                                            |
+| **Composition root**    | `src/main.ts`, the only file that imports `AppModule`.                                                                                  |
+| **Persistence module**  | A module that owns a context's schema, repository and token.                                                                            |
+| **Usage module**        | A module that exports a published use case another context consumes.                                                                    |
 
 ## 2. Top-level map
 
@@ -103,18 +103,18 @@ docker/                           # acceptance-test containers
 .agents/                          # agent skills
 ```
 
-| Area | Responsibility |
-|---|---|
-| `src/contexts/<context>/domain` | Pure business types, rules, errors, repository ports and repository contracts. No framework, I/O, randomness or Zod. |
-| `src/contexts/<context>/application` | Commands, use cases, DTO shapes, mappers, helpers. No `@nestjs/*`, Mongoose, Fastify or `nestjs-zod`. |
-| `src/contexts/<context>/infrastructure` | HTTP controllers, DTO wrappers, Mongoose schemas/repositories, persistence mappers and pipelines. |
-| `src/contexts/<context>/contracts` | Published cross-context DTO shapes, pure mappers, validators and persistence contracts (constants, types, mappers). A facade, not a layer. |
-| `src/shared` | Shared kernel with layer subfolders plus type-only `types`. |
-| `src/app` | Application shell and composition root. Owns no business logic; wires cross-context concerns such as the global HTTP exception filter. |
-| `src/infrastructure` | Cross-cutting adapters: auth, config, health, server bootstrap, database. |
-| `packages/schemas` | Publishable facade over pure contracts and faketories. |
-| `tests` | Unit, shared utilities, acceptance and mutation state. |
-| `configs`, `scripts` | Standalone tooling. |
+| Area                                    | Responsibility                                                                                                                             |
+|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `src/contexts/<context>/domain`         | Pure business types, rules, errors, repository ports and repository contracts. No framework, I/O, randomness or Zod.                       |
+| `src/contexts/<context>/application`    | Commands, use cases, DTO shapes, mappers, helpers. No `@nestjs/*`, Mongoose, Fastify or `nestjs-zod`.                                      |
+| `src/contexts/<context>/infrastructure` | HTTP controllers, DTO wrappers, Mongoose schemas/repositories, persistence mappers and pipelines.                                          |
+| `src/contexts/<context>/contracts`      | Published cross-context DTO shapes, pure mappers, validators and persistence contracts (constants, types, mappers). A facade, not a layer. |
+| `src/shared`                            | Shared kernel with layer subfolders plus type-only `types`.                                                                                |
+| `src/app`                               | Application shell and composition root. Owns no business logic; wires cross-context concerns such as the global HTTP exception filter.     |
+| `src/infrastructure`                    | Cross-cutting adapters: auth, config, health, server bootstrap, database.                                                                  |
+| `packages/schemas`                      | Publishable facade over pure contracts and faketories.                                                                                     |
+| `tests`                                 | Unit, shared utilities, acceptance and mutation state.                                                                                     |
+| `configs`, `scripts`                    | Standalone tooling.                                                                                                                        |
 
 Context and domain directory names are **singular** (`question-theme/`, not `question-themes/`). Do not invent a new top-level folder or a `misc` bucket; propose the boundary through an approved design.
 
@@ -134,22 +134,22 @@ Apply the first matching rule:
 
 ### 2.3 Repository file classes
 
-| Location | Responsibility |
-|---|---|
-| `configs/` | ESLint, Vitest, Stryker, Cucumber, SWC, TypeScript, Nest, Node, lint-staged, commitlint, semantic-release, Bruno and branch-name configuration (the Oxlint config lives at the repository root, `oxlint.config.jsonc`) |
-| `scripts/` | Standalone maintenance and validation scripts (`check-eslint-rules`, `check-oxlint-rules`, branch/PR/release helpers) |
-| `docs/` | Maintained documentation, including this guide and the local (git-ignored) agent workflow artifacts under `docs/superpowers/` |
-| `configs/bruno/` | Bruno API collection (`configs/bruno/Goat It/`) |
-| `env/` | `.env.example` and `.env.test` (tracked); `.env` is local-only and git-ignored |
-| `docker/` | Acceptance-test Docker Compose configuration |
-| `Dockerfile`, `.dockerignore` | Production image build |
-| `.github/` | Contribution docs, PR template, Copilot instructions, Renovate config and workflows |
-| `.opencode/` | OpenCode agents and slash commands |
-| `.agents/` | Agent skills |
-| `packages/schemas/` | Publishable `@goat-it/schemas` facade re-exporting pure DTO shapes and faketories |
-| `public/` | Static assets served by the app |
-| `tests/mutation/` | Committed Stryker incremental state; coverage output is generated |
-| `dist/`, coverage and report directories | Generated output only; never hand-edited as source |
+| Location                                 | Responsibility                                                                                                                                                                                                         |
+|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `configs/`                               | ESLint, Vitest, Stryker, Cucumber, SWC, TypeScript, Nest, Node, lint-staged, commitlint, semantic-release, Bruno and branch-name configuration (the Oxlint config lives at the repository root, `oxlint.config.jsonc`) |
+| `scripts/`                               | Standalone maintenance and validation scripts (`check-eslint-rules`, `check-oxlint-rules`, branch/PR/release helpers)                                                                                                  |
+| `docs/`                                  | Maintained documentation, including this guide and the local (git-ignored) agent workflow artifacts under `docs/superpowers/`                                                                                          |
+| `configs/bruno/`                         | Bruno API collection (`configs/bruno/Goat It/`)                                                                                                                                                                        |
+| `env/`                                   | `.env.example` and `.env.test` (tracked); `.env` is local-only and git-ignored                                                                                                                                         |
+| `docker/`                                | Acceptance-test Docker Compose configuration                                                                                                                                                                           |
+| `Dockerfile`, `.dockerignore`            | Production image build                                                                                                                                                                                                 |
+| `.github/`                               | Contribution docs, PR template, Copilot instructions, Renovate config and workflows                                                                                                                                    |
+| `.opencode/`                             | OpenCode agents and slash commands                                                                                                                                                                                     |
+| `.agents/`                               | Agent skills                                                                                                                                                                                                           |
+| `packages/schemas/`                      | Publishable `@goat-it/schemas` facade re-exporting pure DTO shapes and faketories                                                                                                                                      |
+| `public/`                                | Static assets served by the app                                                                                                                                                                                        |
+| `tests/mutation/`                        | Committed Stryker incremental state; coverage output is generated                                                                                                                                                      |
+| `dist/`, coverage and report directories | Generated output only; never hand-edited as source                                                                                                                                                                     |
 
 ## 3. Dependency rules
 
@@ -167,19 +167,19 @@ configs/, scripts/  -> standalone
 
 ### 3.2 Allowed imports
 
-| From | May import |
-|---|---|
-| context domain | own domain, another context's **published domain types/constants/pure rules/errors**, `shared/domain`, `shared/types`, type-only `type-fest` |
-| context application | own domain, own application, own `contracts/`, another context's **published use cases and published surface**, `shared/domain`, `shared/application`, `shared/types`, `zod`, type-only `type-fest` |
-| context infrastructure | own domain/application/infrastructure, own `contracts/`, another context's **published contracts and domain types** (never its application use cases or infrastructure), all shared layers, framework packages, cross-cutting `@src/infrastructure/*` |
-| `contracts/` | own domain, `shared/domain`, `shared/application` (pure), `zod`, type-only `type-fest`. Never own application or infrastructure. |
-| `shared/domain` | `shared/domain`, `shared/types`, type-only `type-fest` |
-| `shared/application` | `shared/domain`, `shared/application`, `shared/types`, `zod`, type-only `type-fest` |
-| `shared/infrastructure` | all shared layers, framework packages, plus the documented localization `AppConfigService` exception in §13 |
-| `src/app` | contexts, all shared layers, `src/infrastructure` |
-| `src/infrastructure` | all shared layers, framework packages |
-| `tests` | `src` through aliases |
-| `packages/schemas` | pure DTO shapes (application or contracts), constants, value objects, pure helpers and faketories from `tests/shared/utils/faketories` |
+| From                    | May import                                                                                                                                                                                                                                            |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| context domain          | own domain, another context's **published domain types/constants/pure rules/errors**, `shared/domain`, `shared/types`, type-only `type-fest`                                                                                                          |
+| context application     | own domain, own application, own `contracts/`, another context's **published use cases and published surface**, `shared/domain`, `shared/application`, `shared/types`, `zod`, type-only `type-fest`                                                   |
+| context infrastructure  | own domain/application/infrastructure, own `contracts/`, another context's **published contracts and domain types** (never its application use cases or infrastructure), all shared layers, framework packages, cross-cutting `@src/infrastructure/*` |
+| `contracts/`            | own domain, `shared/domain`, `shared/application` (pure), `zod`, type-only `type-fest`. Never own application or infrastructure.                                                                                                                      |
+| `shared/domain`         | `shared/domain`, `shared/types`, type-only `type-fest`                                                                                                                                                                                                |
+| `shared/application`    | `shared/domain`, `shared/application`, `shared/types`, `zod`, type-only `type-fest`                                                                                                                                                                   |
+| `shared/infrastructure` | all shared layers, framework packages, plus the documented localization `AppConfigService` exception in §13                                                                                                                                           |
+| `src/app`               | contexts, all shared layers, `src/infrastructure`                                                                                                                                                                                                     |
+| `src/infrastructure`    | all shared layers, framework packages                                                                                                                                                                                                                 |
+| `tests`                 | `src` through aliases                                                                                                                                                                                                                                 |
+| `packages/schemas`      | pure DTO shapes (application or contracts), constants, value objects, pure helpers and faketories from `tests/shared/utils/faketories`                                                                                                                |
 
 Type-only `type-fest` utilities are allowed in any pure layer. `shared/types` is type-only and usable by any layer.
 
@@ -205,12 +205,12 @@ Domain code MUST be pure and deterministic. It MUST NOT use `node:fs`, `node:cry
 
 ### 4.1 Domain (`src/contexts/<context>/domain/`)
 
-| Directory | Contents |
-|---|---|
-| `types/` | `<aggregate>.entities.ts`, `<aggregate>.value-objects.ts`, `<aggregate>.types.ts` (filters, sort fields, stats) |
-| `constants/` | `<aggregate>.constants.ts` — exported `UPPER_CASE` constants |
-| `rules/` | `<aggregate>.rules.ts` — predicates, policies and pure helpers |
-| `errors/` | One subdirectory per error: `<error-name>/<error-name>.error.ts` |
+| Directory       | Contents                                                                                                                                                           |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `types/`        | `<aggregate>.entities.ts`, `<aggregate>.value-objects.ts`, `<aggregate>.types.ts` (filters, sort fields, stats)                                                    |
+| `constants/`    | `<aggregate>.constants.ts` — exported `UPPER_CASE` constants                                                                                                       |
+| `rules/`        | `<aggregate>.rules.ts` — predicates, policies and pure helpers                                                                                                     |
+| `errors/`       | One subdirectory per error: `<error-name>/<error-name>.error.ts`                                                                                                   |
 | `repositories/` | `<aggregate>.repository.types.ts` (port), `<aggregate>.repository.constants.ts` (symbol token), `<aggregate>.repository-contracts.types.ts` (repository contracts) |
 
 - Entities are **type aliases**, not classes. Invariants live in `ensure*` policies.
@@ -234,14 +234,14 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 
 ### 4.2 Application (`src/contexts/<context>/application/`)
 
-| Directory | Contents |
-|---|---|
-| `commands/` | `<aggregate>.commands.ts` — use-case input messages |
-| `use-cases/` | `<verb>-<aggregate>/<verb>-<aggregate>.use-case.ts` at the folder root, or `<feature-group>/<verb>-<aggregate>/…`; secondary artifacts in `constants/`, `types/` and `helpers/` subfolders |
-| `dto/<feature>/` | `<feature>.dto.shape.ts` (pure Zod schema + inferred type) |
-| `dto/zod/` | Context-internal preprocessors, refinements and validators |
-| `mappers/` | Pure functions; aggregate mapper at the root, sub-mappers in `<unit>/<unit>.mappers.ts` |
-| `helpers/` | Pure application helpers in `<unit>/<unit>.helpers.ts` |
+| Directory        | Contents                                                                                                                                                                                   |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `commands/`      | `<aggregate>.commands.ts` — use-case input messages                                                                                                                                        |
+| `use-cases/`     | `<verb>-<aggregate>/<verb>-<aggregate>.use-case.ts` at the folder root, or `<feature-group>/<verb>-<aggregate>/…`; secondary artifacts in `constants/`, `types/` and `helpers/` subfolders |
+| `dto/<feature>/` | `<feature>.dto.shape.ts` (pure Zod schema + inferred type)                                                                                                                                 |
+| `dto/zod/`       | Context-internal preprocessors, refinements and validators                                                                                                                                 |
+| `mappers/`       | Pure functions; aggregate mapper at the root, sub-mappers in `<unit>/<unit>.mappers.ts`                                                                                                    |
+| `helpers/`       | Pure application helpers in `<unit>/<unit>.helpers.ts`                                                                                                                                     |
 
 - Use-case folders contain only the use case and its spec at the root. Constants, types and helpers go in the kind subfolders beside it.
 - A class file contains only its class. No module-level constants, types or helpers in a class file; place them in the nearest `constants/`, `types/` or `helpers/` folder.
@@ -253,18 +253,18 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 
 ### 4.3 Infrastructure (`src/contexts/<context>/infrastructure/`)
 
-| Directory | Contents |
-|---|---|
-| `http/controllers/<audience>-<aggregate>/` | `<audience>-<aggregate>.controller.ts` — thin, decorated, maps DTOs to commands and entities to response shapes; may contain `constants/`, `helpers/` and `types/` |
-| `http/dto/<feature>/` | `<feature>.dto.ts` — NestJS wrapper around an application or published-contract DTO shape |
-| `persistence/mongoose/schemas/` | `<aggregate>.mongoose.schema.ts`; nested sub-schemas under `schemas/<name>/<name>.mongoose.schema.ts`. The compiled `<AGGREGATE>_MONGOOSE_SCHEMA` constant beside the class is the only class-file constant exception |
-| `persistence/mongoose/repository/` | `<aggregate>.mongoose.repository.ts` implementing the domain port; may contain `helpers/` and `types/` |
-| `persistence/mongoose/repository/pipelines/` | Root pipeline and grouped pipelines under `pipelines/<feature>/<unit>.mongoose.repository.pipeline.ts` |
-| `persistence/mongoose/repository/helpers/` | Repository-private Mongoose helpers; pure helpers keep `<unit>.helpers.ts` |
-| `persistence/mongoose/repository/types/` | Repository-private type aliases |
-| `persistence/mongoose/mappers/` | `<aggregate>.mongoose.mappers.ts` (document ↔ entity) |
-| `persistence/mongoose/constants/`, `types/`, `errors/` | Persistence-private constants, types and infrastructure errors |
-| `persistence/<context>-persistence.module.ts` | Schema, repository and token wiring; exports the token |
+| Directory                                              | Contents                                                                                                                                                                                                              |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `http/controllers/<audience>-<aggregate>/`             | `<audience>-<aggregate>.controller.ts` — thin, decorated, maps DTOs to commands and entities to response shapes; may contain `constants/`, `helpers/` and `types/`                                                    |
+| `http/dto/<feature>/`                                  | `<feature>.dto.ts` — NestJS wrapper around an application or published-contract DTO shape                                                                                                                             |
+| `persistence/mongoose/schemas/`                        | `<aggregate>.mongoose.schema.ts`; nested sub-schemas under `schemas/<name>/<name>.mongoose.schema.ts`. The compiled `<AGGREGATE>_MONGOOSE_SCHEMA` constant beside the class is the only class-file constant exception |
+| `persistence/mongoose/repository/`                     | `<aggregate>.mongoose.repository.ts` implementing the domain port; may contain `helpers/` and `types/`                                                                                                                |
+| `persistence/mongoose/repository/pipelines/`           | Root pipeline and grouped pipelines under `pipelines/<feature>/<unit>.mongoose.repository.pipeline.ts`                                                                                                                |
+| `persistence/mongoose/repository/helpers/`             | Repository-private Mongoose helpers; pure helpers keep `<unit>.helpers.ts`                                                                                                                                            |
+| `persistence/mongoose/repository/types/`               | Repository-private type aliases                                                                                                                                                                                       |
+| `persistence/mongoose/mappers/`                        | `<aggregate>.mongoose.mappers.ts` (document ↔ entity)                                                                                                                                                                 |
+| `persistence/mongoose/constants/`, `types/`, `errors/` | Persistence-private constants, types and infrastructure errors                                                                                                                                                        |
+| `persistence/<context>-persistence.module.ts`          | Schema, repository and token wiring; exports the token                                                                                                                                                                |
 
 - Use plural `schemas/` everywhere.
 - Pipeline groups use the feature name without a redundant `-pipeline` suffix (`question-stats/`, `question-theme-stats/`, `question-theme-assignment/`). File names always end `.mongoose.repository.pipeline.ts`.
@@ -275,12 +275,12 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 
 `contracts/` exists only when a context publishes something another context consumes.
 
-| Directory | Contents |
-|---|---|
-| `contracts/dto/<feature>/` | Published DTO shapes |
-| `contracts/dto/<feature>.dto.mappers.ts` | Pure mappers for published shapes |
-| `contracts/dto/zod/validators/<kind>/` | Validators owned by a published shape |
-| `contracts/persistence/` | Published persistence contracts: collection names and published field names/status values in `<concept>.persistence.contracts.constants.ts`, structural shapes in `<concept>.persistence.contracts.types.ts`, pure persistence-to-domain mappers in `<concept>.persistence.mappers.ts` |
+| Directory                                | Contents                                                                                                                                                                                                                                                                               |
+|------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `contracts/dto/<feature>/`               | Published DTO shapes                                                                                                                                                                                                                                                                   |
+| `contracts/dto/<feature>.dto.mappers.ts` | Pure mappers for published shapes                                                                                                                                                                                                                                                      |
+| `contracts/dto/zod/validators/<kind>/`   | Validators owned by a published shape                                                                                                                                                                                                                                                  |
+| `contracts/persistence/`                 | Published persistence contracts: collection names and published field names/status values in `<concept>.persistence.contracts.constants.ts`, structural shapes in `<concept>.persistence.contracts.types.ts`, pure persistence-to-domain mappers in `<concept>.persistence.mappers.ts` |
 
 - `contracts/` is a facade, not a layer. It may import own domain, `shared/domain`, `shared/application` (pure) and `zod`. It MUST NOT import own application or infrastructure.
 - `contracts/` holds **published contracts**. Repository contracts stay in `domain/repositories/<aggregate>.repository-contracts.types.ts`; do not mix the two.
@@ -341,16 +341,16 @@ Rules:
 
 This table is the **published surface register** and the allowlist is **per consumer layer**, not a context-wide grant:
 
-| Consumer | May import from the provider |
-|---|---|
-| `question/domain` | theme `domain/types`, `domain/constants`, `domain/rules`, `domain/errors` (read-only published domain) |
-| `question/application` | the above, plus theme `application/use-cases/find-question-theme-by-id/**`, `application/use-cases/get-question-themes-by-ids-or-throw/**`, and theme `contracts/**` |
-| `question/infrastructure` | theme `contracts/**` (DTO and persistence) and published theme domain types; **not** theme application use cases |
-| `question/<context>.module.ts` | `question-theme.module.ts` and the two published theme use-case class tokens it injects |
-| `question-theme/domain` | nothing from `question` |
-| `question-theme/application` | `question/application/use-cases/count-live-questions-by-theme-id/**` |
-| `question-theme/infrastructure` | `question/contracts/persistence/**` |
-| `question-theme/<context>.module.ts` | `question-usage.module.ts` and the published count use-case class token it injects |
+| Consumer                             | May import from the provider                                                                                                                                         |
+|--------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `question/domain`                    | theme `domain/types`, `domain/constants`, `domain/rules`, `domain/errors` (read-only published domain)                                                               |
+| `question/application`               | the above, plus theme `application/use-cases/find-question-theme-by-id/**`, `application/use-cases/get-question-themes-by-ids-or-throw/**`, and theme `contracts/**` |
+| `question/infrastructure`            | theme `contracts/**` (DTO and persistence) and published theme domain types; **not** theme application use cases                                                     |
+| `question/<context>.module.ts`       | `question-theme.module.ts` and the two published theme use-case class tokens it injects                                                                              |
+| `question-theme/domain`              | nothing from `question`                                                                                                                                              |
+| `question-theme/application`         | `question/application/use-cases/count-live-questions-by-theme-id/**`                                                                                                 |
+| `question-theme/infrastructure`      | `question/contracts/persistence/**`                                                                                                                                  |
+| `question-theme/<context>.module.ts` | `question-usage.module.ts` and the published count use-case class token it injects                                                                                   |
 
 A module that wires a use case with `createUseCaseProvider` MUST import the published use-case class to use it as the `inject` token. That is wiring, not an application dependency; the application layer still imports only the published use case it calls.
 
@@ -526,13 +526,13 @@ Nested shapes that are only composed by a parent may stay shape-only. Wrappers a
 
 ### 7.2 DTO families
 
-| Family | Shape location | Wrapper location |
-|---|---|---|
-| Context shapes | `src/contexts/*/application/dto/` | `src/contexts/*/infrastructure/http/dto/` |
-| Published context contracts | `src/contexts/*/contracts/dto/` | `src/contexts/*/infrastructure/http/dto/` |
-| App metadata | `src/app/dto/app-metadata/` | `src/app/dto/app-metadata/` (app-shell exception) |
-| API exception | `src/shared/application/dto/api-response-exception/` | no wrapper |
-| Health | `src/infrastructure/api/health/dto/` | `src/infrastructure/api/health/dto/` (health-adapter exception) |
+| Family                      | Shape location                                       | Wrapper location                                                |
+|-----------------------------|------------------------------------------------------|-----------------------------------------------------------------|
+| Context shapes              | `src/contexts/*/application/dto/`                    | `src/contexts/*/infrastructure/http/dto/`                       |
+| Published context contracts | `src/contexts/*/contracts/dto/`                      | `src/contexts/*/infrastructure/http/dto/`                       |
+| App metadata                | `src/app/dto/app-metadata/`                          | `src/app/dto/app-metadata/` (app-shell exception)               |
+| API exception               | `src/shared/application/dto/api-response-exception/` | no wrapper                                                      |
+| Health                      | `src/infrastructure/api/health/dto/`                 | `src/infrastructure/api/health/dto/` (health-adapter exception) |
 
 Only pure shapes, constants, value objects, pure helpers and faketories may be re-exported by `@goat-it/schemas`. The shared API exception shape is pure, has no HTTP wrapper, and lives in `shared/application/dto`. A wrapper only affects generated documentation when a controller or Swagger decorator references it.
 
@@ -561,44 +561,44 @@ Each validator's constants live in a `constants/` folder beside it, and its spec
 
 ### 8.1 Artifact table
 
-| Artifact | Directory | Filename | Required companions |
-|---|---|---|---|
-| Entity types | `domain/types/` | `<aggregate>.entities.ts` | — |
-| Value-object types | `domain/types/` | `<aggregate>.value-objects.ts` | — |
-| Domain types | `domain/types/` | `<aggregate>.types.ts` | — |
-| Domain constants | `domain/constants/` | `<aggregate>.constants.ts` | — |
-| Domain rules | `domain/rules/` | `<aggregate>.rules.ts` | `<aggregate>.rules.spec.ts` |
-| Domain error | `domain/errors/<error-name>/` | `<error-name>.error.ts` | `.spec.ts`; HTTP mapping only when a specific status is required |
-| Repository port | `domain/repositories/` | `<aggregate>.repository.types.ts` | `<aggregate>.repository.constants.ts` token |
-| Repository contracts | `domain/repositories/` | `<aggregate>.repository-contracts.types.ts` | — |
-| Commands | `application/commands/` | `<aggregate>.commands.ts` | — |
-| Use case | `application/use-cases/<verb>-<aggregate>/` or `<feature-group>/<verb>-<aggregate>/` | `<verb>-<aggregate>.use-case.ts` | `.spec.ts`, module provider; secondary artifacts in `constants/`, `types/`, `helpers/` |
-| DTO shape | `application/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` |
-| DTO wrapper | `infrastructure/http/dto/<feature>/` | `<feature>.dto.ts` | Required only when NestJS binds the DTO or Swagger must reference it as a named component |
-| Mapper | `application/mappers/` | `<aggregate>.mappers.ts` at the root; `<unit>/<unit>.mappers.ts` in subfolders | `.spec.ts` |
-| Published contract shape | `contracts/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` when it owns logic |
-| Published contract mapper | `contracts/dto/` | `<feature>.dto.mappers.ts` | `.spec.ts` |
-| Published contract validator | `contracts/dto/zod/validators/<kind>/` | `<kind>.dto.zod.validators.ts` | `.spec.ts`, constants in `constants/` |
-| Published persistence contract constants | `contracts/persistence/` | `<concept>.persistence.contracts.constants.ts` | — |
-| Published persistence contract types | `contracts/persistence/` | `<concept>.persistence.contracts.types.ts` | — |
-| Published persistence mapper | `contracts/persistence/` | `<concept>.persistence.mappers.ts` | `.spec.ts` |
-| Shared pure DTO shape | `shared/application/dto/<feature>/` | `<feature>.dto.shape.ts` | `.spec.ts` |
-| Controller | `infrastructure/http/controllers/<audience>-<aggregate>/` | `<audience>-<aggregate>.controller.ts` | `.spec.ts`, module registration; may contain `constants/`, `helpers/`, `types/` |
-| Controller constants | `infrastructure/http/controllers/<audience>-<aggregate>/constants/` | `<aggregate>.constants.ts` | — |
-| Mongoose schema | `infrastructure/persistence/mongoose/schemas/` | `<aggregate>.mongoose.schema.ts` / `<name>.mongoose.schema.ts` | — (excluded from coverage); the compiled schema constant is the only class-file constant exception |
-| Mongoose repository | `infrastructure/persistence/mongoose/repository/` | `<aggregate>.mongoose.repository.ts` | `.spec.ts`, module provider |
-| Mongoose mapper | `infrastructure/persistence/mongoose/mappers/` | `<aggregate>.mongoose.mappers.ts` | `.spec.ts` |
-| Mongoose pipeline | `infrastructure/persistence/mongoose/repository/pipelines/` for the root, or `pipelines/<feature>/` | `<aggregate>.mongoose.repository.pipeline.ts` for the root, `<unit>.mongoose.repository.pipeline.ts` for grouped | — (excluded from coverage) |
-| Mongoose helper | `infrastructure/persistence/mongoose/repository/helpers/` | `<unit>.mongoose.helpers.ts` only when Mongoose-specific; pure helpers `<unit>.helpers.ts`; local types `<unit>.helpers.types.ts` | `.spec.ts` |
-| Persistence module | `infrastructure/persistence/` | `<context>-persistence.module.ts` | `.spec.ts` (module wiring) |
-| Context module | `src/contexts/<context>/` | `<context>.module.ts` | `.spec.ts` (provider graph) |
-| Usage module | `src/contexts/<context>/` | `<context>-usage.module.ts` | `.spec.ts` (provider graph) |
-| Shared infrastructure helper | `shared/infrastructure/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
-| Shared Nest helper | `shared/infrastructure/nest/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
-| Shared mapper | `shared/application/mappers/<unit>/` | `<unit>.mappers.ts` | `.spec.ts` |
-| Shared application helper | `shared/application/helpers/<unit>/` | `<unit>.helpers.ts` | `.spec.ts` |
-| Shared Zod validator | `shared/application/dto/zod/validators/<kind>/` | `<kind>.zod.validators.ts` | `.spec.ts`, constants in `constants/` |
-| Test | next to source | `<source-basename>.spec.ts` | — |
+| Artifact                                 | Directory                                                                                           | Filename                                                                                                                          | Required companions                                                                                |
+|------------------------------------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| Entity types                             | `domain/types/`                                                                                     | `<aggregate>.entities.ts`                                                                                                         | —                                                                                                  |
+| Value-object types                       | `domain/types/`                                                                                     | `<aggregate>.value-objects.ts`                                                                                                    | —                                                                                                  |
+| Domain types                             | `domain/types/`                                                                                     | `<aggregate>.types.ts`                                                                                                            | —                                                                                                  |
+| Domain constants                         | `domain/constants/`                                                                                 | `<aggregate>.constants.ts`                                                                                                        | —                                                                                                  |
+| Domain rules                             | `domain/rules/`                                                                                     | `<aggregate>.rules.ts`                                                                                                            | `<aggregate>.rules.spec.ts`                                                                        |
+| Domain error                             | `domain/errors/<error-name>/`                                                                       | `<error-name>.error.ts`                                                                                                           | `.spec.ts`; HTTP mapping only when a specific status is required                                   |
+| Repository port                          | `domain/repositories/`                                                                              | `<aggregate>.repository.types.ts`                                                                                                 | `<aggregate>.repository.constants.ts` token                                                        |
+| Repository contracts                     | `domain/repositories/`                                                                              | `<aggregate>.repository-contracts.types.ts`                                                                                       | —                                                                                                  |
+| Commands                                 | `application/commands/`                                                                             | `<aggregate>.commands.ts`                                                                                                         | —                                                                                                  |
+| Use case                                 | `application/use-cases/<verb>-<aggregate>/` or `<feature-group>/<verb>-<aggregate>/`                | `<verb>-<aggregate>.use-case.ts`                                                                                                  | `.spec.ts`, module provider; secondary artifacts in `constants/`, `types/`, `helpers/`             |
+| DTO shape                                | `application/dto/<feature>/`                                                                        | `<feature>.dto.shape.ts`                                                                                                          | `.spec.ts`                                                                                         |
+| DTO wrapper                              | `infrastructure/http/dto/<feature>/`                                                                | `<feature>.dto.ts`                                                                                                                | Required only when NestJS binds the DTO or Swagger must reference it as a named component          |
+| Mapper                                   | `application/mappers/`                                                                              | `<aggregate>.mappers.ts` at the root; `<unit>/<unit>.mappers.ts` in subfolders                                                    | `.spec.ts`                                                                                         |
+| Published contract shape                 | `contracts/dto/<feature>/`                                                                          | `<feature>.dto.shape.ts`                                                                                                          | `.spec.ts` when it owns logic                                                                      |
+| Published contract mapper                | `contracts/dto/`                                                                                    | `<feature>.dto.mappers.ts`                                                                                                        | `.spec.ts`                                                                                         |
+| Published contract validator             | `contracts/dto/zod/validators/<kind>/`                                                              | `<kind>.dto.zod.validators.ts`                                                                                                    | `.spec.ts`, constants in `constants/`                                                              |
+| Published persistence contract constants | `contracts/persistence/`                                                                            | `<concept>.persistence.contracts.constants.ts`                                                                                    | —                                                                                                  |
+| Published persistence contract types     | `contracts/persistence/`                                                                            | `<concept>.persistence.contracts.types.ts`                                                                                        | —                                                                                                  |
+| Published persistence mapper             | `contracts/persistence/`                                                                            | `<concept>.persistence.mappers.ts`                                                                                                | `.spec.ts`                                                                                         |
+| Shared pure DTO shape                    | `shared/application/dto/<feature>/`                                                                 | `<feature>.dto.shape.ts`                                                                                                          | `.spec.ts`                                                                                         |
+| Controller                               | `infrastructure/http/controllers/<audience>-<aggregate>/`                                           | `<audience>-<aggregate>.controller.ts`                                                                                            | `.spec.ts`, module registration; may contain `constants/`, `helpers/`, `types/`                    |
+| Controller constants                     | `infrastructure/http/controllers/<audience>-<aggregate>/constants/`                                 | `<aggregate>.constants.ts`                                                                                                        | —                                                                                                  |
+| Mongoose schema                          | `infrastructure/persistence/mongoose/schemas/`                                                      | `<aggregate>.mongoose.schema.ts` / `<name>.mongoose.schema.ts`                                                                    | — (excluded from coverage); the compiled schema constant is the only class-file constant exception |
+| Mongoose repository                      | `infrastructure/persistence/mongoose/repository/`                                                   | `<aggregate>.mongoose.repository.ts`                                                                                              | `.spec.ts`, module provider                                                                        |
+| Mongoose mapper                          | `infrastructure/persistence/mongoose/mappers/`                                                      | `<aggregate>.mongoose.mappers.ts`                                                                                                 | `.spec.ts`                                                                                         |
+| Mongoose pipeline                        | `infrastructure/persistence/mongoose/repository/pipelines/` for the root, or `pipelines/<feature>/` | `<aggregate>.mongoose.repository.pipeline.ts` for the root, `<unit>.mongoose.repository.pipeline.ts` for grouped                  | — (excluded from coverage)                                                                         |
+| Mongoose helper                          | `infrastructure/persistence/mongoose/repository/helpers/`                                           | `<unit>.mongoose.helpers.ts` only when Mongoose-specific; pure helpers `<unit>.helpers.ts`; local types `<unit>.helpers.types.ts` | `.spec.ts`                                                                                         |
+| Persistence module                       | `infrastructure/persistence/`                                                                       | `<context>-persistence.module.ts`                                                                                                 | `.spec.ts` (module wiring)                                                                         |
+| Context module                           | `src/contexts/<context>/`                                                                           | `<context>.module.ts`                                                                                                             | `.spec.ts` (provider graph)                                                                        |
+| Usage module                             | `src/contexts/<context>/`                                                                           | `<context>-usage.module.ts`                                                                                                       | `.spec.ts` (provider graph)                                                                        |
+| Shared infrastructure helper             | `shared/infrastructure/helpers/<unit>/`                                                             | `<unit>.helpers.ts`                                                                                                               | `.spec.ts`                                                                                         |
+| Shared Nest helper                       | `shared/infrastructure/nest/helpers/<unit>/`                                                        | `<unit>.helpers.ts`                                                                                                               | `.spec.ts`                                                                                         |
+| Shared mapper                            | `shared/application/mappers/<unit>/`                                                                | `<unit>.mappers.ts`                                                                                                               | `.spec.ts`                                                                                         |
+| Shared application helper                | `shared/application/helpers/<unit>/`                                                                | `<unit>.helpers.ts`                                                                                                               | `.spec.ts`                                                                                         |
+| Shared Zod validator                     | `shared/application/dto/zod/validators/<kind>/`                                                     | `<kind>.zod.validators.ts`                                                                                                        | `.spec.ts`, constants in `constants/`                                                              |
+| Test                                     | next to source                                                                                      | `<source-basename>.spec.ts`                                                                                                       | —                                                                                                  |
 
 Companion test mechanics, test naming, mock and faketory conventions live in [unit-tests.md](unit-tests.md), [mocks.md](mocks.md) and [faketories.md](faketories.md); do not duplicate them here.
 
@@ -638,22 +638,22 @@ Companion test mechanics, test naming, mock and faketory conventions live in [un
 
 Path aliases are mandatory in `src/`, `tests/` and `packages/schemas/src/`; relative imports are forbidden there.
 
-| Alias | Resolves to |
-|---|---|
-| `@package-json` | `package.json` (test-only; in `src/`, use `readPackageJson()` instead of importing JSON) |
-| `@src/*` | `src/*` |
-| `@app/*` | `src/app/*` |
-| `@shared/*` | `src/shared/*` |
-| `@configs/*` | `configs/*` |
-| `@question/*` | `src/contexts/question/*` |
-| `@question-theme/*` | `src/contexts/question-theme/*` |
-| `@unit-tests/*` | `tests/unit/*` |
-| `@mocks/*` | `tests/unit/utils/mocks/*` |
-| `@faketories/*` | `tests/shared/utils/faketories/*` |
-| `@test-helpers/*` | `tests/shared/utils/helpers/*` |
-| `@acceptance-tests/*` | `tests/acceptance/*` |
-| `@acceptance-features/*` | `tests/acceptance/features/*` |
-| `@acceptance-support/*` | `tests/acceptance/support/*` |
+| Alias                    | Resolves to                                                                              |
+|--------------------------|------------------------------------------------------------------------------------------|
+| `@package-json`          | `package.json` (test-only; in `src/`, use `readPackageJson()` instead of importing JSON) |
+| `@src/*`                 | `src/*`                                                                                  |
+| `@app/*`                 | `src/app/*`                                                                              |
+| `@shared/*`              | `src/shared/*`                                                                           |
+| `@configs/*`             | `configs/*`                                                                              |
+| `@question/*`            | `src/contexts/question/*`                                                                |
+| `@question-theme/*`      | `src/contexts/question-theme/*`                                                          |
+| `@unit-tests/*`          | `tests/unit/*`                                                                           |
+| `@mocks/*`               | `tests/unit/utils/mocks/*`                                                               |
+| `@faketories/*`          | `tests/shared/utils/faketories/*`                                                        |
+| `@test-helpers/*`        | `tests/shared/utils/helpers/*`                                                           |
+| `@acceptance-tests/*`    | `tests/acceptance/*`                                                                     |
+| `@acceptance-features/*` | `tests/acceptance/features/*`                                                            |
+| `@acceptance-support/*`  | `tests/acceptance/support/*`                                                             |
 
 - Import groups are separated by blank lines: (1) `node:*`, (2) external packages, (3) internal aliases, (4) test aliases, (5) `import type`.
 - When adding a new bounded context, register its alias in `configs/swc/swc.config.json`, `configs/typescript/tsconfig.app.json` and `configs/vitest/vitest.config.ts`.
@@ -677,12 +677,12 @@ Path aliases are mandatory in `src/`, `tests/` and `packages/schemas/src/`; rela
 - `*.module.ts` is in both coverage and mutation scope: every module has a colocated `.module.spec.ts` — see [unit-tests.md § Module wiring tests](unit-tests.md#module-wiring-tests).
 - `*.dto.ts` stays under mutation testing; every `*.schema.ts` file, including `src/infrastructure/api/config/schemas/env.schema.ts`, is excluded from mutation.
 
-| SUT | Boundary to mock |
-|---|---|
-| Use case | Repository **port** or published use case |
-| Controller | Use case |
-| Repository | Mongoose model/collection |
-| Acceptance | Real HTTP + real database |
+| SUT        | Boundary to mock                          |
+|------------|-------------------------------------------|
+| Use case   | Repository **port** or published use case |
+| Controller | Use case                                  |
+| Repository | Mongoose model/collection                 |
+| Acceptance | Real HTTP + real database                 |
 
 Test mechanics live in [unit-tests.md](unit-tests.md), [mocks.md](mocks.md), [faketories.md](faketories.md) and [acceptance-tests.md](acceptance-tests.md).
 
@@ -758,7 +758,7 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 
 ### 12.3 Rules
 
-- `import-x/no-cycle` stays on.
+- Cycle detection is owned by Oxlint's native `import/no-cycle`. Every `import-x/*` rule that Oxlint also implements natively is intentionally absent from `eslint-import.flat-config.ts`: the Oxlint bridge disables rules under their native `import/*` name, which never matches the `import-x/*` prefix, so keeping them there would run each rule twice.
 - Add a new zone only with a passing codebase or with a documented accepted exception.
 - When adding a cross-context dependency, update the published surface and the per-layer allowlist in the same PR.
 - When `from` is a glob, `except` entries MUST be glob patterns. Prefer directory-based `from` plus relative `except` entries.
@@ -770,8 +770,8 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 
 ## 13. Accepted exceptions
 
-| Exception | Rule | Removal condition |
-|---|---|---|
+| Exception                                                                                       | Rule                                              | Removal condition                                                                                       |
+|-------------------------------------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `shared/infrastructure` localization middleware imports `src/infrastructure` `AppConfigService` | Accepted because there is one infrastructure area | A second infrastructure area appears; then move the middleware or introduce a narrow shared-owned token |
 
 Every accepted exception MUST name a removal condition. Do not add a silent exception to the guide. Existing non-boundary lint disables (for example `unicorn/no-keyword-prefix` in the stats pipelines) are tracked by the lint policy, not this register.
