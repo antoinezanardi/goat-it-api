@@ -1,6 +1,16 @@
 import { ServerResponse } from "node:http";
 
-import { BadRequestException, ForbiddenException, HttpException, HttpStatus, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  NotFoundException,
+  PayloadTooLargeException,
+  ServiceUnavailableException,
+  UnsupportedMediaTypeException,
+} from "@nestjs/common";
 import { ZodValidationException } from "nestjs-zod";
 import { ZodError } from "zod";
 
@@ -372,6 +382,98 @@ describe(GlobalExceptionFilter, () => {
       {
         test: "should send unknown exception as internal server error when called with unknown Error.",
         exception: new Error("Some unknown error"),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should map a Fastify empty JSON body error to the curated bad request envelope when called.",
+        exception: new HttpException("Body cannot be empty when content-type is set to 'application/json'", HttpStatus.BAD_REQUEST, {
+          cause: Object.assign(Object.create(Error.prototype) as Error, {
+            code: "FST_ERR_CTP_EMPTY_JSON_BODY",
+            name: "FastifyError",
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: "Body cannot be empty when content-type is set to 'application/json'",
+          }),
+        }),
+        expectedSentException: new BadRequestException("Invalid request body"),
+      },
+      {
+        test: "should map a Fastify malformed JSON body error to the curated bad request envelope when called.",
+        exception: new HttpException("Body is not valid JSON but content-type is set to 'application/json'", HttpStatus.BAD_REQUEST, {
+          cause: Object.assign(Object.create(Error.prototype) as Error, {
+            code: "FST_ERR_CTP_INVALID_JSON_BODY",
+            name: "FastifyError",
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: "Body is not valid JSON but content-type is set to 'application/json'",
+          }),
+        }),
+        expectedSentException: new BadRequestException("Invalid request body"),
+      },
+      {
+        test: "should map a Fastify content length mismatch error to the curated bad request envelope when called.",
+        exception: new HttpException("Request body size did not match Content-Length", HttpStatus.BAD_REQUEST, {
+          cause: Object.assign(Object.create(Error.prototype) as Error, {
+            code: "FST_ERR_CTP_INVALID_CONTENT_LENGTH",
+            name: "FastifyError",
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: "Request body size did not match Content-Length",
+          }),
+        }),
+        expectedSentException: new BadRequestException("Invalid request body"),
+      },
+      {
+        test: "should map a Fastify oversized body error to the curated payload too large envelope when called.",
+        exception: new HttpException("Request body is too large", HttpStatus.PAYLOAD_TOO_LARGE, {
+          cause: Object.assign(Object.create(Error.prototype) as Error, {
+            code: "FST_ERR_CTP_BODY_TOO_LARGE",
+            name: "FastifyError",
+            statusCode: HttpStatus.PAYLOAD_TOO_LARGE,
+            message: "Request body is too large",
+          }),
+        }),
+        expectedSentException: new PayloadTooLargeException("Request body is too large"),
+      },
+      {
+        test: "should map a Fastify unsupported media type error to the curated unsupported media type envelope when called.",
+        exception: new HttpException("Unsupported Media Type", HttpStatus.UNSUPPORTED_MEDIA_TYPE, {
+          cause: Object.assign(Object.create(Error.prototype) as Error, {
+            code: "FST_ERR_CTP_INVALID_MEDIA_TYPE",
+            name: "FastifyError",
+            statusCode: HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+            message: "Unsupported Media Type",
+          }),
+        }),
+        expectedSentException: new UnsupportedMediaTypeException("Unsupported Media Type"),
+      },
+      {
+        test: "should map a Fastify handler timeout to the sanitized service unavailable envelope when called.",
+        exception: Object.assign(Object.create(Error.prototype) as Error, {
+          code: "FST_ERR_HANDLER_TIMEOUT",
+          name: "FastifyError",
+          statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+          message: "Request timed out after 15000 ms on route '/questions/search/random'",
+        }),
+        expectedSentException: new ServiceUnavailableException("Request timed out"),
+      },
+      {
+        test: "should send unknown exception as internal server error when called with an Error carrying an unmapped error code.",
+        exception: Object.assign(new Error("connection 1 to 127.0.0.1:27017 timed out"), {
+          // Acceptable as this row models a MongoDB socket timeout error without importing MongoDB
+          // eslint-disable-next-line unicorn/no-error-property-assignment
+          name: "MongoNetworkTimeoutError",
+          code: "ETIMEDOUT",
+        }),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should send unknown exception as internal server error when called with an Error carrying a non-string error code.",
+        exception: Object.assign(new Error("write EPIPE"), {
+          code: 42,
+        }),
+        expectedSentException: new InternalServerErrorException(),
+      },
+      {
+        test: "should send unknown exception as internal server error when called with a plain object carrying a Fastify error code.",
+        exception: { code: "FST_ERR_CTP_BODY_TOO_LARGE" },
         expectedSentException: new InternalServerErrorException(),
       },
     ])("$test", ({ exception, expectedSentException }) => {

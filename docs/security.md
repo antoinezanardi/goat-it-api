@@ -1,8 +1,8 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting, security headers, request body guard), #1262 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting, security headers), #1262 (error tracking).
 
-Last reviewed: 2026-11-13.
+Last reviewed: 2026-11-15.
 
 ## Authentication
 
@@ -63,7 +63,14 @@ There is no rate limiting or throttling (no throttler module, no middleware): an
 
 ## Request body guard
 
-There is no explicit request-body guard: no `bodyLimit`, content-type or content-length policy is configured on the Fastify adapter (`file:src/infrastructure/api/server/server.ts`); only the framework's built-in defaults apply. An explicit, documented guard is tracked by #1263.
+Request bodies are bounded at the HTTP boundary by `createFastifyAdapter` (`file:src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`, values in `file:src/infrastructure/api/server/fastify/constants/fastify.constants.ts`), which `server.ts` passes to `NestFactory.create` together with `{ bodyParser: false }`:
+
+- Fastify's `bodyLimit` is 512 KiB (524,288 bytes), so an oversized body is refused with 413 before it is buffered;
+- only JSON is accepted for body-bearing write routes: Fastify's built-in JSON parser is kept and its default `text/plain` parser is removed, so `application/x-www-form-urlencoded` and `text/plain` bodies get 415, and so does a request that carries bytes without any `Content-Type`;
+- `bodyParser: false` keeps Nest from registering its own parsers, and a bodyless request without `Content-Type` reaches route validation instead of being refused by a parser;
+- malformed or explicitly empty JSON returns 400, and a syntactically valid body that fails its Zod DTO keeps the existing `Invalid request payload` 400.
+
+`GlobalExceptionFilter` normalizes only the Fastify error codes it recognizes (`FST_ERR_CTP_*` and `FST_ERR_HANDLER_TIMEOUT`) and never echoes parser text, route paths or Fastify codes; the documented envelopes live in `docs/api-contract.md`. The lifecycle bounds around this guard are in `docs/operations.md`.
 
 ## Vulnerability disclosure
 
@@ -81,9 +88,9 @@ The intended policy is that log lines never carry secrets or personal data, and 
 
 ## Known limitations
 
-- #1263 — rate limiting, global security headers and an explicit request-body guard are missing.
+- #1263 — rate limiting and global security headers are still missing; the request-body guard landed and is described in [Request body guard](#request-body-guard).
 - #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
 - **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
-Issue #1263 (rate limiting, security headers, request body guard) will extend this document when it lands.
+Issue #1263's remaining slices (security headers and rate limiting) will extend this document when they land.

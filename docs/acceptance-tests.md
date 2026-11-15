@@ -54,7 +54,9 @@ Feature files live under `tests/acceptance/features/`. Support code (hooks, worl
 ```text
 tests/acceptance/
   features/
-    app/                             # App-level features (health, docs, metadata)
+    app/                             # App-level features
+      app-<name>.feature             # New app features: flat, as required by [FT8]
+      health/ docs/ metadata/        # Legacy nested folders (predate [FT8])
     contexts/
       question/                      # Domain features per audience
         admin/                       # Admin-facing question scenarios
@@ -488,24 +490,36 @@ Builds an `ofetch` `FetchOptions` object from `AppFetchOptions`:
 
 ```ts
 type AppFetchOptions = {
-  apiKey?: string;       // If provided, sets the API key header (X-Api-Key)
-  locale?: string;       // Sets Accept-Language header; defaults to "*"
-  method?: string;       // HTTP method; defaults to ofetch's default (GET)
-  body?: unknown;        // JSON-serialized as request body
+  apiKey?: string;       // If provided, sets the goat-it-api-key header
+  locale?: Locale | "*"; // Sets Accept-Language header; defaults to "*"
+  method?: "GET" | "HEAD" | "POST" | "PATCH" | "DELETE"; // HTTP method; defaults to ofetch's default (GET)
+  body?: Record<string, unknown>; // JSON-serialized as request body
+  rawBody?: string;      // Sent verbatim, including ""; takes precedence over body
+  contentType?: string;  // Forwarded verbatim as the Content-Type header
+  query?: Record<string, string | string[]>;
 };
 ```
 
 If `apiKey` is `undefined`, no API key header is sent (tests the unauthenticated path).
+`rawBody` is never serialized: use it for malformed, empty or oversized payloads and for any body that must reach the server byte-for-byte. `ofetch` adds its own `content-type: application/json` only when no `Content-Type` is supplied, so always pair a raw body with `contentType` when the media type matters.
 
 ```ts
 // Authenticated GET
-createFetchOptions({ apiKey: APP_ADMIN_API_KEY });
+createFetchOptions({ apiKey: APP_GAME_API_KEY });
 
 // Authenticated POST with payload
 createFetchOptions({
-  apiKey: APP_ADMIN_API_KEY,
+  apiKey: APP_GAME_API_KEY,
   method: "POST",
   body: this.payload
+});
+
+// Raw JSON body, sent byte-for-byte
+createFetchOptions({
+  apiKey: APP_GAME_API_KEY,
+  method: "POST",
+  rawBody: "{",
+  contentType: "application/json"
 });
 
 // Unauthenticated (no API key header at all)
@@ -513,7 +527,7 @@ createFetchOptions();
 
 // Scoped to a specific locale
 createFetchOptions({
-  apiKey: APP_ADMIN_API_KEY,
+  apiKey: APP_GAME_API_KEY,
   locale: "fr"
 });
 ```
@@ -642,7 +656,7 @@ If the feature uses steps not yet implemented:
 - **Given steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.given-steps.ts` (use the `*.given-steps.ts` filename glob so multiple files may coexist).
   - For DB setup: call `loadFixture(world, domain, name)`.
 - **When steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.when-steps.ts`.
-  - Build fetch options via `createFetchOptions({ apiKey, method, body })`.
+  - Build fetch options via `createFetchOptions({ apiKey, method, body })`; add `rawBody` (and `contentType`) when the exact bytes or the media type matter.
   - Call `this.fetchAndStoreResponse(endpoint, fetchOptions)`.
 - **Then steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.then-steps.ts`.
   - Parse response with `this.expectLastResponseJson<T>(ZOD_SCHEMA)`.

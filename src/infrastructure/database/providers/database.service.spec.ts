@@ -66,6 +66,7 @@ describe(DatabaseService, () => {
         uri: "mongodb://127.0.0.1:27018",
         serverSelectionTimeoutMS: 5000,
         connectTimeoutMS: 5000,
+        socketTimeoutMS: 10_000,
         retryDelay: 3000,
         retryAttempts: 5,
         dbName: "goat-it-test",
