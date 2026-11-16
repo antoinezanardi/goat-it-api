@@ -1,4 +1,4 @@
-@app @app-request-body-guard
+@app @app-request-body-guard @public
 Feature: App Request Body Guard
 
   Scenario: Sending a valid JSON body within the limit

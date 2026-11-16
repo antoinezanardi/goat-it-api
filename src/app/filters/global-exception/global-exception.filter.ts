@@ -112,28 +112,25 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     return this.fastifyErrorHttpExceptionFactories[fastifyErrorCode]?.();
   }
 
-  private static sendDomainErrorIfKnown(exception: unknown, response: FastifyReply | ServerResponse): boolean {
+  private static getDomainErrorHttpException(exception: unknown): HttpException | undefined {
     if (!Error.isError(exception)) {
-      return false;
+      return undefined;
     }
 
     const DomainHttpExceptionFactory = this.domainErrorHttpExceptionFactories[exception.name];
     if (!DomainHttpExceptionFactory) {
-      return false;
+      return undefined;
     }
 
     const domainHttpException = new DomainHttpExceptionFactory();
     const statusCode = domainHttpException.getStatus();
-    const httpException = new HttpException({
+
+    return new HttpException({
       error: domainHttpException.message,
       message: exception.message,
       statusCode,
       errorCode: getDerivedErrorCodeFromClassName(exception.constructor.name),
     }, statusCode);
-
-    this.sendNestHttpException(httpException, response);
-
-    return true;
   }
 
   /**
@@ -163,7 +160,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (GlobalExceptionFilter.sendDomainErrorIfKnown(exception, response)) {
+    const domainErrorHttpException = GlobalExceptionFilter.getDomainErrorHttpException(exception);
+
+    if (domainErrorHttpException) {
+      GlobalExceptionFilter.sendNestHttpException(domainErrorHttpException, response);
+
       return;
     }
 

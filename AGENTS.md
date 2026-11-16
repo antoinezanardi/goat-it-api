@@ -142,6 +142,10 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 - Agents must not add explanatory comments, `TODO`/`FIXME` markers, section markers or commented-out code.
 - The only allowed source comments are JSDoc on the public logic surfaces defined in `docs/jsdoc.md`, the two-line lint-disable pair below, and inline comments inside an `@example` sample.
 
+### Documentation
+
+- Maintained docs (`docs/`, `README.md`) cite files, symbols and sections, never line numbers or line ranges — the line anchors drift as code changes. Plan artifacts under `docs/superpowers/` and audit reports under `docs/audits/` follow their own templates and are exempt.
+
 ### Lint disable comments (last resort)
 
 - Two-line format:

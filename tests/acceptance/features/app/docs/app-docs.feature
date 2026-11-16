@@ -1,4 +1,4 @@
-@app @app-docs
+@app @app-docs @public
 Feature: App Docs
 
   Scenario: Serving API Reference Docs

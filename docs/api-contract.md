@@ -4,7 +4,7 @@ This document is the verified inventory of the actual HTTP surface of `goat-it-a
 
 ## Framework and bootstrap
 
-- Entrypoint `src/main.ts` calls `bootstrap(AppModule)` from `src/infrastructure/api/server/server.ts`, which creates the app with `createFastifyAdapter()` from `src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts` (`NestFactory.create<NestFastifyApplication>`, `{ bodyParser: false }`), enables shutdown hooks, CORS, and Swagger, then listens on `SERVER_HOST`/`SERVER_PORT` (`env/.env.example`; schema in `src/infrastructure/api/config/schemas/env.schema.ts`; defaults `0.0.0.0:3000` in `src/infrastructure/api/config/constants/env.constants.ts`).
+- Entrypoint `src/main.ts` calls `bootstrap(AppModule)` from `src/infrastructure/api/server/server.ts`, which creates the app with `createFastifyAdapter()` from `src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts` (`NestFactory.create<NestFastifyApplication>`, `NEST_APPLICATION_OPTIONS` from `src/infrastructure/api/server/constants/server.constants.ts`), enables shutdown hooks, CORS, and Swagger, then listens on `SERVER_HOST`/`SERVER_PORT` (`env/.env.example`; schema in `src/infrastructure/api/config/schemas/env.schema.ts`; defaults `0.0.0.0:3000` in `src/infrastructure/api/config/constants/env.constants.ts`).
 - `src/app/app.module.ts` registers `ServeStaticModule` for `/public/`, the `ZodValidationPipe` as `APP_PIPE`, `GlobalExceptionFilter` as `APP_FILTER`, and the `LocalizationMiddleware` on `"*"` routes.
 - There is **no** `setGlobalPrefix` and **no** `enableVersioning` call anywhere in `src/` — every route is mounted at the repository root (see Known limitations).
 - CORS: `app.enableCors(createCorsConfig(...))` in `server.ts`; defaults in `src/infrastructure/api/server/cors/constants/cors.constants.ts` — `credentials: false`, methods `GET, POST, PUT, DELETE, PATCH, OPTIONS`, `allowedHeaders: ["Content-Type", "Authorization"]`; the `origin` comes from the `CORS_ORIGIN` env variable (default `*`).
@@ -57,9 +57,9 @@ Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"heal
 
 `GlobalExceptionFilter` (`src/app/filters/global-exception/global-exception.filter.ts`, registered via `APP_FILTER`) is the single cross-context error composition point. Its branches, in order:
 
-1. `ZodValidationException` → 400 with body `{ statusCode: 400, message: "Invalid request payload", error: "Bad Request", validationDetails: <zod issues> }` (filter lines 84-95; body pinned by the spec at `global-exception.filter.spec.ts:126-140`). Each `validationDetails` entry is the pure shape `API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO` (`src/shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape.ts`): `code`, `message`, `path`, optional `expected`/`received`/`origin`/`format`/`pattern`/`minimum`/`maximum`/`inclusive`/`keys`/`values`.
-2. `HttpException` → the exception's own `getResponse()` is sent verbatim (filter lines 160-164). This covers 401 from the guards, 400 from `MongoIdPipe`/localization, 503 from the health service, etc.
-3. Known domain error classes → mapped to a specific HTTP status with body `{ error: <HTTP exception message>, message: <domain message>, statusCode, errorCode }` where `errorCode = dash(<ClassName without the "Error" suffix>)` via `getDerivedErrorCodeFromClassName` (`src/shared/infrastructure/http/errors/helpers/errors.helpers.ts`, using radashi `dash`), e.g. `QuestionThemeReferencedByLiveQuestionsError` → `"question-theme-referenced-by-live-questions"`. Mapping table (filter lines 48-61):
+1. `ZodValidationException` → 400 with body `{ statusCode: 400, message: "Invalid request payload", error: "Bad Request", validationDetails: <zod issues> }` (the `sendZodValidationException` branch; body pinned by the filter spec). Each `validationDetails` entry is the pure shape `API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO` (`src/shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape.ts`): `code`, `message`, `path`, optional `expected`/`received`/`origin`/`format`/`pattern`/`minimum`/`maximum`/`inclusive`/`keys`/`values`.
+2. `HttpException` → the exception's own `getResponse()` is sent verbatim. This covers 401 from the guards, 400 from `MongoIdPipe`/localization, 503 from the health service, etc.
+3. Known domain error classes → mapped to a specific HTTP status with body `{ error: <HTTP exception message>, message: <domain message>, statusCode, errorCode }` where `errorCode = dash(<ClassName without the "Error" suffix>)` via `getDerivedErrorCodeFromClassName` (`src/shared/infrastructure/http/errors/helpers/errors.helpers.ts`, using radashi `dash`), e.g. `QuestionThemeReferencedByLiveQuestionsError` → `"question-theme-referenced-by-live-questions"`. Mapping table (`domainErrorHttpExceptionFactories`):
 
 | Domain error | Status |
 |---|---|
@@ -67,7 +67,7 @@ Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"heal
 | `QuestionThemeAlreadyArchivedError`, `ReferencedQuestionThemeArchivedError`, `QuestionAlreadyArchivedError`, `QuestionMaximumThemesError`, `QuestionMinimumThemesError`, `QuestionPrimaryThemeAssignmentNotRemovableError` | 400 |
 | `QuestionThemeSlugAlreadyExistsError`, `QuestionThemeAssignmentAlreadyExistsError`, `QuestionThemeReferencedByLiveQuestionsError` | 409 |
 
-**Anything else** → logged with `this.logger.error(...)` and the stock `new InternalServerErrorException()` body is sent verbatim (filter lines 173-179). The spec pins the exact exception instance (`global-exception.filter.spec.ts:358-386`), i.e. Nest's default 500 body `{ statusCode: 500, message: "Internal Server Error" }`. No custom 500 body exists.
+**Anything else** → logged with `this.logger.error(...)` and the stock `new InternalServerErrorException()` body is sent verbatim (the `sendUnknownException` branch). The spec pins the exact exception instance (the filter spec), i.e. Nest's default 500 body `{ statusCode: 500, message: "Internal Server Error" }`. No custom 500 body exists.
 
 Before those branches, the filter normalizes the Fastify transport errors it recognizes, keyed **only** on the Fastify error `code` carried by the thrown error itself (a 5xx Fastify error, which Nest leaves unmapped) or by the `cause` of the `HttpException` Nest's Fastify adapter builds for a 4xx one (`fastifyErrorHttpExceptionFactories` and `getFastifyErrorCode` in `src/app/filters/global-exception/global-exception.filter.ts`). Status and message alone never classify an error.
 
@@ -79,6 +79,8 @@ Before those branches, the filter normalizes the Fastify transport errors it rec
 | `FST_ERR_HANDLER_TIMEOUT` | 503 | `{ "statusCode": 503, "message": "Request timed out", "error": "Service Unavailable" }` |
 
 These envelopes carry no `errorCode` and never include the Fastify message, the route path or a stack trace. A request-receive timeout is not in this table: Fastify's low-level connection handler answers `408` `{ "statusCode": 408, "message": "Client Timeout", "error": "Request Timeout" }` before Nest runs, so `GlobalExceptionFilter` never sees it.
+
+The `FST_ERR_HANDLER_TIMEOUT` envelope is only reachable for requests without a body: on Node 16+ a POST/PATCH request body completes before the handler runs and Fastify clears its handler timer (#1428).
 
 Four write/read-back errors are intentionally unmapped and fall through to 500: `QuestionCreationError`, `QuestionThemeAssignmentCreationError`, `QuestionThemeAssignmentModificationError`, `QuestionThemeAssignmentRemovalError` (`docs/architecture.md` §7.4).
 

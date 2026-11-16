@@ -71,13 +71,13 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 | Request receipt (`requestTimeout`, both Fastify and Node) | 30 s | same | Fastify's default `clientErrorHandler` writes `408` `{ "statusCode": 408, "message": "Client Timeout", "error": "Request Timeout" }` over the raw socket and destroys it before Nest's filter runs |
 | Header receipt (`headersTimeout`) | 30 s | same | same `408` |
 | Connection expiry check (`connectionsCheckingInterval`) | 5 s | same | Node re-evaluates incomplete requests every 5 s, so the effective receive deadline is about 30–35 s |
-| Routed handler duration (`handlerTimeout`) | 15 s | same | `503` `{ "statusCode": 503, "message": "Request timed out", "error": "Service Unavailable" }`; Fastify aborts cooperatively, so in-flight database work is not cancelled |
-| MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`; the client still receives the generic sanitized `500` |
+| Routed handler duration (`handlerTimeout`) | 15 s | same | `503` `{ "statusCode": 503, "message": "Request timed out", "error": "Service Unavailable" }`; Fastify aborts cooperatively, so in-flight database work is not cancelled. Bounds requests without a body only (see below). |
+| MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`. The client gets the sanitized `500` when the error reaches the handler; retryable operations retry once with a fresh 10 s inactivity timer, so a GET can outlast the 15 s handler deadline and answer `503` first. A body-bearing request is not bounded by that deadline (see below). |
 
 - The 408 comes from Fastify's low-level connection handler, so it carries no application response headers and no application log context. It is not produced by `GlobalExceptionFilter`.
-- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work.
+- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify 5.12.8 clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
-- Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the effective values and the response mappings are pinned by unit specs.
+- Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.
 
 ## Post-deploy smoke verification
 

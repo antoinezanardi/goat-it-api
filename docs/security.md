@@ -50,7 +50,7 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 
 - Configuration is validated against the Zod `APP_ENV_SCHEMA` at boot (`file:src/infrastructure/api/config/schemas/env.schema.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`) and loaded through `@nestjs/config` (`file:src/infrastructure/api/config/config.module.ts`). The three secret variables — `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY` — have no default, so a missing or too-short value aborts startup; an identical `ADMIN_API_KEY`/`GAME_API_KEY` pair is rejected at boot with a validation error on the `GAME_API_KEY` field. `SERVER_HOST`, `SERVER_PORT`, `CORS_ORIGIN`, `MONGODB_HOST`, `MONGODB_PORT`, `MONGODB_DATABASE` and `FALLBACK_LOCALE` are validated and fall back to their documented defaults (`file:src/infrastructure/api/config/constants/env.constants.ts`); in particular a missing `CORS_ORIGIN` defaults to `*`. `NODE_ENV` is read directly for bootstrap concerns (log transport and env-file selection) outside `@nestjs/config` (`file:src/app/helpers/logger.helpers.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`).
 - The tracked env files hold no real secrets: `env/.env.example` is a template, `env/.env.test` carries test-only values, and `env/.env` is local-only and git-ignored (`.gitignore`). The Dockerfile copies no env files into the image — secrets are supplied by the deployment environment (`Dockerfile`).
-- API key material is removed from `process.env` once consumed (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`), and the production image build fails if secrets end up in the compiled output: `pnpm run check:secrets-in-built-output` (`Dockerfile:56`, `package.json`, `scripts/check-secrets-in-built-output.sh`).
+- API key material is removed from `process.env` once consumed (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`), and the production image build fails if secrets end up in the compiled output: `pnpm run check:secrets-in-built-output` (`Dockerfile`, `package.json`, `scripts/check-secrets-in-built-output.sh`).
 - The production image runs as the non-root `node` user (`Dockerfile`).
 
 ## HTTP security headers
@@ -63,11 +63,11 @@ There is no rate limiting or throttling (no throttler module, no middleware): an
 
 ## Request body guard
 
-Request bodies are bounded at the HTTP boundary by `createFastifyAdapter` (`file:src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`, values in `file:src/infrastructure/api/server/fastify/constants/fastify.constants.ts`), which `server.ts` passes to `NestFactory.create` together with `{ bodyParser: false }`:
+Request bodies are bounded at the HTTP boundary by `createFastifyAdapter` (`file:src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`, values in `file:src/infrastructure/api/server/fastify/constants/fastify.constants.ts`), which `server.ts` passes to `NestFactory.create` together with `NEST_APPLICATION_OPTIONS` (`bufferLogs: true`, `bodyParser: false`; `file:src/infrastructure/api/server/constants/server.constants.ts`):
 
 - Fastify's `bodyLimit` is 512 KiB (524,288 bytes), so an oversized body is refused with 413 before it is buffered;
 - only JSON is accepted for body-bearing write routes: Fastify's built-in JSON parser is kept and its default `text/plain` parser is removed, so `application/x-www-form-urlencoded` and `text/plain` bodies get 415, and so does a request that carries bytes without any `Content-Type`;
-- `bodyParser: false` keeps Nest from registering its own parsers, and a bodyless request without `Content-Type` reaches route validation instead of being refused by a parser;
+- `bodyParser: false` in `NEST_APPLICATION_OPTIONS` keeps Nest from registering its own parsers, and a bodyless request without `Content-Type` reaches route validation instead of being refused by a parser;
 - malformed or explicitly empty JSON returns 400, and a syntactically valid body that fails its Zod DTO keeps the existing `Invalid request payload` 400.
 
 `GlobalExceptionFilter` normalizes only the Fastify error codes it recognizes (`FST_ERR_CTP_*` and `FST_ERR_HANDLER_TIMEOUT`) and never echoes parser text, route paths or Fastify codes; the documented envelopes live in `docs/api-contract.md`. The lifecycle bounds around this guard are in `docs/operations.md`.
@@ -90,6 +90,7 @@ The intended policy is that log lines never carry secrets or personal data, and 
 
 - #1263 — rate limiting and global security headers are still missing; the request-body guard landed and is described in [Request body guard](#request-body-guard).
 - #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
+- #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
 - **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 

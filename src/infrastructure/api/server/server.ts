@@ -2,6 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { Logger } from "nestjs-pino";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+import { NEST_APPLICATION_OPTIONS } from "@src/infrastructure/api/server/constants/server.constants";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import { createFastifyAdapter } from "@src/infrastructure/api/server/fastify/helpers/fastify.helpers";
 import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
@@ -10,7 +11,7 @@ import type { Type } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 async function bootstrap(appModule: Type<unknown>): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(appModule, createFastifyAdapter(), { bufferLogs: true, bodyParser: false });
+  const app = await NestFactory.create<NestFastifyApplication>(appModule, createFastifyAdapter(), NEST_APPLICATION_OPTIONS);
 
   const logger = app.get(Logger);
   const appConfigService = app.get<AppConfigService>(AppConfigService);

@@ -661,6 +661,7 @@ If the feature uses steps not yet implemented:
 - **Then steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.then-steps.ts`.
   - Parse response with `this.expectLastResponseJson<T>(ZOD_SCHEMA)`.
   - Assert with `expect(actual).toStrictEqual(expected)` or a helper from `helpers/`.
+- **Constants**: put feature-specific step constants in a colocated `constants/<feature>.constants.ts` file; never declare module-level value constants in a step file.
 
 ### 5. Define DataTable schemas
 

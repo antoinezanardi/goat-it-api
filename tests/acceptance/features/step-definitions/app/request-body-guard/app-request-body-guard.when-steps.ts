@@ -1,25 +1,11 @@
 import { When } from "@cucumber/cucumber";
 
-import { FASTIFY_BODY_LIMIT_BYTES } from "@src/infrastructure/api/server/fastify/constants/fastify.constants";
+import { FORM_ENCODED_BODY, JSON_CONTENT_TYPE, MALFORMED_JSON_BODY, OVERSIZED_JSON_BODY, RANDOM_QUESTIONS_ENDPOINT, VALID_JSON_BODY } from "@acceptance-features/step-definitions/app/request-body-guard/constants/app-request-body-guard.constants";
 
 import { APP_GAME_API_KEY } from "@acceptance-support/constants/app.constants";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
-
-const RANDOM_QUESTIONS_ENDPOINT = "/questions/search/random";
-
-const RANDOM_QUESTIONS_LIMIT = 2;
-
-const JSON_CONTENT_TYPE = "application/json";
-
-const VALID_JSON_BODY = { limit: RANDOM_QUESTIONS_LIMIT };
-
-const OVERSIZED_JSON_BODY = JSON.stringify({ limit: RANDOM_QUESTIONS_LIMIT, padding: "x".repeat(FASTIFY_BODY_LIMIT_BYTES) });
-
-const FORM_ENCODED_BODY = `limit=${RANDOM_QUESTIONS_LIMIT}`;
-
-const MALFORMED_JSON_BODY = "{";
 
 When(/^the client searches random questions with a valid JSON body$/u, async function(this: GoatItWorld): Promise<void> {
   const fetchOptions = createFetchOptions({
