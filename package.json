@@ -142,7 +142,7 @@
     "oxlint-tsgolint": "^7.0.2007",
     "pino-pretty": "^13.2.0",
     "rimraf": "^6.1.4",
-    "semantic-release": "^25.0.9",
+    "semantic-release": "^26.0.1",
     "semantic-release-export-data": "^1.2.0",
     "tsc-alias": "^1.9.10",
     "tsx": "^4.23.15",
