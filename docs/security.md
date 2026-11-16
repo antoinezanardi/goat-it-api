@@ -1,8 +1,8 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting, security headers), #1262 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting), #1262 (error tracking).
 
-Last reviewed: 2026-11-15.
+Last reviewed: 2026-11-16.
 
 ## Authentication
 
@@ -55,7 +55,31 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 
 ## HTTP security headers
 
-There is no global security-headers middleware today: no `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, `Content-Security-Policy` or `Referrer-Policy` is set. Two global middlewares are installed: the pino HTTP logger (`LoggerModule.forRoot(...)`) and the localization middleware (`file:src/app/app.module.ts`, `file:src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`). Tracked by #1263.
+Security headers are written by the native NestJS security hook, enabled once at bootstrap with `app.useSecurityHeaders()` (`file:src/infrastructure/api/server/security-headers/helpers/security-headers.helpers.ts`), so ordinary responses, handler and filter errors, `404`s and the router-level `400`/`414` framework errors carry its headers. Values live in `file:src/infrastructure/api/server/security-headers/constants/security-headers.constants.ts`:
+
+| Header | Value and rationale |
+|---|---|
+| `Content-Security-Policy` | Nest's default policy with `upgrade-insecure-requests` removed, so the Swagger UI keeps loading over local HTTP. |
+| `Strict-Transport-Security` | `max-age=31536000`, host-only: `includeSubDomains` and `preload` are explicitly `false` (Nest defaults `includeSubDomains` to `true`). |
+| `X-Content-Type-Options` | `nosniff`. |
+| `X-Frame-Options` | `DENY`. |
+| `Referrer-Policy` | `no-referrer`. |
+| `Cross-Origin-Resource-Policy` | `same-site`, so the game hosts under `goat-it.fr` can embed game assets while unrelated sites cannot. This is site-wide, not an exact host allow-list. |
+| `Cross-Origin-Opener-Policy` | Nest's default `same-origin`; `Cross-Origin-Embedder-Policy` is intentionally absent. |
+| `Permissions-Policy` | `camera=()`, `microphone=()`, `geolocation=()`, `payment=()`, `usb=()` — written by a root Fastify request hook registered at bootstrap before the application is created, because the Nest options do not expose the header. |
+| `X-Powered-By` | Removed. |
+
+CORS preflight responses short-circuit the request-phase hooks (`@fastify/cors` answers `OPTIONS` before they run), so a root `onSend` fallback fills every missing header on `OPTIONS` replies only. It is idempotent, never overwrites an existing value, and leaves `Access-Control-*`, the status, the content length and the body untouched. The CORS configuration itself is unchanged: `goat-it-api-key` stays out of `Access-Control-Allow-Headers`, so browser API-key calls remain unsupported (see [Cross-origin resource sharing](#cross-origin-resource-sharing-cors)).
+
+## Response caching
+
+One root Fastify `onSend` hook (`file:src/infrastructure/api/server/cache/helpers/cache.helpers.ts`) sets `Cache-Control: no-store` and merges `Vary: Accept-Language` on every response: business reads, documentation, errors, health, `OPTIONS` and missing routes. The merge is case-insensitive, never duplicates a token and keeps an existing `*` authoritative.
+
+The single exception is a real file response under `/public/` that still carries the `@fastify/static` signature: a `200`, `206` or `304` with `Cache-Control: public, max-age=0` and at least one of `ETag`/`Last-Modified`. Those responses keep the plugin headers, their validators and `Accept-Ranges`, and gain no `Vary`. The exemption is not a path prefix: `/public/unknown` and `/public/` answer `404` and are `no-store`, and the Swagger assets under `/docs/**` are `no-store` even though a static plugin serves them.
+
+`GlobalExceptionFilter` repeats `Cache-Control: no-store` and the merged `Vary` through the shared helper `file:src/shared/infrastructure/helpers/response-headers/response-headers.helpers.ts`, on both its `FastifyReply` and `ServerResponse` branches, because a middleware error replies through a synthetic Fastify reply that has no `onSend` chain.
+
+These headers never change a status, a body, a `Content-Type`, an error classification or an error code. `no-store` is advisory: a misconfigured intermediary can still cache, so it does not replace proxy configuration.
 
 ## Rate limiting
 
@@ -88,10 +112,12 @@ The intended policy is that log lines never carry secrets or personal data, and 
 
 ## Known limitations
 
-- #1263 — rate limiting and global security headers are still missing; the request-body guard landed and is described in [Request body guard](#request-body-guard).
+- #1263 — rate limiting is still missing; global security headers and the response cache policy landed and are described in [HTTP security headers](#http-security-headers) and [Response caching](#response-caching).
 - #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
 - #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
+- **Some transport-level responses bypass the application headers.** Fastify's low-level `408` is written over the raw socket before the request hooks and before `GlobalExceptionFilter` (`docs/operations.md`), so it carries no security header, no `Cache-Control` and no `Permissions-Policy`. A router-level `400`/`414` answer also skips the request hooks: the adapter writes the Nest security headers on that path, but the response carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. An edge-owned policy is the only remaining way to cover the rest.
+- **`Strict-Transport-Security` (HSTS) is emitted statically, including on direct plain-HTTP responses.** The public path terminates TLS at the proxy and redirects public HTTP to HTTPS, browsers ignore HSTS received over plain HTTP, and the application does not trust proxy headers, so the header is not gated on the request scheme. Revisit if the app listener becomes publicly reachable over HTTP.
 - **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
-Issue #1263's remaining slices (security headers and rate limiting) will extend this document when they land.
+Issue #1263's remaining slice (rate limiting, with the client-identity and proxy-trust work) will extend this document when they land.

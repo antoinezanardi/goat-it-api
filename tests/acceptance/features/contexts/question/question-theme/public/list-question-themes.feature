@@ -63,6 +63,8 @@ Feature: List Question Themes
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                                                                                                                              |
       | Bad Request | 400        | Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered) |
+    And the response should not be cacheable
+    And the response should vary on the "Accept-Language" header
 
   Scenario: Trying to list all question themes without API key
     Given the database is populated with question themes fixture set with name "five-question-themes"

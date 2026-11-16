@@ -13,7 +13,7 @@ Architecture and file placement are owned by [Architecture](architecture.md); CI
 | `HEAD /health` | Same readiness check as `GET`, without a response body.                                                        | `200`, same headers as `GET`, no body.    | `503`, same headers as `GET`, no body. |
 
 - Fastify 5 exposes HEAD routes for GET handlers by default (`exposeHeadRoutes: true`), and NestJS runs the same handler. `HEAD /health` therefore performs the same checks and returns the same status and application headers as `GET`, with no body.
-- Both responses send `Cache-Control: no-store`. Clients, browsers, load balancers and intermediaries must not cache them.
+- Both responses send `Cache-Control: no-store` and `Vary: Accept-Language` (the response policy is described in [Security](security.md#response-caching)). Clients, browsers, load balancers and intermediaries must not cache them.
 - The endpoint is not protected by an API key. Do not put sensitive operational data in its response.
 
 ### What is checked
@@ -42,6 +42,23 @@ Not checked: disk, memory, CPU, queues, external services, authentication config
 
   Terminus logs the detailed cause server-side before the sanitized response is sent.
 - `HEAD` answers the same status as `GET` and suppresses the body.
+
+## Response headers and caching
+
+Every application response carries the security-header matrix and `Cache-Control: no-store` with `Vary: Accept-Language`; values and rationale live in [Security](security.md#http-security-headers). In front of the API:
+
+- a reverse proxy, a CDN or a corporate intermediary must forward these headers and must not cache an API response; do not enable a caching layer until a caching design lands;
+- the only cacheable responses are the game assets under `/public/`, which keep `Cache-Control: public, max-age=0`, `ETag` and `Last-Modified` so a client revalidates instead of re-downloading; do not expect a positive `max-age` or `immutable` there;
+- a missing asset (`/public/unknown`), a Swagger asset under `/docs/**` and every error answer `no-store`;
+- the low-level `408` is written by the connection handler before the application hooks, so it carries no security, cache or `Permissions-Policy` header, and a router-level `400`/`414` keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`; never use either to verify the policy.
+
+Post-deploy verification, in addition to the smoke step below:
+
+```bash
+curl -sI https://<host>/health | grep -iE "strict-transport-security|cache-control|vary"
+```
+
+Expect `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`. `curl -sI https://<host>/public/img/logo/logo-16.avif` must instead answer `cache-control: public, max-age=0` with an `etag` and a `last-modified` header.
 
 ## Container health check
 
@@ -74,7 +91,7 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 | Routed handler duration (`handlerTimeout`) | 15 s | same | `503` `{ "statusCode": 503, "message": "Request timed out", "error": "Service Unavailable" }`; Fastify aborts cooperatively, so in-flight database work is not cancelled. Bounds requests without a body only (see below). |
 | MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`. The client gets the sanitized `500` when the error reaches the handler; retryable operations retry once with a fresh 10 s inactivity timer, so a GET can outlast the 15 s handler deadline and answer `503` first. A body-bearing request is not bounded by that deadline (see below). |
 
-- The 408 comes from Fastify's low-level connection handler, so it carries no application response headers and no application log context. It is not produced by `GlobalExceptionFilter`.
+- The 408 comes from Fastify's low-level connection handler, so it carries no application response headers — no security header, no `Cache-Control`, no `Vary` and no `Permissions-Policy` — and no application log context. It is not produced by `GlobalExceptionFilter`. A router-level `400`/`414` answer is different: it keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`.
 - The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify 5.12.8 clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
 - Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.

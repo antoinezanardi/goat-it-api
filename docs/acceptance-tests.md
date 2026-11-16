@@ -177,12 +177,15 @@ All step function bodies must declare `this: GoatItWorld`.
 
 ### Methods
 
-| Method                                            | Description                                                                                                                                                            |
-|---------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `fetchAndStoreResponse(endpoint, fetchOptions?)`  | Fires the request via the `ofetch` instance. Swallows `ofetch` errors so that non-2xx responses are still stored in `lastFetchResponse` without throwing.              |
-| `expectLastResponseJson<T>(schema)`               | Parses `lastFetchResponse._data` through the provided Zod schema and returns typed `T`. Throws if no response is stored.                                               |
-| `expectLastResponseText()`                        | Returns `lastFetchResponse._data` as a raw string. Throws if the data is not a string.                                                                                 |
-| `expectLastResponseHeaderToBe(headerName, value)` | Reads the stored response's header and throws when it differs from the expected value, or when no response is stored. Used by HEAD scenarios that cannot parse a body. |
+| Method                                                    | Description                                                                                                                                                            |
+|-----------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `fetchAndStoreResponse(endpoint, fetchOptions?)`          | Fires the request via the `ofetch` instance. Swallows `ofetch` errors so that non-2xx responses are still stored in `lastFetchResponse` without throwing.              |
+| `expectLastResponseJson<T>(schema)`                       | Parses `lastFetchResponse._data` through the provided Zod schema and returns typed `T`. Throws if no response is stored.                                               |
+| `expectLastResponseText()`                                | Returns `lastFetchResponse._data` as a raw string. Throws if the data is not a string.                                                                                 |
+| `expectLastResponseHeaderToBe(headerName, value)`         | Reads the stored response's header and throws when it differs from the expected value, or when no response is stored. Used by HEAD scenarios that cannot parse a body. |
+| `expectLastResponseHeaderToBeAbsent(headerName)`          | Reads the stored response's header and throws when it is present. Pins a header the API must never expose, such as `X-Powered-By`.                                     |
+| `expectLastResponseHeaderToBePresent(headerName)`         | Reads the stored response's header and throws when it is absent. Pins a header that must always be emitted, such as a static-asset validator.                          |
+| `expectLastResponseHeaderNotToContain(headerName, value)` | Reads the stored response's header and throws when one of its comma-separated tokens equals the forbidden value (case-insensitive); an absent header passes.           |
 
 ### Internal details
 
@@ -405,6 +408,8 @@ Shared step definitions live under `features/step-definitions/shared/` and are a
 | `the request should have succeeded with status code <N>`                                                   | Asserts `lastFetchResponse.status === N`. Validates `N` is a known success code.                                                                                      |
 | `the request should have failed with status code <N> and the response should contain the following error:` | Asserts HTTP status and the `ApiResponseExceptionDto` shape (error, message, statusCode, optionally validationDetails).                                               |
 | `the failed request's response should contain the following validation details:`                           | Parses `validationDetails` array and asserts each entry's fields (code, message, path, expected, origin, format, pattern, minimum, maximum, inclusive, keys, values). |
+| `the response should not be cacheable`                                                                     | Asserts `Cache-Control` is `no-store`.                                                                                                                                |
+| `the response should vary on the "Accept-Language" header`                                                 | Asserts the `Vary` header contains `Accept-Language`.                                                                                                                 |
 
 ---
 
@@ -492,16 +497,22 @@ Builds an `ofetch` `FetchOptions` object from `AppFetchOptions`:
 type AppFetchOptions = {
   apiKey?: string;       // If provided, sets the goat-it-api-key header
   locale?: Locale | "*"; // Sets Accept-Language header; defaults to "*"
-  method?: "GET" | "HEAD" | "POST" | "PATCH" | "DELETE"; // HTTP method; defaults to ofetch's default (GET)
+  method?: "GET" | "HEAD" | "POST" | "PATCH" | "DELETE" | "OPTIONS"; // HTTP method; defaults to ofetch's default (GET)
   body?: Record<string, unknown>; // JSON-serialized as request body
   rawBody?: string;      // Sent verbatim, including ""; takes precedence over body
   contentType?: string;  // Forwarded verbatim as the Content-Type header
   query?: Record<string, string | string[]>;
+  origin?: string;       // Forwarded verbatim as the Origin header
+  accessControlRequestMethod?: string;  // Forwarded as Access-Control-Request-Method
+  accessControlRequestHeaders?: string; // Forwarded as Access-Control-Request-Headers
+  retry?: number | false; // ofetch retry count; OPTIONS requests default to 0
 };
 ```
 
 If `apiKey` is `undefined`, no API key header is sent (tests the unauthenticated path).
 `rawBody` is never serialized: use it for malformed, empty or oversized payloads and for any body that must reach the server byte-for-byte. `ofetch` adds its own `content-type: application/json` only when no `Content-Type` is supplied, so always pair a raw body with `contentType` when the media type matters.
+
+`origin`, `accessControlRequestMethod` and `accessControlRequestHeaders` are forwarded verbatim, so a CORS preflight is a typed, assertable request that does not touch the production CORS configuration: a scenario can ask permission for a header (for example `goat-it-api-key`) without sending a credential. `retry` overrides ofetch's retry count, which is `1` for a non-payload method such as `OPTIONS`; the helper sets it to `0` for `OPTIONS` so a preflight assertion always inspects the first attempt.
 
 ```ts
 // Authenticated GET

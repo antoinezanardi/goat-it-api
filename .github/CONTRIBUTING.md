@@ -281,6 +281,7 @@ The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
 ## 🔒 Security
 
 - Never commit secrets or credentials. Use environment variables and CI secret storage.
+- Read [docs/security.md](../docs/security.md) before changing authentication, CORS, response headers, caching or error responses; it records the enforced controls and the accepted limitations.
 
 > [!CAUTION]
 > Committing secrets (API keys, credentials, private keys) can expose systems and cause security incidents. If you accidentally commit a secret, rotate it immediately and notify maintainers.

@@ -89,6 +89,8 @@ Feature: List Questions
       | ai   | AI Question Generator |        |
 
     And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" but without rejection
+    And the response should not be cacheable
+    And the response should vary on the "Accept-Language" header
 
   Scenario: Listing all questions in wildcard locale
     Given the database is populated with questions fixture set with name "five-questions"
@@ -310,6 +312,8 @@ Feature: List Questions
     Then the request should have failed with status code 400 and the response should contain the following error:
       | error       | statusCode | message                                                                                                                              |
       | Bad Request | 400        | Invalid locale 'in' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered) |
+    And the response should not be cacheable
+    And the response should vary on the "Accept-Language" header
 
   Scenario: Trying to list all questions without API key
     Given the database is populated with questions fixture set with name "five-questions"

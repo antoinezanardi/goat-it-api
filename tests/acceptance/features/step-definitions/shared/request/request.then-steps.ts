@@ -70,3 +70,11 @@ Then(/^the failed request's response should contain the following validation det
     }
   }
 });
+
+Then(/^the response should not be cacheable$/u, function(this: GoatItWorld): void {
+  this.expectLastResponseHeaderToBe("cache-control", "no-store");
+});
+
+Then(/^the response should vary on the "Accept-Language" header$/u, function(this: GoatItWorld): void {
+  this.expectLastResponseHeaderToBe("vary", "Accept-Language");
+});

@@ -101,6 +101,17 @@ There is no pagination — no `page`/`offset` parameter exists anywhere in the q
 - `LocalizationMiddleware` (`src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`) runs on all routes; it reads the first locale of the `Accept-Language` header, validates it against `LOCALES = ["en", "fr", "es", "de", "it", "pt"]` (`src/shared/domain/value-objects/locale/locale.constants.ts`), falls back to `FALLBACK_LOCALE` (env, default `"en"`), and throws 400 on an invalid header.
 - Controllers receive the resolved options through the `@Localization()` decorator (`src/shared/infrastructure/http/decorators/localization/localization.decorator.ts`) and pass them to mappers/use cases.
 
+## Response headers and caching
+
+Every application response carries a fixed security-header set and the cache policy; the values and their rationale are recorded in [Security](security.md#http-security-headers). Two transport paths are the documented exception — a low-level `408` carries no application header, and a router-level `400`/`414` keeps the security headers but carries no `Permissions-Policy`, `Cache-Control` or `Vary` (see [Security § Known limitations](security.md#known-limitations)). Clients can rely on:
+
+- `Content-Security-Policy`, `Strict-Transport-Security: max-age=31536000`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cross-Origin-Resource-Policy: same-site`, `Cross-Origin-Opener-Policy: same-origin` and a `Permissions-Policy` denying `camera`, `microphone`, `geolocation`, `payment` and `usb`;
+- no `X-Powered-By` header;
+- `Cache-Control: no-store` with `Vary: Accept-Language` on every JSON response, every error, every documentation response and every `OPTIONS` reply, so a client or an intermediary must not cache them;
+- `Cache-Control: public, max-age=0` with `ETag` and `Last-Modified` on the game assets under `/public/` only, which a client re-fetches with a conditional request after a change.
+
+These headers never change a status code or a body: every success and error shape documented above stays identical. CORS keeps its documented allow-list, so `goat-it-api-key` remains absent from `Access-Control-Allow-Headers` (see Known limitations).
+
 ## Swagger at `/docs`
 
 - Path constant `SWAGGER_DOCUMENTATION_PATH = "/docs"` and tags `APP`, `ADMIN`, `QUESTIONS`, `QUESTION_THEMES` in `src/infrastructure/api/server/swagger/constants/swagger.constants.ts`.

@@ -16,6 +16,7 @@ import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exce
 import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import { AppService } from "@app/providers/services/app.service";
 
+import { PUBLIC_ASSETS_PATH_PREFIX } from "@shared/infrastructure/http/constants/public-assets.constants";
 import { LocalizationMiddleware } from "@shared/infrastructure/http/middlewares/localization/localization.middleware";
 
 import { QuestionModule } from "@question/question.module";
@@ -26,7 +27,7 @@ import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
   imports: [
     ServeStaticModule.forRoot({
       rootPath: `${process.cwd()}/public`,
-      serveRoot: "/public/",
+      serveRoot: PUBLIC_ASSETS_PATH_PREFIX,
     }),
     AppConfigModule,
     LoggerModule.forRoot(getLoggerConfiguration()),

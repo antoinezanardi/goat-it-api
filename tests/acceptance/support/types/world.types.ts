@@ -78,6 +78,44 @@ class GoatItWorld extends World {
     }
   }
 
+  public expectLastResponseHeaderToBeAbsent(headerName: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue !== null) {
+      throw new Error(`Expected the last response header "${headerName}" to be absent, but received: ${headerValue}`);
+    }
+  }
+
+  public expectLastResponseHeaderToBePresent(headerName: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null) {
+      throw new Error(`Expected the last response header "${headerName}" to be present, but it was absent.`);
+    }
+  }
+
+  public expectLastResponseHeaderNotToContain(headerName: string, forbiddenValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null) {
+      return;
+    }
+    const headerTokens = headerValue.split(",").map((token: string): string => token.trim().toLowerCase());
+
+    if (headerTokens.includes(forbiddenValue.toLowerCase())) {
+      throw new Error(`Expected the last response header "${headerName}" not to contain "${forbiddenValue}", but received: ${headerValue}`);
+    }
+  }
+
   public expectLastResponseJson<T>(schema: { parse: (_data: unknown) => T }): T {
     if (!this.lastFetchResponse) {
       throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
