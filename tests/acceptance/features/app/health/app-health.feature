@@ -1,4 +1,4 @@
-@app @app-health
+@app @app-health @public
 Feature: App Health
 
   Scenario: Checking application health

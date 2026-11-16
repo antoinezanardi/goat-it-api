@@ -312,7 +312,7 @@ Rules:
 - `src/infrastructure/api/auth/`: API-key guards, auth decorators, auth errors and helpers.
 - `src/infrastructure/api/config/`: environment schema, config module, validators and services.
 - `src/infrastructure/api/health/`: health controller, DTOs, mappers and service.
-- `src/infrastructure/api/server/`: Fastify bootstrap, CORS, Swagger.
+- `src/infrastructure/api/server/`: Fastify bootstrap (`fastify/` holds the adapter factory and its bound constants; `constants/` holds the NestJS bootstrap options), CORS, Swagger.
 - `src/infrastructure/database/`: Mongoose connection module and service.
 
 `src/app` wires every context and cross-cutting module. It is the only area allowed to compose context domain errors into cross-context HTTP responses: `GlobalExceptionFilter` lives in `src/app/filters/global-exception/` and is registered with `APP_FILTER`. `src/infrastructure` imports `@shared/*` only, and `server.ts` receives the application module as a parameter.
@@ -442,13 +442,14 @@ void bootstrap(AppModule);
 ```ts
 // src/infrastructure/api/server/server.ts
 async function bootstrap(appModule: Type<unknown>): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(appModule, new FastifyAdapter(), { bufferLogs: true });
+  const app = await NestFactory.create<NestFastifyApplication>(appModule, createFastifyAdapter(), NEST_APPLICATION_OPTIONS);
   // ...
 }
 ```
 
 - `src/main.ts` is the only file that imports `AppModule`.
 - `server.ts` MUST NOT import `@app/*` or a context.
+- `createFastifyAdapter()` (`src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`) owns the body limit, the JSON-only parser policy, the request and handler timeouts and the nested Node `http` server options; `server.ts` only wires it and passes `NEST_APPLICATION_OPTIONS` (`src/infrastructure/api/server/constants/server.constants.ts`), whose `bodyParser: false` stops Nest from registering a parser of its own.
 
 ### 6.2 Module responsibilities
 

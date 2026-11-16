@@ -1,7 +1,19 @@
 import { ServerResponse } from "node:http";
 
 import { ZodValidationException } from "nestjs-zod";
-import { BadRequestException, Catch, ConflictException, HttpException, HttpStatus, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Catch,
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+  PayloadTooLargeException,
+  ServiceUnavailableException,
+  UnsupportedMediaTypeException,
+} from "@nestjs/common";
 import { ZodError } from "zod";
 
 import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
@@ -26,8 +38,10 @@ import type { FastifyReply } from "fastify";
 /**
  * Single composition point that turns any thrown value into the HTTP response.
  *
- * Zod validation errors and `HttpException`s are forwarded as they are; known domain errors are mapped to 404, 400 or 409
- * through a class-name table; everything else is logged and answered with a 500 that never exposes the original message.
+ * Known Fastify body-parser and handler-timeout errors are mapped to curated 400, 413, 415 and 503 envelopes, keyed only on
+ * their Fastify error code; Zod validation errors and unrelated `HttpException`s are forwarded as they are; known domain
+ * errors are mapped to 404, 400 or 409 through a class-name table; everything else is logged and answered with a 500 that
+ * never exposes the original message.
  */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -44,6 +58,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [QuestionThemeSlugAlreadyExistsError.name]: ConflictException,
     [QuestionThemeAssignmentAlreadyExistsError.name]: ConflictException,
     [QuestionThemeReferencedByLiveQuestionsError.name]: ConflictException,
+  };
+
+  private static readonly fastifyErrorHttpExceptionFactories: Partial<Record<string, () => HttpException>> = {
+    FST_ERR_CTP_EMPTY_JSON_BODY: (): HttpException => new BadRequestException("Invalid request body"),
+    FST_ERR_CTP_INVALID_JSON_BODY: (): HttpException => new BadRequestException("Invalid request body"),
+    FST_ERR_CTP_INVALID_CONTENT_LENGTH: (): HttpException => new BadRequestException("Invalid request body"),
+    FST_ERR_CTP_BODY_TOO_LARGE: (): HttpException => new PayloadTooLargeException("Request body is too large"),
+    FST_ERR_CTP_INVALID_MEDIA_TYPE: (): HttpException => new UnsupportedMediaTypeException("Unsupported Media Type"),
+    FST_ERR_HANDLER_TIMEOUT: (): HttpException => new ServiceUnavailableException("Request timed out"),
   };
 
   private readonly logger = new Logger(GlobalExceptionFilter.name);
@@ -71,6 +94,45 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     this.sendNestHttpException(badRequestException, response);
   }
 
+  private static getFastifyErrorCode(exception: unknown): string | undefined {
+    const candidate = exception instanceof HttpException ? exception.cause : exception;
+    // Acceptable as Fastify creates its errors with Object.create(Error.prototype), so Error.isError returns false for them while instanceof Error is true
+    // eslint-disable-next-line unicorn/prefer-error-is-error
+    if (candidate instanceof Error && "code" in candidate && typeof candidate.code === "string") {
+      return candidate.code;
+    }
+    return undefined;
+  }
+
+  private static getFastifyErrorHttpException(exception: unknown): HttpException | undefined {
+    const fastifyErrorCode = this.getFastifyErrorCode(exception);
+    if (fastifyErrorCode === undefined) {
+      return undefined;
+    }
+    return this.fastifyErrorHttpExceptionFactories[fastifyErrorCode]?.();
+  }
+
+  private static getDomainErrorHttpException(exception: unknown): HttpException | undefined {
+    if (!Error.isError(exception)) {
+      return undefined;
+    }
+
+    const DomainHttpExceptionFactory = this.domainErrorHttpExceptionFactories[exception.name];
+    if (!DomainHttpExceptionFactory) {
+      return undefined;
+    }
+
+    const domainHttpException = new DomainHttpExceptionFactory();
+    const statusCode = domainHttpException.getStatus();
+
+    return new HttpException({
+      error: domainHttpException.message,
+      message: exception.message,
+      statusCode,
+      errorCode: getDerivedErrorCodeFromClassName(exception.constructor.name),
+    }, statusCode);
+  }
+
   /**
    * Writes the response for the first matching branch and never rethrows.
    *
@@ -78,6 +140,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
    */
   public catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply | ServerResponse>();
+    const fastifyErrorHttpException = GlobalExceptionFilter.getFastifyErrorHttpException(exception);
+
+    if (fastifyErrorHttpException) {
+      GlobalExceptionFilter.sendNestHttpException(fastifyErrorHttpException, response);
+
+      return;
+    }
 
     if (exception instanceof ZodValidationException) {
       GlobalExceptionFilter.sendZodValidationException(exception, response);
@@ -91,22 +160,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    if (Error.isError(exception)) {
-      const DomainHttpExceptionFactory = GlobalExceptionFilter.domainErrorHttpExceptionFactories[exception.name];
-      if (DomainHttpExceptionFactory) {
-        const domainHttpException = new DomainHttpExceptionFactory();
-        const statusCode = domainHttpException.getStatus();
-        const httpException = new HttpException({
-          error: domainHttpException.message,
-          message: exception.message,
-          statusCode,
-          errorCode: getDerivedErrorCodeFromClassName(exception.constructor.name),
-        }, statusCode);
+    const domainErrorHttpException = GlobalExceptionFilter.getDomainErrorHttpException(exception);
 
-        GlobalExceptionFilter.sendNestHttpException(httpException, response);
+    if (domainErrorHttpException) {
+      GlobalExceptionFilter.sendNestHttpException(domainErrorHttpException, response);
 
-        return;
-      }
+      return;
     }
 
     this.sendUnknownException(exception, response);

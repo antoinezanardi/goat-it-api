@@ -39,7 +39,7 @@ Correct use of the framework and library APIs this API is built on: NestJS 12 de
 
 ## 2. Fastify 5 usage
 
-- **[STACK-09] Fastify is the only HTTP adapter** — `server.ts` creates the app with `NestFactory.create<NestFastifyApplication>(appModule, new FastifyAdapter(), { bufferLogs: true })`; no `ExpressAdapter`, `@nestjs/platform-express` dependency or Express middleware is present, and Fastify-specific reply types are used at the HTTP boundary.
+- **[STACK-09] Fastify is the only HTTP adapter** — The application is created with `NestFactory.create<NestFastifyApplication>` and a Fastify adapter supplied by the application's own server infrastructure; no `ExpressAdapter`, `@nestjs/platform-express` dependency or Express middleware is present, and Fastify-specific reply types are used at the HTTP boundary.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/infrastructure/api/server/server.ts`, `package.json` · Src: [4], [11]
 - **[STACK-10] Fastify 5 API contracts are respected** — The server calls `NestFastifyApplication.listen` with an options object (`{ port, host }`) as the project convention; the positional form (`listen(port, host)`) is a supported Nest wrapper and is not a Fastify 5 violation, while a raw Fastify instance must receive an options object. The server also uses `reply.hijack()` instead of assigning `reply.sent`, reads `request.socket` instead of `request.connection`, uses `reply.elapsedTime` instead of `getResponseTime()`, reads route metadata from `request.routeOptions`/`reply.routeOptions`, and passes a custom logger through `loggerInstance`, not `logger`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/server/**`, `src/app/filters/global-exception/**` · Src: [11], [9]

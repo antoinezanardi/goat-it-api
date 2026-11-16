@@ -51,6 +51,12 @@ No N+1 patterns were found: question lists resolve themes with a single `$lookup
 
 Document size is structurally bounded by the domain constants: ≤ 3 theme assignments and 1..5 source URLs per question; per-locale text entries ≤ 500 chars and per-locale text arrays ≤ 10 items across at most 6 locales (`file:src/contexts/question/domain/constants/question.constants.ts`, `file:src/shared/application/dto/zod/validators/localization/constants/localization.zod.validators.constants.ts`). Theme documents are tiny (slug + 3 localized fields + optional color). Responses embed full theme snapshots per assignment, so a question response carries up to 3 theme objects (`createQuestionDtoFromEntity` in `file:src/contexts/question/application/mappers/question.mappers.ts`).
 
+### Request body cap
+
+Request bodies are capped at 512 KiB (524,288 bytes) by Fastify's `bodyLimit` (`file:src/infrastructure/api/server/fastify/constants/fastify.constants.ts`). The largest documented bounded request is the random-question `excludedIds` payload: 5,000 24-character ObjectIds serialize to about 135 KB (131.9 KiB), leaving about 3.88× headroom under the cap.
+
+The cap bounds **bytes only**. The random-search body's `themeIds` array still has no element-count maximum, so a payload that stays under 512 KiB can still carry an unbounded number of theme ids (see `docs/api-contract.md`); the cap does not replace the missing element-count bound.
+
 ### Translation-completeness filter cost
 
 - Static mode (question themes, and the single-locale variant used by random questions) emits plain per-locale field conditions (`buildFieldCompleteCondition`) that regular indexes could serve (`file:src/shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers.ts`).

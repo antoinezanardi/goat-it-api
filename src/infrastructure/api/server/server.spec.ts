@@ -4,6 +4,7 @@ import { Logger } from "nestjs-pino";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import * as corsHelpers from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
+import * as fastifyHelpers from "@src/infrastructure/api/server/fastify/helpers/fastify.helpers";
 import * as swaggerHelpers from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
@@ -44,6 +45,7 @@ describe(bootstrap, () => {
     };
 
     vi.spyOn(corsHelpers, "createCorsConfig");
+    vi.spyOn(fastifyHelpers, "createFastifyAdapter");
     vi.spyOn(swaggerHelpers, "getSwaggerUrl");
     vi.spyOn(swaggerHelpers, "setupSwaggerModule").mockReturnValue(undefined);
 
@@ -66,6 +68,7 @@ describe(bootstrap, () => {
   it("should create from NestFactory when called.", async() => {
     const expectedOptions: NestApplicationOptions = {
       bufferLogs: true,
+      bodyParser: false,
     };
     await bootstrap(MockedAppModule);
 
@@ -74,6 +77,12 @@ describe(bootstrap, () => {
       expect.any(Fastify.FastifyAdapter),
       expectedOptions,
     );
+  });
+
+  it("should create the Fastify adapter from the fastify helpers when called.", async() => {
+    await bootstrap(MockedAppModule);
+
+    expect(fastifyHelpers.createFastifyAdapter).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("should create cors config from configuration when called.", async() => {
