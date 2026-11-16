@@ -72,7 +72,7 @@
     }
   },
   "dependencies": {
-    "type-fest": "^5.10.0"
+    "type-fest": "^6.0.0"
   },
   "sideEffects": false
 }
