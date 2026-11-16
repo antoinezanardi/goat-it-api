@@ -1,9 +1,9 @@
 import {
   OPTIONS_HTTP_METHOD,
-  OPTIONS_SECURITY_HEADERS,
+  OPTIONS_RESPONSE_SECURITY_HEADERS,
   PERMISSIONS_POLICY_HEADER_NAME,
   PERMISSIONS_POLICY_HEADER_VALUE,
-  REMOVED_RESPONSE_HEADER_NAMES,
+  RESPONSE_HEADER_NAMES_TO_REMOVE,
   SECURITY_HEADERS_OPTIONS,
 } from "@src/infrastructure/api/server/security-headers/constants/security-headers.constants";
 
@@ -11,12 +11,12 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 function applyMissingSecurityHeadersToReply(reply: FastifyReply): void {
-  for (const [headerName, headerValue] of OPTIONS_SECURITY_HEADERS) {
+  for (const [headerName, headerValue] of OPTIONS_RESPONSE_SECURITY_HEADERS) {
     if (reply.getHeader(headerName) === undefined) {
       reply.header(headerName, headerValue);
     }
   }
-  for (const headerName of REMOVED_RESPONSE_HEADER_NAMES) {
+  for (const headerName of RESPONSE_HEADER_NAMES_TO_REMOVE) {
     if (reply.getHeader(headerName) !== undefined) {
       reply.removeHeader(headerName);
     }

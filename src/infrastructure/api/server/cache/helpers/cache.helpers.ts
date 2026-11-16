@@ -3,10 +3,10 @@ import {
   LAST_MODIFIED_HEADER_NAME,
   PRESERVED_PUBLIC_ASSET_HTTP_STATUSES,
   PUBLIC_ASSETS_CACHE_CONTROL_VALUE,
-  PUBLIC_ASSETS_PATH_PREFIX,
 } from "@src/infrastructure/api/server/cache/constants/cache.constants";
 
 import { CACHE_CONTROL_HEADER_NAME } from "@shared/infrastructure/http/constants/cache-control.constants";
+import { PUBLIC_ASSETS_PATH_PREFIX } from "@shared/infrastructure/http/constants/public-assets.constants";
 import { applyNoStoreResponseHeadersToFastifyReply } from "@shared/infrastructure/helpers/response-headers/response-headers.helpers";
 
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";

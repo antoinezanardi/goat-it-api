@@ -78,48 +78,42 @@ describe(GlobalExceptionFilter, () => {
   describe(GlobalExceptionFilter["sendNestHttpException"], () => {
     it("should send the correct status using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledExactlyOnceWith(exception.getStatus());
     });
 
     it("should send the correct response using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledExactlyOnceWith(exception.getResponse());
     });
 
     it("should write the correct head using the ServerResponse when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.serverResponse);
 
       expect(mocks.filters.globalException.serverResponse.writeHead).toHaveBeenCalledWith(exception.getStatus(), { "Content-Type": "application/json" });
     });
 
     it("should end the response with the correct response using the ServerResponse when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.serverResponse);
 
       expect(mocks.filters.globalException.serverResponse.end).toHaveBeenCalledWith(JSON.stringify(exception.getResponse()));
     });
 
     it("should set the no-store cache control header using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Cache-Control", "no-store");
     });
 
     it("should set the accept language vary header using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Vary", "Accept-Language");
     });
@@ -127,24 +121,21 @@ describe(GlobalExceptionFilter, () => {
     it("should merge an existing vary header using the FastifyReply when called.", () => {
       const exception = new NotFoundException("Resource not found");
       vi.mocked(mocks.filters.globalException.fastifyReply.getHeader).mockReturnValue("Origin");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Vary", "Origin, Accept-Language");
     });
 
     it("should set the no-store cache control header using the ServerResponse when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.serverResponse);
 
       expect(mocks.filters.globalException.serverResponse.setHeader).toHaveBeenCalledWith("Cache-Control", "no-store");
     });
 
     it("should set the accept language vary header using the ServerResponse when called.", () => {
       const exception = new NotFoundException("Resource not found");
-      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
-      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+      GlobalExceptionFilter["sendNestHttpException"](exception, mocks.filters.globalException.serverResponse);
 
       expect(mocks.filters.globalException.serverResponse.setHeader).toHaveBeenCalledWith("Vary", "Accept-Language");
     });

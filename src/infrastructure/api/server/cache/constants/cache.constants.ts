@@ -1,7 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
 
-const PUBLIC_ASSETS_PATH_PREFIX = "/public/";
-
 const PUBLIC_ASSETS_CACHE_CONTROL_VALUE = "public, max-age=0";
 
 const PRESERVED_PUBLIC_ASSET_HTTP_STATUSES: readonly number[] = [
@@ -19,5 +17,4 @@ export {
   LAST_MODIFIED_HEADER_NAME,
   PRESERVED_PUBLIC_ASSET_HTTP_STATUSES,
   PUBLIC_ASSETS_CACHE_CONTROL_VALUE,
-  PUBLIC_ASSETS_PATH_PREFIX,
 };
