@@ -57,12 +57,16 @@ describe(GlobalExceptionFilter, () => {
           fastifyReply: {
             status: vi.fn<(status: number) => FastifyReply>().mockReturnThis(),
             send: vi.fn<() => void>(),
+            getHeader: vi.fn<(name: string) => string | undefined>().mockReturnValue(undefined),
+            header: vi.fn<(name: string, value: string) => void>(),
           } as unknown as FastifyReply,
           // Acceptable as we are creating a mock ServerResponse object for testing purposes. The type assertion is necessary to satisfy TypeScript's type checking, as we are creating an object that mimics the ServerResponse interface but does not fully implement it.
           // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
           serverResponse: Object.assign(Object.create(ServerResponse.prototype), {
             writeHead: vi.fn<() => void>(),
             end: vi.fn<() => void>(),
+            getHeader: vi.fn<(name: string) => string | undefined>().mockReturnValue(undefined),
+            setHeader: vi.fn<(name: string, value: string) => void>(),
           }) as unknown as ServerResponse,
         },
       },
@@ -102,6 +106,47 @@ describe(GlobalExceptionFilter, () => {
       globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
 
       expect(mocks.filters.globalException.serverResponse.end).toHaveBeenCalledWith(JSON.stringify(exception.getResponse()));
+    });
+
+    it("should set the no-store cache control header using the FastifyReply when called.", () => {
+      const exception = new NotFoundException("Resource not found");
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
+      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+
+      expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Cache-Control", "no-store");
+    });
+
+    it("should set the accept language vary header using the FastifyReply when called.", () => {
+      const exception = new NotFoundException("Resource not found");
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
+      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+
+      expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Vary", "Accept-Language");
+    });
+
+    it("should merge an existing vary header using the FastifyReply when called.", () => {
+      const exception = new NotFoundException("Resource not found");
+      vi.mocked(mocks.filters.globalException.fastifyReply.getHeader).mockReturnValue("Origin");
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
+      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.fastifyReply);
+
+      expect(mocks.filters.globalException.fastifyReply.header).toHaveBeenCalledWith("Vary", "Origin, Accept-Language");
+    });
+
+    it("should set the no-store cache control header using the ServerResponse when called.", () => {
+      const exception = new NotFoundException("Resource not found");
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
+      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+
+      expect(mocks.filters.globalException.serverResponse.setHeader).toHaveBeenCalledWith("Cache-Control", "no-store");
+    });
+
+    it("should set the accept language vary header using the ServerResponse when called.", () => {
+      const exception = new NotFoundException("Resource not found");
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as { sendNestHttpException: (...parameters: unknown[]) => void };
+      globalExceptionFilterStub.sendNestHttpException(exception, mocks.filters.globalException.serverResponse);
+
+      expect(mocks.filters.globalException.serverResponse.setHeader).toHaveBeenCalledWith("Vary", "Accept-Language");
     });
   });
 

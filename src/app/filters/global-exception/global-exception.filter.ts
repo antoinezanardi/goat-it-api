@@ -22,6 +22,7 @@ import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/dom
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
+import { applyNoStoreResponseHeadersToFastifyReply, applyNoStoreResponseHeadersToServerResponse } from "@shared/infrastructure/helpers/response-headers/response-headers.helpers";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
@@ -73,11 +74,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   private static sendNestHttpException(exception: HttpException, response: FastifyReply | ServerResponse): void {
     if (response instanceof ServerResponse) {
+      applyNoStoreResponseHeadersToServerResponse(response);
       response.writeHead(exception.getStatus(), { "Content-Type": "application/json" });
       response.end(JSON.stringify(exception.getResponse()));
 
       return;
     }
+    applyNoStoreResponseHeadersToFastifyReply(response);
     response.status(exception.getStatus()).send(exception.getResponse());
   }
 

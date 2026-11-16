@@ -2,9 +2,11 @@ import * as NestCore from "@nestjs/core";
 import * as Fastify from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import * as cacheHelpers from "@src/infrastructure/api/server/cache/helpers/cache.helpers";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import * as corsHelpers from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
 import * as fastifyHelpers from "@src/infrastructure/api/server/fastify/helpers/fastify.helpers";
+import * as securityHeadersHelpers from "@src/infrastructure/api/server/security-headers/helpers/security-headers.helpers";
 import * as swaggerHelpers from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
@@ -44,8 +46,11 @@ describe(bootstrap, () => {
       },
     };
 
+    vi.spyOn(cacheHelpers, "setupResponseCachePolicy").mockReturnValue(undefined);
     vi.spyOn(corsHelpers, "createCorsConfig");
     vi.spyOn(fastifyHelpers, "createFastifyAdapter");
+    vi.spyOn(securityHeadersHelpers, "setupSecurityHeaders").mockReturnValue(undefined);
+    vi.spyOn(securityHeadersHelpers, "setupSecurityHeadersRequestHook").mockReturnValue(undefined);
     vi.spyOn(swaggerHelpers, "getSwaggerUrl");
     vi.spyOn(swaggerHelpers, "setupSwaggerModule").mockReturnValue(undefined);
 
@@ -83,6 +88,21 @@ describe(bootstrap, () => {
     await bootstrap(MockedAppModule);
 
     expect(fastifyHelpers.createFastifyAdapter).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it("should setup the security headers request hook with the fastify adapter instance when called.", async() => {
+    const fastifyAdapter = new Fastify.FastifyAdapter();
+    vi.mocked(fastifyHelpers.createFastifyAdapter).mockReturnValue(fastifyAdapter);
+    await bootstrap(MockedAppModule);
+
+    expect(securityHeadersHelpers.setupSecurityHeadersRequestHook).toHaveBeenCalledExactlyOnceWith(fastifyAdapter.getInstance());
+  });
+
+  it("should setup the security headers request hook before creating the application when called.", async() => {
+    await bootstrap(MockedAppModule);
+
+    expect(vi.mocked(securityHeadersHelpers.setupSecurityHeadersRequestHook).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(NestCore.NestFactory.create).mock.invocationCallOrder[0]);
   });
 
   it("should create cors config from configuration when called.", async() => {
@@ -124,6 +144,32 @@ describe(bootstrap, () => {
     await bootstrap(MockedAppModule);
 
     expect(swaggerHelpers.setupSwaggerModule).toHaveBeenCalledExactlyOnceWith(expect.any(Object));
+  });
+
+  it("should setup the security headers when called.", async() => {
+    const app = await bootstrap(MockedAppModule);
+
+    expect(securityHeadersHelpers.setupSecurityHeaders).toHaveBeenCalledExactlyOnceWith(app);
+  });
+
+  it("should setup the response cache policy when called.", async() => {
+    const app = await bootstrap(MockedAppModule);
+
+    expect(cacheHelpers.setupResponseCachePolicy).toHaveBeenCalledExactlyOnceWith(app);
+  });
+
+  it("should setup the security headers before the swagger module when called.", async() => {
+    await bootstrap(MockedAppModule);
+
+    expect(vi.mocked(securityHeadersHelpers.setupSecurityHeaders).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(swaggerHelpers.setupSwaggerModule).mock.invocationCallOrder[0]);
+  });
+
+  it("should setup the response cache policy before the swagger module when called.", async() => {
+    await bootstrap(MockedAppModule);
+
+    expect(vi.mocked(cacheHelpers.setupResponseCachePolicy).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(swaggerHelpers.setupSwaggerModule).mock.invocationCallOrder[0]);
   });
 
   it.each<{

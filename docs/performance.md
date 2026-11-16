@@ -79,6 +79,14 @@ The cap bounds **bytes only**. The random-search body's `themeIds` array still h
 - Cross-context calls are read-only validation/query calls with no distributed transaction; consistency is best-effort and races should be tested (`file:docs/architecture.md` §5.5).
 - Intra-question assignment writes must stay atomic via conditional updates/update pipelines, not MongoDB transactions (`file:docs/architecture.md` §5.5).
 
+## Response caching
+
+No API response is cacheable. One root Fastify `onSend` hook (`file:src/infrastructure/api/server/cache/helpers/cache.helpers.ts`) sets `Cache-Control: no-store` and merges `Vary: Accept-Language` on every response, because the bodies vary by the `Accept-Language` header and by the API-key audience — the audience is covered by `no-store` and deliberately never becomes a cache-key component. The merge keeps an existing `Vary` value and never duplicates a token. The variance key set is therefore exactly `Accept-Language` for every non-static response.
+
+The single exception is a successful (`200`, `206`) or revalidated (`304`) file response under `/public/` that still carries the `@fastify/static` signature (`Cache-Control: public, max-age=0` plus `ETag`/`Last-Modified`). Those responses keep the plugin headers, their validators and `Accept-Ranges`, and gain no `Vary`: asset filenames are not content-hashed, so a positive `max-age` or `immutable` would pin a stale file, while `max-age=0` lets a cache store the asset and revalidate it with one conditional request per use. A path prefix alone does not qualify — `/public/unknown` is a `404` and is `no-store`, and the Swagger assets under `/docs/**` are `no-store`.
+
+Enabling any real caching later needs a per-route policy, validators, a reviewed `Vary` set and this section updated before the code changes.
+
 ## Known limitations
 
 - **No top-level indexes on `questions`.** `status`, `category`, `cognitiveDifficulty`, `createdAt`, `isAdultContent` and `author.role` are all filterable/sortable (public and admin find DTOs) yet unindexed; growing collections will rely on collection scans for these paths (verified: the question schema defines none, `file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema.ts`).

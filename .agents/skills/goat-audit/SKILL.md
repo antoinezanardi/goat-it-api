@@ -214,7 +214,7 @@ Boundaries worth repeating: query and response performance → PERF; input-valid
 
 **Existing documented decisions are binding too** (cite `file:line`, outcome `DECIDED`). Auditors therefore read each decision doc **in full**, not only its GOAT section:
 
-- `docs/security.md` — Known limitations (#1263 rate limiting, security headers, request-body guard; #1262 error tracking; `pino-http` default request logging exposing headers/credentials; missing `SECURITY.md`) and deliberate choices.
+- `docs/security.md` — Known limitations (#1263 rate limiting; #1262 error tracking; `pino-http` default request logging exposing headers/credentials; missing `SECURITY.md`) and deliberate choices.
 - `docs/operations.md` — Out of scope (numeric SLOs, automatic rollback, remote log shipping, Sentry, Kubernetes probes) and reliability targets.
 - `docs/architecture.md` — §13 Accepted exceptions, §5 published-surface and B-lite decisions, §7.4 intentionally-500 write errors.
 - `docs/ci-cd.md` — documented branching, release, deployment and hook exceptions.

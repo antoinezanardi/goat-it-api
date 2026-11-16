@@ -293,7 +293,8 @@ function ensureQuestionThemeIsNotArchivedForCreation(theme: QuestionTheme): void
 - `domain/`: `constants/`, `rules/`, `types/`, `value-objects/`.
 - `types/`: generic type-only utilities (`enum.types.ts`, `tuple.types.ts`) usable by any layer.
 - `application/`: `dto/zod/` (preprocessors, refinements, validators), `mappers/` (find-all, localization, sort), `helpers/` (stats).
-- `infrastructure/http/`: controllers, decorators, errors, middlewares, pipes, types.
+- `infrastructure/http/`: constants, controllers, decorators, errors, middlewares, pipes, types.
+- `infrastructure/helpers/`: framework-agnostic reusable helpers (type-only framework imports are allowed), such as `response-headers/` for the no-store/`Vary` header merge.
 - `infrastructure/persistence/mongoose/`: constants, helpers, schemas, types.
 - `infrastructure/nest/helpers/`: NestJS provider helpers such as `createUseCaseProvider`.
 
@@ -312,7 +313,7 @@ Rules:
 - `src/infrastructure/api/auth/`: API-key guards, auth decorators, auth errors and helpers.
 - `src/infrastructure/api/config/`: environment schema, config module, validators and services.
 - `src/infrastructure/api/health/`: health controller, DTOs, mappers and service.
-- `src/infrastructure/api/server/`: Fastify bootstrap (`fastify/` holds the adapter factory and its bound constants; `constants/` holds the NestJS bootstrap options), CORS, Swagger.
+- `src/infrastructure/api/server/`: Fastify bootstrap (`fastify/` holds the adapter factory and its bound constants; `constants/` holds the NestJS bootstrap options), CORS, Swagger, `security-headers/` (the NestJS security options, the root `Permissions-Policy` request hook and the `OPTIONS` fallback) and `cache/` (the root response-cache `onSend` hook).
 - `src/infrastructure/database/`: Mongoose connection module and service.
 
 `src/app` wires every context and cross-cutting module. It is the only area allowed to compose context domain errors into cross-context HTTP responses: `GlobalExceptionFilter` lives in `src/app/filters/global-exception/` and is registered with `APP_FILTER`. `src/infrastructure` imports `@shared/*` only, and `server.ts` receives the application module as a parameter.
@@ -450,6 +451,7 @@ async function bootstrap(appModule: Type<unknown>): Promise<NestFastifyApplicati
 - `src/main.ts` is the only file that imports `AppModule`.
 - `server.ts` MUST NOT import `@app/*` or a context.
 - `createFastifyAdapter()` (`src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`) owns the body limit, the JSON-only parser policy, the request and handler timeouts and the nested Node `http` server options; `server.ts` only wires it and passes `NEST_APPLICATION_OPTIONS` (`src/infrastructure/api/server/constants/server.constants.ts`), whose `bodyParser: false` stops Nest from registering a parser of its own.
+- `server.ts` also owns the response policy: `setupSecurityHeadersRequestHook()` registers the root `Permissions-Policy` request hook on the Fastify instance **before** `NestFactory.create()` (a hook registered later runs after middie and never runs on a middleware-rejected request), `setupSecurityHeaders()` calls `app.useSecurityHeaders()` once and registers the `OPTIONS` fallback, and `setupResponseCachePolicy()` registers the root `onSend` hook that keeps `/public/**` file responses revalidated and makes every other response `no-store` with `Vary: Accept-Language`. All of them live in `src/infrastructure/api/server/security-headers/helpers/security-headers.helpers.ts` and `src/infrastructure/api/server/cache/helpers/cache.helpers.ts`, run before `listen()`, and neither module imports `@app/*` or a context.
 
 ### 6.2 Module responsibilities
 
