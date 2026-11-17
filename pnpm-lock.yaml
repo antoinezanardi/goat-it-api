@@ -375,8 +375,8 @@ importers:
         specifier: ^4.23.15
         version: 4.23.15
       type-fest:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^6.0.1
+        version: 6.0.1
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -396,8 +396,8 @@ importers:
         specifier: '>=10.6.0'
         version: 10.6.0
       type-fest:
-        specifier: ^6.0.0
-        version: 6.0.0
+        specifier: ^6.0.1
+        version: 6.0.1
     devDependencies:
       '@arethetypeswrong/core':
         specifier: ^0.18.5
@@ -6145,8 +6145,8 @@ packages:
     resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
     engines: {node: '>=20'}
 
-  type-fest@6.0.0:
-    resolution: {integrity: sha512-cFOr1/4SZf98P0WMLb1X+RJNZrZI9Wf4xT0bjdH8OP2tJmUcuJ6jyLE8i10ecq1m/7ObGbXNa7QEF2LCXKVLqg==}
+  type-fest@6.0.1:
+    resolution: {integrity: sha512-nnRRKEpyNxX4XkeR6dpMy27ZNT5/nE3D73fs5FcKW/+OtqwSmdshWUw5azvpsMzjst5rAUe61ZxilQ70YFS9yA==}
     engines: {node: '>=22'}
 
   typed-inject@5.0.0:
@@ -12051,7 +12051,7 @@ snapshots:
     dependencies:
       tagged-tag: 1.0.0
 
-  type-fest@6.0.0:
+  type-fest@6.0.1:
     dependencies:
       tagged-tag: 1.0.0
 
