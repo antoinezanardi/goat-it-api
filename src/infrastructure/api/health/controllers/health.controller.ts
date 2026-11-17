@@ -1,5 +1,6 @@
 import { Controller, Get, Header, HttpStatus } from "@nestjs/common";
 import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { SkipThrottle } from "@nestjs/throttler";
 import { ZodResponse } from "nestjs-zod";
 
 import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
@@ -8,6 +9,7 @@ import { HEALTH_CACHE_CONTROL_VALUE } from "@src/infrastructure/api/health/const
 import { createAppHealthDtoFromHealthCheckResult } from "@src/infrastructure/api/health/mappers/health.mappers";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
+import { THROTTLER_SKIPPED_TIERS } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
 
@@ -16,6 +18,7 @@ export class HealthController {
   public constructor(private readonly healthService: HealthService) {}
 
   @Get()
+  @SkipThrottle(THROTTLER_SKIPPED_TIERS)
   @Header("Cache-Control", HEALTH_CACHE_CONTROL_VALUE)
   @ApiOperation({
     tags: [SWAGGER_TAGS.APP],

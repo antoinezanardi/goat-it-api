@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 
 import { createApiKeyValidator, hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
 
-import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv, ThrottlerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 /**
  * Single access point to the validated environment configuration.
@@ -56,6 +56,19 @@ export class AppConfigService {
   public get localizationConfig(): LocalizationConfigFromEnv {
     return {
       fallbackLocale: this.configService.getOrThrow<LocalizationConfigFromEnv["fallbackLocale"]>("FALLBACK_LOCALE"),
+    };
+  }
+
+  public get throttlerConfig(): ThrottlerConfigFromEnv {
+    return {
+      default: {
+        ttlSeconds: this.configService.getOrThrow<ThrottlerConfigFromEnv["default"]["ttlSeconds"]>("THROTTLER_DEFAULT_TTL_SECONDS"),
+        limit: this.configService.getOrThrow<ThrottlerConfigFromEnv["default"]["limit"]>("THROTTLER_DEFAULT_LIMIT"),
+      },
+      sustained: {
+        ttlSeconds: this.configService.getOrThrow<ThrottlerConfigFromEnv["sustained"]["ttlSeconds"]>("THROTTLER_SUSTAINED_TTL_SECONDS"),
+        limit: this.configService.getOrThrow<ThrottlerConfigFromEnv["sustained"]["limit"]>("THROTTLER_SUSTAINED_LIMIT"),
+      },
     };
   }
 

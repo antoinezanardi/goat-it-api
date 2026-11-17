@@ -18,6 +18,7 @@
       "json:tests/acceptance/reports/report.json",
       "message:tests/acceptance/reports/message.json"
     ],
-    "parallel": 4
+    "parallel": 4,
+    "tags": "not @rate-limit-429"
   }
 }

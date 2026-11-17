@@ -25,7 +25,8 @@ const API_RESPONSE_EXCEPTION_DTO = z.strictObject({
 });
 
 /**
- * The error body consumers receive; `validationDetails` appears only for request-validation failures and `errorCode` only for mapped domain errors.
+ * The error body consumers receive; `validationDetails` appears only for request-validation failures, and `errorCode` appears
+ * for mapped domain errors and for curated infrastructure HTTP errors such as the throttler's `too-many-requests`.
  */
 export type ApiResponseExceptionDto = z.infer<typeof API_RESPONSE_EXCEPTION_DTO>;
 

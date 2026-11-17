@@ -21,6 +21,16 @@ type LocalizationConfigFromEnv = {
   fallbackLocale: Locale;
 };
 
+type ThrottlerTierConfigFromEnv = {
+  ttlSeconds: number;
+  limit: number;
+};
+
+type ThrottlerConfigFromEnv = {
+  default: ThrottlerTierConfigFromEnv;
+  sustained: ThrottlerTierConfigFromEnv;
+};
+
 type AuthenticationConfigFromEnv = {
   admin: {
     apiKeyValidator: ReturnType<typeof createApiKeyValidator>;
@@ -35,5 +45,7 @@ export type {
   CorsConfigFromEnv,
   MongoDatabaseConfigFromEnv,
   LocalizationConfigFromEnv,
+  ThrottlerTierConfigFromEnv,
+  ThrottlerConfigFromEnv,
   AuthenticationConfigFromEnv,
 };

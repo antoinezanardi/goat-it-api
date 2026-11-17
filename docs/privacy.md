@@ -2,7 +2,7 @@
 
 This document records the privacy and compliance posture of the Goat It API (`goat-it-api`), the headless NestJS backend serving the Goat It web game. The API has no user accounts, no sessions, no cookies and no analytics: today it persists only quiz content — questions and question themes — and no player or user personal data. Compliance obligations for player interactions sit with the consuming web game, not with this API. Every claim cites the repository file it is based on. Related issue: #1262 (error tracking).
 
-Last reviewed: 2026-11-04.
+Last reviewed: 2026-11-17.
 
 ## Data inventory
 
@@ -35,11 +35,13 @@ The only author-related data is the `author` sub-document (`file:src/contexts/qu
 
 What the API never persists in MongoDB: IP addresses, user agents, device identifiers, emails, player profiles, scores, answer histories, or any session/consent record. Request metadata is a different matter at the logging layer: the default `pino-http` request logger currently emits request headers, the client address/port and the user-agent to stdout — see Logs and error tracking; this is a known limitation, not a data-model field. Categories and statuses are content metadata (`file:src/contexts/question/domain/constants/question.constants.ts`); the adult-content flag marks content, not its consumers. The API keys described in `docs/security.md` are shared service credentials held by the server-side consumer, not personal data: they are HMAC-hashed at boot, deleted from `process.env`, and never enter MongoDB (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`). Test environments only ever hold generated content: `env/.env.test` keys are test-only values and fixtures come from `tests/shared/utils/faketories/`.
 
+The rate limiter (`src/infrastructure/api/server/throttler/throttler.module.ts`) is the one place where request-derived state exists outside MongoDB: it keeps a SHA-256 digest of the tier name plus the library-normalized client IP (`src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`) along with request counters and window expiries in process memory. The digest is not an IP address and is never persisted or logged; the counters are never written to disk or sent to another service, and both disappear on restart. The library sweeps expired entries periodically but the map has no hard cardinality cap, which is recorded as an accepted risk with a load-test revisit trigger.
+
 ## Data minimization and retention
 
 No user or player personal data is persisted, so there is nothing to minimize, delete or export from the datastore today, and no retention schedule applies to persisted data. Log metadata is the one exception: it is retained under the host's retention policy (see Logs and error tracking). Quiz content is the API's business data and is kept as long as the product needs it; archiving a question or theme is a content-status transition (`status` field), not a privacy operation.
 
-The API is stateless per client: authentication is a stateless key check, and the requested locale arrives per request through the `Accept-Language` header, is attached to the request object and is never written to MongoDB (`file:src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`) — note that the header may appear in host-retained logs until the pino default serializer is fixed. There is no per-client state to retain or purge.
+Apart from the rate limiter, the API is stateless per client: authentication is a stateless key check, and the requested locale arrives per request through the `Accept-Language` header, is attached to the request object and is never written to MongoDB (`file:src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`) — note that the header may appear in host-retained logs until the pino default serializer is fixed. The only per-client state is the throttler's in-memory counter and its hashed IP-derived key: it is transient, never persisted and never logged, so there is nothing to export and nothing to purge once the process restarts.
 
 If player data is ever added (profiles, scores, identifiers), the rules are: persist only what the game needs, for as long as it needs it; ship deletion and export paths together with the data model; and update this document in the same change.
 
@@ -47,7 +49,7 @@ If player data is ever added (profiles, scores, identifiers), the rules are: per
 
 Logging is pino via `nestjs-pino` (`file:src/app/app.module.ts`, `file:src/app/helpers/logger.helpers.ts`): pretty-printed in development, plain JSON in production.
 
-Policy: log lines must never contain personal data, request bodies or authorization headers. That policy is **not enforced today**: `getLoggerConfiguration` only configures the transport, so `pino-http`'s default request serializer emits request headers, the client address/port and the `user-agent` (`file:src/app/helpers/logger.helpers.ts`, `file:src/app/app.module.ts`). No `redact` or custom serializer is configured. The only application-level error logging is the exception message of unknown errors, recorded server-side by the global exception filter (`file:src/app/filters/global-exception/global-exception.filter.ts`) — never the request payload.
+Policy: log lines must never contain personal data, request bodies or authorization headers. That policy is **not enforced today**: `getLoggerConfiguration` only configures the transport, so `pino-http`'s default request serializer emits request headers, the client address/port and the `user-agent` (`file:src/app/helpers/logger.helpers.ts`, `file:src/app/app.module.ts`). No `redact` or custom serializer is configured. The only application-level error logging is the exception message of unknown errors, recorded server-side by the global exception filter (`file:src/app/filters/global-exception/global-exception.filter.ts`) — never the request payload. The rate limiter adds no log line of its own: it never logs the normalized client IP, the hashed key or the counters.
 
 Error tracking is pending #1262 — no error-tracking service is wired (no Sentry or equivalent dependency in `package.json`). The constraint for any future tracker: it must scrub personal data at the source, before events leave the server, and the scrubbing configuration lands together with the tracker, not after.
 
@@ -55,7 +57,7 @@ Error tracking is pending #1262 — no error-tracking service is wired (no Sentr
 
 - The API writes JSON logs to stdout; there is no in-app log store, rotation or retention policy. Retention, rotation and reader access are owned by the deployment host/platform, which must apply its own retention window and access control.
 - While the `pino-http` default request logging remains, request metadata (including IP addresses and request headers) is retained for as long as the host retains logs. This is the highest-priority privacy gap in this document and must be fixed at the logger configuration, not accepted silently.
-- Last reviewed: 2026-11-04.
+- Last reviewed: 2026-11-17.
 
 ## Third parties and data transfers
 

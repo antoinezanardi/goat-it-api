@@ -22,6 +22,10 @@ describe(validate, () => {
     MONGODB_PORT: 27_017,
     MONGODB_DATABASE: "goat-it",
     FALLBACK_LOCALE: "en",
+    THROTTLER_DEFAULT_TTL_SECONDS: 1,
+    THROTTLER_DEFAULT_LIMIT: 20,
+    THROTTLER_SUSTAINED_TTL_SECONDS: 60,
+    THROTTLER_SUSTAINED_LIMIT: 300,
   }));
 
   it("should return parsed env when config is valid with all fields.", () => {
@@ -33,6 +37,10 @@ describe(validate, () => {
       MONGODB_PORT: "27018",
       MONGODB_DATABASE: "goat-it-test",
       FALLBACK_LOCALE: "fr",
+      THROTTLER_DEFAULT_TTL_SECONDS: "5",
+      THROTTLER_DEFAULT_LIMIT: "50",
+      THROTTLER_SUSTAINED_TTL_SECONDS: "120",
+      THROTTLER_SUSTAINED_LIMIT: "600",
       API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
       ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
@@ -45,6 +53,10 @@ describe(validate, () => {
       MONGODB_PORT: 27_018,
       MONGODB_DATABASE: "goat-it-test",
       FALLBACK_LOCALE: "fr",
+      THROTTLER_DEFAULT_TTL_SECONDS: 5,
+      THROTTLER_DEFAULT_LIMIT: 50,
+      THROTTLER_SUSTAINED_TTL_SECONDS: 120,
+      THROTTLER_SUSTAINED_LIMIT: 600,
       API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
       ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
@@ -163,6 +175,79 @@ describe(validate, () => {
     };
 
     expect(validate(config)).toStrictEqual(defaultEnv);
+  });
+
+  it.each<{ test: string; envKey: keyof AppEnv; rawValue: string; expectedValue: number }>([
+    {
+      test: "should coerce THROTTLER_DEFAULT_TTL_SECONDS from string to number when it is a valid numeric string.",
+      envKey: "THROTTLER_DEFAULT_TTL_SECONDS",
+      rawValue: "2",
+      expectedValue: 2,
+    },
+    {
+      test: "should coerce THROTTLER_DEFAULT_LIMIT from string to number when it is a valid numeric string.",
+      envKey: "THROTTLER_DEFAULT_LIMIT",
+      rawValue: "40",
+      expectedValue: 40,
+    },
+    {
+      test: "should coerce THROTTLER_SUSTAINED_TTL_SECONDS from string to number when it is a valid numeric string.",
+      envKey: "THROTTLER_SUSTAINED_TTL_SECONDS",
+      rawValue: "90",
+      expectedValue: 90,
+    },
+    {
+      test: "should coerce THROTTLER_SUSTAINED_LIMIT from string to number when it is a valid numeric string.",
+      envKey: "THROTTLER_SUSTAINED_LIMIT",
+      rawValue: "900",
+      expectedValue: 900,
+    },
+  ])("$test", ({ envKey, rawValue, expectedValue }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...defaultEnv,
+      [envKey]: rawValue,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      [envKey]: expectedValue,
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it.each<{ test: string; envKey: keyof AppEnv; invalidValue: string }>([
+    {
+      test: "should throw error when THROTTLER_DEFAULT_TTL_SECONDS is zero.",
+      envKey: "THROTTLER_DEFAULT_TTL_SECONDS",
+      invalidValue: "0",
+    },
+    {
+      test: "should throw error when THROTTLER_DEFAULT_LIMIT is negative.",
+      envKey: "THROTTLER_DEFAULT_LIMIT",
+      invalidValue: "-1",
+    },
+    {
+      test: "should throw error when THROTTLER_SUSTAINED_TTL_SECONDS is fractional.",
+      envKey: "THROTTLER_SUSTAINED_TTL_SECONDS",
+      invalidValue: "1.5",
+    },
+    {
+      test: "should throw error when THROTTLER_SUSTAINED_LIMIT is not numeric.",
+      envKey: "THROTTLER_SUSTAINED_LIMIT",
+      invalidValue: "not_a_number",
+    },
+    {
+      test: "should throw error when THROTTLER_SUSTAINED_LIMIT is an empty string.",
+      envKey: "THROTTLER_SUSTAINED_LIMIT",
+      invalidValue: "",
+    },
+  ])("$test", ({ envKey, invalidValue }) => {
+    const config: Record<keyof AppEnv, unknown> = {
+      ...defaultEnv,
+      [envKey]: invalidValue,
+    };
+
+    expect(() => validate(config)).toThrow("Invalid environment variables");
   });
 
   it.each<{

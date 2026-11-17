@@ -2,7 +2,7 @@ import { vi } from "vitest";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
-import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv, ThrottlerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 function createFakeServerConfigFromEnv(serverConfig: Partial<ServerConfigFromEnv> = {}): ServerConfigFromEnv {
   const fakeAppEnv = createFakeAppEnv();
@@ -43,6 +43,22 @@ function createFakeLocalizationConfigFromEnv(localizationConfig: Partial<Localiz
   };
 }
 
+function createFakeThrottlerConfigFromEnv(throttlerConfig: Partial<ThrottlerConfigFromEnv> = {}): ThrottlerConfigFromEnv {
+  const fakeAppEnv = createFakeAppEnv();
+
+  return {
+    default: {
+      ttlSeconds: fakeAppEnv.THROTTLER_DEFAULT_TTL_SECONDS,
+      limit: fakeAppEnv.THROTTLER_DEFAULT_LIMIT,
+    },
+    sustained: {
+      ttlSeconds: fakeAppEnv.THROTTLER_SUSTAINED_TTL_SECONDS,
+      limit: fakeAppEnv.THROTTLER_SUSTAINED_LIMIT,
+    },
+    ...throttlerConfig,
+  };
+}
+
 function createFakeAuthenticationConfigFromEnv(authenticationConfig: Partial<AuthenticationConfigFromEnv> = {}): AuthenticationConfigFromEnv {
   return {
     admin: {
@@ -60,5 +76,6 @@ export {
   createFakeCorsConfigFromEnv,
   createFakeMongoDatabaseConfigFromEnv,
   createFakeLocalizationConfigFromEnv,
+  createFakeThrottlerConfigFromEnv,
   createFakeAuthenticationConfigFromEnv,
 };

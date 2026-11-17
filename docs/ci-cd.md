@@ -107,8 +107,8 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 
 1. Install project dependencies.
 2. `pnpm run docker:acceptance-tests:start` to start the MongoDB test containers.
-3. `pnpm run test:acceptance` (build + Cucumber).
-4. Transform the Cucumber report into environment variables and expose the scenario count as an output.
+3. `pnpm run test:acceptance`, which builds once and runs both Cucumber phases through `scripts/run-acceptance-tests.sh`: the standard profile (`configs/cucumber/cucumber.json`) and the serial low-limit `@rate-limit-429` profile (`configs/cucumber/cucumber.rate-limit.json`).
+4. Transform both JUnit reports into the aggregated `CUCUMBER_SCENARIOS_COUNT` environment variable and expose the scenario count as an output.
 5. Upload the acceptance reports and logs as artifacts (retention: 2 days).
 6. Fail the job if the acceptance run failed.
 7. `pnpm run docker:acceptance-tests:stop` in an `always()` step.
@@ -230,7 +230,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - Full gate: `pnpm run test` (unit coverage + mutation + acceptance).
 - Unit coverage: `pnpm run test:unit:cov`.
 - Mutation: `pnpm run test:mutation` (incremental) or `pnpm run test:mutation:ci` (CI config).
-- Acceptance: `pnpm run test:acceptance` (builds first) or `pnpm run test:acceptance:skip-build` when `dist/` is current.
+- Acceptance: `pnpm run test:acceptance` (builds first) or `pnpm run test:acceptance:skip-build` when `dist/` is current — both run the standard and the serial low-limit phase and fail if either fails.
 - Docker services: `pnpm run docker:acceptance-tests:start`, `pnpm run docker:acceptance-tests:stop`, `pnpm run docker:acceptance-tests:reset` (discards the named `mongodb_data_container` volume before starting).
 - Lint and typecheck: `pnpm run lint` and `pnpm run typecheck`.
 - App build: `pnpm run build`; schemas build: `pnpm --filter @goat-it/schemas build`.
