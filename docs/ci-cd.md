@@ -107,7 +107,7 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 
 1. Install project dependencies.
 2. `pnpm run docker:acceptance-tests:start` to start the MongoDB test containers.
-3. `pnpm run test:acceptance`, which builds once and runs both Cucumber phases through `scripts/run-acceptance-tests.sh`: the standard profile (`configs/cucumber/cucumber.json`) and the serial low-limit `@rate-limit-429` profile (`configs/cucumber/cucumber.rate-limit.json`).
+3. `pnpm run test:acceptance`, which builds once and runs both Cucumber phases through `scripts/run-acceptance-tests.sh` from `configs/cucumber/cucumber.config.ts`: the `default` profile (standard phase) and the serial `lowLimit` profile selecting `@rate-limit-429`.
 4. Transform both JUnit reports into the aggregated `CUCUMBER_SCENARIOS_COUNT` environment variable and expose the scenario count as an output.
 5. Upload the acceptance reports and logs as artifacts (retention: 2 days).
 6. Fail the job if the acceptance run failed.

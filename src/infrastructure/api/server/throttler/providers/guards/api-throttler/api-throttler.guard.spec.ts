@@ -72,12 +72,14 @@ describe(ApiThrottlerGuard, () => {
   let fakeResponse: FakeResponse;
 
   beforeEach(async() => {
+    vi.useFakeTimers();
     ({ apiThrottlerGuard, module } = await createApiThrottlerGuard(1, 10));
     fakeResponse = createFakeResponse();
   });
 
   afterEach(async() => {
     await module.close();
+    vi.useRealTimers();
   });
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
@@ -160,12 +162,13 @@ describe(ApiThrottlerGuard, () => {
       expect(fakeResponse.headers.get(RETRY_AFTER_HEADER_NAME)).toBe("1");
     });
 
-    it("should not expose a suffixed retry header when the default tier budget is exhausted.", async() => {
+    it("should expose only the plain retry header when the default tier budget is exhausted.", async() => {
       const context = createFakeExecutionContext("getApiMetadata", "127.0.0.1", fakeResponse);
       await apiThrottlerGuard.canActivate(context);
       await activateAndCatch(apiThrottlerGuard, context);
+      const retryHeaderNames = fakeResponse.headers.keys().filter(name => name.toLowerCase().startsWith(RETRY_AFTER_HEADER_NAME.toLowerCase())).toArray();
 
-      expect(fakeResponse.headers.has(`${RETRY_AFTER_HEADER_NAME}-${THROTTLER_SUSTAINED_TIER_NAME}`)).toBe(false);
+      expect(retryHeaderNames).toStrictEqual([RETRY_AFTER_HEADER_NAME]);
     });
 
     it("should throw the curated 429 envelope when the sustained tier budget is exhausted.", async() => {

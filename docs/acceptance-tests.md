@@ -42,7 +42,7 @@ Feature files live under `tests/acceptance/features/`. Support code (hooks, worl
 - **HTTP client**: `ofetch` (auto-serializes JSON, captures responses regardless of HTTP status).
 - **Assertions**: `expect` from the `expect` package (same API as Vitest/Jest).
 - **Payload patching**: `radashi` (`crush` + `construct`) for deep-path overrides.
-- **Cucumber config**: `configs/cucumber/cucumber.json` for the standard phase (it excludes the `@rate-limit-429` scenario) and `configs/cucumber/cucumber.rate-limit.json` for the serial low-limit phase (`parallel: 1`, selects only `@rate-limit-429`).
+- **Cucumber config**: `configs/cucumber/cucumber.config.ts` holds the shared settings plus two profiles: the `default` profile for the standard phase (it excludes the `@rate-limit-429` scenario) and the `lowLimit` profile for the serial low-limit phase (`parallel: 1`, selects only `@rate-limit-429`).
 - **TypeScript config**: `configs/typescript/tsconfig.acceptance.json` (extends `tsconfig.app.json`; includes `src/**`, faketories, shared helpers, mock type stubs, and `tests/acceptance/**`).
 - **Parallelism**: 4 Cucumber workers in the standard phase (`"parallel": 4`); the serial low-limit phase runs one worker. Each worker spawns its own app process on port `4242 + CUCUMBER_WORKER_ID` and uses its own `goat-it-test-<workerId>` database; scenarios within a worker share that app process and database.
 - **Reports output**: `tests/acceptance/reports/` — JUnit XML (`junit.xml`), JSON (`report.json`), and Cucumber message format (`message.json`). The low-limit phase writes the same three files under `tests/acceptance/reports/rate-limit/`, and `scripts/transform-cucumber-report-as-env-variables.sh` aggregates both JUnit reports.
@@ -128,22 +128,24 @@ pnpm run test:acceptance --tags "@rate-limit-429"
 pnpm run test:acceptance tests/acceptance/features/app/app-rate-limit.feature:8
 ```
 
-> **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test`. The suite builds the app (`pnpm run build`) unless `--skip-build` is passed.
+> **Prerequisites**: MongoDB must be running and reachable at the URL defined in `env/.env.test` (host port `27019`, published by the acceptance container). The suite builds the app (`pnpm run build`) unless `--skip-build` is passed.
 
 ### Two acceptance phases
 
 `pnpm run test:acceptance` and `pnpm run test:acceptance:skip-build` both run the internal runner `scripts/run-acceptance-tests.sh`, which never substitutes an in-memory or development server: every phase spawns the built `dist/main` against the Dockerized MongoDB.
 
-1. **Standard phase** — `configs/cucumber/cucumber.json`, four workers, every feature except the `@rate-limit-429` scenario. `env/.env.test` sets `THROTTLER_DEFAULT_*` to `1` second / `1,000` requests and `THROTTLER_SUSTAINED_*` to `60` seconds / `100,000` requests, so the suite cannot throttle itself.
-2. **Low-limit phase** — `configs/cucumber/cucumber.rate-limit.json`, one worker, only `@rate-limit-429`, started as a fresh Cucumber process whose environment sets a `60` second / `2` request default tier and keeps the sustained tier high. `env/.env.test` is loaded with dotenv, which never overrides an already-set process variable, so the overrides win. This phase spawns its own app on port `4242` with the `goat-it-test-0` database.
+1. **Standard phase** — `configs/cucumber/cucumber.config.ts` with the `default` profile, four workers, every feature except the `@rate-limit-429` scenario. `env/.env.test` sets `THROTTLER_DEFAULT_*` to `1` second / `1,000` requests and `THROTTLER_SUSTAINED_*` to `60` seconds / `100,000` requests, so the suite cannot throttle itself.
+2. **Low-limit phase** — the same config file with the `lowLimit` profile (`--profile lowLimit`), one worker, only `@rate-limit-429`, started as a fresh Cucumber process whose environment sets a `60` second / `2` request default tier and keeps the sustained tier high. `env/.env.test` is loaded with dotenv, which never overrides an already-set process variable, so the overrides win. This phase spawns its own app on port `4242` with the `goat-it-test-0` database.
 
-The runner fails closed: a non-zero exit from either phase fails the command. A scoped invocation runs a single phase — a tag expression that positively selects `@rate-limit-429` routes to the low-limit phase (a negated mention such as `not @rate-limit-429` counts as a standard selector), and every other selector (including a feature path) routes to the standard phase, whose tag expression is always composed with `and not @rate-limit-429`. Repeated `--tags` flags are composed with `and`, matching Cucumber's own merge, so no selector is dropped.
+Each phase starts with a banner naming the phase, its profile and its tag expression, so a combined run stays readable.
 
-The 429 scenario sends its business requests with `retry: false`, because `ofetch` retries a `429` GET once by default, which would double-count the blocked attempt.
+The runner fails closed: a non-zero exit from either phase fails the command. A scoped invocation runs a single phase — a tag expression that selects the `@rate-limit-429` scenario routes to the low-limit profile (the expression is evaluated with Cucumber's tag-expression parser against a scenario tagged only `@rate-limit-429`, so a negated mention such as `not (@rate-limit-429 or @admin)` stays a standard selector), and every other selector (including a feature path) routes to the standard profile, whose tag expression is always composed with `and not @rate-limit-429`. Repeated `--tags` flags are composed with `and`, matching Cucumber's own merge, so no selector is dropped.
+
+The 429 scenario reuses the shared public client steps; `ofetch` retries a `429` GET once by default with no delay, so the blocked request is attempted twice and the last response is still the 429.
 
 ### Docker services
 
-The acceptance suite needs the Mongo container defined in `docker/goat-it-api-acceptance-tests/docker-compose.yml`:
+The acceptance suite needs the Mongo container defined in `docker/goat-it-api-acceptance-tests/docker-compose.yml` (container port `27017` published on host port `27019`, so a local MongoDB on the default port never conflicts):
 
 | Command                                      | Effect                                                                                                                                                              |
 |----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|

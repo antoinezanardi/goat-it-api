@@ -60,7 +60,7 @@ Effectiveness and reliability of the Goat It API test suites: the Vitest unit la
 ## 4. Acceptance testing
 
 - **[TEST-16] Cucumber loads the declared features, steps and support code** — The Cucumber config loads `tests/acceptance/features/**/*.feature`, requires both support and step-definition TypeScript, transpiles through `tsx/esm`, disables publishing, writes JUnit, JSON and message reports and runs four workers.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/cucumber/cucumber.json` · Src: [8], [10], project: docs/acceptance-tests.md
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/cucumber/cucumber.config.ts` · Src: [8], [10], project: docs/acceptance-tests.md
 - **[TEST-17] Every HTTP route has an acceptance scenario** — Every route exposed by the controllers is requested by at least one `.feature` scenario (directly or through a shared step), and any route deliberately left out is listed with a reason in the acceptance guide; a diff adding or changing a route adds or updates its scenario.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/**/*.controller.ts`, `tests/acceptance/features/**/*.feature` · Src: [12], project: docs/acceptance-tests.md
 - **[TEST-18] New API behaviour ships with a happy-path and error-path scenario** — A change that adds or alters observable API behaviour adds or updates the matching feature with a success scenario and at least one key failure scenario (validation, authentication, not found or conflict), asserting status and body.
@@ -76,13 +76,13 @@ Effectiveness and reliability of the Goat It API test suites: the Vitest unit la
 - **[TEST-23] Every scenario starts from a clean database** — The per-scenario hook drops and recreates all collections before the scenario body runs, and no scenario depends on data, ordering or state produced by another scenario or by a previous worker.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `tests/acceptance/support/hooks.ts`, `tests/acceptance/support/helpers/test-database.helpers.ts`, `tests/acceptance/features/**/*.feature` · Src: [13], project: docs/acceptance-tests.md
 - **[TEST-24] Retries never mask flakiness** — Neither the Cucumber config nor the acceptance command retries failed scenarios; if retries are ever enabled, a scenario that passes only on retry is reported as flaky and counted, never as passed.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/cucumber/cucumber.json`, `.github/actions/acceptance-tests/**` · Src: [10]
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/cucumber/cucumber.config.ts`, `.github/actions/acceptance-tests/**` · Src: [10]
 - **[TEST-25] Acceptance runs the production build against the Dockerized database** — The suite builds the app first and starts the built process (`node dist/main`) against the locally Dockerized MongoDB, never against a development server or an in-memory database; the sandbox image is pinned to a released version rather than a moving tag.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `package.json`, `docker/goat-it-api-acceptance-tests/**`, `tests/acceptance/support/helpers/setup/**` · Src: [10], project: docs/ci-cd.md
 - **[TEST-26] Step definitions are unambiguous across the suite** — No two step definitions match the same Gherkin text in a way that makes a scenario resolve to the wrong step, and a new domain step is added only when no shared request step already covers the action; per-file naming and folder conventions stay with `/lint-acceptance-tests`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `tests/acceptance/features/step-definitions/**/*.ts` · Src: [8], [9], project: docs/acceptance-tests.md
 - **[TEST-27] Failures are diagnosable without a rerun** — A failed scenario flushes the application log ring buffer, prints the world state (last request, payload and response) and leaves the JUnit/JSON reports under the acceptance reports directory, so a CI failure is explainable from the run artifacts alone.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `tests/acceptance/support/hooks.ts`, `tests/acceptance/support/helpers/setup/**`, `configs/cucumber/cucumber.json` · Src: [10], project: docs/acceptance-tests.md
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `tests/acceptance/support/hooks.ts`, `tests/acceptance/support/helpers/setup/**`, `configs/cucumber/cucumber.config.ts` · Src: [10], project: docs/acceptance-tests.md
 
 ## 5. Mocks and faketories
 
@@ -124,7 +124,7 @@ Effectiveness and reliability of the Goat It API test suites: the Vitest unit la
 ## 8. Test tooling hygiene
 
 - **[TEST-42] Test scripts, aliases and configs stay in sync** — Every test script referenced by AGENTS.md, the README, the testing guides and the CI actions exists verbatim in `package.json`; every path alias used by the test trees is registered in the SWC, TypeScript and Vitest configs; the Stryker and Cucumber configs resolve the same source tree the scripts run.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `configs/vitest/vitest.config.ts`, `configs/stryker/stryker.config.mjs`, `configs/cucumber/cucumber.json` · Src: [2], [7], project: docs/architecture.md §9
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `package.json`, `configs/vitest/vitest.config.ts`, `configs/stryker/stryker.config.mjs`, `configs/cucumber/cucumber.config.ts` · Src: [2], [7], project: docs/architecture.md §9
 
 ## Sources
 

@@ -79,6 +79,14 @@ Only fetch categories that are relevant to the problem. If the caller only needs
 
 **Split multi-topic queries** — make separate `query-docs` calls per concept (within budget). Combined queries dilute ranking and return shallow results.
 
+## Fallback when Context7 is unavailable
+
+Context7 is the first source, never the only one. If `resolve-library-id`/`query-docs` is unavailable, rate-limited, or still has no usable result after the three resolve attempts:
+
+1. Locate the library's official documentation site (project docs first, then the official repository docs) and fetch the relevant pages with `webfetch`.
+2. Cite every fetched URL in the summary and flag the source as `webfetch fallback`.
+3. Never answer from training data. Report anything the fallback could not verify as "not fetched — re-dispatch".
+
 ## Synthesizing the Structured Summary
 
 After fetching all docs, assemble them into the output format. The output is a single markdown document.

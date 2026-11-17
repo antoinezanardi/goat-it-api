@@ -2,9 +2,12 @@
 # -----------------------------------------------------------------------------
 # transform-cucumber-report-as-env-variables.sh
 #
-# Reads one or two Cucumber JUnit XML reports (the standard phase and the
-# serial rate-limit phase), sums their test cases, and prints the count as an
-# environment variable for CI/CD usage.
+# Reads the selected Cucumber JUnit XML reports (both phases by default, or the
+# one path passed as an argument or in CUCUMBER_REPORT_PATH), sums their test
+# cases, and prints the count as an environment variable for CI/CD usage.
+#
+# Every selected report must exist and be readable: a successful report step
+# never exports an incomplete scenario count.
 #
 # Usage:
 #   ./transform-cucumber-report-as-env-variables.sh [report_path]
@@ -26,22 +29,16 @@ else
 fi
 
 num_testcases=0
-readable_report_files=0
 
 for report_file in "${report_files[@]}"; do
   if [[ ! -r "$report_file" ]]; then
-    continue
+    echo "Error: the Cucumber report file '${report_file}' does not exist or is not readable." >&2
+    exit 1
   fi
-  readable_report_files=$((readable_report_files + 1))
   if ! report_testcases=$(grep -o -E '<testcase([[:space:]>])' "$report_file" | wc -l | tr -d '[:space:]'); then
     report_testcases=0
   fi
   num_testcases=$((num_testcases + report_testcases))
 done
-
-if ((readable_report_files == 0)); then
-  echo "Error: none of the Cucumber report files '${report_files[*]}' exist or are readable." >&2
-  exit 1
-fi
 
 echo "CUCUMBER_SCENARIOS_COUNT=${num_testcases}"
