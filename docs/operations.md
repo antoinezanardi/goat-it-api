@@ -15,6 +15,7 @@ Architecture and file placement are owned by [Architecture](architecture.md); CI
 - Fastify 5 exposes HEAD routes for GET handlers by default (`exposeHeadRoutes: true`), and NestJS runs the same handler. `HEAD /health` therefore performs the same checks and returns the same status and application headers as `GET`, with no body.
 - Both responses send `Cache-Control: no-store` and `Vary: Accept-Language` (the response policy is described in [Security](security.md#response-caching)). Clients, browsers, load balancers and intermediaries must not cache them.
 - The endpoint is not protected by an API key. Do not put sensitive operational data in its response.
+- `GET /`, `GET /health` and `HEAD /health` skip both global rate-limit tiers (`@SkipThrottle` in `src/app/controllers/app.controller.ts` and `src/infrastructure/api/health/controllers/health.controller.ts`), so a monitoring loop never consumes a client budget and a throttled client can still observe readiness.
 
 ### What is checked
 
@@ -59,6 +60,21 @@ curl -sI https://<host>/health | grep -iE "strict-transport-security|cache-contr
 ```
 
 Expect `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`. `curl -sI https://<host>/public/img/logo/logo-16.avif` must instead answer `cache-control: public, max-age=0` with an `etag` and a `last-modified` header.
+
+## Rate limiting
+
+The global Nest throttler guard limits every business route with two API-wide, per-client budgets (`src/infrastructure/api/server/throttler/throttler.module.ts`; behaviour and contract in [Security](security.md#rate-limiting) and [API contract](api-contract.md#rate-limiting)):
+
+| Tier | Environment keys | Default window | Default budget |
+|---|---|---:|---:|
+| `default` (burst) | `THROTTLER_DEFAULT_TTL_SECONDS`, `THROTTLER_DEFAULT_LIMIT` | 1 s | 20 requests |
+| `sustained` | `THROTTLER_SUSTAINED_TTL_SECONDS`, `THROTTLER_SUSTAINED_LIMIT` | 60 s | 300 requests |
+
+- The four values are validated as positive integers at boot and are deployment-owned: tune them per environment instead of redeploying code, and keep the burst window shorter than the sustained window.
+- Counters live **in process memory**: a restart or redeploy resets every counter, and each instance counts independently. This matches the confirmed single-instance deployment; a second replica needs a shared counter store before the limits can be trusted as a global quota.
+- The quota is per resolved client IP, not per API key: clients behind one NAT or one reverse proxy share it, and unauthenticated traffic consumes it before authentication. Probes are exempt.
+- A blocking window equals the tier window: the request that exceeds a budget blocks its client for one full window counted from that request, and the client is then admitted again with a fresh counter for that tier.
+- The limiter writes no log line and exposes no metric: a `429` is visible only in the client response and in the generic request log line of `pino-http`. Use the 429 rate observed at the reverse proxy or in the log stream to tune the values.
 
 ## Container health check
 

@@ -46,6 +46,8 @@ Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"heal
 - The API key is read from the custom header `goat-it-api-key` (`API_KEY_HEADER` in `src/infrastructure/api/auth/constants/auth.constants.ts`).
 - `src/infrastructure/api/auth/helpers/auth.helpers.ts` hashes the received key with HMAC-SHA256 (`API_KEY_HMAC_SECRET`) and compares with `timingSafeEqual`; on failure the guard throws `UnauthorizedException` (401). Keys come from `ADMIN_API_KEY` / `GAME_API_KEY` env variables (minimum 24 characters, `auth.constants.ts`; env schema in `src/infrastructure/api/config/schemas/env.schema.ts`).
 
+Rate limiting runs **before** authentication, so a business request can be answered `429` before `401`; see [Rate limiting](#rate-limiting).
+
 ## DTO and validation conventions
 
 - Two-file pattern (documented in `docs/architecture.md` §7): a pure Zod **shape** in `<context>/application/dto/<feature>/` (or `contracts/dto/` for published shapes) plus a `createZodDto` **wrapper** class in `<context>/infrastructure/http/dto/<feature>/`. The wrapper is a value import in controllers — `import type` would silently break `ZodValidationPipe`.
@@ -58,7 +60,7 @@ Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"heal
 `GlobalExceptionFilter` (`src/app/filters/global-exception/global-exception.filter.ts`, registered via `APP_FILTER`) is the single cross-context error composition point. Its branches, in order:
 
 1. `ZodValidationException` → 400 with body `{ statusCode: 400, message: "Invalid request payload", error: "Bad Request", validationDetails: <zod issues> }` (the `sendZodValidationException` branch; body pinned by the filter spec). Each `validationDetails` entry is the pure shape `API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO` (`src/shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape.ts`): `code`, `message`, `path`, optional `expected`/`received`/`origin`/`format`/`pattern`/`minimum`/`maximum`/`inclusive`/`keys`/`values`.
-2. `HttpException` → the exception's own `getResponse()` is sent verbatim. This covers 401 from the guards, 400 from `MongoIdPipe`/localization, 503 from the health service, etc.
+2. `HttpException` → the exception's own `getResponse()` is sent verbatim. This covers 401 from the guards, 400 from `MongoIdPipe`/localization, 429 from the throttler guard, 503 from the health service, etc.
 3. Known domain error classes → mapped to a specific HTTP status with body `{ error: <HTTP exception message>, message: <domain message>, statusCode, errorCode }` where `errorCode = dash(<ClassName without the "Error" suffix>)` via `getDerivedErrorCodeFromClassName` (`src/shared/infrastructure/http/errors/helpers/errors.helpers.ts`, using radashi `dash`), e.g. `QuestionThemeReferencedByLiveQuestionsError` → `"question-theme-referenced-by-live-questions"`. Mapping table (`domainErrorHttpExceptionFactories`):
 
 | Domain error | Status |
@@ -112,6 +114,29 @@ Every application response carries a fixed security-header set and the cache pol
 
 These headers never change a status code or a body: every success and error shape documented above stays identical. CORS keeps its documented allow-list, so `goat-it-api-key` remains absent from `Access-Control-Allow-Headers` (see Known limitations).
 
+## Rate limiting
+
+`ApiThrottlerModule` (`src/infrastructure/api/server/throttler/throttler.module.ts`) registers a global throttler guard (`src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`), so every route listed under [Route inventory](#route-inventory) except the probes is limited by two API-wide, per-client budgets. The values come from `THROTTLER_DEFAULT_TTL_SECONDS`/`THROTTLER_DEFAULT_LIMIT` and `THROTTLER_SUSTAINED_TTL_SECONDS`/`THROTTLER_SUSTAINED_LIMIT` (`src/infrastructure/api/config/schemas/env.schema.ts`; defaults `1`/`20` and `60`/`300` in `src/infrastructure/api/config/constants/env.constants.ts`).
+
+- The guard runs before `@GameAuth()`/`@AdminAuth()` and before `ZodValidationPipe`, so an unauthenticated or schema-invalid business request still consumes budget and can be answered `429` before `401`/`400`. A request rejected by `LocalizationMiddleware` (invalid `Accept-Language`) never reaches the guard.
+- The bucket is shared by every business route for one client and per tier: the key is a SHA-256 digest of the tier name and the library-normalized `request.ip` with no controller or handler component, so two routes never receive separate quotas.
+- `GET /`, `GET /health` and `HEAD /health` skip both tiers and never carry rate-limit headers. `/docs`, `/docs-json`, `/public/**` and `OPTIONS` preflights are outside the Nest controller guard chain and are not limited by this guard.
+
+Below the limit, business responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` for the `default` tier, and `X-RateLimit-Limit-sustained`, `X-RateLimit-Remaining-sustained` and `X-RateLimit-Reset-sustained` for the `sustained` tier. The `Reset` values are whole seconds until the window resets, never epoch timestamps.
+
+A blocked request returns exactly this body, with one plain `Retry-After` header in seconds and `Cache-Control: no-store`:
+
+```json
+{
+  "statusCode": 429,
+  "error": "Too Many Requests",
+  "message": "Too many requests",
+  "errorCode": "too-many-requests"
+}
+```
+
+The guard throws an `HttpException`, so `GlobalExceptionFilter` sends the body verbatim (branch 2 of [Unified error shape](#unified-error-shape)); `too-many-requests` is an infrastructure code and is absent from the domain-error mapping table. The body never echoes the client IP, the storage key, the tier counters or any budget detail.
+
 ## Swagger at `/docs`
 
 - Path constant `SWAGGER_DOCUMENTATION_PATH = "/docs"` and tags `APP`, `ADMIN`, `QUESTIONS`, `QUESTION_THEMES` in `src/infrastructure/api/server/swagger/constants/swagger.constants.ts`.
@@ -132,3 +157,4 @@ These headers never change a status code or a body: every success and error shap
 - **500 responses carry no `errorCode`.** The generic 500 body is the stock Nest `InternalServerErrorException` body passed through verbatim (see Unified error shape); frontends cannot machine-differentiate unknown failures.
 - **Browser API-key calls are unsupported.** CORS `allowedHeaders` is `["Content-Type", "Authorization"]` and deliberately excludes `goat-it-api-key` (`cors.constants.ts`, `auth.constants.ts`), so the API key stays server-side and a browser caller cannot authenticate cross-origin by design; `PUT` is still advertised in CORS methods although no PUT route exists — a minor mismatch to remove.
 - **The public list cannot page to the end of large datasets**, and `theme-ids` has no upper bound (only min 1) unlike `ids` (max 100). The random-search body's `themeIds` array has no upper bound either (only min 1), unlike `excludedIds` (1–5000).
+- **Browsers cannot read the rate-limit headers.** No `Access-Control-Expose-Headers` entry exists and CORS is unchanged, so cross-origin browser JavaScript cannot read `Retry-After` or the `X-RateLimit-*` headers, although server-side clients can. Revisit if browser API-key access is approved.

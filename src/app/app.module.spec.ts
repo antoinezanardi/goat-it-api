@@ -1,6 +1,8 @@
 import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER, Reflector } from "@nestjs/core";
 
+import { ApiThrottlerModule } from "@src/infrastructure/api/server/throttler/throttler.module";
+
 import { AppModule } from "@app/app.module";
 import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
 
@@ -47,6 +49,12 @@ describe(AppModule, () => {
     const reflector = new Reflector();
 
     expect(reflector.get("providers", AppModule)).toContainEqual({ provide: APP_FILTER, useClass: GlobalExceptionFilter });
+  });
+
+  it("should import the api throttler module when the module metadata is read.", () => {
+    const reflector = new Reflector();
+
+    expect(reflector.get("imports", AppModule)).toContainEqual(ApiThrottlerModule);
   });
 
   it("should apply the localization middleware to every route when configured.", () => {

@@ -840,7 +840,8 @@
               "Localization",
               "Param",
               "Body",
-              "Query"
+              "Query",
+              "SkipThrottle"
             ]
           }
         ],

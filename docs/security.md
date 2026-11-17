@@ -1,8 +1,8 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1263 (rate limiting), #1262 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1262 (error tracking).
 
-Last reviewed: 2026-11-16.
+Last reviewed: 2026-11-17.
 
 ## Authentication
 
@@ -48,7 +48,7 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 
 ## Secrets and configuration
 
-- Configuration is validated against the Zod `APP_ENV_SCHEMA` at boot (`file:src/infrastructure/api/config/schemas/env.schema.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`) and loaded through `@nestjs/config` (`file:src/infrastructure/api/config/config.module.ts`). The three secret variables — `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY` — have no default, so a missing or too-short value aborts startup; an identical `ADMIN_API_KEY`/`GAME_API_KEY` pair is rejected at boot with a validation error on the `GAME_API_KEY` field. `SERVER_HOST`, `SERVER_PORT`, `CORS_ORIGIN`, `MONGODB_HOST`, `MONGODB_PORT`, `MONGODB_DATABASE` and `FALLBACK_LOCALE` are validated and fall back to their documented defaults (`file:src/infrastructure/api/config/constants/env.constants.ts`); in particular a missing `CORS_ORIGIN` defaults to `*`. `NODE_ENV` is read directly for bootstrap concerns (log transport and env-file selection) outside `@nestjs/config` (`file:src/app/helpers/logger.helpers.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`).
+- Configuration is validated against the Zod `APP_ENV_SCHEMA` at boot (`file:src/infrastructure/api/config/schemas/env.schema.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`) and loaded through `@nestjs/config` (`file:src/infrastructure/api/config/config.module.ts`). The three secret variables — `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY`, `GAME_API_KEY` — have no default, so a missing or too-short value aborts startup; an identical `ADMIN_API_KEY`/`GAME_API_KEY` pair is rejected at boot with a validation error on the `GAME_API_KEY` field. `SERVER_HOST`, `SERVER_PORT`, `CORS_ORIGIN`, `MONGODB_HOST`, `MONGODB_PORT`, `MONGODB_DATABASE` and `FALLBACK_LOCALE` are validated and fall back to their documented defaults (`file:src/infrastructure/api/config/constants/env.constants.ts`); in particular a missing `CORS_ORIGIN` defaults to `*`. The four `THROTTLER_*` rate-limiting values are non-secret deployment knobs: they are validated as positive integers with documented defaults and have no hard upper bound (`file:src/infrastructure/api/config/constants/env.constants.ts`). `NODE_ENV` is read directly for bootstrap concerns (log transport and env-file selection) outside `@nestjs/config` (`file:src/app/helpers/logger.helpers.ts`, `file:src/infrastructure/api/config/helpers/env.helpers.ts`).
 - The tracked env files hold no real secrets: `env/.env.example` is a template, `env/.env.test` carries test-only values, and `env/.env` is local-only and git-ignored (`.gitignore`). The Dockerfile copies no env files into the image — secrets are supplied by the deployment environment (`Dockerfile`).
 - API key material is removed from `process.env` once consumed (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`), and the production image build fails if secrets end up in the compiled output: `pnpm run check:secrets-in-built-output` (`Dockerfile`, `package.json`, `scripts/check-secrets-in-built-output.sh`).
 - The production image runs as the non-root `node` user (`Dockerfile`).
@@ -83,7 +83,21 @@ These headers never change a status, a body, a `Content-Type`, an error classifi
 
 ## Rate limiting
 
-There is no rate limiting or throttling (no throttler module, no middleware): any client with a valid API key may issue unbounded requests today. Tracked by #1263.
+Every business Nest route is limited by a global Nest guard registered with `APP_GUARD` by `ApiThrottlerModule` (`file:src/infrastructure/api/server/throttler/throttler.module.ts`, imported by `file:src/app/app.module.ts`). The guard is a `ThrottlerGuard` subclass (`file:src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`) backed by the library's in-process storage.
+
+| Tier | Default window | Default budget | Environment keys |
+|---|---:|---:|---|
+| `default` (burst) | 1 second | 20 requests | `THROTTLER_DEFAULT_TTL_SECONDS`, `THROTTLER_DEFAULT_LIMIT` |
+| `sustained` | 60 seconds | 300 requests | `THROTTLER_SUSTAINED_TTL_SECONDS`, `THROTTLER_SUSTAINED_LIMIT` |
+
+- The four values are validated as positive integers at boot with the documented defaults (`file:src/infrastructure/api/config/schemas/env.schema.ts`, `file:src/infrastructure/api/config/constants/env.constants.ts`) and are documented in `env/.env.example`. Each tier blocks for its own window length; there is no separate block-duration variable.
+- The quota is **API-wide per client**, not per route: the storage key is a SHA-256 digest of the tier name plus the library-normalized tracker, with no controller or handler name, so two different business handlers share one budget for the same client (`generateKey` in `file:src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`). The tracker is the library's normalized `request.ip` (IPv4 as-is, IPv6 masked to its `/64` subnet); an unresolvable IP collapses into one shared fallback bucket instead of being exempted.
+- The guard runs before the audience API-key guards and before `ZodValidationPipe`, so an unauthenticated or schema-invalid business request still consumes budget and can receive `429` before `401`/`400`. A request rejected earlier by `LocalizationMiddleware` (invalid `Accept-Language`) never reaches the guard and therefore consumes nothing.
+- `GET /`, `GET /health` and `HEAD /health` skip both tiers with `@SkipThrottle` (`file:src/app/controllers/app.controller.ts`, `file:src/infrastructure/api/health/controllers/health.controller.ts`), so probes stay available and never consume a client budget. No business handler is exempt.
+- Below the limit, responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` for the `default` tier and the `-sustained` variants for the second tier; reset values are seconds until reset, not epoch timestamps. Cross-origin browser JavaScript cannot read those headers, because CORS is unchanged and no `Access-Control-Expose-Headers` entry was added.
+- A blocked request is an infrastructure `HttpException` carrying the shared body `{ "statusCode": 429, "error": "Too Many Requests", "message": "Too many requests", "errorCode": "too-many-requests" }` and one plain `Retry-After` in seconds; the library's suffixed retry headers are suppressed (`file:src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`). `GlobalExceptionFilter` forwards the body unchanged and the response stays `no-store`. `too-many-requests` is a stable infrastructure code and is **not** part of the domain-error mapping table.
+- Counters live in process memory only: no MongoDB collection, no repository port, no persistence, and no logging of IPs, hashes, keys or counters. A restart clears every counter, and the limits apply per instance.
+- `/docs`, `/docs-json`, `/public/**` and CORS preflight sit outside the Nest controller guard chain: they are **not** rate limited by this guard and would need a separate edge control.
 
 ## Request body guard
 
@@ -112,7 +126,8 @@ The intended policy is that log lines never carry secrets or personal data, and 
 
 ## Known limitations
 
-- #1263 — rate limiting is still missing; global security headers and the response cache policy landed and are described in [HTTP security headers](#http-security-headers) and [Response caching](#response-caching).
+- #1263 — the security-controls umbrella stays open; rate limiting landed as described in [Rate limiting](#rate-limiting), and global security headers plus the response cache policy are described in [HTTP security headers](#http-security-headers) and [Response caching](#response-caching).
+- **Client identity behind the production proxy is not resolved yet.** Fastify's `trustProxy` remains off, so `request.ip` is the direct peer address: while the API is reached through a reverse proxy, every client arriving through it shares one rate-limit bucket. The client-identity and trusted-proxy policy is not implemented yet; the limiter already keys on the resolved `request.ip`, so it inherits that work without a code change.
 - #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
 - #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
 - **Some transport-level responses bypass the application headers.** Fastify's low-level `408` is written over the raw socket before the request hooks and before `GlobalExceptionFilter` (`docs/operations.md`), so it carries no security header, no `Cache-Control` and no `Permissions-Policy`. A router-level `400`/`414` answer also skips the request hooks: the adapter writes the Nest security headers on that path, but the response carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. An edge-owned policy is the only remaining way to cover the rest.
@@ -120,4 +135,4 @@ The intended policy is that log lines never carry secrets or personal data, and 
 - **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
-Issue #1263's remaining slice (rate limiting, with the client-identity and proxy-trust work) will extend this document when they land.
+Issue #1263's remaining safeguards and the client-identity/proxy-trust work will extend this document when they land.

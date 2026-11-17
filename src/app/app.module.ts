@@ -9,6 +9,7 @@ import { QuestionThemeModule } from "@question-theme/question-theme.module";
 import { AuthModule } from "@src/infrastructure/api/auth/auth.module";
 import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
+import { ApiThrottlerModule } from "@src/infrastructure/api/server/throttler/throttler.module";
 import { DatabaseModule } from "@src/infrastructure/database/database.module";
 
 import { AppController } from "@app/controllers/app.controller";
@@ -36,6 +37,7 @@ import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
     QuestionModule,
     QuestionThemeModule,
     AuthModule,
+    ApiThrottlerModule,
   ],
   controllers: [AppController],
   providers: [

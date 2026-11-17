@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createFakeAuthenticationConfigFromEnv, createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+import { createFakeAuthenticationConfigFromEnv, createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv, createFakeThrottlerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
 type MockedAppConfigService = {
   serverConfig: AppConfigService["serverConfig"];
@@ -10,6 +10,7 @@ type MockedAppConfigService = {
   corsConfig: AppConfigService["corsConfig"];
   mongoDbConfig: AppConfigService["mongoDbConfig"];
   localizationConfig: AppConfigService["localizationConfig"];
+  throttlerConfig: AppConfigService["throttlerConfig"];
   authenticationConfig: AppConfigService["authenticationConfig"];
 };
 
@@ -20,6 +21,7 @@ function createMockedAppConfigService(overrides: Partial<MockedAppConfigService>
     corsConfig: createFakeCorsConfigFromEnv(),
     mongoDbConfig: createFakeMongoDatabaseConfigFromEnv(),
     localizationConfig: createFakeLocalizationConfigFromEnv(),
+    throttlerConfig: createFakeThrottlerConfigFromEnv(),
     authenticationConfig: createFakeAuthenticationConfigFromEnv(),
     ...overrides,
   };

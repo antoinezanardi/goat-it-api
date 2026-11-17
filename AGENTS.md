@@ -286,7 +286,7 @@ All data stays on your machine. The plugin requires OpenCode V2 (V2 plugin API a
 - Stryker config:   `configs/stryker/stryker.config.mjs`
 - ESLint config:    `eslint.config.ts` + `configs/eslint/flat-configs/`
 - Oxlint config:    `oxlint.config.jsonc`
-- Cucumber config:  `configs/cucumber/cucumber.json`
+- Cucumber config:  `configs/cucumber/cucumber.config.ts`
 - Env files:        `env/`
 - Test setup:       `tests/unit/setup/`
 - Test utilities:   `tests/unit/utils/mocks/`, `tests/shared/utils/faketories/`
