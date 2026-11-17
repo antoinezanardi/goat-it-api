@@ -59,7 +59,7 @@ Effectiveness and reliability of the Goat It API test suites: the Vitest unit la
 
 ## 4. Acceptance testing
 
-- **[TEST-16] Cucumber loads the declared features, steps and support code** — The Cucumber config loads `tests/acceptance/features/**/*.feature`, requires both support and step-definition TypeScript, transpiles through `tsx/esm`, disables publishing, writes JUnit, JSON and message reports and runs four workers.
+- **[TEST-16] Cucumber loads the declared features, steps and support code** — The Cucumber config loads `tests/acceptance/features/**/*.feature`, requires both support and step-definition TypeScript, transpiles through `tsx/esm`, disables publishing, writes JUnit, JSON and message reports and runs four workers for the standard profile and one for the `lowLimit` profile.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/cucumber/cucumber.config.ts` · Src: [8], [10], project: docs/acceptance-tests.md
 - **[TEST-17] Every HTTP route has an acceptance scenario** — Every route exposed by the controllers is requested by at least one `.feature` scenario (directly or through a shared step), and any route deliberately left out is listed with a reason in the acceptance guide; a diff adding or changing a route adds or updates its scenario.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/**/*.controller.ts`, `tests/acceptance/features/**/*.feature` · Src: [12], project: docs/acceptance-tests.md

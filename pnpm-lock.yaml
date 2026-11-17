@@ -248,9 +248,6 @@ importers:
       '@cucumber/cucumber':
         specifier: ^13.3.0
         version: 13.3.0
-      '@cucumber/tag-expressions':
-        specifier: 11.0.1
-        version: 11.0.1
       '@eslint/config-inspector':
         specifier: ^3.5.0
         version: 3.5.0(crossws@0.4.12(srvx@1.0.4))(eslint@10.15.0(jiti@2.7.0)(supports-color@11.0.0))(srvx@1.0.4)

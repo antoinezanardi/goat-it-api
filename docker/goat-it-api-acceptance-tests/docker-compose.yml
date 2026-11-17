@@ -8,7 +8,6 @@ services:
     environment:
       MONGO_INITDB_DATABASE: goat-it-api-acceptance-tests
     ports:
-      # Published on 27019 so a local MongoDB on the default 27017 never conflicts with the acceptance container
       - "27019:27017"
     volumes:
       - mongodb_data_container:/data/db

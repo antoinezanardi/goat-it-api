@@ -81,7 +81,7 @@ Only fetch categories that are relevant to the problem. If the caller only needs
 
 ## Fallback when Context7 is unavailable
 
-Context7 is the first source, never the only one. If `resolve-library-id`/`query-docs` is unavailable, rate-limited, or still has no usable result after the three resolve attempts:
+Context7 is the first source, never the only one. Fall back whenever `resolve-library-id` exhausts its three attempts, `query-docs` returns nothing usable, or either call is unavailable or rate-limited:
 
 1. Locate the library's official documentation site (project docs first, then the official repository docs) and fetch the relevant pages with `webfetch`.
 2. Cite every fetched URL in the summary and flag the source as `webfetch fallback`.

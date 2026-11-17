@@ -118,13 +118,13 @@ pnpm run test:acceptance
 # Same two phases on the current dist/
 pnpm run test:acceptance:skip-build
 
-# Standard phase only: a non-rate-limit selector routes to the standard profile
+# Scoped run: both phases receive the selector and keep their own tag constraint
 pnpm run test:acceptance --tags "@app-rate-limit"
 
-# Low-limit phase only: selecting the tag routes the run to the serial profile
+# Low-limit phase only: the exact @rate-limit-429 tag runs the serial profile alone
 pnpm run test:acceptance --tags "@rate-limit-429"
 
-# One feature file or one scenario line also uses the standard profile
+# One feature file or one scenario line: both phases are filtered by the path
 pnpm run test:acceptance tests/acceptance/features/app/app-rate-limit.feature:8
 ```
 
@@ -139,7 +139,7 @@ pnpm run test:acceptance tests/acceptance/features/app/app-rate-limit.feature:8
 
 Each phase starts with a banner naming the phase, its profile and its tag expression, so a combined run stays readable.
 
-The runner fails closed: a non-zero exit from either phase fails the command. A scoped invocation runs a single phase — a tag expression that selects the `@rate-limit-429` scenario routes to the low-limit profile (the expression is evaluated with Cucumber's tag-expression parser against a scenario tagged only `@rate-limit-429`, so a negated mention such as `not (@rate-limit-429 or @admin)` stays a standard selector), and every other selector (including a feature path) routes to the standard profile, whose tag expression is always composed with `and not @rate-limit-429`. Repeated `--tags` flags are composed with `and`, matching Cucumber's own merge, so no selector is dropped.
+The runner fails closed: a non-zero exit from either phase fails the command. A scoped invocation runs both phases in order and passes the selector to each one unchanged; each phase adds its own tag constraint on top — the standard phase composes it with `and not @rate-limit-429`, the `lowLimit` profile composes it with `and @rate-limit-429` — so each matching scenario runs in exactly one phase and no selector is dropped. Repeated `--tags` flags are composed with `and`, matching Cucumber's own merge, and a phase that matches no scenario exits successfully. The only single-phase shortcut is the exact `@rate-limit-429` expression, which runs the serial low-limit profile alone.
 
 The 429 scenario reuses the shared public client steps; `ofetch` retries a `429` GET once by default with no delay, so the blocked request is attempted twice and the last response is still the 429.
 

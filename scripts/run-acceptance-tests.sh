@@ -7,10 +7,11 @@
 #   2. the serial low-limit profile, which selects only @rate-limit-429 with a
 #      2-requests-per-minute default tier.
 #
-# A scoped invocation is routed to the single phase its selector targets: a tag
-# expression that selects the @rate-limit-429 scenario runs the low-limit
-# profile, any other selector runs the standard profile, and no selector runs
-# both in order. Each phase prints a banner so a combined run stays readable.
+# A scoped invocation runs both phases in order and passes the selector to each
+# phase unchanged, so each phase adds its own tag constraint and no matching
+# scenario is dropped. The only exception is the exact @rate-limit-429 tag,
+# which runs the low-limit profile alone. Each phase prints a banner so a
+# combined run stays readable.
 #
 # The script fails closed: a failing phase stops the run with a non-zero exit
 # status, so the acceptance gate can never pass on a partial run.
@@ -41,22 +42,6 @@ print_phase_banner() {
     "======================================================================"
 }
 
-tag_expression_selects_rate_limit_scenario() {
-  local tags_expression="$1"
-  TAGS_EXPRESSION="$tags_expression" node --input-type=module -e '
-import { parse } from "@cucumber/tag-expressions";
-
-const expression = process.env.TAGS_EXPRESSION ?? "";
-let selectsRateLimitScenario = false;
-try {
-  selectsRateLimitScenario = parse(expression).evaluate(["@rate-limit-429"]);
-} catch {
-  selectsRateLimitScenario = false;
-}
-process.exit(selectsRateLimitScenario ? 0 : 1);
-'
-}
-
 append_user_tags_expression() {
   local tags_expression="$1"
   if [[ -z "$user_tags_expression" ]]; then
@@ -78,7 +63,6 @@ option_takes_value() {
 }
 
 skip_build=false
-selector_present=false
 user_tags_expression=""
 passthrough_arguments=()
 
@@ -89,12 +73,10 @@ while (($# > 0)); do
       shift
       ;;
     --tags=*)
-      selector_present=true
       append_user_tags_expression "${1#--tags=}"
       shift
       ;;
     --tags|-t)
-      selector_present=true
       if (($# > 1)); then
         append_user_tags_expression "$2"
         shift 2
@@ -103,12 +85,10 @@ while (($# > 0)); do
       fi
       ;;
     --name=*)
-      selector_present=true
       passthrough_arguments+=("$1")
       shift
       ;;
     --name)
-      selector_present=true
       passthrough_arguments+=("$1")
       shift
       if (($# > 0)); then
@@ -126,17 +106,11 @@ while (($# > 0)); do
       fi
       ;;
     *)
-      selector_present=true
       passthrough_arguments+=("$1")
       shift
       ;;
   esac
 done
-
-rate_limit_selector_present=false
-if [[ -n "$user_tags_expression" ]] && tag_expression_selects_rate_limit_scenario "$user_tags_expression"; then
-  rate_limit_selector_present=true
-fi
 
 run_standard_phase() {
   local tags_expression="not ${rate_limit_tag}"
@@ -165,13 +139,8 @@ if [[ "$skip_build" == false ]]; then
   pnpm run build
 fi
 
-if [[ "$rate_limit_selector_present" == true ]]; then
+if [[ "$user_tags_expression" == "$rate_limit_tag" ]]; then
   run_rate_limit_phase ${passthrough_arguments[@]+"${passthrough_arguments[@]}"}
-  exit 0
-fi
-
-if [[ "$selector_present" == true ]]; then
-  run_standard_phase ${passthrough_arguments[@]+"${passthrough_arguments[@]}"}
   exit 0
 fi
 
