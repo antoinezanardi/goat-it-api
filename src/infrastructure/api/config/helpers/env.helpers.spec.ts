@@ -28,11 +28,17 @@ describe(validate, () => {
     THROTTLER_SUSTAINED_LIMIT: 300,
   }));
 
+  const defaultEnvInput = Object.freeze({
+    ...defaultEnv,
+    TRUST_PROXY: "",
+  });
+
   it("should return parsed env when config is valid with all fields.", () => {
     const config: Record<keyof AppEnv, unknown> = {
       SERVER_HOST: "192.168.1.1",
       SERVER_PORT: "4000",
       CORS_ORIGIN: "*",
+      TRUST_PROXY: "127.0.0.1",
       MONGODB_HOST: "0.0.0.0",
       MONGODB_PORT: "27018",
       MONGODB_DATABASE: "goat-it-test",
@@ -49,6 +55,7 @@ describe(validate, () => {
       SERVER_HOST: "192.168.1.1",
       SERVER_PORT: 4000,
       CORS_ORIGIN: "*",
+      TRUST_PROXY: "127.0.0.1",
       MONGODB_HOST: "0.0.0.0",
       MONGODB_PORT: 27_018,
       MONGODB_DATABASE: "goat-it-test",
@@ -129,6 +136,61 @@ describe(validate, () => {
     expect(validate(config)).toStrictEqual(expectedConfig);
   });
 
+  it("should disable proxy trust when TRUST_PROXY is not provided.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: false,
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should disable proxy trust when TRUST_PROXY is an empty string.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      TRUST_PROXY: "",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: false,
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
+  it.each<{ test: string; trustProxy: string }>([
+    {
+      test: "should accept an IPv4 address for TRUST_PROXY when it is an override.",
+      trustProxy: "127.0.0.1",
+    },
+    {
+      test: "should accept an IPv6 address for TRUST_PROXY when it is an override.",
+      trustProxy: "::1",
+    },
+    {
+      test: "should accept an IPv4 CIDR block for TRUST_PROXY when it is an override.",
+      trustProxy: "10.0.0.0/8",
+    },
+    {
+      test: "should accept an IPv6 CIDR block for TRUST_PROXY when it is an override.",
+      trustProxy: "2001:db8::/32",
+    },
+  ])("$test", ({ trustProxy }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      TRUST_PROXY: trustProxy,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: trustProxy,
+    });
+
+    expect(validate(config)).toStrictEqual(expectedConfig);
+  });
+
   it("should accept a valid MONGODB_PORT when it is an override.", () => {
     const config: Partial<Record<keyof AppEnv, unknown>> = {
       ...minimalValidEnv,
@@ -204,7 +266,7 @@ describe(validate, () => {
     },
   ])("$test", ({ envKey, rawValue, expectedValue }) => {
     const config: Partial<Record<keyof AppEnv, unknown>> = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       [envKey]: rawValue,
     };
     const expectedConfig = createFakeAppEnv({
@@ -243,7 +305,7 @@ describe(validate, () => {
     },
   ])("$test", ({ envKey, invalidValue }) => {
     const config: Record<keyof AppEnv, unknown> = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       [envKey]: invalidValue,
     };
 
@@ -322,6 +384,34 @@ describe(validate, () => {
       test: "should throw error when CORS_ORIGIN is an empty string.",
       config: {
         CORS_ORIGIN: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a boolean string.",
+      config: {
+        TRUST_PROXY: "true",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a proxy hop count.",
+      config: {
+        TRUST_PROXY: "1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a comma-separated list.",
+      config: {
+        TRUST_PROXY: "192.168.0.1,10.0.0.1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a blank string with a space.",
+      config: {
+        TRUST_PROXY: " ",
       },
       errorMessage: "Invalid environment variables",
     },
@@ -461,7 +551,7 @@ describe(validate, () => {
     },
   ])("$test", ({ config, errorMessage }) => {
     const fullConfig = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       ...config,
     };
 

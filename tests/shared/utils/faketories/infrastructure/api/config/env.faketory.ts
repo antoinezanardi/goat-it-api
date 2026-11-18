@@ -9,6 +9,7 @@ function createFakeAppEnv(appEnv: Partial<AppEnv> = {}): AppEnv {
     SERVER_HOST: faker.internet.ipv4(),
     SERVER_PORT: faker.number.int({ min: 1024, max: 65_535 }),
     CORS_ORIGIN: faker.internet.url(),
+    TRUST_PROXY: false,
     MONGODB_HOST: faker.internet.ipv4(),
     MONGODB_PORT: faker.number.int({ min: 1024, max: 65_535 }),
     MONGODB_DATABASE: faker.lorem.word(),

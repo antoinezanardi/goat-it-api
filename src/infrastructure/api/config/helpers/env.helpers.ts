@@ -5,6 +5,9 @@ import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 /**
  * Parses the merged environment through the Zod schema and returns the typed configuration.
  *
+ * @remarks
+ * The composition root calls it again after `ConfigModule.forRoot()` has merged the env file into `process.env`,
+ * so the Fastify adapter is built from validated values before NestJS exists.
  * @throws `Error` when any variable is missing or invalid; the message carries the Zod issues and startup fails before the first request.
  */
 function validate(config: Record<string, unknown>): AppEnv {

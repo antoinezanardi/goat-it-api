@@ -5,7 +5,7 @@ import type { FetchOptions } from "ofetch";
 import type { AppFetchOptions } from "@acceptance-support/types/app.types";
 
 function createFetchHeaders(options: AppFetchOptions): Record<string, string> {
-  const { locale = "*", apiKey, contentType, origin, accessControlRequestMethod, accessControlRequestHeaders } = options;
+  const { locale = "*", apiKey, contentType, origin, accessControlRequestMethod, accessControlRequestHeaders, extraHeaders } = options;
   const headers: Record<string, string> = {
     "Accept-Language": locale,
   };
@@ -29,7 +29,7 @@ function createFetchHeaders(options: AppFetchOptions): Record<string, string> {
   if (accessControlRequestHeaders !== undefined) {
     headers["Access-Control-Request-Headers"] = accessControlRequestHeaders;
   }
-  return headers;
+  return { ...headers, ...extraHeaders };
 }
 
 function createFetchOptions(options: AppFetchOptions = {}): FetchOptions {

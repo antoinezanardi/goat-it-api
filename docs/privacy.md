@@ -51,6 +51,8 @@ Logging is pino via `nestjs-pino` (`file:src/app/app.module.ts`, `file:src/app/h
 
 Policy: log lines must never contain personal data, request bodies or authorization headers. That policy is **not enforced today**: `getLoggerConfiguration` only configures the transport, so `pino-http`'s default request serializer emits request headers, the client address/port and the `user-agent` (`file:src/app/helpers/logger.helpers.ts`, `file:src/app/app.module.ts`). No `redact` or custom serializer is configured. The only application-level error logging is the exception message of unknown errors, recorded server-side by the global exception filter (`file:src/app/filters/global-exception/global-exception.filter.ts`) — never the request payload.
 
+The request identifier bound to each request log line is a random UUID v4 generated per request (`file:src/infrastructure/api/server/request-id/helpers/request-id.helpers.ts`). It is never derived from the client address, headers, API key or payload, it is not persisted, and clients read the same value from the `X-Request-Id` response header. This does not change the logging gap above: the `pino-http` default serializer still emits request metadata and remains tracked under #1262.
+
 Error tracking is pending #1262 — no error-tracking service is wired (no Sentry or equivalent dependency in `package.json`). The constraint for any future tracker: it must scrub personal data at the source, before events leave the server, and the scrubbing configuration lands together with the tracker, not after.
 
 ### Log retention and review

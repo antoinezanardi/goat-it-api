@@ -116,6 +116,28 @@ class GoatItWorld extends World {
     }
   }
 
+  public expectLastResponseHeaderToMatch(headerName: string, pattern: RegExp): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null || !pattern.test(headerValue)) {
+      throw new Error(`Expected the last response header "${headerName}" to match "${String(pattern)}", but received: ${String(headerValue)}`);
+    }
+  }
+
+  public expectLastResponseHeaderNotToBe(headerName: string, unexpectedValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === unexpectedValue) {
+      throw new Error(`Expected the last response header "${headerName}" not to be "${unexpectedValue}", but received: ${headerValue}`);
+    }
+  }
+
   public expectLastResponseJson<T>(schema: { parse: (_data: unknown) => T }): T {
     if (!this.lastFetchResponse) {
       throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");

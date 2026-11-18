@@ -39,6 +39,8 @@ Then(/^the preflight response should have no body$/u, function(this: GoatItWorld
 
 Then(/^the preflight response should keep the application CORS allow list$/u, function(this: GoatItWorld): void {
   this.expectLastResponseHeaderToBe("access-control-allow-origin", "*");
-  this.expectLastResponseHeaderToBe("access-control-allow-methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  this.expectLastResponseHeaderToBe("access-control-allow-methods", "GET, POST, DELETE, PATCH, OPTIONS");
   this.expectLastResponseHeaderToBe("access-control-allow-headers", "Content-Type, Authorization");
+  this.expectLastResponseHeaderToBe("access-control-expose-headers", "X-Request-Id");
+  this.expectLastResponseHeaderNotToContain("access-control-allow-headers", "goat-it-api-key");
 });
