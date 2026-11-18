@@ -55,7 +55,7 @@ jobs:
 
       - name: Release 🏷️
         id: release
-        run: npx semantic-release --extends ./configs/semantic-release/release.config.mjs
+        run: npx semantic-release
 
     outputs:
       new-release-published: ${{ steps.release.outputs.new-release-published }}

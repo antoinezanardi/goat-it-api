@@ -144,10 +144,15 @@ Health semantics and the post-deploy probe are documented in [operations.md](ope
 
 1. Run CodeQL analysis (`code-ql`).
 2. Install dependencies (`install`).
-3. Run `semantic-release` with `configs/semantic-release/release.config.mjs` using `SEMANTIC_RELEASE_TOKEN`
-   (`release`, needs `install`).
+3. Run `semantic-release` with the repository config (`release.config.ts` at the repository root exposes
+   `configs/semantic-release/release.config.ts`, which semantic-release discovers on its own) using
+   `SEMANTIC_RELEASE_TOKEN` (`release`, needs `install`).
 4. When a new release is published, merge `origin/main` back into `develop` with a
    `chore: sync release v<version> from main` merge commit and push `develop` (`sync-develop`, needs `release`).
+
+The root entry point exists because semantic-release 26 merges its built-in default plugin list over the
+`plugins` of a config passed through `--extends`; letting semantic-release discover the config from the
+working directory keeps `configs/semantic-release/release.config.ts` authoritative.
 
 In parallel, the workflow runs `unit-tests`, `mutation-tests` and `acceptance-tests` (all after `install`),
 `badges` (after `unit-tests` and `acceptance-tests`) and `sonarcloud` (after `unit-tests`). The `release` job
@@ -157,7 +162,7 @@ Creating the GitHub release triggers the production deployment workflow.
 
 ### Versioning rules
 
-`configs/semantic-release/release.config.mjs` targets the `main` and `develop` branches:
+`configs/semantic-release/release.config.ts` targets the `main` and `develop` branches:
 
 | Commit type                                                       | Release    |
 |-------------------------------------------------------------------|------------|

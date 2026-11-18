@@ -1171,6 +1171,7 @@
     {
       "files": [
         "eslint.config.ts",
+        "release.config.ts",
         "**/configs/**/*.{js,mjs,ts}",
         "**/packages/schemas/tsdown.config.ts"
       ],
