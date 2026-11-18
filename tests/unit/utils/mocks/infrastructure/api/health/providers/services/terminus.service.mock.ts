@@ -11,6 +11,18 @@ type MockedHealthIndicatorService = {
   [K in keyof HealthCheckIndicatorServiceStub]: Mock<HealthCheckIndicatorServiceStub[K]>
 };
 
+type FetchHealthIndicatorAttemptStub = {
+  withTimeout: (timeout: number) => Promise<HealthIndicatorResult>;
+};
+
+type FetchHealthIndicatorServiceStub = {
+  pingCheck: (key: string, url: string) => FetchHealthIndicatorAttemptStub;
+};
+
+type MockedFetchHealthIndicatorService = {
+  [K in keyof FetchHealthIndicatorServiceStub]: Mock<FetchHealthIndicatorServiceStub[K]>
+};
+
 type HealthCheckServiceStub = {
   check: (checks: (() => Promise<HealthIndicatorResult>)[]) => Promise<HealthCheckResult>;
 };
@@ -24,6 +36,15 @@ function createMockedTerminusHealthIndicatorService(overrides: Partial<MockedHea
   };
 }
 
+function createMockedTerminusFetchHealthIndicatorService(overrides: Partial<MockedFetchHealthIndicatorService> = {}): MockedFetchHealthIndicatorService {
+  return {
+    pingCheck: vi.fn<FetchHealthIndicatorServiceStub["pingCheck"]>().mockReturnValue({
+      withTimeout: vi.fn<FetchHealthIndicatorAttemptStub["withTimeout"]>().mockResolvedValue(createFakeHealthIndicatorResult()),
+    }),
+    ...overrides,
+  };
+}
+
 function createMockedTerminusHealthCheckService(overrides: Partial<MockedHealthCheckService> = {}): MockedHealthCheckService {
   return {
     check: vi.fn<HealthCheckServiceStub["check"]>().mockResolvedValue(createFakeHealthCheckResult()),
@@ -33,5 +54,8 @@ function createMockedTerminusHealthCheckService(overrides: Partial<MockedHealthC
 
 export {
   createMockedTerminusHealthIndicatorService,
+  createMockedTerminusFetchHealthIndicatorService,
   createMockedTerminusHealthCheckService,
 };
+
+export type { FetchHealthIndicatorAttemptStub };

@@ -1,5 +1,5 @@
 import { Injectable, ServiceUnavailableException } from "@nestjs/common";
-import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
+import { FetchHealthIndicator, HealthCheckService, MongooseHealthIndicator } from "@nestjs/terminus";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS, DOCS_ENDPOINT_HEALTH_KEY, HEALTH_CHECK_UNAVAILABLE_MESSAGE, MONGOOSE_HEALTH_KEY } from "@src/infrastructure/api/health/constants/health.constants";
@@ -17,7 +17,7 @@ export class HealthService {
   public constructor(
     private readonly healthCheckService: HealthCheckService,
     private readonly mongoose: MongooseHealthIndicator,
-    private readonly http: HttpHealthIndicator,
+    private readonly fetch: FetchHealthIndicator,
     private readonly appConfig: AppConfigService,
   ) {}
 
@@ -46,11 +46,7 @@ export class HealthService {
 
   private async checkGoatItDocs(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> {
     const documentationUrl = getSwaggerUrl(this.appConfig.serverBaseUrl);
-    const documentationProbeRequestOptions = {
-      timeout: DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS,
-      signal: AbortSignal.timeout(DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS),
-    };
 
-    return this.http.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, documentationUrl, documentationProbeRequestOptions);
+    return this.fetch.pingCheck(DOCS_ENDPOINT_HEALTH_KEY, documentationUrl).withTimeout(DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS);
   }
 }
