@@ -65,8 +65,8 @@ Covers how code reaches production for this NestJS 12 + Fastify 5 API: GitHub Ac
 
 ## 4. Release engineering
 
-- **[CICD-19] Release branches match release workflows** — `branches` in `configs/semantic-release/release.config.mjs` lists only branches on which a workflow runs semantic-release or a documented dry-run version preview (the release-changelog script on `develop`), and the release step's `--extends` path points to that file (verified: semantic-release 25.0.9).
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/semantic-release/**`, `.github/workflows/release-creation.yml`, `.github/workflows/upsert-pr-release.yml` · Src: [13]
+- **[CICD-19] Release branches match release workflows** — `branches` in `configs/semantic-release/release.config.ts` lists only branches on which a workflow runs semantic-release or a documented dry-run version preview (the release-changelog script on `develop`), and every semantic-release invocation discovers the repository config through the root `release.config.ts` (verified: semantic-release 26.0.1).
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `release.config.ts`, `configs/semantic-release/**`, `.github/workflows/release-creation.yml`, `.github/workflows/upsert-pr-release.yml` · Src: [13]
 - **[CICD-20] Release publishes only from main** — The semantic-release job triggers on push to `main` only, checks out with `persist-credentials: false` and authenticates through a dedicated token, so a workflow token cannot publish a release from another branch.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `.github/workflows/release-creation.yml` · Src: [1], [8]
 - **[CICD-21] Commit types map to SemVer** — `releaseRules` keep `feat` → minor, `fix` → patch and breaking changes (`!` or a `BREAKING CHANGE:` footer) → major; any extra patch-releasing type (`docs`, `style`, `refactor`, `perf`, `test`, `ci`, `chore`) is a documented choice.

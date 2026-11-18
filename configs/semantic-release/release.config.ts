@@ -1,4 +1,6 @@
-const commitGroupsOrder = {
+type CommitGroup = { title: string };
+
+const commitGroupsOrder: Partial<Record<string, number>> = {
   features: 1,
   bugfixes: 2,
   docs: 3,
@@ -113,7 +115,7 @@ export default {
         },
         writerOpts: {
           groupBy: "type",
-          commitGroupsSort: (commitGroupA, commitGroupB) => {
+          commitGroupsSort: (commitGroupA: CommitGroup, commitGroupB: CommitGroup): number => {
             const commitGroupTitleA = commitGroupA.title.replaceAll(/[^a-zA-Z]/gu, "").toLowerCase();
             const commitGroupTitleB = commitGroupB.title.replaceAll(/[^a-zA-Z]/gu, "").toLowerCase();
             const commitGroupOrderA = commitGroupsOrder[commitGroupTitleA] ?? Number.MAX_SAFE_INTEGER;
