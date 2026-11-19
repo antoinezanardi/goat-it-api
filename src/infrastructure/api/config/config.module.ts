@@ -1,20 +1,15 @@
 import { Global, Module } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
 
-import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { APP_CONFIG_MODULE_READY } from "@src/infrastructure/api/config/helpers/config-module.helpers";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 @Global()
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validate,
-      envFilePath: getEnvFilePath(),
-    }),
-  ],
+  imports: [APP_CONFIG_MODULE_READY],
   providers: [AppConfigService],
   exports: [AppConfigService],
 })
 
-export class AppConfigModule {}
+class AppConfigModule {}
+
+export { AppConfigModule };

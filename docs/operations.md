@@ -51,15 +51,9 @@ Every application response carries the security-header matrix and `Cache-Control
 - a reverse proxy, a CDN or a corporate intermediary must forward these headers and must not cache an API response; do not enable a caching layer until a caching design lands;
 - the only cacheable responses are the game assets under `/public/`, which keep `Cache-Control: public, max-age=0`, `ETag` and `Last-Modified` so a client revalidates instead of re-downloading; do not expect a positive `max-age` or `immutable` there;
 - a missing asset (`/public/unknown`), a Swagger asset under `/docs/**` and every error answer `no-store`;
-- the low-level `408` is written by the connection handler before the application hooks, so it carries no security, cache or `Permissions-Policy` header, and a router-level `400`/`414` keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`; never use either to verify the policy.
+- the low-level `408` is written by the connection handler before the application hooks, so it carries no security, cache or `Permissions-Policy` header, and a router-level `400`/`414` keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`; never use either to verify the policy. The request-identifier header follows the same rule: application-managed responses carry `X-Request-Id`, while the low-level `408` and a router-level `400`/`414` may lack it — never verify the ID contract through those paths.
 
-Post-deploy verification, in addition to the smoke step below:
-
-```bash
-curl -sI https://<host>/health | grep -iE "strict-transport-security|cache-control|vary"
-```
-
-Expect `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`. `curl -sI https://<host>/public/img/logo/logo-16.avif` must instead answer `cache-control: public, max-age=0` with an `etag` and a `last-modified` header.
+A deployed `GET /health` answer carries `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`; a game asset under `/public/` instead carries `cache-control: public, max-age=0` with `etag` and `last-modified`. Verify those headers on an application-managed response, never through the low-level `408` or a router-level `400`/`414`.
 
 ## Rate limiting
 
@@ -72,9 +66,26 @@ The global Nest throttler guard limits every business route with two API-wide, p
 
 - The four values are validated as positive integers at boot and are deployment-owned: tune them per environment instead of redeploying code, and keep the burst window shorter than the sustained window.
 - Counters live **in process memory**: a restart or redeploy resets every counter, and each instance counts independently. This matches the confirmed single-instance deployment; a second replica needs a shared counter store before the limits can be trusted as a global quota.
-- The quota is per resolved client IP, not per API key: clients behind one NAT or one reverse proxy share it, and unauthenticated traffic consumes it before authentication. Probes are exempt.
+- The quota is per resolved client IP, not per API key: clients behind one NAT or one reverse proxy share it, and unauthenticated traffic consumes it before authentication. Behind the production Nginx the operator sets `TRUST_PROXY` to the exact proxy peer (see [Proxy trust and client identity](#proxy-trust-and-client-identity)); without it every proxied client shares the peer's bucket. Probes are exempt.
 - A blocking window equals the tier window: the request that exceeds a budget blocks its client for one full window counted from that request, and the client is then admitted again with a fresh counter for that tier.
 - The limiter writes no log line and exposes no metric: a `429` is visible only in the client response and in the generic request log line of `pino-http`. Use the 429 rate observed at the reverse proxy or in the log stream to tune the values.
+
+## Proxy trust and client identity
+
+The limiter keys on Fastify's resolved client address, so any reverse proxy in front of the API changes what that address means. The application ships proxy trust **off**; the trust boundary is deployment-owned.
+
+| Setting | Value | Owner |
+|---|---|---|
+| `TRUST_PROXY` | the single IPv4/IPv6 address or CIDR block of the Nginx-to-API peer; empty disables trust | remote environment of the deployment |
+| Published API port | bound to IPv4 loopback only, for example `127.0.0.1:<port>:<port>` | Compose stack, outside this repository |
+| Nginx upstream | explicit `127.0.0.1:<published port>` | Nginx server block, outside this repository |
+| `X-Forwarded-For` | overwritten with `$remote_addr`, never `$proxy_add_x_forwarded_for` | Nginx server block, outside this repository |
+
+- The schema accepts exactly one address or CIDR block; comma-separated lists, `true`/`false`, hop counts and malformed values abort startup (`file:src/infrastructure/api/config/schemas/env.schema.ts`). Configure the **observed** peer, never the shared Docker subnet: a trusted subnet lets any container on it choose its own bucket.
+- Overwriting `X-Forwarded-For` discards a client-supplied prefix before Fastify reads the chain. `X-Forwarded-Proto` keeps describing the TLS-facing scheme; no application code consumes `request.protocol` today.
+- The peer address changes when the external Docker network is recreated. Re-observe it and update the remote variable before blaming the limiter for merged buckets.
+- `web-game` and `web-admin` use Docker service-name networking and therefore share one bucket per container IP. Measure their aggregate request rate and set a deliberate budget: raising the global limits also raises the external-client ceiling.
+Bucket separation is asserted by the `@rate-limit-429` acceptance scenario, which forwards two distinct client addresses through the trusted loopback peer. The published port must stay bound to loopback, so it must not answer from a remote host.
 
 ## Container health check
 
@@ -107,7 +118,7 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 | Routed handler duration (`handlerTimeout`) | 15 s | same | `503` `{ "statusCode": 503, "message": "Request timed out", "error": "Service Unavailable" }`; Fastify aborts cooperatively, so in-flight database work is not cancelled. Bounds requests without a body only (see below). |
 | MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`. The client gets the sanitized `500` when the error reaches the handler; retryable operations retry once with a fresh 10 s inactivity timer, so a GET can outlast the 15 s handler deadline and answer `503` first. A body-bearing request is not bounded by that deadline (see below). |
 
-- The 408 comes from Fastify's low-level connection handler, so it carries no application response headers — no security header, no `Cache-Control`, no `Vary` and no `Permissions-Policy` — and no application log context. It is not produced by `GlobalExceptionFilter`. A router-level `400`/`414` answer is different: it keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`.
+- The 408 comes from Fastify's low-level connection handler, so it carries no application response headers — no security header, no `Cache-Control`, no `Vary` and no `Permissions-Policy` — and no application log context. It is not produced by `GlobalExceptionFilter`. A router-level `400`/`414` answer is different: it keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. `X-Request-Id` is missing there too, for the same reason.
 - The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify 5.12.8 clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
 - Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.
@@ -128,8 +139,8 @@ The repository does not provision an uptime monitor. If one is configured outsid
 
 | Environment  | Method          | URL                                | Expected result                                        | Suggested cadence |
 |--------------|-----------------|------------------------------------|--------------------------------------------------------|-------------------|
-| Production   | GET, keyword    | `https://api.goat-it.fr/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
-| Staging      | GET, keyword    | `$PREPRODUCTION_API_URL/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
+| Production   | GET, keyword    | `<production-base-url>/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
+| Staging      | GET, keyword    | `<staging-base-url>/health`       | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
 
 Do not point an external liveness monitor at `/health` while the container health check uses `/`; keep the two signals separate and alert on readiness when dependency availability matters.
 

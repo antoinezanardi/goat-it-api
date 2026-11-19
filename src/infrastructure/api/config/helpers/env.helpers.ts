@@ -7,7 +7,7 @@ import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
  *
  * @throws `Error` when any variable is missing or invalid; the message carries the Zod issues and startup fails before the first request.
  */
-function validate(config: Record<string, unknown>): AppEnv {
+function validateEnv(config: Record<string, unknown>): AppEnv {
   const parsed = APP_ENV_SCHEMA.safeParse(config);
   if (!parsed.success) {
     throw new Error(`Invalid environment variables ${parsed.error.message}`);
@@ -28,6 +28,6 @@ function getEnvFilePath(): string {
 }
 
 export {
-  validate,
+  validateEnv,
   getEnvFilePath,
 };

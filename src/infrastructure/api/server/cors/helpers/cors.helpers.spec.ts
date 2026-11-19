@@ -12,8 +12,9 @@ describe(createCorsConfig, () => {
     const expectedCorsConfig = createFakeCorsConfig({
       origin: "*",
       credentials: false,
-      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      methods: ["GET", "POST", "DELETE", "PATCH", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
+      exposedHeaders: ["X-Request-Id"],
     });
 
     expect(corsConfig).toStrictEqual(expectedCorsConfig);
@@ -39,6 +40,20 @@ describe(createCorsConfig, () => {
     const corsConfigFromEnv = createFakeCorsConfigFromEnv();
     const corsConfig = createCorsConfig(corsConfigFromEnv);
 
-    expect(corsConfig.methods).toStrictEqual(["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]);
+    expect(corsConfig.methods).toStrictEqual(["GET", "POST", "DELETE", "PATCH", "OPTIONS"]);
+  });
+
+  it("should expose only the request id response header when called.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
+
+    expect(corsConfig.exposedHeaders).toStrictEqual(["X-Request-Id"]);
+  });
+
+  it("should keep the api key header out of the allowed headers when called.", () => {
+    const corsConfigFromEnv = createFakeCorsConfigFromEnv();
+    const corsConfig = createCorsConfig(corsConfigFromEnv);
+
+    expect(corsConfig.allowedHeaders).toStrictEqual(["Content-Type", "Authorization"]);
   });
 });

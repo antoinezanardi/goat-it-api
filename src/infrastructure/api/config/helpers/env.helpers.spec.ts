@@ -1,12 +1,12 @@
 import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
-import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { getEnvFilePath, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
 import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
-describe(validate, () => {
+describe(validateEnv, () => {
   const minimalValidEnv: Partial<AppEnv> = {
     API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
     ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
@@ -28,11 +28,17 @@ describe(validate, () => {
     THROTTLER_SUSTAINED_LIMIT: 300,
   }));
 
+  const defaultEnvInput = Object.freeze({
+    ...defaultEnv,
+    TRUST_PROXY: "",
+  });
+
   it("should return parsed env when config is valid with all fields.", () => {
     const config: Record<keyof AppEnv, unknown> = {
       SERVER_HOST: "192.168.1.1",
       SERVER_PORT: "4000",
       CORS_ORIGIN: "*",
+      TRUST_PROXY: "127.0.0.1",
       MONGODB_HOST: "0.0.0.0",
       MONGODB_PORT: "27018",
       MONGODB_DATABASE: "goat-it-test",
@@ -49,6 +55,7 @@ describe(validate, () => {
       SERVER_HOST: "192.168.1.1",
       SERVER_PORT: 4000,
       CORS_ORIGIN: "*",
+      TRUST_PROXY: "127.0.0.1",
       MONGODB_HOST: "0.0.0.0",
       MONGODB_PORT: 27_018,
       MONGODB_DATABASE: "goat-it-test",
@@ -62,7 +69,7 @@ describe(validate, () => {
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should return parsed env with all defaults when config only has optional fields missing.", () => {
@@ -70,7 +77,7 @@ describe(validate, () => {
       ...minimalValidEnv,
     };
 
-    expect(validate(config)).toStrictEqual(defaultEnv);
+    expect(validateEnv(config)).toStrictEqual(defaultEnv);
   });
 
   it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
@@ -83,7 +90,7 @@ describe(validate, () => {
       SERVER_PORT: 8080,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
@@ -96,7 +103,7 @@ describe(validate, () => {
       SERVER_PORT: 9000,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it.each<{ host: string; description: string }>([
@@ -113,7 +120,7 @@ describe(validate, () => {
       MONGODB_HOST: host,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
@@ -126,7 +133,62 @@ describe(validate, () => {
       CORS_ORIGIN: "https://example.com",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should disable proxy trust when TRUST_PROXY is not provided.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: false,
+    });
+
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should disable proxy trust when TRUST_PROXY is an empty string.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      TRUST_PROXY: "",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: false,
+    });
+
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
+  });
+
+  it.each<{ test: string; trustProxy: string }>([
+    {
+      test: "should accept an IPv4 address for TRUST_PROXY when it is an override.",
+      trustProxy: "127.0.0.1",
+    },
+    {
+      test: "should accept an IPv6 address for TRUST_PROXY when it is an override.",
+      trustProxy: "::1",
+    },
+    {
+      test: "should accept an IPv4 CIDR block for TRUST_PROXY when it is an override.",
+      trustProxy: "10.0.0.0/8",
+    },
+    {
+      test: "should accept an IPv6 CIDR block for TRUST_PROXY when it is an override.",
+      trustProxy: "2001:db8::/32",
+    },
+  ])("$test", ({ trustProxy }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...minimalValidEnv,
+      TRUST_PROXY: trustProxy,
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      TRUST_PROXY: trustProxy,
+    });
+
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid MONGODB_PORT when it is an override.", () => {
@@ -139,7 +201,7 @@ describe(validate, () => {
       MONGODB_PORT: 28_017,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
@@ -152,7 +214,7 @@ describe(validate, () => {
       MONGODB_DATABASE: "my-database-1",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
@@ -165,7 +227,7 @@ describe(validate, () => {
       FALLBACK_LOCALE: "es",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should return parsed env when config contains additional properties.", () => {
@@ -174,7 +236,7 @@ describe(validate, () => {
       EXTRA_FIELD: "should be ignored",
     };
 
-    expect(validate(config)).toStrictEqual(defaultEnv);
+    expect(validateEnv(config)).toStrictEqual(defaultEnv);
   });
 
   it.each<{ test: string; envKey: keyof AppEnv; rawValue: string; expectedValue: number }>([
@@ -204,7 +266,7 @@ describe(validate, () => {
     },
   ])("$test", ({ envKey, rawValue, expectedValue }) => {
     const config: Partial<Record<keyof AppEnv, unknown>> = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       [envKey]: rawValue,
     };
     const expectedConfig = createFakeAppEnv({
@@ -212,7 +274,7 @@ describe(validate, () => {
       [envKey]: expectedValue,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it.each<{ test: string; envKey: keyof AppEnv; invalidValue: string }>([
@@ -243,11 +305,11 @@ describe(validate, () => {
     },
   ])("$test", ({ envKey, invalidValue }) => {
     const config: Record<keyof AppEnv, unknown> = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       [envKey]: invalidValue,
     };
 
-    expect(() => validate(config)).toThrow("Invalid environment variables");
+    expect(() => validateEnv(config)).toThrow("Invalid environment variables");
   });
 
   it.each<{
@@ -322,6 +384,34 @@ describe(validate, () => {
       test: "should throw error when CORS_ORIGIN is an empty string.",
       config: {
         CORS_ORIGIN: "",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a boolean string.",
+      config: {
+        TRUST_PROXY: "true",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a proxy hop count.",
+      config: {
+        TRUST_PROXY: "1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a comma-separated list.",
+      config: {
+        TRUST_PROXY: "192.168.0.1,10.0.0.1",
+      },
+      errorMessage: "Invalid environment variables",
+    },
+    {
+      test: "should throw error when TRUST_PROXY is a blank string with a space.",
+      config: {
+        TRUST_PROXY: " ",
       },
       errorMessage: "Invalid environment variables",
     },
@@ -461,11 +551,11 @@ describe(validate, () => {
     },
   ])("$test", ({ config, errorMessage }) => {
     const fullConfig = {
-      ...defaultEnv,
+      ...defaultEnvInput,
       ...config,
     };
 
-    expect(() => validate(fullConfig)).toThrow(errorMessage);
+    expect(() => validateEnv(fullConfig)).toThrow(errorMessage);
   });
 });
 

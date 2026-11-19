@@ -12,6 +12,7 @@ type AppFetchOptions = {
   accessControlRequestMethod?: string;
   accessControlRequestHeaders?: string;
   retry?: number | false;
+  extraHeaders?: Record<string, string>;
 };
 
 export type { AppFetchOptions };

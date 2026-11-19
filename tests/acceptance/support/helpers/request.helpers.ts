@@ -5,31 +5,37 @@ import type { FetchOptions } from "ofetch";
 import type { AppFetchOptions } from "@acceptance-support/types/app.types";
 
 function createFetchHeaders(options: AppFetchOptions): Record<string, string> {
-  const { locale = "*", apiKey, contentType, origin, accessControlRequestMethod, accessControlRequestHeaders } = options;
-  const headers: Record<string, string> = {
-    "Accept-Language": locale,
-  };
+  const { locale = "*", apiKey, contentType, origin, accessControlRequestMethod, accessControlRequestHeaders, extraHeaders = {} } = options;
+  const headers: Map<string, string> = new Map([["accept-language", locale]]);
+
+  function setHeader(headerName: string, headerValue: string): void {
+    headers.set(headerName.toLowerCase(), headerValue);
+  }
 
   if (contentType !== undefined) {
-    headers["Content-Type"] = contentType;
+    setHeader("Content-Type", contentType);
   }
 
   if (apiKey !== undefined) {
-    headers[API_KEY_HEADER] = apiKey;
+    setHeader(API_KEY_HEADER, apiKey);
   }
 
   if (origin !== undefined) {
-    headers.Origin = origin;
+    setHeader("Origin", origin);
   }
 
   if (accessControlRequestMethod !== undefined) {
-    headers["Access-Control-Request-Method"] = accessControlRequestMethod;
+    setHeader("Access-Control-Request-Method", accessControlRequestMethod);
   }
 
   if (accessControlRequestHeaders !== undefined) {
-    headers["Access-Control-Request-Headers"] = accessControlRequestHeaders;
+    setHeader("Access-Control-Request-Headers", accessControlRequestHeaders);
   }
-  return headers;
+
+  for (const [headerName, headerValue] of Object.entries(extraHeaders)) {
+    setHeader(headerName, headerValue);
+  }
+  return Object.fromEntries(headers);
 }
 
 function createFetchOptions(options: AppFetchOptions = {}): FetchOptions {

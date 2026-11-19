@@ -1,6 +1,6 @@
 import { Then } from "@cucumber/cucumber";
 
-import { RATE_LIMIT_ALL_HEADER_NAMES, RATE_LIMIT_DEFAULT_TIER_HEADER_NAMES, RATE_LIMIT_RESET_HEADER_MAXIMUM_SECONDS_BY_HEADER_NAME, RATE_LIMIT_RETRY_AFTER_HEADER_NAME, RATE_LIMIT_RETRY_AFTER_MAXIMUM_SECONDS, RATE_LIMIT_SECONDS_HEADER_VALUE_PATTERN, RATE_LIMIT_SUSTAINED_TIER_HEADER_NAMES } from "@acceptance-features/step-definitions/app/rate-limit/constants/rate-limit.constants";
+import { RATE_LIMIT_ALL_HEADER_NAMES, RATE_LIMIT_DEFAULT_TIER_HEADER_NAMES, RATE_LIMIT_LIMIT_HEADER_NAME, RATE_LIMIT_REMAINING_HEADER_NAME, RATE_LIMIT_RESET_HEADER_MAXIMUM_SECONDS_BY_HEADER_NAME, RATE_LIMIT_RETRY_AFTER_HEADER_NAME, RATE_LIMIT_RETRY_AFTER_MAXIMUM_SECONDS, RATE_LIMIT_SECONDS_HEADER_VALUE_PATTERN, RATE_LIMIT_SUSTAINED_TIER_HEADER_NAMES } from "@acceptance-features/step-definitions/app/rate-limit/constants/rate-limit.constants";
 
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
@@ -41,5 +41,14 @@ Then(/^the response should contain a plain "Retry-After" header in seconds$/u, f
 Then(/^the response should not expose any rate-limit headers$/u, function(this: GoatItWorld): void {
   for (const headerName of RATE_LIMIT_ALL_HEADER_NAMES) {
     this.expectLastResponseHeaderToBeAbsent(headerName);
+  }
+});
+
+Then(/^the response should expose a fresh default rate-limit budget$/u, function(this: GoatItWorld): void {
+  const limit = Number(this.lastFetchResponse?.headers.get(RATE_LIMIT_LIMIT_HEADER_NAME) ?? "");
+  const remaining = Number(this.lastFetchResponse?.headers.get(RATE_LIMIT_REMAINING_HEADER_NAME) ?? "");
+
+  if (!Number.isSafeInteger(limit) || remaining !== limit - 1) {
+    throw new Error(`Expected the second forwarded client to start with its own budget, but the response reported a limit of "${String(limit)}" and "${String(remaining)}" remaining.`);
   }
 });

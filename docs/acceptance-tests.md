@@ -366,7 +366,7 @@ This shared step looks up `PAYLOADS[scope][type][name]` and assigns the result t
 
 ### When Steps
 
-`When` steps fire HTTP requests. Each step builds a `FetchOptions` object via `createFetchOptions()` and calls `this.fetchAndStoreResponse(endpoint, options)`.
+`When` steps fire HTTP requests. Each step builds a `FetchOptions` object via `createFetchOptions()` and calls `this.fetchAndStoreResponse(endpoint, options)`. When a step must send a header the typed options do not cover (for example `X-Forwarded-For` or a caller-supplied request ID), pass it through `extraHeaders`; overrides are applied last and case-insensitively, so they replace a generated header with the same name.
 
 **Typical pattern:**
 
@@ -531,6 +531,7 @@ type AppFetchOptions = {
   origin?: string;       // Forwarded verbatim as the Origin header
   accessControlRequestMethod?: string;  // Forwarded as Access-Control-Request-Method
   accessControlRequestHeaders?: string; // Forwarded as Access-Control-Request-Headers
+  extraHeaders?: Record<string, string>; // Escape hatch for any header the typed options do not cover; applied last and case-insensitively replaces a generated header with the same name
   retry?: number | false; // ofetch retry count; OPTIONS requests default to 0
 };
 ```
@@ -693,7 +694,7 @@ If the feature uses steps not yet implemented:
 - **Given steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.given-steps.ts` (use the `*.given-steps.ts` filename glob so multiple files may coexist).
   - For DB setup: call `loadFixture(world, domain, name)`.
 - **When steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.when-steps.ts`.
-  - Build fetch options via `createFetchOptions({ apiKey, method, body })`; add `rawBody` (and `contentType`) when the exact bytes or the media type matter.
+  - Build fetch options via `createFetchOptions({ apiKey, method, body })`; add `rawBody` (and `contentType`) when the exact bytes or the media type matter, and `extraHeaders` when a step must send a header the typed options do not cover.
   - Call `this.fetchAndStoreResponse(endpoint, fetchOptions)`.
 - **Then steps**: add to `tests/acceptance/features/step-definitions/contexts/<context>/<audience>/*.then-steps.ts`.
   - Parse response with `this.expectLastResponseJson<T>(ZOD_SCHEMA)`.
