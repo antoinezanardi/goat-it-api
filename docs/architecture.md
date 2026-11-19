@@ -311,7 +311,7 @@ Rules:
 
 - `src/app/`: root controller, app metadata DTO, global HTTP exception filter, logger helpers, shell service, `app.module.ts`.
 - `src/infrastructure/api/auth/`: API-key guards, auth decorators, auth errors and helpers.
-- `src/infrastructure/api/config/`: environment schema, config module, validators and services.
+- `src/infrastructure/api/config/`: environment schema, config module, validated-environment helper, validators and services.
 - `src/infrastructure/api/health/`: health controller, DTOs, mappers and service.
 - `src/infrastructure/api/server/`: Fastify bootstrap (`fastify/` holds the adapter factory, its bound constants and its `FastifyTrustProxy` type; `constants/` holds the NestJS bootstrap options), CORS, Swagger, `security-headers/` (the NestJS security options, the root `Permissions-Policy` request hook and the `OPTIONS` fallback), `cache/` (the root response-cache `onSend` hook) and `throttler/` (the global `APP_GUARD` throttler module, its guard under `providers/guards/<name>/`, its options helper under `helpers/` and its tier/error constants under `constants/`). `request-id/` owns the server-generated request identifier: `helpers/request-id.helpers.ts` holds the UUID v4 generator, the root `onRequest`/`onSend` header hooks and their registration, and `constants/request-id.constants.ts` holds the `X-Request-Id` header name and UUID pattern.
 - `src/infrastructure/api/server/throttler/` owns rate limiting end to end: `throttler.module.ts` (`ApiThrottlerModule`) imports `ThrottlerModule.forRootAsync(...)` configured from `AppConfigService.throttlerConfig` and registers `ApiThrottlerGuard` with `APP_GUARD`; the guard owns the API-wide key, the retry-header normalization and the curated 429 exception, and the counters stay in the library's in-process store. `AppModule` imports the module like any other cross-cutting module; no context, persistence artefact or shared-kernel file is involved, and the module imports no `@app/*` or context module.
@@ -433,38 +433,13 @@ Known limitations of the B-lite model: the question/theme dependency is bidirect
 
 ### 6.1 Composition root
 
-```ts
-// src/main.ts
-import { APP_CONFIG_MODULE_READY } from "@src/infrastructure/api/config/config.module";
-import { validate } from "@src/infrastructure/api/config/helpers/env.helpers";
-import { bootstrap } from "@src/infrastructure/api/server/server";
-
-import { AppModule } from "@app/app.module";
-
-async function main(): Promise<void> {
-  await APP_CONFIG_MODULE_READY;
-
-  const appEnv = validate(process.env);
-
-  await bootstrap(AppModule, appEnv.TRUST_PROXY);
-}
-
-void main();
-```
-
-```ts
-// src/infrastructure/api/server/server.ts
-async function bootstrap(appModule: Type<unknown>, trustProxy: FastifyTrustProxy): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(appModule, createFastifyAdapter(trustProxy), NEST_APPLICATION_OPTIONS);
-  // ...
-}
-```
+The composition root lives in `src/main.ts`: it awaits `APP_CONFIG_MODULE_READY` from `src/infrastructure/api/config/helpers/config-module.helpers.ts`, reads the environment that promise validated through `getAppEnv()`, and passes only `TRUST_PROXY` to `bootstrap()` in `src/infrastructure/api/server/server.ts`. `bootstrap()` receives the application module as a parameter, creates the Nest Fastify application from `createFastifyAdapter(trustProxy)` and `NEST_APPLICATION_OPTIONS`, then owns CORS, Swagger, shutdown hooks and `listen()`.
 
 - `src/main.ts` is the only file that imports `AppModule`.
 - `server.ts` MUST NOT import `@app/*` or a context.
 - `createFastifyAdapter()` (`src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts`) owns the body limit, the JSON-only parser policy, the request and handler timeouts and the nested Node `http` server options; `server.ts` only wires it and passes `NEST_APPLICATION_OPTIONS` (`src/infrastructure/api/server/constants/server.constants.ts`), whose `bodyParser: false` stops Nest from registering a parser of its own. It also receives the validated `TRUST_PROXY` value as its only argument (mapping to Fastify's `trustProxy`) and owns the request-identifier options: `genReqId` from `request-id/helpers/request-id.helpers.ts` and the disabled inbound request-ID header.
 - `server.ts` also owns the response policy: `setupSecurityHeadersRequestHook()` registers the root `Permissions-Policy` request hook on the Fastify instance **before** `NestFactory.create()` (a hook registered later runs after middie and never runs on a middleware-rejected request), `setupSecurityHeaders()` calls `app.useSecurityHeaders()` once and registers the `OPTIONS` fallback, and `setupResponseCachePolicy()` registers the root `onSend` hook that keeps `/public/**` file responses revalidated and makes every other response `no-store` with `Vary: Accept-Language`. All of them live in `src/infrastructure/api/server/security-headers/helpers/security-headers.helpers.ts` and `src/infrastructure/api/server/cache/helpers/cache.helpers.ts`, run before `listen()`, and neither module imports `@app/*` or a context.
-- `src/main.ts` awaits `APP_CONFIG_MODULE_READY` — the same `ConfigModule.forRoot()` promise `AppConfigModule` imports — then calls `validate(process.env)` and passes only `TRUST_PROXY` into `bootstrap()`. The deliberate second validation replaces reading an unvalidated value; `ConfigModule.envVariablesLoaded` is never the gate, because it stays pending when validation rejects.
+- `APP_CONFIG_MODULE_READY` and the validated `AppEnv` are owned by `createAppEnvStore()` in `src/infrastructure/api/config/helpers/config-module.helpers.ts`; `AppConfigModule` imports the ready promise and `src/main.ts` reads the stored environment. Never derive startup values by re-validating `process.env` after `ConfigModule.forRoot()`: the module writes the validator output back into `process.env`, so a boolean becomes the string `"false"` and a second validation rejects it.
 - `bootstrap()` hands that value to `createFastifyAdapter()` (Fastify fixes its proxy-trust function at construction) and registers `setupRequestIdHooks()` on the root instance before `NestFactory.create()`, next to `setupSecurityHeadersRequestHook()`. Both root hooks must stay before app creation: a hook added afterwards runs after middie and never runs on a middleware-rejected request.
 
 ### 6.2 Module responsibilities
@@ -480,13 +455,7 @@ async function bootstrap(appModule: Type<unknown>, trustProxy: FastifyTrustProxy
 
 ### 6.3 Use-case providers
 
-Use cases are plain classes wired with `createUseCaseProvider`:
-
-```ts
-providers: [
-  createUseCaseProvider(FindQuestionsUseCase, [QUESTION_REPOSITORY_TOKEN]),
-]
-```
+Use cases are plain classes wired with `createUseCaseProvider`, for example `createUseCaseProvider(FindQuestionsUseCase, [QUESTION_REPOSITORY_TOKEN])` in `src/contexts/question/question.module.ts`.
 
 The helper lives in `src/shared/infrastructure/nest/helpers/` and enforces the number of dependency tokens against the constructor at compile time. Token order MUST match constructor parameter order; module wiring tests assert multi-dependency injection.
 

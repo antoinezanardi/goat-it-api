@@ -1,12 +1,12 @@
 import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
-import { getEnvFilePath, validate } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { getEnvFilePath, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
 import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
-describe(validate, () => {
+describe(validateEnv, () => {
   const minimalValidEnv: Partial<AppEnv> = {
     API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
     ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
@@ -69,7 +69,7 @@ describe(validate, () => {
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should return parsed env with all defaults when config only has optional fields missing.", () => {
@@ -77,7 +77,7 @@ describe(validate, () => {
       ...minimalValidEnv,
     };
 
-    expect(validate(config)).toStrictEqual(defaultEnv);
+    expect(validateEnv(config)).toStrictEqual(defaultEnv);
   });
 
   it("should coerce SERVER_PORT from string to number when SERVER_PORT is a valid numeric string.", () => {
@@ -90,7 +90,7 @@ describe(validate, () => {
       SERVER_PORT: 8080,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should coerce SERVER_PORT from number to number when SERVER_PORT is already a number.", () => {
@@ -103,7 +103,7 @@ describe(validate, () => {
       SERVER_PORT: 9000,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it.each<{ host: string; description: string }>([
@@ -120,7 +120,7 @@ describe(validate, () => {
       MONGODB_HOST: host,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid URL for CORS_ORIGIN when it is an override.", () => {
@@ -133,7 +133,7 @@ describe(validate, () => {
       CORS_ORIGIN: "https://example.com",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should disable proxy trust when TRUST_PROXY is not provided.", () => {
@@ -145,7 +145,7 @@ describe(validate, () => {
       TRUST_PROXY: false,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should disable proxy trust when TRUST_PROXY is an empty string.", () => {
@@ -158,7 +158,7 @@ describe(validate, () => {
       TRUST_PROXY: false,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it.each<{ test: string; trustProxy: string }>([
@@ -188,7 +188,7 @@ describe(validate, () => {
       TRUST_PROXY: trustProxy,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid MONGODB_PORT when it is an override.", () => {
@@ -201,7 +201,7 @@ describe(validate, () => {
       MONGODB_PORT: 28_017,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid MONGODB_DATABASE name when it is an override.", () => {
@@ -214,7 +214,7 @@ describe(validate, () => {
       MONGODB_DATABASE: "my-database-1",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should accept a valid FALLBACK_LOCALE when it is an override.", () => {
@@ -227,7 +227,7 @@ describe(validate, () => {
       FALLBACK_LOCALE: "es",
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it("should return parsed env when config contains additional properties.", () => {
@@ -236,7 +236,7 @@ describe(validate, () => {
       EXTRA_FIELD: "should be ignored",
     };
 
-    expect(validate(config)).toStrictEqual(defaultEnv);
+    expect(validateEnv(config)).toStrictEqual(defaultEnv);
   });
 
   it.each<{ test: string; envKey: keyof AppEnv; rawValue: string; expectedValue: number }>([
@@ -274,7 +274,7 @@ describe(validate, () => {
       [envKey]: expectedValue,
     });
 
-    expect(validate(config)).toStrictEqual(expectedConfig);
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
   });
 
   it.each<{ test: string; envKey: keyof AppEnv; invalidValue: string }>([
@@ -309,7 +309,7 @@ describe(validate, () => {
       [envKey]: invalidValue,
     };
 
-    expect(() => validate(config)).toThrow("Invalid environment variables");
+    expect(() => validateEnv(config)).toThrow("Invalid environment variables");
   });
 
   it.each<{
@@ -555,7 +555,7 @@ describe(validate, () => {
       ...config,
     };
 
-    expect(() => validate(fullConfig)).toThrow(errorMessage);
+    expect(() => validateEnv(fullConfig)).toThrow(errorMessage);
   });
 });
 

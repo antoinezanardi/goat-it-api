@@ -23,8 +23,6 @@ import type { INestApplication, NestApplicationOptions } from "@nestjs/common";
 
 const TRUST_PROXY_FROM_ENV = "127.0.0.1";
 
-vi.mock(import("@nestjs/core"));
-
 class MockedAppModule {}
 
 describe(bootstrap, () => {
@@ -58,7 +56,7 @@ describe(bootstrap, () => {
     vi.spyOn(swaggerHelpers, "getSwaggerUrl");
     vi.spyOn(swaggerHelpers, "setupSwaggerModule").mockReturnValue(undefined);
 
-    vi.mocked(NestCore.NestFactory.create, { partial: true }).mockResolvedValue({
+    vi.spyOn(NestCore.NestFactory, "create").mockResolvedValue({
       enableShutdownHooks: vi.fn<() => INestApplication>(),
       useLogger: vi.fn<() => void>(),
       get: vi.fn<(service: typeof AppConfigService | typeof Logger) => object>().mockImplementation(mockByRules<typeof AppConfigService | typeof Logger, object>(
@@ -71,7 +69,7 @@ describe(bootstrap, () => {
       listen: vi.fn<() => Promise<undefined>>(),
       getUrl: vi.fn<() => Promise<string>>().mockResolvedValue("http://mocked-host:9090"),
       enableCors: vi.fn<() => INestApplication>(),
-    } as Partial<INestApplication>);
+    } as unknown as INestApplication);
   });
 
   it("should create from NestFactory when called.", async() => {

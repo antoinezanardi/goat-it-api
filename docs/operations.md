@@ -53,13 +53,7 @@ Every application response carries the security-header matrix and `Cache-Control
 - a missing asset (`/public/unknown`), a Swagger asset under `/docs/**` and every error answer `no-store`;
 - the low-level `408` is written by the connection handler before the application hooks, so it carries no security, cache or `Permissions-Policy` header, and a router-level `400`/`414` keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`; never use either to verify the policy. The request-identifier header follows the same rule: application-managed responses carry `X-Request-Id`, while the low-level `408` and a router-level `400`/`414` may lack it — never verify the ID contract through those paths.
 
-Post-deploy verification, in addition to the smoke step below:
-
-```bash
-curl -sI https://<host>/health | grep -iE "strict-transport-security|cache-control|vary"
-```
-
-Expect `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`. `curl -sI https://<host>/public/img/logo/logo-16.avif` must instead answer `cache-control: public, max-age=0` with an `etag` and a `last-modified` header.
+A deployed `GET /health` answer carries `strict-transport-security: max-age=31536000`, `cache-control: no-store` and `vary: Accept-Language`; a game asset under `/public/` instead carries `cache-control: public, max-age=0` with `etag` and `last-modified`. Verify those headers on an application-managed response, never through the low-level `408` or a router-level `400`/`414`.
 
 ## Rate limiting
 
@@ -91,18 +85,7 @@ The limiter keys on Fastify's resolved client address, so any reverse proxy in f
 - Overwriting `X-Forwarded-For` discards a client-supplied prefix before Fastify reads the chain. `X-Forwarded-Proto` keeps describing the TLS-facing scheme; no application code consumes `request.protocol` today.
 - The peer address changes when the external Docker network is recreated. Re-observe it and update the remote variable before blaming the limiter for merged buckets.
 - `web-game` and `web-admin` use Docker service-name networking and therefore share one bucket per container IP. Measure their aggregate request rate and set a deliberate budget: raising the global limits also raises the external-client ceiling.
-- Post-deploy verification:
-
-```bash
-# the published port must not answer from a remote host
-curl -sS -m 3 http://<server-ip>:<published-port>/health || echo "not reachable (expected)"
-# a proxied business response must carry the resolved client's counters and the correlation header
-curl -sI https://<host>/questions | grep -iE "x-ratelimit-remaining|x-request-id"
-# two external clients must receive independent buckets
-curl -sI -H "X-Forwarded-For: 198.51.100.7" https://<host>/health || true
-```
-
-The last probe only proves reachability; bucket separation is asserted by the `@rate-limit-429` acceptance scenario, which forwards two distinct client addresses through the trusted loopback peer.
+Bucket separation is asserted by the `@rate-limit-429` acceptance scenario, which forwards two distinct client addresses through the trusted loopback peer. The published port must stay bound to loopback, so it must not answer from a remote host.
 
 ## Container health check
 
@@ -156,8 +139,8 @@ The repository does not provision an uptime monitor. If one is configured outsid
 
 | Environment  | Method          | URL                                | Expected result                                        | Suggested cadence |
 |--------------|-----------------|------------------------------------|--------------------------------------------------------|-------------------|
-| Production   | GET, keyword    | `https://api.goat-it.fr/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
-| Staging      | GET, keyword    | `$PREPRODUCTION_API_URL/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
+| Production   | GET, keyword    | `<production-base-url>/health`    | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
+| Staging      | GET, keyword    | `<staging-base-url>/health`       | HTTP `200` and body contains `"status":"ok"`           | 5 minutes         |
 
 Do not point an external liveness monitor at `/health` while the container health check uses `/`; keep the two signals separate and alert on readiness when dependency availability matters.
 

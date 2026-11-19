@@ -13,3 +13,10 @@ Feature: App Request ID
       | error     | statusCode | message                   |
       | Not Found | 404        | Cannot GET /unknown-route |
     And the response should expose a server-generated request ID
+
+  Scenario: Receiving a request ID on a middleware-rejected request
+    When the client retrieves the application metadata with an unsupported locale
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                                                                                                                                  |
+      | Bad Request | 400        | Invalid locale 'zz' in 'Accept-Language' header, supported locales are: en, fr, es, de, it, pt (only the first locale is considered) |
+    And the response should expose a server-generated request ID

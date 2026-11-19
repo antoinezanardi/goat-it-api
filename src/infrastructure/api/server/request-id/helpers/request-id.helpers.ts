@@ -12,10 +12,13 @@ function createRequestId(): string {
 }
 
 /**
- * Writes the request identifier on the reply as early as the request phase, before NestJS middleware runs.
+ * Writes the request identifier on the reply and on the raw Node response as early as the request phase, before NestJS middleware runs.
+ *
+ * The raw header covers a middleware rejection answered through `writeHead`, which never reaches the `onSend` hook.
  */
 function setRequestIdHeaderOnRequest(request: FastifyRequest, reply: FastifyReply, done: () => void): void {
   reply.header(REQUEST_ID_RESPONSE_HEADER_NAME, request.id);
+  reply.raw.setHeader(REQUEST_ID_RESPONSE_HEADER_NAME, request.id);
   done();
 }
 

@@ -3,7 +3,10 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { REQUEST_ID_RESPONSE_HEADER_NAME, REQUEST_ID_UUID_V4_PATTERN } from "@src/infrastructure/api/server/request-id/constants/request-id.constants";
 import { createRequestId, setRequestIdHeaderOnRequest, setRequestIdHeaderOnSend, setupRequestIdHooks } from "@src/infrastructure/api/server/request-id/helpers/request-id.helpers";
 
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { createMockedFastifyInstance, createMockedFastifyReply, createMockedFastifyRequest } from "@mocks/infrastructure/api/server/fastify/fastify.mock";
+
+import type { Mock } from "vitest";
+import type { FastifyInstance } from "fastify";
 
 const REQUEST_ID_FIXTURE = "3f2b7c1e-4d5a-4e6f-8a9b-0c1d2e3f4a5b";
 
@@ -25,14 +28,12 @@ describe(createRequestId, () => {
 
 describe(setupRequestIdHooks, () => {
   let mocks: {
-    fastifyInstance: FastifyInstance;
+    fastifyInstance: ReturnType<typeof createMockedFastifyInstance>;
   };
 
   beforeEach(() => {
     mocks = {
-      fastifyInstance: {
-        addHook: vi.fn<(name: string, hook: unknown) => void>(),
-      } as unknown as FastifyInstance,
+      fastifyInstance: createMockedFastifyInstance(),
     };
   });
 
@@ -70,15 +71,15 @@ describe(setupRequestIdHooks, () => {
 
 describe(setRequestIdHeaderOnRequest, () => {
   let mocks: {
-    request: FastifyRequest;
-    reply: FastifyReply;
-    done: () => void;
+    request: ReturnType<typeof createMockedFastifyRequest>;
+    reply: ReturnType<typeof createMockedFastifyReply>;
+    done: Mock<() => void>;
   };
 
   beforeEach(() => {
     mocks = {
-      request: { id: REQUEST_ID_FIXTURE } as FastifyRequest,
-      reply: { header: vi.fn<(name: string, value: string) => void>() } as unknown as FastifyReply,
+      request: createMockedFastifyRequest({ id: REQUEST_ID_FIXTURE }),
+      reply: createMockedFastifyReply(),
       done: vi.fn<() => void>(),
     };
   });
@@ -87,6 +88,12 @@ describe(setRequestIdHeaderOnRequest, () => {
     setRequestIdHeaderOnRequest(mocks.request, mocks.reply, mocks.done);
 
     expect(mocks.reply.header).toHaveBeenCalledExactlyOnceWith(REQUEST_ID_RESPONSE_HEADER_NAME, REQUEST_ID_FIXTURE);
+  });
+
+  it("should write the request id header on the raw response when called.", () => {
+    setRequestIdHeaderOnRequest(mocks.request, mocks.reply, mocks.done);
+
+    expect(mocks.reply.raw.setHeader).toHaveBeenCalledExactlyOnceWith(REQUEST_ID_RESPONSE_HEADER_NAME, REQUEST_ID_FIXTURE);
   });
 
   it("should continue the request when called.", () => {
@@ -98,15 +105,15 @@ describe(setRequestIdHeaderOnRequest, () => {
 
 describe(setRequestIdHeaderOnSend, () => {
   let mocks: {
-    request: FastifyRequest;
-    reply: FastifyReply;
-    done: (error?: Error | null, payload?: unknown) => void;
+    request: ReturnType<typeof createMockedFastifyRequest>;
+    reply: ReturnType<typeof createMockedFastifyReply>;
+    done: Mock<(error?: Error | null, payload?: unknown) => void>;
   };
 
   beforeEach(() => {
     mocks = {
-      request: { id: REQUEST_ID_FIXTURE } as FastifyRequest,
-      reply: { header: vi.fn<(name: string, value: string) => void>() } as unknown as FastifyReply,
+      request: createMockedFastifyRequest({ id: REQUEST_ID_FIXTURE }),
+      reply: createMockedFastifyReply(),
       done: vi.fn<(error?: Error | null, payload?: unknown) => void>(),
     };
   });

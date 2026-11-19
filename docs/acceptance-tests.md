@@ -366,7 +366,7 @@ This shared step looks up `PAYLOADS[scope][type][name]` and assigns the result t
 
 ### When Steps
 
-`When` steps fire HTTP requests. Each step builds a `FetchOptions` object via `createFetchOptions()` and calls `this.fetchAndStoreResponse(endpoint, options)`. When a step must send a header the typed options do not cover (for example `X-Forwarded-For` or a caller-supplied request ID), pass it through `extraHeaders`, which is spread last over the typed headers.
+`When` steps fire HTTP requests. Each step builds a `FetchOptions` object via `createFetchOptions()` and calls `this.fetchAndStoreResponse(endpoint, options)`. When a step must send a header the typed options do not cover (for example `X-Forwarded-For` or a caller-supplied request ID), pass it through `extraHeaders`; overrides are applied last and case-insensitively, so they replace a generated header with the same name.
 
 **Typical pattern:**
 
@@ -531,7 +531,7 @@ type AppFetchOptions = {
   origin?: string;       // Forwarded verbatim as the Origin header
   accessControlRequestMethod?: string;  // Forwarded as Access-Control-Request-Method
   accessControlRequestHeaders?: string; // Forwarded as Access-Control-Request-Headers
-  extraHeaders?: Record<string, string>; // Escape hatch for any header the typed options do not cover; merged last, so it wins over them
+  extraHeaders?: Record<string, string>; // Escape hatch for any header the typed options do not cover; applied last and case-insensitively replaces a generated header with the same name
   retry?: number | false; // ofetch retry count; OPTIONS requests default to 0
 };
 ```

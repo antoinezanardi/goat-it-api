@@ -11,6 +11,13 @@ function getMockedLoggerInstance(): typeof mockedLogger {
   return mockedLogger;
 }
 
+const mockedLoggerConstructor = vi.fn<() => typeof mockedLogger>(getMockedLoggerInstance);
+
+function getMockedLoggerConstructor(): typeof mockedLoggerConstructor {
+  return mockedLoggerConstructor;
+}
+
 export {
+  getMockedLoggerConstructor,
   getMockedLoggerInstance,
 };

@@ -1,4 +1,4 @@
-import * as EnvHelpers from "@src/infrastructure/api/config/helpers/env.helpers";
+import * as ConfigModuleHelpers from "@src/infrastructure/api/config/helpers/config-module.helpers";
 import * as Server from "@src/infrastructure/api/server/server";
 
 import { AppModule } from "@app/app.module";
@@ -24,18 +24,18 @@ const environment = vi.hoisted(() => {
 
 const appEnv = createFakeAppEnv({ TRUST_PROXY: "127.0.0.1" });
 
-const validationError = new Error("Invalid environment variables");
+const environmentError = new Error("The application environment is not loaded yet");
 
 describe("Main", () => {
   describe("Root", () => {
     let observedBootstrapCalls: unknown[][];
 
     beforeAll(async() => {
+      vi.spyOn(ConfigModuleHelpers, "getAppEnv").mockReturnValue(appEnv);
       const bootstrapSpy = vi.spyOn(Server, "bootstrap").mockResolvedValue({} as NestFastifyApplication);
 
       await import("@src/main");
 
-      await vi.waitUntil(() => bootstrapSpy.mock.calls.length > 0);
       observedBootstrapCalls = bootstrapSpy.mock.calls;
     });
 
@@ -53,18 +53,18 @@ describe("Main", () => {
       expect(observedBootstrapCalls).toStrictEqual([[AppModule, "127.0.0.1"]]);
     });
 
-    it("should reject when the environment validation fails.", async() => {
-      vi.spyOn(EnvHelpers, "validate").mockImplementation(() => {
-        throw validationError;
+    it("should reject when the application environment is not available.", async() => {
+      vi.spyOn(ConfigModuleHelpers, "getAppEnv").mockImplementation(() => {
+        throw environmentError;
       });
       const { main } = await import("@src/main");
 
-      await expect(main()).rejects.toThrow(validationError);
+      await expect(main()).rejects.toThrow(environmentError);
     });
 
-    it("should not bootstrap the application when the environment validation fails.", async() => {
-      vi.spyOn(EnvHelpers, "validate").mockImplementation(() => {
-        throw validationError;
+    it("should not bootstrap the application when the application environment is not available.", async() => {
+      vi.spyOn(ConfigModuleHelpers, "getAppEnv").mockImplementation(() => {
+        throw environmentError;
       });
       const bootstrapSpy = vi.spyOn(Server, "bootstrap").mockResolvedValue({} as NestFastifyApplication);
       const { main } = await import("@src/main");
@@ -74,14 +74,14 @@ describe("Main", () => {
       expect(bootstrapSpy).not.toHaveBeenCalled();
     });
 
-    it("should validate the environment before bootstrapping the application when the composition root runs.", async() => {
-      const validateSpy = vi.spyOn(EnvHelpers, "validate").mockReturnValue(appEnv);
+    it("should read the application environment before bootstrapping the application when the composition root runs.", async() => {
+      const getAppEnvSpy = vi.spyOn(ConfigModuleHelpers, "getAppEnv").mockReturnValue(appEnv);
       const bootstrapSpy = vi.spyOn(Server, "bootstrap").mockResolvedValue({} as NestFastifyApplication);
       const { main } = await import("@src/main");
 
       await main();
 
-      expect(validateSpy.mock.invocationCallOrder[0]).toBeLessThan(bootstrapSpy.mock.invocationCallOrder[0]);
+      expect(getAppEnvSpy.mock.invocationCallOrder[0]).toBeLessThan(bootstrapSpy.mock.invocationCallOrder[0]);
     });
   });
 });
