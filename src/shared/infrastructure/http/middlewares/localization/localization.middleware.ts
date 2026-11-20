@@ -12,12 +12,10 @@ import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 /**
- * Middleware for extracting the locale from the 'Accept-Language' HTTP header and attaching it to the request.
+ * Resolves the request locale from the `Accept-Language` header and attaches it, with the configured fallback, to the raw request.
  *
- * - Only the first locale in the 'Accept-Language' header is considered.
- * - If no locale is provided, the configured fallback locale is used.
- * - If an invalid locale is received, a BadRequestException is thrown.
- * - The extracted locale and fallback locale are attached to the request's localizationOptions.
+ * Only the first locale is considered, and a `*` or missing header resolves to the fallback locale. Any unsupported locale is
+ * rejected with a 400, so downstream handlers always receive a supported locale.
  */
 @Injectable()
 export class LocalizationMiddleware implements NestMiddleware {

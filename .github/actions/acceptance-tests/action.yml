@@ -39,7 +39,7 @@ runs:
       run: echo "acceptance-tests-count=${{ env.CUCUMBER_SCENARIOS_COUNT }}" >> "$GITHUB_OUTPUT"
 
     - name: Save acceptance tests reports as artifact 💎
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       with:
         name: acceptance-tests-reports
         path: ${{ inputs.acceptance-tests-reports-path }}
@@ -48,7 +48,7 @@ runs:
 
     - name: Save acceptance logs as artifact 📋
       if: always()
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       with:
         name: acceptance-logs
         path: tests/acceptance/logs

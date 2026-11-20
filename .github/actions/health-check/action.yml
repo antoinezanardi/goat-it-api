@@ -1,0 +1,17 @@
+name: Post-Deploy Health Check 🩺
+description: Verifies that a deployed API answers HTTP 200 on its liveness endpoint.
+author: Antoine ZANARDI
+
+inputs:
+  health-check-url:
+    description: Full public liveness URL to probe (for example https://api.goat-it.fr/)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check liveness endpoint 🩺
+      shell: bash
+      env:
+        HEALTH_CHECK_URL: ${{ inputs.health-check-url }}
+      run: bash "${{ github.workspace }}/scripts/post-deploy-health-check.sh" "$HEALTH_CHECK_URL"

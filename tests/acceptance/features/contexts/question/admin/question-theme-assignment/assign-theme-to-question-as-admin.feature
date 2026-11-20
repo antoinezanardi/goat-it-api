@@ -96,3 +96,23 @@ Feature: Assign Theme To Question as Admin
     Then the request should have failed with status code 401 and the response should contain the following error:
       | error        | statusCode | message         |
       | Unauthorized | 401        | Invalid API key |
+
+  Scenario: Trying to assign a fourth theme to a question
+    Given the database is populated with questions fixture set with name "five-questions"
+    And the request payload is set from scope "question-theme-assignment", type "creation" and name "primaryHistory"
+    When the request payload is overridden with the following values:
+      | path      | type    | value                    |
+      | themeId   | string  | 8ef21e4eb04eb0fa5a469d87 |
+      | isPrimary | boolean | false                    |
+      | isHint    | boolean | false                    |
+    And the admin assigns the theme with the request payload to the question with id "d4e5f6a7b8c9012345678904"
+    Then the request should have succeeded with status code 201
+    When the request payload is overridden with the following values:
+      | path      | type    | value                    |
+      | themeId   | string  | ddb03d94cae8df38d28e5adc |
+      | isPrimary | boolean | false                    |
+      | isHint    | boolean | false                    |
+    And the admin assigns the theme with the request payload to the question with id "d4e5f6a7b8c9012345678904"
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                                                             | errorCode               |
+      | Bad Request | 400        | Question with id d4e5f6a7b8c9012345678904 cannot have more than 3 themes assigned | question-maximum-themes |

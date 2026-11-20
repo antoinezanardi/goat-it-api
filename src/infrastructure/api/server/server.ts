@@ -1,19 +1,29 @@
 import { NestFactory } from "@nestjs/core";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { Logger } from "nestjs-pino";
 
+import { initializeSentry } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
+import { setupResponseCachePolicy } from "@src/infrastructure/api/server/cache/helpers/cache.helpers";
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+import { NEST_APPLICATION_OPTIONS } from "@src/infrastructure/api/server/constants/server.constants";
 import { createCorsConfig } from "@src/infrastructure/api/server/cors/helpers/cors.helpers";
+import { createFastifyAdapter } from "@src/infrastructure/api/server/fastify/helpers/fastify.helpers";
+import { setupRequestIdHooks } from "@src/infrastructure/api/server/request-id/helpers/request-id.helpers";
+import { setupSecurityHeaders, setupSecurityHeadersRequestHook } from "@src/infrastructure/api/server/security-headers/helpers/security-headers.helpers";
 import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 
-import { AppModule } from "@app/app.module";
-
-import { GlobalExceptionFilter } from "@shared/infrastructure/http/filters/global-exception/global-exception.filter";
-
+import type { Type } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-async function bootstrap(): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), { bufferLogs: true });
+import type { FastifyTrustProxy } from "@src/infrastructure/api/server/fastify/types/fastify.types";
+
+async function bootstrap(appModule: Type<unknown>, trustProxy: FastifyTrustProxy): Promise<NestFastifyApplication> {
+  initializeSentry();
+
+  const fastifyAdapter = createFastifyAdapter(trustProxy);
+  setupSecurityHeadersRequestHook(fastifyAdapter.getInstance());
+  setupRequestIdHooks(fastifyAdapter.getInstance());
+
+  const app = await NestFactory.create<NestFastifyApplication>(appModule, fastifyAdapter, NEST_APPLICATION_OPTIONS);
 
   const logger = app.get(Logger);
   const appConfigService = app.get<AppConfigService>(AppConfigService);
@@ -21,10 +31,11 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   const corsConfig = createCorsConfig(appConfigService.corsConfig);
   app.enableCors(corsConfig);
 
+  setupSecurityHeaders(app);
+  setupResponseCachePolicy(app);
+
   app.enableShutdownHooks();
   app.useLogger(logger);
-
-  app.useGlobalFilters(new GlobalExceptionFilter());
 
   setupSwaggerModule(app);
 

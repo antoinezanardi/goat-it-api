@@ -1,4 +1,4 @@
-import type { QUESTION_CREATION_AUTHOR_ROLES, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_CREATION_STATUSES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
+import type { QUESTION_AUTHOR_ROLE_ADMIN, QUESTION_AUTHOR_ROLE_AI, QUESTION_AUTHOR_ROLE_GAME, QUESTION_CREATION_AUTHOR_ROLES, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_CREATION_STATUSES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import type { TupleToUnion } from "type-fest";
@@ -17,13 +17,13 @@ type BaseQuestionAuthor<T extends QuestionAuthorRole> = {
   name?: string;
 };
 
-type QuestionGameAuthor = BaseQuestionAuthor<"game"> & {
+type QuestionGameAuthor = BaseQuestionAuthor<typeof QUESTION_AUTHOR_ROLE_GAME> & {
   gameId: string;
 };
 
-type QuestionAIAuthor = BaseQuestionAuthor<"ai">;
+type QuestionAIAuthor = BaseQuestionAuthor<typeof QUESTION_AUTHOR_ROLE_AI>;
 
-type QuestionAdminAuthor = BaseQuestionAuthor<"admin">;
+type QuestionAdminAuthor = BaseQuestionAuthor<typeof QUESTION_AUTHOR_ROLE_ADMIN>;
 
 type QuestionAuthor =
   | QuestionGameAuthor

@@ -1,0 +1,13 @@
+name: Audit Dependencies 🛡️
+description: Audits the production dependency surface (the one that ships) and fails on high or critical advisories.
+author: Antoine ZANARDI
+
+runs:
+  using: composite
+  steps:
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Audit dependencies 🛡️
+      shell: bash
+      run: pnpm audit --prod --audit-level=high

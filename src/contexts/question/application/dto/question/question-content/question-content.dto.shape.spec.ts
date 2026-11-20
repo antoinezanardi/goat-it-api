@@ -6,7 +6,7 @@ import {
   QUESTION_ANSWER_EXAMPLE,
   QUESTION_CONTEXT_EXAMPLE,
   QUESTION_TRIVIA_EXAMPLE,
-} from "@question/application/dto/shared/zod/validators/question-content/constants/question-content.zod.validators.constants";
+} from "@question/application/dto/zod/validators/question-content/constants/question-content.zod.validators.constants";
 
 describe("Question Content DTO Shape", () => {
   let validQuestionContentDto: { statement: string; answer: string; context?: string; trivia?: string[] };

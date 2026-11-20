@@ -1,17 +1,32 @@
 import { Logger, Injectable } from "@nestjs/common";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
-import { DATABASE_CONNECTION_TIMEOUT_MS, DATABASE_RETRY_ATTEMPTS, DATABASE_RETRY_DELAY_MS } from "@src/infrastructure/database/constants/database.constants";
+import {
+  DATABASE_CONNECTION_TIMEOUT_MS,
+  DATABASE_RETRY_ATTEMPTS,
+  DATABASE_RETRY_DELAY_MS,
+  DATABASE_SOCKET_TIMEOUT_MS,
+} from "@src/infrastructure/database/constants/database.constants";
 
 import type { MongooseModuleOptions, MongooseOptionsFactory } from "@nestjs/mongoose";
 import type { Connection } from "mongoose";
 
+/**
+ * Builds the Mongoose connection options from the environment and logs connection lifecycle events.
+ */
 @Injectable()
 export class DatabaseService implements MongooseOptionsFactory {
   private readonly logger = new Logger(DatabaseService.name);
 
   public constructor(private readonly appConfig: AppConfigService) {}
 
+  /**
+   * Builds the connection URI from the configured host, port and database name.
+   *
+   * Timeouts, retry count and retry delay are bounded and configurable only through the constants, and the call logs once per app start.
+   * `socketTimeoutMS` bounds inactivity on an established socket; it is not a total query deadline, since the driver may retry
+   * an operation and a command with ongoing socket activity can outlast it.
+   */
   public createMongooseOptions(): MongooseModuleOptions {
     this.logger.log("🍃 Connecting to the database...");
     const { host, port, database } = this.appConfig.mongoDbConfig;
@@ -20,6 +35,7 @@ export class DatabaseService implements MongooseOptionsFactory {
       uri: `mongodb://${host}:${port}`,
       serverSelectionTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,
       connectTimeoutMS: DATABASE_CONNECTION_TIMEOUT_MS,
+      socketTimeoutMS: DATABASE_SOCKET_TIMEOUT_MS,
       retryDelay: DATABASE_RETRY_DELAY_MS,
       retryAttempts: DATABASE_RETRY_ATTEMPTS,
       dbName: database,

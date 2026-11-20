@@ -4,6 +4,8 @@
     "config:recommended"
   ],
   "rangeStrategy": "bump",
+  "pinDigests": true,
+  "minimumReleaseAge": "3 days",
   "assignees": [
     "antoinezanardi"
   ],

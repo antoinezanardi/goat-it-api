@@ -1,0 +1,98 @@
+name: 🐛 Bug report
+description: Report a problem with Goat It API.
+title: "🐛 [Bug]: "
+labels:
+  - 🐛 bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please search existing issues before opening a new one.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the problem.
+      placeholder: Describe what went wrong.
+    validations:
+      required: true
+
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint
+      description: Which HTTP method and path are affected?
+      placeholder: e.g. GET /api/v1/questions
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the steps that lead to the problem.
+      placeholder: |
+        1. Start the API with '...'
+        2. Send a request to '...'
+        3. See the error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: request
+    attributes:
+      label: Request details
+      description: Headers (redact API keys), query parameters, or request body.
+      render: json
+
+  - type: textarea
+    id: response
+    attributes:
+      label: Response details
+      description: HTTP status and response body.
+      render: json
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Which version or commit are you using?
+      placeholder: e.g. v1.25.0 or a commit SHA
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste any relevant logs or stack traces.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: "Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in."
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true

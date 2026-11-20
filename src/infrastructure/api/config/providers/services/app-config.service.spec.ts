@@ -6,7 +6,7 @@ import { AppConfigService } from "@src/infrastructure/api/config/providers/servi
 
 import { createMockedNestConfigService } from "@mocks/infrastructure/api/config/providers/services/nest-config.service.mock";
 
-import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv, createFakeThrottlerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
 import type { MockInstance } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
@@ -44,6 +44,10 @@ describe(AppConfigService, () => {
           MONGODB_PORT: 27_018,
           MONGODB_DATABASE: "goat-it-test",
           FALLBACK_LOCALE: "en",
+          THROTTLER_DEFAULT_TTL_SECONDS: 1,
+          THROTTLER_DEFAULT_LIMIT: 20,
+          THROTTLER_SUSTAINED_TTL_SECONDS: 60,
+          THROTTLER_SUSTAINED_LIMIT: 300,
           API_KEY_HMAC_SECRET: apiKeyHmacSecret,
           ADMIN_API_KEY: adminApiKey,
           GAME_API_KEY: gameApiKey,
@@ -166,6 +170,25 @@ describe(AppConfigService, () => {
     });
   });
 
+  describe("throttlerConfig", () => {
+    it("should return throttler config from env when called.", () => {
+      const expectedThrottlerConfig = createFakeThrottlerConfigFromEnv({
+        default: { ttlSeconds: 1, limit: 20 },
+        sustained: { ttlSeconds: 60, limit: 300 },
+      });
+
+      expect(services.appConfig.throttlerConfig).toStrictEqual(expectedThrottlerConfig);
+    });
+
+    it("should throw error when one of the required env vars is not defined.", () => {
+      mocks.services.nestConfig.getOrThrow.mockImplementation(() => {
+        throw new Error("THROTTLER_DEFAULT_TTL_SECONDS is not defined");
+      });
+
+      expect(() => services.appConfig.throttlerConfig).toThrow("THROTTLER_DEFAULT_TTL_SECONDS is not defined");
+    });
+  });
+
   describe("authenticationConfig", () => {
     it("should return authentication config from env when called.", () => {
       expect(services.appConfig.authenticationConfig).toStrictEqual<AuthenticationConfigFromEnv>({
@@ -221,7 +244,7 @@ describe(AppConfigService, () => {
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
-  describe(AppConfigService["deleteSensitiveEnvVariables"], () => {
+  describe(AppConfigService["removeSensitiveEnvVariables"], () => {
     it.each<{ test: string; envVarName: string }>([
       {
         test: "should delete api key hmac secret when computing authentication config cache.",

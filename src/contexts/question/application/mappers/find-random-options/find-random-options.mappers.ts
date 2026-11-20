@@ -3,6 +3,9 @@ import type { FindRandomQuestionsBodyDto } from "@question/application/dto/find-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
+/**
+ * Maps a random-question body DTO to the repository options, adding the resolved `locale` used to filter translations.
+ */
 function createFindRandomQuestionsOptionsFromBodyDto(bodyDto: FindRandomQuestionsBodyDto, locale: Locale): FindRandomQuestionsOptions {
   return {
     limit: bodyDto.limit,

@@ -4,6 +4,7 @@ const ESLINT_CONFIG_FILES_FLAT_CONFIG: Linter.Config = {
   name: "config-files",
   files: [
     "eslint.config.ts",
+    "release.config.ts",
     "configs/**/*.{js,mjs,ts}",
   ],
 

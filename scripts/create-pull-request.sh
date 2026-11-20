@@ -2,8 +2,9 @@
 # -----------------------------------------------------------------------------
 # create-pull-request.sh
 #
-# Interactive script to open a pull request on GitHub. Prompts for GitHub
-# username if not set, validates it, and checks for commits before opening PR.
+# Interactive script to open a pull request on GitHub. Reads the GitHub username
+# from GITHUB_USER or git config, prompts if neither is set, validates it, and
+# checks for commits before opening PR.
 #
 # Usage:
 #   ./create-pull-request.sh [base-branch]
@@ -17,16 +18,15 @@ command -v git >/dev/null 2>&1 || { echo "❌  git is required." >&2; exit 1; }
 command -v ruby >/dev/null 2>&1 || echo "⚠️ ruby not found; labels/titles won't be URL-encoded."
 git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "❌ Not a git repository." >&2; exit 1; }
 
-github_user=$(git config github.user || true)
+github_user=${GITHUB_USER:-$(git config --get github.user || true)}
 
 while true; do
   if [[ -z "$github_user" ]]; then
     read -r -p "Enter your GitHub username: " github_user
-    git config github.user "$github_user"
+    echo "💡  Set GITHUB_USER to skip this prompt next time."
   elif ! curl -s "https://api.github.com/users/$github_user" | grep -q '"login":'; then
     echo "The GitHub username \"$github_user\" does not exist or is invalid."
     read -r -p "Enter your GitHub username: " github_user
-    git config github.user "$github_user"
   else
     break
   fi

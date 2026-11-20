@@ -2,7 +2,7 @@ import { expect } from "expect";
 
 import type { QUESTION_THEME_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/question-theme/public/datatables/question-theme.datatables.schemas";
 
-import type { QuestionThemeDto } from "@question-theme/application/dto/question-theme/question-theme.dto.shape";
+import type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 import type { z } from "zod";
 
 function findQuestionThemeBySlugOrThrow<T extends Pick<QuestionThemeDto, "slug">>(questionThemes: T[], slug: string): T {

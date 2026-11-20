@@ -33,7 +33,7 @@ function zCreateFilterArray<T extends ZodType>(
       const uniqueValues = new Set(array);
 
       return uniqueValues.size === array.length;
-    }, { message: uniquenessMessage })
+    }, { error: uniquenessMessage })
     .optional()
     .describe(description);
 }

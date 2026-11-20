@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { AppMetadata } from "@app/types/app.types";
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
-function createFakeAppMetadata(appMetadata: Partial<AppMetadata> = {}): AppMetadata {
+function createFakeAppMetadata(appMetadata: Partial<AppMetadataDto> = {}): AppMetadataDto {
   return {
     version: faker.system.semver(),
     name: faker.company.name(),

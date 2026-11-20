@@ -3,15 +3,21 @@ import { ConfigService } from "@nestjs/config";
 
 import { createApiKeyValidator, hashApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
 
-import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
+import type { AuthenticationConfigFromEnv, CorsConfigFromEnv, LocalizationConfigFromEnv, MongoDatabaseConfigFromEnv, ServerConfigFromEnv, ThrottlerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
+/**
+ * Single access point to the validated environment configuration.
+ *
+ * The constructor hashes the admin and game API keys once and caches the validators, then deletes `API_KEY_HMAC_SECRET`,
+ * `ADMIN_API_KEY` and `GAME_API_KEY` from `process.env` so the raw secrets are no longer readable in the process.
+ */
 @Injectable()
 export class AppConfigService {
   private readonly authenticationConfigCache: AuthenticationConfigFromEnv;
 
   public constructor(private readonly configService: ConfigService) {
     this.authenticationConfigCache = this.computeAuthenticationConfigCache();
-    AppConfigService.deleteSensitiveEnvVariables();
+    AppConfigService.removeSensitiveEnvVariables();
   }
 
   public get serverConfig(): ServerConfigFromEnv {
@@ -21,6 +27,9 @@ export class AppConfigService {
     };
   }
 
+  /**
+   * Returns the server origin, defaulting to an `http://` scheme when the configured host does not declare one.
+   */
   public get serverBaseUrl(): string {
     const { host, port } = this.serverConfig;
     const normalizedHost = host.startsWith("http://") || host.startsWith("https://") ? host : `http://${host}`;
@@ -50,11 +59,27 @@ export class AppConfigService {
     };
   }
 
+  public get throttlerConfig(): ThrottlerConfigFromEnv {
+    return {
+      default: {
+        ttlSeconds: this.configService.getOrThrow<ThrottlerConfigFromEnv["default"]["ttlSeconds"]>("THROTTLER_DEFAULT_TTL_SECONDS"),
+        limit: this.configService.getOrThrow<ThrottlerConfigFromEnv["default"]["limit"]>("THROTTLER_DEFAULT_LIMIT"),
+      },
+      sustained: {
+        ttlSeconds: this.configService.getOrThrow<ThrottlerConfigFromEnv["sustained"]["ttlSeconds"]>("THROTTLER_SUSTAINED_TTL_SECONDS"),
+        limit: this.configService.getOrThrow<ThrottlerConfigFromEnv["sustained"]["limit"]>("THROTTLER_SUSTAINED_LIMIT"),
+      },
+    };
+  }
+
+  /**
+   * Returns the validators cached at construction, so API keys are only ever compared as HMAC-SHA256 hashes against the stored digests.
+   */
   public get authenticationConfig(): AuthenticationConfigFromEnv {
     return this.authenticationConfigCache;
   }
 
-  private static deleteSensitiveEnvVariables(): void {
+  private static removeSensitiveEnvVariables(): void {
     delete process.env.API_KEY_HMAC_SECRET;
     delete process.env.ADMIN_API_KEY;
     delete process.env.GAME_API_KEY;

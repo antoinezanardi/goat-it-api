@@ -1,8 +1,9 @@
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/application/mappers/question-theme.mappers";
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 
 import { createTranslationFromLocalizedText, createTranslationsFromLocalizedTexts } from "@shared/application/mappers/localization/localization.mappers";
 
 import { computeQuestionStatusFromAuthorRole } from "@question/domain/rules/question.rules";
+import { createQuestionThemeAssignmentCreationContractFromDto } from "@question/application/mappers/question-theme-assignment/question-theme-assignment.mappers";
 import type { AdminQuestionThemeAssignmentDto } from "@question/application/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.shape";
 import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import type { QuestionThemeAssignmentDto } from "@question/application/dto/question/question-theme-assignment/question-theme-assignment.dto.shape";
@@ -11,15 +12,19 @@ import type { QuestionDto } from "@question/application/dto/question/question.dt
 import type { QuestionAuthorCreationDto } from "@question/application/dto/question-creation/question-author-creation/question-author-creation.dto.shape";
 import type { QuestionContentCreationDto } from "@question/application/dto/question-creation/question-content-creation/question-content-creation.dto.shape";
 import type { QuestionCreationDto } from "@question/application/dto/question-creation/question-creation.dto.shape";
-import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 import type { QuestionContent, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 import type { Question } from "@question/domain/types/question.entities";
-import type { QuestionCreationCommand, QuestionModificationCommand } from "@question/domain/types/question.commands";
-import type { QuestionAuthorCreationContract, QuestionContentCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import type { QuestionCreationCommand, QuestionModificationCommand } from "@question/application/commands/question.commands";
 
+import type { QuestionAuthorCreationContract, QuestionContentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
+/**
+ * Maps question content to its public DTO, resolving every localized field for the requested locale.
+ *
+ * Absent `context` and `trivia` stay `undefined` rather than being replaced by a placeholder.
+ */
 function createQuestionContentDtoFromEntity(questionContent: QuestionContent, localizationOptions: LocalizationOptions): QuestionContentDto {
   const context = questionContent.context ? createTranslationFromLocalizedText(questionContent.context, localizationOptions) : undefined;
   const trivia = questionContent.trivia ? createTranslationsFromLocalizedTexts(questionContent.trivia, localizationOptions) : undefined;
@@ -32,6 +37,9 @@ function createQuestionContentDtoFromEntity(questionContent: QuestionContent, lo
   };
 }
 
+/**
+ * Maps one theme assignment to its public DTO, resolving the nested theme for the requested locale.
+ */
 function createQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: QuestionThemeAssignment, localizationOptions: LocalizationOptions): QuestionThemeAssignmentDto {
   return {
     theme: createQuestionThemeDtoFromEntity(questionThemeAssignment.theme, localizationOptions),
@@ -40,6 +48,11 @@ function createQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: Que
   };
 }
 
+/**
+ * Maps a question entity to the public question DTO, localizing content and themes and converting the timestamps to ISO strings.
+ *
+ * `sourceUrls` is copied into a new array so the response does not alias the domain `Set`.
+ */
 function createQuestionDtoFromEntity(question: Question, localizationOptions: LocalizationOptions): QuestionDto {
   return {
     id: question.id,
@@ -57,6 +70,9 @@ function createQuestionDtoFromEntity(question: Question, localizationOptions: Lo
   };
 }
 
+/**
+ * Maps one theme assignment to its admin DTO, keeping the nested theme in its localized-map form.
+ */
 function createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment: QuestionThemeAssignment): AdminQuestionThemeAssignmentDto {
   return {
     theme: createAdminQuestionThemeDtoFromEntity(questionThemeAssignment.theme),
@@ -65,6 +81,11 @@ function createAdminQuestionThemeAssignmentDtoFromEntity(questionThemeAssignment
   };
 }
 
+/**
+ * Maps a question entity to the admin DTO, exposing every localized map and the applicable locales, with timestamps as ISO strings.
+ *
+ * `sourceUrls` is copied into a new array so the response does not alias the domain `Set`.
+ */
 function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto {
   return {
     id: question.id,
@@ -83,14 +104,9 @@ function createAdminQuestionDtoFromEntity(question: Question): AdminQuestionDto 
   };
 }
 
-function createQuestionThemeAssignmentCreationContractFromDto(questionThemeAssignmentDto: QuestionThemeAssignmentCreationDto): QuestionThemeAssignmentCreationContract {
-  return {
-    themeId: questionThemeAssignmentDto.themeId,
-    isPrimary: questionThemeAssignmentDto.isPrimary,
-    isHint: questionThemeAssignmentDto.isHint,
-  };
-}
-
+/**
+ * Maps a question-author creation DTO to the repository contract, keeping only the fields the repository persists.
+ */
 function createQuestionAuthorCreationContractFromDto(questionAuthorDto: QuestionAuthorCreationDto): QuestionAuthorCreationContract {
   return {
     role: questionAuthorDto.role,
@@ -98,6 +114,9 @@ function createQuestionAuthorCreationContractFromDto(questionAuthorDto: Question
   };
 }
 
+/**
+ * Maps a question-content creation DTO to the repository contract, preserving the localized maps as submitted.
+ */
 function createQuestionContentCreationContractFromDto(questionContentDto: QuestionContentCreationDto): QuestionContentCreationContract {
   return {
     statement: questionContentDto.statement,
@@ -107,6 +126,9 @@ function createQuestionContentCreationContractFromDto(questionContentDto: Questi
   };
 }
 
+/**
+ * Maps a question-creation DTO to a creation command, deriving the initial status from the author role and copying the source URLs into a `Set`.
+ */
 function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): QuestionCreationCommand {
   return {
     payload: {
@@ -123,6 +145,9 @@ function createQuestionCreationCommandFromDto(dto: QuestionCreationDto): Questio
   };
 }
 
+/**
+ * Maps a question-modification DTO and its target id to a modification command; omitted fields stay `undefined` so the repository leaves them untouched.
+ */
 function createQuestionModificationCommandFromDto(questionId: string, questionModificationDto: QuestionModificationDto): QuestionModificationCommand {
   return {
     questionId,
@@ -143,7 +168,6 @@ export {
   createQuestionDtoFromEntity,
   createAdminQuestionThemeAssignmentDtoFromEntity,
   createAdminQuestionDtoFromEntity,
-  createQuestionThemeAssignmentCreationContractFromDto,
   createQuestionAuthorCreationContractFromDto,
   createQuestionContentCreationContractFromDto,
   createQuestionCreationCommandFromDto,

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Contributing guide
+    url: https://github.com/antoinezanardi/goat-it-api/blob/main/.github/CONTRIBUTING.md
+    about: Read the contribution guidelines before opening an issue.

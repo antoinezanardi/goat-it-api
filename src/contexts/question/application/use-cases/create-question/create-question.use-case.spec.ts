@@ -1,21 +1,16 @@
-import { Test } from "@nestjs/testing";
-
-import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
 
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import { createMockedGetQuestionThemesByIdsOrThrowUseCase } from "@mocks/contexts/question-theme/application/use-cases/get-question-themes-by-ids-or-throw.use-case.mock";
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionCreationCommand } from "@faketories/contexts/question/commands/question.commands.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-
-import type { TestingModule } from "@nestjs/testing";
 
 describe(CreateQuestionUseCase, () => {
   let createQuestionUseCase: CreateQuestionUseCase;
@@ -28,7 +23,7 @@ describe(CreateQuestionUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
@@ -42,21 +37,10 @@ describe(CreateQuestionUseCase, () => {
       createFakeQuestionTheme({ status: DEFAULT_QUESTION_THEME_STATUS }),
     ]);
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CreateQuestionUseCase,
-        {
-          provide: GetQuestionThemesByIdsOrThrowUseCase,
-          useValue: mocks.useCases.getQuestionThemesByIdsOrThrow,
-        },
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-      ],
-    }).compile();
-
-    createQuestionUseCase = module.get<CreateQuestionUseCase>(CreateQuestionUseCase);
+    createQuestionUseCase = new CreateQuestionUseCase(
+      mocks.repositories.question,
+      mocks.useCases.getQuestionThemesByIdsOrThrow as unknown as GetQuestionThemesByIdsOrThrowUseCase,
+    );
   });
 
   describe(CreateQuestionUseCase.prototype.create, () => {

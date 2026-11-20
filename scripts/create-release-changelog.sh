@@ -20,7 +20,7 @@ if ! command -v gawk &>/dev/null; then
   exit 1
 fi
 
-npx semantic-release --dry-run --no-ci --extends ./configs/semantic-release/release.config.mjs
+npx semantic-release --dry-run --no-ci
 
 if [ ! -s RELEASE.md ]; then
   echo "No new release notes generated. Removing empty RELEASE.md."

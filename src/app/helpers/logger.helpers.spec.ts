@@ -3,8 +3,18 @@ import { getLoggerConfiguration } from "@app/helpers/logger.helpers";
 import type { Params as PinoParameters } from "nestjs-pino";
 
 describe(getLoggerConfiguration, () => {
+  const originalNodeEnv: { value?: string } = {};
+
+  beforeEach(() => {
+    originalNodeEnv.value = process.env.NODE_ENV;
+  });
+
   afterEach(() => {
-    process.env.NODE_ENV = "TEST";
+    if (originalNodeEnv.value === undefined) {
+      Reflect.deleteProperty(process.env, "NODE_ENV");
+    } else {
+      process.env.NODE_ENV = originalNodeEnv.value;
+    }
   });
 
   it.each<{ test: string; nodeEnv: string; expectedConfig: PinoParameters }>([

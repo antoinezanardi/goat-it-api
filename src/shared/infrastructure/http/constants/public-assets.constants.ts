@@ -1,0 +1,3 @@
+const PUBLIC_ASSETS_PATH_PREFIX = "/public/";
+
+export { PUBLIC_ASSETS_PATH_PREFIX };

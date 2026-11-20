@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
 import { SORT_BY_QUERY_KEY, SORT_ORDER_QUERY_KEY } from "@shared/application/dto/constants/sort-query.dto.constants";
 import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
-import { LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
 import { FULLY_TRANSLATED_QUERY_KEY } from "@shared/application/dto/constants/translation-completeness-query.dto.constants";
 
 import { ADMIN_QUESTION_SORTABLE_FIELDS, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";

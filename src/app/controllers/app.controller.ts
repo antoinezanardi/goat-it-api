@@ -1,8 +1,10 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
+import { SkipThrottle } from "@nestjs/throttler";
 import { ZodResponse } from "nestjs-zod";
 
-import { SwaggerTags } from "@src/infrastructure/api/server/swagger/constants/swagger.enums";
+import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
+import { THROTTLER_SKIPPED_TIERS } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 
 import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import { AppMetadataNestZodDto } from "@app/dto/app-metadata/app-metadata.dto";
@@ -13,8 +15,9 @@ export class AppController {
   public constructor(private readonly appService: AppService) {}
 
   @Get()
+  @SkipThrottle(THROTTLER_SKIPPED_TIERS)
   @ApiOperation({
-    tags: [SwaggerTags.APP],
+    tags: [SWAGGER_TAGS.APP],
     summary: "Get application metadata",
     description: "Get the metadata information of the application like name, version, and description.",
   })

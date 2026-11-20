@@ -2,7 +2,7 @@ import { World } from "@cucumber/cucumber";
 import { ofetch } from "ofetch";
 import { model } from "mongoose";
 
-import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schema/question-theme.mongoose.schema";
+import { QUESTION_THEME_MONGOOSE_SCHEMA, QuestionThemeMongooseSchema } from "@question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema";
 
 import { QUESTION_MONGOOSE_SCHEMA, QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 
@@ -65,6 +65,77 @@ class GoatItWorld extends World {
       throw new TypeError("The last response data is not of type string.");
     }
     return data;
+  }
+
+  public expectLastResponseHeaderToBe(headerName: string, expectedValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue !== expectedValue) {
+      throw new Error(`Expected the last response header "${headerName}" to be "${expectedValue}", but received: ${String(headerValue)}`);
+    }
+  }
+
+  public expectLastResponseHeaderToBeAbsent(headerName: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue !== null) {
+      throw new Error(`Expected the last response header "${headerName}" to be absent, but received: ${headerValue}`);
+    }
+  }
+
+  public expectLastResponseHeaderToBePresent(headerName: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null) {
+      throw new Error(`Expected the last response header "${headerName}" to be present, but it was absent.`);
+    }
+  }
+
+  public expectLastResponseHeaderNotToContain(headerName: string, forbiddenValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null) {
+      return;
+    }
+    const headerTokens = headerValue.split(",").map((token: string): string => token.trim().toLowerCase());
+
+    if (headerTokens.includes(forbiddenValue.toLowerCase())) {
+      throw new Error(`Expected the last response header "${headerName}" not to contain "${forbiddenValue}", but received: ${headerValue}`);
+    }
+  }
+
+  public expectLastResponseHeaderToMatch(headerName: string, pattern: RegExp): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === null || !pattern.test(headerValue)) {
+      throw new Error(`Expected the last response header "${headerName}" to match "${String(pattern)}", but received: ${String(headerValue)}`);
+    }
+  }
+
+  public expectLastResponseHeaderNotToBe(headerName: string, unexpectedValue: string): void {
+    if (!this.lastFetchResponse) {
+      throw new Error("No response stored. Did you forget to call fetchAndStoreResponse()?");
+    }
+    const headerValue = this.lastFetchResponse.headers.get(headerName);
+
+    if (headerValue === unexpectedValue) {
+      throw new Error(`Expected the last response header "${headerName}" not to be "${unexpectedValue}", but received: ${headerValue}`);
+    }
   }
 
   public expectLastResponseJson<T>(schema: { parse: (_data: unknown) => T }): T {

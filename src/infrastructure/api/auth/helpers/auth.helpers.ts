@@ -11,11 +11,9 @@ import type { ExecutionContext } from "@nestjs/common";
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 
 /**
- * **SECURITY WARNING**:
+ * Computes the HMAC-SHA256 hex digest used to compare API keys without keeping them in clear.
  *
- * This function is only for hashing API keys for comparison purposes. Not for storing passwords.
- *
- * This is a high-entropy API token validated using HMAC-SHA256, which is the recommended approach for server-side API key authentication.
+ * This is keyed hashing for a high-entropy token, not a password-storage function.
  */
 function hashApiKey(apiKey: string, hmacKey: string): string {
   return createHmac("sha256", hmacKey)
@@ -23,6 +21,11 @@ function hashApiKey(apiKey: string, hmacKey: string): string {
     .digest("hex");
 }
 
+/**
+ * Binds the expected digest and secret into a validator, so callers cannot forget either argument.
+ *
+ * The returned validator completes normally when the key matches and throws the auth error when it does not.
+ */
 function createApiKeyValidator(
   expectedHashedApiKey: string,
   hmacSecret: string,
@@ -32,6 +35,12 @@ function createApiKeyValidator(
   };
 }
 
+/**
+ * Re-hashes the received key and compares it to the expected digest in constant time.
+ *
+ * @throws `MissingApiKeyError` when the received key is not a string.
+ * @throws `InvalidApiKeyError` when the digests differ in length or content.
+ */
 function validateReceivedApiKey(expectedHashedApiKey: string, receivedApiKey: unknown, hmacSecret: string): void {
   if (typeof receivedApiKey !== "string") {
     throw new MissingApiKeyError();
@@ -53,7 +62,11 @@ function validateReceivedApiKey(expectedHashedApiKey: string, receivedApiKey: un
 }
 
 /**
- * This function handles the common logic for API key guards. It is used for both admin and game API key guards and only in those guards.
+ * Validates the request API key against the admin or game validator selected by `apiKeyAuthType`.
+ *
+ * Returns `true` only when the key matches; a missing or invalid key becomes an `UnauthorizedException` (401), so the guard never returns `false` itself.
+ *
+ * @throws `UnauthorizedException` when the header is missing or the key does not match.
  */
 function canActivateApiKeyGuardHandler(context: ExecutionContext, configService: AppConfigService, apiKeyAuthType: "admin" | "game"): boolean {
   const request = context.switchToHttp().getRequest<AugmentedFastifyRequest>();

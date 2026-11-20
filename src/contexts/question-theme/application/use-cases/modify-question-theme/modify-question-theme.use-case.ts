@@ -1,19 +1,23 @@
-import { Inject, Injectable } from "@nestjs/common";
-
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 
-import type { QuestionThemeModificationCommand } from "@question-theme/domain/types/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
-@Injectable()
+/**
+ * Applies a partial theme modification and rejects a slug already used by another theme.
+ */
 export class ModifyQuestionThemeUseCase {
-  public constructor(@Inject(QUESTION_THEME_REPOSITORY_TOKEN)
-  private readonly questionThemeRepository: QuestionThemeRepository) {}
+  public constructor(private readonly questionThemeRepository: QuestionThemeRepository) {}
 
+  /**
+   * Returns the theme with the modification applied.
+   *
+   * @throws `QuestionThemeSlugAlreadyExistsError` when the new slug is already used by another theme.
+   * @throws `QuestionThemeNotFoundError` when no theme matches the id.
+   */
   public async modify(questionThemeModificationCommand: QuestionThemeModificationCommand): Promise<QuestionTheme> {
     const { questionThemeId, payload } = questionThemeModificationCommand;
     await this.throwIfQuestionThemeNotModifiable(questionThemeModificationCommand);

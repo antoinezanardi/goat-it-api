@@ -1,8 +1,11 @@
 import { isObject, mapKeys, shake } from "radashi";
 
+import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+
 import type { PipelineStage } from "mongoose";
 
 import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers.types";
 import type { SemanticSortOrders } from "@shared/infrastructure/persistence/mongoose/types/mongoose.types";
 
 function crushDataObjectEntry(entry: [string, unknown], parentKey: string, result: Record<string, unknown>): Record<string, unknown> {
@@ -35,10 +38,11 @@ function crushDataRecursively(data: object, parentKey = "", result: Record<strin
 }
 
 /**
- * Crushes a nested data object into a flat structure suitable for MongoDB patch updates.
- * Suitable when updating documents partially using the `$set` operator.
- * Database operation resulting from a PATCH request for example.
- * @param data
+ * Crushes a nested data object into a flat structure suitable for MongoDB patch updates applied through the `$set` operator.
+ *
+ * Leaf paths are dot-joined and empty nested objects are preserved, so `{ a: { b: 1 } }` becomes `{ "a.b": 1 }`.
+ *
+ * @param data - The nested update payload whose leaves are flattened into `$set` paths.
  */
 function getCrushedDataForMongoPatchUpdate(data: Record<string, unknown>): Record<string, unknown> {
   return crushDataRecursively(data);
@@ -56,6 +60,7 @@ function getCrushedDataForMongoPatchUpdate(data: Record<string, unknown>): Recor
  * // contract = { isPrimary: true, isHint: undefined }
  * // arrayPath = "themes.$[elem]"
  * // → { "themes.$[elem].isPrimary": true }
+ *
  * @param data - The object whose defined keys will become `$set` fields.
  * @param arrayPath - The MongoDB array element path prefix (e.g. `"themes.$[elem]"`).
  */
@@ -63,17 +68,17 @@ function getDefinedFieldsForMongoArrayElementUpdate(data: Record<string, unknown
   return mapKeys(shake(data), key => `${arrayPath}.${key}`);
 }
 
-type MongoSortDirection = 1 | -1;
-
+/**
+ * Maps a domain sort order to MongoDB's numeric direction: `asc` becomes `1`, and every other order becomes `-1`.
+ */
 function getMongoSortDirectionFromSortOrder(sortOrder: SortOrder): MongoSortDirection {
-  return sortOrder === "asc" ? 1 : -1;
+  return sortOrder === SORT_ORDERS[0] ? 1 : -1;
 }
 
 /**
- * Builds MongoDB aggregation pipeline stages for sorting.
- * For semantic fields (defined in `semanticSortOrders`), uses `$indexOfArray` to compute sort priority.
- * For regular fields, uses a simple `$sort` stage.
- * Always includes `_id` as a tiebreaker.
+ * Builds the aggregation pipeline stages that sort on the requested field, with `_id` as a deterministic tiebreaker.
+ *
+ * Fields in `semanticSortOrders` are ranked with `$indexOfArray` through a temporary `_sortPriority` field; other fields use a plain `$sort`.
  */
 function buildMongooseAggregationSortStages<T extends string>(
   sortOptions: SortOptions<T>,
@@ -92,6 +97,9 @@ function buildMongooseAggregationSortStages<T extends string>(
   return [{ $sort: { [sortOptions.sortBy]: direction, _id: direction } }];
 }
 
+/**
+ * Builds the Mongoose sort criteria object, appending `_id` as a deterministic tiebreaker so documents sharing the sort value keep a stable order.
+ */
 function buildMongooseSortCriteria<T extends string>(sortOptions: SortOptions<T>): Record<string, MongoSortDirection> {
   const direction = getMongoSortDirectionFromSortOrder(sortOptions.sortOrder);
 
@@ -99,12 +107,13 @@ function buildMongooseSortCriteria<T extends string>(sortOptions: SortOptions<T>
 }
 
 /**
- * Adds a value to a match stage object if the given array is defined and non-empty.
- * Useful for building MongoDB aggregation $match stages from optional array filters.
- * @param items - The array to check (may be undefined)
- * @param matchStage - The match stage object to mutate
- * @param key - The key to set in the match stage
- * @param valueFunction - A function that produces the value from the non-empty array
+ * Adds a filter to a `$match` stage only when the source array is defined and non-empty.
+ *
+ * `matchStage` is mutated in place, and `valueFunction` never runs for a missing or empty array, so no empty `$in` clause reaches MongoDB.
+ *
+ * @param items - The optional filter values; both `undefined` and `[]` leave the stage untouched.
+ * @param matchStage - The match stage builder object mutated in place.
+ * @param valueFunction - Builds the Mongo condition from the non-empty values only.
  */
 function addArrayFilterIfNonEmpty<T>(
   items: T[] | undefined,
@@ -127,5 +136,3 @@ export {
   getDefinedFieldsForMongoArrayElementUpdate,
   getMongoSortDirectionFromSortOrder,
 };
-
-export type { MongoSortDirection };

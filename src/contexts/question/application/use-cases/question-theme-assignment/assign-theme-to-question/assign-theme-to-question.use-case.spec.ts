@@ -1,25 +1,21 @@
-import { Test } from "@nestjs/testing";
-
-import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
-import { ReferencedQuestionThemeArchivedError } from "@question-theme/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 import { DEFAULT_QUESTION_THEME_STATUS, QUESTION_THEME_STATUS_ARCHIVED } from "@question-theme/domain/constants/question-theme.constants";
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { QuestionThemeAssignmentCreationError } from "@question/domain/errors/question-theme-assignment-creation/question-theme-assignment-creation.error";
+import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
+import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 
-import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
+import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/repository-contracts/question-theme-assignment/question-theme-assignment.repository-contracts.faketory";
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionThemeAssignmentCreationCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
-
-import type { TestingModule } from "@nestjs/testing";
 
 describe(AssignThemeToQuestionUseCase, () => {
   let assignThemeToQuestionUseCase: AssignThemeToQuestionUseCase;
@@ -33,7 +29,7 @@ describe(AssignThemeToQuestionUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
@@ -44,25 +40,11 @@ describe(AssignThemeToQuestionUseCase, () => {
       },
     };
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        AssignThemeToQuestionUseCase,
-        {
-          provide: FindQuestionThemeByIdUseCase,
-          useValue: mocks.useCases.findQuestionThemeById,
-        },
-        {
-          provide: FindQuestionByIdUseCase,
-          useValue: mocks.useCases.findQuestionById,
-        },
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-      ],
-    }).compile();
-
-    assignThemeToQuestionUseCase = module.get<AssignThemeToQuestionUseCase>(AssignThemeToQuestionUseCase);
+    assignThemeToQuestionUseCase = new AssignThemeToQuestionUseCase(
+      mocks.repositories.question,
+      mocks.useCases.findQuestionThemeById as unknown as FindQuestionThemeByIdUseCase,
+      mocks.useCases.findQuestionById as unknown as FindQuestionByIdUseCase,
+    );
   });
 
   describe(AssignThemeToQuestionUseCase.prototype.assign, () => {
@@ -138,6 +120,23 @@ describe(AssignThemeToQuestionUseCase, () => {
         status: QUESTION_THEME_STATUS_ARCHIVED,
       }));
       const expectedError = new ReferencedQuestionThemeArchivedError(command.payload.themeId);
+
+      await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionMaximumThemesError when the question already has the maximum number of themes.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-1",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-new" }),
+      });
+      const themes = [
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+        createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-3" }) }),
+      ];
+      mocks.useCases.findQuestionById.getById.mockResolvedValue(createFakeQuestion({ id: "q-1", themes }));
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: command.payload.themeId }));
+      const expectedError = new QuestionMaximumThemesError(command.questionId);
 
       await expect(async() => assignThemeToQuestionUseCase["throwIfThemeNotAssignableToQuestion"](command.payload, command.questionId)).rejects.toThrow(expectedError);
     });

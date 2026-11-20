@@ -1,0 +1,347 @@
+import { ZodError } from "zod";
+
+import { API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO } from "@shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
+
+describe("Api Response Exception Validation Details DTO Shape", () => {
+  let validApiResponseExceptionValidationDetailsDto: {
+    code: string;
+    message: string;
+    path: (string | number)[];
+    expected?: string;
+    received?: string;
+    origin?: string;
+    format?: string;
+    pattern?: string;
+    minimum?: number;
+    maximum?: number;
+    inclusive?: boolean;
+    keys?: string[];
+    values?: (string | number | boolean)[];
+  };
+
+  beforeEach(() => {
+    validApiResponseExceptionValidationDetailsDto = {
+      code: "type_error",
+      message: "Expected type string but received type number",
+      path: ["user", "age"],
+      expected: "string",
+      received: "number",
+    };
+  });
+
+  it("should pass validation when assigned valid values.", () => {
+    expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validApiResponseExceptionValidationDetailsDto)).not.toThrow();
+  });
+
+  describe("code", () => {
+    it("should throw a zod error when assigned a non-string value.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, code: 123 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.description).toBe("Validation error code");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Validation error code",
+        example: "type_error",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.code.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("message", () => {
+    it("should throw a zod error when assigned a non-string value.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, message: 456 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.description).toBe("Validation error message");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Validation error message",
+        example: "Expected type string but received type number",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.message.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("path", () => {
+    it("should throw a zod error when assigned a non-array value.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, path: "not-an-array" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it.each<{ test: string; items: (string | number)[] }>([
+      { test: "should pass validation when array contains string items.", items: ["user", "address"] },
+      { test: "should pass validation when array contains number items.", items: [0, 1] },
+      { test: "should pass validation when array contains mixed string and number items.", items: ["user", 0, "name"] },
+    ])("$test", ({ items }) => {
+      const validDto = { ...validApiResponseExceptionValidationDetailsDto, path: items };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validDto)).not.toThrow();
+    });
+
+    it("should throw a zod error when array items are of invalid types.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, path: ["valid", { obj: true }] };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.description).toBe("Path to the invalid property");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Path to the invalid property",
+        example: ["user", "age"],
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.path.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("expected", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, expected: 789 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.description).toBe("Expected type of the invalid property value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Expected type of the invalid property value when applicable",
+        example: "string",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.expected.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("received", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, received: 789 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.received.description).toBe("Received type of the invalid property value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Received type of the invalid property value when applicable",
+        example: "NaN",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.received.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("origin", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, origin: 123 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.description).toBe("Origin type of the invalid property value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Origin type of the invalid property value when applicable",
+        example: "number",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.origin.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("format", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, format: true };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.description).toBe("Expected high-level value format (e.g. 'uuid', 'email') when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Expected high-level value format (e.g. 'uuid', 'email') when applicable",
+        example: "email",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("pattern", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, pattern: 123 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.description).toBe("Expected regex pattern when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Expected regex pattern when applicable",
+        example: String.raw`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$`,
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.pattern.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("minimum", () => {
+    it("should throw a zod error when assigned a non-number value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, minimum: "NaN" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.description).toBe("Expected minimum value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Expected minimum value when applicable",
+        example: 1,
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.minimum.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("maximum", () => {
+    it("should throw a zod error when assigned a non-number value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, maximum: "NaN" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.description).toBe("Expected maximum value when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Expected maximum value when applicable",
+        example: 255,
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.maximum.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("inclusive", () => {
+    it("should throw a zod error when assigned a non-boolean value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, inclusive: "true" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.description).toBe("Whether the minimum or maximum value is inclusive when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Whether the minimum or maximum value is inclusive when applicable",
+        example: true,
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.inclusive.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("keys", () => {
+    it("should throw a zod error when assigned a non-array value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, keys: "not-an-array" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should throw a zod error when array items are not strings.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, keys: ["a", 2] };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.description).toBe("List unrecognized keys when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "List unrecognized keys when applicable",
+        example: ["unexpectedKey1", "unexpectedKey2"],
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.keys.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("values", () => {
+    it("should throw a zod error when assigned a non-array value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, values: "not-an-array" };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it.each<{ test: string; items: (string | number | boolean)[] }>([
+      { test: "should pass validation when array contains string items.", items: ["value1", "value2"] },
+      { test: "should pass validation when array contains number items.", items: [1, 2] },
+      { test: "should pass validation when array contains boolean items.", items: [true, false] },
+      { test: "should pass validation when array contains mixed string, number and boolean items.", items: ["value1", 1, true] },
+    ])("$test", ({ items }) => {
+      const validDto = { ...validApiResponseExceptionValidationDetailsDto, values: items };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validDto)).not.toThrow();
+    });
+
+    it("should throw a zod error when array items are not valid types.", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, values: ["a", { invalid: true }] };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.description).toBe("List of expected values when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "List of expected values when applicable",
+        example: ["expectedValue1", "expectedValue2"],
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.values.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+});

@@ -1,14 +1,11 @@
-import { Test } from "@nestjs/testing";
-
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
 import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 
 import { createFakeQuestionThemeAssignmentRemovalCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
@@ -26,7 +23,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
@@ -36,21 +33,10 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       },
     };
 
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoveThemeFromQuestionUseCase,
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-        {
-          provide: FindQuestionByIdUseCase,
-          useValue: mocks.useCases.findQuestionById,
-        },
-      ],
-    }).compile();
-
-    useCase = module.get(RemoveThemeFromQuestionUseCase);
+    useCase = new RemoveThemeFromQuestionUseCase(
+      mocks.repositories.question,
+      mocks.useCases.findQuestionById as unknown as FindQuestionByIdUseCase,
+    );
   });
 
   describe(RemoveThemeFromQuestionUseCase.prototype.remove, () => {

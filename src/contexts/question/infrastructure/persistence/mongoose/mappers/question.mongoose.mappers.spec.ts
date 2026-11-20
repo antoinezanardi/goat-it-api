@@ -1,15 +1,15 @@
 import { Types } from "mongoose";
 
-import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
-
 import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
-import { createQuestionAuthorFromAggregate, createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentFromQuestionThemeAggregate, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
+import { createQuestionAuthorFromAggregate, createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentFromQuestionThemeAggregate, createQuestionThemeAssignmentMongooseInsertPayloadFromContract, createQuestionThemeFromAggregate } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 
 import { createFakeQuestionMongooseInsertPayload, createFakeQuestionThemeAssignmentMongooseInsertPayload } from "@faketories/contexts/question/mongoose/mongoose-insert-payload/question.mongoose-insert-payload.faketory";
-import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/contracts/question-theme-assignment/question-theme-assignment.contracts.faketory";
-import { createFakeQuestionCreationContract } from "@faketories/contexts/question/contracts/question.contracts.faketory";
+import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/contexts/question/repository-contracts/question-theme-assignment/question-theme-assignment.repository-contracts.faketory";
+import { createFakeQuestionCreationContract } from "@faketories/contexts/question/repository-contracts/question.repository-contracts.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeQuestionAggregate, createFakeQuestionAuthorAggregate, createFakeQuestionThemeAssignmentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
+import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestion, createFakeQuestionAuthor, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 
 describe(createQuestionAuthorFromAggregate, () => {
@@ -74,11 +74,31 @@ describe(createQuestionAuthorFromAggregate, () => {
   });
 });
 
+describe(createQuestionThemeFromAggregate, () => {
+  it("should map a question theme aggregate to a question theme when called.", () => {
+    const questionThemeAggregate = createFakeQuestionThemeDocument();
+    const expectedQuestionTheme = createFakeQuestionTheme({
+      id: questionThemeAggregate._id.toString(),
+      slug: questionThemeAggregate.slug,
+      label: questionThemeAggregate.label,
+      aliases: questionThemeAggregate.aliases,
+      description: questionThemeAggregate.description,
+      color: questionThemeAggregate.color,
+      status: questionThemeAggregate.status,
+      createdAt: questionThemeAggregate.createdAt,
+      updatedAt: questionThemeAggregate.updatedAt,
+    });
+    const result = createQuestionThemeFromAggregate(questionThemeAggregate);
+
+    expect(result).toStrictEqual(expectedQuestionTheme);
+  });
+});
+
 describe(createQuestionThemeAssignmentFromQuestionThemeAggregate, () => {
   it("should correctly map a question theme assignment from aggregate when called.", () => {
     const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate();
     const expectedQuestionThemeAssignment = createFakeQuestionThemeAssignment({
-      theme: createQuestionThemeFromDocument(questionThemeAssignmentAggregate.theme),
+      theme: createQuestionThemeFromAggregate(questionThemeAssignmentAggregate.theme),
       isPrimary: questionThemeAssignmentAggregate.isPrimary,
       isHint: questionThemeAssignmentAggregate.isHint,
     });

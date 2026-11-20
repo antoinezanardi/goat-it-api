@@ -1,10 +1,13 @@
 import { z } from "zod";
 
-import { zMongoId } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zMongoId } from "@shared/application/dto/zod/validators/string/string.zod.validators";
 
-import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
+import { isGameIdSetOnGameRole } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinements";
 import { QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
 
+/**
+ * Validates a question author, enforcing that `gameId` is set if and only if the role is `game`.
+ */
 const QUESTION_AUTHOR_DTO = z.strictObject({
   role: z.enum(QUESTION_AUTHOR_ROLES)
     .describe("Question's author role")
@@ -19,6 +22,9 @@ const QUESTION_AUTHOR_DTO = z.strictObject({
 }).refine(isGameIdSetOnGameRole, { error: "Game ID must be set if and only if the author role is 'game'." })
   .describe("Question's author");
 
+/**
+ * The question author consumers receive, with `gameId` present exactly when the role is `game`.
+ */
 export type QuestionAuthorDto = z.infer<typeof QUESTION_AUTHOR_DTO>;
 
 export { QUESTION_AUTHOR_DTO };

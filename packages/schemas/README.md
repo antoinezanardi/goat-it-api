@@ -14,7 +14,10 @@ This package is a small, framework‑agnostic collection of DTO shapes, value‑
   - `./shared/locale`
   - `./shared/error`
   - `./shared/constants`
-- Peer dependency: `zod` (match workspace version)
+  - `./testing/question`
+  - `./testing/question-theme`
+  - `./testing/shared`
+- Peer dependencies: `zod` and `@faker-js/faker` (match workspace versions; faker is required by `./testing/*`)
 
 ## 🔧 Usage
 
@@ -45,7 +48,7 @@ import { QUESTION_AUTHOR_NAME_MIN_LENGTH, QUESTION_STATUS_PENDING } from "@goat-
 
 - The package ships compiled ES modules under `dist/` and `.d.mts` type definitions.
 - The package uses `tsdown` to generate the `dist/` layout — the `build` script runs `tsdown`.
-- Ensure the caller project has `zod` installed as a peer dependency, matching the version used in this package.
+- Ensure the caller project has `zod` and `@faker-js/faker` installed as peer dependencies, matching the versions used in this package. `@faker-js/faker` is only needed when importing a `./testing/*` entrypoint.
 
 ## ©️ License
 

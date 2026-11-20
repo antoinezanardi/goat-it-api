@@ -1,3 +1,8 @@
+/**
+ * Keeps only the entries whose value is defined, so an absent filter is never forwarded as an explicit `undefined` query condition.
+ *
+ * Returns `undefined` when no entry is left, letting callers distinguish "no filter" from "empty filter"; the copy is shallow.
+ */
 function pickDefinedValues<T extends Record<string, unknown>>(object: T): Partial<T> | undefined {
   const entries = Object.entries(object).filter(([, value]) => value !== undefined);
 
