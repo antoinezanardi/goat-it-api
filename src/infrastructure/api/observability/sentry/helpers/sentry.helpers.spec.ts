@@ -7,73 +7,59 @@ import * as sentrySdkHelpers from "@src/infrastructure/api/observability/sentry/
 import { captureServerError, createRedactedSentryError, createRedactedSentryEvent, createSentryInitOptions, createSentryIntegrations, createUncaughtExceptionIntegrationOptions, dropSentryBreadcrumb, handleSentryFatalError, initializeSentry } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
+import { createFakeSentryErrorEvent } from "@faketories/infrastructure/api/observability/sentry/sentry.faketory";
 
 import type { NodeOptions } from "@sentry/nestjs";
 
 import type { SentryErrorEvent } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers.types";
 
-function createFakeSentryErrorEvent(event: Partial<SentryErrorEvent> = {}): SentryErrorEvent {
-  return {
-    type: undefined,
-    event_id: "8f1c1a44f0a04dd6a4a0d6f2d6b0a1c9",
-    timestamp: 1_763_000_000,
-    level: "error",
-    platform: "node",
-    sdk: {
-      name: "sentry.javascript.nestjs",
-      version: "11.15.0",
-      packages: [{ name: "npm:@sentry/nestjs", version: "11.15.0" }],
-    },
-    environment: "production",
-    release: "goat-it-api@1.25.0",
-    server_name: "goat-it-api-1",
-    transaction: "/admin/questions",
-    request: {
-      url: "https://api.goat-it.fr/admin/questions?apiKey=secret",
-      method: "POST",
-      headers: { "goat-it-api-key": "secret" },
-      data: { statement: "secret" },
-    },
-    user: { id: "user-id", ip_address: "127.0.0.1" },
-    contexts: { runtime: { name: "node", version: "26.13.1" } },
-    extra: { payload: "secret" },
-    breadcrumbs: [{ message: "secret" }],
-    modules: { mongoose: "9.12.2" },
-    tags: {
-      "errorClass": "QuestionCreationError",
-      "http.route": "/admin/questions",
-      "http.request.method": "POST",
-      "http.response.status_code": "500",
-      "http.request.id": "request-id",
-      "feature": "questions",
-    },
-    exception: {
-      values: [
-        {
-          type: "QuestionCreationError",
-          value: "explosive secret message",
-          mechanism: { type: "generic", handled: false, data: { secret: "value" } },
-          stacktrace: {
-            frames: [
-              {
-                filename: "/app/dist/contexts/question/question.js",
-                function: "createQuestion",
-                lineno: 12,
-                colno: 34,
-                in_app: true,
-                context_line: "const secret = 'value';",
-                pre_context: ["secret"],
-                post_context: ["secret"],
-                vars: { secret: "value" },
-              },
-            ],
-          },
+const SENTRY_SECRET = "explosive secret value";
+
+const sentrySecretOverrides: Partial<SentryErrorEvent> = {
+  transaction: `/${SENTRY_SECRET}`,
+  request: {
+    url: `https://api.goat-it.fr/admin/questions?apiKey=${SENTRY_SECRET}`,
+    method: "POST",
+    headers: { "goat-it-api-key": SENTRY_SECRET },
+    data: { statement: SENTRY_SECRET },
+  },
+  user: { id: SENTRY_SECRET, ip_address: "127.0.0.1" },
+  contexts: { runtime: { name: "node", version: SENTRY_SECRET } },
+  extra: { payload: SENTRY_SECRET },
+  breadcrumbs: [{ message: SENTRY_SECRET }],
+  modules: { mongoose: SENTRY_SECRET },
+  tags: {
+    "errorClass": "QuestionCreationError",
+    "http.route": "/admin/questions",
+    "http.request.method": "POST",
+    "http.response.status_code": "500",
+    "http.request.id": SENTRY_SECRET,
+  },
+  exception: {
+    values: [
+      {
+        type: "QuestionCreationError",
+        value: SENTRY_SECRET,
+        mechanism: { type: "generic", handled: false, data: { secret: SENTRY_SECRET } },
+        stacktrace: {
+          frames: [
+            {
+              filename: "/app/dist/contexts/question/question.js",
+              function: "createQuestion",
+              lineno: 12,
+              colno: 34,
+              in_app: true,
+              context_line: SENTRY_SECRET,
+              pre_context: [SENTRY_SECRET],
+              post_context: [SENTRY_SECRET],
+              vars: { secret: SENTRY_SECRET },
+            },
+          ],
         },
-      ],
-    },
-    ...event,
-  };
-}
+      },
+    ],
+  },
+};
 
 describe(createRedactedSentryError, () => {
   it("should name the redacted error after the given error class when called.", () => {
@@ -94,17 +80,63 @@ describe(createRedactedSentryError, () => {
     expect([redactedError.name, redactedError.message, redactedError.stack].join(" ")).not.toContain("Explosive secret value");
   });
 
-  it("should drop the first line of the original stack when called with an Error.", () => {
+  it("should remove the whole message header from the original stack when called with an Error.", () => {
     const originalError = new Error("Explosive secret value");
-    const expectedStack = String(originalError.stack).split("\n").slice(1).join("\n");
+    const messageHeader = `Error: ${originalError.message}\n`;
+    const expectedStack = String(originalError.stack).slice(messageHeader.length);
 
     expect(createRedactedSentryError(originalError, "QuestionCreationError").stack).toBe(expectedStack);
+  });
+
+  it("should drop the frame-shaped continuation lines of a multiline message when called with an Error.", () => {
+    const originalError = new Error("Failed\n    at fake (/private/token-secret:2:2)");
+    const redactedStack = String(createRedactedSentryError(originalError, "QuestionCreationError").stack);
+
+    expect(redactedStack).not.toContain("token-secret");
+  });
+
+  it("should keep only the original frames of an Error carrying a multiline message when called.", () => {
+    const originalError = new Error("Failed\n    at fake (/private/token-secret:2:2)");
+    const redactedStack = String(createRedactedSentryError(originalError, "QuestionCreationError").stack);
+
+    expect(redactedStack.startsWith("    at ")).toBe(true);
+  });
+
+  it("should drop the whole stack of an Error whose stack does not start with the message header when called.", () => {
+    const originalError = Object.assign(new Error("Explosive secret value"), {
+      // Acceptable as this case models an Error whose stack was replaced by a foreign producer
+      // eslint-disable-next-line unicorn/no-error-property-assignment
+      stack: "    at createQuestion (/app/dist/question.js:12:34)",
+    });
+
+    expect(createRedactedSentryError(originalError, "QuestionCreationError").stack).toBe("");
+  });
+
+  it("should keep the frames of an Error carrying no message when called.", () => {
+    const originalError = Object.assign(new Error("Explosive secret value"), {
+      message: "",
+      // Acceptable as this case needs the stack to match the message-less header
+      // eslint-disable-next-line unicorn/no-error-property-assignment
+      stack: "Error\n    at createQuestion (/app/dist/question.js:12:34)",
+    });
+
+    expect(createRedactedSentryError(originalError, "QuestionCreationError").stack).toBe("    at createQuestion (/app/dist/question.js:12:34)");
   });
 
   it("should build a synthetic stack when called with a value that is not an Error.", () => {
     const redactedError = createRedactedSentryError("Some unknown exception", "NonErrorThrown");
 
     expect(redactedError.stack).toContain("createRedactedSentryError");
+  });
+
+  it("should build a synthetic stack when the original Error carries no stack.", () => {
+    const originalError = Object.assign(new Error("Explosive secret value"), {
+      // Acceptable as this case models an Error whose stack was stripped by a foreign producer
+      // eslint-disable-next-line unicorn/no-error-property-assignment
+      stack: undefined,
+    });
+
+    expect(createRedactedSentryError(originalError, "QuestionCreationError").stack).toContain("createRedactedSentryError");
   });
 });
 
@@ -118,37 +150,40 @@ describe(createRedactedSentryEvent, () => {
   });
 
   it("should return the allow-listed event when called with a full event.", () => {
+    const event = createFakeSentryErrorEvent();
+    const exceptionValue = event.exception?.values?.[0];
+    const frame = exceptionValue?.stacktrace?.frames?.[0];
     const expectedEvent: SentryErrorEvent = {
       type: undefined,
-      event_id: "8f1c1a44f0a04dd6a4a0d6f2d6b0a1c9",
-      timestamp: 1_763_000_000,
-      level: "error",
-      platform: "node",
+      event_id: event.event_id,
+      timestamp: event.timestamp,
+      level: event.level,
+      platform: event.platform,
       sdk: {
-        name: "sentry.javascript.nestjs",
-        version: "11.15.0",
+        name: event.sdk?.name,
+        version: event.sdk?.version,
       },
-      environment: "production",
-      release: "goat-it-api@1.25.0",
+      environment: event.environment,
+      release: event.release,
       tags: {
-        "errorClass": "QuestionCreationError",
-        "http.route": "/admin/questions",
-        "http.request.method": "POST",
-        "http.response.status_code": "500",
+        "errorClass": event.tags?.errorClass,
+        "http.route": event.tags?.["http.route"],
+        "http.request.method": event.tags?.["http.request.method"],
+        "http.response.status_code": event.tags?.["http.response.status_code"],
       },
       exception: {
         values: [
           {
-            type: "QuestionCreationError",
+            type: exceptionValue?.type,
             value: "[REDACTED]",
             stacktrace: {
               frames: [
                 {
-                  filename: "/app/dist/contexts/question/question.js",
-                  function: "createQuestion",
-                  lineno: 12,
-                  colno: 34,
-                  in_app: true,
+                  filename: frame?.filename,
+                  function: frame?.function,
+                  lineno: frame?.lineno,
+                  colno: frame?.colno,
+                  in_app: frame?.in_app,
                 },
               ],
             },
@@ -157,7 +192,7 @@ describe(createRedactedSentryEvent, () => {
       },
     };
 
-    expect(createRedactedSentryEvent(createFakeSentryErrorEvent())).toStrictEqual(expectedEvent);
+    expect(createRedactedSentryEvent(event)).toStrictEqual(expectedEvent);
   });
 
   it("should omit an allowed tag the event does not carry when called.", () => {
@@ -174,8 +209,49 @@ describe(createRedactedSentryEvent, () => {
     });
   });
 
+  it("should return an empty frame list when the exception value message spans several lines when called.", () => {
+    const redactedEvent = createRedactedSentryEvent(createFakeSentryErrorEvent({
+      exception: {
+        values: [
+          {
+            type: "Error",
+            value: "Failed\n    at fake (/private/token-secret:2:2)",
+            stacktrace: { frames: [{ filename: "/private/token-secret" }] },
+          },
+        ],
+      },
+    }));
+
+    expect(redactedEvent?.exception?.values?.[0]?.stacktrace?.frames).toStrictEqual([]);
+  });
+
+  it("should not carry the stack of an exception value whose message spans several lines when called.", () => {
+    const redactedEvent = createRedactedSentryEvent(createFakeSentryErrorEvent({
+      exception: {
+        values: [
+          {
+            type: "Error",
+            value: "Failed\n    at fake (/private/token-secret:2:2)",
+            stacktrace: { frames: [{ filename: "/private/token-secret" }] },
+          },
+        ],
+      },
+    }));
+
+    expect(JSON.stringify(redactedEvent)).not.toContain("token-secret");
+  });
+
+  it("should keep the frames when the exception value carries no message when called.", () => {
+    const frames = [{ filename: "/app/dist/contexts/question/question.js", function: "createQuestion", lineno: 12, colno: 34, in_app: true }];
+    const redactedEvent = createRedactedSentryEvent(createFakeSentryErrorEvent({
+      exception: { values: [{ type: "Error", stacktrace: { frames } }] },
+    }));
+
+    expect(redactedEvent?.exception?.values?.[0]?.stacktrace?.frames).toStrictEqual(frames);
+  });
+
   it("should not carry any original event text when called.", () => {
-    expect(JSON.stringify(createRedactedSentryEvent(createFakeSentryErrorEvent()))).not.toContain("secret");
+    expect(JSON.stringify(createRedactedSentryEvent(createFakeSentryErrorEvent(sentrySecretOverrides)))).not.toContain(SENTRY_SECRET);
   });
 
   it("should not mutate the received event when called.", () => {
@@ -195,6 +271,20 @@ describe(dropSentryBreadcrumb, () => {
 });
 
 describe(createSentryInitOptions, () => {
+  const originalDebug: { value?: string } = {};
+
+  beforeEach(() => {
+    originalDebug.value = process.env.SENTRY_DEBUG;
+  });
+
+  afterEach(() => {
+    if (originalDebug.value === undefined) {
+      Reflect.deleteProperty(process.env, "SENTRY_DEBUG");
+    } else {
+      process.env.SENTRY_DEBUG = originalDebug.value;
+    }
+  });
+
   it("should return the allow-listed SDK options when called.", () => {
     const appEnv = createFakeAppEnv({
       SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
@@ -204,6 +294,7 @@ describe(createSentryInitOptions, () => {
       dsn: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
       environment: "production",
       release: packageJson.version,
+      debug: false,
       includeServerName: false,
       maxBreadcrumbs: 0,
       dataCollection: {
@@ -226,6 +317,12 @@ describe(createSentryInitOptions, () => {
     };
 
     expect(createSentryInitOptions(appEnv)).toStrictEqual(expectedOptions);
+  });
+
+  it("should pin the debug output off when an ambient SENTRY_DEBUG is set.", () => {
+    process.env.SENTRY_DEBUG = "true";
+
+    expect(createSentryInitOptions(createFakeAppEnv()).debug).toBe(false);
   });
 });
 
@@ -333,12 +430,34 @@ describe(captureServerError, () => {
 });
 
 describe(initializeSentry, () => {
+  const originalTracesSampleRate: { value?: string } = {};
+
   beforeEach(() => {
+    originalTracesSampleRate.value = process.env.SENTRY_TRACES_SAMPLE_RATE;
     vi.spyOn(sentrySdkHelpers, "initSentrySdk").mockReturnValue(undefined);
+  });
+
+  afterEach(() => {
+    if (originalTracesSampleRate.value === undefined) {
+      Reflect.deleteProperty(process.env, "SENTRY_TRACES_SAMPLE_RATE");
+    } else {
+      process.env.SENTRY_TRACES_SAMPLE_RATE = originalTracesSampleRate.value;
+    }
   });
 
   it("should not initialize the tracker when no DSN is configured.", () => {
     vi.spyOn(configModuleHelpers, "getAppEnv").mockReturnValue(createFakeAppEnv({ SENTRY_DSN: "" }));
+
+    initializeSentry();
+
+    expect(sentrySdkHelpers.initSentrySdk).not.toHaveBeenCalled();
+  });
+
+  it("should not initialize the tracker when the tracker is disabled with a configured DSN.", () => {
+    vi.spyOn(configModuleHelpers, "getAppEnv").mockReturnValue(createFakeAppEnv({
+      SENTRY_DISABLED: true,
+      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+    }));
 
     initializeSentry();
 
@@ -350,6 +469,25 @@ describe(initializeSentry, () => {
       SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
       SENTRY_ENVIRONMENT: "staging",
     });
+    vi.spyOn(configModuleHelpers, "getAppEnv").mockReturnValue(appEnv);
+
+    initializeSentry();
+
+    expect(sentrySdkHelpers.initSentrySdk).toHaveBeenCalledExactlyOnceWith(createSentryInitOptions(appEnv));
+  });
+
+  it("should remove the ambient traces sample rate when a DSN is configured.", () => {
+    process.env.SENTRY_TRACES_SAMPLE_RATE = "1";
+    vi.spyOn(configModuleHelpers, "getAppEnv").mockReturnValue(createFakeAppEnv({ SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42" }));
+
+    initializeSentry();
+
+    expect(process.env.SENTRY_TRACES_SAMPLE_RATE).toBeUndefined();
+  });
+
+  it("should initialize the tracker once when an ambient traces sample rate is set and a DSN is configured.", () => {
+    process.env.SENTRY_TRACES_SAMPLE_RATE = "1";
+    const appEnv = createFakeAppEnv({ SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42" });
     vi.spyOn(configModuleHelpers, "getAppEnv").mockReturnValue(appEnv);
 
     initializeSentry();

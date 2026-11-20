@@ -41,7 +41,7 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `src/infrastructure/api/server/**`, `src/infrastructure/database/**`, `docs/operations.md` · Src: [12], [9], project: docs/operations.md
 - **[REL-08] One retry layer, no hand-rolled loops** — The MongoDB driver's bounded connection retries are the only retry layer: no application code re-executes a failed operation in a loop or on a timer.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**` · Src: [1], [9]
-- **[REL-09] Outbound calls bounded** — The only outbound HTTP call the application makes is the same-process readiness ping; any future outbound business call adds an explicit timeout constant instead of a library default.
+- **[REL-09] Outbound calls bounded** — The only outbound HTTP calls are the same-process readiness ping and the configured error tracker's event delivery; any future outbound business call adds an explicit timeout constant instead of a library default.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**` · Src: [1]
 - **[REL-10] Retries never re-issue writes** — No retry re-issues a non-idempotent write: the API never repeats a POST/PATCH/DELETE itself after a failure — a failed write surfaces once as its mapped status and the client decides whether to repeat it.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/application/use-cases/**` · Src: [2], [9]

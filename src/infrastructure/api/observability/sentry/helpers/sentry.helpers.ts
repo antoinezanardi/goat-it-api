@@ -35,7 +35,8 @@ function createRedactedSentryStackFrame(frame: SentryStackFrame): SentryStackFra
 }
 
 function createRedactedSentryExceptionValue(exceptionValue: SentryExceptionValue): SentryExceptionValue {
-  const frames = exceptionValue.stacktrace?.frames;
+  const hasMultilineMessage = exceptionValue.value?.includes(SENTRY_STACK_LINE_SEPARATOR) ?? false;
+  const frames = hasMultilineMessage ? undefined : exceptionValue.stacktrace?.frames;
 
   return {
     type: exceptionValue.type,
@@ -88,18 +89,24 @@ function dropSentryBreadcrumb(): null {
 }
 
 /**
- * Drops the message-bearing first line of a V8 stack, keeping the frames only.
+ * Removes the message-bearing header of a V8 stack, keeping the frames only.
+ *
+ * A stack that does not start with the error's full message header is dropped entirely, so no frame-shaped continuation line of a multiline message survives.
  */
-function removeFirstStackLine(stack: string): string {
-  const [, ...remainingStackLines] = stack.split(SENTRY_STACK_LINE_SEPARATOR);
+function removeStackMessageHeader(stack: string, error: Error): string {
+  const messageHeader = error.message === "" ? error.name : `${error.name}: ${error.message}`;
+  const messageHeaderWithSeparator = `${messageHeader}${SENTRY_STACK_LINE_SEPARATOR}`;
 
-  return remainingStackLines.join(SENTRY_STACK_LINE_SEPARATOR);
+  if (!stack.startsWith(messageHeaderWithSeparator)) {
+    return "";
+  }
+  return stack.slice(messageHeaderWithSeparator.length);
 }
 
 /**
- * Builds the synthetic error reported to the tracker: a fixed redacted message, the given error class and a stack without its first line.
+ * Builds the synthetic error reported to the tracker: a fixed redacted message, the given error class and a stack rebuilt from the original frames only.
  *
- * A value that carries no stack keeps the stack captured when the redacted error is constructed, so the reported error always has frames.
+ * A stack that does not start with the error's full message header is dropped entirely, and a value that carries no stack keeps the stack captured when the redacted error is constructed.
  */
 function createRedactedSentryError(exception: unknown, errorClass: string): Error {
   const redactedError = new Error(SENTRY_REDACTED_VALUE);
@@ -107,11 +114,13 @@ function createRedactedSentryError(exception: unknown, errorClass: string): Erro
   // eslint-disable-next-line unicorn/no-error-property-assignment
   redactedError.name = errorClass;
 
-  const originalStack = Error.isError(exception) ? exception.stack : undefined;
-  if (originalStack !== undefined) {
-    // Acceptable as the frames must survive without the message-bearing first line
-    // eslint-disable-next-line unicorn/no-error-property-assignment
-    redactedError.stack = removeFirstStackLine(originalStack);
+  if (Error.isError(exception)) {
+    const originalStack = exception.stack;
+    if (originalStack !== undefined) {
+      // Acceptable as the frames must survive without the message-bearing header
+      // eslint-disable-next-line unicorn/no-error-property-assignment
+      redactedError.stack = removeStackMessageHeader(originalStack, exception);
+    }
   }
   return redactedError;
 }
@@ -133,14 +142,17 @@ function captureServerError(exception: unknown, context: SentryErrorContext): vo
 }
 
 /**
- * Initializes the tracker once at bootstrap, and stays a no-op when no DSN is configured.
+ * Initializes the tracker once at bootstrap, and stays a no-op when `SENTRY_DISABLED` is true or no DSN is configured.
+ *
+ * The SDK's ambient `SENTRY_TRACES_SAMPLE_RATE` fallback is removed so tracing stays disabled.
  */
 function initializeSentry(): void {
   const appEnv = getAppEnv();
 
-  if (appEnv.SENTRY_DSN === DEFAULT_ENV_SENTRY_DSN) {
+  if (appEnv.SENTRY_DISABLED || appEnv.SENTRY_DSN === DEFAULT_ENV_SENTRY_DSN) {
     return;
   }
+  delete process.env.SENTRY_TRACES_SAMPLE_RATE;
   initSentrySdk(createSentryInitOptions(appEnv));
 }
 
@@ -183,15 +195,16 @@ function createSentryIntegrations(defaultIntegrations: SentryIntegration[]): Sen
 }
 
 /**
- * Builds the SDK options: every data-collection surface denied, no breadcrumb, tracing left unconfigured, no server name, the allow-list scrubbers and the safe integrations.
+ * Builds the SDK options: every data-collection surface denied, no breadcrumb, debug output pinned off, no server name, the allow-list scrubbers and the safe integrations.
  *
- * The release is the version of the `package.json` shipped in the runtime image, so no build-time variable is needed. `tracesSampleRate` and `tracesSampler` are deliberately absent: any defined rate would enable tracing.
+ * The release is the version of the `package.json` shipped in the runtime image, so no build-time variable is needed. `debug: false` overrides the SDK's ambient `SENTRY_DEBUG` fallback, so no event payload is ever printed. `tracesSampleRate` and `tracesSampler` are deliberately absent: any defined rate would enable tracing.
  */
 function createSentryInitOptions(appEnv: AppEnv): NodeOptions {
   return {
     dsn: appEnv.SENTRY_DSN,
     environment: appEnv.SENTRY_ENVIRONMENT,
     release: readPackageJson().version,
+    debug: false,
     includeServerName: false,
     maxBreadcrumbs: SENTRY_MAX_BREADCRUMBS,
     dataCollection: {

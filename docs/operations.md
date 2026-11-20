@@ -119,7 +119,7 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 | MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`. The client gets the sanitized `500` when the error reaches the handler; retryable operations retry once with a fresh 10 s inactivity timer, so a GET can outlast the 15 s handler deadline and answer `503` first. A body-bearing request is not bounded by that deadline (see below). |
 
 - The 408 comes from Fastify's low-level connection handler, so it carries no application response headers — no security header, no `Cache-Control`, no `Vary` and no `Permissions-Policy` — and no application log context. It is not produced by `GlobalExceptionFilter`. A router-level `400`/`414` answer is different: it keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. `X-Request-Id` is missing there too, for the same reason.
-- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify 5.12.8 clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
+- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
 - Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.
 
@@ -146,14 +146,14 @@ Do not point an external liveness monitor at `/health` while the container healt
 
 ## Error tracking
 
-Unexpected server errors and process-level crashes are reported to a Sentry SaaS project through `@sentry/nestjs` 11.15.0, initialized once by `initializeSentry()` (`src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`) as the first statement of `bootstrap()` (`src/infrastructure/api/server/server.ts`). The HTTP response contract is unchanged: the filter still answers the stock generic `500` body.
+Unexpected server errors and process-level crashes are reported to a Sentry SaaS project through the Sentry SDK (`@sentry/nestjs`), initialized once by `initializeSentry()` (`src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`) as the first statement of `bootstrap()` (`src/infrastructure/api/server/server.ts`). The HTTP response contract is unchanged: the filter still answers the stock generic `500` body.
 
 - Only the generic-500 branch is reported. Mapped 4xx domain errors, explicit `HttpException`s (including the health `503` and the throttler `429`) and Fastify-mapped responses never reach the tracker.
-- The event carries the error class, the matched Fastify route template, the request method, the `500` status tag and stack frames reduced to file, function, line, column and in-app flag. The error value is always `[REDACTED]` and the message-bearing first stack line is dropped.
+- The event carries the error class, the matched Fastify route template, the request method, the `500` status tag and stack frames reduced to file, function, line, column and in-app flag. The error value is always `[REDACTED]`; the full stack message header is dropped, and frames are dropped when the exception message spans several lines.
 - No request, user, header, cookie, query, body, breadcrumb or server-name data is collected: every `dataCollection` surface is denied, `beforeSend` rebuilds the event from an allow-list and `beforeBreadcrumb` drops everything.
-- Tracing is left unconfigured (`tracesSampleRate` and `tracesSampler` omitted), so no tracing integration is installed and no span, transaction or SDK Fastify auto-capture path is loaded.
+- Tracing is left unconfigured (`tracesSampleRate` and `tracesSampler` omitted) and the SDK's ambient `SENTRY_TRACES_SAMPLE_RATE` fallback is removed before init, so no tracing integration is installed and no span, transaction or SDK Fastify auto-capture path is loaded. SDK debug output is pinned off (`debug: false`), so an inherited `SENTRY_DEBUG` cannot print an event payload.
 - The server-side log line records the exception class only (`Error.isError(exception) ? exception.constructor.name : "NonErrorThrown"`), never the message or a stack.
-- Startup is fail-fast. With `NODE_ENV=production`, an empty `SENTRY_DSN` or a `SENTRY_ENVIRONMENT` outside `staging|production` aborts boot in `validateEnv()` before the tracker is initialized, so a deployment cannot start unmonitored.
+- Startup is fail-fast. `SENTRY_DSN` is required whenever `SENTRY_ENVIRONMENT` is `staging` or `production`; with `NODE_ENV=production` the environment must also be `staging` or `production`, and a deployment environment must not set `SENTRY_DISABLED=true`. Any violation aborts boot in `validateEnv()` before the tracker is initialized, so a deployment cannot start unmonitored.
 - Release is the `package.json` version baked into the image. There is no `SENTRY_RELEASE`, no auth token and no source-map upload.
 
 ### Sentry failure modes
@@ -163,29 +163,18 @@ Unexpected server errors and process-level crashes are reported to a Sentry SaaS
 | Tracker unreachable or transport error | Events are dropped; responses, statuses and bodies are unaffected, and a request is never blocked. | A missing event for a known incident: the production 5xx alert stays silent. |
 | A report call throws | `GlobalExceptionFilter` logs `Failed to report an unexpected error to Sentry` and still writes the stock `500`. | The fixed log line in the host log stream. |
 | Tracker configuration missing or malformed on a deployment host | Startup aborts in `validateEnv()`; the post-deploy health gate then fails the job. | A failed container start and a failed deployment job. |
-| Uncaught exception | The event is captured, the client is closed within 2 000 ms and the process exits with code `1`, printing nothing. When another `uncaughtException` listener is installed, the SDK still captures but does not force the exit. | Container restart plus the event in the Sentry project. |
+| Uncaught exception | The event is captured, the client is closed within 2 000 ms and the process exits with code `1`, printing nothing. When another `uncaughtException` listener is installed, the SDK still captures but does not force the exit. A second uncaught exception raised while the close is pending is printed raw to stderr by the SDK; the two-second window is the only raw-error path. | Container restart plus the event in the Sentry project. |
 | Unhandled promise rejection | The Sentry rejection integration is removed, so Node's default escalation to the uncaught-exception path stays intact and delivery remains best-effort. | Same as the uncaught-exception row. |
 
 The complete failure-mode matrix for database, documentation endpoint and host failures remains #1324; the rows above cover the tracker only.
 
-### Enabling and verifying error tracking
+### Enabling error tracking
 
-Before deploying either environment, the Sentry project administrator must provision the project and its DSN, choose the Sentry data region, review the DPA and retention terms (then record them in `docs/privacy.md`), inject `SENTRY_DSN` and `SENTRY_ENVIRONMENT` (`staging` or `production`) into the host environment, and configure a production 5xx spike alert with its threshold and notification destination. The alert threshold and the channel are project-owned settings, not repository variables.
-
-Verification is manual, runs against the built container, and is the release gate:
-
-1. start the production image with the deployment DSN and environment;
-2. stop MongoDB, call one business route so the driver error falls through to the generic 500, and confirm exactly one event arrives with the `[REDACTED]` value, the route template, the method and the `500` tag;
-3. restore MongoDB, call an unknown route and confirm no event is created for the `404`;
-4. open the captured event and confirm it carries no request headers, query string, body, cookie, user, server name or breadcrumb data;
-5. send an uncaught exception to the process and confirm it exits with code `1` without printing the error;
-6. call `flush()` with a bounded timeout before closing the smoke session, then confirm the event is visible in the intended project: a `flush()` result alone is not delivery proof when no transport wrote anything.
-
-`@sentry/nestjs` 11.15.0 declares a Node engine range of `>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0`, so Node 26.13.1 is outside it. pnpm installs the package with `engine-strict` unset, which is this repository's configuration, and the built-container smoke is the compatibility gate before either environment is enabled.
+Before deploying either environment, the Sentry project administrator must provision the project and its DSN, choose the Sentry data region, review the DPA and retention terms (then record them in `docs/privacy.md`), inject `SENTRY_DSN`, `SENTRY_ENVIRONMENT` (`staging` or `production`) and `SENTRY_DISABLED=false` into the host environment, and configure a production 5xx spike alert with its threshold and notification destination. The alert threshold and the channel are project-owned settings, not repository variables.
 
 ## Out of scope
 
-Numeric SLOs, automatic rollback, remote log shipping and Kubernetes probes are intentionally not configured here. Error tracking is configured and verified as described in [Error tracking](#error-tracking); numeric alert thresholds and error budgets stay in #1407/#1411. Observability work is tracked separately in the repository issues.
+Numeric SLOs, automatic rollback, remote log shipping and Kubernetes probes are intentionally not configured here. Error tracking is configured as described in [Error tracking](#error-tracking); numeric alert thresholds and error budgets stay in #1407/#1411. Observability work is tracked separately in the repository issues.
 
 ## GOAT audit decisions
 

@@ -20,6 +20,7 @@ function createFakeAppEnv(appEnv: Partial<AppEnv> = {}): AppEnv {
     THROTTLER_DEFAULT_LIMIT: faker.number.int({ min: 1, max: 1000 }),
     THROTTLER_SUSTAINED_TTL_SECONDS: faker.number.int({ min: 1, max: 60 }),
     THROTTLER_SUSTAINED_LIMIT: faker.number.int({ min: 1, max: 100_000 }),
+    SENTRY_DISABLED: false,
     SENTRY_DSN: `https://${faker.string.alphanumeric(32)}@sentry.io/${faker.number.int({ min: 1, max: 9_999_999 })}`,
     SENTRY_ENVIRONMENT: faker.helpers.arrayElement(SENTRY_ENVIRONMENTS),
     API_KEY_HMAC_SECRET: faker.string.alpha({ length: 32 }),

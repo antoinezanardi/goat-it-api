@@ -68,6 +68,21 @@ describe(isSentryDsnValid, () => {
       value: "sentry",
       isValid: false,
     },
+    {
+      test: "should return false when the DSN has a leading space.",
+      value: " https://publickey@sentry.io/42",
+      isValid: false,
+    },
+    {
+      test: "should return false when the DSN has a trailing space.",
+      value: "https://publickey@sentry.io/42 ",
+      isValid: false,
+    },
+    {
+      test: "should return false when the DSN has a leading tab.",
+      value: "\thttps://publickey@sentry.io/42",
+      isValid: false,
+    },
   ])("$test", ({ value, isValid }) => {
     expect(isSentryDsnValid(value)).toBe(isValid);
   });

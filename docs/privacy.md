@@ -53,7 +53,7 @@ Policy: log lines must never contain personal data, request bodies or authorizat
 
 The request identifier bound to each request log line is a random UUID v4 generated per request (`file:src/infrastructure/api/server/request-id/helpers/request-id.helpers.ts`). It is never derived from the client address, headers, API key or payload, and clients read the same value from the `X-Request-Id` response header. The API does not store it in MongoDB or in separate application state; a UUID written to request logs follows the host's log-retention policy. This does not change the logging gap above: the `pino-http` default serializer still emits request metadata and remains tracked under #1332/#1343.
 
-Error tracking is wired (`@sentry/nestjs` 11.15.0) and reports only the generic 500 path and process-level crashes to a Sentry SaaS project. Every SDK data-collection surface is denied and `beforeSend` rebuilds the event from an allow-list, so the scrubbing configuration ships with the tracker instead of after it.
+Error tracking is wired (`@sentry/nestjs`) and reports only the generic 500 path and process-level crashes to a Sentry SaaS project. Every SDK data-collection surface is denied and `beforeSend` rebuilds the event from an allow-list, so the scrubbing configuration ships with the tracker instead of after it.
 
 ### Error tracking
 
@@ -62,12 +62,14 @@ Error tracking is wired (`@sentry/nestjs` 11.15.0) and reports only the generic 
 | Processor | Sentry (SaaS), provisioned per environment by the maintainer |
 | Trigger | Unexpected server errors on the API's generic 500 path, and process-level crashes |
 | Fields transferred | event id, timestamp, level, platform, SDK name and version, environment, release, the tags `errorClass`, route template, request method and HTTP status, exception type, exception value `[REDACTED]`, and stack frames reduced to file, function, line, column and in-app flag |
-| Never transferred | request URL, query string, headers, cookies, bodies, user identity, IP address, server name, modules, breadcrumbs, stack-frame source context and local variables, the raw exception message and the raw first stack line |
+| Never transferred | request URL, query string, headers, cookies, bodies, user identity, IP address, server name, modules, breadcrumbs, stack-frame source context and local variables, the raw exception message, the full stack message header and every frame of an exception whose message spans several lines |
 | Purpose | Detect and alert on 5xx spikes and process crashes |
 | Region, DPA and retention | Chosen and reviewed by the Sentry project administration; recorded here once provisioned, never assumed |
-| Disabled state | Empty `SENTRY_DSN`: no client, no transport, no event |
+| Disabled state | `SENTRY_DISABLED=true` or an empty `SENTRY_DSN`: no client, no transport, no event |
 
-The allow-list lives in `file:src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts` and `file:src/infrastructure/api/observability/sentry/constants/sentry.constants.ts`. The reported value is always `[REDACTED]` and the first stack line, which carries the message, is dropped before the event leaves the process. The route tag is the registered Fastify route template, never the request URL; an unmatched or middleware request sends the literal `unknown`.
+The allow-list lives in `file:src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts` and `file:src/infrastructure/api/observability/sentry/constants/sentry.constants.ts`. The reported value is always `[REDACTED]`; the full stack message header is dropped and frames are dropped for a multiline-message exception before the event leaves the process. SDK debug output is pinned off (`debug: false`), so an inherited `SENTRY_DEBUG` cannot print an event payload to stdout. The route tag is the registered Fastify route template, never the request URL; an unmatched or middleware request sends the literal `unknown`.
+
+During the SDK's two-second shutdown window, a second uncaught exception is printed raw to stderr by `logAndExitProcess`; this is the only raw-error path in the tracker integration and is accepted for now.
 
 ### Log retention and review
 
@@ -94,9 +96,9 @@ Recorded GOAT audit decisions. /goat-audit, final-reviewer and plan-writer honor
 
 ### [PRIV-20] Privacy-reviewed error tracking is permitted while general telemetry stays prohibited — Accepted risk (2026-11-20)
 
-- **Finding:** `package.json` gained `@sentry/nestjs` 11.15.0, so an external processor now receives error events; the criterion as written forbade every error-tracking SDK as a production dependency.
-- **Decision:** Error tracking is allowed when it is privacy-reviewed and scrubbed at the source: every `dataCollection` surface denied, an allow-list `beforeSend` rebuild, no breadcrumbs, no server name, no tracing, a class-only error log, a `[REDACTED]` error value with the message line removed from the stack, and the processor plus the exact transferred fields recorded in this document. General analytics and telemetry stay prohibited.
+- **Finding:** `package.json` gained `@sentry/nestjs`, so an external processor now receives error events; the criterion as written forbade every error-tracking SDK as a production dependency.
+- **Decision:** Error tracking is allowed when it is privacy-reviewed and scrubbed at the source: every `dataCollection` surface denied, an allow-list `beforeSend` rebuild, no breadcrumbs, no server name, no tracing, a class-only error log, a `[REDACTED]` error value with the message header removed from the stack, and the processor plus the exact transferred fields recorded in this document. General analytics and telemetry stay prohibited.
 - **Rationale:** An unmonitored 500 path is the larger operational risk, and the allow-list sends only the error class, route template, method, status and stack location — never request, user, content or query data.
-- **Revisit when:** any event carries request, user, content or query data; a second third-party SDK is added; or the allow-list under `src/infrastructure/api/observability/sentry/` widens.
-- **Checklist change:** the `[PRIV-20]` criterion is rewritten so privacy-reviewed, allow-listed error tracking is the only permitted third-party client and every other analytics, telemetry or tracker SDK remains a failure. Original criterion, restored if the revisit condition is met: "No analytics, telemetry, error-tracking, email, CDN or managed-database SDK is a production dependency, and no code path sends request or content data to an external origin; the only network peers are the self-hosted MongoDB and the deployment tooling."
+- **Revisit when:** any event carries request, user, content or query data beyond the registered route template and request method; a second third-party SDK is added; or the allow-list under `src/infrastructure/api/observability/sentry/` widens.
+- **Checklist change:** the `[PRIV-20]` criterion is rewritten so privacy-reviewed, allow-listed error tracking is the only permitted third-party client, the registered route template and request method are the only request-derived fields it may transfer, and every other analytics, telemetry or tracker SDK remains a failure. Original criterion, restored if the revisit condition is met: "No analytics, telemetry, error-tracking, email, CDN or managed-database SDK is a production dependency, and no code path sends request or content data to an external origin; the only network peers are the self-hosted MongoDB and the deployment tooling."
 - **Recorded by:** orchestrator final review (feat/sentry-error-tracking)

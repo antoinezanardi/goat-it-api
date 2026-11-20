@@ -185,7 +185,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    this.sendUnknownException(exception, httpArgumentsHost.getRequest<SentryReportableRequest>(), response);
+    const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
+
+    this.sendUnknownException(exception, request, response);
   }
 
   private sendUnknownException(exception: unknown, request: SentryReportableRequest, response: FastifyReply | ServerResponse): void {

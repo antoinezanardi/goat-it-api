@@ -2,7 +2,10 @@ import type { Linter } from "eslint";
 
 const ESLINT_SENTRY_OBSERVABILITY_FLAT_CONFIG: Linter.Config = {
   name: "sentry-observability",
-  files: ["src/infrastructure/api/observability/sentry/**/*.ts"],
+  files: [
+    "src/infrastructure/api/observability/sentry/**/*.ts",
+    "tests/shared/utils/faketories/infrastructure/api/observability/sentry/**/*.ts",
+  ],
   rules: {
     camelcase: [
       "error",
