@@ -84,7 +84,7 @@ src/
       <context>.module.ts         # NestJS feature wiring
       <context>-usage.module.ts   # optional published use case wiring
   infrastructure/
-    api/{auth,config,health,server}/
+    api/{auth,config,health,observability,server}/
     database/
   shared/
     domain/
@@ -313,6 +313,7 @@ Rules:
 - `src/infrastructure/api/auth/`: API-key guards, auth decorators, auth errors and helpers.
 - `src/infrastructure/api/config/`: environment schema, config module, validated-environment helper, validators and services.
 - `src/infrastructure/api/health/`: health controller, DTOs, mappers and service.
+- `src/infrastructure/api/observability/sentry/`: error tracking. `constants/sentry.constants.ts` owns the redaction placeholder, the four event tag keys and their allow-list, the integration names and the shutdown bound; `helpers/sentry.helpers.types.ts` derives the event, frame, integration and error-context types from the SDK's own option types; `helpers/sentry-sdk.helpers.ts` is the only file that imports the SDK's lifecycle calls (`init`, `captureException`, `close`); `helpers/sentry.helpers.ts` builds the allow-listed SDK options and integrations, rebuilds an event from an allow-list, captures one redacted event and initializes the tracker once. There is no Nest provider and no module file: `bootstrap()` calls `initializeSentry()` before the Fastify adapter is created, and `GlobalExceptionFilter` calls `captureServerError()` from its generic-500 branch only.
 - `src/infrastructure/api/server/`: Fastify bootstrap (`fastify/` holds the adapter factory, its bound constants and its `FastifyTrustProxy` type; `constants/` holds the NestJS bootstrap options), CORS, Swagger, `security-headers/` (the NestJS security options, the root `Permissions-Policy` request hook and the `OPTIONS` fallback), `cache/` (the root response-cache `onSend` hook) and `throttler/` (the global `APP_GUARD` throttler module, its guard under `providers/guards/<name>/`, its options helper under `helpers/` and its tier/error constants under `constants/`). `request-id/` owns the server-generated request identifier: `helpers/request-id.helpers.ts` holds the UUID v4 generator, the root `onRequest`/`onSend` header hooks and their registration, and `constants/request-id.constants.ts` holds the `X-Request-Id` header name and UUID pattern.
 - `src/infrastructure/api/server/throttler/` owns rate limiting end to end: `throttler.module.ts` (`ApiThrottlerModule`) imports `ThrottlerModule.forRootAsync(...)` configured from `AppConfigService.throttlerConfig` and registers `ApiThrottlerGuard` with `APP_GUARD`; the guard owns the API-wide key, the retry-header normalization and the curated 429 exception, and the counters stay in the library's in-process store. `AppModule` imports the module like any other cross-cutting module; no context, persistence artefact or shared-kernel file is involved, and the module imports no `@app/*` or context module.
 - `src/infrastructure/database/`: Mongoose connection module and service.
@@ -433,7 +434,7 @@ Known limitations of the B-lite model: the question/theme dependency is bidirect
 
 ### 6.1 Composition root
 
-The composition root lives in `src/main.ts`: it awaits `APP_CONFIG_MODULE_READY` from `src/infrastructure/api/config/helpers/config-module.helpers.ts`, reads the environment that promise validated through `getAppEnv()`, and passes only `TRUST_PROXY` to `bootstrap()` in `src/infrastructure/api/server/server.ts`. `bootstrap()` receives the application module as a parameter, creates the Nest Fastify application from `createFastifyAdapter(trustProxy)` and `NEST_APPLICATION_OPTIONS`, then owns CORS, Swagger, shutdown hooks and `listen()`.
+The composition root lives in `src/main.ts`: it awaits `APP_CONFIG_MODULE_READY` from `src/infrastructure/api/config/helpers/config-module.helpers.ts`, reads the environment that promise validated through `getAppEnv()`, and passes only `TRUST_PROXY` to `bootstrap()` in `src/infrastructure/api/server/server.ts`. `bootstrap()` receives the application module as a parameter, creates the Nest Fastify application from `createFastifyAdapter(trustProxy)` and `NEST_APPLICATION_OPTIONS`, then owns CORS, Swagger, shutdown hooks and `listen()`. Its first statement initializes error tracking through `initializeSentry()` (`src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`), before `createFastifyAdapter()` and `NestFactory.create()`, so a Fastify or Nest creation failure still reaches the tracker; the initializer reads the already validated environment, stays a no-op when `SENTRY_DSN` is empty, and never replaces `validateEnv()` as the deployment gate.
 
 - `src/main.ts` is the only file that imports `AppModule`.
 - `server.ts` MUST NOT import `@app/*` or a context.

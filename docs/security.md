@@ -1,8 +1,8 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1262 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1406 (error tracking).
 
-Last reviewed: 2026-11-18.
+Last reviewed: 2026-11-20.
 
 ## Authentication
 
@@ -43,7 +43,7 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 `GlobalExceptionFilter` is the single composition point for HTTP errors (`file:src/app/filters/global-exception/global-exception.filter.ts`), registered with `APP_FILTER` (`file:src/app/app.module.ts`). The policy (`docs/architecture.md` §7.4): a domain error gets a specific 4xx status only when the client can act on it.
 
 - Client-actionable mappings: not-found (`QuestionNotFoundError`, `QuestionThemeNotFoundError`, `QuestionThemeAssignmentAbsentError`), bad-request (already-archived, referenced-theme-archived, max/min themes, primary assignment not removable), conflict (slug exists, assignment exists, theme referenced by live questions) — see the filter's `domainErrorHttpExceptionFactories`.
-- Everything else — including the four write/read-back errors intentionally classified as 500 — falls through to a generic 500 body. Unknown-error messages are logged server-side and never sent to clients; clients only ever see the generic 500 body.
+- Everything else — including the four write/read-back errors intentionally classified as 500 — falls through to a generic 500 body. Unknown errors are recorded server-side by class name only — never by message — and reported to the error tracker as a redacted event (see [Error tracking](#error-tracking)); clients only ever see the generic 500 body.
 - Domain error responses include the domain message and an `errorCode` derived from the class name (`file:src/shared/infrastructure/http/errors/helpers/errors.helpers.ts`), which the web game uses to localize errors.
 
 ## Secrets and configuration
@@ -133,14 +133,25 @@ Logging is pino via `nestjs-pino` (`file:src/app/app.module.ts`, `file:src/app/h
 
 The intended policy is that log lines never carry secrets or personal data, and that the API keys are removed from `process.env` at boot. **That policy is not enforced by configuration today.** `getLoggerConfiguration` only sets the transport, so `pino-http` runs with its defaults: request logging is enabled and the default request serializer emits the request headers, the client address and port, and the `user-agent`. No `redact` or custom serializer is configured. This is recorded as a known limitation below; treat production logs as sensitive until it is fixed.
 
+Unknown errors are logged by exception class only — `Error.isError(exception) ? exception.constructor.name : "NonErrorThrown"` — so an exception message that embeds a connection string, a payload fragment or a route with a user-supplied segment never reaches the log stream (`file:src/app/filters/global-exception/global-exception.filter.ts`). The `pino-http` request-serializer limitation above is a separate defect and remains open.
+
+## Error tracking
+
+Unexpected server errors and process crashes are reported to a Sentry SaaS project through `@sentry/nestjs` 11.15.0, initialized once in `bootstrap()` (`file:src/infrastructure/api/server/server.ts`) from `file:src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`.
+
+- Only the generic-500 branch of `GlobalExceptionFilter` reports an event; mapped 4xx, explicit `HttpException`s (health `503`, throttler `429`) and Fastify-mapped responses do not.
+- The event carries the error class, the matched route template, the method, the `500` status tag and stack frames only. Every `dataCollection` surface is denied, breadcrumbs and tracing are off, server-name collection is off, and `beforeSend` rebuilds the event from an allow-list instead of deleting fields, so an unknown SDK field cannot leak.
+- The error value is always `[REDACTED]` and the stack's message line is dropped, so neither an internal message nor a connection string can reach the tracker. The request object itself is never handed to the SDK.
+- `SENTRY_DSN` and `SENTRY_ENVIRONMENT` are validated at boot; with `NODE_ENV=production` a missing DSN or a non-deployment environment aborts startup (`file:src/infrastructure/api/config/helpers/env.helpers.ts`). No tracker token or source-map credential is stored in the repository, and the tracked env files hold no live DSN.
+- The production 5xx alert is a Sentry-project setting owned by the project administration (#1406); its threshold and destination are not repository configuration. The allow-list and the processor record live in `docs/privacy.md`; setup and verification live in `docs/operations.md`.
+
 ## Known limitations
 
 - #1263 — the security-controls umbrella stays open; rate limiting landed as described in [Rate limiting](#rate-limiting), and global security headers plus the response cache policy are described in [HTTP security headers](#http-security-headers) and [Response caching](#response-caching).
-- #1262 — no error-tracking service is wired yet; the constraint for any future tracker (PII scrubbing) lives in `docs/privacy.md`.
 - #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
 - **Some transport-level responses bypass the application headers.** Fastify's low-level `408` is written over the raw socket before the request hooks and before `GlobalExceptionFilter` (`docs/operations.md`), so it carries no security header, no `Cache-Control` and no `Permissions-Policy`. A router-level `400`/`414` answer also skips the request hooks: the adapter writes the Nest security headers on that path, but the response carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. An edge-owned policy is the only remaining way to cover the rest.
 - **`Strict-Transport-Security` (HSTS) is emitted statically, including on direct plain-HTTP responses.** The proxy peer is now trusted for client-address resolution, but the security-header hook still writes a static and `includeSubDomains`/`preload`-free `max-age=31536000` value and does not gate it on `request.protocol`. The public path terminates TLS at the proxy, public HTTP is redirected to HTTPS, and the operator rollout publishes the API port on host loopback only. Revisit if the app listener becomes publicly reachable over HTTP or a scheme-gated policy is adopted.
 - **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
-The external-client slice of #1263 is complete: client identity behind the proxy and the request-ID contract are documented above. The remaining external-client work is per-player identity for the `web-game` and `web-admin` server-to-server callers, which the API cannot derive from the Docker service network, and the `pino-http` redaction gap tracked by #1262.
+The external-client slice of #1263 is complete: client identity behind the proxy and the request-ID contract are documented above. The remaining external-client work is per-player identity for the `web-game` and `web-admin` server-to-server callers, which the API cannot derive from the Docker service network, and the `pino-http` redaction gap tracked by #1332/#1343.

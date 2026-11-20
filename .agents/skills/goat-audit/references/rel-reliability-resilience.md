@@ -65,7 +65,7 @@ request-size posture, no unbounded queries or state).
 
 ## 4. Failure modes & error containment
 
-- **[REL-18] One exception filter closes every path** — Every uncaught error becomes a JSON 500 with no stack trace, error detail or connection information sent to clients; unknown errors log their message server-side and no route can return an empty 200 or a partial body after a failure.
+- **[REL-18] One exception filter closes every path** — Every uncaught error becomes a JSON 500 with no stack trace, error detail or connection information sent to clients; unknown errors log a non-request-derived identity server-side (the error class or a fixed fallback code) — never the raw message, its string form or a stack — and report a redacted event to the privacy-reviewed tracker, and no route can return an empty 200 or a partial body after a failure.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**` · Src: [4], project: docs/security.md
 - **[REL-19] Deterministic domain-error mapping** — Every domain error maps to exactly one client-actionable status (404 not-found, 400 invalid-state, 409 conflict), or is intentionally 500 with a recorded one-line justification; the intentionally-500 mappings are locked by filter tests.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/*/domain/errors/**` · Src: [4], project: docs/architecture.md §7.4, project: AGENTS.md

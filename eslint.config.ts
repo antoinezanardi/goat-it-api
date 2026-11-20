@@ -10,6 +10,7 @@ import { ESLINT_CONTROLLERS_FLAT_CONFIG } from "./configs/eslint/flat-configs/es
 import { ESLINT_GLOBAL_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-global.flat-config";
 import { ESLINT_IMPORT_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-import.flat-config";
 import { ESLINT_MODULES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-modules.flat-config";
+import { ESLINT_SENTRY_OBSERVABILITY_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-sentry-observability.flat-config";
 import { ESLINT_SERVICES_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-services.flat-config";
 import { ESLINT_STYLISTIC_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-stylistic.flat-config";
 import { ESLINT_UNICORN_FLAT_CONFIG } from "./configs/eslint/flat-configs/eslint-unicorn.flat-config";
@@ -26,6 +27,7 @@ const ESLINT_FLAT_CONFIGS: Linter.Config[] = [
     ignores: ESLINT_IGNORES,
   },
   ESLINT_GLOBAL_FLAT_CONFIG,
+  ESLINT_SENTRY_OBSERVABILITY_FLAT_CONFIG,
   ESLINT_BOUNDARIES_FLAT_CONFIG,
   ESLINT_UNICORN_FLAT_CONFIG,
   ESLINT_IMPORT_FLAT_CONFIG,

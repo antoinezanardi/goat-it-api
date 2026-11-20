@@ -19,6 +19,7 @@ const ESLINT_GLOBAL_FLAT_CONFIG: Linter.Config = {
       console: "readonly",
       AbortSignal: "readonly",
       URL: "readonly",
+      structuredClone: "readonly",
     },
   },
   rules: {

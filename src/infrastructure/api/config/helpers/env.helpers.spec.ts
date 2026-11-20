@@ -26,6 +26,8 @@ describe(validateEnv, () => {
     THROTTLER_DEFAULT_LIMIT: 20,
     THROTTLER_SUSTAINED_TTL_SECONDS: 60,
     THROTTLER_SUSTAINED_LIMIT: 300,
+    SENTRY_DSN: "",
+    SENTRY_ENVIRONMENT: "development",
   }));
 
   const defaultEnvInput = Object.freeze({
@@ -47,6 +49,8 @@ describe(validateEnv, () => {
       THROTTLER_DEFAULT_LIMIT: "50",
       THROTTLER_SUSTAINED_TTL_SECONDS: "120",
       THROTTLER_SUSTAINED_LIMIT: "600",
+      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+      SENTRY_ENVIRONMENT: "production",
       API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
       ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
@@ -64,6 +68,8 @@ describe(validateEnv, () => {
       THROTTLER_DEFAULT_LIMIT: 50,
       THROTTLER_SUSTAINED_TTL_SECONDS: 120,
       THROTTLER_SUSTAINED_LIMIT: 600,
+      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+      SENTRY_ENVIRONMENT: "production",
       API_KEY_HMAC_SECRET: "valid-hmac-secret-of-sufficient-length-version-two",
       ADMIN_API_KEY: "cccccccc-cccc-cccc-cccc-cccccccccccc",
       GAME_API_KEY: "dddddddd-dddd-dddd-dddd-dddddddddddd",
@@ -556,6 +562,141 @@ describe(validateEnv, () => {
     };
 
     expect(() => validateEnv(fullConfig)).toThrow(errorMessage);
+  });
+
+  it("should accept a complete Sentry DSN when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...defaultEnvInput,
+      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+    });
+
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
+  });
+
+  it("should accept a deployment Sentry environment when it is an override.", () => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...defaultEnvInput,
+      SENTRY_ENVIRONMENT: "staging",
+    };
+    const expectedConfig = createFakeAppEnv({
+      ...defaultEnv,
+      SENTRY_ENVIRONMENT: "staging",
+    });
+
+    expect(validateEnv(config)).toStrictEqual(expectedConfig);
+  });
+
+  it.each<{ test: string; dsn: string }>([
+    {
+      test: "should throw error when SENTRY_DSN has no HTTPS scheme.",
+      // Acceptable as this case must use plain HTTP to prove the schema rejects it
+      // eslint-disable-next-line unicorn/prefer-https
+      dsn: "http://publickey@sentry.io/42",
+    },
+    {
+      test: "should throw error when SENTRY_DSN has no public key.",
+      dsn: "https://sentry.io/42",
+    },
+    {
+      test: "should throw error when SENTRY_DSN has no project id.",
+      dsn: "https://publickey@sentry.io",
+    },
+    {
+      test: "should throw error when SENTRY_DSN has a non-numeric project id.",
+      dsn: "https://publickey@sentry.io/project",
+    },
+  ])("$test", ({ dsn }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...defaultEnvInput,
+      SENTRY_DSN: dsn,
+    };
+
+    expect(() => validateEnv(config)).toThrow("Invalid environment variables");
+  });
+
+  it.each<{ test: string; sentryEnvironment: string }>([
+    {
+      test: "should throw error when SENTRY_ENVIRONMENT is not a supported environment.",
+      sentryEnvironment: "staging-eu",
+    },
+    {
+      test: "should throw error when SENTRY_ENVIRONMENT is an empty string.",
+      sentryEnvironment: "",
+    },
+  ])("$test", ({ sentryEnvironment }) => {
+    const config: Partial<Record<keyof AppEnv, unknown>> = {
+      ...defaultEnvInput,
+      SENTRY_ENVIRONMENT: sentryEnvironment,
+    };
+
+    expect(() => validateEnv(config)).toThrow("Invalid environment variables");
+  });
+
+  describe("deployment Sentry configuration", () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalNodeEnv;
+    });
+
+    it("should return parsed env when NODE_ENV is production and the Sentry configuration is deployable.", () => {
+      process.env.NODE_ENV = "production";
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...defaultEnvInput,
+        SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+        SENTRY_ENVIRONMENT: "staging",
+      };
+      const expectedConfig = createFakeAppEnv({
+        ...defaultEnv,
+        SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+        SENTRY_ENVIRONMENT: "staging",
+      });
+
+      expect(validateEnv(config)).toStrictEqual(expectedConfig);
+    });
+
+    it("should throw error when NODE_ENV is production and SENTRY_DSN is empty.", () => {
+      process.env.NODE_ENV = "production";
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...defaultEnvInput,
+        SENTRY_DSN: "",
+      };
+
+      expect(() => validateEnv(config)).toThrow("SENTRY_DSN must be set when NODE_ENV is production");
+    });
+
+    it.each<{ test: string; sentryEnvironment: string }>([
+      {
+        test: "should throw error when NODE_ENV is production and SENTRY_ENVIRONMENT is development.",
+        sentryEnvironment: "development",
+      },
+      {
+        test: "should throw error when NODE_ENV is production and SENTRY_ENVIRONMENT is test.",
+        sentryEnvironment: "test",
+      },
+    ])("$test", ({ sentryEnvironment }) => {
+      process.env.NODE_ENV = "production";
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...defaultEnvInput,
+        SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
+        SENTRY_ENVIRONMENT: sentryEnvironment,
+      };
+
+      expect(() => validateEnv(config)).toThrow("SENTRY_ENVIRONMENT must be staging or production when NODE_ENV is production");
+    });
+
+    it("should return parsed env when NODE_ENV is test and SENTRY_DSN is empty.", () => {
+      process.env.NODE_ENV = "test";
+      const config: Partial<Record<keyof AppEnv, unknown>> = {
+        ...minimalValidEnv,
+      };
+
+      expect(validateEnv(config)).toStrictEqual(defaultEnv);
+    });
   });
 });
 

@@ -1,6 +1,6 @@
 # PRIV — Privacy, compliance & legal
 
-Personal-data and legal posture of the Goat It API: the processing inventory (two quiz-content collections and the optional author sub-document), data minimization and the absence of player, account and analytics data; what the pino log pipeline and the pending error tracker may carry; retention, deletion and export triggers; third parties, self-hosted MongoDB and international transfers; the GDPR division of responsibility with the consuming web game; and the maintenance of the privacy decision record. Checks that depend on facts outside the repository are `manual` and need maintainer or legal confirmation. This is not legal advice.
+Personal-data and legal posture of the Goat It API: the processing inventory (two quiz-content collections and the optional author sub-document), data minimization and the absence of player, account and analytics data; what the pino log pipeline and the error tracker may carry; retention, deletion and export triggers; third parties, self-hosted MongoDB and international transfers; the GDPR division of responsibility with the consuming web game; and the maintenance of the privacy decision record. Checks that depend on facts outside the repository are `manual` and need maintainer or legal confirmation. This is not legal advice.
 
 **Decision doc:** `docs/privacy.md` (section `## GOAT audit decisions`). **Diff triggers:** see SKILL.md category index.
 
@@ -65,7 +65,7 @@ Personal-data and legal posture of the Goat It API: the processing inventory (tw
 
 ## 4. Third parties and transfers
 
-- **[PRIV-20] No third-party processor receives quiz content or personal data** — No analytics, telemetry, error-tracking, email, CDN or managed-database SDK is a production dependency, and no code path sends request or content data to an external origin; the only network peers are the self-hosted MongoDB and the deployment tooling.
+- **[PRIV-20] No third-party processor receives quiz content or personal data** — No analytics, telemetry, email, CDN or managed-database SDK is a production dependency, and no code path sends request or content data to an external origin. Privacy-reviewed error tracking is the only permitted third-party client, and only when its data collection is denied at the source (explicit `dataCollection` denials, an allow-list `beforeSend` that rebuilds the event, no breadcrumbs, no server name, no tracing), the privacy record names the processor and the exact transferred fields, and the scrubbing configuration ships in the same change as the tracker; any other tracker or telemetry SDK is a failure.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `package.json`, `src/**`, `pnpm-lock.yaml` · Src: [4], project: docs/privacy.md
 - **[PRIV-21] MongoDB is self-hosted and the deployment path is recorded** — The database connection is a plain host/port/database configuration, the acceptance database runs locally in a pinned container and production deploys over SSH to a self-hosted server; no managed database or third-party hosting processor is introduced without updating the record.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `env/.env.example`, `docker/goat-it-api-acceptance-tests/**`, `.github/workflows/deploy-to-production.yml` · Src: [4], [11], project: docs/privacy.md
