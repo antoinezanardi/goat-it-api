@@ -8,6 +8,7 @@ import * as corsHelpers from "@src/infrastructure/api/server/cors/helpers/cors.h
 import * as fastifyHelpers from "@src/infrastructure/api/server/fastify/helpers/fastify.helpers";
 import * as requestIdHelpers from "@src/infrastructure/api/server/request-id/helpers/request-id.helpers";
 import * as securityHeadersHelpers from "@src/infrastructure/api/server/security-headers/helpers/security-headers.helpers";
+import * as sentryHelpers from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 import * as swaggerHelpers from "@src/infrastructure/api/server/swagger/helpers/swagger.helpers";
 import { bootstrap } from "@src/infrastructure/api/server/server";
 
@@ -47,6 +48,7 @@ describe(bootstrap, () => {
       },
     };
 
+    vi.spyOn(sentryHelpers, "initializeSentry").mockReturnValue(undefined);
     vi.spyOn(cacheHelpers, "setupResponseCachePolicy").mockReturnValue(undefined);
     vi.spyOn(corsHelpers, "createCorsConfig");
     vi.spyOn(fastifyHelpers, "createFastifyAdapter");
@@ -90,6 +92,26 @@ describe(bootstrap, () => {
     await bootstrap(MockedAppModule, TRUST_PROXY_FROM_ENV);
 
     expect(fastifyHelpers.createFastifyAdapter).toHaveBeenCalledExactlyOnceWith(TRUST_PROXY_FROM_ENV);
+  });
+
+  it("should initialize error tracking when called.", async() => {
+    await bootstrap(MockedAppModule, TRUST_PROXY_FROM_ENV);
+
+    expect(sentryHelpers.initializeSentry).toHaveBeenCalledExactlyOnceWith();
+  });
+
+  it("should initialize error tracking before creating the Fastify adapter when called.", async() => {
+    await bootstrap(MockedAppModule, TRUST_PROXY_FROM_ENV);
+
+    expect(vi.mocked(sentryHelpers.initializeSentry).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(fastifyHelpers.createFastifyAdapter).mock.invocationCallOrder[0]);
+  });
+
+  it("should initialize error tracking before creating the application when called.", async() => {
+    await bootstrap(MockedAppModule, TRUST_PROXY_FROM_ENV);
+
+    expect(vi.mocked(sentryHelpers.initializeSentry).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(NestCore.NestFactory.create).mock.invocationCallOrder[0]);
   });
 
   it("should setup the security headers request hook with the fastify adapter instance when called.", async() => {

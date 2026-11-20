@@ -19,6 +19,8 @@ import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/questi
 import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
+import * as sentryHelpers from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
+
 import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
@@ -40,17 +42,21 @@ import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/
 
 import type { FastifyReply } from "fastify";
 
+import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
+
 describe(GlobalExceptionFilter, () => {
   let mocks: {
     filters: {
       globalException: {
         fastifyReply: FastifyReply;
         serverResponse: ServerResponse;
+        request: SentryReportableRequest;
       };
     };
   };
 
   beforeEach(() => {
+    vi.spyOn(sentryHelpers, "captureServerError").mockReturnValue(undefined);
     mocks = {
       filters: {
         globalException: {
@@ -60,6 +66,10 @@ describe(GlobalExceptionFilter, () => {
             getHeader: vi.fn<(name: string) => string | undefined>().mockReturnValue(undefined),
             header: vi.fn<(name: string, value: string) => void>(),
           } as unknown as FastifyReply,
+          request: {
+            method: "POST",
+            routeOptions: { url: "/admin/questions" },
+          },
           // Acceptable as we are creating a mock ServerResponse object for testing purposes. The type assertion is necessary to satisfy TypeScript's type checking, as we are creating an object that mimics the ServerResponse interface but does not fully implement it.
           // oxlint-disable-next-line typescript/no-unnecessary-type-assertion
           serverResponse: Object.assign(Object.create(ServerResponse.prototype), {
@@ -227,7 +237,8 @@ describe(GlobalExceptionFilter, () => {
         filters: {
           globalException: {
             host: {
-              switchToHttp: (): { getResponse: () => FastifyReply } => ({
+              switchToHttp: (): { getRequest: () => SentryReportableRequest; getResponse: () => FastifyReply } => ({
+                getRequest: (): SentryReportableRequest => mocks.filters.globalException.request,
                 getResponse: (): FastifyReply => mocks.filters.globalException.fastifyReply,
               }),
             } as unknown as Parameters<GlobalExceptionFilter["catch"]>[1],
@@ -521,36 +532,137 @@ describe(GlobalExceptionFilter, () => {
 
       expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedSentException, mocks.filters.globalException.fastifyReply);
     });
+
+    it.each<{ test: string; exception: unknown }>([
+      {
+        test: "should not report a mapped domain error when called with a known domain error.",
+        exception: new QuestionThemeNotFoundError("question-theme-id"),
+      },
+      {
+        test: "should not report an explicit http exception when called with HttpException.",
+        exception: new ForbiddenException("Access denied"),
+      },
+      {
+        test: "should not report a validation exception when called with ZodValidationException.",
+        exception: new ZodValidationException(new ZodError([])),
+      },
+    ])("$test", ({ exception }) => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter.catch(exception, localMocks.filters.globalException.host);
+
+      expect(sentryHelpers.captureServerError).not.toHaveBeenCalled();
+    });
+
+    it("should report an unknown error once with its class and route context when called.", () => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter.catch(new Error("Some unknown error"), localMocks.filters.globalException.host);
+
+      expect(sentryHelpers.captureServerError).toHaveBeenCalledExactlyOnceWith(expect.any(Error), {
+        errorClass: "Error",
+        route: "/admin/questions",
+        method: "POST",
+      });
+    });
   });
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
   describe(GlobalExceptionFilter.prototype["sendUnknownException"], () => {
-    it("should log the error message when called with an Error.", () => {
+    it("should log the error class name when called with an Error.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();
-      const error = new Error("Unknown error occurred");
 
-      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("Unknown error occurred");
+      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("Error");
     });
 
-    it("should log the string representation when called with a non-Error.", () => {
+    it("should log the non-error marker when called with a non-Error.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();
-      const nonError = "Some unknown exception";
 
-      globalExceptionFilter["sendUnknownException"](nonError, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"]("Some unknown exception", mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("Some unknown exception");
+      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("NonErrorThrown");
+    });
+
+    it("should not log the original error message when called with an Error.", () => {
+      const mockLogger = getMockedLoggerInstance();
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter["sendUnknownException"](new Error("Explosive secret value"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+
+      expect(mockLogger.error).not.toHaveBeenCalledWith("Explosive secret value");
+    });
+
+    it("should report the error with the registered route template and the request method when called.", () => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+
+      expect(sentryHelpers.captureServerError).toHaveBeenCalledExactlyOnceWith(expect.any(Error), {
+        errorClass: "Error",
+        route: "/admin/questions",
+        method: "POST",
+      });
+    });
+
+    it.each<{ test: string; request: SentryReportableRequest; expectedRoute: string; expectedMethod: string }>([
+      {
+        test: "should report the registered route template when the request carries one.",
+        request: { method: "PATCH", routeOptions: { url: "/questions/:id" } },
+        expectedRoute: "/questions/:id",
+        expectedMethod: "PATCH",
+      },
+      {
+        test: "should report the unknown route when the request carries no route options.",
+        request: { method: "POST" },
+        expectedRoute: "unknown",
+        expectedMethod: "POST",
+      },
+      {
+        test: "should report the unknown route when the route options carry no template.",
+        request: { method: "POST", routeOptions: {} },
+        expectedRoute: "unknown",
+        expectedMethod: "POST",
+      },
+      {
+        test: "should report the unknown method when the request carries no method.",
+        request: {},
+        expectedRoute: "unknown",
+        expectedMethod: "unknown",
+      },
+      {
+        test: "should report an empty route template as-is when the request carries one.",
+        request: { method: "POST", routeOptions: { url: "" } },
+        expectedRoute: "",
+        expectedMethod: "POST",
+      },
+      {
+        test: "should report an empty method as-is when the request carries one.",
+        request: { method: "", routeOptions: { url: "/questions/:id" } },
+        expectedRoute: "/questions/:id",
+        expectedMethod: "",
+      },
+    ])("$test", ({ request, expectedRoute, expectedMethod }) => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), request, mocks.filters.globalException.fastifyReply);
+
+      expect(sentryHelpers.captureServerError).toHaveBeenCalledExactlyOnceWith(expect.any(Error), {
+        errorClass: "Error",
+        route: expectedRoute,
+        method: expectedMethod,
+      });
     });
 
     it("should send InternalServerErrorException status code using FastifyReply when called.", () => {
       const globalExceptionFilter = new GlobalExceptionFilter();
       const error = new Error("Unknown error occurred");
 
-      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledExactlyOnceWith(500);
     });
@@ -561,9 +673,32 @@ describe(GlobalExceptionFilter, () => {
       const internalServerError = new InternalServerErrorException();
       const expectedResponse = internalServerError.getResponse();
 
-      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
       expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledExactlyOnceWith(expectedResponse);
+    });
+
+    it("should send the 500 response when the tracker call throws.", () => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+      vi.mocked(sentryHelpers.captureServerError).mockImplementation(() => {
+        throw new Error("Tracker is unavailable");
+      });
+
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+
+      expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledExactlyOnceWith(500);
+    });
+
+    it("should log the fixed tracker failure message when the tracker call throws.", () => {
+      const mockLogger = getMockedLoggerInstance();
+      const globalExceptionFilter = new GlobalExceptionFilter();
+      vi.mocked(sentryHelpers.captureServerError).mockImplementation(() => {
+        throw new Error("Tracker is unavailable");
+      });
+
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+
+      expect(mockLogger.error).toHaveBeenLastCalledWith("Failed to report an unexpected error to Sentry");
     });
   });
 });

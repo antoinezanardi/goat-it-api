@@ -41,7 +41,8 @@
     "clearTimeout": "readonly",
     "console": "readonly",
     "AbortSignal": "readonly",
-    "URL": "readonly"
+    "URL": "readonly",
+    "structuredClone": "readonly"
   },
   "rules": {
     // ---- ESLint Rules -----

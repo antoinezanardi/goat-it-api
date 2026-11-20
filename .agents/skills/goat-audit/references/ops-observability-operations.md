@@ -1,8 +1,8 @@
 # OPS — Observability & operations
 
 Operating the Goat It API (NestJS 12 + Fastify 5, MongoDB via Mongoose): the single `/health` readiness contract and its sanitized
-failure body, structured Pino logging through nestjs-pino and the logging policy, the absence of an error tracker and how 5xx
-failures are triaged from server logs, SLOs and external uptime monitoring (or their recorded deferral), runbooks and incident
+failure body, structured Pino logging through nestjs-pino and the logging policy, the error-tracking allow-list and how 5xx
+failures are triaged from redacted tracker events and server logs, SLOs and external uptime monitoring (or their recorded deferral), runbooks and incident
 readiness, post-deploy verification in the deploy workflows, and the container and acceptance-database operational probes. It
 checks that failures are detected, attributed and actionable, not what data may be collected or how requests are guarded.
 
@@ -57,7 +57,7 @@ checks that failures are detected, attributed and actionable, not what data may 
 
 ## 3. Error tracking, SLOs and alerts
 
-- **[OPS-16] Server-side error logs are the triage path** — Every unknown 500 is logged server-side with its message before the generic response is sent, so failures are discoverable from stdout even though no error-tracking service is wired.
+- **[OPS-16] Server-side error logs are the triage path** — Every unknown 500 is logged server-side by a non-request-derived identity (error class or a fixed fallback code) before the generic response is sent, and reported as a redacted event to the privacy-reviewed error tracker, so failures stay discoverable without a raw message in stdout or in the event.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**` · Src: [9], project: docs/security.md
 - **[OPS-17] Error tracking is wired with 5xx spike alerts** — An error-tracking service is wired with 5xx spike alerts and the tracker honors the PII-scrubbing allow-list owned by the privacy guide; a documented absence is a GAP, not a pass.
   Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `package.json`, `src/app/app.module.ts`, `docs/security.md`, `docs/privacy.md` · Src: [2], [5], project: docs/security.md

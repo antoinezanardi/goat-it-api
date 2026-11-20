@@ -146,9 +146,9 @@ The guard throws an `HttpException`, so `GlobalExceptionFilter` sends the body v
 
 ## Published package `@goat-it/schemas`
 
-- Package root `packages/schemas/` (`package.json` version `0.0.27`). Entrypoints (`packages/schemas/package.json` `exports` + `packages/schemas/src/*/index.ts`, built by `packages/schemas/tsdown.config.ts`): `./question`, `./question-theme`, `./shared/locale`, `./shared/error`, `./shared/constants`, `./testing/question`, `./testing/question-theme`, `./testing/shared`.
+- Package root `packages/schemas/` (version source: its `package.json`). Entrypoints (`packages/schemas/package.json` `exports` + `packages/schemas/src/*/index.ts`, built by `packages/schemas/tsdown.config.ts`): `./question`, `./question-theme`, `./shared/locale`, `./shared/error`, `./shared/constants`, `./testing/question`, `./testing/question-theme`, `./testing/shared`.
 - It re-exports only pure, framework-free modules: DTO shapes (value + inferred types) such as `QUESTION_DTO`, `ADMIN_QUESTION_DTO`, `QUESTION_CREATION_DTO`, `QUESTION_THEME_DTO`, the query shapes, the `API_RESPONSE_EXCEPTION_DTO`, domain constants (`QUESTION_STATUSES`, `QUESTION_CATEGORIES`, `SORT_ORDERS`, `LOCALES`, …), validator constants, and the `createFake*` faketories under `./testing/*` (see the entrypoint files listed above; policy in `docs/architecture.md` §11).
-- Declared consumers: `goat-it-web-game` (`"@goat-it/schemas": "^0.0.26"`) and `goat-it-web-admin` (`"@goat-it/schemas": "^0.0.26-beta"`) — sibling repositories outside this repo, verified in their respective `package.json` files.
+- Declared consumers: `goat-it-web-game` and `goat-it-web-admin` — sibling repositories outside this repo, verified in their respective `package.json` files.
 - Versioning policy: bump the **patch** version when an existing export changes; ask the user before adding a new export (`docs/architecture.md` §11, `AGENTS.md` DOD items 4-5). `zod` and `@faker-js/faker` are peer dependencies.
 
 ## Known limitations

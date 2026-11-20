@@ -21,6 +21,10 @@ import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/questi
 import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
+import { captureServerError } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
+
+import { NON_ERROR_THROWN, SENTRY_CAPTURE_FAILED_LOG_MESSAGE, UNKNOWN_SENTRY_CONTEXT_VALUE } from "@app/filters/global-exception/constants/global-exception.constants";
+
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 import { applyNoStoreResponseHeadersToFastifyReply, applyNoStoreResponseHeadersToServerResponse } from "@shared/infrastructure/helpers/response-headers/response-headers.helpers";
 
@@ -36,13 +40,15 @@ import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/re
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
 
+import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
+
 /**
  * Single composition point that turns any thrown value into the HTTP response.
  *
  * Known Fastify body-parser and handler-timeout errors are mapped to curated 400, 413, 415 and 503 envelopes, keyed only on
  * their Fastify error code; Zod validation errors and unrelated `HttpException`s are forwarded as they are; known domain
- * errors are mapped to 404, 400 or 409 through a class-name table; everything else is logged and answered with a 500 that
- * never exposes the original message.
+ * errors are mapped to 404, 400 or 409 through a class-name table; everything else is reported to the error tracker, logged
+ * by class name only and answered with a 500 that never exposes the original message.
  */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -136,13 +142,21 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }, statusCode);
   }
 
+  private static getSentryContextValue(value: string | undefined): string {
+    if (value === undefined) {
+      return UNKNOWN_SENTRY_CONTEXT_VALUE;
+    }
+    return value;
+  }
+
   /**
    * Writes the response for the first matching branch and never rethrows.
    *
-   * A mapped domain error keeps its message and gains an error code derived from its class name; an unknown error is logged and replaced by a generic 500.
+   * A mapped domain error keeps its message and gains an error code derived from its class name; an unknown error is reported to the error tracker, logged by class name only and replaced by a generic 500.
    */
   public catch(exception: unknown, host: ArgumentsHost): void {
-    const response = host.switchToHttp().getResponse<FastifyReply | ServerResponse>();
+    const httpArgumentsHost = host.switchToHttp();
+    const response = httpArgumentsHost.getResponse<FastifyReply | ServerResponse>();
     const fastifyErrorHttpException = GlobalExceptionFilter.getFastifyErrorHttpException(exception);
 
     if (fastifyErrorHttpException) {
@@ -171,12 +185,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    this.sendUnknownException(exception, response);
+    const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
+
+    this.sendUnknownException(exception, request, response);
   }
 
-  private sendUnknownException(exception: unknown, response: FastifyReply | ServerResponse): void {
-    const errorMessage = Error.isError(exception) ? exception.message : String(exception);
-    this.logger.error(errorMessage);
+  private sendUnknownException(exception: unknown, request: SentryReportableRequest, response: FastifyReply | ServerResponse): void {
+    const errorClass = Error.isError(exception) ? exception.constructor.name : NON_ERROR_THROWN;
+    this.logger.error(errorClass);
+    const sentryErrorContext = {
+      errorClass,
+      route: GlobalExceptionFilter.getSentryContextValue(request.routeOptions?.url),
+      method: GlobalExceptionFilter.getSentryContextValue(request.method),
+    };
+
+    try {
+      captureServerError(exception, sentryErrorContext);
+    } catch {
+      this.logger.error(SENTRY_CAPTURE_FAILED_LOG_MESSAGE);
+    }
+
     const internalServerErrorException = new InternalServerErrorException();
 
     GlobalExceptionFilter.sendNestHttpException(internalServerErrorException, response);

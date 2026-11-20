@@ -41,7 +41,7 @@ request-size posture, no unbounded queries or state).
   Evidence: `static` · Diff: ✓ · Target: reach · Severity: high · Look: `src/infrastructure/api/server/**`, `src/infrastructure/database/**`, `docs/operations.md` · Src: [12], [9], project: docs/operations.md
 - **[REL-08] One retry layer, no hand-rolled loops** — The MongoDB driver's bounded connection retries are the only retry layer: no application code re-executes a failed operation in a loop or on a timer.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/**` · Src: [1], [9]
-- **[REL-09] Outbound calls bounded** — The only outbound HTTP call the application makes is the same-process readiness ping; any future outbound business call adds an explicit timeout constant instead of a library default.
+- **[REL-09] Outbound calls bounded** — The only outbound HTTP calls are the same-process readiness ping and the configured error tracker's event delivery; any future outbound business call adds an explicit timeout constant instead of a library default.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/infrastructure/api/health/**` · Src: [1]
 - **[REL-10] Retries never re-issue writes** — No retry re-issues a non-idempotent write: the API never repeats a POST/PATCH/DELETE itself after a failure — a failed write surfaces once as its mapped status and the client decides whether to repeat it.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/*/application/use-cases/**` · Src: [2], [9]
@@ -65,7 +65,7 @@ request-size posture, no unbounded queries or state).
 
 ## 4. Failure modes & error containment
 
-- **[REL-18] One exception filter closes every path** — Every uncaught error becomes a JSON 500 with no stack trace, error detail or connection information sent to clients; unknown errors log their message server-side and no route can return an empty 200 or a partial body after a failure.
+- **[REL-18] One exception filter closes every path** — Every uncaught error becomes a JSON 500 with no stack trace, error detail or connection information sent to clients; unknown errors log a non-request-derived identity server-side (the error class or a fixed fallback code) — never the raw message, its string form or a stack — and report a redacted event to the privacy-reviewed tracker, and no route can return an empty 200 or a partial body after a failure.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `src/app/filters/global-exception/**` · Src: [4], project: docs/security.md
 - **[REL-19] Deterministic domain-error mapping** — Every domain error maps to exactly one client-actionable status (404 not-found, 400 invalid-state, 409 conflict), or is intentionally 500 with a recorded one-line justification; the intentionally-500 mappings are locked by filter tests.
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: medium · Look: `src/app/filters/global-exception/**`, `src/contexts/*/domain/errors/**` · Src: [4], project: docs/architecture.md §7.4, project: AGENTS.md

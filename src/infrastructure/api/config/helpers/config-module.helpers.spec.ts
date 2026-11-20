@@ -13,26 +13,32 @@ describe(createAppEnvStore, () => {
 
   it("should return the validated environment when it has been validated.", () => {
     const store = createAppEnvStore();
-    const appEnv = store.validate(createFakeAppEnv({
-      SERVER_HOST: "0.0.0.0",
-      CORS_ORIGIN: "*",
-      TRUST_PROXY: "127.0.0.1",
-      MONGODB_HOST: "0.0.0.0",
-      MONGODB_DATABASE: "goat-it-test",
-    }));
+    const appEnv = store.validate({
+      ...createFakeAppEnv({
+        SERVER_HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        TRUST_PROXY: "127.0.0.1",
+        MONGODB_HOST: "0.0.0.0",
+        MONGODB_DATABASE: "goat-it-test",
+      }),
+      SENTRY_DISABLED: "false",
+    });
 
     expect(store.getAppEnv()).toStrictEqual(appEnv);
   });
 
   it("should keep the validated proxy trust when the raw environment would serialize it as a string.", () => {
     const store = createAppEnvStore();
-    store.validate(createFakeAppEnv({
-      SERVER_HOST: "0.0.0.0",
-      CORS_ORIGIN: "*",
-      TRUST_PROXY: "",
-      MONGODB_HOST: "0.0.0.0",
-      MONGODB_DATABASE: "goat-it-test",
-    }));
+    store.validate({
+      ...createFakeAppEnv({
+        SERVER_HOST: "0.0.0.0",
+        CORS_ORIGIN: "*",
+        TRUST_PROXY: "",
+        MONGODB_HOST: "0.0.0.0",
+        MONGODB_DATABASE: "goat-it-test",
+      }),
+      SENTRY_DISABLED: "false",
+    });
 
     expect(store.getAppEnv().TRUST_PROXY).toBe(false);
   });
