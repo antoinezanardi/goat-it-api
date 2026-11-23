@@ -20,6 +20,8 @@ export class RemoveThemeFromQuestionUseCase {
   /**
    * Returns the question without the removed assignment.
    *
+   * A conditional write that matches no document is re-evaluated floor-first, so a concurrent removal that lost the race reports the minimum-theme invariant that blocked it.
+   *
    * @throws `QuestionNotFoundError` when no question matches the question id.
    * @throws `QuestionThemeAssignmentAbsentError` when the question has no assignment for the theme id.
    * @throws `QuestionPrimaryThemeAssignmentNotRemovableError` when the assignment is the primary one.
@@ -31,9 +33,18 @@ export class RemoveThemeFromQuestionUseCase {
     await this.throwIfThemeNotRemovableFromQuestion(questionId, themeId);
     const updatedQuestion = await this.questionRepository.removeTheme(questionId, themeId);
     if (!updatedQuestion) {
-      throw new QuestionThemeAssignmentRemovalError(themeId, questionId);
+      return this.throwErrorForQuestionThemeRemovalNoMatch(questionId, themeId);
     }
     return updatedQuestion;
+  }
+
+  private async throwErrorForQuestionThemeRemovalNoMatch(questionId: string, themeId: string): Promise<never> {
+    const question = await this.findQuestionByIdUseCase.getById(questionId);
+    if (question.themes.length <= QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS) {
+      throw new QuestionMinimumThemesError(questionId);
+    }
+    ensureQuestionThemeAssignmentIsRemovable(question, themeId);
+    throw new QuestionThemeAssignmentRemovalError(themeId, questionId);
   }
 
   private async throwIfThemeNotRemovableFromQuestion(questionId: string, themeId: string): Promise<void> {

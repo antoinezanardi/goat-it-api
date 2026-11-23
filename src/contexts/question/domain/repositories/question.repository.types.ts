@@ -22,14 +22,23 @@ type QuestionRepository = {
   archive: (id: string) => Promise<Question | undefined>;
 
   /**
-   * A primary assignment is exclusive: assigning one demotes the question's previous primary theme.
+   * A primary assignment is exclusive: assigning one demotes the question's previous primary theme in the same atomic update.
+   *
+   * Returns `undefined` when the conditional write matches no document: the question is missing, the theme is already
+   * assigned or the question already holds `QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS` assignments.
    */
   assignTheme: (questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract) => Promise<Question | undefined>;
 
+  /**
+   * Returns `undefined` when the conditional write matches no document: the question is missing, the assignment is absent or
+   * primary, or removing it would leave fewer than `QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS` assignments.
+   */
   removeTheme: (questionId: string, themeId: string) => Promise<Question | undefined>;
 
   /**
-   * Setting `isPrimary` promotes the assignment and demotes the previous primary theme.
+   * Setting `isPrimary` promotes the assignment and demotes the previous primary theme in the same atomic update.
+   *
+   * Returns `undefined` when the conditional write matches no document.
    */
   modifyThemeAssignment: (questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract) => Promise<Question | undefined>;
 

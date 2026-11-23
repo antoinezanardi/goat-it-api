@@ -338,6 +338,25 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   - `src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.spec.ts`
   - `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
 
+### Mongoose schema index tests
+
+- Purpose: lock the indexes a collection owner declares and the `autoIndex` policy, without opening a database.
+- Describe label: the exported schema class, for example `describe(QuestionMongooseSchema, ...)`.
+- Assert `SCHEMA.indexes()`: map `[fields]` to compare the declared key, and read `options.unique` for a unique index.
+- Assert `SCHEMA.options.autoIndex` when the schema relies on startup builds.
+- A schema spec locks a declaration, not a behaviour: it adds no coverage or mutation scope, per the authoritative exclusion lists in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`.
+- Also assert that a superseded standalone index is gone, so a redundant index is not re-added.
+
+```ts
+describe(QuestionMongooseSchema, () => {
+  it("should declare the compound theme usage index when the schema is built.", () => {
+    const indexFields = QUESTION_MONGOOSE_SCHEMA.indexes().map(([fields]) => fields);
+
+    expect(indexFields).toContainEqual({ "themes.themeId": 1, status: 1 });
+  });
+});
+```
+
 ### Module wiring tests
 
 - Purpose: compile a real Nest module graph and prove that every provider, export and `createUseCaseProvider` dependency token resolves without opening a MongoDB connection.

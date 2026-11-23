@@ -40,6 +40,8 @@ Prefixes come from `QUESTION_ROUTE_PREFIX = "questions"` (`src/contexts/question
 
 Notes: the `@Controller(...)` decorator strings are `""` (AppController), `"health"`, `"questions"`, `"admin/questions"`, `"question-themes"` and `"admin/question-themes"` respectively (verified in the six controller files listed above). `POST /questions/search/random` is a search-style endpoint implemented as a POST carrying a filter body. Archive endpoints are `POST /:id/archive` and always return the archived resource (200), not 204. In both admin controllers `GET /stats` is declared before `GET /:id`.
 
+Resource lifecycle: `archive` is a terminal status transition; no unarchive route exists. Archived questions and themes remain mutable through the existing `PATCH` and theme-assignment routes. No route hard-deletes a question or theme — the only `DELETE` route detaches a theme assignment. See `docs/domain-logic.md` for the full transition table.
+
 ## Authentication
 
 - `@GameAuth()` applies `GameApiKeyGuard` and `@AdminAuth()` applies `AdminApiKeyGuard` (`src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator.ts`, `.../admin-auth/admin-auth.decorator.ts`; guards in `src/infrastructure/api/auth/providers/guards/`). `GET /` and `GET /health` are unauthenticated.

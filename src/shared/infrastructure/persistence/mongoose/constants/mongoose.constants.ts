@@ -1,6 +1,7 @@
 import type { SchemaOptions } from "@nestjs/mongoose";
 
 const DEFAULT_MONGOOSE_SCHEMA_OPTIONS: Partial<SchemaOptions> = {
+  autoIndex: true,
   timestamps: true,
   versionKey: false,
   _id: true,

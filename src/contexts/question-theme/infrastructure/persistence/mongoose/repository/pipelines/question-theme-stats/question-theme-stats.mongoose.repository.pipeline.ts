@@ -19,16 +19,12 @@ const ROWS_TO_RECORD_STAGES = [
 const QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE = {
   $lookup: {
     from: QUESTION_MONGOOSE_COLLECTION_NAME,
-    let: { themeId: "$_id" },
+    localField: "_id",
+    foreignField: QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId,
     pipeline: [
       {
         $match: {
-          $expr: {
-            $and: [
-              { $in: ["$$themeId", `$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId}`] },
-              { $eq: [`$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status}`, QUESTION_STATUS_ACTIVE] },
-            ],
-          },
+          [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status]: QUESTION_STATUS_ACTIVE,
         },
       },
       { $count: "count" },
