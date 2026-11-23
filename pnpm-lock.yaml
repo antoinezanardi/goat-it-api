@@ -233,8 +233,8 @@ importers:
         specifier: ^5.6.0
         version: 5.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/swagger@12.1.2(@fastify/static@10.1.12)(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)(typescript@6.0.3))(rxjs@7.8.2)(zod@4.6.7)
       radashi:
-        specifier: ^13.1.0
-        version: 13.1.0
+        specifier: ^13.1.1
+        version: 13.1.1
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -5693,8 +5693,8 @@ packages:
     resolution: {integrity: sha512-Y3NoRtprEEZQD8RfxMCfS0ZTqc4e+i18OrXEXAvpM6TfC/3y+0L5rNbZiSnbBBEkDfFzbpd8o+cE8q3/anjMGA==}
     engines: {node: '>=22'}
 
-  radashi@13.1.0:
-    resolution: {integrity: sha512-EH7SZPHgRsjkZjnJ5+BsDJHIVfxgm5D9b+3ax36wHezvjCdlFqofFtzMHIRz8KZ70hVjx5skdnQG6E+ZVlO8kg==}
+  radashi@13.1.1:
+    resolution: {integrity: sha512-oHRpBrO14lNQbk6bTzRpYPKPwmLljlk1dgDT5ktWGPxv1Z11Y/jNiRVnSb9YdrkWHvVsudCAT6uakn2LkSfGNw==}
     engines: {node: '>=18.0.0'}
 
   rc@1.2.8:
@@ -11768,7 +11768,7 @@ snapshots:
 
   quote-js-string@0.1.0: {}
 
-  radashi@13.1.0: {}
+  radashi@13.1.1: {}
 
   rc@1.2.8:
     dependencies:
