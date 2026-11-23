@@ -11,8 +11,8 @@ type QuestionMongooseModelStub = {
   aggregate: (pipeline?: QuestionAggregatePipeline) => Promise<QuestionAggregate[]>;
   create: (questionCreationContract: Partial<QuestionAggregate>) => Promise<QuestionMongooseDocumentStub>;
   findByIdAndUpdate: (id: string, update: Partial<QuestionAggregate>, options?: unknown) => Promise<QuestionMongooseDocumentStub | null>;
+  updateOne: (filter: unknown, update: unknown, options?: unknown) => Promise<{ matchedCount: number }>;
   countDocuments: (query: unknown) => Promise<number>;
-  bulkWrite: (ops: unknown[]) => Promise<unknown>;
 };
 
 type MockedQuestionMongooseModel = { [K in keyof QuestionMongooseModelStub]: Mock<QuestionMongooseModelStub[K]> };
@@ -26,8 +26,8 @@ function createMockedQuestionMongooseModel(overrides: Partial<MockedQuestionMong
     ]),
     create: vi.fn<QuestionMongooseModelStub["create"]>().mockResolvedValue(createFakeQuestionDocument()),
     findByIdAndUpdate: vi.fn<QuestionMongooseModelStub["findByIdAndUpdate"]>().mockResolvedValue(createFakeQuestionDocument()),
+    updateOne: vi.fn<QuestionMongooseModelStub["updateOne"]>().mockResolvedValue({ matchedCount: 1 }),
     countDocuments: vi.fn<QuestionMongooseModelStub["countDocuments"]>().mockResolvedValue(0),
-    bulkWrite: vi.fn<QuestionMongooseModelStub["bulkWrite"]>().mockResolvedValue({}),
     ...overrides,
   };
 }

@@ -55,5 +55,17 @@ describe(ModifyQuestionUseCase, () => {
 
       expect(result).toStrictEqual(expectedQuestion);
     });
+
+    it("should modify an archived question when called.", async() => {
+      const questionId = "question-id-archived";
+      const payload = createFakeQuestionModificationContract();
+      const archivedQuestion = createFakeQuestion({ id: questionId, status: "archived" });
+      mocks.repositories.question.modify.mockResolvedValueOnce(archivedQuestion);
+      const command = createFakeQuestionModificationCommand({ questionId, payload });
+
+      const result = await modifyQuestionUseCase.modify(command);
+
+      expect(result).toStrictEqual(archivedQuestion);
+    });
   });
 });

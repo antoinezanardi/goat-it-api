@@ -69,6 +69,21 @@ describe(ModifyQuestionThemeUseCase, () => {
 
       expect(result).toStrictEqual(expectedUpdatedQuestionTheme);
     });
+
+    it("should modify an archived question theme when called.", async() => {
+      const id = "question-theme-id-archived";
+      const payload = createFakeQuestionThemeModificationContract({ slug: undefined });
+      const archivedQuestionTheme = createFakeQuestionTheme({ id, status: "archived" });
+      mocks.repositories.questionTheme.modify.mockResolvedValueOnce(archivedQuestionTheme);
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
+        questionThemeId: id,
+        payload,
+      });
+
+      const result = await modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand);
+
+      expect(result).toStrictEqual(archivedQuestionTheme);
+    });
   });
 
   describe("throwIfQuestionThemeNotModifiable", () => {

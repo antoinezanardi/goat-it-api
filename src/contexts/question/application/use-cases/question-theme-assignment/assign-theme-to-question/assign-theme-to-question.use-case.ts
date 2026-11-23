@@ -25,6 +25,8 @@ export class AssignThemeToQuestionUseCase {
   /**
    * Returns the question with the new theme assignment.
    *
+   * A conditional write that matches no document is re-evaluated against the stored question to surface the invariant that blocked it, falling back to the write error.
+   *
    * @throws `QuestionNotFoundError` when no question matches the question id.
    * @throws `QuestionThemeNotFoundError` when no theme matches the assignment theme id.
    * @throws `QuestionThemeAssignmentAlreadyExistsError` when the theme is already assigned to the question.
@@ -37,9 +39,14 @@ export class AssignThemeToQuestionUseCase {
     await this.throwIfThemeNotAssignableToQuestion(questionThemeAssignmentPayload, questionId);
     const updatedQuestion = await this.questionRepository.assignTheme(questionId, questionThemeAssignmentPayload);
     if (!updatedQuestion) {
-      throw new QuestionThemeAssignmentCreationError(questionThemeAssignmentPayload.themeId, questionId);
+      return this.throwErrorForQuestionThemeAssignmentNoMatch(questionId, questionThemeAssignmentPayload);
     }
     return updatedQuestion;
+  }
+
+  private async throwErrorForQuestionThemeAssignmentNoMatch(questionId: string, questionThemeAssignmentContract: QuestionThemeAssignmentCreationContract): Promise<never> {
+    await this.throwIfThemeNotAssignableToQuestion(questionThemeAssignmentContract, questionId);
+    throw new QuestionThemeAssignmentCreationError(questionThemeAssignmentContract.themeId, questionId);
   }
 
   private async throwIfThemeNotAssignableToQuestion(questionThemeAssignmentContract: QuestionThemeAssignmentCreationContract, questionId: string): Promise<void> {

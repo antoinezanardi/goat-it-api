@@ -18,7 +18,6 @@
       }
     }
   },
-  "plugins": ["@rvboris/opencode-mempalace"],
   "permission": {
     "skill": { "*": "allow" },
     "bash": {

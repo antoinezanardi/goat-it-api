@@ -4,24 +4,56 @@ This document records the performance posture of the Goat It API (`goat-it-api`)
 
 ## Indexing policy and current indexes
 
-The only indexes in the two collections today are:
+The context that owns a collection owns its indexes; a cross-context consumer requests an index from the owner and never declares it. `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`file:src/shared/infrastructure/persistence/mongoose/constants/mongoose.constants.ts`) enables `autoIndex`, so missing indexes are built at application startup. Measure with `explain` before adding one, and do not add speculative indexes.
 
 | Collection | Index | Source |
 |---|---|---|
 | `question_themes` | unique index on `slug` | `@Prop({ unique: true, index: true })` in `file:src/contexts/question-theme/infrastructure/persistence/mongoose/schemas/question-theme.mongoose.schema.ts` |
-| `questions` | default `_id` index only | the schema defines no top-level index (`file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema.ts`) |
-| `questions` (subdocument) | `themes.themeId` | `@Prop({ type: Types.ObjectId, ref: "question_themes", index: true })` in `file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema.ts` |
+| `question_themes` | index on `status` | `@Prop({ index: true })` in the same schema |
+| `questions` | compound `{ themes.themeId: 1, status: 1 }` | `QUESTION_MONGOOSE_SCHEMA.index(...)` in `file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema.ts` |
+| `questions` | default `_id` index only otherwise | the schema declares no other top-level index |
 
-Both schemas use `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`timestamps: true`, `versionKey: false`, `_id: true`, `id: true`) from `file:src/shared/infrastructure/persistence/mongoose/constants/mongoose.constants.ts`. The `slug` unique index doubles as the race-safe slug-deduplication backstop (duplicate key code `MONGO_DUPLICATE_KEY_ERROR_CODE = 11000`, same constants file, mapped in `file:src/contexts/question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers.ts`).
+The `slug` unique index doubles as the race-safe slug-deduplication backstop (duplicate key code `MONGO_DUPLICATE_KEY_ERROR_CODE = 11000`, same constants file, mapped in `file:src/contexts/question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers.ts`). The compound `questions` index is the indexed prefix for `countLiveByThemeId`, theme-filtered question lists and the theme-stats local/foreign join. The old standalone `themes.themeId` index is no longer declared; a deployment that already has it keeps it until it is dropped manually.
+
+### Measurement
+
+The index decisions were confirmed with `explain("executionStats")` on a 60-document dataset shaped like the acceptance fixtures:
+
+- `countDocuments` with a `themes.$elemMatch.themeId` equality plus `status: { $in: [pending, active] }` selects the compound `{ themes.themeId: 1, status: 1 }` index (`themes.themeId_1_status_1`).
+- A theme-filtered question list uses the same compound index for its `themes.themeId` predicate.
+- The admin theme list with a `status` filter selects `question_themes.status_1` (`docsExamined` equals the number of archived themes).
+- The theme-stats `$lookup` reports `indexesUsed: ["themes.themeId_1_status_1"]`, zero collection scans and zero document fetches for the joined side. A correlated `$expr`/`$in` sub-pipeline cannot use a multikey index, which is why the pipeline uses the local/foreign form.
+
+Re-measure when a collection grows materially or a query shape changes. An index that the planner does not use is removed from the plan rather than kept speculatively.
+
+Reproduce on the acceptance MongoDB (`pnpm run docker:acceptance-tests:start`) with a 60-document dataset:
+
+```js
+db.questions.find({ themes: { $elemMatch: { themeId: <id> } }, status: { $in: ["pending", "active"] } }).explain("executionStats");
+db.question_themes.find({ status: "archived" }).explain("executionStats");
+db.runCommand({
+  explain: {
+    aggregate: "question_themes",
+    pipeline: [
+      { $lookup: { from: "questions", localField: "_id", foreignField: "themes.themeId", pipeline: [{ $match: { status: "active" } }, { $count: "count" }], as: "activeQuestionLookup" } },
+      { $match: { slug: "theme-0" } },
+    ],
+    cursor: {},
+  },
+  verbosity: "executionStats",
+});
+```
+
+Read `winningPlan.indexName` (or `stages[].$lookup.indexesUsed`) plus `executionStats.totalDocsExamined` / `totalKeysExamined`.
 
 ## Query patterns
 
 ### Question reads (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts`)
 
 - `findAll` and `findById` run an aggregation: `$match` (filters from `file:src/contexts/question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers.ts`) → the theme-resolution pipeline → sort → optional `$limit`.
-- The theme-resolution pipeline (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/pipelines/question-theme-assignment/question-theme-assignment.mongoose.repository.pipeline.ts`) does `$unwind` themes → `$lookup` on `question_themes` (on the indexed `themes.themeId` and theme `_id`) → `$unwind` → `$group` → `$replaceWith` → `$set` with `$sortArray` (primary first, then by theme slug). This is the accepted cross-context `$lookup` documented in `file:docs/architecture.md` §5.4: "revisit only if ... the join becomes a measurable performance bottleneck".
+- The theme-resolution pipeline (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/pipelines/question-theme-assignment/question-theme-assignment.mongoose.repository.pipeline.ts`) does `$unwind` themes → `$lookup` on `question_themes` (`localField: "themes.themeId"`, `foreignField: "_id"`, so the joined `_id` is indexed) → `$unwind` → `$group` → `$replaceWith` → `$set` with `$sortArray` (primary first, then by theme slug). This is the accepted cross-context `$lookup` documented in `file:docs/architecture.md` §5.4: "revisit only if ... the join becomes a measurable performance bottleneck".
 - Sorting: plain fields use a single `$sort` stage with `_id` as tiebreaker; semantic fields (`status`, `cognitiveDifficulty`) add an in-memory `_sortPriority` computed with `$indexOfArray` and are removed with `$unset` afterwards — `buildMongooseAggregationSortStages` in `file:src/shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers.ts`; orders come from `QUESTION_STATUS_SORT_ORDER` / `QUESTION_COGNITIVE_DIFFICULTY_SORT_ORDER` (`file:src/contexts/question/domain/constants/question.constants.ts`).
-- `countLiveByThemeId`: `countDocuments` with `$elemMatch` on `themes.themeId` (indexed) plus `status $in [pending, active]` — used to protect theme archiving.
+- `countLiveByThemeId`: `countDocuments` with `$elemMatch` on `themes.themeId` plus `status $in [pending, active]` — served by the compound `{ themes.themeId: 1, status: 1 }` index.
 - `findRandom` (public game endpoint): `$match` (active status, filters, locale + per-locale translation-completeness conditions) → `$sample: { size: limit }` → theme pipeline → in-memory `shuffleArray`. `$sample` is inherently index-unfriendly.
 - Stats: one `$facet` aggregation computing total, by status/category/difficulty/author-role/rejection-type and translation-completeness counts (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline.ts`).
 
@@ -32,7 +64,7 @@ Both schemas use `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`timestamps: true`, `version
 
 ### Write patterns
 
-- Question writes (`create`, `archive`, `assignTheme`, `removeTheme`, `modifyThemeAssignment`, `modify`) all re-read the question afterwards with `findById` to return a fully mapped entity — a deliberate read-after-write double round trip (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts`). Primary promotion/demotion uses `bulkWrite` with two ordered `updateOne` operations whose operations are individually atomic but whose batch is not (same file), so a reader may observe the intermediate state and a mid-batch failure leaves the earlier operation committed; this matches the "conditional updates and update pipelines, not transactions" target in `file:docs/architecture.md` §5.5.
+- Question writes (`create`, `archive`, `assignTheme`, `removeTheme`, `modifyThemeAssignment`, `modify`) all re-read the question afterwards with `findById` to return a fully mapped entity — a deliberate read-after-write double round trip (`file:src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts`). The assignment writes use `updateOne` with a conditional filter and check `matchedCount`: a non-primary assignment is a conditional `$push`, a removal is a conditional `$pull`, and a primary assignment or promotion is one update pipeline (passed with `updatePipeline: true`) that demotes every other assignment and mutates the target in the same single-document write. The filter, not the schema validator or `runValidators`, enforces the duplicate, 1–3 and primary invariants.
 - Question-theme writes return the updated document directly with `findByIdAndUpdate(..., { returnDocument: "after" })` (no extra read) and map duplicate-key errors (`file:src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.ts`).
 
 ### N+1 risk assessment
@@ -69,9 +101,9 @@ The cap bounds **bytes only**. The random-search body's `themeIds` array still h
 |---|---|---|
 | `GET /questions`, `GET /admin/questions` | aggregation: match → theme `$lookup` → sort → limit | unindexed filter fields; `$lookup` into `question_themes` (uses indexed `_id` + `themes.themeId`) |
 | `GET /questions/:id`, `GET /admin/questions/:id` | aggregation with single `_id` match | `_id` lookup is cheap; the `$lookup` still runs even for the admin response, which embeds themes |
-| `GET /question-themes`, `GET /admin/question-themes` | plain `find().sort().limit()` | unindexed sort fields (`createdAt`, `status`) |
+| `GET /question-themes`, `GET /admin/question-themes` | plain `find().sort().limit()` | `status` filtering uses the new status index; sorting by `createdAt`/`status` still needs an in-memory sort because the `_id` tiebreaker prevents a pure index sort |
 | `POST /questions/search/random` | match → `$sample` → theme `$lookup` → in-memory shuffle | `$sample` scan; unindexed match fields |
-| `GET /admin/questions/stats`, `GET /admin/question-themes/stats` | single `$facet` aggregation | full scan per bucket group; dynamic completeness `$expr`; theme stats add a cross-collection `$lookup` per theme row |
+| `GET /admin/questions/stats`, `GET /admin/question-themes/stats` | single `$facet` aggregation | full scan per bucket group; dynamic completeness `$expr`; theme stats add an indexed local/foreign `$lookup` per theme row |
 
 ## Performance decisions in docs/architecture.md
 
@@ -89,10 +121,11 @@ Enabling any real caching later needs a per-route policy, validators, a reviewed
 
 ## Known limitations
 
-- **No top-level indexes on `questions`.** `status`, `category`, `cognitiveDifficulty`, `createdAt`, `isAdultContent` and `author.role` are all filterable/sortable (public and admin find DTOs) yet unindexed; growing collections will rely on collection scans for these paths (verified: the question schema defines none, `file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema.ts`).
+- **Only the compound theme-usage index exists on `questions`.** `status` alone, `category`, `cognitiveDifficulty`, `createdAt`, `isAdultContent`, `author.role` and the sort fields remain unindexed; growing collections rely on collection scans for those paths. Add an index only after an `explain` measurement shows it is used (`file:src/contexts/question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema.ts`).
 - **`is-fully-translated` on questions is an `$expr` over `$map`/`$getField`** (`buildDynamicFieldCompleteCondition` in `file:src/shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers.ts`), which cannot use indexes — admin completeness filters and completeness stats scan the whole collection. Theme completeness filtering uses static per-field conditions instead, which is the indexable path (`buildFieldCompleteCondition`, same file).
 - **Semantic sorts are in-memory**: `$indexOfArray` priorities are computed per result after filtering (`buildMongooseAggregationSortStages`), so `sort-by=status`/`cognitiveDifficulty` do not benefit from an index even if one existed.
-- **No compound index for the theme-stats `$lookup`**: the inner match filters `themes.themeId` + `status`; only `themes.themeId` is indexed, so counting active questions per theme degrades with question volume.
+- **Correlated `$expr` lookups cannot use multikey indexes.** The theme-stats pipeline therefore uses the indexed `localField`/`foreignField` form for `themes.themeId` and applies the `status` match in the sub-pipeline; a `$expr`/`$in` correlated form would scan `questions` per theme.
+- **Concurrency is proven at the repository layer, not end-to-end.** The acceptance harness has no parallel-request helper, so the conditional filters and update pipelines are pinned by repository specs and the use-case interleaving tests; no acceptance scenario fires two simultaneous writes.
 - **`$sample` random questions** cannot use indexes; the endpoint is bounded to 50 results but the pre-sample `$match` still scans unindexed filter fields.
 - **Unbounded list endpoints**: `limit=0` (unlimited) is accepted on `GET /questions`, `GET /admin/questions`, `GET /question-themes`, `GET /admin/question-themes`; there is no hard ceiling server-side (verified in `file:src/shared/application/dto/zod/validators/limit/limit.zod.validators.ts`).
 - **Read-after-write double round trips** on every question write add latency by design (verified in the repository implementation).

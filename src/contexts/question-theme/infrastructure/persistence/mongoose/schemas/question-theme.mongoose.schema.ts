@@ -52,6 +52,7 @@ class QuestionThemeMongooseSchema {
     type: String,
     enum: QUESTION_THEME_STATUSES,
     default: DEFAULT_QUESTION_THEME_STATUS,
+    index: true,
   })
   public status!: QuestionThemeStatus;
 

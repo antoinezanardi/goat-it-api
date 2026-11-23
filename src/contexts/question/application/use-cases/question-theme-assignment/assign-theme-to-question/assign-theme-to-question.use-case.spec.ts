@@ -67,15 +67,157 @@ describe(AssignThemeToQuestionUseCase, () => {
     it("should throw when repository.assignTheme returns undefined.", async() => {
       const command = createFakeQuestionThemeAssignmentCreationCommand({
         questionId: "q-1",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-new" }),
+      });
+      const question = createFakeQuestion({
+        id: "q-1",
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "existing-theme" }) })],
       });
       mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({
+        id: "theme-new",
         status: DEFAULT_QUESTION_THEME_STATUS,
       }));
-      mocks.useCases.findQuestionById.getById.mockResolvedValue(createFakeQuestion());
+      mocks.useCases.findQuestionById.getById.mockResolvedValue(question);
       mocks.repositories.question.assignTheme.mockResolvedValueOnce(undefined);
       const expectedError = new QuestionThemeAssignmentCreationError(command.payload.themeId, command.questionId);
 
       await expect(async() => assignThemeToQuestionUseCase.assign(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionMaximumThemesError when the conditional write matches no document and the question reached the maximum.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-max",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-new" }),
+      });
+      const questionBefore = createFakeQuestion({
+        id: "q-max",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+        ],
+      });
+      const questionAfter = createFakeQuestion({
+        id: "q-max",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-3" }) }),
+        ],
+      });
+      mocks.useCases.findQuestionById.getById.mockResolvedValueOnce(questionBefore).mockResolvedValueOnce(questionAfter);
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: "theme-new", status: DEFAULT_QUESTION_THEME_STATUS }));
+      mocks.repositories.question.assignTheme.mockResolvedValueOnce(undefined);
+      const expectedError = new QuestionMaximumThemesError(command.questionId);
+
+      await expect(assignThemeToQuestionUseCase.assign(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionThemeAssignmentAlreadyExistsError when the conditional write matches no document and the theme is now assigned.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-duplicate",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-1" }),
+      });
+      const questionBefore = createFakeQuestion({
+        id: "q-duplicate",
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) })],
+      });
+      const questionAfter = createFakeQuestion({
+        id: "q-duplicate",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+        ],
+      });
+      mocks.useCases.findQuestionById.getById.mockResolvedValueOnce(questionBefore).mockResolvedValueOnce(questionAfter);
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: "theme-1", status: DEFAULT_QUESTION_THEME_STATUS }));
+      mocks.repositories.question.assignTheme.mockResolvedValueOnce(undefined);
+      const expectedError = new QuestionThemeAssignmentAlreadyExistsError(command.payload.themeId, command.questionId);
+
+      await expect(assignThemeToQuestionUseCase.assign(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw ReferencedQuestionThemeArchivedError when the conditional write matches no document and the theme became archived.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-archived-theme",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-1" }),
+      });
+      const question = createFakeQuestion({ id: "q-archived-theme", themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) })] });
+      mocks.useCases.findQuestionById.getById.mockResolvedValueOnce(question).mockResolvedValueOnce(question);
+      mocks.useCases.findQuestionThemeById.getById
+        .mockResolvedValueOnce(createFakeQuestionTheme({ id: "theme-1", status: DEFAULT_QUESTION_THEME_STATUS }))
+        .mockResolvedValueOnce(createFakeQuestionTheme({ id: "theme-1", status: QUESTION_THEME_STATUS_ARCHIVED }));
+      mocks.repositories.question.assignTheme.mockResolvedValueOnce(undefined);
+      const expectedError = new ReferencedQuestionThemeArchivedError(command.payload.themeId);
+
+      await expect(assignThemeToQuestionUseCase.assign(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should map a concurrent assignment that lost the maximum-theme race to QuestionMaximumThemesError when the conditional write matches no document.", async() => {
+      const firstCommand = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-race",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-a", isPrimary: false }),
+      });
+      const secondCommand = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-race",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-b", isPrimary: false }),
+      });
+      const twoThemesQuestion = createFakeQuestion({
+        id: "q-race",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+        ],
+      });
+      const threeThemesQuestion = createFakeQuestion({
+        id: "q-race",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-a" }) }),
+        ],
+      });
+      const firstWrite = Promise.withResolvers<ReturnType<typeof createFakeQuestion> | undefined>();
+      const secondWrite = Promise.withResolvers<ReturnType<typeof createFakeQuestion> | undefined>();
+      const themeA = createFakeQuestionTheme({ id: "theme-a", status: DEFAULT_QUESTION_THEME_STATUS });
+      const themeB = createFakeQuestionTheme({ id: "theme-b", status: DEFAULT_QUESTION_THEME_STATUS });
+      mocks.useCases.findQuestionById.getById
+        .mockResolvedValueOnce(twoThemesQuestion)
+        .mockResolvedValueOnce(twoThemesQuestion)
+        .mockResolvedValueOnce(threeThemesQuestion);
+      mocks.useCases.findQuestionThemeById.getById
+        .mockResolvedValueOnce(themeA)
+        .mockResolvedValueOnce(themeB)
+        .mockResolvedValueOnce(themeB);
+      mocks.repositories.question.assignTheme.mockReturnValueOnce(firstWrite.promise).mockReturnValueOnce(secondWrite.promise);
+      const firstAssignment = assignThemeToQuestionUseCase.assign(firstCommand);
+      const secondAssignment = assignThemeToQuestionUseCase.assign(secondCommand);
+      await vi.waitUntil(() => mocks.repositories.question.assignTheme.mock.calls.length === 2);
+      firstWrite.resolve(threeThemesQuestion);
+      secondWrite.resolve(undefined);
+      const expectedError = new QuestionMaximumThemesError(firstCommand.questionId);
+
+      await expect(secondAssignment).rejects.toThrow(expectedError);
+
+      await firstAssignment;
+    });
+
+    it("should assign a theme to an archived question when called.", async() => {
+      const command = createFakeQuestionThemeAssignmentCreationCommand({
+        questionId: "q-archived",
+        payload: createFakeQuestionThemeAssignmentCreationContract({ themeId: "theme-1" }),
+      });
+      const archivedQuestion = createFakeQuestion({
+        id: "q-archived",
+        status: "archived",
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }) })],
+      });
+      mocks.useCases.findQuestionById.getById.mockResolvedValue(archivedQuestion);
+      mocks.useCases.findQuestionThemeById.getById.mockResolvedValue(createFakeQuestionTheme({ id: "theme-1", status: DEFAULT_QUESTION_THEME_STATUS }));
+      mocks.repositories.question.assignTheme.mockResolvedValueOnce(archivedQuestion);
+
+      await assignThemeToQuestionUseCase.assign(command);
+
+      expect(mocks.repositories.question.assignTheme).toHaveBeenCalledExactlyOnceWith(command.questionId, command.payload);
     });
 
     it("should return updated question when repository.assignTheme returns it.", async() => {

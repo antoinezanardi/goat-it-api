@@ -10,14 +10,15 @@ import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS, QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import type { Question } from "@question/domain/types/question.entities";
 
-import type { Model, UpdateQuery } from "mongoose";
+import type { Model, QueryFilter, UpdateQuery, UpdateWithAggregationPipeline } from "mongoose";
 
 import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
@@ -30,7 +31,7 @@ import type { FindAllOptions } from "@shared/domain/types/find/find.types";
  *
  * Every read aggregates the question together with its theme assignments, resolved through a `$lookup` and ordered primary first.
  *
- * A primary assignment is written atomically with `bulkWrite`.
+ * Theme assignment writes are conditional updates: the filter enforces the duplicate, count and primary guards, so a lost race cannot persist an invalid assignment.
  */
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
@@ -51,6 +52,74 @@ export class QuestionMongooseRepository implements QuestionRepository {
     );
 
     return matchStage;
+  }
+
+  private static composeQuestionThemeAssignmentPushFilter(questionId: string, themeId: Types.ObjectId): QueryFilter<QuestionMongooseDocument> {
+    return {
+      _id: new Types.ObjectId(questionId),
+      [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId]: { $ne: themeId },
+      $expr: { $lt: [{ $size: "$themes" }, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS] },
+    };
+  }
+
+  private static composeQuestionThemeAssignmentRemovalFilter(questionId: string, themeId: Types.ObjectId): QueryFilter<QuestionMongooseDocument> {
+    return {
+      _id: new Types.ObjectId(questionId),
+      themes: { $elemMatch: { themeId, isPrimary: false } },
+      [`themes.${QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS}`]: { $exists: true },
+    };
+  }
+
+  private static composeQuestionThemeAssignmentModificationFilter(questionId: string, themeId: string): QueryFilter<QuestionMongooseDocument> {
+    return {
+      _id: new Types.ObjectId(questionId),
+      [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId]: new Types.ObjectId(themeId),
+    };
+  }
+
+  private static composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload: QuestionThemeAssignmentMongooseInsertPayload): UpdateWithAggregationPipeline {
+    return [
+      {
+        $set: {
+          themes: {
+            $concatArrays: [
+              {
+                $map: {
+                  input: "$themes",
+                  as: "themeAssignment",
+                  in: { $mergeObjects: ["$$themeAssignment", { isPrimary: false }] },
+                },
+              },
+              [insertPayload],
+            ],
+          },
+        },
+      },
+    ];
+  }
+
+  private static composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId: string, contract: QuestionThemeAssignmentModificationContract): UpdateWithAggregationPipeline {
+    const promotionFields = contract.isHint === undefined ? { isPrimary: true } : { isPrimary: true, isHint: contract.isHint };
+
+    return [
+      {
+        $set: {
+          themes: {
+            $map: {
+              input: "$themes",
+              as: "themeAssignment",
+              in: {
+                $cond: [
+                  { $eq: ["$$themeAssignment.themeId", new Types.ObjectId(themeId)] },
+                  { $mergeObjects: ["$$themeAssignment", promotionFields] },
+                  { $mergeObjects: ["$$themeAssignment", { isPrimary: false }] },
+                ],
+              },
+            },
+          },
+        },
+      },
+    ];
   }
 
   /**
@@ -110,38 +179,60 @@ export class QuestionMongooseRepository implements QuestionRepository {
   }
 
   /**
-   * A primary assignment demotes the current primary theme and inserts the new one in a single `bulkWrite`; a non-primary assignment only appends the theme entry.
+   * Appends the assignment only when the question exists, the theme is not already assigned and the question holds fewer than
+   * `QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS` assignments. A primary assignment demotes the current primary theme in the same atomic
+   * update pipeline, so a reader never observes zero or two primary themes.
+   *
+   * Returns `undefined` when the conditional write matches no document.
    */
   public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
     const insertPayload = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
+    const updateResult = questionThemeAssignmentCreationContract.isPrimary ? await this.questionModel.updateOne(
+      QuestionMongooseRepository.composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId),
+      QuestionMongooseRepository.composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload),
+      { updatePipeline: true },
+    ) : await this.questionModel.updateOne(
+      QuestionMongooseRepository.composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId),
+      { $push: { themes: insertPayload } },
+    );
 
-    if (questionThemeAssignmentCreationContract.isPrimary) {
-      await this.assignNewPrimaryTheme(questionId, insertPayload);
-
-      return this.findById(questionId);
+    if (updateResult.matchedCount === 0) {
+      return undefined;
     }
-    const update: UpdateQuery<QuestionMongooseDocument> = {
-      $push: { themes: insertPayload },
-    };
-    await this.questionModel.findByIdAndUpdate(questionId, update);
-
     return this.findById(questionId);
   }
 
   /**
-   * Promoting to primary demotes the current primary assignment and sets the target one in a single `bulkWrite`; a non-primary
-   * update writes only the defined fields and skips the database when none are defined.
+   * Updates an existing assignment. A primary promotion demotes every other assignment in the same atomic pipeline, and a non-primary update writes only the defined fields.
+   *
+   * Returns `undefined` when the conditional write matches no document.
    */
   public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
     if (contract.isPrimary) {
-      await this.promoteToPrimaryThemeAssignment(questionId, themeId, contract);
+      const updateResult = await this.questionModel.updateOne(
+        QuestionMongooseRepository.composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+        QuestionMongooseRepository.composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId, contract),
+        { updatePipeline: true },
+      );
 
+      if (updateResult.matchedCount === 0) {
+        return undefined;
+      }
       return this.findById(questionId);
     }
     const fieldsToSet = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
-    if (Object.keys(fieldsToSet).length > 0) {
-      const themeObjectId = new Types.ObjectId(themeId);
-      await this.questionModel.findByIdAndUpdate(questionId, { $set: fieldsToSet }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
+    if (Object.keys(fieldsToSet).length === 0) {
+      return this.findById(questionId);
+    }
+    const themeObjectId = new Types.ObjectId(themeId);
+    const updateResult = await this.questionModel.updateOne(
+      QuestionMongooseRepository.composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+      { $set: fieldsToSet },
+      { arrayFilters: [{ "elem.themeId": themeObjectId }] },
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return undefined;
     }
     return this.findById(questionId);
   }
@@ -158,16 +249,21 @@ export class QuestionMongooseRepository implements QuestionRepository {
   }
 
   /**
-   * Pulls the theme entry from the embedded assignments and returns the re-read question, or `undefined` when the question does not exist.
+   * Pulls the assignment only when the question exists, still holds more than `QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS` assignments
+   * and the target assignment exists and is not primary.
+   *
+   * Returns `undefined` when the conditional write matches no document.
    */
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
-    const update: UpdateQuery<QuestionMongooseDocument> = {
-      $pull: {
-        themes: { themeId: new Types.ObjectId(themeId) },
-      },
-    };
-    await this.questionModel.findByIdAndUpdate(questionId, update);
+    const themeObjectId = new Types.ObjectId(themeId);
+    const updateResult = await this.questionModel.updateOne(
+      QuestionMongooseRepository.composeQuestionThemeAssignmentRemovalFilter(questionId, themeObjectId),
+      { $pull: { themes: { themeId: themeObjectId } } },
+    );
 
+    if (updateResult.matchedCount === 0) {
+      return undefined;
+    }
     return this.findById(questionId);
   }
 
@@ -221,43 +317,5 @@ export class QuestionMongooseRepository implements QuestionRepository {
         incomplete: result.incompleteTranslationCountStage[0]?.count ?? 0,
       },
     };
-  }
-
-  private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {
-    await this.questionModel.bulkWrite([
-      {
-        updateOne: {
-          filter: { _id: new Types.ObjectId(questionId) },
-          update: { $set: { "themes.$[].isPrimary": false } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { _id: new Types.ObjectId(questionId) },
-          update: { $push: { themes: insertPayload } },
-        },
-      },
-    ]);
-  }
-
-  private async promoteToPrimaryThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<void> {
-    const themeObjectId = new Types.ObjectId(themeId);
-    const questionObjectId = new Types.ObjectId(questionId);
-    const targetSetFields = getDefinedFieldsForMongoArrayElementUpdate({ ...contract, isPrimary: true }, "themes.$[elem]");
-    await this.questionModel.bulkWrite([
-      {
-        updateOne: {
-          filter: { _id: questionObjectId },
-          update: { $set: { "themes.$[].isPrimary": false } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { _id: questionObjectId },
-          update: { $set: targetSetFields },
-          arrayFilters: [{ "elem.themeId": themeObjectId }],
-        },
-      },
-    ]);
   }
 }

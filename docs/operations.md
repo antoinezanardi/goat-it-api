@@ -123,6 +123,14 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
 - Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.
 
+## Database index builds
+
+Both context schemas enable `autoIndex` through `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`src/shared/infrastructure/persistence/mongoose/constants/mongoose.constants.ts`), so Mongoose builds any missing index when the application starts. There is no migration tooling.
+
+- An index change ships with the deployment that needs it. A large build can consume database resources and delay the first fully indexed queries; schedule it with the release window and watch the deployment.
+- Mongoose never drops an index. Removing a declaration leaves the existing index in place; drop the superseded index manually only after its replacement has been built.
+- Confirm the result with `db.questions.getIndexes()` / `db.question_themes.getIndexes()`; the expected declarations are recorded in [data-model.md](data-model.md#indexes) and [performance.md](performance.md#indexing-policy-and-current-indexes).
+
 ## Post-deploy smoke verification
 
 The staging and production workflows run the `health-check` composite action as a separate step after the SSH deploy step. The action executes `scripts/post-deploy-health-check.sh` against the repository variable `PREPRODUCTION_API_URL` or `PRODUCTION_API_URL`:

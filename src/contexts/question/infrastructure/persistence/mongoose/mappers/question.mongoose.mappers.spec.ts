@@ -96,24 +96,35 @@ describe(createQuestionThemeFromAggregate, () => {
 
 describe(createQuestionThemeAssignmentFromQuestionThemeAggregate, () => {
   it("should correctly map a question theme assignment from aggregate when called.", () => {
-    const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate();
+    const questionTheme = createFakeQuestionThemeDocument();
+    const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate({ theme: questionTheme });
     const expectedQuestionThemeAssignment = createFakeQuestionThemeAssignment({
-      theme: createQuestionThemeFromAggregate(questionThemeAssignmentAggregate.theme),
+      theme: createQuestionThemeFromAggregate(questionTheme),
       isPrimary: questionThemeAssignmentAggregate.isPrimary,
       isHint: questionThemeAssignmentAggregate.isHint,
     });
-    const result = createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate);
+    const result = createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate, "question-id");
 
     expect(result).toStrictEqual(expectedQuestionThemeAssignment);
+  });
+
+  it("should throw a question persistence mapping error when the referenced theme is missing.", () => {
+    const questionId = "question-id";
+    const questionThemeAssignmentAggregate = createFakeQuestionThemeAssignmentAggregate({ theme: undefined });
+    const expectedError = new QuestionPersistenceMappingError(questionId, "Missing referenced question theme in assigned theme");
+
+    expect(() => createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate, questionId)).toThrow(expectedError);
   });
 });
 
 describe(createQuestionFromAggregate, () => {
   it("should correctly map a question from aggregate when called.", () => {
     const questionAggregate = createFakeQuestionAggregate({ isAdultContent: true });
+    const questionId = questionAggregate._id.toString();
+    const themes = questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate, questionId));
     const expectedQuestion = createFakeQuestion({
-      id: questionAggregate._id.toString(),
-      themes: questionAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
+      id: questionId,
+      themes,
       content: questionAggregate.content,
       category: questionAggregate.category,
       cognitiveDifficulty: questionAggregate.cognitiveDifficulty,

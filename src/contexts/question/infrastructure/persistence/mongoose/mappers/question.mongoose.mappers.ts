@@ -44,8 +44,13 @@ function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate)
 
 /**
  * Maps a theme-assignment aggregate to the domain value object, delegating the nested theme to `createQuestionThemeFromAggregate`.
+ *
+ * @throws `QuestionPersistenceMappingError` when the referenced theme is missing from the aggregate, which can only happen after a manual hard delete.
  */
-function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate: QuestionThemeAssignmentAggregate): QuestionThemeAssignment {
+function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate: QuestionThemeAssignmentAggregate, questionId: string): QuestionThemeAssignment {
+  if (!questionThemeAssignmentAggregate.theme) {
+    throw new QuestionPersistenceMappingError(questionId, "Missing referenced question theme in assigned theme");
+  }
   return {
     theme: createQuestionThemeFromAggregate(questionThemeAssignmentAggregate.theme),
     isPrimary: questionThemeAssignmentAggregate.isPrimary,
@@ -57,9 +62,11 @@ function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAs
  * Maps a question aggregation result to the domain entity, converting `_id` to a string `id` and the stored source URLs to a `Set`.
  */
 function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregate): Question {
+  const questionId = questionMongooseAggregate._id.toString();
+
   return {
-    id: questionMongooseAggregate._id.toString(),
-    themes: questionMongooseAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
+    id: questionId,
+    themes: questionMongooseAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate, questionId)),
     content: questionMongooseAggregate.content,
     category: questionMongooseAggregate.category,
     cognitiveDifficulty: questionMongooseAggregate.cognitiveDifficulty,

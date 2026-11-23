@@ -13,7 +13,6 @@ class QuestionThemeAssignmentMongooseSchema {
     required: true,
     type: Types.ObjectId,
     ref: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
-    index: true,
   })
   public themeId!: Types.ObjectId;
 

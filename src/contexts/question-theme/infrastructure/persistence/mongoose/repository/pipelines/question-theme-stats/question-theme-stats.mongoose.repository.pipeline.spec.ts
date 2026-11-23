@@ -7,15 +7,17 @@ describe("Question Theme Stats Mongoose Repository Pipeline", () => {
     expect(QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE.$lookup.from).toBe(QUESTION_MONGOOSE_COLLECTION_NAME);
   });
 
-  it("should match active questions on the published theme id and status field paths when building the match stage.", () => {
+  it("should join the theme id to the published question theme usage field when building the stage.", () => {
+    expect(QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE.$lookup).toMatchObject({
+      localField: "_id",
+      foreignField: QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId,
+    });
+  });
+
+  it("should match active questions on the published status field path when building the match stage.", () => {
     expect(QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE.$lookup.pipeline[0]).toStrictEqual({
       $match: {
-        $expr: {
-          $and: [
-            { $in: ["$$themeId", `$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId}`] },
-            { $eq: [`$${QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status}`, QUESTION_STATUS_ACTIVE] },
-          ],
-        },
+        [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status]: QUESTION_STATUS_ACTIVE,
       },
     });
   });

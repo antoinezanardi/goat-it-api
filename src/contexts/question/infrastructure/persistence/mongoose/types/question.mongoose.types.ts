@@ -17,7 +17,7 @@ type QuestionThemeAssignmentAggregate = Omit<
   QuestionMongooseSchemaShape["themes"][number],
   "themeId"
 > & {
-  theme: QuestionThemeAggregate;
+  theme?: QuestionThemeAggregate;
 };
 
 type QuestionAggregate = Omit<
