@@ -18,7 +18,8 @@ import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/do
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
 import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
-import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestionCreationContract } from "@faketories/contexts/question/repository-contracts/question.repository-contracts.faketory";
 import { createFakeQuestionModificationContract } from "@faketories/contexts/question/repository-contracts/question-modification/question-modification.repository-contracts.faketory";
@@ -350,7 +351,7 @@ describe(QuestionMongooseRepository, () => {
 
       await repositories.question.assignTheme(questionId, contract);
 
-      expect(mocks.models.question.updateOne).toHaveBeenCalledExactlyOnceWith(expectedFilter, { $push: { themes: expectedInsert } });
+      expect(mocks.models.question.updateOne).toHaveBeenCalledExactlyOnceWith(expectedFilter, { $push: { themes: expectedInsert } }, { updatePipeline: false });
     });
 
     it("should call model.updateOne with the conditional push filter and atomic primary pipeline when the contract is primary.", async() => {
@@ -391,7 +392,7 @@ describe(QuestionMongooseRepository, () => {
       const questionId = "618c1f4b3a2f000000000021";
       mocks.models.question.updateOne.mockResolvedValueOnce({ matchedCount: 0 });
 
-      const actual = await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
+      const actual = await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract({ isPrimary: false }));
 
       expect(actual).toBeUndefined();
     });
@@ -401,7 +402,7 @@ describe(QuestionMongooseRepository, () => {
       mocks.models.question.updateOne.mockResolvedValueOnce({ matchedCount: 0 });
       const findByIdSpy = vi.spyOn(repositories.question, "findById");
 
-      await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
+      await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract({ isPrimary: true }));
 
       expect(findByIdSpy).not.toHaveBeenCalled();
     });
@@ -410,7 +411,7 @@ describe(QuestionMongooseRepository, () => {
       const questionId = "618c1f4b3a2f000000000022";
       const findByIdSpy = vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(createFakeQuestion());
 
-      await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract());
+      await repositories.question.assignTheme(questionId, createFakeQuestionThemeAssignmentCreationContract({ isPrimary: false }));
 
       expect(findByIdSpy).toHaveBeenCalledExactlyOnceWith(questionId);
     });
@@ -668,15 +669,40 @@ describe(QuestionMongooseRepository, () => {
       expect(findByIdSpy).not.toHaveBeenCalled();
     });
 
-    it("should return the question returned by findById when contract has no fields.", async() => {
+    it("should return the re-read question when the empty modification still holds the assignment.", async() => {
       const questionId = "618c1f4b3a2f000000000062";
       const themeId = "618c1f4b3a2f000000000063";
-      const expectedQuestion = createFakeQuestion();
+      const expectedQuestion = createFakeQuestion({
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: themeId }) })],
+      });
       vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(expectedQuestion);
 
       const actual = await repositories.question.modifyThemeAssignment(questionId, themeId, {});
 
       expect(actual).toStrictEqual(expectedQuestion);
+    });
+
+    it("should return undefined when the empty modification re-reads a question without the assignment.", async() => {
+      const questionId = "618c1f4b3a2f0000000000c1";
+      const themeId = "618c1f4b3a2f0000000000c2";
+      const question = createFakeQuestion({
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "618c1f4b3a2f0000000000c3" }) })],
+      });
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(question);
+
+      const actual = await repositories.question.modifyThemeAssignment(questionId, themeId, {});
+
+      expect(actual).toBeUndefined();
+    });
+
+    it("should return undefined when the empty modification re-reads no question.", async() => {
+      const questionId = "618c1f4b3a2f0000000000c4";
+      const themeId = "618c1f4b3a2f0000000000c5";
+      vi.spyOn(repositories.question, "findById").mockResolvedValueOnce(undefined);
+
+      const actual = await repositories.question.modifyThemeAssignment(questionId, themeId, {});
+
+      expect(actual).toBeUndefined();
     });
 
     it("should return the question returned by findById when the primary promotion matches a document.", async() => {

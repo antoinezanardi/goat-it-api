@@ -402,7 +402,7 @@ This is a deliberate partnership, not a general license. `QuestionModule` import
 - TypeScript structural assignability at the mapper call sites and acceptance tests cover the runtime contract. No dedicated pure-contract specs.
 - **Index ownership:** the context that owns a MongoDB collection owns its indexes. An index is declared only in the owning context's Mongoose schema; a cross-context `$lookup` consumer requests the index from the owner and never declares it in its own module. The path zones in §12.1 enforce the schema-import boundary.
 - **Index builds:** `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` enables `autoIndex`, so missing indexes are built at application startup. Index declarations are authoritative; an index change ships with the deployment that needs it.
-- **Index changes:** measure the query plan with `explain` before adding an index; do not add speculative indexes. Mongoose never drops an index, so removing a declaration does not remove an existing index — drop the superseded index manually after the replacement is built.
+- **Index changes:** measure the query plan with `explain` before adding an index; do not add speculative indexes. Mongoose never drops an index, so removing a declaration does not remove an existing index — drop the superseded index manually after the replacement is built. The deployment procedure is in [operations.md § Database index builds](operations.md#database-index-builds).
 
 > Both contexts share one MongoDB deployment. Cross-context `$lookup` is accepted; collection and field names are published in `contracts/persistence` and covered by acceptance tests. Revisit only if the database is split or the join becomes a measurable performance bottleneck.
 

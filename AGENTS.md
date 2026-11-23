@@ -270,6 +270,8 @@ The `mempalace` MCP server (`mempalace-mcp`, configured globally in
 `~/.config/opencode/opencode.json`) stores project context locally and replaces the former
 `@rvboris/opencode-mempalace` plugin, which no longer installs.
 
+OpenCode exposes each tool as `<server>_<tool>`, so these are callable as `mempalace_<tool>` (Code Mode: `tools.mempalace.<tool>`); the names below are the server-side tool names. The server is optional machine-local tooling, not a project dependency: it needs the `mempalace-mcp` executable on your `PATH` and a `mcp.servers.mempalace` entry (`{"type": "local", "command": ["mempalace-mcp"]}`) in your global OpenCode config. Without it the tools below are unavailable and this section does not apply.
+
 - Wing `wing_project_goat-it-api`; rooms `architecture`, `workflow`, `decisions`, `bugs`, `setup`.
 - Context: `mempalace_search` (`wing`, optional `room`, `query`); overview: `mempalace_status`.
 - Learnings: `mempalace_add_drawer` (`wing`, `room`, verbatim `content`); facts: `mempalace_kg_add`.

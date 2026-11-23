@@ -344,7 +344,8 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 - Describe label: the exported schema class, for example `describe(QuestionMongooseSchema, ...)`.
 - Assert `SCHEMA.indexes()`: map `[fields]` to compare the declared key, and read `options.unique` for a unique index.
 - Assert `SCHEMA.options.autoIndex` when the schema relies on startup builds.
-- Schema files stay excluded from coverage and mutation (`configs/vitest/vitest.config.ts`, `configs/stryker/stryker.config.mjs`); the spec is still part of the normal unit suite.
+- A schema spec locks a declaration, not a behaviour: it adds no coverage or mutation scope, per the authoritative exclusion lists in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`.
+- Also assert that a superseded standalone index is gone, so a redundant index is not re-added.
 
 ```ts
 describe(QuestionMongooseSchema, () => {

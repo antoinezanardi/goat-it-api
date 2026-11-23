@@ -20,7 +20,7 @@ Query and response performance of the Goat It API: the indexing policy of the `q
 
 - **[PERF-01] The natural-key index doubles as the dedup backstop** — Every natural key the domain requires unique carries the repository's unique index, and its duplicate-key error maps to the domain conflict; the current keys and indexes are recorded in `docs/performance.md` and `docs/data-model.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question-theme/infrastructure/persistence/mongoose/schemas/**`, `src/shared/infrastructure/persistence/mongoose/constants/**` · Src: [9], project: docs/performance.md
-- **[PERF-02] Reference paths are indexed** — Every cross-collection reference path carries `index: true` and serves the joins and counts that use it; the index inventory is recorded in `docs/performance.md`.
+- **[PERF-02] Reference paths are indexed** — Every cross-collection reference path is led by an owner-declared index — `index: true` on the path or a compound index whose leading key is that path — and that index serves the joins and counts that use it; the index inventory is recorded in `docs/performance.md`.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/infrastructure/persistence/mongoose/schemas/**` · Src: [9], [15], project: docs/performance.md
 - **[PERF-03] New indexes only for exercised query paths** — Every added index targets a filterable or sortable field exercised by a request DTO and is recorded in `docs/performance.md`; no speculative or redundant index is added.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `src/contexts/question/infrastructure/persistence/mongoose/schemas/**`, `src/contexts/question/application/dto/**` · Src: [11], project: docs/performance.md

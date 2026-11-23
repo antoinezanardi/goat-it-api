@@ -128,6 +128,7 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 Both context schemas enable `autoIndex` through `DEFAULT_MONGOOSE_SCHEMA_OPTIONS` (`src/shared/infrastructure/persistence/mongoose/constants/mongoose.constants.ts`), so Mongoose builds any missing index when the application starts. There is no migration tooling.
 
 - An index change ships with the deployment that needs it. A large build can consume database resources and delay the first fully indexed queries; schedule it with the release window and watch the deployment.
+- A failed build does not crash the process: Mongoose reports it as an `index` event on the model and the app keeps serving without that index, so the `getIndexes()` check below is mandatory after any deploy that changes an index, not optional.
 - Mongoose never drops an index. Removing a declaration leaves the existing index in place; drop the superseded index manually only after its replacement has been built.
 - Confirm the result with `db.questions.getIndexes()` / `db.question_themes.getIndexes()`; the expected declarations are recorded in [data-model.md](data-model.md#indexes) and [performance.md](performance.md#indexing-policy-and-current-indexes).
 

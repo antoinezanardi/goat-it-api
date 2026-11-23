@@ -9,21 +9,28 @@ import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
 import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
+import {
+  composeQuestionThemeAssignmentModificationFilter,
+  composeQuestionThemeAssignmentPrimaryPromotionPipeline,
+  composeQuestionThemeAssignmentPrimaryPushPipeline,
+  composeQuestionThemeAssignmentPushFilter,
+  composeQuestionThemeAssignmentRemovalFilter,
+} from "@question/infrastructure/persistence/mongoose/repository/helpers/question-theme-assignment.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS, QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
-import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
+import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import type { Question } from "@question/domain/types/question.entities";
 
-import type { Model, QueryFilter, UpdateQuery, UpdateWithAggregationPipeline } from "mongoose";
+import type { Model, UpdateQuery } from "mongoose";
 
 import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
-import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
 /**
@@ -52,74 +59,6 @@ export class QuestionMongooseRepository implements QuestionRepository {
     );
 
     return matchStage;
-  }
-
-  private static composeQuestionThemeAssignmentPushFilter(questionId: string, themeId: Types.ObjectId): QueryFilter<QuestionMongooseDocument> {
-    return {
-      _id: new Types.ObjectId(questionId),
-      [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId]: { $ne: themeId },
-      $expr: { $lt: [{ $size: "$themes" }, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS] },
-    };
-  }
-
-  private static composeQuestionThemeAssignmentRemovalFilter(questionId: string, themeId: Types.ObjectId): QueryFilter<QuestionMongooseDocument> {
-    return {
-      _id: new Types.ObjectId(questionId),
-      themes: { $elemMatch: { themeId, isPrimary: false } },
-      [`themes.${QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS}`]: { $exists: true },
-    };
-  }
-
-  private static composeQuestionThemeAssignmentModificationFilter(questionId: string, themeId: string): QueryFilter<QuestionMongooseDocument> {
-    return {
-      _id: new Types.ObjectId(questionId),
-      [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId]: new Types.ObjectId(themeId),
-    };
-  }
-
-  private static composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload: QuestionThemeAssignmentMongooseInsertPayload): UpdateWithAggregationPipeline {
-    return [
-      {
-        $set: {
-          themes: {
-            $concatArrays: [
-              {
-                $map: {
-                  input: "$themes",
-                  as: "themeAssignment",
-                  in: { $mergeObjects: ["$$themeAssignment", { isPrimary: false }] },
-                },
-              },
-              [insertPayload],
-            ],
-          },
-        },
-      },
-    ];
-  }
-
-  private static composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId: string, contract: QuestionThemeAssignmentModificationContract): UpdateWithAggregationPipeline {
-    const promotionFields = contract.isHint === undefined ? { isPrimary: true } : { isPrimary: true, isHint: contract.isHint };
-
-    return [
-      {
-        $set: {
-          themes: {
-            $map: {
-              input: "$themes",
-              as: "themeAssignment",
-              in: {
-                $cond: [
-                  { $eq: ["$$themeAssignment.themeId", new Types.ObjectId(themeId)] },
-                  { $mergeObjects: ["$$themeAssignment", promotionFields] },
-                  { $mergeObjects: ["$$themeAssignment", { isPrimary: false }] },
-                ],
-              },
-            },
-          },
-        },
-      },
-    ];
   }
 
   /**
@@ -187,54 +126,44 @@ export class QuestionMongooseRepository implements QuestionRepository {
    */
   public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
     const insertPayload = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
-    const updateResult = questionThemeAssignmentCreationContract.isPrimary ? await this.questionModel.updateOne(
-      QuestionMongooseRepository.composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId),
-      QuestionMongooseRepository.composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload),
-      { updatePipeline: true },
-    ) : await this.questionModel.updateOne(
-      QuestionMongooseRepository.composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId),
-      { $push: { themes: insertPayload } },
-    );
+    const pushFilter = composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId);
+    const { isPrimary } = questionThemeAssignmentCreationContract;
+    const update = isPrimary ? composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload) : { $push: { themes: insertPayload } };
+    const { matchedCount } = await this.questionModel.updateOne(pushFilter, update, { updatePipeline: isPrimary });
 
-    if (updateResult.matchedCount === 0) {
-      return undefined;
-    }
-    return this.findById(questionId);
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
   /**
    * Updates an existing assignment. A primary promotion demotes every other assignment in the same atomic pipeline, and a non-primary update writes only the defined fields.
    *
-   * Returns `undefined` when the conditional write matches no document.
+   * Returns `undefined` when the conditional write matches no document, and an empty modification also returns `undefined` when the re-read question no longer holds the assignment.
    */
   public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
     if (contract.isPrimary) {
-      const updateResult = await this.questionModel.updateOne(
-        QuestionMongooseRepository.composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
-        QuestionMongooseRepository.composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId, contract),
+      const { matchedCount } = await this.questionModel.updateOne(
+        composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+        composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId, contract),
         { updatePipeline: true },
       );
 
-      if (updateResult.matchedCount === 0) {
-        return undefined;
-      }
-      return this.findById(questionId);
+      return this.readAfterConditionalWrite(questionId, matchedCount);
     }
     const fieldsToSet = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
     if (Object.keys(fieldsToSet).length === 0) {
-      return this.findById(questionId);
+      const question = await this.findById(questionId);
+      const hasAssignment = question !== undefined && findQuestionThemeAssignmentInQuestionByThemeId(question, themeId) !== undefined;
+
+      return hasAssignment ? question : undefined;
     }
     const themeObjectId = new Types.ObjectId(themeId);
-    const updateResult = await this.questionModel.updateOne(
-      QuestionMongooseRepository.composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+    const { matchedCount } = await this.questionModel.updateOne(
+      composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
       { $set: fieldsToSet },
       { arrayFilters: [{ "elem.themeId": themeObjectId }] },
     );
 
-    if (updateResult.matchedCount === 0) {
-      return undefined;
-    }
-    return this.findById(questionId);
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
   /**
@@ -256,15 +185,12 @@ export class QuestionMongooseRepository implements QuestionRepository {
    */
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
     const themeObjectId = new Types.ObjectId(themeId);
-    const updateResult = await this.questionModel.updateOne(
-      QuestionMongooseRepository.composeQuestionThemeAssignmentRemovalFilter(questionId, themeObjectId),
+    const { matchedCount } = await this.questionModel.updateOne(
+      composeQuestionThemeAssignmentRemovalFilter(questionId, themeObjectId),
       { $pull: { themes: { themeId: themeObjectId } } },
     );
 
-    if (updateResult.matchedCount === 0) {
-      return undefined;
-    }
-    return this.findById(questionId);
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
   public async countLiveByThemeId(themeId: string): Promise<number> {
@@ -317,5 +243,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
         incomplete: result.incompleteTranslationCountStage[0]?.count ?? 0,
       },
     };
+  }
+
+  private async readAfterConditionalWrite(questionId: string, matchedCount: number): Promise<Question | undefined> {
+    return matchedCount === 0 ? undefined : this.findById(questionId);
   }
 }
