@@ -195,7 +195,7 @@ importers:
         version: 12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/mongoose':
         specifier: ^12.0.1
-        version: 12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.2)(rxjs@7.8.2)
+        version: 12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.3)(rxjs@7.8.2)
       '@nestjs/platform-fastify':
         specifier: ^12.6.0
         version: 12.6.0(@fastify/static@10.1.12)(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -207,7 +207,7 @@ importers:
         version: 12.1.2(@fastify/static@10.1.12)(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)(typescript@6.0.3)
       '@nestjs/terminus':
         specifier: ^12.2.0
-        version: 12.2.0(cc919b4d1c4ea77b13587bd89697c393)
+        version: 12.2.0(d70549b144c34cd54f7dccca5a981aaa)
       '@nestjs/throttler':
         specifier: ^6.8.0
         version: 6.8.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)
@@ -224,8 +224,8 @@ importers:
         specifier: ^5.12.8
         version: 5.12.8
       mongoose:
-        specifier: ^9.12.2
-        version: 9.12.2
+        specifier: ^9.12.3
+        version: 9.12.3
       nestjs-pino:
         specifier: ^5.3.2
         version: 5.3.2(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(pino-http@11.0.0)(pino@10.3.1)(rxjs@7.8.2)
@@ -5106,8 +5106,8 @@ packages:
       socks:
         optional: true
 
-  mongoose@9.12.2:
-    resolution: {integrity: sha512-SoWBAJGaC7UJ8SCmsVd34kDmiq/lvyeENVTHTjR1ez+vyfY/cu/K5/uCgIoXA6pYV5yMAHM72sWVe6XuYYEqeA==}
+  mongoose@9.12.3:
+    resolution: {integrity: sha512-b94dToHZfATLkZPsJqjq7h4XdrGq29+aNHHAxzwGEnAMj4phdjd4PrR0Xfy+LJNmKuR7mukzEWsuKC+4qrjdug==}
     engines: {node: '>=20.19.0'}
 
   mpath@0.9.0:
@@ -8065,11 +8065,11 @@ snapshots:
     optionalDependencies:
       class-transformer: 0.5.1
 
-  '@nestjs/mongoose@12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.2)(rxjs@7.8.2)':
+  '@nestjs/mongoose@12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.3)(rxjs@7.8.2)':
     dependencies:
       '@nestjs/common': 12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
       '@nestjs/core': 12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      mongoose: 9.12.2
+      mongoose: 9.12.3
       rxjs: 7.8.2
 
   '@nestjs/platform-fastify@12.6.0(@fastify/static@10.1.12)(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(rxjs@7.8.2)':
@@ -8126,7 +8126,7 @@ snapshots:
       class-transformer: 0.5.1
       typescript: 6.0.3
 
-  '@nestjs/terminus@12.2.0(cc919b4d1c4ea77b13587bd89697c393)':
+  '@nestjs/terminus@12.2.0(d70549b144c34cd54f7dccca5a981aaa)':
     dependencies:
       '@nestjs/common': 12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0)
       '@nestjs/core': 12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -8134,9 +8134,9 @@ snapshots:
       rxjs: 7.8.2
     optionalDependencies:
       '@nestjs/axios': 12.0.2(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(axios@1.21.1(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0))(rxjs@7.8.2)
-      '@nestjs/mongoose': 12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.2)(rxjs@7.8.2)
+      '@nestjs/mongoose': 12.0.1(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(mongoose@9.12.3)(rxjs@7.8.2)
       '@nestjs/swagger': 12.1.2(@fastify/static@10.1.12)(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(reflect-metadata@0.2.2)(typescript@6.0.3)
-      mongoose: 9.12.2
+      mongoose: 9.12.3
 
   '@nestjs/testing@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(@nestjs/core@12.6.0(@nestjs/common@12.6.0(class-transformer@0.5.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@11.0.0))(reflect-metadata@0.2.2)(rxjs@7.8.2))':
     dependencies:
@@ -11313,7 +11313,7 @@ snapshots:
       bson: 7.3.3
       mongodb-connection-string-url: 7.0.2
 
-  mongoose@9.12.2:
+  mongoose@9.12.3:
     dependencies:
       '@standard-schema/spec': 1.1.0
       kareem: 3.4.1
