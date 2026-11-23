@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { parse } from "yaml";
@@ -82,11 +82,28 @@ function listWorkflowFiles(): string[] {
     .map(file => path.join(WORKFLOWS_DIRECTORY, file));
 }
 
+function isActionDefinitionFile(fileName: string): boolean {
+  return fileName === "action.yml" || fileName === "action.yaml";
+}
+
+function collectActionFilesRecursively(directory: string): string[] {
+  const files: string[] = [];
+  const entries = readdirSync(directory, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...collectActionFilesRecursively(entryPath));
+    } else if (isActionDefinitionFile(entry.name)) {
+      files.push(entryPath);
+    }
+  }
+  return files;
+}
+
 function listActionFiles(): string[] {
-  return readdirSync(ACTIONS_DIRECTORY, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => path.join(ACTIONS_DIRECTORY, entry.name, "action.yml"))
-    .filter(file => existsSync(file));
+  return collectActionFilesRecursively(ACTIONS_DIRECTORY).toSorted((firstFile, secondFile) => firstFile.localeCompare(secondFile));
 }
 
 function collectFindings(): RunFinding[] {

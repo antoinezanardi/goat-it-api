@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Audit production dependencies 🛡️
         uses: ./.github/actions/audit-dependencies
@@ -27,16 +29,4 @@ jobs:
       - name: Report the full dependency tree advisories 📋
         if: always()
         shell: bash
-        run: |
-          pnpm audit --json > full-tree-audit.json || true
-          {
-            echo "### Full dependency tree audit"
-            echo ""
-            if jq -e '.metadata.vulnerabilities' full-tree-audit.json >/dev/null 2>&1; then
-              echo "| Severity | Count |"
-              echo "|---|---|"
-              jq -r '.metadata.vulnerabilities | to_entries[] | "| \(.key) | \(.value) |"' full-tree-audit.json
-            else
-              echo "The full-tree audit report could not be generated."
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+        run: scripts/report-dependency-audit.sh

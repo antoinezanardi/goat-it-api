@@ -292,13 +292,24 @@ function getLicenseExpressions(component: SbomComponent): string[] {
   return (component.licenses ?? []).map(entry => entry.expression ?? entry.license?.id ?? entry.license?.name ?? "UNKNOWN");
 }
 
+function buildLicenseExpression(expressions: string[]): string {
+  if (expressions.length === 0) {
+    return "UNKNOWN";
+  }
+
+  if (expressions.length === 1) {
+    return expressions[0];
+  }
+  return expressions.map(expression => `(${expression})`).join(" AND ");
+}
+
 function collectViolations(components: SbomComponent[], allowlist: LicenseAllowlist): string[] {
   const violations: string[] = [];
 
   for (const component of components) {
     const packageName = getFullName(component);
     const expressions = getLicenseExpressions(component);
-    const expression = expressions.length === 0 ? "UNKNOWN" : expressions.join(" AND ");
+    const expression = buildLicenseExpression(expressions);
 
     if (expressions.length === 0 || !isLicenseExpressionAllowed(expression, packageName, allowlist)) {
       violations.push(`${packageName}@${component.version ?? "unknown"}: ${expression}`);

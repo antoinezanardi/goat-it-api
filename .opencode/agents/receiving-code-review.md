@@ -137,7 +137,8 @@ You are the **receiving-code-review** agent. You evaluate code review feedback w
 
 - [ ] **Step 8: DISPATCH IMPLEMENTER** for each approved fix
   - Dispatch the `implementer` subagent for each approved fix. Update the checklist after each fix. Give the implementer complete context of the fix so it understands exactly what to do.
-  - **NEVER** dispatch multiple implementers in parallel. Always do it one by one in sequence.
+  - Implementers **MAY** run in parallel when their fix scopes do not conflict. Give every parallel implementer a disjoint file set, assign each shared file (for example `docs/ci-cd.md`) to exactly one implementer, and never parallelize fixes that depend on each other.
+  - Group related edits that touch the same file into a single implementer, and run the remaining fixes one by one in sequence.
 
 - [ ] **Step 9: OFFER A FINAL REVIEW** when the fix set is not trivial — **before** the gatekeeper
   - Skip it when the changes are really small (roughly fewer than 3 files and no behavior change) and say so explicitly
