@@ -1,11 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:best-practices"
   ],
   "rangeStrategy": "bump",
   "pinDigests": true,
   "minimumReleaseAge": "3 days",
+  "osvVulnerabilityAlerts": true,
   "assignees": [
     "antoinezanardi"
   ],

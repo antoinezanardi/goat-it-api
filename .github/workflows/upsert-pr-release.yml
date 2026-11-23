@@ -8,9 +8,6 @@ on:
 permissions:
   contents: read
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   install:
     name: Install ⚙️
@@ -53,6 +50,8 @@ jobs:
 
       - name: Get next release version and create release changelog 🏷️
         id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pnpm run script:create-release-changelog
 
       - name: Cache release changelog 🥡
@@ -87,13 +86,17 @@ jobs:
           key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
 
       - name: List open PR into main 📋
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           OPEN_PR_INTO_MAIN=$(gh pr list --state open -B main --search "Release in:title" --json number,title)
           echo "OPEN_PR_INTO_MAIN=$OPEN_PR_INTO_MAIN" >> "$GITHUB_ENV"
 
       - name: Set PR Title 🔤
+        env:
+          RELEASE_VERSION: ${{ needs.get-next-release-version.outputs.new-release-version }}
         run: |
-          PR_TITLE="Release v${{ needs.get-next-release-version.outputs.new-release-version }}"
+          PR_TITLE="Release v$RELEASE_VERSION"
           echo "PR_TITLE=$PR_TITLE" >> "$GITHUB_ENV"
 
       - name: Determine action to perform on PR 🚏
@@ -112,8 +115,14 @@ jobs:
 
       - name: Create Release PR if it doesn't exist 🔃
         if: env.PR_ACTION == 'create'
-        run: gh pr create --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "$(cat RELEASE.md)" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: gh pr create --repo "$REPOSITORY" --title "$PR_TITLE" --body "$(cat RELEASE.md)" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "$(cat RELEASE.md)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+        run: gh pr edit "$PR_NUMBER" --repo "$REPOSITORY" --title "$PR_TITLE" --body "$(cat RELEASE.md)"

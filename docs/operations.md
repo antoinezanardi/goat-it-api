@@ -134,7 +134,7 @@ Both context schemas enable `autoIndex` through `DEFAULT_MONGOOSE_SCHEMA_OPTIONS
 
 ## Post-deploy smoke verification
 
-The staging and production workflows run the `health-check` composite action as a separate step after the SSH deploy step. The action executes `scripts/post-deploy-health-check.sh` against the repository variable `PREPRODUCTION_API_URL` or `PRODUCTION_API_URL`:
+The staging and production workflows run the `health-check` composite action as a separate step after the SSH deploy step. The action executes `scripts/post-deploy-health-check.sh` against the `PREPRODUCTION_API_URL` or `PRODUCTION_API_URL` variable; those variables must be scoped to the matching `Docker Image Staging` / `Docker Image Production` GitHub environment once the #1321 manual migration lands:
 
 - 5 attempts, 5 seconds apart, with a 3-second request timeout each;
 - only HTTP `200` passes; every other status, timeout or connection error keeps retrying;

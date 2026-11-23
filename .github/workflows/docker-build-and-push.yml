@@ -83,13 +83,18 @@ jobs:
 
       - name: Set formatted platform directory in environment variable 🌿
         shell: bash
-        run: echo "PLATFORM_DIR=$(echo ${{ matrix.platform }} | sed 's/\//-/g')" >> "$GITHUB_ENV"
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: echo "PLATFORM_DIR=${PLATFORM//\//-}" >> "$GITHUB_ENV"
 
       - name: Export digest 📦
         shell: bash
+        env:
+          TAG: ${{ matrix.tag }}
+          DIGEST: ${{ steps.build.outputs.digest }}
         run: |
-          mkdir -p /tmp/digests/${{ matrix.tag }}
-          echo "${{ steps.build.outputs.digest }}" > "/tmp/digests/${{ matrix.tag }}/${{ env.PLATFORM_DIR }}-digest.txt"
+          mkdir -p "/tmp/digests/$TAG"
+          printf '%s\n' "$DIGEST" > "/tmp/digests/$TAG/$PLATFORM_DIR-digest.txt"
 
       - name: Upload digest artifact 📦
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
@@ -128,16 +133,22 @@ jobs:
 
       - name: Create manifest list and push 📦
         shell: bash
+        env:
+          TAG: ${{ matrix.tag }}
+          REGISTRY_IMAGE: ${{ inputs.registry-image }}
         run: |
           DIGESTS=()
-          for f in /tmp/digests/${{ matrix.tag }}/*-digest.txt; do
+          for f in "/tmp/digests/$TAG"/*-digest.txt; do
             PLATFORM=$(basename "$f" | sed 's/-digest.txt//')
             DIGEST=$(cat "$f")
-            DIGESTS+=("${{ inputs.registry-image }}:${PLATFORM}@${DIGEST}")
+            DIGESTS+=("$REGISTRY_IMAGE:${PLATFORM}@${DIGEST}")
           done
 
-          docker buildx imagetools create --tag "${{ inputs.registry-image }}:${{ matrix.tag }}" "${DIGESTS[@]}"
+          docker buildx imagetools create --tag "$REGISTRY_IMAGE:$TAG" "${DIGESTS[@]}"
 
       - name: Inspect manifest list 🕵️
         shell: bash
-        run: docker buildx imagetools inspect ${{ inputs.registry-image }}:${{ matrix.tag }}
+        env:
+          TAG: ${{ matrix.tag }}
+          REGISTRY_IMAGE: ${{ inputs.registry-image }}
+        run: docker buildx imagetools inspect "$REGISTRY_IMAGE:$TAG"

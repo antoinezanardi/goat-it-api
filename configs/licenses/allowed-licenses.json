@@ -1,0 +1,25 @@
+{
+  "allowedLicenses": [
+    "0BSD",
+    "Apache-2.0",
+    "BlueOak-1.0.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CC0-1.0",
+    "ISC",
+    "MIT",
+    "PSF-2.0"
+  ],
+  "exceptions": [
+    {
+      "package": "sentry",
+      "license": "FSL-1.1-Apache-2.0",
+      "reason": "Sentry SDK pulled by @sentry/nestjs: the FSL only forbids a competing product or service and each release converts to Apache-2.0 after two years. Goat It is not a Sentry competitor."
+    },
+    {
+      "package": "caniuse-lite",
+      "license": "CC-BY-4.0",
+      "reason": "Browser compatibility data consumed through browserslist (webpack, via the Sentry bundler plugin): attribution only, never redistributed as a standalone dataset."
+    }
+  ]
+}

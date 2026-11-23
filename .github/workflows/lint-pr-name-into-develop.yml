@@ -10,6 +10,10 @@ on:
       - reopened
       - synchronize
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -23,11 +27,21 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Compute Pull Request title regex 🔃
+        id: commit-types
+        shell: bash
+        run: |
+          TYPES=$(node -p "require('./configs/commitlint/.commitlintrc.json').rules['type-enum'][2].join('|')")
+          echo "regex=^(?<type>${TYPES})(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$" >> "$GITHUB_OUTPUT"
+
       - name: Lint Pull Request Name 🔃
         uses: morrisoncole/pr-lint-action@51f3cfabaf5d46f94e54524214e45685f0401b2a # v1.7.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          title-regex: '^(?<type>build|tech|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$'
+          title-regex: ${{ steps.commit-types.outputs.regex }}
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false

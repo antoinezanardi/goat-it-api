@@ -149,7 +149,7 @@ The acceptance suite needs the Mongo container defined in `docker/goat-it-api-ac
 
 | Command                                      | Effect                                                                                                                                                              |
 |----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `pnpm run docker:acceptance-tests:start`     | Starts MongoDB and keeps the named `mongodb_data_container` volume.                                                                                                 |
+| `pnpm run docker:acceptance-tests:start`     | Starts MongoDB, waits for its healthcheck (`docker compose up --wait`) and keeps the named `mongodb_data_container` volume.                                          |
 | `pnpm run docker:acceptance-tests:stop`      | Removes the container and network, but keeps the named volume, so a later `start` resumes with the same data.                                                       |
 | `pnpm run docker:acceptance-tests:reset`     | **Discards** the named `mongodb_data_container` volume (`docker compose down --volumes`), then starts a fresh MongoDB.                                              |
 

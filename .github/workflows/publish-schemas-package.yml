@@ -33,9 +33,11 @@ jobs:
       - name: Compute version and dist-tag 🔢
         id: compute-version
         shell: bash
+        env:
+          REF_NAME: ${{ github.ref_name }}
         run: |
           BASE_VERSION=$(node -p "require('./packages/schemas/package.json').version")
-          if [ "${{ github.ref_name }}" = "develop" ]; then
+          if [ "$REF_NAME" = "develop" ]; then
             echo "version=${BASE_VERSION}-beta" >> "$GITHUB_OUTPUT"
             echo "dist-tag=beta" >> "$GITHUB_OUTPUT"
           else
@@ -46,8 +48,10 @@ jobs:
       - name: Check if version already exists on npm 🔍
         id: check-version
         shell: bash
+        env:
+          VERSION: ${{ steps.compute-version.outputs.version }}
         run: |
-          if npm view "@goat-it/schemas@${{ steps.compute-version.outputs.version }}" version --json 2>/dev/null; then
+          if npm view "@goat-it/schemas@$VERSION" version --json 2>/dev/null; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -56,7 +60,9 @@ jobs:
       - name: Skip publication (version already published) ⏭️
         if: steps.check-version.outputs.exists == 'true'
         shell: bash
-        run: echo "Version ${{ steps.compute-version.outputs.version }} already exists on npm – skipping publication."
+        env:
+          VERSION: ${{ steps.compute-version.outputs.version }}
+        run: echo "Version $VERSION already exists on npm – skipping publication."
 
       - name: Setup Node.js for npm publish 🔧
         if: steps.check-version.outputs.exists == 'false'
@@ -69,10 +75,14 @@ jobs:
         if: steps.check-version.outputs.exists == 'false'
         shell: bash
         working-directory: packages/schemas
-        run: npm version "${{ steps.compute-version.outputs.version }}" --no-git-tag-version --allow-same-version
+        env:
+          VERSION: ${{ steps.compute-version.outputs.version }}
+        run: npm version "$VERSION" --no-git-tag-version --allow-same-version
 
       - name: Publish @goat-it/schemas to npm 🚀
         if: steps.check-version.outputs.exists == 'false'
         shell: bash
         working-directory: packages/schemas
-        run: pnpm publish --tag "${{ steps.compute-version.outputs.dist-tag }}" --no-git-checks --access public --provenance
+        env:
+          DIST_TAG: ${{ steps.compute-version.outputs.dist-tag }}
+        run: pnpm publish --tag "$DIST_TAG" --no-git-checks --access public --provenance

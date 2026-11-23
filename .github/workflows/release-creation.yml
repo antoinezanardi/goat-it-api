@@ -42,8 +42,6 @@ jobs:
     timeout-minutes: 10
     needs:
       - install
-    env:
-      GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -55,6 +53,8 @@ jobs:
 
       - name: Release 🏷️
         id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
         run: npx semantic-release
 
     outputs:

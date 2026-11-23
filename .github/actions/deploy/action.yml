@@ -52,31 +52,42 @@ runs:
     - name: Add provided known hosts (if any)
       if: ${{ inputs.known-hosts != '' }}
       shell: bash
+      env:
+        KNOWN_HOSTS: ${{ inputs.known-hosts }}
       run: |
-        echo "${{ inputs.known-hosts }}" > ~/.ssh/known_hosts
+        printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
         chmod 600 ~/.ssh/known_hosts
 
     - name: Start ssh-agent and add key
       id: ssh-setup
       shell: bash
+      env:
+        SSH_PRIVATE_KEY: ${{ inputs.ssh-private-key }}
       run: |
         eval "$(ssh-agent -s)"
-        echo "${{ inputs.ssh-private-key }}" | tr -d '\r' > ~/.ssh/id_rsa
+        {
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+          echo "SSH_AGENT_PID=$SSH_AGENT_PID"
+        } >> "$GITHUB_ENV"
+        printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
         ssh-add ~/.ssh/id_rsa
 
     - name: Deploy script over SSH
       shell: bash
+      env:
+        STRICT_HOST_KEY_CHECKING: ${{ inputs.strict-host-key-checking }}
+        SSH_USER: ${{ inputs.ssh-user }}
+        SSH_SERVER_IP: ${{ inputs.ssh-server-ip }}
+        UPDATE_SCRIPT_FULL_PATH: ${{ inputs.update-script-full-path }}
       run: |
-        if [[ "${{ inputs.strict-host-key-checking }}" == "yes" ]]; then
-          SSH_OPTIONS="-o StrictHostKeyChecking=yes"
+        if [[ "$STRICT_HOST_KEY_CHECKING" == "yes" ]]; then
+          SSH_OPTIONS=(-o StrictHostKeyChecking=yes)
         else
-          SSH_OPTIONS="-o StrictHostKeyChecking=no"
+          SSH_OPTIONS=(-o StrictHostKeyChecking=no)
         fi
 
-        ssh $SSH_OPTIONS ${{ inputs.ssh-user }}@${{ inputs.ssh-server-ip }} << EOF
-          ${{ inputs.update-script-full-path }}
-        EOF
+        ssh "${SSH_OPTIONS[@]}" "$SSH_USER@$SSH_SERVER_IP" "$UPDATE_SCRIPT_FULL_PATH"
 
     - name: Cleanup SSH key material
       if: always()

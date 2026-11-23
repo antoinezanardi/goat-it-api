@@ -30,13 +30,13 @@ runs:
       shell: bash
       run: |
         pnpm run test:acceptance
-        ${{ github.workspace }}/scripts/transform-cucumber-report-as-env-variables.sh >> "$GITHUB_ENV"
+        "$GITHUB_WORKSPACE/scripts/transform-cucumber-report-as-env-variables.sh" >> "$GITHUB_ENV"
 
     - name: Set Cucumber Results As Outputs 📝
       id: cucumber-results
       continue-on-error: true
       shell: bash
-      run: echo "acceptance-tests-count=${{ env.CUCUMBER_SCENARIOS_COUNT }}" >> "$GITHUB_OUTPUT"
+      run: echo "acceptance-tests-count=$CUCUMBER_SCENARIOS_COUNT" >> "$GITHUB_OUTPUT"
 
     - name: Save acceptance tests reports as artifact 💎
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
