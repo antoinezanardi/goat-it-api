@@ -14,8 +14,9 @@ import type { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/typ
 /**
  * Resolves the request locale from the `Accept-Language` header and attaches it, with the configured fallback, to the raw request.
  *
- * Only the first locale is considered, and a `*` or missing header resolves to the fallback locale. Any unsupported locale is
- * rejected with a 400, so downstream handlers always receive a supported locale.
+ * Only the first language range is considered, and a wildcard range (`*`, with or without parameters such as `;q=0.5`) or a
+ * missing header resolves to the fallback locale. Any unsupported locale is rejected with a 400, so downstream handlers always
+ * receive a supported locale.
  */
 @Injectable()
 export class LocalizationMiddleware implements NestMiddleware {
@@ -55,7 +56,8 @@ export class LocalizationMiddleware implements NestMiddleware {
     }
     const { fallbackLocale } = this.appConfigService.localizationConfig;
     const localeLength = 2;
-    const firstLocale = headerLocale.trim().slice(0, localeLength).toLowerCase();
+    const [firstLanguageRange] = headerLocale.split(",", 1);
+    const firstLocale = firstLanguageRange.split(";", 1)[0].trim().slice(0, localeLength).toLowerCase();
     if (firstLocale === "*") {
       return fallbackLocale;
     }

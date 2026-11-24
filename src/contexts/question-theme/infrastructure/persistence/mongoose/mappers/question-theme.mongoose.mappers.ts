@@ -6,9 +6,14 @@ import type { QuestionThemeMongooseDocument, QuestionThemeMongooseSchemaShape } 
 
 /**
  * Maps a Mongoose theme document or its raw schema shape to the domain entity through the published persistence mapper.
+ *
+ * A hydrated document is converted with `toObject()` first, so its localized nested paths reach the domain as plain objects instead of
+ * Mongoose subdocuments carrying internal keys.
  */
 function createQuestionThemeFromDocument(questionThemeDocument: QuestionThemeMongooseDocument | QuestionThemeMongooseSchemaShape): QuestionTheme {
-  return createQuestionThemeFromPersistenceShape(questionThemeDocument);
+  const questionThemePersistenceShape = "toObject" in questionThemeDocument ? questionThemeDocument.toObject() : questionThemeDocument;
+
+  return createQuestionThemeFromPersistenceShape(questionThemePersistenceShape);
 }
 
 export {

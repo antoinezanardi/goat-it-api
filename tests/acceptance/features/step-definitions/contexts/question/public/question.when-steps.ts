@@ -1,5 +1,7 @@
 import { When } from "@cucumber/cucumber";
 
+import { LIMIT_QUERY_KEY } from "@shared/application/dto/constants/limit-query.dto.constants";
+
 import { fetchListWithQuery } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
 import { PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, RANDOM_QUESTION_BODY_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
 
@@ -22,6 +24,15 @@ When(/^the client retrieves all questions(?: in locale "(?<locale>[^"]+)")?$/u, 
 
 When(/^the client retrieves all questions with the following query:$/u, async function(this: GoatItWorld, queryDataTable: DataTable) {
   await fetchListWithQuery(this, "/questions", queryDataTable, PUBLIC_QUESTION_QUERY_PARAMS_DATATABLE_ROW_SCHEMA, APP_GAME_API_KEY);
+});
+
+When(/^the client retrieves all questions with an empty limit query$/u, async function(this: GoatItWorld) {
+  const fetchOptions = createFetchOptions({
+    apiKey: APP_GAME_API_KEY,
+    query: { [LIMIT_QUERY_KEY]: "" },
+  });
+
+  await this.fetchAndStoreResponse("/questions", fetchOptions);
 });
 
 When(/^the client retrieves all questions without an API key$/u, async function(this: GoatItWorld) {

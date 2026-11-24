@@ -155,9 +155,9 @@ Do not point an external liveness monitor at `/health` while the container healt
 
 ## Error tracking
 
-Unexpected server errors and process-level crashes are reported to a Sentry SaaS project through the Sentry SDK (`@sentry/nestjs`), initialized once by `initializeSentry()` (`src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`) as the first statement of `bootstrap()` (`src/infrastructure/api/server/server.ts`). The HTTP response contract is unchanged: the filter still answers the stock generic `500` body.
+Unexpected server errors and process-level crashes are reported to a Sentry SaaS project through the Sentry SDK (`@sentry/nestjs`), initialized once by `initializeSentry()` (`src/infrastructure/api/observability/sentry/helpers/sentry.helpers.ts`) as the first statement of `bootstrap()` (`src/infrastructure/api/server/server.ts`). The HTTP response contract is unchanged: the filter answers the shared generic `500` body with `statusCode`, `message` and `error`.
 
-- Only the generic-500 branch is reported. Mapped 4xx domain errors, explicit `HttpException`s (including the health `503` and the throttler `429`) and Fastify-mapped responses never reach the tracker.
+- Only the generic-500 path is reported: unknown exceptions and `ZodSerializationException` raised by the response interceptor. Mapped 4xx domain errors, other explicit `HttpException`s (including the health `503` and the throttler `429`) and Fastify-mapped responses never reach the tracker.
 - The event carries the error class, the matched Fastify route template, the request method, the `500` status tag and stack frames reduced to file, function, line, column and in-app flag. The error value is always `[REDACTED]`; the full stack message header is dropped, and frames are dropped when the exception message spans several lines.
 - No request, user, header, cookie, query, body, breadcrumb or server-name data is collected: every `dataCollection` surface is denied, `beforeSend` rebuilds the event from an allow-list and `beforeBreadcrumb` drops everything.
 - Tracing is left unconfigured (`tracesSampleRate` and `tracesSampler` omitted) and the SDK's ambient `SENTRY_TRACES_SAMPLE_RATE` fallback is removed before init, so no tracing integration is installed and no span, transaction or SDK Fastify auto-capture path is loaded. SDK debug output is pinned off (`debug: false`), so an inherited `SENTRY_DEBUG` cannot print an event payload.
@@ -170,7 +170,7 @@ Unexpected server errors and process-level crashes are reported to a Sentry SaaS
 | Failure | Expected behaviour | Detection |
 |---|---|---|
 | Tracker unreachable or transport error | Events are dropped; responses, statuses and bodies are unaffected, and a request is never blocked. | A missing event for a known incident: the production 5xx alert stays silent. |
-| A report call throws | `GlobalExceptionFilter` logs `Failed to report an unexpected error to Sentry` and still writes the stock `500`. | The fixed log line in the host log stream. |
+| A report call throws | `GlobalExceptionFilter` logs `Failed to report an unexpected error to Sentry` and still writes the shared `500` body. | The fixed log line in the host log stream. |
 | Tracker configuration missing or malformed on a deployment host | Startup aborts in `validateEnv()`; the post-deploy health gate then fails the job. | A failed container start and a failed deployment job. |
 | Uncaught exception | The event is captured, the client is closed within 2 000 ms and the process exits with code `1`, printing nothing. When another `uncaughtException` listener is installed, the SDK still captures but does not force the exit. A second uncaught exception raised while the close is pending is printed raw to stderr by the SDK; the two-second window is the only raw-error path. | Container restart plus the event in the Sentry project. |
 | Unhandled promise rejection | The Sentry rejection integration is removed, so Node's default escalation to the uncaught-exception path stays intact and delivery remains best-effort. | Same as the uncaught-exception row. |

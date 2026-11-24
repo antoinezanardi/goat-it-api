@@ -43,3 +43,13 @@ Feature: Limit Questions
     And the failed request's response should contain the following validation details:
       | code          | message                                        | path  | expected | received |
       | invalid_type  | Invalid input: expected number, received NaN   | limit | number   | NaN      |
+
+  Scenario: Trying to limit questions with an empty limit value
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions with an empty limit query
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code          | message                                        | path  | expected | received |
+      | invalid_type  | Invalid input: expected number, received NaN   | limit | number   | NaN      |
