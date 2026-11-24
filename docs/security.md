@@ -2,7 +2,7 @@
 
 This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1406 (error tracking).
 
-Last reviewed: 2026-11-20.
+Last reviewed: 2026-11-23.
 
 ## Authentication
 
@@ -122,6 +122,13 @@ Request bodies are bounded at the HTTP boundary by `createFastifyAdapter` (`file
 ## Vulnerability disclosure
 
 There is no `SECURITY.md` in the repository yet (recorded under Known limitations). Private vulnerability reporting is enabled on GitHub. During GOAT audit triage, non-sensitive findings are filed as public issues carrying the `🐐 goat-audit` label; 🔒 findings (an exploitable path today, secret or personal-data exposure, a missing control that gives an attacker a roadmap) are filed as private draft security advisories instead; the local report records the finding (its Appendix B artifact is the returned GHSA id and advisory URL), and no exploitable detail is referenced in any public artifact before remediation.
+
+## Dependency supply chain
+
+- **Vulnerability alerts and fix PRs.** Dependabot alerts are enabled at the repository level, which provides a feed for advisories affecting transitive dependencies. Dependabot security updates are disabled: Renovate is the only updater. Renovate runs with `osvVulnerabilityAlerts: true`, which opens fix PRs for known-vulnerable **direct** dependencies only; transitive coverage relies on the alerts feed and the audits below.
+- **Continuous audit.** Every pull request runs `pnpm audit --prod --audit-level=high` (`.github/actions/audit-dependencies`) and fails on high or critical production advisories. A weekly scheduled workflow runs the same blocking audit from the default branch and publishes a non-blocking full-tree severity report to the job summary. Development-only advisories are reported there but do not block the pipeline.
+- **License allowlist.** The same action runs `pnpm run check:licenses`, which reads the production SBOM (`pnpm sbom --sbom-format cyclonedx --prod`) and compares each component with `configs/licenses/allowed-licenses.json`. The closure is derived from the root `package.json` (`dependencies` and `optionalDependencies`) and the SBOM graph, because the `--prod` SBOM lists dev-only packages too. Permissive licenses are allowed globally. Two package-scoped exceptions are recorded: `sentry` uses `FSL-1.1-Apache-2.0` (source-available; it only forbids a competing product and converts to Apache-2.0 after two years) and `caniuse-lite` uses `CC-BY-4.0` (attribution-only browser data). A new copyleft, source-available or unknown expression fails the pull request.
+- **Scope.** The audit and the license check cover the deployed application's production closure. They do not replace a consumer-side review of the published `@goat-it/schemas` package, whose only runtime dependency is `type-fest` (`MIT OR CC0-1.0`).
 
 ## Swagger documentation exposure
 

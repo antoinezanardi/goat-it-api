@@ -1,0 +1,32 @@
+name: 🛡️ Scheduled Dependency Audit Workflow
+
+on:
+  schedule:
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit-dependencies:
+    name: Audit Dependencies 🛡️
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Audit production dependencies 🛡️
+        uses: ./.github/actions/audit-dependencies
+
+      - name: Report the full dependency tree advisories 📋
+        if: always()
+        shell: bash
+        run: scripts/report-dependency-audit.sh

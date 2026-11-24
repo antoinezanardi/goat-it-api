@@ -8,11 +8,12 @@ on:
       - opened
       - edited
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   clean-pr-description:
@@ -27,6 +28,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Clean PR description from numbered diffhunk links 🧹
-        run: scripts/clean-pr-description.sh ${{ github.event.pull_request.number }}
+        run: scripts/clean-pr-description.sh "$PR_NUMBER"
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}

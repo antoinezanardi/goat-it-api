@@ -30,7 +30,7 @@ Covers how code reaches production for this NestJS 12 + Fastify 5 API: GitHub Ac
   Evidence: `static` · Diff: ✓ · Core: ✓ · Severity: high · Look: `.github/workflows/*.yml`, `.github/actions/*/action.yml` · Src: [4], [7]
 - **[CICD-05] Every job has a timeout** — Every job that runs steps declares `timeout-minutes`; jobs that only call a reusable workflow rely on the callee's job timeouts.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `.github/workflows/*.yml` · Src: [7]
-- **[CICD-06] Superseded PR runs cancelled** — Every `pull_request`-triggered workflow declares a `concurrency` group keyed on the workflow name and the head ref (`${{ github.workflow }}-${{ github.head_ref || github.run_id }}`) with `cancel-in-progress: true`, so a superseded push stops burning runner minutes.
+- **[CICD-06] Superseded PR runs cancelled** — Every `pull_request`-triggered workflow declares a `concurrency` group keyed on the workflow name and the pull request number (`${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}`) with `cancel-in-progress: true`, so a superseded push stops burning runner minutes.
   Evidence: `static` · Diff: ✓ · Severity: low · Look: `.github/workflows/*.yml` · Src: [7], [15]
 
 ## 2. CI completeness

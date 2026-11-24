@@ -56,7 +56,8 @@ Husky installs the hooks through `scripts/post-install-prepare.sh`.
   1. `pnpm run typecheck`
   2. `pnpm run validate:branch-name`
   3. `pnpm run lint:staged:fix`
-  4. `pnpm run test:unit:staged`
+  4. `pnpm run check:workflows:expressions`
+  5. `pnpm run test:unit:staged`
 - `.husky/commit-msg` runs commitlint against the commit message:
   `pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"`.
 
@@ -69,7 +70,8 @@ Never bypass the hooks with `--no-verify`.
 - The description must include the summary, the testing steps and any migration or configuration notes.
 - Apply the label matching the change type (`feat`, `fix`, `docs`, `chore`, …).
 - PR titles targeting `develop` are validated against the Conventional Commits regex by `lint-pr-name-into-develop.yml`:
-  `^(?<type>build|tech|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$`.
+  `^(?<type>build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:\((?<scope>[\w-]+)\))?(?<breaking>!)?(?<subject>:\s.+)$`.
+  The type list is computed at runtime from `type-enum` in `configs/commitlint/.commitlintrc.json`, the same rule commitlint applies to commit messages, so the PR title check and the commit-msg hook cannot drift apart.
 - The release PR targeting `main` uses the title `Release v<version>` and is not validated by this workflow.
 - `pnpm run script:create-pull-request` and `pnpm run script:clean-pr-description` automate the common PR workflow.
 - `clean-pr-description.yml` strips numbered diffhunk links from PR descriptions automatically.
@@ -79,7 +81,7 @@ Never bypass the hooks with `--no-verify`.
 ### Trigger and concurrency
 
 - `build.yml` runs on every `pull_request` targeting `main` or `develop`.
-- A concurrency group cancels superseded runs for the same PR (`cancel-in-progress: true`).
+- Every PR-triggered workflow declares the same concurrency group (`${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}` with `cancel-in-progress: true`). A new push cancels the superseded `build.yml`, PR-title lint and main-protection runs; a new edit cancels the superseded PR-description run.
 - `install` installs pnpm, Node (version from `configs/node/.node-version`) and cached dependencies with `pnpm install --frozen-lockfile`. Most jobs depend on it.
 
 ### Job graph
@@ -92,12 +94,12 @@ Never bypass the hooks with `--no-verify`.
 | `docker-builds`         | —            | Build the Docker image for `linux/amd64` and `linux/arm64` (no push).                                  |
 | `build`                 | `install`    | Typecheck, build the NestJS application and verify `dist/main.js`.                                     |
 | `build-schemas-package` | `install`    | Typecheck `@goat-it/schemas`, build it with tsdown, run a `pnpm pack` sanity check and upload `dist/`. |
-| `lint-codebase`         | `install`    | Run Oxlint and ESLint.                                                                                 |
-| `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` against the production dependency surface.                   |
+| `lint-codebase`         | `install`    | Run Oxlint, ESLint and the workflow run-body expression check.                                         |
+| `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` and the production license allowlist check.                 |
 | `unit-tests`            | `install`    | Run `pnpm run test:unit:cov` and export test/coverage counts.                                          |
 | `mutation-tests`        | `install`    | Run `pnpm run test:mutation:ci`, publish to the Stryker Dashboard and upload reports.                  |
 | `acceptance-tests`      | `build`      | Run the Cucumber suite through the `acceptance-tests` composite action.                                |
-| `sonarcloud`            | `unit-tests` | Run SonarCloud analysis with the unit-test coverage cache. Skipped for `renovate[bot]`.                |
+| `sonarcloud`            | `unit-tests` | Run SonarCloud analysis with the unit-test coverage cache. Skipped when the PR author is `renovate[bot]`. |
 
 All jobs must pass before a PR can be merged.
 
@@ -106,7 +108,7 @@ All jobs must pass before a PR can be merged.
 The `acceptance-tests` composite action (`.github/actions/acceptance-tests/action.yml`) runs:
 
 1. Install project dependencies.
-2. `pnpm run docker:acceptance-tests:start` to start the MongoDB test containers.
+2. `pnpm run docker:acceptance-tests:start` to start the MongoDB test containers and wait for the declared healthcheck (`docker compose up --wait`).
 3. `pnpm run test:acceptance`, which builds once and runs both Cucumber phases through `scripts/run-acceptance-tests.sh` from `configs/cucumber/cucumber.config.ts`: the `default` profile (standard phase) and the serial `lowLimit` profile selecting `@rate-limit-429`.
 4. Transform both JUnit reports into the aggregated `CUCUMBER_SCENARIOS_COUNT` environment variable and expose the scenario count as an output.
 5. Upload the acceptance reports and logs as artifacts (retention: 2 days).
@@ -115,11 +117,14 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 
 ### Supply-chain security
 
-- **Action pinning.** Every third-party `uses:` entry in `.github/workflows/**` and `.github/actions/**` is pinned to a full 40-character commit SHA with a trailing version comment (`# vX.Y.Z`). Local composite actions (`./.github/actions/...`) are referenced by path. Renovate maintains the pins: `pinDigests: true` enables digest pinning, and `minimumReleaseAge: "3 days"` enforces a supply-chain cooldown before a new release is proposed. `baseBranchPatterns: ["develop"]` is unchanged.
-- **Least-privilege permissions.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`.
-- **Dependency audit.** `.github/actions/audit-dependencies` installs the project and runs `pnpm audit --prod --audit-level=high`. The `audit-dependencies` job fails the build on high or critical production advisories. Development-only advisories do not block the pipeline.
+- **Action pinning.** Every third-party `uses:` entry in `.github/workflows/**` and `.github/actions/**` is pinned to a full 40-character commit SHA with a trailing version comment (`# vX.Y.Z`). Local composite actions (`./.github/actions/...`) are referenced by path. `renovate.json` extends `config:best-practices`, which keeps action digests updated, maintains the lockfile weekly, pins devDependencies and flags abandoned packages. `pinDigests: true`, `minimumReleaseAge: "3 days"` and `baseBranchPatterns: ["develop"]` configure the update policy.
+- **Least-privilege permissions and tokens.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`. Tokens are never exported at workflow or job scope: `GITHUB_TOKEN` and `SEMANTIC_RELEASE_TOKEN` are bound to the individual steps that call `gh`, semantic-release or the changelog script, so third-party actions in the same job never inherit them.
+- **No expressions in shell bodies.** `pnpm run check:workflows:expressions` (part of `pnpm run lint`, run by the `lint-codebase` job) fails when a `${{ … }}` expression appears inside a `run:` body in `.github/workflows/**` or `.github/actions/**`. Workflow values reach the shell through `env:` and quoted variables instead, which removes the template-injection path from the deploy, Docker and publication jobs.
+- **Dependency audit.** `.github/actions/audit-dependencies` installs the project, runs `pnpm audit --prod --audit-level=high` and then the license check. The `audit-dependencies` job fails the build on high or critical production advisories. Development-only advisories do not block the pipeline.
+- **Scheduled audit.** `scheduled-dependency-audit.yml` runs every Monday at 05:00 UTC (and on `workflow_dispatch`) from the default branch. It repeats the blocking production audit and writes the full dependency tree advisory counts to the job summary as a non-blocking report through `scripts/report-dependency-audit.sh`, which prints the same Markdown to standard output when `GITHUB_STEP_SUMMARY` is empty.
+- **License allowlist.** `scripts/check-licenses.ts` builds the production SBOM with `pnpm sbom --sbom-format cyclonedx --prod` and compares each component's SPDX expression with `configs/licenses/allowed-licenses.json`. The closure is derived from the root `package.json` (`dependencies` and `optionalDependencies`) and the SBOM dependency graph, because the `--prod` SBOM lists dev-only packages too. Permissive licenses are allowed globally; `sentry` (`FSL-1.1-Apache-2.0`) and `caniuse-lite` (`CC-BY-4.0`) are package-scoped exceptions. A new copyleft, source-available or unknown expression fails the job.
 - **Built-output secret scan.** `scripts/check-secrets-in-built-output.sh` (exposed as `pnpm run check:secrets-in-built-output`) scans `dist/` for the values of environment variables whose names contain `SECRET`, `TOKEN`, `PASSWORD`, `PRIVATE_KEY` or `API_KEY`. It runs in the `build` composite action and in the Docker build stage before `pnpm prune --prod`. It fails closed when the scan itself errors, and it never prints the secret value. Multiline values are only scanned through their first line; that limitation is documented in the script.
-- **Mutation testing stays in place.** The `mutation-tests` action and job, including the Stryker Dashboard integration, are retained. Its artifact upload steps follow the same SHA-pinning rule as every other third-party action.
+- **Mutation testing is retained.** The `mutation-tests` action and job, including the Stryker Dashboard integration, are retained. Its artifact upload steps follow the same SHA-pinning rule as every other third-party action.
 - **Deploy host verification.** See [Deployment](#deployment) for the `known_hosts` requirement and strict host-key checking.
 
 Health semantics and the post-deploy probe are documented in [operations.md](operations.md).
@@ -168,7 +173,7 @@ Creating the GitHub release triggers the production deployment workflow.
 |-------------------------------------------------------------------|------------|
 | `feat`                                                            | minor      |
 | `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `ci`, `chore` | patch      |
-| `build`, `tech`, `revert`                                         | no release |
+| `build`, `revert`                                                 | no release |
 
 The changelog is grouped by commit type (features, bug fixes, docs, styles, refactor, performance, tests, CI, chore) and enriched with a dependency table.
 
@@ -228,7 +233,8 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - `clean-pr-description.yml`: on opened/edited PRs targeting `develop`, removes numbered diffhunk links from the description.
 - `lint-pr-name-into-develop.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates the PR title against Conventional Commits.
 - `protect-main-branch.yml`: on PRs targeting `main`, comments and fails unless the head branch is `develop`.
-- `renovate.json` configures dependency updates; Renovate PRs still go through the standard CI pipeline. It enables digest pinning (`pinDigests: true`), enforces a three-day minimum release age (`minimumReleaseAge: "3 days"`), and keeps `baseBranchPatterns: ["develop"]`.
+- `renovate.json` configures dependency updates; Renovate PRs go through the standard CI pipeline. It extends `config:best-practices`, so lockfile maintenance runs weekly, devDependencies are pinned, action digests are maintained and abandoned packages are flagged. It also enables `osvVulnerabilityAlerts`, which opens fix PRs for known-vulnerable **direct** dependencies. `pinDigests: true`, `minimumReleaseAge: "3 days"` and `baseBranchPatterns: ["develop"]` configure the update policy.
+- `scheduled-dependency-audit.yml` re-audits the production tree weekly; see [Supply-chain security](#supply-chain-security).
 
 ## Local CI reproduction
 
@@ -240,6 +246,8 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - Lint and typecheck: `pnpm run lint` and `pnpm run typecheck`.
 - App build: `pnpm run build`; schemas build: `pnpm --filter @goat-it/schemas build`.
 - Built-output secret scan: `pnpm run check:secrets-in-built-output` after a build.
+- License allowlist: `pnpm run check:licenses` (builds the production SBOM from the installed tree).
+- Workflow run-body expressions: `pnpm run check:workflows:expressions`.
 
 ## Secrets and environments
 
@@ -256,4 +264,4 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 | `DOCKER_HUB_STAGING_IMAGE_URL`, `DOCKER_HUB_PRODUCTION_IMAGE_URL`                                                                                    | variables | Environment URLs                    |
 | `PREPRODUCTION_API_URL`, `PRODUCTION_API_URL`                                                                                                         | variables | Post-deploy liveness probe base URLs |
 
-GitHub environments: `Stryker Dashboard`, `Docker Image Staging`, `Docker Image Production`.
+GitHub environments: `Stryker Dashboard` (mutation dashboard), `Docker Image Staging` (staging image publication and preproduction deploy) and `Docker Image Production` (production image publication and deploy). The deploy jobs declare their environment, so the `*_SERVER_*` secrets and the `PREPRODUCTION_API_URL`/`PRODUCTION_API_URL` variables can be scoped to it and take precedence over repository-level values. Environment protection rules (a `develop`-only staging deployment, and a reviewer plus a `main`/tag restriction on production) are repository settings, not workflow configuration.

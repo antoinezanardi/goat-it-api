@@ -1,5 +1,5 @@
 name: Audit Dependencies 🛡️
-description: Audits the production dependency surface (the one that ships) and fails on high or critical advisories.
+description: Audits the production dependency surface for high or critical advisories and checks its licenses against the allowlist.
 author: Antoine ZANARDI
 
 runs:
@@ -11,3 +11,7 @@ runs:
     - name: Audit dependencies 🛡️
       shell: bash
       run: pnpm audit --prod --audit-level=high
+
+    - name: Check dependency licenses 🛡️
+      shell: bash
+      run: pnpm run check:licenses
