@@ -119,7 +119,7 @@ The HTTP server and the database connection carry explicit bounds. Every value i
 | MongoDB established-socket inactivity (`socketTimeoutMS`) | 10 s | `file:src/infrastructure/database/constants/database.constants.ts` | The driver raises `MongoNetworkTimeoutError`. The client gets the sanitized `500` when the error reaches the handler; retryable operations retry once with a fresh 10 s inactivity timer, so a GET can outlast the 15 s handler deadline and answer `503` first. A body-bearing request is not bounded by that deadline (see below). |
 
 - The 408 comes from Fastify's low-level connection handler, so it carries no application response headers — no security header, no `Cache-Control`, no `Vary` and no `Permissions-Policy` — and no application log context. It is not produced by `GlobalExceptionFilter`. A router-level `400`/`414` answer is different: it keeps the NestJS security headers but carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. `X-Request-Id` is missing there too, for the same reason.
-- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify clears its handler timer on that event, so a POST/PATCH request runs without this deadline. A response-owned deadline is tracked in #1428.
+- The 15-second handler timeout answers a sanitized 503 but does not guarantee cancellation of the underlying work. It only bounds requests without a body: on Node 16+, `http.IncomingMessage` emits `close` when the request is complete (body received), and Fastify clears its handler timer on that event, so a POST/PATCH request runs without this deadline.
 - The 10-second `socketTimeoutMS` is an inactivity bound on an established socket, not a total query deadline: a command with ongoing socket activity can outlast it.
 - Timeout paths are not asserted by long acceptance scenarios (the harness has no deterministic stall fixture); the configured values and the response mappings are pinned by unit specs.
 
@@ -175,7 +175,7 @@ Unexpected server errors and process-level crashes are reported to a Sentry SaaS
 | Uncaught exception | The event is captured, the client is closed within 2 000 ms and the process exits with code `1`, printing nothing. When another `uncaughtException` listener is installed, the SDK still captures but does not force the exit. A second uncaught exception raised while the close is pending is printed raw to stderr by the SDK; the two-second window is the only raw-error path. | Container restart plus the event in the Sentry project. |
 | Unhandled promise rejection | The Sentry rejection integration is removed, so Node's default escalation to the uncaught-exception path stays intact and delivery remains best-effort. | Same as the uncaught-exception row. |
 
-The complete failure-mode matrix for database, documentation endpoint and host failures remains #1324; the rows above cover the tracker only.
+The rows above cover the tracker only.
 
 ### Enabling error tracking
 
@@ -183,7 +183,7 @@ Before deploying either environment, the Sentry project administrator must provi
 
 ## Out of scope
 
-Numeric SLOs, automatic rollback, remote log shipping and Kubernetes probes are intentionally not configured here. Error tracking is configured as described in [Error tracking](#error-tracking); numeric alert thresholds and error budgets stay in #1407/#1411. Observability work is tracked separately in the repository issues.
+Numeric SLOs, automatic rollback, remote log shipping and Kubernetes probes are intentionally not configured here. Error tracking is configured as described in [Error tracking](#error-tracking); numeric alert thresholds and error budgets are not repository configuration.
 
 ## GOAT audit decisions
 

@@ -1,6 +1,6 @@
 # API contract
 
-This document is the verified inventory of the actual HTTP surface of `goat-it-api` (NestJS 12 + Fastify 5, Zod validation): every route with its exact prefix taken from the controller decorators, the DTO/validation conventions, the unified error shape produced by `GlobalExceptionFilter`, the query-string conventions (limit, sort, filters), Swagger at `/docs`, and the published `@goat-it/schemas` package. It was written against the code on branch `feat/goat-audit`; every claim cites a repository path that exists. Gaps found during verification are recorded as Known limitations at the end.
+This document is the verified inventory of the actual HTTP surface of `goat-it-api` (NestJS 12 + Fastify 5, Zod validation): every route with its exact prefix taken from the controller decorators, the DTO/validation conventions, the unified error shape produced by `GlobalExceptionFilter`, the query-string conventions (limit, sort, filters), Swagger at `/docs`, and the published `@goat-it/schemas` package. Every claim cites a repository path that exists. Gaps found during verification are recorded as Known limitations at the end.
 
 ## Framework and bootstrap
 
@@ -85,7 +85,7 @@ Before those branches, the filter normalizes the Fastify transport errors it rec
 
 These envelopes carry no `errorCode` and never include the Fastify message, the route path or a stack trace. A request-receive timeout is not in this table: Fastify's low-level connection handler answers `408` `{ "statusCode": 408, "message": "Client Timeout", "error": "Request Timeout" }` before Nest runs, so `GlobalExceptionFilter` never sees it.
 
-The `FST_ERR_HANDLER_TIMEOUT` envelope is only reachable for requests without a body: on Node 16+ a POST/PATCH request body completes before the handler runs and Fastify clears its handler timer (#1428).
+The `FST_ERR_HANDLER_TIMEOUT` envelope is only reachable for requests without a body: on Node 16+ a POST/PATCH request body completes before the handler runs and Fastify clears its handler timer.
 
 Four write/read-back errors are intentionally unmapped and fall through to 500: `QuestionCreationError`, `QuestionThemeAssignmentCreationError`, `QuestionThemeAssignmentModificationError`, `QuestionThemeAssignmentRemovalError` (`docs/architecture.md` §7.4).
 

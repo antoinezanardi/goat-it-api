@@ -1,6 +1,6 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1406 (error tracking), #1326/#1332/#1333/#1343/#1344 (logging and structured security events).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations.
 
 Last reviewed: 2026-11-24.
 
@@ -143,11 +143,10 @@ The policy is enforced by configuration. `getLoggerConfiguration` installs an al
 - A normal request emits one completion line with the request ID, the method, the path without its query string, the status code and the response time. It never carries a header, the client address or port, the user-agent, the request body or a query value.
 - `redact` censors every `headers` map at depths 0–2 and the credential names `authorization`, `cookie`, `apiKey`, `gameKey`, `token`, `password`, `secret`, `apiKeyHash` and `hmacSecret` at depths 0–2, plus `remoteAddress` and `remotePort`. It is the second layer: the serializer is the primary control for the automatic request line, and redaction covers a future manual `{ req }`, `{ request }` or credential-field log.
 - Unknown errors and response serialization failures emit `request.error` with the exception class and the V8 frame lines of its stack. The stack header, which embeds the exception message, is dropped, so a message that contains a connection string, a payload fragment or a user-supplied route segment never reaches the log stream (`file:src/app/filters/global-exception/global-exception.filter.ts`, `file:src/app/filters/global-exception/helpers/error-stack/error-stack.helpers.ts`).
-- Logs written before the fix is deployed may contain request metadata and credential headers. Within 24 hours of each deploy, rotate `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY` and `GAME_API_KEY` and purge or expire those logs; this is a deployment action, not an application setting.
 
 ### Structured security events
 
-The application emits four allow-listed events. Each record also carries the pino request binding (`req.id`, `req.method`, `req.url` without query) and the logger context.
+The application emits four allow-listed events. Each record also carries the pino request binding and the logger context: `req.id`, `req.method` and `req.url` with its query string removed. On a parameterized route, `req.url` is the requested path and therefore contains the path-parameter values; the event's own `route` field is always the matched template.
 
 | Event | Level | Fields | Emitted when |
 |---|---|---|---|
@@ -157,7 +156,7 @@ The application emits four allow-listed events. Each record also carries the pin
 | `request.error` | `error` | `status` (500), `route`, `errorClass`, `stack` (frame lines only, omitted when absent) | an unexpected exception reaches the generic 500 |
 
 - `route` is the matched Fastify route template, for example `/questions/:id`, or the literal `unknown` when the request did not match a route. It never contains a path-parameter value or a query string.
-- No event carries the API key, a header, the request body, a query value, a path-parameter value, a client address or a user-agent.
+- The allow-listed event fields never carry the API key, a header, the request body, a query value, a path-parameter value, a client address or a user-agent. The pino request binding described above is separate from those fields, and its `req.url` can contain a path-parameter value on a parameterized route.
 - `request.throttled` is tier-agnostic: the library does not expose the tier name at the rejection point, and its storage key and tracker are never logged.
 - Explicit 5xx `HttpException`s, the `503` handler timeout, `404`/`409` responses and Fastify body-parser `400`s do not emit a security event; only the generic unknown-error branch emits `request.error`.
 
@@ -169,15 +168,12 @@ Unexpected server errors and process crashes are reported to a Sentry SaaS proje
 - The event carries the error class, the matched route template, the method, the `500` status tag and stack frames only. Every `dataCollection` surface is denied, breadcrumbs and tracing are off, server-name collection is off, and `beforeSend` rebuilds the event from an allow-list instead of deleting fields, so an unknown SDK field cannot leak.
 - The error value is always `[REDACTED]`, the stack's message header is dropped, and frames are dropped for a multiline-message exception, so neither an internal message nor a connection string can reach the tracker. The request object itself is never handed to the SDK.
 - `SENTRY_DSN`, `SENTRY_DISABLED` and `SENTRY_ENVIRONMENT` are validated at boot; a DSN is required whenever the environment is `staging` or `production`, `NODE_ENV=production` also requires `staging` or `production`, and `SENTRY_DISABLED=true` is rejected on a deployment environment (`file:src/infrastructure/api/config/schemas/env.schema.ts`). SDK debug output is pinned off (`debug: false`), so an inherited `SENTRY_DEBUG` cannot print an event payload. No tracker token or source-map credential is stored in the repository, and the tracked env files hold no live DSN.
-- The production 5xx alert is a Sentry-project setting owned by the project administration (#1406); its threshold and destination are not repository configuration. The allow-list and the processor record live in `docs/privacy.md`; setup lives in `docs/operations.md`.
+- The production 5xx alert is a Sentry-project setting owned by the project administration; its threshold and destination are not repository configuration. The allow-list and the processor record live in `docs/privacy.md`; setup lives in `docs/operations.md`.
 
 ## Known limitations
 
-- #1263 — the security-controls umbrella stays open; rate limiting landed as described in [Rate limiting](#rate-limiting), and global security headers plus the response cache policy are described in [HTTP security headers](#http-security-headers) and [Response caching](#response-caching).
-- #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
+- **Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH).** Those handlers have no routed-handler deadline; the mechanism is in `docs/operations.md`.
 - **Some transport-level responses bypass the application headers.** Fastify's low-level `408` is written over the raw socket before the request hooks and before `GlobalExceptionFilter` (`docs/operations.md`), so it carries no security header, no `Cache-Control` and no `Permissions-Policy`. A router-level `400`/`414` answer also skips the request hooks: the adapter writes the Nest security headers on that path, but the response carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. An edge-owned policy is the only remaining way to cover the rest.
-- **`Strict-Transport-Security` (HSTS) is emitted statically, including on direct plain-HTTP responses.** The proxy peer is now trusted for client-address resolution, but the security-header hook still writes a static and `includeSubDomains`/`preload`-free `max-age=31536000` value and does not gate it on `request.protocol`. The public path terminates TLS at the proxy, public HTTP is redirected to HTTPS, and the operator rollout publishes the API port on host loopback only. Revisit if the app listener becomes publicly reachable over HTTP or a scheme-gated policy is adopted.
-- **A second uncaught exception during the tracker shutdown window is printed raw to stderr.** When a second exception arrives while the first Sentry client close is pending (bounded to two seconds), the SDK's `logAndExitProcess` bypasses the application `onFatalError` and writes the raw error to stderr. It is not sent to the tracker; owning the process handler is the tracked follow-up.
+- **`Strict-Transport-Security` (HSTS) is emitted statically, including on direct plain-HTTP responses.** The proxy peer is trusted for client-address resolution, but the security-header hook still writes a static and `includeSubDomains`/`preload`-free `max-age=31536000` value and does not gate it on `request.protocol`. The public path terminates TLS at the proxy, public HTTP is redirected to HTTPS, and the operator rollout publishes the API port on host loopback only. Revisit if the app listener becomes publicly reachable over HTTP or a scheme-gated policy is adopted.
+- **A second uncaught exception during the tracker shutdown window is printed raw to stderr.** When a second exception arrives while the first Sentry client close is pending (bounded to two seconds), the SDK's `logAndExitProcess` bypasses the application `onFatalError` and writes the raw error to stderr. It is not sent to the tracker.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
-
-The external-client slice of #1263 is complete: client identity behind the proxy and the request-ID contract are documented above. The remaining external-client work is per-player identity for the `web-game` and `web-admin` server-to-server callers, which the API cannot derive from the Docker service network.
