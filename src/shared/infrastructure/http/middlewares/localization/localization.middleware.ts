@@ -57,7 +57,8 @@ export class LocalizationMiddleware implements NestMiddleware {
     const { fallbackLocale } = this.appConfigService.localizationConfig;
     const localeLength = 2;
     const [firstLanguageRange] = headerLocale.split(",", 1);
-    const firstLocale = firstLanguageRange.split(";", 1)[0].trim().slice(0, localeLength).toLowerCase();
+    const [languageRangeWithoutParameters] = firstLanguageRange.split(";", 1);
+    const firstLocale = languageRangeWithoutParameters.trim().slice(0, localeLength).toLowerCase();
     if (firstLocale === "*") {
       return fallbackLocale;
     }

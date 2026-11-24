@@ -4,7 +4,7 @@
  * Used as a Zod preprocessor by `zLimit`.
  */
 function normalizeBlankLimitToNaN(value: unknown): unknown {
-  return typeof value === "string" && value.trim() === "" ? NaN : value;
+  return typeof value === "string" && value.trim() === "" ? Number.NaN : value;
 }
 
 export { normalizeBlankLimitToNaN };
