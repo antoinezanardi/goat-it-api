@@ -178,6 +178,17 @@ Feature: List Questions
 
     And the response should contain a question among them with id "efd39a4ac3bdfd03d2f8cdf1" but without rejection
 
+  Scenario: Listing all questions in weighted wildcard locale
+    Given the database is populated with questions fixture set with name "five-questions"
+    When the client retrieves all questions in locale "*;q=0.5"
+    Then the request should have succeeded with status code 200
+    And the response should contain 5 questions
+    And the response should contain a question among them with id "a1b2c3d4e5f6012345678901" and the following content:
+      | statement                                              | answer           | context                                                                                                           |
+      | Which director is known for the movie 'Psycho' (1960)? | Alfred Hitchcock | Alfred Hitchcock directed the 1960 psychological horror film 'Psycho', which became one of his most famous works. |
+    And the response should not be cacheable
+    And the response should vary on the "Accept-Language" header
+
   Scenario: Listing all questions in Italian locale
     Given the database is populated with questions fixture set with name "five-questions"
     When the client retrieves all questions in locale "it"

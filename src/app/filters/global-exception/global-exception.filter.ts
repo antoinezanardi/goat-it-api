@@ -1,13 +1,12 @@
 import { ServerResponse } from "node:http";
 
-import { ZodValidationException } from "nestjs-zod";
+import { ZodSerializationException, ZodValidationException } from "nestjs-zod";
 import {
   BadRequestException,
   Catch,
   ConflictException,
   HttpException,
   HttpStatus,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
   PayloadTooLargeException,
@@ -23,7 +22,7 @@ import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/erro
 
 import { captureServerError } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
-import { NON_ERROR_THROWN, SENTRY_CAPTURE_FAILED_LOG_MESSAGE, UNKNOWN_SENTRY_CONTEXT_VALUE } from "@app/filters/global-exception/constants/global-exception.constants";
+import { GENERIC_INTERNAL_SERVER_ERROR_BODY, NON_ERROR_THROWN, SENTRY_CAPTURE_FAILED_LOG_MESSAGE, UNKNOWN_SENTRY_CONTEXT_VALUE } from "@app/filters/global-exception/constants/global-exception.constants";
 
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 import { applyNoStoreResponseHeadersToFastifyReply, applyNoStoreResponseHeadersToServerResponse } from "@shared/infrastructure/helpers/response-headers/response-headers.helpers";
@@ -46,9 +45,10 @@ import type { SentryReportableRequest } from "@app/filters/global-exception/glob
  * Single composition point that turns any thrown value into the HTTP response.
  *
  * Known Fastify body-parser and handler-timeout errors are mapped to curated 400, 413, 415 and 503 envelopes, keyed only on
- * their Fastify error code; Zod validation errors and unrelated `HttpException`s are forwarded as they are; known domain
- * errors are mapped to 404, 400 or 409 through a class-name table; everything else is reported to the error tracker, logged
- * by class name only and answered with a 500 that never exposes the original message.
+ * their Fastify error code; Zod validation errors and unrelated `HttpException`s are forwarded as they are; a response
+ * serialization failure is reported and answered with the generic 500; known domain errors are mapped to 404, 400 or 409
+ * through a class-name table; everything else is reported to the error tracker, logged by class name only and answered with a
+ * 500 that never exposes the original message.
  */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -152,7 +152,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   /**
    * Writes the response for the first matching branch and never rethrows.
    *
-   * A mapped domain error keeps its message and gains an error code derived from its class name; an unknown error is reported to the error tracker, logged by class name only and replaced by a generic 500.
+   * A mapped domain error keeps its message and gains an error code derived from its class name; a response serialization failure or an unknown error is reported to the error tracker, logged by class name only and replaced by a generic 500.
    */
   public catch(exception: unknown, host: ArgumentsHost): void {
     const httpArgumentsHost = host.switchToHttp();
@@ -167,6 +167,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof ZodValidationException) {
       GlobalExceptionFilter.sendZodValidationException(exception, response);
+
+      return;
+    }
+
+    if (exception instanceof ZodSerializationException) {
+      const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
+
+      this.sendUnknownException(exception, request, response);
 
       return;
     }
@@ -205,7 +213,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       this.logger.error(SENTRY_CAPTURE_FAILED_LOG_MESSAGE);
     }
 
-    const internalServerErrorException = new InternalServerErrorException();
+    const internalServerErrorException = new HttpException(GENERIC_INTERNAL_SERVER_ERROR_BODY, HttpStatus.INTERNAL_SERVER_ERROR);
 
     GlobalExceptionFilter.sendNestHttpException(internalServerErrorException, response);
   }

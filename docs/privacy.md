@@ -53,14 +53,14 @@ Policy: log lines must never contain personal data, request bodies or authorizat
 
 The request identifier bound to each request log line is a random UUID v4 generated per request (`file:src/infrastructure/api/server/request-id/helpers/request-id.helpers.ts`). It is never derived from the client address, headers, API key or payload, and clients read the same value from the `X-Request-Id` response header. The API does not store it in MongoDB or in separate application state; a UUID written to request logs follows the host's log-retention policy. This does not change the logging gap above: the `pino-http` default serializer still emits request metadata and remains tracked under #1332/#1343.
 
-Error tracking is wired (`@sentry/nestjs`) and reports only the generic 500 path and process-level crashes to a Sentry SaaS project. Every SDK data-collection surface is denied and `beforeSend` rebuilds the event from an allow-list, so the scrubbing configuration ships with the tracker instead of after it.
+Error tracking is wired (`@sentry/nestjs`) and reports only the generic 500 path — including a response-serialization failure raised by `ZodSerializerInterceptor` — and process-level crashes to a Sentry SaaS project. Every SDK data-collection surface is denied and `beforeSend` rebuilds the event from an allow-list, so the scrubbing configuration ships with the tracker instead of after it.
 
 ### Error tracking
 
 | Aspect | Value |
 |---|---|
 | Processor | Sentry (SaaS), provisioned per environment by the maintainer |
-| Trigger | Unexpected server errors on the API's generic 500 path, and process-level crashes |
+| Trigger | Unexpected server errors on the API's generic 500 path (including response-serialization failures raised by `ZodSerializerInterceptor`), and process-level crashes |
 | Fields transferred | event id, timestamp, level, platform, SDK name and version, environment, release, the tags `errorClass`, route template, request method and HTTP status, exception type, exception value `[REDACTED]`, and stack frames reduced to file, function, line, column and in-app flag |
 | Never transferred | request URL, query string, headers, cookies, bodies, user identity, IP address, server name, modules, breadcrumbs, stack-frame source context and local variables, the raw exception message, the full stack message header and every frame of an exception whose message spans several lines |
 | Purpose | Detect and alert on 5xx spikes and process crashes |

@@ -5,13 +5,12 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
-  InternalServerErrorException,
   NotFoundException,
   PayloadTooLargeException,
   ServiceUnavailableException,
   UnsupportedMediaTypeException,
 } from "@nestjs/common";
-import { ZodValidationException } from "nestjs-zod";
+import { ZodSerializationException, ZodValidationException } from "nestjs-zod";
 import { ZodError } from "zod";
 
 import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
@@ -21,7 +20,10 @@ import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/erro
 
 import * as sentryHelpers from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
+import { GENERIC_INTERNAL_SERVER_ERROR_BODY } from "@app/filters/global-exception/constants/global-exception.constants";
 import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
+
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionCreationError } from "@question/domain/errors/question-creation/question-creation.error";
@@ -44,6 +46,10 @@ import type { FastifyReply } from "fastify";
 
 import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
 
+function createExpectedInternalServerErrorException(): HttpException {
+  return new HttpException(GENERIC_INTERNAL_SERVER_ERROR_BODY, HttpStatus.INTERNAL_SERVER_ERROR);
+}
+
 describe(GlobalExceptionFilter, () => {
   let mocks: {
     filters: {
@@ -62,7 +68,7 @@ describe(GlobalExceptionFilter, () => {
         globalException: {
           fastifyReply: {
             status: vi.fn<(status: number) => FastifyReply>().mockReturnThis(),
-            send: vi.fn<() => void>(),
+            send: vi.fn<(response: unknown) => void>(),
             getHeader: vi.fn<(name: string) => string | undefined>().mockReturnValue(undefined),
             header: vi.fn<(name: string, value: string) => void>(),
           } as unknown as FastifyReply,
@@ -277,6 +283,11 @@ describe(GlobalExceptionFilter, () => {
         }),
       },
       {
+        test: "should send a serialization exception as internal server error when called with ZodSerializationException.",
+        exception: new ZodSerializationException(new ZodError([])),
+        expectedSentException: createExpectedInternalServerErrorException(),
+      },
+      {
         test: "should send directly nest http exception when called with HttpException.",
         exception: new ForbiddenException("Access denied"),
         expectedSentException: new ForbiddenException("Access denied"),
@@ -404,32 +415,32 @@ describe(GlobalExceptionFilter, () => {
       {
         test: "should send QuestionCreationError as internal server error when called.",
         exception: new QuestionCreationError(),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send QuestionThemeAssignmentCreationError as internal server error when called.",
         exception: new QuestionThemeAssignmentCreationError("question-theme-id", "question-id"),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send QuestionThemeAssignmentModificationError as internal server error when called.",
         exception: new QuestionThemeAssignmentModificationError("question-theme-id", "question-id"),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send QuestionThemeAssignmentRemovalError as internal server error when called.",
         exception: new QuestionThemeAssignmentRemovalError("question-theme-id", "question-id"),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown exception.",
         exception: "Some unknown exception",
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send unknown exception as internal server error when called with unknown Error.",
         exception: new Error("Some unknown error"),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should map a Fastify empty JSON body error to the curated bad request envelope when called.",
@@ -509,19 +520,19 @@ describe(GlobalExceptionFilter, () => {
           name: "MongoNetworkTimeoutError",
           code: "ETIMEDOUT",
         }),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send unknown exception as internal server error when called with an Error carrying a non-string error code.",
         exception: Object.assign(new Error("write EPIPE"), {
           code: 42,
         }),
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
       {
         test: "should send unknown exception as internal server error when called with a plain object carrying a Fastify error code.",
         exception: { code: "FST_ERR_CTP_BODY_TOO_LARGE" },
-        expectedSentException: new InternalServerErrorException(),
+        expectedSentException: createExpectedInternalServerErrorException(),
       },
     ])("$test", ({ exception, expectedSentException }) => {
       const globalExceptionFilter = new GlobalExceptionFilter();
@@ -561,6 +572,18 @@ describe(GlobalExceptionFilter, () => {
 
       expect(sentryHelpers.captureServerError).toHaveBeenCalledExactlyOnceWith(expect.any(Error), {
         errorClass: "Error",
+        route: "/admin/questions",
+        method: "POST",
+      });
+    });
+
+    it("should report a serialization exception once with its class and route context when called.", () => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter.catch(new ZodSerializationException(new ZodError([])), localMocks.filters.globalException.host);
+
+      expect(sentryHelpers.captureServerError).toHaveBeenCalledExactlyOnceWith(expect.any(ZodSerializationException), {
+        errorClass: "ZodSerializationException",
         route: "/admin/questions",
         method: "POST",
       });
@@ -658,7 +681,7 @@ describe(GlobalExceptionFilter, () => {
       });
     });
 
-    it("should send InternalServerErrorException status code using FastifyReply when called.", () => {
+    it("should send the internal server error status code using FastifyReply when called.", () => {
       const globalExceptionFilter = new GlobalExceptionFilter();
       const error = new Error("Unknown error occurred");
 
@@ -667,15 +690,22 @@ describe(GlobalExceptionFilter, () => {
       expect(mocks.filters.globalException.fastifyReply.status).toHaveBeenCalledExactlyOnceWith(500);
     });
 
-    it("should send InternalServerErrorException response using FastifyReply when called.", () => {
+    it("should send the shared internal server error body using FastifyReply when called.", () => {
       const globalExceptionFilter = new GlobalExceptionFilter();
       const error = new Error("Unknown error occurred");
-      const internalServerError = new InternalServerErrorException();
-      const expectedResponse = internalServerError.getResponse();
 
       globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledExactlyOnceWith(expectedResponse);
+      expect(mocks.filters.globalException.fastifyReply.send).toHaveBeenCalledExactlyOnceWith(GENERIC_INTERNAL_SERVER_ERROR_BODY);
+    });
+
+    it("should send a body matching the published error DTO when called.", () => {
+      const globalExceptionFilter = new GlobalExceptionFilter();
+
+      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+      const sentBody = vi.mocked(mocks.filters.globalException.fastifyReply.send).mock.calls[0][0];
+
+      expect(API_RESPONSE_EXCEPTION_DTO.parse(sentBody)).toStrictEqual(GENERIC_INTERNAL_SERVER_ERROR_BODY);
     });
 
     it("should send the 500 response when the tracker call throws.", () => {

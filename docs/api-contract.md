@@ -5,7 +5,7 @@ This document is the verified inventory of the actual HTTP surface of `goat-it-a
 ## Framework and bootstrap
 
 - Entrypoint `src/main.ts` awaits `APP_CONFIG_MODULE_READY` from `src/infrastructure/api/config/helpers/config-module.helpers.ts`, reads the validated environment through `getAppEnv()` (the helper keeps the first validation because `ConfigModule.forRoot()` rewrites `process.env`), then calls `bootstrap(AppModule, appEnv.TRUST_PROXY)` from `src/infrastructure/api/server/server.ts`, which creates the app with `createFastifyAdapter(trustProxy)` from `src/infrastructure/api/server/fastify/helpers/fastify.helpers.ts` (`NestFactory.create<NestFastifyApplication>`, `NEST_APPLICATION_OPTIONS` from `src/infrastructure/api/server/constants/server.constants.ts`, `genReqId` wired to `createRequestId` from `src/infrastructure/api/server/request-id/helpers/request-id.helpers.ts` and the inbound request-ID header disabled), enables shutdown hooks, CORS, and Swagger, then listens on `SERVER_HOST`/`SERVER_PORT` (`env/.env.example`; schema in `src/infrastructure/api/config/schemas/env.schema.ts`; defaults `0.0.0.0:3000` in `src/infrastructure/api/config/constants/env.constants.ts`).
-- `src/app/app.module.ts` registers `ServeStaticModule` for `/public/`, the `ZodValidationPipe` as `APP_PIPE`, `GlobalExceptionFilter` as `APP_FILTER`, and the `LocalizationMiddleware` on `"*"` routes.
+- `src/app/app.module.ts` registers `ServeStaticModule` for `/public/`, the `ZodValidationPipe` as `APP_PIPE`, the `ZodSerializerInterceptor` as `APP_INTERCEPTOR`, `GlobalExceptionFilter` as `APP_FILTER`, and the `LocalizationMiddleware` on `"*"` routes.
 - There is **no** `setGlobalPrefix` and **no** `enableVersioning` call anywhere in `src/` — every route is mounted at the repository root (see Known limitations).
 - CORS: `app.enableCors(createCorsConfig(...))` in `server.ts`; defaults in `src/infrastructure/api/server/cors/constants/cors.constants.ts` — `credentials: false`, methods `GET, POST, DELETE, PATCH, OPTIONS`, `allowedHeaders: ["Content-Type", "Authorization"]`, `exposedHeaders: ["X-Request-Id"]`; the `origin` comes from the `CORS_ORIGIN` env variable (default `*`).
 
@@ -56,6 +56,7 @@ Rate limiting runs **before** authentication, so a business request can be answe
 - `ZodValidationPipe` is global (`APP_PIPE` in `app.module.ts`), so every `@Body()`/`@Query()` DTO is parsed by Zod.
 - Request shapes use non-strict `z.object` deliberately: Zod strips unknown properties, so extra fields are dropped, never persisted (`docs/architecture.md` §7.1). Response shapes use `z.strictObject` with `.describe()`/`.meta()` on public fields — e.g. `QUESTION_DTO` in `src/contexts/question/application/dto/question/question.dto.shape.ts`.
 - Every endpoint declares `@ZodResponse(...)` from `nestjs-zod` with its status and wrapper type; `setupSwaggerModule` runs `cleanupOpenApiDoc` over the generated document (`src/infrastructure/api/server/swagger/helpers/swagger.helpers.ts`).
+- Response serialization is enforced at runtime: `ZodSerializerInterceptor` (registered as `APP_INTERCEPTOR` in `src/app/app.module.ts`) parses every handler result declared with `@ZodResponse` against its DTO. Because response shapes are `z.strictObject`, an unknown or missing field fails the parse, and the request answers 500 with the generic error body; the Zod issues are never returned to the client.
 
 ## Unified error shape
 
@@ -71,7 +72,7 @@ Rate limiting runs **before** authentication, so a business request can be answe
 | `QuestionThemeAlreadyArchivedError`, `ReferencedQuestionThemeArchivedError`, `QuestionAlreadyArchivedError`, `QuestionMaximumThemesError`, `QuestionMinimumThemesError`, `QuestionPrimaryThemeAssignmentNotRemovableError` | 400 |
 | `QuestionThemeSlugAlreadyExistsError`, `QuestionThemeAssignmentAlreadyExistsError`, `QuestionThemeReferencedByLiveQuestionsError` | 409 |
 
-**Anything else** → logged with `this.logger.error(...)` and the stock `new InternalServerErrorException()` body is sent verbatim (the `sendUnknownException` branch). The spec pins the exact exception instance (the filter spec), i.e. Nest's default 500 body `{ statusCode: 500, message: "Internal Server Error" }`. No custom 500 body exists.
+**Anything else** → reported to the error tracker, logged by class name only and answered with the shared 500 body `{ statusCode: 500, message: "Internal Server Error", error: "Internal Server Error" }` (the `sendUnknownException` branch). A `ZodSerializationException` thrown by the response interceptor takes the same branch, so a serialization failure is logged, reported and answered with the same body; its Zod issues are not exposed. The published `API_RESPONSE_EXCEPTION_DTO` therefore parses every generic 500 body.
 
 Before those branches, the filter normalizes the Fastify transport errors it recognizes, keyed **only** on the Fastify error `code` carried by the thrown error itself (a 5xx Fastify error, which Nest leaves unmapped) or by the `cause` of the `HttpException` Nest's Fastify adapter builds for a 4xx one (`fastifyErrorHttpExceptionFactories` and `getFastifyErrorCode` in `src/app/filters/global-exception/global-exception.filter.ts`). Status and message alone never classify an error.
 
@@ -102,7 +103,7 @@ There is no pagination — no `page`/`offset` parameter exists anywhere in the q
 
 ## Localization
 
-- `LocalizationMiddleware` (`src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`) runs on all routes; it reads the first locale of the `Accept-Language` header, validates it against `LOCALES = ["en", "fr", "es", "de", "it", "pt"]` (`src/shared/domain/value-objects/locale/locale.constants.ts`), falls back to `FALLBACK_LOCALE` (env, default `"en"`), and throws 400 on an invalid header.
+- `LocalizationMiddleware` (`src/shared/infrastructure/http/middlewares/localization/localization.middleware.ts`) runs on all routes; it reads the first language range of the `Accept-Language` header (parameters such as `;q=0.5` are stripped), validates the two-letter locale against `LOCALES = ["en", "fr", "es", "de", "it", "pt"]` (`src/shared/domain/value-objects/locale/locale.constants.ts`), falls back to `FALLBACK_LOCALE` (env, default `"en"`), and throws 400 on an invalid header. A wildcard range, including a weighted one such as `*;q=0.5`, resolves to the fallback locale.
 - Controllers receive the resolved options through the `@Localization()` decorator (`src/shared/infrastructure/http/decorators/localization/localization.decorator.ts`) and pass them to mappers/use cases.
 
 ## Response headers and caching
@@ -157,7 +158,7 @@ The guard throws an `HttpException`, so `GlobalExceptionFilter` sends the body v
 
 - **No API versioning prefix.** No `setGlobalPrefix`/`enableVersioning` exists (verified by grep across `src/`); all routes live at the root, so a breaking change cannot be released alongside a v1.
 - **No pagination.** List endpoints expose only `limit` (0 = unlimited) — no `page`/`offset` and no cursor; a repeated sorted and limited query returns the same first results, so `limit=0` is the only way to retrieve the full result set.
-- **500 responses carry no `errorCode`.** The generic 500 body is the stock Nest `InternalServerErrorException` body passed through verbatim (see Unified error shape); frontends cannot machine-differentiate unknown failures.
+- **500 responses carry no `errorCode`.** The generic 500 body matches the shared error shape (see Unified error shape), including serialization failures, but has no `errorCode`; frontends cannot machine-differentiate unknown failures.
 - **Browser API-key calls are unsupported.** CORS `allowedHeaders` is `["Content-Type", "Authorization"]` and deliberately excludes `goat-it-api-key` (`cors.constants.ts`, `auth.constants.ts`), so the API key stays server-side and a browser caller cannot authenticate cross-origin by design. `PUT` is no longer advertised: the method list now matches the implemented routes, and `X-Request-Id` is the only exposed response header.
 - **The public list cannot page to the end of large datasets**, and `theme-ids` has no upper bound (only min 1) unlike `ids` (max 100). The random-search body's `themeIds` array has no upper bound either (only min 1), unlike `excludedIds` (1–5000).
 - **Browsers cannot read the rate-limit headers.** `Access-Control-Expose-Headers` lists only `X-Request-Id`, so cross-origin browser JavaScript cannot read `Retry-After` or the `X-RateLimit-*` headers, although server-side clients can. Revisit if browser API-key access is approved.

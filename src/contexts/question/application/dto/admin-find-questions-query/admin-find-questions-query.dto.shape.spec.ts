@@ -117,7 +117,7 @@ describe("Admin Find Questions Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string", "", " ".repeat(3)])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);

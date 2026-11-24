@@ -15,7 +15,7 @@ describe(zLimit, () => {
     expect(result.success).toBeTruthy();
   });
 
-  it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
+  it.each<unknown>([-1, 1.5, "string", "", " ".repeat(3)])("should throw zod error when limit is '%s'.", (invalidLimit: unknown) => {
     const schema = zLimit();
 
     expect(() => schema.parse(invalidLimit)).toThrow(z.ZodError);
@@ -28,11 +28,24 @@ describe(zLimit, () => {
     expect(result).toBe(50);
   });
 
+  it("should coerce to a number when limit is a whitespace-padded numeric string.", () => {
+    const schema = zLimit();
+    const result = schema.parse(" 50 ");
+
+    expect(result).toBe(50);
+  });
+
   it("should use default value 50 when limit is not provided.", () => {
     const schema = zLimit();
     const result = schema.parse(undefined);
 
     expect(result).toBe(LIMIT_DEFAULT);
+  });
+
+  it("should keep the default value in the input JSON schema when generating it.", () => {
+    const jsonSchema = z.toJSONSchema(zLimit(), { io: "input" });
+
+    expect(jsonSchema).toHaveProperty("default", LIMIT_DEFAULT);
   });
 
   it("should have correct metadata when accessing the metadata.", () => {
