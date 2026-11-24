@@ -1,8 +1,8 @@
 # Security
 
-This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1406 (error tracking).
+This document describes the application security of the Goat It API (`goat-it-api`): the NestJS 12 + Fastify 5 backend that serves quiz content (questions and question themes) to the Goat It web game. It records what the API enforces today, file by file, and where a control is missing, it is recorded under Known limitations. Related issues: #1404 (rate limiting), #1263 (security-controls umbrella), #1406 (error tracking), #1326/#1332/#1333/#1343/#1344 (logging and structured security events).
 
-Last reviewed: 2026-11-23.
+Last reviewed: 2026-11-24.
 
 ## Authentication
 
@@ -43,7 +43,7 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 `GlobalExceptionFilter` is the single composition point for HTTP errors (`file:src/app/filters/global-exception/global-exception.filter.ts`), registered with `APP_FILTER` (`file:src/app/app.module.ts`). The policy (`docs/architecture.md` §7.4): a domain error gets a specific 4xx status only when the client can act on it.
 
 - Client-actionable mappings: not-found (`QuestionNotFoundError`, `QuestionThemeNotFoundError`, `QuestionThemeAssignmentAbsentError`), bad-request (already-archived, referenced-theme-archived, max/min themes, primary assignment not removable), conflict (slug exists, assignment exists, theme referenced by live questions) — see the filter's `domainErrorHttpExceptionFactories`.
-- Everything else — including the four write/read-back errors intentionally classified as 500 and a response serialization failure raised by `ZodSerializerInterceptor` — falls through to the shared generic 500 body (`{ statusCode: 500, message: "Internal Server Error", error: "Internal Server Error" }`). Unknown errors and serialization failures are recorded server-side by class name only — never by message — and reported to the error tracker as a redacted event (see [Error tracking](#error-tracking)); clients only ever see the generic 500 body.
+- Everything else — including the four write/read-back errors intentionally classified as 500 and a response serialization failure raised by `ZodSerializerInterceptor` — falls through to the shared generic 500 body (`{ statusCode: 500, message: "Internal Server Error", error: "Internal Server Error" }`). Unknown errors and serialization failures are recorded server-side with the exception class and V8 frame lines only — never the message or the stack header — and reported to the error tracker as a redacted event (see [Error tracking](#error-tracking)); clients only ever see the generic 500 body.
 - Domain error responses include the domain message and an `errorCode` derived from the class name (`file:src/shared/infrastructure/http/errors/helpers/errors.helpers.ts`), which the web game uses to localize errors.
 
 ## Secrets and configuration
@@ -96,7 +96,7 @@ Every business Nest route is limited by a global Nest guard registered with `APP
 - `GET /`, `GET /health` and `HEAD /health` skip both tiers with `@SkipThrottle` (`file:src/app/controllers/app.controller.ts`, `file:src/infrastructure/api/health/controllers/health.controller.ts`), so probes stay available and never consume a client budget. No business handler is exempt.
 - Below the limit, responses carry `X-RateLimit-Limit`, `X-RateLimit-Remaining` and `X-RateLimit-Reset` for the `default` tier and the `-sustained` variants for the second tier; reset values are seconds until reset, not epoch timestamps. Cross-origin browser JavaScript cannot read those headers: `X-Request-Id` is the only exposed response header, and `X-RateLimit-*` and `Retry-After` stay unexposed.
 - A blocked request is an infrastructure `HttpException` carrying the shared body `{ "statusCode": 429, "error": "Too Many Requests", "message": "Too many requests", "errorCode": "too-many-requests" }` and one plain `Retry-After` in seconds; the library's suffixed retry headers are suppressed (`file:src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard.ts`). `GlobalExceptionFilter` forwards the body unchanged and the response stays `no-store`. `too-many-requests` is a stable infrastructure code and is **not** part of the domain-error mapping table.
-- Counters live in process memory only: no MongoDB collection, no repository port, no persistence, and no logging of IPs, hashes, keys or counters. A restart clears every counter, and the limits apply per instance.
+- Counters live in process memory only: no MongoDB collection, no repository port, no persistence, and no logging of IPs, hashes, keys or counters. A blocked request emits the structured `request.throttled` event with the route pattern and retry delay only. A restart clears every counter, and the limits apply per instance.
 - `/docs`, `/docs-json`, `/public/**` and CORS preflight sit outside the Nest controller guard chain: they are **not** rate limited by this guard and would need a separate edge control.
 
 ## Request correlation
@@ -138,9 +138,28 @@ Swagger is enabled unconditionally: `setupSwaggerModule(app)` runs at bootstrap 
 
 Logging is pino via `nestjs-pino` (`file:src/app/app.module.ts`, `file:src/app/helpers/logger.helpers.ts`): pretty-printed in development, plain JSON in production, with `bufferLogs` and the pino logger installed at bootstrap (`file:src/infrastructure/api/server/server.ts`).
 
-The intended policy is that log lines never carry secrets or personal data, and that the API keys are removed from `process.env` at boot. **That policy is not enforced by configuration today.** `getLoggerConfiguration` only sets the transport, so `pino-http` runs with its defaults: request logging is enabled and the default request serializer emits the request headers, the client address and port, and the `user-agent`. No `redact` or custom serializer is configured. This is recorded as a known limitation below; treat production logs as sensitive until it is fixed.
+The policy is enforced by configuration. `getLoggerConfiguration` installs an allow-list request serializer, an allow-list response serializer and a `redact` block; the transport switch is unchanged.
 
-Unknown errors and response serialization failures are logged by exception class only — `Error.isError(exception) ? exception.constructor.name : "NonErrorThrown"` — so an exception message that embeds a connection string, a payload fragment or a route with a user-supplied segment never reaches the log stream (`file:src/app/filters/global-exception/global-exception.filter.ts`). The `pino-http` request-serializer limitation above is a separate defect and remains open.
+- A normal request emits one completion line with the request ID, the method, the path without its query string, the status code and the response time. It never carries a header, the client address or port, the user-agent, the request body or a query value.
+- `redact` censors every `headers` map at depths 0–2 and the credential names `authorization`, `cookie`, `apiKey`, `gameKey`, `token`, `password`, `secret`, `apiKeyHash` and `hmacSecret` at depths 0–2, plus `remoteAddress` and `remotePort`. It is the second layer: the serializer is the primary control for the automatic request line, and redaction covers a future manual `{ req }`, `{ request }` or credential-field log.
+- Unknown errors and response serialization failures emit `request.error` with the exception class and the V8 frame lines of its stack. The stack header, which embeds the exception message, is dropped, so a message that contains a connection string, a payload fragment or a user-supplied route segment never reaches the log stream (`file:src/app/filters/global-exception/global-exception.filter.ts`, `file:src/app/filters/global-exception/helpers/error-stack/error-stack.helpers.ts`).
+- Logs written before the fix is deployed may contain request metadata and credential headers. Within 24 hours of each deploy, rotate `API_KEY_HMAC_SECRET`, `ADMIN_API_KEY` and `GAME_API_KEY` and purge or expire those logs; this is a deployment action, not an application setting.
+
+### Structured security events
+
+The application emits four allow-listed events. Each record also carries the pino request binding (`req.id`, `req.method`, `req.url` without query) and the logger context.
+
+| Event | Level | Fields | Emitted when |
+|---|---|---|---|
+| `auth.failed` | `warn` | `status` (401), `route`, `audience` (`admin`/`game`), `reason` (`missing`/`invalid`/`unknown`) | the API-key guard rejects a missing, invalid or unexpectedly failing key |
+| `request.validation.failed` | `warn` | `status` (400), `route`, `issueCount` | the Zod validation pipe rejects a payload |
+| `request.throttled` | `warn` | `status` (429), `route`, `retryAfterSeconds` | the rate limiter blocks a request |
+| `request.error` | `error` | `status` (500), `route`, `errorClass`, `stack` (frame lines only, omitted when absent) | an unexpected exception reaches the generic 500 |
+
+- `route` is the matched Fastify route template, for example `/questions/:id`, or the literal `unknown` when the request did not match a route. It never contains a path-parameter value or a query string.
+- No event carries the API key, a header, the request body, a query value, a path-parameter value, a client address or a user-agent.
+- `request.throttled` is tier-agnostic: the library does not expose the tier name at the rejection point, and its storage key and tracker are never logged.
+- Explicit 5xx `HttpException`s, the `503` handler timeout, `404`/`409` responses and Fastify body-parser `400`s do not emit a security event; only the generic unknown-error branch emits `request.error`.
 
 ## Error tracking
 
@@ -158,8 +177,7 @@ Unexpected server errors and process crashes are reported to a Sentry SaaS proje
 - #1428 — Fastify's 15-second handler timeout does not bound body-bearing requests (POST/PATCH), so those handlers have no routed-handler deadline. The mechanism and the tracked fix are in `docs/operations.md`.
 - **Some transport-level responses bypass the application headers.** Fastify's low-level `408` is written over the raw socket before the request hooks and before `GlobalExceptionFilter` (`docs/operations.md`), so it carries no security header, no `Cache-Control` and no `Permissions-Policy`. A router-level `400`/`414` answer also skips the request hooks: the adapter writes the Nest security headers on that path, but the response carries no `Permissions-Policy`, no `Cache-Control` and no `Vary`. An edge-owned policy is the only remaining way to cover the rest.
 - **`Strict-Transport-Security` (HSTS) is emitted statically, including on direct plain-HTTP responses.** The proxy peer is now trusted for client-address resolution, but the security-header hook still writes a static and `includeSubDomains`/`preload`-free `max-age=31536000` value and does not gate it on `request.protocol`. The public path terminates TLS at the proxy, public HTTP is redirected to HTTPS, and the operator rollout publishes the API port on host loopback only. Revisit if the app listener becomes publicly reachable over HTTP or a scheme-gated policy is adopted.
-- **Request logging retains sensitive request metadata.** `pino-http` is installed with its defaults (`file:src/app/helpers/logger.helpers.ts`): request logging is enabled and the default serializer emits every request's headers, client address and port, and `user-agent`; no `redact` or custom serializer exists. Treat the logs as sensitive: the specific credential exposed by the default serializer is intentionally not described here while the defect is unpatched. Fix by disabling auto-logging or redacting the sensitive fields, then update this document.
 - **A second uncaught exception during the tracker shutdown window is printed raw to stderr.** When a second exception arrives while the first Sentry client close is pending (bounded to two seconds), the SDK's `logAndExitProcess` bypasses the application `onFatalError` and writes the raw error to stderr. It is not sent to the tracker; owning the process handler is the tracked follow-up.
 - **No `SECURITY.md`.** The repository has no security policy file yet; private vulnerability reporting is enabled on GitHub.
 
-The external-client slice of #1263 is complete: client identity behind the proxy and the request-ID contract are documented above. The remaining external-client work is per-player identity for the `web-game` and `web-admin` server-to-server callers, which the API cannot derive from the Docker service network, and the `pino-http` redaction gap tracked by #1332/#1343.
+The external-client slice of #1263 is complete: client identity behind the proxy and the request-ID contract are documented above. The remaining external-client work is per-player identity for the `web-game` and `web-admin` server-to-server callers, which the API cannot derive from the Docker service network.

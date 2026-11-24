@@ -5,6 +5,7 @@ import { AdminApiKeyGuard } from "@src/infrastructure/api/auth/providers/guards/
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
+import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
 import type { ExecutionContext } from "@nestjs/common";
 import type { MockInstance } from "vitest";
@@ -52,6 +53,7 @@ describe(AdminApiKeyGuard, () => {
         fakeExecutionContext,
         mocks.services.appConfig,
         "admin",
+        getMockedLoggerInstance(),
       );
     });
   });

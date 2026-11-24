@@ -6,8 +6,24 @@ import { canActivateApiKeyGuardHandler, createApiKeyValidator, hashApiKey, valid
 import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
+import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
 import type { ExecutionContext } from "@nestjs/common";
+
+function createFakeExecutionContext(apiKey?: string, route?: string): ExecutionContext {
+  const request = {
+    headers: {
+      [API_KEY_HEADER]: apiKey,
+    },
+    routeOptions: route === undefined ? undefined : { url: route },
+  };
+
+  return {
+    switchToHttp: (): unknown => ({
+      getRequest: (): unknown => request,
+    }),
+  } as unknown as ExecutionContext;
+}
 
 describe("Auth Helpers", () => {
   describe(hashApiKey, () => {
@@ -82,9 +98,11 @@ describe("Auth Helpers", () => {
 
   describe(canActivateApiKeyGuardHandler, () => {
     let appConfigService: ReturnType<typeof createMockedAppConfigService>;
+    let logger: ReturnType<typeof getMockedLoggerInstance>;
 
     beforeEach(() => {
       appConfigService = createMockedAppConfigService();
+      logger = getMockedLoggerInstance();
     });
 
     it.each<{ test: string; authType: "admin" | "game"; apiKey: string }>([
@@ -99,54 +117,119 @@ describe("Auth Helpers", () => {
         apiKey: "valid-game-api-key-of-sufficient-length",
       },
     ])("$test", ({ authType, apiKey }) => {
-      const fakeContext = {
-        switchToHttp: (): unknown => ({
-          getRequest: (): unknown => ({
-            headers: {
-              [API_KEY_HEADER]: apiKey,
-            },
-          }),
-        }),
-      } as unknown as ExecutionContext;
-      const isValid = canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, authType);
+      const isValid = canActivateApiKeyGuardHandler(createFakeExecutionContext(apiKey), appConfigService as unknown as AppConfigService, authType, logger);
 
       expect(isValid).toBeTruthy();
+    });
+
+    it("should not emit an auth failed event when the API key is valid.", () => {
+      canActivateApiKeyGuardHandler(createFakeExecutionContext("valid-admin-api-key-of-sufficient-length"), appConfigService as unknown as AppConfigService, "admin", logger);
+
+      expect(logger.warn).not.toHaveBeenCalled();
     });
 
     it("should throw UnauthorizedException with error message when API key is invalid for admin auth type and error is type Error.", () => {
       vi.spyOn(appConfigService.authenticationConfig.admin, "apiKeyValidator").mockImplementation(() => {
         throw new InvalidApiKeyError();
       });
-
-      const fakeContext = {
-        switchToHttp: (): unknown => ({
-          getRequest: (): unknown => ({
-            headers: {
-              [API_KEY_HEADER]: "invalid-api-key",
-            },
-          }),
-        }),
-      } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Invalid API key");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "admin")).toThrow(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(
+        createFakeExecutionContext("invalid-api-key"),
+        appConfigService as unknown as AppConfigService,
+        "admin",
+        logger,
+      )).toThrow(expectedError);
     });
 
     it("should throw UnauthorizedException with generic message when API key is invalid for game auth type and error is not type Error.", () => {
       vi.spyOn(appConfigService.authenticationConfig.game, "apiKeyValidator").mockThrow("Unexpected error");
-
-      const fakeContext = {
-        switchToHttp: (): unknown => ({
-          getRequest: (): unknown => ({
-            headers: {
-              [API_KEY_HEADER]: "invalid-api-key",
-            },
-          }),
-        }),
-      } as unknown as ExecutionContext;
       const expectedError = new UnauthorizedException("Unauthorized");
 
-      expect(() => canActivateApiKeyGuardHandler(fakeContext, appConfigService as unknown as AppConfigService, "game")).toThrow(expectedError);
+      expect(() => canActivateApiKeyGuardHandler(
+        createFakeExecutionContext("invalid-api-key"),
+        appConfigService as unknown as AppConfigService,
+        "game",
+        logger,
+      )).toThrow(expectedError);
+    });
+
+    it("should emit the auth failed event with the invalid reason when the admin API key is invalid.", () => {
+      vi.spyOn(appConfigService.authenticationConfig.admin, "apiKeyValidator").mockImplementation(() => {
+        throw new InvalidApiKeyError();
+      });
+
+      try {
+        canActivateApiKeyGuardHandler(createFakeExecutionContext("invalid-api-key", "/admin/questions"), appConfigService as unknown as AppConfigService, "admin", logger);
+      } catch(error) {
+        void error;
+      }
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "auth.failed",
+        status: 401,
+        route: "/admin/questions",
+        audience: "admin",
+        reason: "invalid",
+      }, "API key authentication failed");
+    });
+
+    it("should emit the auth failed event with the missing reason when the API key is missing.", () => {
+      vi.spyOn(appConfigService.authenticationConfig.game, "apiKeyValidator").mockImplementation(() => {
+        throw new MissingApiKeyError();
+      });
+
+      try {
+        canActivateApiKeyGuardHandler(createFakeExecutionContext(undefined, "/games/:id/questions"), appConfigService as unknown as AppConfigService, "game", logger);
+      } catch(error) {
+        void error;
+      }
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "auth.failed",
+        status: 401,
+        route: "/games/:id/questions",
+        audience: "game",
+        reason: "missing",
+      }, "API key authentication failed");
+    });
+
+    it("should emit the auth failed event with the unknown reason when the validator throws an unexpected error.", () => {
+      vi.spyOn(appConfigService.authenticationConfig.admin, "apiKeyValidator").mockThrow(new TypeError("Unexpected validator error"));
+
+      try {
+        canActivateApiKeyGuardHandler(createFakeExecutionContext("invalid-api-key", "/admin/questions"), appConfigService as unknown as AppConfigService, "admin", logger);
+      } catch(error) {
+        void error;
+      }
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "auth.failed",
+        status: 401,
+        route: "/admin/questions",
+        audience: "admin",
+        reason: "unknown",
+      }, "API key authentication failed");
+    });
+
+    it("should emit the unknown route when the request carries no route options.", () => {
+      vi.spyOn(appConfigService.authenticationConfig.admin, "apiKeyValidator").mockImplementation(() => {
+        throw new InvalidApiKeyError();
+      });
+
+      try {
+        canActivateApiKeyGuardHandler(createFakeExecutionContext("invalid-api-key"), appConfigService as unknown as AppConfigService, "admin", logger);
+      } catch(error) {
+        void error;
+      }
+
+      expect(logger.warn).toHaveBeenCalledWith({
+        event: "auth.failed",
+        status: 401,
+        route: "unknown",
+        audience: "admin",
+        reason: "invalid",
+      }, "API key authentication failed");
     });
   });
 });

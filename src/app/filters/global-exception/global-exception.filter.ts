@@ -23,9 +23,11 @@ import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/erro
 import { captureServerError } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
 import { GENERIC_INTERNAL_SERVER_ERROR_BODY, NON_ERROR_THROWN, SENTRY_CAPTURE_FAILED_LOG_MESSAGE, UNKNOWN_SENTRY_CONTEXT_VALUE } from "@app/filters/global-exception/constants/global-exception.constants";
+import { getErrorStackFrames } from "@app/filters/global-exception/helpers/error-stack/error-stack.helpers";
 
 import { getDerivedErrorCodeFromClassName } from "@shared/infrastructure/http/errors/helpers/errors.helpers";
 import { applyNoStoreResponseHeadersToFastifyReply, applyNoStoreResponseHeadersToServerResponse } from "@shared/infrastructure/helpers/response-headers/response-headers.helpers";
+import { getSecurityEventRoute, logRequestErrorEvent, logRequestValidationFailedEvent } from "@shared/infrastructure/helpers/security-events/security-events.helpers";
 
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
@@ -36,7 +38,7 @@ import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/ques
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
-import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
+import type { ArgumentsHost, ExceptionFilter, LoggerService } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
 
 import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
@@ -47,8 +49,8 @@ import type { SentryReportableRequest } from "@app/filters/global-exception/glob
  * Known Fastify body-parser and handler-timeout errors are mapped to curated 400, 413, 415 and 503 envelopes, keyed only on
  * their Fastify error code; Zod validation errors and unrelated `HttpException`s are forwarded as they are; a response
  * serialization failure is reported and answered with the generic 500; known domain errors are mapped to 404, 400 or 409
- * through a class-name table; everything else is reported to the error tracker, logged by class name only and answered with a
- * 500 that never exposes the original message.
+ * through a class-name table; everything else is reported to the error tracker, emitted as a structured `request.error`
+ * event with a frames-only stack and answered with a 500 that never exposes the original message.
  */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -90,7 +92,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(exception.getStatus()).send(exception.getResponse());
   }
 
-  private static sendZodValidationException(exception: ZodValidationException, response: FastifyReply | ServerResponse): void {
+  private static sendZodValidationException(
+    exception: ZodValidationException,
+    response: FastifyReply | ServerResponse,
+    logger: LoggerService,
+    request: SentryReportableRequest,
+  ): void {
     const zodError = exception.getZodError();
     const validationDetails = zodError instanceof ZodError ? zodError.issues : [];
     const badRequestException = new BadRequestException({
@@ -98,6 +105,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message: "Invalid request payload",
       error: "Bad Request",
       validationDetails,
+    });
+
+    logRequestValidationFailedEvent(logger, {
+      route: getSecurityEventRoute(request),
+      issueCount: validationDetails.length,
     });
 
     this.sendNestHttpException(badRequestException, response);
@@ -152,11 +164,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   /**
    * Writes the response for the first matching branch and never rethrows.
    *
-   * A mapped domain error keeps its message and gains an error code derived from its class name; a response serialization failure or an unknown error is reported to the error tracker, logged by class name only and replaced by a generic 500.
+   * A Zod validation failure emits `request.validation.failed`; a mapped domain error keeps its message and gains an
+   * error code derived from its class name; a response serialization failure or an unknown error is reported to the
+   * error tracker, emitted as a structured `request.error` event with a frames-only stack and replaced by a generic 500.
    */
   public catch(exception: unknown, host: ArgumentsHost): void {
     const httpArgumentsHost = host.switchToHttp();
     const response = httpArgumentsHost.getResponse<FastifyReply | ServerResponse>();
+    const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
     const fastifyErrorHttpException = GlobalExceptionFilter.getFastifyErrorHttpException(exception);
 
     if (fastifyErrorHttpException) {
@@ -166,14 +181,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof ZodValidationException) {
-      GlobalExceptionFilter.sendZodValidationException(exception, response);
+      GlobalExceptionFilter.sendZodValidationException(exception, response, this.logger, request);
 
       return;
     }
 
     if (exception instanceof ZodSerializationException) {
-      const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
-
       this.sendUnknownException(exception, request, response);
 
       return;
@@ -193,14 +206,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    const request = httpArgumentsHost.getRequest<SentryReportableRequest>();
-
     this.sendUnknownException(exception, request, response);
   }
 
   private sendUnknownException(exception: unknown, request: SentryReportableRequest, response: FastifyReply | ServerResponse): void {
-    const errorClass = Error.isError(exception) ? exception.constructor.name : NON_ERROR_THROWN;
-    this.logger.error(errorClass);
+    const errorInstance = Error.isError(exception) ? exception : undefined;
+    const errorClass = errorInstance ? errorInstance.constructor.name : NON_ERROR_THROWN;
+    const stack = errorInstance ? getErrorStackFrames(errorInstance) : undefined;
+    logRequestErrorEvent(this.logger, {
+      route: getSecurityEventRoute(request),
+      errorClass,
+      stack,
+    });
     const sentryErrorContext = {
       errorClass,
       route: GlobalExceptionFilter.getSentryContextValue(request.routeOptions?.url),
