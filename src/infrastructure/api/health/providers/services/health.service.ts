@@ -29,8 +29,8 @@ export class HealthService {
   public async checkAppHealth(): Promise<HealthCheckResult> {
     try {
       return await this.healthCheckService.check([
-        async() => this.checkMongooseConnection(),
-        async() => this.checkGoatItDocs(),
+        async(): Promise<HealthIndicatorResult<typeof MONGOOSE_HEALTH_KEY>> => this.checkMongooseConnection(),
+        async(): Promise<HealthIndicatorResult<typeof DOCS_ENDPOINT_HEALTH_KEY>> => this.checkGoatItDocs(),
       ]);
     } catch(error) {
       if (error instanceof ServiceUnavailableException) {
