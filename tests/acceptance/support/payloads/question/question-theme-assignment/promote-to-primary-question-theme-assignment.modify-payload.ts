@@ -1,8 +1,6 @@
-type PromoteToPrimaryQuestionThemeAssignmentModifyPayload = {
-  isPrimary: boolean;
-};
+import type { QuestionThemeAssignmentModificationDto } from "@question/application/dto/question-theme-assignment-modification/question-theme-assignment-modification.dto.shape";
 
-function buildPromoteToPrimaryQuestionThemeAssignmentModifyPayload(): PromoteToPrimaryQuestionThemeAssignmentModifyPayload {
+function buildPromoteToPrimaryQuestionThemeAssignmentModifyPayload(): QuestionThemeAssignmentModificationDto {
   return { isPrimary: true };
 }
 

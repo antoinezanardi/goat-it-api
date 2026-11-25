@@ -13,11 +13,11 @@ runs:
     - name: Install project 📦
       uses: ./.github/actions/install-project
 
+    - name: Check Oxlint rules inventory and linter option parity 🔗
+      shell: bash
+      run: pnpm run lint:oxlint:check-rules
+
     - name: Check and lint code 🔍
       id: lint
       shell: bash
       run: pnpm run lint
-
-    - name: Check Oxlint rules inventory and linter option parity 🔗
-      shell: bash
-      run: pnpm run lint:oxlint:check-rules
