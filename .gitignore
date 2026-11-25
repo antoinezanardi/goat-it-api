@@ -21,9 +21,9 @@ lerna-debug.log*
 Thumbs.db
 
 # dotenv environment variable files
-.env
-.env.development
-.env.production
+.env*
+!env/.env.example
+!env/.env.test
 
 # temp directory
 .temp

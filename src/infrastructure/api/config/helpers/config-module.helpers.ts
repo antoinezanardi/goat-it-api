@@ -1,6 +1,6 @@
 import { ConfigModule } from "@nestjs/config";
 
-import { getEnvFilePath, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { getEnvFileOptions, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
 
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
@@ -42,7 +42,7 @@ const APP_ENV_STORE = createAppEnvStore();
 const APP_CONFIG_MODULE_READY = ConfigModule.forRoot({
   isGlobal: true,
   validate: APP_ENV_STORE.validate,
-  envFilePath: getEnvFilePath(),
+  ...getEnvFileOptions(),
 });
 
 /**

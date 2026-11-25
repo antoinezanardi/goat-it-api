@@ -5,6 +5,17 @@
   ],
   "rangeStrategy": "bump",
   "pinDigests": true,
+  "packageRules": [
+    {
+      "description": "Track pinned apk packages installed in the production Dockerfile. Keep the Alpine branch aligned with the Node base image.",
+      "matchFileNames": ["Dockerfile"],
+      "matchDatasources": ["apk"],
+      "matchPackageNames": ["tini"],
+      "registryUrls": [
+        "https://dl-cdn.alpinelinux.org/alpine?branch=v3.24&components=main,community&arch=x86_64"
+      ]
+    }
+  ],
   "minimumReleaseAge": "3 days",
   "osvVulnerabilityAlerts": true,
   "assignees": [

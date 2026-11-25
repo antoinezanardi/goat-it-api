@@ -78,7 +78,7 @@ Per-task agents (implementers and other task agents) run focused checks only: sc
 run the full `lint:fix`, `test:unit:cov`, `test:mutation` or `test:acceptance` suite; the gatekeeper
 owns that. Never claim "done" before the full gate passes.
 
-> Gates 4 (mutation) and 5 (acceptance) are CI/post-commit gates. Pre-commit hooks run: `typecheck` → `validate:branch-name` → `lint:staged:fix` → `check:workflows:expressions` → `test:unit:staged`.
+> Gates 4 (mutation) and 5 (acceptance) are CI/post-commit gates. Pre-commit hooks run: `typecheck` → `validate:branch-name` → `lint:staged:fix` → `check:workflows:expressions` → `check:tracked-env-files` → `test:unit:staged`.
 
 **Incremental test state must be saved, never restored.** Gate 4 rewrites `tests/mutation/incremental/incremental.json` (Stryker incremental state, committed on purpose under `tests/mutation/`). The file produced by a gate run MUST stay in the working tree and be reported with the change so the user can commit it. Never revert it with `git checkout --`, `git restore`, `rm`, or by copying an older blob back — this also applies after gate 5 (acceptance) has run. A large diff is expected (test-ID renumbering); report its size with `git diff --stat` instead of discarding it.
 
@@ -201,7 +201,7 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 ## Git / commit / PR expectations
 
 - **Never commit unless the user explicitly asks for it.** Do not create commits autonomously.
-- Do not commit `.env.*` files with real secrets (`.env.example` is safe).
+- Do not commit `.env.*` files with real secrets. `.gitignore` ignores every `.env*` path at any depth and re-includes only `env/.env.example` and `env/.env.test`; a forcing `git add -f` is not safe.
 - Husky pre-commit hooks are active; never bypass with `--no-verify`.
 - Conventional commits enforced by commitlint: `type(scope): message`.
 - Validate branch names: `pnpm run validate:branch-name`.

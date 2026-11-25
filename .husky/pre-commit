@@ -12,4 +12,5 @@ $PKG_CMD run typecheck
 $PKG_CMD run validate:branch-name
 $PKG_CMD run lint:staged:fix
 $PKG_CMD run check:workflows:expressions
+$PKG_CMD run check:tracked-env-files
 $PKG_CMD run test:unit:staged

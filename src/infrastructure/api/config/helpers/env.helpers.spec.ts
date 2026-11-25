@@ -1,5 +1,5 @@
 import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
-import { getEnvFilePath, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
+import { getEnvFileOptions, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
 import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
@@ -836,26 +836,31 @@ describe("APP_ENV_SCHEMA Shape", () => {
   });
 });
 
-describe(getEnvFilePath, () => {
+describe(getEnvFileOptions, () => {
   const originalEnv = process.env.NODE_ENV;
 
   afterEach(() => {
     process.env.NODE_ENV = originalEnv;
   });
 
+  it("should ignore the env file when NODE_ENV is 'production'.", () => {
+    process.env.NODE_ENV = "production";
+
+    expect(getEnvFileOptions()).toStrictEqual({ ignoreEnvFile: true });
+  });
+
   it("should return 'env/.env' when NODE_ENV is not set.", () => {
     delete process.env.NODE_ENV;
 
-    expect(getEnvFilePath()).toBe("env/.env");
+    expect(getEnvFileOptions()).toStrictEqual({ envFilePath: "env/.env" });
   });
 
   it.each<[string, string]>([
     ["development", "env/.env.development"],
     ["test", "env/.env.test"],
-    ["production", "env/.env"],
   ])("should return the expected path when NODE_ENV is '%s'.", (nodeEnv, expected) => {
     process.env.NODE_ENV = nodeEnv;
 
-    expect(getEnvFilePath()).toBe(expected);
+    expect(getEnvFileOptions()).toStrictEqual({ envFilePath: expected });
   });
 });

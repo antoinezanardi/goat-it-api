@@ -92,8 +92,10 @@ Bucket separation is asserted by the `@rate-limit-429` acceptance scenario, whic
 The production stage of the `Dockerfile` probes the process-liveness endpoint with a real GET every 30 seconds, with a 5-second timeout, 3 retries and a 10-second start period:
 
 ```text
-GET http://localhost:${SERVER_PORT}/
+GET http://127.0.0.1:${SERVER_PORT}/
 ```
+
+The probe targets the IPv4 loopback because the server binds `0.0.0.0`; Alpine resolves `localhost` to `::1` first, which the IPv4 listener does not accept.
 
 This is intentionally **liveness**, not readiness: the container becomes unhealthy only when the Node process stops answering. A MongoDB or Swagger outage does not mark the container unhealthy and does not trigger a restart on platforms that restart unhealthy containers. `/health` remains the readiness probe for load balancers, orchestrators and external monitors.
 
@@ -104,6 +106,8 @@ If dependency-based restarts are preferred over keeping a healthy process alive 
 `src/infrastructure/api/server/server.ts` calls `app.enableShutdownHooks()`. On `SIGTERM`/`SIGINT`, Nest runs application-shutdown hooks; `@nestjs/mongoose` closes the MongoDB connection as part of that lifecycle.
 
 Docker sends `SIGTERM` and waits for the container to exit before sending `SIGKILL`. The Linux default stop grace period is 10 seconds. If the deployment runtime needs more time, set it outside this repository, for example `stop_grace_period: 30s` in Compose or `docker stop --time 30 <container>`. `HEALTHCHECK` and `STOPSIGNAL` do not configure the stop grace period.
+
+The production image carries its own init: `ENTRYPOINT [ "/sbin/tini", "--" ]` makes `tini` PID 1 and runs `node` as its child, so `SIGTERM` is forwarded to Node and any process re-parented to PID 1 (healthcheck probes, `docker exec` shells, a future child process) is reaped instead of accumulating as a zombie. Do **not** add `docker run --init` or `init: true` in front of this image: Docker's `docker-init` is itself tini, so both together nest two inits and make the inner one log a reaper warning on every start. `STOPSIGNAL` is the Docker default `SIGTERM`, declared explicitly in the `Dockerfile`. The image pins `tini` to the Alpine package version (`tini=0.19.0-r3`); Renovate keeps that pin current.
 
 ## Request, handler and database time bounds
 

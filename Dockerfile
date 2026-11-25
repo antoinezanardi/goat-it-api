@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:26.13.1-alpine AS base
+FROM --platform=$BUILDPLATFORM node:26.13.1-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS base
 LABEL maintainer="Antoine ZANARDI"
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -59,7 +59,9 @@ ENV NODE_ENV="production"
 
 RUN pnpm prune --prod
 
-FROM node:26.13.1-alpine AS production
+FROM node:26.13.1-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS production
+
+RUN apk add --no-cache tini=0.19.0-r3
 
 USER node
 
@@ -74,6 +76,9 @@ COPY --chown=node:node --from=build /app/dist dist/
 COPY --chown=node:node public/ public/
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 -O /dev/null http://localhost:${SERVER_PORT}/ || exit 1
+  CMD wget --no-verbose --tries=1 -O /dev/null http://127.0.0.1:${SERVER_PORT}/ || exit 1
 
+STOPSIGNAL SIGTERM
+
+ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "node", "dist/main.js" ]

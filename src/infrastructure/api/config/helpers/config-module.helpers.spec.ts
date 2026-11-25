@@ -57,6 +57,6 @@ describe("APP_CONFIG_MODULE_READY promise", () => {
   it("should expose the validated environment when the config module is ready.", async() => {
     await APP_CONFIG_MODULE_READY;
 
-    expect(getAppEnv()).toHaveProperty("SERVER_PORT");
+    expect(getAppEnv().SERVER_PORT).toBe(4242);
   });
 });
