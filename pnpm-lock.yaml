@@ -188,7 +188,7 @@ overrides:
   '@devframes/agentic>@modelcontextprotocol/server': ^2.4.0
   '@eslint/css-tree>source-map-js': ^1.2.4
   '@semantic-release/github>undici': ^8.13.1
-  '@swc/cli>piscina': ^4.9.4
+  '@swc/cli>piscina': ^5.3.2
   '@xhmikosr/downloader>@xhmikosr/decompress': ^11.1.4
   cosmiconfig@8>js-yaml: ^5.5.0
   cosmiconfig@9>js-yaml: ^4.3.2
@@ -5383,8 +5383,9 @@ packages:
     resolution: {integrity: sha512-r34yH/GlQpKZbU1BvFFqOjhISRo1MNx1tWYsYvmj6KIRHSPMT2+yHOEb1SG6NMvRoHRF0a07kCOox/9yakl1vg==}
     hasBin: true
 
-  piscina@4.9.4:
-    resolution: {integrity: sha512-RyBDr2VheQ8ZfH3N8SzQZHztqVyOtadTwLnUYof6gdj5161/eu2wNhCbGl5GHnNKDpnkicJYpKtL2J+y/gk6XA==}
+  piscina@5.3.2:
+    resolution: {integrity: sha512-vv7l/mM7B9WgrhDaudIqv1x6v4LOBRYYmpWGdWushhpbCmVHp11sUB2v4hj1CAeTGXVxuZFz6xOU1RalAiPKfQ==}
+    engines: {node: '>=20.x'}
 
   pkce-challenge@5.0.1:
     resolution: {integrity: sha512-wQ0b/W4Fr01qtpHlqSqspcj3EhBvimsdh0KlHhH8HRZnMsEa0ea2fTULOXOS9ccQr3om+GcGRk4e+isrZWV8qQ==}
@@ -8436,7 +8437,7 @@ snapshots:
       '@xhmikosr/bin-wrapper': 14.2.3(supports-color@11.0.0)
       commander: 8.3.0
       minimatch: 9.0.9
-      piscina: 4.9.4
+      piscina: 5.3.2
       semver: 7.8.5
       slash: 3.0.0
       source-map: 0.7.6
@@ -11208,7 +11209,7 @@ snapshots:
       sonic-boom: 4.2.1
       thread-stream: 4.2.0
 
-  piscina@4.9.4:
+  piscina@5.3.2:
     optionalDependencies:
       '@napi-rs/nice': 1.1.1
 
