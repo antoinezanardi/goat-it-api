@@ -60,6 +60,12 @@ permission:
     "fd *": "allow"
     "docker info *": "allow"
     "docker ps *": "allow"
+    "* .env": "ask"
+    "* .env.*": "ask"
+    "*/.env": "ask"
+    "*/.env.*": "ask"
+    "*.env": "ask"
+    "cat env/.env.example": "allow"
   task: deny
   webfetch: deny
 ---

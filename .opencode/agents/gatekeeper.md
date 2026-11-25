@@ -25,6 +25,12 @@ permission:
     "tail *": "allow"
     "echo *": "allow"
     "wc *": "allow"
+    "* .env": "ask"
+    "* .env.*": "ask"
+    "*/.env": "ask"
+    "*/.env.*": "ask"
+    "*.env": "ask"
+    "cat env/.env.example": "allow"
   task: deny
   webfetch: deny
 ---

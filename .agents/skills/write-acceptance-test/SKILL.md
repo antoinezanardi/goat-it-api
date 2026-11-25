@@ -1,6 +1,6 @@
 ---
 name: write-acceptance-test
-description: "Use when a feature needs new or updated end-to-end coverage to write or complete a Cucumber/Gherkin acceptance scenario with its fixtures, payloads and step definitions per docs/acceptance-tests.md."
+description: "Use when a feature needs new or updated end-to-end coverage, or a new domain needs acceptance fixtures or payloads, to write or complete its Cucumber/Gherkin assets per docs/acceptance-tests.md."
 disable-model-invocation: true
 ---
 

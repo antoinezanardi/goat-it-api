@@ -1,6 +1,6 @@
 ---
 name: create-mock
-description: "Use when a repository port, use case or service needs a test double to scaffold a typed createMocked<X> factory under tests/unit/utils/mocks/ with the right placement, vi.fn() typing and overrides pattern."
+description: "Use when a repository port, use case or service needs a test double, to scaffold a typed createMocked<X> factory under tests/unit/utils/mocks/."
 disable-model-invocation: true
 ---
 

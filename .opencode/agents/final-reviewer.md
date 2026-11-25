@@ -8,10 +8,17 @@ steps: 300
 permission:
   edit: deny
   bash:
-    "*": "deny"
+    "*": "ask"
+    "git *": "deny"
     "git status *": "allow"
     "git log *": "allow"
-    "git branch *": "allow"
+    "git branch": "allow"
+    "git branch --list *": "allow"
+    "git branch --show-current": "allow"
+    "git branch -a": "allow"
+    "git branch -r": "allow"
+    "git branch -v": "allow"
+    "git branch -vv": "allow"
     "git diff *": "allow"
     "git ls-files *": "allow"
     "git show *": "allow"
@@ -43,11 +50,35 @@ permission:
     "find *-ok*": "deny"
     "find *-fprint*": "deny"
     "find *-fls*": "deny"
+    "rm *": "deny"
+    "rmdir *": "deny"
+    "mv *": "deny"
+    "cp *": "deny"
+    "tee *": "deny"
+    "touch *": "deny"
+    "truncate *": "deny"
+    "chmod *": "deny"
+    "chown *": "deny"
+    "ln *": "deny"
+    "install *": "deny"
+    "patch *": "deny"
+    "dd *": "deny"
+    "rsync *": "deny"
+    "mkdir *": "deny"
+    "sed *-i*": "deny"
+    "sed *--in-place*": "deny"
+    "sort *-o *": "deny"
+    "* .env": "ask"
+    "* .env.*": "ask"
+    "*/.env": "ask"
+    "*/.env.*": "ask"
+    "*.env": "ask"
+    "cat env/.env.example": "allow"
   task:
     "*": "deny"
     "explore": "allow"
     "docs-fetcher": "allow"
-  webfetch: deny
+  webfetch: ask
 ---
 
 **DO NOT COMMIT.** The user is the only one who commits. Never run `git add`, `git commit`, or `git push`. Permissions enforce this.

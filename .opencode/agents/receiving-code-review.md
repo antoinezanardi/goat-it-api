@@ -55,6 +55,12 @@ permission:
     "curl *-o *": "deny"
     "curl *--output*": "deny"
     "sed *-i*": "deny"
+    "* .env": "ask"
+    "* .env.*": "ask"
+    "*/.env": "ask"
+    "*/.env.*": "ask"
+    "*.env": "ask"
+    "cat env/.env.example": "allow"
   task:
     "*": "deny"
     "gatekeeper": "allow"
