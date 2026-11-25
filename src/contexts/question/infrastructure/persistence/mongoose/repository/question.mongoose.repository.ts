@@ -7,6 +7,7 @@ import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushe
 import { buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
 
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
 import {
@@ -49,7 +50,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
     addArrayFilterIfNonEmpty(options.excludedIds, matchStage, "_id", ids => ({ $nin: ids.map(id => new Types.ObjectId(id)) }));
     addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
     addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
-    addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+    addArrayFilterIfNonEmpty(options.themeIds, matchStage, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId, ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
     Object.assign(matchStage, shake({ isAdultContent: options.isAdultContent }));
     Object.assign(
       matchStage,

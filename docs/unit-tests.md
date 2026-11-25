@@ -338,12 +338,13 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
   - `src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.spec.ts`
   - `src/contexts/question-theme/infrastructure/persistence/mongoose/repository/question-theme.mongoose.repository.spec.ts`
 
-### Mongoose schema index tests
+### Mongoose schema declaration tests
 
-- Purpose: lock the indexes a collection owner declares and the `autoIndex` policy, without opening a database.
+- Purpose: lock the indexes a collection owner declares, the `autoIndex` policy and the paths a schema derives from a constant, without opening a database.
 - Describe label: the exported schema class, for example `describe(QuestionMongooseSchema, ...)`.
 - Assert `SCHEMA.indexes()`: map `[fields]` to compare the declared key, and read `options.unique` for a unique index.
 - Assert `SCHEMA.options.autoIndex` when the schema relies on startup builds.
+- Assert derived path sets against their source constant (for example `SCHEMA.paths` against `LOCALES`), plus each path's `instance`, `isRequired` and explicit `default` option; a locale addition must fail the spec rather than be silently stripped.
 - A schema spec locks a declaration, not a behaviour: it adds no coverage or mutation scope, per the authoritative exclusion lists in `configs/vitest/vitest.config.ts` and `configs/stryker/stryker.config.mjs`.
 - Also assert that a superseded standalone index is gone, so a redundant index is not re-added.
 
@@ -364,7 +365,7 @@ describe(QuestionMongooseSchema, () => {
 - Override every Mongoose model token registered by the module and its imports with a mock from `@mocks/...`; never call `MongooseModule.forRoot`.
 - Resolve every use case and controller by its class token. For multi-dependency use cases, assert the constructed instance received the expected dependency via bracket notation.
 - Global providers used by guards or middleware (for example `AppConfigService`) are supplied by `tests/unit/utils/helpers/nest/app-config-testing.module.ts`.
-- Declarative cross-cutting modules (app shell, auth, health, database) are imported and asserted without compiling a database connection.
+- Declarative cross-cutting modules (app shell, health, database) are imported and asserted without compiling a database connection.
 - The compile itself is the assertion that no `forwardRef` or module cycle is required.
 
 ```ts
@@ -405,6 +406,7 @@ describe(QuestionModule, () => {
   - For `*.dto.shape.spec.ts` files, `validDto` must be an **inline literal** — never a faketory call. Declare with a structural type (e.g., `let validDto: { field: type; ... };`) and assign in `beforeEach`. Negative tests use `{ ...validDto, field: badValue }` (spread copy). Remove all `@faketories/*` imports and all `as SomeDto` casts from shape spec files.
   - Prefer `DTO.parse(valid)` or `expect(() => DTO.parse(valid)).not.toThrow()` for positive tests; use `safeParse` when you need to inspect `success` / `error` details.
   - When asserting failures use `ZodError` (e.g. `expect(() => DTO.parse(bad)).toThrow(ZodError)`) and inspect `parsed.error.issues` when necessary.
+  - Every shape spec also locks its top-level unknown-key behaviour once, immediately after the positive test: response shapes (`z.strictObject`) reject extra keys (`expect(() => DTO.parse({ ...validDto, extra: 1 })).toThrow(ZodError)`), request shapes (`z.object`) strip them (`expect(DTO.parse({ ...validDto, extra: 1 })).not.toHaveProperty("extra")`).
   - Assert Zod metadata (`.meta()`) and property metadata (`DTO.shape.field.meta()`) exactly with `toStrictEqual` so OpenAPI generation expectations are maintained.
   - For refinements and small validators (slugs, mongo ids, ISO datetimes) use `it.each` to enumerate valid/invalid inputs and assert `schema.safeParse(value).success`.
 

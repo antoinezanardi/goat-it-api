@@ -27,6 +27,12 @@ describe("Question Theme Modification DTO Shape", () => {
     expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validQuestionThemeModificationDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validQuestionThemeModificationDto, extra: 1 };
+
+    expect(QUESTION_THEME_MODIFICATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   it("should pass validation when assigned empty object.", () => {
     const validEmptyDto: Record<string, unknown> = {};
 

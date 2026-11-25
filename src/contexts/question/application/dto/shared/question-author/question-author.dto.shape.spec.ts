@@ -17,6 +17,12 @@ describe("Question Author DTO Shape", () => {
     expect(() => QUESTION_AUTHOR_DTO.parse(validQuestionAuthorDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionAuthorDto, extra: 1 };
+
+    expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("role", () => {
     it.each<{
       test: string;

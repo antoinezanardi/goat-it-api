@@ -20,6 +20,12 @@ describe("App Health Details DTO Shape", () => {
     expect(() => APP_HEALTH_DETAILS_DTO.parse(validAppHealthDetailsDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validAppHealthDetailsDto, extra: 1 };
+
+    expect(() => APP_HEALTH_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe(MONGOOSE_HEALTH_KEY, () => {
     it("should pass validation when mongoose health is valid.", () => {
       const dto = { ...validAppHealthDetailsDto, [MONGOOSE_HEALTH_KEY]: validAppHealthDetailsDto[MONGOOSE_HEALTH_KEY] };

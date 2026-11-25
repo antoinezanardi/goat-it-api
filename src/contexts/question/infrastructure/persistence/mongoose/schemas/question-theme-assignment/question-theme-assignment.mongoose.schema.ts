@@ -3,8 +3,6 @@ import { Types } from "mongoose";
 
 import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.constants";
-
 @Schema({
   ...DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS,
 })
@@ -12,7 +10,6 @@ class QuestionThemeAssignmentMongooseSchema {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
   })
   public themeId!: Types.ObjectId;
 

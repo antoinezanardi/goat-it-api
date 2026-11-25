@@ -57,6 +57,12 @@ describe("Admin Question DTO Shape", () => {
     expect(() => ADMIN_QUESTION_DTO.parse(validAdminQuestionDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validAdminQuestionDto, extra: 1 };
+
+    expect(() => ADMIN_QUESTION_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("id", () => {
     it("should throw zod error when id is invalid.", () => {
       const dtoWithInvalidId = { ...validAdminQuestionDto, id: "invalid" };
