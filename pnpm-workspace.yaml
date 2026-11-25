@@ -16,7 +16,7 @@ overrides:
   '@semantic-release/github>undici': ^8.13.1
   '@swc/cli>piscina': ^4.9.4
   '@xhmikosr/downloader>@xhmikosr/decompress': ^11.1.4
-  'cosmiconfig@8>js-yaml': ^4.3.2
+  'cosmiconfig@8>js-yaml': ^5.5.0
   'cosmiconfig@9>js-yaml': ^4.3.2
   'magicast>source-map-js': ^1.2.4
   'vitest>vite': ^8.3.8
