@@ -13,7 +13,7 @@ overrides:
   '@devframes/agentic>@modelcontextprotocol/client': ^2.4.0
   '@devframes/agentic>@modelcontextprotocol/server': ^2.4.0
   '@eslint/css-tree>source-map-js': ^1.2.4
-  '@semantic-release/github>undici': ^7.30.2
+  '@semantic-release/github>undici': ^8.13.1
   '@swc/cli>piscina': ^4.9.4
   '@xhmikosr/downloader>@xhmikosr/decompress': ^11.1.4
   'cosmiconfig@8>js-yaml': ^4.3.2

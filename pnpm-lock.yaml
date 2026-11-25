@@ -187,7 +187,7 @@ overrides:
   '@devframes/agentic>@modelcontextprotocol/client': ^2.4.0
   '@devframes/agentic>@modelcontextprotocol/server': ^2.4.0
   '@eslint/css-tree>source-map-js': ^1.2.4
-  '@semantic-release/github>undici': ^7.30.2
+  '@semantic-release/github>undici': ^8.13.1
   '@swc/cli>piscina': ^4.9.4
   '@xhmikosr/downloader>@xhmikosr/decompress': ^11.1.4
   cosmiconfig@8>js-yaml: ^4.3.2
@@ -6182,9 +6182,9 @@ packages:
     resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
 
-  undici@7.30.2:
-    resolution: {integrity: sha512-mLyPQnHwUxaM/rideoK/+KL8DaAJLRl4aBCfmX444aCSLnIaomqPLtNRe2jdCYcsk5wZzXrDIQC8ZeYNRAYyIA==}
-    engines: {node: '>=20.18.1'}
+  undici@8.13.1:
+    resolution: {integrity: sha512-Kt7EaPjh0s93lJH/PmW3d5rhkcpUa6fS3jqZ7+YGxNd9L7Xy/i827xe4C2uhhq+pJebM4tQOl5AgHmW11G5Skg==}
+    engines: {node: '>=22.19.0'}
 
   unicode-emoji-modifier-base@1.0.0:
     resolution: {integrity: sha512-yLSH4py7oFH3oG/9K+XWrz1pSi3dfUrWEnInbxMfArOfc1+33BlGPQtLsOYwvdMy11AwUBetYuaRxSPqgkq+8g==}
@@ -8200,7 +8200,7 @@ snapshots:
       p-filter: 4.1.0
       semantic-release: 26.0.1(supports-color@11.0.0)
       tinyglobby: 0.2.17
-      undici: 7.30.2
+      undici: 8.13.1
       url-join: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -11993,7 +11993,7 @@ snapshots:
 
   undici@6.29.1: {}
 
-  undici@7.30.2: {}
+  undici@8.13.1: {}
 
   unicode-emoji-modifier-base@1.0.0: {}
 
