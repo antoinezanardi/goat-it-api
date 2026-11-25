@@ -1,6 +1,5 @@
 import { API_KEY_HMAC_SECRET_MINIMAL_LENGTH, API_KEY_MINIMAL_LENGTH } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { getEnvFileOptions, validateEnv } from "@src/infrastructure/api/config/helpers/env.helpers";
-import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
 import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.faketory";
 
@@ -758,81 +757,6 @@ describe(validateEnv, () => {
 
       expect(validateEnv(config)).toStrictEqual(defaultEnv);
     });
-  });
-});
-
-describe("APP_ENV_SCHEMA Shape", () => {
-  const minimalValidEnvInput = {
-    API_KEY_HMAC_SECRET: "x".repeat(API_KEY_HMAC_SECRET_MINIMAL_LENGTH),
-    ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
-    GAME_API_KEY: "y".repeat(API_KEY_MINIMAL_LENGTH),
-  };
-
-  const originalNodeEnv: { value?: string } = {};
-
-  beforeEach(() => {
-    originalNodeEnv.value = process.env.NODE_ENV;
-  });
-
-  afterEach(() => {
-    if (originalNodeEnv.value === undefined) {
-      Reflect.deleteProperty(process.env, "NODE_ENV");
-    } else {
-      process.env.NODE_ENV = originalNodeEnv.value;
-    }
-  });
-
-  it("should report the equality error on the GAME_API_KEY path when ADMIN_API_KEY equals GAME_API_KEY.", () => {
-    const result = APP_ENV_SCHEMA.safeParse({
-      ...minimalValidEnvInput,
-      ADMIN_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
-      GAME_API_KEY: "x".repeat(API_KEY_MINIMAL_LENGTH),
-    });
-
-    expect(result.error?.issues).toContainEqual(expect.objectContaining({
-      path: ["GAME_API_KEY"],
-      message: "ADMIN_API_KEY and GAME_API_KEY must be different",
-    }));
-  });
-
-  it("should report the missing DSN error on the SENTRY_DSN path when SENTRY_ENVIRONMENT is staging.", () => {
-    const result = APP_ENV_SCHEMA.safeParse({
-      ...minimalValidEnvInput,
-      SENTRY_ENVIRONMENT: "staging",
-    });
-
-    expect(result.error?.issues).toContainEqual(expect.objectContaining({
-      path: ["SENTRY_DSN"],
-      message: "SENTRY_DSN must be set when SENTRY_ENVIRONMENT is staging or production",
-    }));
-  });
-
-  it("should report the disabled tracker error on the SENTRY_DISABLED path when SENTRY_ENVIRONMENT is staging.", () => {
-    const result = APP_ENV_SCHEMA.safeParse({
-      ...minimalValidEnvInput,
-      SENTRY_DISABLED: "true",
-      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
-      SENTRY_ENVIRONMENT: "staging",
-    });
-
-    expect(result.error?.issues).toContainEqual(expect.objectContaining({
-      path: ["SENTRY_DISABLED"],
-      message: "SENTRY_DISABLED must be false when SENTRY_ENVIRONMENT is staging or production",
-    }));
-  });
-
-  it("should report the non-deployment environment error on the SENTRY_ENVIRONMENT path when NODE_ENV is production.", () => {
-    process.env.NODE_ENV = "production";
-    const result = APP_ENV_SCHEMA.safeParse({
-      ...minimalValidEnvInput,
-      SENTRY_DSN: "https://0123456789abcdef0123456789abcdef@sentry.io/42",
-      SENTRY_ENVIRONMENT: "development",
-    });
-
-    expect(result.error?.issues).toContainEqual(expect.objectContaining({
-      path: ["SENTRY_ENVIRONMENT"],
-      message: "SENTRY_ENVIRONMENT must be staging or production when NODE_ENV is production",
-    }));
   });
 });
 

@@ -28,6 +28,7 @@ export default defineConfig({
       exclude: [
         "src/**/mongoose/**/*.schema.ts",
         "src/**/*.constants.ts",
+        "src/**/*.enums.ts",
         "src/**/*.pipeline.ts",
         "src/**/*.types.ts",
         "src/**/*.commands.ts",

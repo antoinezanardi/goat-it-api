@@ -4,7 +4,6 @@ import { LOCALE_LABELS } from "@shared/domain/value-objects/locale/locale.consta
 import { LOCALE_EXAMPLES, LOCALIZED_TEXT_ENTRY_MAX_LENGTH, LOCALIZED_TEXT_ENTRY_MIN_LENGTH, LOCALIZED_TEXTS_MAX_LENGTH, LOCALIZED_TEXTS_MIN_LENGTH, LOCALIZED_TEXT_EMPTY_ERROR_MESSAGE } from "@shared/application/dto/zod/validators/localization/constants/localization.zod.validators.constants";
 
 import type { ZodObject, ZodString, ZodOptional, ZodArray } from "zod";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 function hasAtLeastOneLocaleValue(object: Record<string, unknown>): boolean {

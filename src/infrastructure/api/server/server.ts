@@ -13,7 +13,6 @@ import { getSwaggerUrl, setupSwaggerModule } from "@src/infrastructure/api/serve
 
 import type { Type } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-
 import type { FastifyTrustProxy } from "@src/infrastructure/api/server/fastify/types/fastify.types";
 
 async function bootstrap(appModule: Type<unknown>, trustProxy: FastifyTrustProxy): Promise<NestFastifyApplication> {

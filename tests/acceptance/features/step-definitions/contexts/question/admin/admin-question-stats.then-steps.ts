@@ -1,6 +1,5 @@
 import { Then } from "@cucumber/cucumber";
 
-import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 import { QUESTION_STATS_DTO } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
 import {
@@ -10,8 +9,8 @@ import {
 
 import { expectRecordFieldValues, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain questions stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {

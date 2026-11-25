@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import { isValidLocale } from "@shared/domain/value-objects/locale/helpers/locale.helpers";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import { ADMIN_QUESTION_DTO } from "@question/application/dto/admin-question/admin-question.dto.shape";
 
 import { expectQuestionAuthorDtoToMatch, expectQuestionRejectionDtoToMatch } from "@acceptance-features/step-definitions/contexts/question/public/helpers/question.steps.helpers";
@@ -15,8 +14,8 @@ import { expectAllAdminQuestionsToHaveField, expectAllAdminQuestionsToHaveThemeI
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionsCount>\d+) admin questions?$/u, function(this: GoatItWorld, countAsString: string): void {

@@ -3,7 +3,6 @@ import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { SkipThrottle } from "@nestjs/throttler";
 import { ZodResponse } from "nestjs-zod";
 
-import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 import { AppHealthNestZodDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto";
 import { HEALTH_CACHE_CONTROL_VALUE } from "@src/infrastructure/api/health/constants/health.constants";
 import { createAppHealthDtoFromHealthCheckResult } from "@src/infrastructure/api/health/mappers/health.mappers";
@@ -12,6 +11,8 @@ import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/s
 import { THROTTLER_SKIPPED_TIERS } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 
 import { ControllerPrefixes } from "@shared/infrastructure/http/controllers/controllers.enums";
+
+import type { AppHealthDto } from "@src/infrastructure/api/health/dto/app-health/app-health.dto.shape";
 
 @Controller(ControllerPrefixes.HEALTH)
 export class HealthController {

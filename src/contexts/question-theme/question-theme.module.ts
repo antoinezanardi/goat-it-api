@@ -1,5 +1,10 @@
 import { Module } from "@nestjs/common";
 
+import { createUseCaseProvider } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers";
+
+import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
+import { QuestionUsageModule } from "@question/question-usage.module";
+
 import { ArchiveQuestionThemeUseCase } from "@question-theme/application/use-cases/archive-question-theme/archive-question-theme.use-case";
 import { GetQuestionThemeStatsUseCase } from "@question-theme/application/use-cases/get-question-theme-stats/get-question-theme-stats.use-case";
 import { CreateQuestionThemeUseCase } from "@question-theme/application/use-cases/create-question-theme/create-question-theme.use-case";
@@ -11,11 +16,6 @@ import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/reposito
 import { AdminQuestionThemeController } from "@question-theme/infrastructure/http/controllers/admin-question-theme/admin-question-theme.controller";
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
 import { QuestionThemePersistenceModule } from "@question-theme/infrastructure/persistence/question-theme-persistence.module";
-
-import { createUseCaseProvider } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers";
-
-import { CountLiveQuestionsByThemeIdUseCase } from "@question/application/use-cases/count-live-questions-by-theme-id/count-live-questions-by-theme-id.use-case";
-import { QuestionUsageModule } from "@question/question-usage.module";
 
 @Module({
   imports: [

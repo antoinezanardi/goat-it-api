@@ -1,5 +1,4 @@
 import type { createApiKeyValidator } from "@src/infrastructure/api/auth/helpers/auth.helpers";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 type ServerConfigFromEnv = {

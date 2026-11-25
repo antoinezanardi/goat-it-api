@@ -1,13 +1,11 @@
 import { expect } from "expect";
 
-import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
-
 import { expectLocalizedTextFieldToBe } from "@acceptance-features/step-definitions/shared/locale/helpers/locale.steps.helpers";
+
+import type { AdminQuestionDto } from "@question/application/dto/admin-question/admin-question.dto.shape";
 import type { ADMIN_QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA, ADMIN_QUESTION_THEME_ASSIGNMENT_LABEL_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/admin/datatables/admin-question.datatables.schemas";
 import type { QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
-
 import type { z } from "zod";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 function expectAllAdminQuestionsToHaveField(

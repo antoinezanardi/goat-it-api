@@ -1,8 +1,6 @@
 import type { QUESTION_AUTHOR_ROLE_ADMIN, QUESTION_AUTHOR_ROLE_AI, QUESTION_AUTHOR_ROLE_GAME, QUESTION_CREATION_AUTHOR_ROLES, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_REJECTION_TYPES, QUESTION_CREATION_STATUSES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
-
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import type { TupleToUnion } from "type-fest";
-
 import type { TupleToEnum } from "@shared/types/enum.types";
 import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 

@@ -1,9 +1,9 @@
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { QuestionThemeAssignmentModificationError } from "@question/domain/errors/question-theme-assignment-modification/question-theme-assignment-modification.error";
 import { ensureQuestionThemeAssignmentIsModifiable } from "@question/domain/rules/question.rules";
+
 import type { QuestionThemeAssignmentModificationCommand } from "@question/application/commands/question.commands";
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**

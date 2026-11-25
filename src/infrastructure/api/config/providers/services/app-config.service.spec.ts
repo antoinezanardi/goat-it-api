@@ -10,7 +10,6 @@ import { createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, creat
 
 import type { MockInstance } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
-
 import type { AuthenticationConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 describe(AppConfigService, () => {

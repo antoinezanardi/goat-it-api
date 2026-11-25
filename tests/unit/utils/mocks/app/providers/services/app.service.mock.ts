@@ -1,7 +1,6 @@
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
-
 import { createFakeAppMetadata } from "@faketories/app/app.faketory";
 
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import type { Mock } from "vitest";
 
 type AppServiceStub = {

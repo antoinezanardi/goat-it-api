@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
-
 import { readPackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers";
+
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 /**
  * Application shell service that exposes the API metadata read from `package.json`.

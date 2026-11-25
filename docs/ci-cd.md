@@ -96,7 +96,7 @@ Never bypass the hooks with `--no-verify`.
 | `docker-builds`         | —            | Run the `.dockerignore` and Dockerfile pin guards, then build the Docker image for `linux/amd64` and `linux/arm64` (no push). |
 | `build`                 | `install`    | Typecheck, build the NestJS application and verify `dist/main.js`.                                     |
 | `build-schemas-package` | `install`    | Typecheck `@goat-it/schemas`, build it with tsdown, run a `pnpm pack` sanity check and upload `dist/`. |
-| `lint-codebase`         | `install`    | Run Oxlint, ESLint, the workflow run-body expression check and the tracked-env-file guard.              |
+| `lint-codebase`         | `install`    | Run Oxlint and ESLint, plus the Oxlint rule inventory and linter option-parity checks, the workflow run-body expression check and the tracked-env-file guard. |
 | `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` and the production license allowlist check.                 |
 | `unit-tests`            | `install`    | Run `pnpm run test:unit:cov` and export test/coverage counts.                                          |
 | `mutation-tests`        | `install`    | Run `pnpm run test:mutation:ci`, publish to the Stryker Dashboard and upload reports.                  |

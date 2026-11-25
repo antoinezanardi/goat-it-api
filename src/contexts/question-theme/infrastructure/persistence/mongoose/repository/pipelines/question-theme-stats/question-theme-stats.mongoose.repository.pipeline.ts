@@ -1,19 +1,18 @@
-import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
-
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
 import { QUESTION_MONGOOSE_COLLECTION_NAME, QUESTION_STATUS_ACTIVE, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
+
+import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
 
 // Acceptable as MongoDB query syntax — null matches missing grouped field values
 // oxlint-disable-next-line unicorn/no-null
 const FILTER_NULL_ID_STAGE = { $match: { _id: { $ne: null } } };
 
 const ROWS_TO_RECORD_STAGES = [
-  // Acceptable as MongoDB $group + $arrayToObject + $replaceRoot operator field names
+  // Acceptable as MongoDB $group + $arrayToObject + $replaceWith operator field names
   // oxlint-disable-next-line eslint/id-length, unicorn/no-null
   { $group: { _id: null, pairs: { $push: { k: "$_id", v: "$count" } } } },
-  // eslint-disable-next-line unicorn/no-keyword-prefix
-  { $replaceRoot: { newRoot: { $arrayToObject: "$pairs" } } },
+  { $replaceWith: { $arrayToObject: "$pairs" } },
 ];
 
 const QUESTION_THEME_ACTIVE_QUESTION_COUNT_LOOKUP_STAGE = {

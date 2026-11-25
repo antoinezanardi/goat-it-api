@@ -2,13 +2,6 @@ import { Controller, Get, HttpStatus, Param, Query } from "@nestjs/common";
 import { ApiOperation } from "@nestjs/swagger";
 import { ZodResponse } from "nestjs-zod";
 
-import { QuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme/question-theme.dto";
-import { createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
-import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
-import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
-import { FindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/find-question-themes-query/find-question-themes-query.dto";
-import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/constants/question-theme.constants";
-
 import { GameAuth } from "@src/infrastructure/api/auth/providers/decorators/game-auth/game-auth.decorator";
 import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 
@@ -16,8 +9,14 @@ import { createSortOptionsFromSortQueryDto } from "@shared/application/mappers/s
 import { Localization } from "@shared/infrastructure/http/decorators/localization/localization.decorator";
 import { MongoIdPipe } from "@shared/infrastructure/http/pipes/mongo/mongo-id/mongo-id.pipe";
 
-import type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
+import { QuestionThemeNestZodDto } from "@question-theme/infrastructure/http/dto/question-theme/question-theme.dto";
+import { createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
+import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
+import { FindQuestionThemesQueryNestZodDto } from "@question-theme/infrastructure/http/dto/find-question-themes-query/find-question-themes-query.dto";
+import { QUESTION_THEME_ROUTE_PREFIX } from "@question-theme/infrastructure/http/controllers/question-theme/constants/question-theme.constants";
 
+import type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 @GameAuth()

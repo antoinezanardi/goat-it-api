@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 import { createFakeQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/question/question-theme-assignment/question-theme-assignment.dto.faketory";
 import { createFakeQuestionContentDto } from "@faketories/contexts/question/dto/question/question-content/question-content.dto.faketory";
 import { createFakeQuestionAuthorDto } from "@faketories/contexts/question/dto/shared/question-author/question-author.dto.faketory";
 import { createFakeQuestionRejectionDto } from "@faketories/contexts/question/dto/shared/question-rejection/question-rejection.dto.faketory";
+
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 
 function createFakeQuestionDto(questionDto: Partial<QuestionDto> = {}): QuestionDto {
   return {

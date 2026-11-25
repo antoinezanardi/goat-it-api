@@ -1,5 +1,4 @@
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";

@@ -1,7 +1,5 @@
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { TupleToUnion } from "type-fest";
-
 import type { ExhaustiveTuple } from "@shared/types/tuple.types";
 
 const QUESTION_AUTHOR_ROLE_ADMIN = "admin";

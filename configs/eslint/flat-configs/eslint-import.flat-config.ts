@@ -59,6 +59,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
       {
         "warnOnUnassignedImports": true,
         "groups": ["builtin", "external", "internal", "parent", "sibling", "type"],
+        "pathGroupsExcludedImportTypes": ["builtin", "external", "object", "type"],
         "pathGroups": [
           { pattern: "**/*.types", group: "type", position: "after" },
           { pattern: "@package-json", group: "parent", position: "before" },
@@ -67,6 +68,7 @@ const ESLINT_IMPORT_FLAT_CONFIG: Linter.Config = {
           { pattern: "@shared/**", group: "parent", position: "after" },
           { pattern: "@configs/**", group: "parent", position: "after" },
           { pattern: "@question/**", group: "parent", position: "after" },
+          { pattern: "@question-theme/**", group: "parent", position: "after" },
           { pattern: "@unit-tests/**", group: "sibling", position: "after" },
           { pattern: "@mocks/**", group: "sibling", position: "after" },
           { pattern: "@faketories/**", group: "sibling", position: "after" },

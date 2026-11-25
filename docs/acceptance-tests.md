@@ -305,7 +305,9 @@ The registry in `tests/acceptance/support/payloads/constants/payload.constants.t
 ### Payload file conventions
 
 - Files live under `support/payloads/<domain>/<type>/<name>-<domain>.<type>-payload.ts`.
-- Payloads are built using faketories overridden with concrete, deterministic values (no `faker` randomness).
+- Payloads are built using faketories overridden with concrete, deterministic values (no `faker` randomness). Every faketory-randomised optional field must be overridden explicitly; use `applicableLocales: undefined` when the payload must stay unrestricted.
+- Each payload file exports a `build<Name>` function and a frozen constant built from it. Register the builder in `support/payloads/constants/payload-builders.constants.ts`; the registry must mirror the `PAYLOADS` coordinates.
+- `BeforeAll` runs `assertPayloadsAreDeterministic()` from `support/payloads/helpers/payload-determinism.helpers.ts`: it checks that every registered payload has a builder and rebuilds each builder 20 times, failing on any serialized difference.
 - They reference fixture entry `_id`s (e.g., `FIVE_QUESTION_THEMES_FIXTURE_SCIENCE_ENTRY._id.toString()`) to match what will be in the database.
 
 ### Overriding payload values

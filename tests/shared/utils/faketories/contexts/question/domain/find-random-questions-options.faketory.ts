@@ -4,8 +4,8 @@ import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import { FIND_RANDOM_QUESTIONS_BODY_LIMIT_MAXIMUM, FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
-import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
+import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 
 function createFakeFindRandomQuestionsOptions(overrides: Partial<FindRandomQuestionsOptions> = {}): FindRandomQuestionsOptions {

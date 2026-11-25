@@ -11,22 +11,22 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when author role is 'admin'",
+        test: "should return true when author role is 'admin'.",
         value: "admin",
         expected: true,
       },
       {
-        test: "should return true when author role is 'game'",
+        test: "should return true when author role is 'game'.",
         value: "game",
         expected: true,
       },
       {
-        test: "should return true when author role is 'ai'",
+        test: "should return true when author role is 'ai'.",
         value: "ai",
         expected: true,
       },
       {
-        test: "should return false when author role is 'unknown'",
+        test: "should return false when author role is 'unknown'.",
         value: "unknown",
         expected: false,
       },
@@ -50,22 +50,22 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when cognitive difficulty is 'easy'",
+        test: "should return true when cognitive difficulty is 'easy'.",
         value: "easy",
         expected: true,
       },
       {
-        test: "should return true when cognitive difficulty is 'medium'",
+        test: "should return true when cognitive difficulty is 'medium'.",
         value: "medium",
         expected: true,
       },
       {
-        test: "should return true when cognitive difficulty is 'hard'",
+        test: "should return true when cognitive difficulty is 'hard'.",
         value: "hard",
         expected: true,
       },
       {
-        test: "should return false when cognitive difficulty is 'extreme'",
+        test: "should return false when cognitive difficulty is 'extreme'.",
         value: "extreme",
         expected: false,
       },
@@ -89,27 +89,27 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when status is 'pending'",
+        test: "should return true when status is 'pending'.",
         value: "pending",
         expected: true,
       },
       {
-        test: "should return true when status is 'active'",
+        test: "should return true when status is 'active'.",
         value: "active",
         expected: true,
       },
       {
-        test: "should return true when status is 'rejected'",
+        test: "should return true when status is 'rejected'.",
         value: "rejected",
         expected: true,
       },
       {
-        test: "should return true when status is 'archived'",
+        test: "should return true when status is 'archived'.",
         value: "archived",
         expected: true,
       },
       {
-        test: "should return false when status is 'deleted'",
+        test: "should return false when status is 'deleted'.",
         value: "deleted",
         expected: false,
       },
@@ -133,27 +133,27 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when category is 'trivia'",
+        test: "should return true when category is 'trivia'.",
         value: "trivia",
         expected: true,
       },
       {
-        test: "should return true when category is 'lexicon'",
+        test: "should return true when category is 'lexicon'.",
         value: "lexicon",
         expected: true,
       },
       {
-        test: "should return true when category is 'riddle'",
+        test: "should return true when category is 'riddle'.",
         value: "riddle",
         expected: true,
       },
       {
-        test: "should return true when category is 'explanation'",
+        test: "should return true when category is 'explanation'.",
         value: "explanation",
         expected: true,
       },
       {
-        test: "should return false when category is 'unknown'",
+        test: "should return false when category is 'unknown'.",
         value: "unknown",
         expected: false,
       },
@@ -177,17 +177,17 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when array of valid URLs is provided",
+        test: "should return true when array of valid URLs is provided.",
         value: ["https://example.com/source1", "https://example.com/source2"],
         expected: true,
       },
       {
-        test: "should return false when array is empty",
+        test: "should return false when array is empty.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when array exceeds maximum items",
+        test: "should return false when array exceeds maximum items.",
         value: [
           "https://example.com/source1",
           "https://example.com/source2",
@@ -199,12 +199,12 @@ describe("Question DTO Zod Validators", () => {
         expected: false,
       },
       {
-        test: "should return false when array contains an invalid URL",
+        test: "should return false when array contains an invalid URL.",
         value: ["https://example.com/source1", "invalid-url"],
         expected: false,
       },
       {
-        test: "should return false when array contains duplicate URLs",
+        test: "should return false when array contains duplicate URLs.",
         value: ["https://example.com/source1", "https://example.com/source1"],
         expected: false,
       },
@@ -240,32 +240,32 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when an array with a valid MongoDB ObjectId is provided",
+        test: "should return true when an array with a valid MongoDB ObjectId is provided.",
         value: ["60af924f4f1a2563f8e8b456"],
         expected: true,
       },
       {
-        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided",
+        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided.",
         value: ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"],
         expected: true,
       },
       {
-        test: "should return true when a single string MongoDB ObjectId is provided",
+        test: "should return true when a single string MongoDB ObjectId is provided.",
         value: "60af924f4f1a2563f8e8b456",
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided",
+        test: "should return false when an empty array is provided.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when an array with an invalid ObjectId is provided",
+        test: "should return false when an array with an invalid ObjectId is provided.",
         value: ["not-a-valid-id"],
         expected: false,
       },
@@ -307,42 +307,42 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when an array with a valid MongoDB ObjectId is provided",
+        test: "should return true when an array with a valid MongoDB ObjectId is provided.",
         value: ["60af924f4f1a2563f8e8b456"],
         expected: true,
       },
       {
-        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided",
+        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided.",
         value: ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"],
         expected: true,
       },
       {
-        test: "should return true when a single string MongoDB ObjectId is provided",
+        test: "should return true when a single string MongoDB ObjectId is provided.",
         value: "60af924f4f1a2563f8e8b456",
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided",
+        test: "should return false when an empty array is provided.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when an array with an invalid ObjectId is provided",
+        test: "should return false when an array with an invalid ObjectId is provided.",
         value: ["not-a-valid-id"],
         expected: false,
       },
       {
-        test: "should return false when an array exceeds the maximum allowed items",
+        test: "should return false when an array exceeds the maximum allowed items.",
         value: Array.from({ length: 101 }, () => faker.database.mongodbObjectId()),
         expected: false,
       },
       {
-        test: "should return false when an array contains duplicate ObjectIds",
+        test: "should return false when an array contains duplicate ObjectIds.",
         value: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"],
         expected: false,
       },
@@ -392,12 +392,12 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a valid MongoDB ObjectId is provided",
+        test: "should return true when a valid MongoDB ObjectId is provided.",
         value: "60af924f4f1a2563f8e8b456",
         expected: true,
       },
       {
-        test: "should return false when an invalid ObjectId is provided",
+        test: "should return false when an invalid ObjectId is provided.",
         value: "not-a-valid-id",
         expected: false,
       },
@@ -421,12 +421,12 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a valid ISO datetime is provided",
+        test: "should return true when a valid ISO datetime is provided.",
         value: "2026-04-14T00:00:00.000Z",
         expected: true,
       },
       {
-        test: "should return false when an invalid datetime is provided",
+        test: "should return false when an invalid datetime is provided.",
         value: "not-a-date",
         expected: false,
       },
@@ -450,12 +450,12 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a valid ISO datetime is provided",
+        test: "should return true when a valid ISO datetime is provided.",
         value: "2026-04-14T00:00:00.000Z",
         expected: true,
       },
       {
-        test: "should return false when an invalid datetime is provided",
+        test: "should return false when an invalid datetime is provided.",
         value: "not-a-date",
         expected: false,
       },
@@ -479,42 +479,42 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when an array with a valid MongoDB ObjectId is provided",
+        test: "should return true when an array with a valid MongoDB ObjectId is provided.",
         value: ["60af924f4f1a2563f8e8b456"],
         expected: true,
       },
       {
-        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided",
+        test: "should return true when an array with multiple valid MongoDB ObjectIds is provided.",
         value: ["60af924f4f1a2563f8e8b456", "507f1f77bcf86cd799439011"],
         expected: true,
       },
       {
-        test: "should return true when a single string MongoDB ObjectId is provided",
+        test: "should return true when a single string MongoDB ObjectId is provided.",
         value: "60af924f4f1a2563f8e8b456",
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided",
+        test: "should return false when an empty array is provided.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when an array with an invalid ObjectId is provided",
+        test: "should return false when an array with an invalid ObjectId is provided.",
         value: ["not-a-valid-id"],
         expected: false,
       },
       {
-        test: "should return false when an array exceeds the maximum allowed items",
+        test: "should return false when an array exceeds the maximum allowed items.",
         value: Array.from({ length: 201 }, (_, index) => `60af924f4f1a2563f8e8b${index.toString().padStart(2, "0")}`),
         expected: false,
       },
       {
-        test: "should return false when an array contains duplicate ObjectIds",
+        test: "should return false when an array contains duplicate ObjectIds.",
         value: ["60af924f4f1a2563f8e8b456", "60af924f4f1a2563f8e8b456"],
         expected: false,
       },
@@ -564,37 +564,37 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when an array with a valid category is provided",
+        test: "should return true when an array with a valid category is provided.",
         value: ["trivia"],
         expected: true,
       },
       {
-        test: "should return true when an array with multiple valid categories is provided",
+        test: "should return true when an array with multiple valid categories is provided.",
         value: ["trivia", "riddle"],
         expected: true,
       },
       {
-        test: "should return true when a single string category is provided",
+        test: "should return true when a single string category is provided.",
         value: "trivia",
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided",
+        test: "should return false when an empty array is provided.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when an array contains an invalid category",
+        test: "should return false when an array contains an invalid category.",
         value: ["unknown"],
         expected: false,
       },
       {
-        test: "should return false when an array contains duplicate categories",
+        test: "should return false when an array contains duplicate categories.",
         value: ["trivia", "trivia"],
         expected: false,
       },
@@ -632,37 +632,37 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when an array with a valid cognitive difficulty is provided",
+        test: "should return true when an array with a valid cognitive difficulty is provided.",
         value: ["easy"],
         expected: true,
       },
       {
-        test: "should return true when an array with multiple valid cognitive difficulties is provided",
+        test: "should return true when an array with multiple valid cognitive difficulties is provided.",
         value: ["easy", "hard"],
         expected: true,
       },
       {
-        test: "should return true when a single string cognitive difficulty is provided",
+        test: "should return true when a single string cognitive difficulty is provided.",
         value: "easy",
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided",
+        test: "should return false when an empty array is provided.",
         value: [],
         expected: false,
       },
       {
-        test: "should return false when an array contains an invalid cognitive difficulty",
+        test: "should return false when an array contains an invalid cognitive difficulty.",
         value: ["extreme"],
         expected: false,
       },
       {
-        test: "should return false when an array contains duplicate cognitive difficulties",
+        test: "should return false when an array contains duplicate cognitive difficulties.",
         value: ["easy", "easy"],
         expected: false,
       },
@@ -701,49 +701,49 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a valid subset of locales is provided",
+        test: "should return true when a valid subset of locales is provided.",
         value: ["fr"],
         minItems: 1,
         expected: true,
       },
       {
-        test: "should return true when all locales are provided",
+        test: "should return true when all locales are provided.",
         value: ["en", "fr", "es", "de", "it", "pt"],
         minItems: 1,
         expected: true,
       },
       {
-        test: "should return true when value is undefined",
+        test: "should return true when value is undefined.",
         value: undefined,
         minItems: 1,
         expected: true,
       },
       {
-        test: "should return false when an empty array is provided with default minItems",
+        test: "should return false when an empty array is provided with default minItems.",
         value: [],
         minItems: 1,
         expected: false,
       },
       {
-        test: "should return true when an empty array is provided with minItems 0",
+        test: "should return true when an empty array is provided with minItems 0.",
         value: [],
         minItems: 0,
         expected: true,
       },
       {
-        test: "should return false when duplicate locales are provided",
+        test: "should return false when duplicate locales are provided.",
         value: ["fr", "fr"],
         minItems: 1,
         expected: false,
       },
       {
-        test: "should return false when an invalid locale is provided",
+        test: "should return false when an invalid locale is provided.",
         value: ["fr", "jp"],
         minItems: 1,
         expected: false,
       },
       {
-        test: "should return false when more than the maximum number of locales is provided",
+        test: "should return false when more than the maximum number of locales is provided.",
         value: ["en", "fr", "es", "de", "it", "pt", "en"],
         minItems: 1,
         expected: false,
@@ -775,17 +775,17 @@ describe("Question DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a boolean true is provided",
+        test: "should return true when a boolean true is provided.",
         value: true,
         expected: true,
       },
       {
-        test: "should return true when a boolean false is provided",
+        test: "should return true when a boolean false is provided.",
         value: false,
         expected: true,
       },
       {
-        test: "should return false when a string is provided",
+        test: "should return false when a string is provided.",
         value: "true",
         expected: false,
       },

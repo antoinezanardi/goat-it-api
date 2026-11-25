@@ -4,8 +4,6 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { LoggerModule } from "nestjs-pino";
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
 
-import { QuestionThemeModule } from "@question-theme/question-theme.module";
-
 import { AuthModule } from "@src/infrastructure/api/auth/auth.module";
 import { AppConfigModule } from "@src/infrastructure/api/config/config.module";
 import { HealthModule } from "@src/infrastructure/api/health/health.module";
@@ -21,6 +19,8 @@ import { PUBLIC_ASSETS_PATH_PREFIX } from "@shared/infrastructure/http/constants
 import { LocalizationMiddleware } from "@shared/infrastructure/http/middlewares/localization/localization.middleware";
 
 import { QuestionModule } from "@question/question.module";
+
+import { QuestionThemeModule } from "@question-theme/question-theme.module";
 
 import type { MiddlewareConsumer, NestModule } from "@nestjs/common";
 

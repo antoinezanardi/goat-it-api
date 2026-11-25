@@ -3,7 +3,6 @@ import { createTranslationFromLocalizedText, createTranslationsFromLocalizedText
 import type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 import type { QuestionThemeDto } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 /**

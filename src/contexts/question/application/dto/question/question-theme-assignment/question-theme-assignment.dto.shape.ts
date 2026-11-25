@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { QUESTION_THEME_DTO } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
-
 import {
   zQuestionThemeAssignmentIsPrimary,
   zQuestionThemeAssignmentIsHint,
 } from "@question/application/dto/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
+
+import { QUESTION_THEME_DTO } from "@question-theme/contracts/dto/question-theme/question-theme.dto.shape";
 
 /**
  * Validates one public theme assignment: a locale-resolved theme plus its primary and hint flags.

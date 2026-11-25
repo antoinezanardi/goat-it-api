@@ -7,7 +7,6 @@ import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 When(/^the admin retrieves all question themes$/u, async function(this: GoatItWorld) {

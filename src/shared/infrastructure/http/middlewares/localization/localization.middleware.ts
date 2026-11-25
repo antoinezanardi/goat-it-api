@@ -7,7 +7,6 @@ import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import type { FastifyReply } from "fastify";
 import type { NestMiddleware } from "@nestjs/common";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { AugmentedFastifyRequestRaw } from "@shared/infrastructure/http/types/fastify/fastify.types";
 

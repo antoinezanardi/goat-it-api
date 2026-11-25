@@ -23,10 +23,9 @@ import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromCon
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
 import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { Model, UpdateQuery } from "mongoose";
-
 import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";

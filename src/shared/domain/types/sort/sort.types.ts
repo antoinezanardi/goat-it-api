@@ -1,5 +1,4 @@
 import type { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-
 import type { TupleToUnion } from "type-fest";
 
 /**

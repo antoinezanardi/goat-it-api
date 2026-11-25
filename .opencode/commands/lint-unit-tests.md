@@ -61,6 +61,7 @@ Audit subagents apply this checklist verbatim. Violations are recorded with rule
 - **[U6] Type safety** — No `any`; no unsafe assertions without an `// Acceptable as ...` + `// oxlint-disable-next-line ...` comment pair.
 - **[U7] Faketory sources** — Fake data from `@faketories/*`. No inline mock data factories — **except** DTO shape specs (`*.dto.shape.spec.ts`) which must use inline literals for `validDto` (see `[DT5]`).
 - **[U8] `it.each` usage** — Always use `it.each` for parameterized tests. Don't write multiple `it(...)` for the same test with different inputs. `it.each` should always be typed like `it.each<T>([...])`. Do NOT flag tests that describe semantically different conditions or edge cases as mergeable — only pure input duplicates of identical test logic count.
+- **[U9] Test title format** — Every `it` title and every `it.each` row title states the expected behaviour first and the triggering condition second, and **ends with a period**: `should <expected behavior> when <condition>.` Flag any title missing the trailing period, including the `test`-field values of object-form tables (`it.each([{ test: "…" }])("$test", …)`). In an `it.each` title template, never write `$key.` — `.` belongs to Vitest's `$key` character class, so the period is absorbed into the property name and the title renders `undefined`; a period after `%s`-style placeholders is safe.
 
 #### Established patterns — do NOT flag
 

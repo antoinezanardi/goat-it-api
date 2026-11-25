@@ -13,11 +13,6 @@ import {
 import { ZodSerializationException, ZodValidationException } from "nestjs-zod";
 import { ZodError } from "zod";
 
-import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
-import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
-import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
-import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-
 import * as sentryHelpers from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
 import { GENERIC_INTERNAL_SERVER_ERROR_BODY } from "@app/filters/global-exception/constants/global-exception.constants";
@@ -38,12 +33,16 @@ import { QuestionThemeAssignmentModificationError } from "@question/domain/error
 import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
 import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
+import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
+import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
+import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
+import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
+
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
 import { createFakeApiResponseExceptionValidationDetailsDto } from "@faketories/shared/application/dto/api-response-exception/api-response-exception.faketory";
 
 import type { FastifyReply } from "fastify";
-
 import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
 
 function createExpectedInternalServerErrorException(): HttpException {

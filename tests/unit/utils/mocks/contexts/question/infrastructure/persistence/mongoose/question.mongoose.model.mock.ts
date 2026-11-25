@@ -1,10 +1,8 @@
-import type { QuestionMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
-
 import { createFakeQuestionDocument } from "@faketories/contexts/question/mongoose/mongoose-document/question.mongoose-document.faketory";
 import { createFakeQuestionAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 
+import type { QuestionMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
 import type { Mock } from "vitest";
-
 import type { QuestionAggregate, QuestionAggregatePipeline } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 type QuestionMongooseModelStub = {

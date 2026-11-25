@@ -7,8 +7,8 @@ import {
   QUESTION_REJECTION_TYPES,
   QUESTION_STATUSES,
 } from "@question/domain/constants/question.constants";
-import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 import type { QuestionStats } from "@question/domain/types/question.types";
 
 /**

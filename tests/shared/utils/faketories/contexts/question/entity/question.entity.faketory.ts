@@ -3,11 +3,12 @@ import { faker } from "@faker-js/faker";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import { QUESTION_AUTHOR_ROLES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_CATEGORIES, QUESTION_REJECTION_TYPES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
-import type { Question } from "@question/domain/types/question.entities";
-import type { QuestionAuthor, QuestionContent, QuestionRejection, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
+
+import type { Question } from "@question/domain/types/question.entities";
+import type { QuestionAuthor, QuestionContent, QuestionRejection, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
 
 function createFakeQuestionThemeAssignment(questionThemeAssignment: Partial<QuestionThemeAssignment> = {}): QuestionThemeAssignment {
   return {

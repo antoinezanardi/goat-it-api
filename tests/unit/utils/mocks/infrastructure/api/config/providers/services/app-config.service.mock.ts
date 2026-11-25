@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
-
 import { createFakeAuthenticationConfigFromEnv, createFakeCorsConfigFromEnv, createFakeLocalizationConfigFromEnv, createFakeMongoDatabaseConfigFromEnv, createFakeServerConfigFromEnv, createFakeThrottlerConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
+
+import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 type MockedAppConfigService = {
   serverConfig: AppConfigService["serverConfig"];

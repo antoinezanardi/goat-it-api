@@ -8,11 +8,10 @@ import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrast
 const FILTER_NULL_ID_STAGE = { $match: { _id: { $ne: null } } };
 
 const ROWS_TO_RECORD_STAGES = [
-  // Acceptable as MongoDB $group + $arrayToObject + $replaceRoot operator field names
+  // Acceptable as MongoDB $group + $arrayToObject + $replaceWith operator field names
   // oxlint-disable-next-line eslint/id-length, unicorn/no-null
   { $group: { _id: null, pairs: { $push: { k: "$_id", v: "$count" } } } },
-  // eslint-disable-next-line unicorn/no-keyword-prefix
-  { $replaceRoot: { newRoot: { $arrayToObject: "$pairs" } } },
+  { $replaceWith: { $arrayToObject: "$pairs" } },
 ];
 
 const GET_STATS_FACET_STAGE = {

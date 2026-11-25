@@ -13,7 +13,6 @@ import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@a
 
 import type { AdminQuestionThemeDto } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionThemesCount>\d+) admin question themes$/u, function(this: GoatItWorld, countAsString: string): void {

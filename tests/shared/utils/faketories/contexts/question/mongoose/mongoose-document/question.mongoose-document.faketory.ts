@@ -4,11 +4,11 @@ import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
-import type { QuestionMongooseDocumentStub, QuestionThemeAssignmentMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
-
 import { createFakeQuestionAuthorAggregate, createFakeQuestionContentAggregate } from "@faketories/contexts/question/aggregate/question.aggregate.faketory";
 import { createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
+
+import type { QuestionMongooseDocumentStub, QuestionThemeAssignmentMongooseDocumentStub } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.types.mock";
 
 function createFakeQuestionThemeAssignmentDocument(questionThemeAssignmentDocument: Partial<QuestionThemeAssignmentMongooseDocumentStub> = {}):
 QuestionThemeAssignmentMongooseDocumentStub {

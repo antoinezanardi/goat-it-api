@@ -9,10 +9,10 @@ import { ApiThrottlerModule } from "@src/infrastructure/api/server/throttler/thr
 import { AppModule } from "@app/app.module";
 import { AppMetadataNestZodDto } from "@app/dto/app-metadata/app-metadata.dto";
 import { GlobalExceptionFilter } from "@app/filters/global-exception/global-exception.filter";
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 import { LocalizationMiddleware } from "@shared/infrastructure/http/middlewares/localization/localization.middleware";
 
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import type { ExecutionContext } from "@nestjs/common";
 import type { Observable } from "rxjs";
 

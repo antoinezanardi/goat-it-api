@@ -10,7 +10,6 @@ import { createFakeAppEnv } from "@faketories/infrastructure/api/config/env.fake
 import { createFakeSentryErrorEvent } from "@faketories/infrastructure/api/observability/sentry/sentry.faketory";
 
 import type { NodeOptions } from "@sentry/nestjs";
-
 import type { SentryErrorEvent } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers.types";
 
 const SENTRY_SECRET = "explosive secret value";

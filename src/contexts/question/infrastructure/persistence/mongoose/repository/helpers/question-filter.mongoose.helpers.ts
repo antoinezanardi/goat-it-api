@@ -7,7 +7,6 @@ import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/per
 import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import type { PipelineStage } from "mongoose";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
 

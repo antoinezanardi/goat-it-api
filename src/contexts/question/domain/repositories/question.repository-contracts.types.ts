@@ -1,5 +1,4 @@
 import type { QuestionCategory, QuestionCognitiveDifficulty, QuestionCreationAuthorRole, QuestionCreationStatus } from "@question/domain/types/question.value-objects";
-
 import type { Locale, LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 /**

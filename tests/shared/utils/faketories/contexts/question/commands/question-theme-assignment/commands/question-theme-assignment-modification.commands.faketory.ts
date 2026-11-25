@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionThemeAssignmentModificationCommand } from "@question/application/commands/question.commands";
-
 import { createFakeQuestionThemeAssignmentModificationContract } from "@faketories/contexts/question/repository-contracts/question-theme-assignment/question-theme-assignment-modification.repository-contracts.faketory";
+
+import type { QuestionThemeAssignmentModificationCommand } from "@question/application/commands/question.commands";
 
 function createFakeQuestionThemeAssignmentModificationCommand(overrides: Partial<QuestionThemeAssignmentModificationCommand> = {}): QuestionThemeAssignmentModificationCommand {
   return {

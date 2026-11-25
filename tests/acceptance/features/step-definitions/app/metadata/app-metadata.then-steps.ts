@@ -2,8 +2,8 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
 import { APP_METADATA_DTO } from "@app/dto/app-metadata/app-metadata.dto.shape";
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the application metadata should be returned$/u, function(this: GoatItWorld): void {

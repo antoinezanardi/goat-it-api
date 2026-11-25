@@ -11,6 +11,7 @@ export default {
     "!**/*.spec.ts",
     "!**/*.schema.ts",
     "!**/*.constants.ts",
+    "!**/*.enums.ts",
     "!**/*.types.ts",
     "!**/*.commands.ts",
     "!**/*.pipeline.ts",

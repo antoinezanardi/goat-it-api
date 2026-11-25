@@ -1,7 +1,6 @@
-import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
-
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
 
+import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 import type { Mock } from "vitest";
 
 type QuestionThemeMongooseFindQuery = Promise<QuestionThemeMongooseDocumentStub[]> & {

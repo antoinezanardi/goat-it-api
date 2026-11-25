@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { zLocalizedText, zLocalizedTexts } from "@shared/application/dto/zod/validators/localization/localization.zod.validators";
+import { zHexColor, zIsoDateTime, zMongoId, zSlug } from "@shared/application/dto/zod/validators/string/string.zod.validators";
+
 import {
   QUESTION_THEME_ALIASES_EXAMPLE,
   QUESTION_THEME_DESCRIPTION_EXAMPLE,
@@ -8,12 +11,8 @@ import {
 } from "@question-theme/contracts/dto/zod/validators/question-theme/constants/question-theme.zod.validators.constants";
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
-import { zLocalizedText, zLocalizedTexts } from "@shared/application/dto/zod/validators/localization/localization.zod.validators";
-import { zHexColor, zIsoDateTime, zMongoId, zSlug } from "@shared/application/dto/zod/validators/string/string.zod.validators";
-
 import type { QuestionThemeStatusEnum } from "@question-theme/domain/types/question-theme.value-objects";
 import type { ZodArray, ZodEnum, ZodISODateTime, ZodObject, ZodOptional, ZodString } from "zod";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 function zQuestionThemeId(): ZodString {

@@ -1,9 +1,5 @@
 import { Module } from "@nestjs/common";
 
-import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
-import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
-import { QuestionThemeModule } from "@question-theme/question-theme.module";
-
 import { createUseCaseProvider } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
@@ -20,6 +16,10 @@ import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/questio
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
 import { QuestionController } from "@question/infrastructure/http/controllers/question/question.controller";
 import { QuestionPersistenceModule } from "@question/infrastructure/persistence/question-persistence.module";
+
+import { QuestionThemeModule } from "@question-theme/question-theme.module";
+import { GetQuestionThemesByIdsOrThrowUseCase } from "@question-theme/application/use-cases/get-question-themes-by-ids-or-throw/get-question-themes-by-ids-or-throw.use-case";
+import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 
 @Module({
   imports: [

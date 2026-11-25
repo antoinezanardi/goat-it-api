@@ -5,7 +5,6 @@ import { DEFAULT_TAIL_LINES, LOGS_BASE_DIR, RING_BUFFER_DEFAULT_CAPACITY } from 
 
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 import type { ITestCaseHookParameter as TestCaseHookParameter } from "@cucumber/cucumber";
-
 import type { AppLogsManager, AppLogsFlushResult } from "@acceptance-support/types/hooks.types";
 
 /**

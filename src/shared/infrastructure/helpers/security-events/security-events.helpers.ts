@@ -1,7 +1,6 @@
 import { SECURITY_EVENT, SECURITY_EVENT_MESSAGE, SECURITY_EVENT_STATUS } from "@shared/infrastructure/helpers/security-events/constants/security-events.constants";
 
 import type { LoggerService } from "@nestjs/common";
-
 import type {
   AuthFailedSecurityEventContext,
   RequestErrorSecurityEventContext,

@@ -1,7 +1,6 @@
 import { createQuestionThemeStatsDtoFromStats } from "@question-theme/application/mappers/question-theme-stats/question-theme-stats.mappers";
 
 import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
-
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
 /**

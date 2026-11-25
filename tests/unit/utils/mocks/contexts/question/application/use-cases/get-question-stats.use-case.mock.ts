@@ -1,7 +1,6 @@
-import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
-
 import { createFakeQuestionStatsDto } from "@faketories/contexts/question/dto/question-stats/question-stats.dto.faketory";
 
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 import type { Mock } from "vitest";
 
 type GetQuestionStatsStub = {

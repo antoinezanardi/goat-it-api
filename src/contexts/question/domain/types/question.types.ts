@@ -1,8 +1,6 @@
 import type { ADMIN_QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty, QuestionRejectionType, QuestionStatus } from "@question/domain/types/question.value-objects";
-
 import type { TupleToUnion } from "type-fest";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { TranslationCompletenessStats } from "@shared/domain/types/translation-completeness/translation-completeness.types";
 
