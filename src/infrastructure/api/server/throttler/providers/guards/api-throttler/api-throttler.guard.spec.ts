@@ -7,6 +7,8 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { RETRY_AFTER_HEADER_NAME, THROTTLER_DEFAULT_TIER_NAME, THROTTLER_SUSTAINED_TIER_NAME, TOO_MANY_REQUESTS_ERROR_BODY } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 import { ApiThrottlerGuard } from "@src/infrastructure/api/server/throttler/providers/guards/api-throttler/api-throttler.guard";
 
+import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
+
 import type { ExecutionContext } from "@nestjs/common";
 import type { TestingModule } from "@nestjs/testing";
 
@@ -24,8 +26,8 @@ function createFakeResponse(): FakeResponse {
   return { headers, header };
 }
 
-function createFakeExecutionContext(handlerName: string, clientIp: string, response: FakeResponse): ExecutionContext {
-  const request = { ip: clientIp, headers: {} };
+function createFakeExecutionContext(handlerName: string, clientIp: string, response: FakeResponse, route?: string): ExecutionContext {
+  const request = { ip: clientIp, headers: {}, routeOptions: route === undefined ? undefined : { url: route } };
   const handler = { name: handlerName };
 
   return {
@@ -162,6 +164,34 @@ describe(ApiThrottlerGuard, () => {
       expect(fakeResponse.headers.get(RETRY_AFTER_HEADER_NAME)).toBe("1");
     });
 
+    it("should emit the request throttled event with only the route and retry delay when the default tier budget is exhausted.", async() => {
+      const logger = getMockedLoggerInstance();
+      const context = createFakeExecutionContext("getApiMetadata", "127.0.0.1", fakeResponse, "/questions/:id");
+      await apiThrottlerGuard.canActivate(context);
+      await activateAndCatch(apiThrottlerGuard, context);
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "request.throttled",
+        status: 429,
+        route: "/questions/:id",
+        retryAfterSeconds: 1,
+      }, "Request throttled");
+    });
+
+    it("should emit the unknown route in the request throttled event when the request carries no route options.", async() => {
+      const logger = getMockedLoggerInstance();
+      const context = createFakeExecutionContext("getApiMetadata", "127.0.0.1", fakeResponse);
+      await apiThrottlerGuard.canActivate(context);
+      await activateAndCatch(apiThrottlerGuard, context);
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "request.throttled",
+        status: 429,
+        route: "unknown",
+        retryAfterSeconds: 1,
+      }, "Request throttled");
+    });
+
     it("should expose only the plain retry header when the default tier budget is exhausted.", async() => {
       const context = createFakeExecutionContext("getApiMetadata", "127.0.0.1", fakeResponse);
       await apiThrottlerGuard.canActivate(context);
@@ -189,6 +219,23 @@ describe(ApiThrottlerGuard, () => {
       await activateAndCatch(sustainedGuard, context);
 
       expect(fakeResponse.headers.get(RETRY_AFTER_HEADER_NAME)).toBe("60");
+
+      await sustainedModule.close();
+    });
+
+    it("should emit the sustained retry delay in the request throttled event when the sustained tier budget is exhausted.", async() => {
+      const { apiThrottlerGuard: sustainedGuard, module: sustainedModule } = await createApiThrottlerGuard(5, 1);
+      const logger = getMockedLoggerInstance();
+      const context = createFakeExecutionContext("getApiMetadata", "127.0.0.1", fakeResponse, "/questions/:id");
+      await sustainedGuard.canActivate(context);
+      await activateAndCatch(sustainedGuard, context);
+
+      expect(logger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "request.throttled",
+        status: 429,
+        route: "/questions/:id",
+        retryAfterSeconds: 60,
+      }, "Request throttled");
 
       await sustainedModule.close();
     });

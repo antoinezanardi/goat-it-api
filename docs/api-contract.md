@@ -1,6 +1,6 @@
 # API contract
 
-This document is the verified inventory of the actual HTTP surface of `goat-it-api` (NestJS 12 + Fastify 5, Zod validation): every route with its exact prefix taken from the controller decorators, the DTO/validation conventions, the unified error shape produced by `GlobalExceptionFilter`, the query-string conventions (limit, sort, filters), Swagger at `/docs`, and the published `@goat-it/schemas` package. It was written against the code on branch `feat/goat-audit`; every claim cites a repository path that exists. Gaps found during verification are recorded as Known limitations at the end.
+This document is the verified inventory of the actual HTTP surface of `goat-it-api` (NestJS 12 + Fastify 5, Zod validation): every route with its exact prefix taken from the controller decorators, the DTO/validation conventions, the unified error shape produced by `GlobalExceptionFilter`, the query-string conventions (limit, sort, filters), Swagger at `/docs`, and the published `@goat-it/schemas` package. Every claim cites a repository path that exists. Gaps found during verification are recorded as Known limitations at the end.
 
 ## Framework and bootstrap
 
@@ -72,7 +72,7 @@ Rate limiting runs **before** authentication, so a business request can be answe
 | `QuestionThemeAlreadyArchivedError`, `ReferencedQuestionThemeArchivedError`, `QuestionAlreadyArchivedError`, `QuestionMaximumThemesError`, `QuestionMinimumThemesError`, `QuestionPrimaryThemeAssignmentNotRemovableError` | 400 |
 | `QuestionThemeSlugAlreadyExistsError`, `QuestionThemeAssignmentAlreadyExistsError`, `QuestionThemeReferencedByLiveQuestionsError` | 409 |
 
-**Anything else** → reported to the error tracker, logged by class name only and answered with the shared 500 body `{ statusCode: 500, message: "Internal Server Error", error: "Internal Server Error" }` (the `sendUnknownException` branch). A `ZodSerializationException` thrown by the response interceptor takes the same branch, so a serialization failure is logged, reported and answered with the same body; its Zod issues are not exposed. The published `API_RESPONSE_EXCEPTION_DTO` therefore parses every generic 500 body.
+**Anything else** → reported to the error tracker, logged as a structured `request.error` event with the exception class and V8 frame lines only (never the message or the stack header) and answered with the shared 500 body `{ statusCode: 500, message: "Internal Server Error", error: "Internal Server Error" }` (the `sendUnknownException` branch). A `ZodSerializationException` thrown by the response interceptor takes the same branch, so a serialization failure is logged, reported and answered with the same body; its Zod issues are not exposed. The published `API_RESPONSE_EXCEPTION_DTO` therefore parses every generic 500 body.
 
 Before those branches, the filter normalizes the Fastify transport errors it recognizes, keyed **only** on the Fastify error `code` carried by the thrown error itself (a 5xx Fastify error, which Nest leaves unmapped) or by the `cause` of the `HttpException` Nest's Fastify adapter builds for a 4xx one (`fastifyErrorHttpExceptionFactories` and `getFastifyErrorCode` in `src/app/filters/global-exception/global-exception.filter.ts`). Status and message alone never classify an error.
 
@@ -85,7 +85,7 @@ Before those branches, the filter normalizes the Fastify transport errors it rec
 
 These envelopes carry no `errorCode` and never include the Fastify message, the route path or a stack trace. A request-receive timeout is not in this table: Fastify's low-level connection handler answers `408` `{ "statusCode": 408, "message": "Client Timeout", "error": "Request Timeout" }` before Nest runs, so `GlobalExceptionFilter` never sees it.
 
-The `FST_ERR_HANDLER_TIMEOUT` envelope is only reachable for requests without a body: on Node 16+ a POST/PATCH request body completes before the handler runs and Fastify clears its handler timer (#1428).
+The `FST_ERR_HANDLER_TIMEOUT` envelope is only reachable for requests without a body: on Node 16+ a POST/PATCH request body completes before the handler runs and Fastify clears its handler timer.
 
 Four write/read-back errors are intentionally unmapped and fall through to 500: `QuestionCreationError`, `QuestionThemeAssignmentCreationError`, `QuestionThemeAssignmentModificationError`, `QuestionThemeAssignmentRemovalError` (`docs/architecture.md` §7.4).
 

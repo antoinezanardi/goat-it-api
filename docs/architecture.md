@@ -41,7 +41,7 @@ Normative keywords: **MUST**, **MUST NOT**, **SHOULD**, **MAY**.
 
 Agents MUST read this guide before creating, editing, moving or deleting a repository file. Plans name exact paths and companions; implementers stop and surface a mismatch instead of inventing a rule; reviewers check placement, companions, aliases, layer dependencies and module registration.
 
-This guide describes the **target** architecture. The #1264 migration is complete; any remaining accepted exception is listed in §13. Do not copy a pre-existing violation as a precedent.
+This guide describes the **target** architecture. Any accepted exception is listed in §13. Do not copy a pre-existing violation as a precedent.
 
 | Term                    | Meaning                                                                                                                                 |
 |-------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|

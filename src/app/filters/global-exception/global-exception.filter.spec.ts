@@ -174,7 +174,12 @@ describe(GlobalExceptionFilter, () => {
         sendZodValidationException: (...parameters: unknown[]) => void;
       };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
-      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilterStub.sendZodValidationException(
+        zodValidationException,
+        mocks.filters.globalException.fastifyReply,
+        getMockedLoggerInstance(),
+        mocks.filters.globalException.request,
+      );
       const expectedException = new BadRequestException({
         statusCode: 400,
         message: "Invalid request payload",
@@ -199,7 +204,12 @@ describe(GlobalExceptionFilter, () => {
         sendZodValidationException: (...parameters: unknown[]) => void;
       };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
-      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilterStub.sendZodValidationException(
+        zodValidationException,
+        mocks.filters.globalException.fastifyReply,
+        getMockedLoggerInstance(),
+        mocks.filters.globalException.request,
+      );
       const expectedException = new BadRequestException({
         statusCode: 400,
         message: "Invalid request payload",
@@ -217,7 +227,12 @@ describe(GlobalExceptionFilter, () => {
         sendZodValidationException: (...parameters: unknown[]) => void;
       };
       const sendNestHttpExceptionSpy = vi.spyOn(globalExceptionFilterStub, "sendNestHttpException");
-      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilterStub.sendZodValidationException(
+        zodValidationException,
+        mocks.filters.globalException.fastifyReply,
+        getMockedLoggerInstance(),
+        mocks.filters.globalException.request,
+      );
       const expectedException = new BadRequestException({
         statusCode: 400,
         message: "Invalid request payload",
@@ -226,6 +241,53 @@ describe(GlobalExceptionFilter, () => {
       });
 
       expect(sendNestHttpExceptionSpy).toHaveBeenCalledExactlyOnceWith(expectedException, mocks.filters.globalException.fastifyReply);
+    });
+
+    it("should emit the validation failed event with the issue count when called with a ZodError.", () => {
+      const mockLogger = getMockedLoggerInstance();
+      const zodValidationException = new ZodValidationException(new ZodError([
+        {
+          message: "Validation error message",
+          code: "invalid_type",
+          expected: "string",
+          path: ["field1"],
+        },
+        {
+          message: "Another validation error message",
+          code: "invalid_type",
+          expected: "number",
+          path: ["field2"],
+        },
+      ]));
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as {
+        sendZodValidationException: (...parameters: unknown[]) => void;
+      };
+
+      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply, mockLogger, mocks.filters.globalException.request);
+
+      expect(mockLogger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "request.validation.failed",
+        status: 400,
+        route: "/admin/questions",
+        issueCount: 2,
+      }, "Request validation failed");
+    });
+
+    it("should emit the validation failed event with a zero issue count when called with a non-ZodError.", () => {
+      const mockLogger = getMockedLoggerInstance();
+      const zodValidationException = new ZodValidationException(new Error("Some other error"));
+      const globalExceptionFilterStub = GlobalExceptionFilter as unknown as {
+        sendZodValidationException: (...parameters: unknown[]) => void;
+      };
+
+      globalExceptionFilterStub.sendZodValidationException(zodValidationException, mocks.filters.globalException.fastifyReply, mockLogger, mocks.filters.globalException.request);
+
+      expect(mockLogger.warn).toHaveBeenCalledExactlyOnceWith({
+        event: "request.validation.failed",
+        status: 400,
+        route: "/admin/questions",
+        issueCount: 0,
+      }, "Request validation failed");
     });
   });
 
@@ -593,31 +655,62 @@ describe(GlobalExceptionFilter, () => {
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
   describe(GlobalExceptionFilter.prototype["sendUnknownException"], () => {
-    it("should log the error class name when called with an Error.", () => {
+    it("should emit the request error event with the error class and frame lines when called with an Error.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();
+      const error = new Error("Unknown error occurred");
+      Object.defineProperty(error, "stack", { value: "Error: Unknown error occurred\n    at firstFrame (file.js:1:1)\n    at secondFrame (file.js:2:2)" });
 
-      globalExceptionFilter["sendUnknownException"](new Error("Unknown error occurred"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("Error");
+      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith({
+        event: "request.error",
+        status: 500,
+        route: "/admin/questions",
+        errorClass: "Error",
+        stack: "    at firstFrame (file.js:1:1)\n    at secondFrame (file.js:2:2)",
+      }, "Unhandled request error");
     });
 
-    it("should log the non-error marker when called with a non-Error.", () => {
+    it("should emit the request error event with the non-error marker and no stack when called with a non-Error.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();
 
       globalExceptionFilter["sendUnknownException"]("Some unknown exception", mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith("NonErrorThrown");
+      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith({
+        event: "request.error",
+        status: 500,
+        route: "/admin/questions",
+        errorClass: "NonErrorThrown",
+      }, "Unhandled request error");
     });
 
-    it("should not log the original error message when called with an Error.", () => {
+    it("should omit the stack when the Error carries no frame lines.", () => {
       const mockLogger = getMockedLoggerInstance();
       const globalExceptionFilter = new GlobalExceptionFilter();
+      const error = new Error("Unknown error occurred");
+      Object.defineProperty(error, "stack", { value: "Error: Unknown error occurred" });
 
-      globalExceptionFilter["sendUnknownException"](new Error("Explosive secret value"), mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
 
-      expect(mockLogger.error).not.toHaveBeenCalledWith("Explosive secret value");
+      expect(mockLogger.error).toHaveBeenCalledExactlyOnceWith({
+        event: "request.error",
+        status: 500,
+        route: "/admin/questions",
+        errorClass: "Error",
+      }, "Unhandled request error");
+    });
+
+    it("should not include the original error message in the emitted event when called with an Error.", () => {
+      const mockLogger = getMockedLoggerInstance();
+      const globalExceptionFilter = new GlobalExceptionFilter();
+      const error = new Error("Explosive secret value");
+
+      globalExceptionFilter["sendUnknownException"](error, mocks.filters.globalException.request, mocks.filters.globalException.fastifyReply);
+      const [record] = vi.mocked(mockLogger.error).mock.calls[0];
+
+      expect(JSON.stringify(record)).not.toContain("Explosive secret value");
     });
 
     it("should report the error with the registered route template and the request method when called.", () => {
