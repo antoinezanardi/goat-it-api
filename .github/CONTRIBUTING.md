@@ -257,7 +257,7 @@ This removes the v1 endpoints. Consumers must migrate to /v2.
 
 ```bash
 # validate the message saved in .git/COMMIT_EDITMSG
-npx --no-install @commitlint/cli --config configs/commitlint/.commitlintrc.json --edit .git/COMMIT_EDITMSG
+pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit .git/COMMIT_EDITMSG
 ```
 
 ### Notes
@@ -305,13 +305,13 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 
 ### Current hooks
 
-- `.husky/commit-msg` — runs commitlint to validate commit messages:
+- `.husky/commit-msg` — runs commitlint to validate the pending commit message:
 
   ```bash
-  npx commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"
+  pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"
   ```
 
-  This ensures commit messages follow the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
+  This is the hook line verbatim: git passes the path of the pending commit message as `$1`, the same contract documented for [`commit-msg`](https://git-scm.com/docs/githooks#_commit_msg). Unlike the pre-commit hook below, it does not fall back to another package manager — keep `pnpm` on your `PATH`, or the hook exits `127` and git aborts the commit. It enforces the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
 
 - `.husky/pre-commit` — validates branch names, runs linting/tests on staged files and runs the repository guards whose inputs changed:
 
@@ -326,7 +326,7 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
   <package-manager> run test:unit:staged
   ```
 
-  (You can run the same validation locally listed above. Use `<package-manager>` as `pnpm` or `npm` here.)
+  (You can run the same validation locally as listed above. `<package-manager>` is `pnpm`, or `npm` when pnpm is not installed — a fallback that exists in `.husky/pre-commit` only, not in `.husky/commit-msg`.)
 
 ### Bypassing hooks
 

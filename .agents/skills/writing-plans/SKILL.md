@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Write comprehensive implementation plans from an approved spec with bite-sized tasks (2-5 min steps), complete code, and no placeholders for the goat-it-api NestJS 12 project
+description: "Use when an approved spec must become an executable implementation plan to write bite-sized 2-5 minute tasks with complete code and no placeholders for the goat-it-api NestJS 12 project."
 ---
 
 # Writing Implementation Plans

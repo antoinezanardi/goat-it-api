@@ -1,6 +1,6 @@
 ---
 name: write-acceptance-test
-description: Write or complete a Cucumber/Gherkin acceptance test scenario for any feature in the Goat It API, following the conventions in docs/acceptance-tests.md (fixtures, payloads, step definitions, DataTable schemas, locale helpers).
+description: "Use when a feature needs new or updated end-to-end coverage to write or complete a Cucumber/Gherkin acceptance scenario with its fixtures, payloads and step definitions per docs/acceptance-tests.md."
 disable-model-invocation: true
 ---
 

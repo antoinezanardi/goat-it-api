@@ -42,11 +42,6 @@
       "cat env/.env.example": "allow"
     }
   },
-  "lsp": {
-    "oxlint": {
-      "command": ["oxlint", "--lsp"]
-    }
-  },
   "compaction": {
     "auto": true,
     "prune": true,

@@ -1,6 +1,6 @@
 ---
 name: write-unit-test
-description: Write or complete a colocated Vitest unit test for any source file in the Goat It API, following the per-file-type conventions in docs/unit-tests.md (controllers, use-cases, repositories, module wiring, DTOs, helpers, errors).
+description: "Use when a source file needs a colocated Vitest spec to write or complete its unit test following the per-file-type conventions in docs/unit-tests.md (controllers, use cases, repositories, module wiring, DTOs, helpers, errors)."
 disable-model-invocation: true
 ---
 

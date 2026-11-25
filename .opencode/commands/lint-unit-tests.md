@@ -1,3 +1,8 @@
+---
+description: Audit unit test spec files against the repository conventions, then fix the user-approved violations category by category.
+agent: build
+---
+
 # Lint unit tests conventions
 
 ## Task

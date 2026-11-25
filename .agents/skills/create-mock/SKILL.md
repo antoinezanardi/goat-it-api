@@ -1,6 +1,6 @@
 ---
 name: create-mock
-description: Scaffold a typed Vitest mock factory for a repository port, use-case, or service following Goat It API conventions, including correct placement, vi.fn() typing and overrides pattern.
+description: "Use when a repository port, use case or service needs a test double to scaffold a typed createMocked<X> factory under tests/unit/utils/mocks/ with the right placement, vi.fn() typing and overrides pattern."
 disable-model-invocation: true
 ---
 

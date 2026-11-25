@@ -1,6 +1,6 @@
 ---
 name: context7
-description: Internal skill for the docs-fetcher agent. Fetches version-aware library documentation via Context7 MCP and synthesizes problem-contextual structured summaries. Never rely on training data — always fetch current docs.
+description: "Use when a docs-fetcher dispatch needs one library's current documentation to fetch version-aware docs through the Context7 MCP and return a problem-contextual structured summary instead of training-data recall."
 ---
 
 This skill is used by the `docs-fetcher` subagent to fetch up-to-date, version-aware documentation for libraries via Context7 MCP. Each `docs-fetcher` dispatch handles **exactly one library** — the caller dispatches it once per library (parallel dispatches OK). It receives a problem description + one library and returns a structured summary explaining how that library serves the use case.

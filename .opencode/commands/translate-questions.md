@@ -22,6 +22,8 @@ For each question that is not fully translated, either translate it from French 
 - **French-culture questions** — content is too tied to French culture to be meaningful for non-French players.
 - **Puns, wordplay, or jokes** — French-language specific humor that does not translate.
 
+**DO NOT COMMIT.** The user is the only one who commits. Never run `git add`, `git commit` or `git push`; propose a ready-to-copy conventional commit message instead.
+
 ## Instructions
 
 ### 1. Get API credentials

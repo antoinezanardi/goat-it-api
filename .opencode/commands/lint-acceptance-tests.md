@@ -1,3 +1,8 @@
+---
+description: Audit acceptance test files against the repository conventions, then fix the user-approved violations category by category.
+agent: build
+---
+
 # Lint acceptance tests conventions
 
 ## Task
