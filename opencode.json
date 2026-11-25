@@ -70,7 +70,9 @@
     { "action": "tool.use", "resource": "read:*.env.*", "effect": "deny" },
     { "action": "tool.use", "resource": "read:*.env.example", "effect": "allow" },
     { "action": "tool.use", "resource": "shell:* .env", "effect": "deny" },
-    { "action": "tool.use", "resource": "shell:*/.env", "effect": "deny" }
+    { "action": "tool.use", "resource": "shell:*/.env", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:* .env *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:*/.env *", "effect": "deny" }
   ],
   "compaction": {
     "auto": true,
