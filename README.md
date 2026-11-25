@@ -89,6 +89,8 @@ pnpm run build
 pnpm run start:prod
 ```
 
+Production mode reads the process environment only: `env/.env` is not loaded (`ignoreEnvFile`), so export the required variables before `pnpm run start:prod`.
+
 ## <a name="docker">🐳 Docker</a>
 
 ![Docker](https://img.shields.io/badge/-Docker-black?style=for-the-badge&logoColor=white&logo=docker&color=004EA2)

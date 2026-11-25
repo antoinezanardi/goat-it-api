@@ -5,6 +5,11 @@ author: Antoine ZANARDI
 runs:
   using: composite
   steps:
+    - name: Check tracked env files 🔐
+      id: check-tracked-env-files
+      shell: bash
+      run: sh scripts/check-tracked-env-files.sh
+
     - name: Install project 📦
       uses: ./.github/actions/install-project
 

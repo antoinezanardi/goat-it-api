@@ -1,5 +1,7 @@
 import { APP_ENV_SCHEMA } from "@src/infrastructure/api/config/schemas/env.schema";
 
+import type { ConfigModuleOptions } from "@nestjs/config";
+
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 
 /**
@@ -16,18 +18,20 @@ function validateEnv(config: Record<string, unknown>): AppEnv {
 }
 
 /**
- * Returns `env/.env` in production and `env/.env.<NODE_ENV>` otherwise, falling back to `env/.env` when `NODE_ENV` is unset.
+ * Returns the `@nestjs/config` env-file options: production ignores env files entirely, other environments load `env/.env.<NODE_ENV>` and fall back to `env/.env` when `NODE_ENV` is unset.
  */
-function getEnvFilePath(): string {
-  let env = process.env.NODE_ENV ?? "";
-  env = env === "production" ? "" : env;
+function getEnvFileOptions(): Pick<ConfigModuleOptions, "envFilePath" | "ignoreEnvFile"> {
+  const nodeEnv = process.env.NODE_ENV ?? "";
+  if (nodeEnv === "production") {
+    return { ignoreEnvFile: true };
+  }
 
-  const envSuffix = env ? `.${env}` : "";
+  const envSuffix = nodeEnv ? `.${nodeEnv}` : "";
 
-  return `env/.env${envSuffix}`;
+  return { envFilePath: `env/.env${envSuffix}` };
 }
 
 export {
   validateEnv,
-  getEnvFilePath,
+  getEnvFileOptions,
 };

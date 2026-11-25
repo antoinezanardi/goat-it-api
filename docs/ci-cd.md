@@ -45,7 +45,7 @@ File placement, naming and dependency rules belong to [architecture.md](architec
 - Follow [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <short description>`.
 - `commitlint` runs as a commit hook using `configs/commitlint/`.
 - A commit must contain one coherent change; do not mix refactoring, features and dependency bumps without a clear reason.
-- Never commit `.env.*` files containing real secrets. `.env.example` is safe.
+- Never commit `.env.*` files containing real secrets. `.gitignore` ignores every `.env*` path at any depth and re-includes only `env/.env.example` and `env/.env.test`; `.env.example` is safe, a forcing `git add -f` is not.
 - Commit types drive the release version. See [Versioning rules](#versioning-rules).
 
 ## Pre-commit and commit-msg hooks
@@ -56,8 +56,10 @@ Husky installs the hooks through `scripts/post-install-prepare.sh`.
   1. `pnpm run typecheck`
   2. `pnpm run validate:branch-name`
   3. `pnpm run lint:staged:fix`
-  4. `pnpm run check:workflows:expressions`
-  5. `pnpm run test:unit:staged`
+  4. `pnpm run check:workflows:expressions` — only when a staged path is under `.github/workflows/`, `.github/actions/` or is `scripts/check-workflow-run-expressions.ts`
+  5. `pnpm run check:tracked-env-files`
+  6. `pnpm run check:dockerfile-pins` and `pnpm run check:dockerignore` — only when a staged path is `Dockerfile`, `.dockerignore`, `scripts/check-dockerfile-pins.sh` or `scripts/check-dockerignore.sh`
+  7. `pnpm run test:unit:staged`
 - `.husky/commit-msg` runs commitlint against the commit message:
   `pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit "$1"`.
 
@@ -91,10 +93,10 @@ Never bypass the hooks with `--no-verify`.
 | `code-ql`               | —            | CodeQL analysis for JavaScript/TypeScript (`github/codeql-action`).                                    |
 | `lint-workflows`        | —            | Lint the GitHub Actions workflows with ActionLint.                                                     |
 | `install`               | —            | Install pnpm, Node and project dependencies.                                                           |
-| `docker-builds`         | —            | Build the Docker image for `linux/amd64` and `linux/arm64` (no push).                                  |
+| `docker-builds`         | —            | Run the `.dockerignore` and Dockerfile pin guards, then build the Docker image for `linux/amd64` and `linux/arm64` (no push). |
 | `build`                 | `install`    | Typecheck, build the NestJS application and verify `dist/main.js`.                                     |
 | `build-schemas-package` | `install`    | Typecheck `@goat-it/schemas`, build it with tsdown, run a `pnpm pack` sanity check and upload `dist/`. |
-| `lint-codebase`         | `install`    | Run Oxlint, ESLint and the workflow run-body expression check.                                         |
+| `lint-codebase`         | `install`    | Run Oxlint, ESLint, the workflow run-body expression check and the tracked-env-file guard.              |
 | `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` and the production license allowlist check.                 |
 | `unit-tests`            | `install`    | Run `pnpm run test:unit:cov` and export test/coverage counts.                                          |
 | `mutation-tests`        | `install`    | Run `pnpm run test:mutation:ci`, publish to the Stryker Dashboard and upload reports.                  |
@@ -118,6 +120,9 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 ### Supply-chain security
 
 - **Action pinning.** Every third-party `uses:` entry in `.github/workflows/**` and `.github/actions/**` is pinned to a full 40-character commit SHA with a trailing version comment (`# vX.Y.Z`). Local composite actions (`./.github/actions/...`) are referenced by path. `renovate.json` extends `config:best-practices`, which keeps action digests updated, maintains the lockfile weekly, pins devDependencies and flags abandoned packages. `pinDigests: true`, `minimumReleaseAge: "3 days"` and `baseBranchPatterns: ["develop"]` configure the update policy.
+- **Base image and package pinning.** Both `FROM` lines carry the Node manifest-list `sha256` digest, and the production stage installs `tini=0.19.0-r3`. Renovate's `pinDigests: true` keeps the digests current, and its `apk` datasource rule in `.github/renovate.json` updates the Alpine package pin; the rule reads the Alpine `v3.24` branch, which must move with the Node base image. `scripts/check-dockerfile-pins.sh` (exposed as `pnpm run check:dockerfile-pins`) fails when a registry `FROM` lacks a digest or a final-stage `RUN apk add` package lacks a version; it runs in the `docker-build` composite action, so the required `Docker Build 🐳` jobs fail on a regression, and in the pre-commit hook when a guard input is staged. An upstream Alpine `-r` republish can make the required build red until the Renovate PR clears the 3-day release-age gate; bump the pin manually if the build must proceed sooner.
+- **Build-context hygiene.** `scripts/check-dockerignore.sh` (exposed as `pnpm run check:dockerignore`) asserts the mandatory `.dockerignore` exclusions and rejects the known exact, trailing-slash and `**` patterns that would exclude a Dockerfile input; it runs before the build in the `docker-build` composite action and in the pre-commit hook when a guard input is staged. The Docker build remains the final check.
+- **Tracked env files.** `scripts/check-tracked-env-files.sh` (exposed as `pnpm run check:tracked-env-files`) fails when the index contains any `.env*` path other than `env/.env.example` and `env/.env.test`; it runs in the `lint-codebase` composite action and in the pre-commit hook.
 - **Least-privilege permissions and tokens.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`. Tokens are never exported at workflow or job scope: `GITHUB_TOKEN` and `SEMANTIC_RELEASE_TOKEN` are bound to the individual steps that call `gh`, semantic-release or the changelog script, so third-party actions in the same job never inherit them.
 - **No expressions in shell bodies.** `pnpm run check:workflows:expressions` (part of `pnpm run lint`, run by the `lint-codebase` job) fails when a `${{ … }}` expression appears inside a `run:` body in `.github/workflows/**` or `.github/actions/**`. Workflow values reach the shell through `env:` and quoted variables instead, which removes the template-injection path from the deploy, Docker and publication jobs.
 - **Dependency audit.** `.github/actions/audit-dependencies` installs the project, runs `pnpm audit --prod --audit-level=high` and then the license check. The `audit-dependencies` job fails the build on high or critical production advisories. Development-only advisories do not block the pipeline.
@@ -205,6 +210,7 @@ The shared `deploy` composite action validates that `strict-host-key-checking` i
 - Digests are uploaded as artifacts.
 - A second job merges the per-platform digests into a multi-architecture manifest list per tag and inspects the result.
 - Authentication uses `DOCKER_HUB_USERNAME` / `DOCKER_HUB_PASSWORD`; the image name comes from the `DOCKER_REGISTRY_IMAGE` variable.
+- Base images are digest-pinned and the production `tini` package is version-pinned before any layer is built, so the published image is reproducible from a commit.
 
 ### Post-deploy verification
 
@@ -244,6 +250,8 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 - Acceptance: `pnpm run test:acceptance` (builds first) or `pnpm run test:acceptance:skip-build` when `dist/` is current — both run the standard and the serial low-limit phase and fail if either fails.
 - Docker services: `pnpm run docker:acceptance-tests:start`, `pnpm run docker:acceptance-tests:stop`, `pnpm run docker:acceptance-tests:reset` (discards the named `mongodb_data_container` volume before starting).
 - Lint and typecheck: `pnpm run lint` and `pnpm run typecheck`.
+- Container guards: `pnpm run check:dockerfile-pins` and `pnpm run check:dockerignore`.
+- Tracked env files: `pnpm run check:tracked-env-files`.
 - App build: `pnpm run build`; schemas build: `pnpm --filter @goat-it/schemas build`.
 - Built-output secret scan: `pnpm run check:secrets-in-built-output` after a build.
 - License allowlist: `pnpm run check:licenses` (builds the production SBOM from the installed tree).

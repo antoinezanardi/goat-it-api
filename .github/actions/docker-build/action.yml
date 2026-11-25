@@ -27,6 +27,16 @@ runs:
             exit 1
           fi
 
+      - name: Check .dockerignore completeness 🐳
+        id: check-dockerignore
+        shell: bash
+        run: sh scripts/check-dockerignore.sh
+
+      - name: Check Dockerfile pins 🔒
+        id: check-dockerfile-pins
+        shell: bash
+        run: sh scripts/check-dockerfile-pins.sh
+
       - name: Docker Build 🐳
         id: docker-build
         shell: bash
