@@ -14,13 +14,15 @@ It is written for maintainers who update dependencies or triage an advisory. The
 
 The production closure must stay at zero advisories of any severity. The full tree may carry moderate or low development findings, but no high or critical finding. The stricter production threshold is affordable because the deployed closure is small and its audits are clean; the full tree is larger and its remaining findings are development-only, so blocking on them would keep the pipeline red for tooling that never ships.
 
+The Dependabot alerts feed mirrors these thresholds: two custom auto-triage rules auto-dismiss development-scope low and medium alerts, so production alerts of any severity and development high or critical alerts stay open. Dependabot evaluates the default branch (`main`), so the feed lags the integration branch by one release and never replaces the pull-request audits.
+
 The remaining full-tree findings at the last review (2026-11-25) are all development-only and are re-checked on every relevant Renovate update:
 
-| Package     | Advisory                                                                                                                  | Consumer                         | Why accepted                                                                 |
-|-------------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------|------------------------------------------------------------------------------|
-| `fast-copy` | GHSA-jggr-w7fw-pc2j                                                                                                       | `pino-pretty`                    | dev logger; patched 4.1.0 requires a new range from `pino-pretty`             |
-| `minimatch` | GHSA-g3hv-75wg-m249                                                                                                       | Stryker, `@swc/cli`, Nest CLI    | dev tooling; the patched 11.0.1 is a major jump from the pinned 3/9/10 lines  |
-| `qs`        | GHSA-4mjr-xmp4-gh2g, GHSA-q8mj-m7cp-5q26, GHSA-x5fp-wj9c-mxmx, GHSA-6pq8-jhm2-2vcw                                        | Stryker (`typed-rest-client`)    | dev test runner; patched 6.16.1 requires a new range from `typed-rest-client` |
+| Package     | Severity | Advisory                                                                                                                  | Consumer                         | Why accepted                                                                 |
+|-------------|----------|---------------------------------------------------------------------------------------------------------------------------|----------------------------------|------------------------------------------------------------------------------|
+| `fast-copy` | moderate | GHSA-jggr-w7fw-pc2j                                                                                                       | `pino-pretty`                    | dev logger; patched 4.1.0 requires a new range from `pino-pretty`             |
+| `minimatch` | moderate | GHSA-g3hv-75wg-m249                                                                                                       | Stryker, `@swc/cli`, Nest CLI    | dev tooling; the patched 11.0.1 is a major jump from the pinned 3/9/10 lines  |
+| `qs`        | moderate | GHSA-4mjr-xmp4-gh2g, GHSA-q8mj-m7cp-5q26, GHSA-x5fp-wj9c-mxmx, GHSA-6pq8-jhm2-2vcw                                        | Stryker (`typed-rest-client`)    | dev test runner; patched 6.16.1 requires a new range from `typed-rest-client` |
 
 ## Scoped overrides
 
@@ -117,7 +119,7 @@ Before a dependency-review PR:
 
 1. Run `pnpm audit --prod --audit-level=low` and `pnpm audit --audit-level=high`; both must exit 0.
 2. Run `pnpm dedupe --check`; it must exit 0.
-3. For an override whose parent lower bound has reached its exit threshold, remove the override, run `pnpm install`, then `pnpm audit`; if the audit stays clean, commit the removal and delete its row above.
+3. For an override whose parent lower bound has reached its exit threshold, remove the override, run `pnpm install`, then repeat both audit commands from step 1; both must still exit 0 before committing the removal and deleting its row above.
 4. For a new duplicate major, add it to the matching group or create a group with a reason and exit condition. Do not add a dedupe override unless the parent ranges are semver-compatible.
 
 Related guides: [ci-cd.md](ci-cd.md) for the audit jobs and versioning rules, [security.md](security.md) for the disclosure posture and the production dependency policy, [operations.md](operations.md) for release verification.
