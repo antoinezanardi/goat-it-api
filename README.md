@@ -269,6 +269,7 @@ You can add them as **run configurations** in your IDE.
 - **[Performance](docs/performance.md)** — indexing, query patterns, pagination and payload bounds.
 - **[Internationalization](docs/i18n.md)** — `Accept-Language` pipeline, locales, fallback and translation completeness.
 - **[Security](docs/security.md)** — authentication, validation, CORS, secrets, disclosure and known limitations.
+- **[Dependencies](docs/dependencies.md)** — scoped overrides, duplicate-major inventory and dependency-audit policy.
 - **[Privacy](docs/privacy.md)** — data inventory, logging and telemetry PII policy, retention and legal posture.
 - **[Operations](docs/operations.md)** — health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.

@@ -248,6 +248,7 @@ The GOAT audit ("Greatest Of All Time" × Goat It) is the repository-wide, evide
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
 - `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/security.md`         – Security posture: authentication, validation, CORS, secrets, disclosure and known limitations.
+- `docs/dependencies.md`     – Scoped overrides, duplicate-major inventory and dependency-audit policy.
 - `docs/privacy.md`          – Data inventory, logging/telemetry PII policy, retention and legal posture.
 - `docs/domain-logic.md`     – Question and question-theme domain rules, invariants and error contracts.
 - `docs/performance.md`      – Indexing, query patterns, pagination and payload bounds.

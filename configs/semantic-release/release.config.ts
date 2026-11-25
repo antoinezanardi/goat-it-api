@@ -1,5 +1,54 @@
 type CommitGroup = { title: string };
 
+type ReleaseRule = {
+  breaking?: boolean;
+  release: "major" | "minor" | "patch";
+  type?: string;
+};
+
+const RELEASE_RULES: ReleaseRule[] = [
+  {
+    breaking: true,
+    release: "major",
+  },
+  {
+    type: "feat",
+    release: "minor",
+  },
+  {
+    type: "fix",
+    release: "patch",
+  },
+  {
+    type: "docs",
+    release: "patch",
+  },
+  {
+    type: "style",
+    release: "patch",
+  },
+  {
+    type: "refactor",
+    release: "patch",
+  },
+  {
+    type: "perf",
+    release: "patch",
+  },
+  {
+    type: "test",
+    release: "patch",
+  },
+  {
+    type: "ci",
+    release: "patch",
+  },
+  {
+    type: "chore",
+    release: "patch",
+  },
+];
+
 const commitGroupsOrder: Partial<Record<string, number>> = {
   features: 1,
   bugfixes: 2,
@@ -20,44 +69,7 @@ export default {
       "@semantic-release/commit-analyzer",
       {
         preset: "conventionalcommits",
-        releaseRules: [
-          {
-            type: "feat",
-            release: "minor",
-          },
-          {
-            type: "fix",
-            release: "patch",
-          },
-          {
-            type: "docs",
-            release: "patch",
-          },
-          {
-            type: "style",
-            release: "patch",
-          },
-          {
-            type: "refactor",
-            release: "patch",
-          },
-          {
-            type: "perf",
-            release: "patch",
-          },
-          {
-            type: "test",
-            release: "patch",
-          },
-          {
-            type: "ci",
-            release: "patch",
-          },
-          {
-            type: "chore",
-            release: "patch",
-          },
-        ],
+        releaseRules: RELEASE_RULES,
       },
     ],
     [
