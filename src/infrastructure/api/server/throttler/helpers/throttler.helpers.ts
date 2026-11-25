@@ -1,7 +1,6 @@
 import { SECONDS_TO_MILLISECONDS_FACTOR, THROTTLER_DEFAULT_TIER_NAME, THROTTLER_SUSTAINED_TIER_NAME } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 
 import type { ThrottlerModuleOptions, ThrottlerOptions } from "@nestjs/throttler";
-
 import type { ThrottlerConfigFromEnv, ThrottlerTierConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 function createThrottlerOptions(name: string, tierConfig: ThrottlerTierConfigFromEnv): ThrottlerOptions {

@@ -1,5 +1,4 @@
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 

@@ -727,7 +727,7 @@ Path and package boundaries are enforced by ESLint. Relative imports are enforce
 | 15 | `src/contexts/question-theme/contracts/**/!(*.spec).ts` | `src/contexts/question/**` |
 | 16 | `src/contexts/*/application/**/!(*.spec).ts`, `src/contexts/*/domain/**/!(*.spec).ts`, `src/shared/application/**/!(*.spec).ts`, `src/shared/domain/**/!(*.spec).ts` | `src/infrastructure/**` |
 
-Do not add production boundary-rule disables. The existing `unicorn/no-keyword-prefix` disables in the stats pipelines are not boundary rules and are out of scope.
+Do not add production boundary-rule disables.
 
 When `from` is a glob, `except` entries MUST be glob patterns. Prefer directory-based `from` plus relative `except` entries for exact allowlists. The table is based on repository inspection; validate it with the actual `pnpm run lint:eslint` run before merge. New contexts add per-layer zones; see §9.1.
 
@@ -766,7 +766,7 @@ Package bans use ESLint core `no-restricted-imports` in scoped flat-config block
 |-------------------------------------------------------------------------------------------------|---------------------------------------------------|---------------------------------------------------------------------------------------------------------|
 | `shared/infrastructure` localization middleware imports `src/infrastructure` `AppConfigService` | Accepted because there is one infrastructure area | A second infrastructure area appears; then move the middleware or introduce a narrow shared-owned token |
 
-Every accepted exception MUST name a removal condition. Do not add a silent exception to the guide. Existing non-boundary lint disables (for example `unicorn/no-keyword-prefix` in the stats pipelines) are tracked by the lint policy, not this register.
+Every accepted exception MUST name a removal condition. Do not add a silent exception to the guide. Non-boundary lint disables are tracked by the lint policy, not this register.
 
 ## 14. Framework references
 

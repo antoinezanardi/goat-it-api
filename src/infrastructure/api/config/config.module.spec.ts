@@ -69,4 +69,10 @@ describe(AppConfigModule, () => {
 
     expect(reflector.get("exports", AppConfigModule)).toContainEqual(AppConfigService);
   });
+
+  it("should mark the app config module as global when the module metadata is read.", () => {
+    const reflector = new Reflector();
+
+    expect(reflector.get("__module:global__", AppConfigModule)).toBe(true);
+  });
 });

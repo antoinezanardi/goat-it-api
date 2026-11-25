@@ -2,7 +2,6 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { z } from "zod";
 
-import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
 import { QUESTION_AUTHOR_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_DATATABLE_ROW_SCHEMA, QUESTION_CONTENT_TRIVIA_DATATABLE_ROW_SCHEMA, QUESTION_DATATABLE_ROW_SCHEMA, QUESTION_REJECTION_DATATABLE_ROW_SCHEMA, QUESTION_THEME_ASSIGNMENT_DATATABLE_ROW_SCHEMA } from "@acceptance-features/step-definitions/contexts/question/public/datatables/question.datatables.schemas";
@@ -10,8 +9,8 @@ import { expectAllQuestionsToHaveField, expectAllQuestionsToHaveThemeId, expectQ
 
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 
+import type { QuestionDto } from "@question/application/dto/question/question.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain (?<questionsCount>\d+) questions?$/u, function(this: GoatItWorld, countAsString: string): void {

@@ -8,11 +8,10 @@ import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/application/
 import { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
 import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/constants/question-sort.dto.constants";
+
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
-
 import type { z } from "zod";
-
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Find Questions Query DTO Shape", () => {

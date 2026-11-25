@@ -1,7 +1,7 @@
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
+
 import type { QuestionModificationCommand } from "@question/application/commands/question.commands";
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**

@@ -1,13 +1,13 @@
 import { Test } from "@nestjs/testing";
 
+import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+
+import * as sortQueryDtoMappers from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
+
 import * as questionThemeContractMappers from "@question-theme/contracts/dto/question-theme.dto.mappers";
 import { FindQuestionThemesUseCase } from "@question-theme/application/use-cases/find-question-themes/find-question-themes.use-case";
 import { FindQuestionThemeByIdUseCase } from "@question-theme/application/use-cases/find-question-theme-by-id/find-question-theme-by-id.use-case";
 import { QuestionThemeController } from "@question-theme/infrastructure/http/controllers/question-theme/question-theme.controller";
-
-import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
-
-import * as sortQueryDtoMappers from "@shared/application/mappers/sort-query-dto/sort-query-dto.mappers";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedFindQuestionThemeByIdUseCase } from "@mocks/contexts/question-theme/application/use-cases/find-question-theme-by-id.use-case.mock";
@@ -19,7 +19,6 @@ import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.
 import { createFakeFindQuestionThemesQueryDto } from "@faketories/contexts/question-theme/dto/find-question-themes-query/find-question-themes-query.dto.faketory";
 
 import type { Mock } from "vitest";
-
 import type { QuestionThemeSortableField } from "@question-theme/domain/types/question-theme.types";
 import type { SortOptions } from "@shared/domain/types/sort/sort.types";
 

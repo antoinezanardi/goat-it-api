@@ -10,7 +10,6 @@ import {
 } from "@question/application/dto/zod/validators/question-content/constants/question-content.zod.validators.constants";
 
 import type { ZodArray, ZodObject, ZodOptional, ZodString } from "zod";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 function zQuestionStatement(): ZodString {

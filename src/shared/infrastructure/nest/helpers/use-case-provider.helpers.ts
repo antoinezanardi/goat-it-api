@@ -1,5 +1,4 @@
 import type { FactoryProvider } from "@nestjs/common";
-
 import type { UseCaseConstructor, UseCaseInjectionTokens } from "@shared/infrastructure/nest/helpers/use-case-provider.helpers.types";
 
 /**

@@ -1,13 +1,10 @@
-import type { ApiResponseExceptionValidationDetailsDto } from "@shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
-
-import type { REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
-
 import { buildQueryFromRow, coerceStringToPrimitive, validateDataTableAndGetFirstRow } from "@acceptance-support/helpers/datatable.helpers";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
+import type { ApiResponseExceptionValidationDetailsDto } from "@shared/application/dto/api-response-exception/api-response-exception-validation-details/api-response-exception-validation-details.dto.shape";
+import type { REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 import type { DataTable } from "@cucumber/cucumber";
 import type { z } from "zod";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 type ValidationDetailsRow = z.infer<typeof REQUEST_VALIDATION_DETAILS_ROW_SCHEMA>;

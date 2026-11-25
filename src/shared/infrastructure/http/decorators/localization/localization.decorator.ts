@@ -1,7 +1,6 @@
 import { createParamDecorator, InternalServerErrorException } from "@nestjs/common";
 
 import type { ExecutionContext } from "@nestjs/common";
-
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 

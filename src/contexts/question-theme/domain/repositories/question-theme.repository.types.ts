@@ -1,5 +1,4 @@
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-
 import type { QuestionThemeCreationContract, QuestionThemeModificationContract } from "@question-theme/domain/repositories/question-theme.repository-contracts.types";
 import type { AdminQuestionThemeFilterOptions, QuestionThemeSortableField, QuestionThemeStats } from "@question-theme/domain/types/question-theme.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";

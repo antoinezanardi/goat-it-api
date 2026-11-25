@@ -8,8 +8,8 @@ import { HealthService } from "@src/infrastructure/api/health/providers/services
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { createMockedTerminusFetchHealthIndicatorService, createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
-import type { FetchHealthIndicatorAttemptStub } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
 
+import type { FetchHealthIndicatorAttemptStub } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
 import type { TestingModule } from "@nestjs/testing";
 
 describe(HealthService, () => {

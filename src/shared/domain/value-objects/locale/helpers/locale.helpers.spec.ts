@@ -7,47 +7,47 @@ describe(isValidLocale, () => {
     expected: boolean;
   }>([
     {
-      test: "should return true when the locale is 'en'",
+      test: "should return true when the locale is 'en'.",
       input: "en",
       expected: true,
     },
     {
-      test: "should return true when the locale is 'fr'",
+      test: "should return true when the locale is 'fr'.",
       input: "fr",
       expected: true,
     },
     {
-      test: "should return true when the locale is 'es'",
+      test: "should return true when the locale is 'es'.",
       input: "es",
       expected: true,
     },
     {
-      test: "should return true when the locale is 'de'",
+      test: "should return true when the locale is 'de'.",
       input: "de",
       expected: true,
     },
     {
-      test: "should return true when the locale is 'it'",
+      test: "should return true when the locale is 'it'.",
       input: "it",
       expected: true,
     },
     {
-      test: "should return true when the locale is 'pt'",
+      test: "should return true when the locale is 'pt'.",
       input: "pt",
       expected: true,
     },
     {
-      test: "should return false when the locale is 'jp'",
+      test: "should return false when the locale is 'jp'.",
       input: "jp",
       expected: false,
     },
     {
-      test: "should return false when the locale is an empty string",
+      test: "should return false when the locale is an empty string.",
       input: "",
       expected: false,
     },
     {
-      test: "should return false when the locale is 'invalid-locale'",
+      test: "should return false when the locale is 'invalid-locale'.",
       input: "invalid-locale",
       expected: false,
     },

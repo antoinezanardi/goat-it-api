@@ -1,7 +1,6 @@
 import { APP_FORCE_KILL_TIMEOUT_MS } from "@acceptance-support/constants/app.constants";
 
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
-
 import type { AppProcessSignal } from "@acceptance-support/types/setup.types";
 
 function hasAppProcessExited(serverProcess: ChildProcessWithoutNullStreams): boolean {

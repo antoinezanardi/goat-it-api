@@ -12,7 +12,6 @@ import { QuestionController } from "@question/infrastructure/http/controllers/qu
 import * as questionMappers from "@question/application/mappers/question.mappers";
 import * as questionFilterQueryDtoMappers from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FIND_RANDOM_QUESTIONS_BODY_LIMIT_DEFAULT } from "@question/application/dto/find-random-questions-body/constants/find-random-questions-body.dto.constants";
-import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 import { createMockedFindRandomQuestionsUseCase } from "@mocks/contexts/question/application/use-cases/find-random-questions.use-case.mock";
@@ -24,8 +23,8 @@ import { createFakeLocalizationOptions } from "@faketories/shared/locale/locale.
 import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
 import { createFakeFindRandomQuestionsBodyDto } from "@faketories/contexts/question/dto/find-random-questions-body/find-random-questions-body.dto.faketory";
 
+import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import type { Mock } from "vitest";
-
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions } from "@question/domain/types/question.types";
 

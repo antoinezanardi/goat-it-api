@@ -3,11 +3,11 @@ import { UnauthorizedException } from "@nestjs/common";
 import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
 import { canActivateApiKeyGuardHandler, createApiKeyValidator, hashApiKey, validateReceivedApiKey } from "@src/infrastructure/api/auth/helpers/auth.helpers";
-import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
 import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
+import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import type { ExecutionContext } from "@nestjs/common";
 
 function createFakeExecutionContext(apiKey?: string, route?: string): ExecutionContext {

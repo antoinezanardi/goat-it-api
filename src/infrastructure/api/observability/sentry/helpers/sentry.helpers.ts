@@ -8,7 +8,6 @@ import { captureSentryException, closeSentryClient, initSentrySdk } from "@src/i
 import { readPackageJson } from "@shared/infrastructure/helpers/package-json/package-json.helpers";
 
 import type { NodeOptions } from "@sentry/nestjs";
-
 import type { AppEnv } from "@src/infrastructure/api/config/types/env.types";
 import type { SentryErrorContext, SentryErrorEvent, SentryExceptionValue, SentryIntegration, SentryStackFrame, SentryTags, SentryUncaughtExceptionIntegrationOptions } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers.types";
 

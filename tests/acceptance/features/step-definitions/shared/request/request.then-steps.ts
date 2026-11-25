@@ -4,7 +4,6 @@ import { shake } from "radashi";
 import { z } from "zod";
 
 import { API_RESPONSE_EXCEPTION_DTO } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
-import type { ApiResponseExceptionDto } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
@@ -12,8 +11,8 @@ import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-de
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 import { SUCCESS_HTTP_STATUSES } from "@acceptance-support/constants/http.constants";
 
+import type { ApiResponseExceptionDto } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/u, function(this: GoatItWorld, statusCode: string): void {

@@ -1,5 +1,4 @@
 import type { QuestionThemeStatus } from "@question-theme/domain/types/question-theme.value-objects";
-
 import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 /**

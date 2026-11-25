@@ -1,5 +1,4 @@
 import type { FastifyRequest } from "fastify";
-
 import type { LocalizationOptions } from "@shared/domain/value-objects/locale/locale.types";
 
 /**

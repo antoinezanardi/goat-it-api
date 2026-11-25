@@ -1,5 +1,3 @@
-import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
-
 import { computeQuestionStatusFromAuthorRole } from "@question/domain/rules/question.rules";
 import {
   createAdminQuestionDtoFromEntity,
@@ -12,6 +10,8 @@ import {
   createQuestionCreationCommandFromDto,
   createQuestionModificationCommandFromDto,
 } from "@question/application/mappers/question.mappers";
+
+import { createAdminQuestionThemeDtoFromEntity, createQuestionThemeDtoFromEntity } from "@question-theme/contracts/dto/question-theme.dto.mappers";
 
 import { createFakeAdminQuestionDto } from "@faketories/contexts/question/dto/admin-question/admin-question.dto.faketory";
 import { createFakeAdminQuestionThemeAssignmentDto } from "@faketories/contexts/question/dto/admin-question/admin-question-theme-assignment/admin-question-theme-assignment.dto.faketory";

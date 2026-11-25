@@ -1,7 +1,6 @@
 import { LOGGER_REDACTION_CENSOR, LOGGER_REDACTION_PATHS } from "@app/helpers/constants/logger.constants";
 
 import type { Params as PinoParameters } from "nestjs-pino";
-
 import type { LoggedRequest, LoggedResponse } from "@app/helpers/logger.helpers.types";
 
 function serializeRequestForLogging(request: LoggedRequest): LoggedRequest {

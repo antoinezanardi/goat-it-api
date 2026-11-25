@@ -1,5 +1,14 @@
-const PROMOTE_TO_PRIMARY_QUESTION_THEME_ASSIGNMENT_MODIFY_PAYLOAD = Object.freeze({
-  isPrimary: true,
-});
+type PromoteToPrimaryQuestionThemeAssignmentModifyPayload = {
+  isPrimary: boolean;
+};
 
-export { PROMOTE_TO_PRIMARY_QUESTION_THEME_ASSIGNMENT_MODIFY_PAYLOAD };
+function buildPromoteToPrimaryQuestionThemeAssignmentModifyPayload(): PromoteToPrimaryQuestionThemeAssignmentModifyPayload {
+  return { isPrimary: true };
+}
+
+const PROMOTE_TO_PRIMARY_QUESTION_THEME_ASSIGNMENT_MODIFY_PAYLOAD = Object.freeze(buildPromoteToPrimaryQuestionThemeAssignmentModifyPayload());
+
+export {
+  PROMOTE_TO_PRIMARY_QUESTION_THEME_ASSIGNMENT_MODIFY_PAYLOAD,
+  buildPromoteToPrimaryQuestionThemeAssignmentModifyPayload,
+};

@@ -119,6 +119,20 @@ import { QUESTION_STATUSES } from "@question/domain/constants/question.constants
 status: faker.helpers.arrayElement(QUESTION_STATUSES),
 ```
 
+The same rule applies to record/map shapes keyed by a domain union. Derive the keys from the constant tuple instead of listing them, so a new member appears automatically:
+
+```ts
+import { QUESTION_CATEGORIES } from "@question/domain/constants/question.constants";
+
+function createFakeCountsRecord<TKey extends string>(keys: readonly TKey[]): Record<TKey, number> {
+  // Acceptable as builder pattern for typed records from const tuple arrays
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  const counts = Object.fromEntries(keys.map(key => [key, faker.number.int({ min: 0, max: 20 })])) as Record<TKey, number>;
+
+  return counts;
+}
+```
+
 ### Optional fields
 
 Use `faker.helpers.maybe` so the field is randomly present or absent — this surfaces brittle tests
@@ -264,6 +278,7 @@ Follow the project-wide import order:
 ## Anti-patterns
 
 - **Hardcoding domain values** — use `faker.helpers.arrayElement(MY_CONSTANTS)` instead.
+- **Hardcoding record/map keys** — derive them from the constant tuple instead of repeating the union members.
 - **Relative imports** — always use path aliases.
 - **Default exports** — named exports only.
 - **Inconsistent shapes** — do not return `Set` in one call and `string[]` in another for the same

@@ -1,8 +1,8 @@
 import { QuestionAlreadyArchivedError } from "@question/domain/errors/question-already-archived/question-already-archived.error";
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
 import { QUESTION_STATUS_ARCHIVED } from "@question/domain/constants/question.constants";
-import type { Question } from "@question/domain/types/question.entities";
 
+import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**

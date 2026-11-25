@@ -13,7 +13,6 @@ import { QuestionMongooseRepository } from "@question/infrastructure/persistence
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING, QUESTION_SORTABLE_FIELDS, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS } from "@question/domain/constants/question.constants";
 import { QUESTION_SEMANTIC_SORT_ORDERS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 
 import { createMockedQuestionMongooseModel } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.model.mock";
 
@@ -28,10 +27,10 @@ import { createFakeQuestionThemeAssignmentCreationContract } from "@faketories/c
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 import { createFakeFindRandomQuestionsOptions } from "@faketories/contexts/question/domain/find-random-questions-options.faketory";
 
+import type { QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
 import type { UpdateQuery } from "mongoose";
 import type { Mock } from "vitest";
 import type { TestingModule } from "@nestjs/testing";
-
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";

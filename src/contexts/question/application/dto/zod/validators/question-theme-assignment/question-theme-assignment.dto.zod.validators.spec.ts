@@ -11,17 +11,17 @@ describe("Question Theme Assignment DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a boolean true is provided",
+        test: "should return true when a boolean true is provided.",
         value: true,
         expected: true,
       },
       {
-        test: "should return true when a boolean false is provided",
+        test: "should return true when a boolean false is provided.",
         value: false,
         expected: true,
       },
       {
-        test: "should return false when a string is provided",
+        test: "should return false when a string is provided.",
         value: "true",
         expected: false,
       },
@@ -45,17 +45,17 @@ describe("Question Theme Assignment DTO Zod Validators", () => {
       expected: boolean;
     }>([
       {
-        test: "should return true when a boolean true is provided",
+        test: "should return true when a boolean true is provided.",
         value: true,
         expected: true,
       },
       {
-        test: "should return true when a boolean false is provided",
+        test: "should return true when a boolean false is provided.",
         value: false,
         expected: true,
       },
       {
-        test: "should return false when a string is provided",
+        test: "should return false when a string is provided.",
         value: "true",
         expected: false,
       },

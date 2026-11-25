@@ -1,11 +1,11 @@
 import { z } from "zod";
 
-import { ADMIN_QUESTION_THEME_DTO } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
-
 import {
   zQuestionThemeAssignmentIsPrimary,
   zQuestionThemeAssignmentIsHint,
 } from "@question/application/dto/zod/validators/question-theme-assignment/question-theme-assignment.dto.zod.validators";
+
+import { ADMIN_QUESTION_THEME_DTO } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 
 /**
  * Validates one admin theme assignment: a localized theme plus its primary and hint flags.

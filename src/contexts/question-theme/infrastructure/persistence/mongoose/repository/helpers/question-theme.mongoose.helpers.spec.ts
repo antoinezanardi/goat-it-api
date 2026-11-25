@@ -1,7 +1,7 @@
+import { MONGO_DUPLICATE_KEY_ERROR_CODE } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
+
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 import { isMongoDuplicateKeyError, throwIfDuplicateKeyError } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers";
-
-import { MONGO_DUPLICATE_KEY_ERROR_CODE } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
 function createDuplicateKeyError(): Error & { code: number } {
   return Object.assign(new Error("duplicate key"), { code: MONGO_DUPLICATE_KEY_ERROR_CODE });

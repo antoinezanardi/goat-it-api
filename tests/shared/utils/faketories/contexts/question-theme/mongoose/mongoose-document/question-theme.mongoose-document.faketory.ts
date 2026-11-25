@@ -2,10 +2,10 @@ import { faker } from "@faker-js/faker";
 
 import { QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
 
-import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
-
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+
+import type { QuestionThemeMongooseDocumentStub } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.types.mock";
 
 function createFakeQuestionThemeDocument(questionThemeDocument: Partial<QuestionThemeMongooseDocumentStub> = {}): QuestionThemeMongooseDocumentStub {
   const documentId = questionThemeDocument._id?.toString() ?? faker.database.mongodbObjectId();

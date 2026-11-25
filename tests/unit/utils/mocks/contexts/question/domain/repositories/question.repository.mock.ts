@@ -1,10 +1,8 @@
-import type { Question } from "@question/domain/types/question.entities";
-
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionStats } from "@faketories/contexts/question/domain/question-stats/question-stats.faketory";
 
+import type { Question } from "@question/domain/types/question.entities";
 import type { Mock } from "vitest";
-
 import type { QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract, QuestionCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
 

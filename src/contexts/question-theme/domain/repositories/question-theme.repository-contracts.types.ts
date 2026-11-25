@@ -1,5 +1,4 @@
 import type { DEFAULT_QUESTION_THEME_STATUS } from "@question-theme/domain/constants/question-theme.constants";
-
 import type { LocalizedText, LocalizedTexts } from "@shared/domain/value-objects/locale/locale.types";
 
 type QuestionThemeCreationContract = {

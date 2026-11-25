@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
 import { QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
+
 import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
 @Schema({

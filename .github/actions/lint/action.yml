@@ -17,3 +17,7 @@ runs:
       id: lint
       shell: bash
       run: pnpm run lint
+
+    - name: Check Oxlint rules inventory and linter option parity 🔗
+      shell: bash
+      run: pnpm run lint:oxlint:check-rules

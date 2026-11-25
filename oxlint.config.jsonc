@@ -55,7 +55,12 @@
     "eslint/block-scoped-var": "error",
     "eslint/capitalized-comments": [
       "error",
-      "always"
+      "always",
+      {
+        "ignorePattern": "oxlint|eslint",
+        "ignoreInlineComments": true,
+        "ignoreConsecutiveComments": true
+      }
     ],
     "eslint/class-methods-use-this": "error",
     "eslint/complexity": "error",
@@ -84,12 +89,15 @@
       "error",
       {
         "exceptions": [
-          "T",
           "K",
+          "T",
+          "_",
           "i",
+          "j",
+          "k",
+          "t",
           "x",
-          "y",
-          "_"
+          "y"
         ]
       }
     ],
@@ -737,6 +745,7 @@
         "typescript/no-unsafe-argument": "error",
         "typescript/no-unsafe-assignment": "error",
         "typescript/no-unsafe-call": "error",
+        "typescript/no-unsafe-class-instance-assignment": "error",
         "typescript/no-unsafe-declaration-merging": "error",
         "typescript/no-unsafe-enum-assignment": "error",
         "typescript/no-unsafe-enum-comparison": "error",
@@ -882,7 +891,7 @@
     // ---- Override for domain and infrastructure errors -----
     {
       "files": [
-        "**/src/**/domain/**/*.errors.ts",
+        "**/src/**/domain/**/*.error.ts",
         "**/src/**/infrastructure/**/*.errors.ts"
       ],
       "rules": {
@@ -1201,6 +1210,16 @@
         "eslint/no-param-reassign": "off",
         "typescript/no-magic-numbers": "off",
         "typescript/unbound-method": "off"
+      }
+    },
+    // ---- Override for test surfaces -----
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/tests/**/*.ts"
+      ],
+      "rules": {
+        "typescript/no-unsafe-class-instance-assignment": "off"
       }
     },
     // ---- Override for declaration files -----

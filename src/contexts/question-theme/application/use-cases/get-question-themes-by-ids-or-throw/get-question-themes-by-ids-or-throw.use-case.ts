@@ -1,7 +1,6 @@
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
-
 import type { QuestionThemeRepository } from "@question-theme/domain/repositories/question-theme.repository.types";
 
 /**

@@ -4,7 +4,6 @@ import { QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_IT
 import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 
 import type { QueryFilter, UpdateWithAggregationPipeline } from "mongoose";
-
 import type { QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionMongooseDocument, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 

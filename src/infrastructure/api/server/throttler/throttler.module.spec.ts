@@ -13,7 +13,6 @@ import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/p
 
 import type { TestingModule } from "@nestjs/testing";
 import type { ThrottlerModuleOptions } from "@nestjs/throttler";
-
 import type { ThrottlerConfigFromEnv } from "@src/infrastructure/api/config/types/config.types";
 
 describe(ApiThrottlerModule, () => {

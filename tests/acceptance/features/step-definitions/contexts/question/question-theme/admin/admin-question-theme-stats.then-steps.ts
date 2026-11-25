@@ -13,7 +13,6 @@ import { expectRecordFieldValues, validateDataTableAndGetRows } from "@acceptanc
 
 import type { QuestionThemeStatsDto } from "@question-theme/application/dto/question-theme-stats/question-theme-stats.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the response should contain question themes stats with:$/u, function(this: GoatItWorld, dataTable: DataTable): void {

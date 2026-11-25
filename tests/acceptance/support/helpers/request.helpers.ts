@@ -1,7 +1,6 @@
 import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
 
 import type { FetchOptions } from "ofetch";
-
 import type { AppFetchOptions } from "@acceptance-support/types/app.types";
 
 function createFetchHeaders(options: AppFetchOptions): Record<string, string> {

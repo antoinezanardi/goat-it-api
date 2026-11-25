@@ -1,8 +1,7 @@
-import type { QuestionThemeAssignmentCreationCommand } from "@question/application/commands/question.commands";
-import type { Question } from "@question/domain/types/question.entities";
-
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
+import type { QuestionThemeAssignmentCreationCommand } from "@question/application/commands/question.commands";
+import type { Question } from "@question/domain/types/question.entities";
 import type { Mock } from "vitest";
 
 type AssignThemeToQuestionStub = {

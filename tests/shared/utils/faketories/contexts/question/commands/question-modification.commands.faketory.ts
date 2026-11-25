@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { QuestionModificationCommand } from "@question/application/commands/question.commands";
-
 import { createFakeQuestionModificationContract } from "@faketories/contexts/question/repository-contracts/question-modification/question-modification.repository-contracts.faketory";
+
+import type { QuestionModificationCommand } from "@question/application/commands/question.commands";
 
 function createFakeQuestionModificationCommand(overrides: Partial<QuestionModificationCommand> = {}): QuestionModificationCommand {
   return {

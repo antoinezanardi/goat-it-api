@@ -1,11 +1,11 @@
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import type { QuestionThemeAssignmentRemovalCommand } from "@question/application/commands/question.commands";
 import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 import { ensureQuestionThemeAssignmentIsRemovable } from "@question/domain/rules/question.rules";
 import { QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS } from "@question/domain/constants/question.constants";
-import type { Question } from "@question/domain/types/question.entities";
 
+import type { QuestionThemeAssignmentRemovalCommand } from "@question/application/commands/question.commands";
+import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**

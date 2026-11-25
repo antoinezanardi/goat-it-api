@@ -1,6 +1,6 @@
 import { QuestionNotFoundError } from "@question/domain/errors/question-not-found/question-not-found.error";
-import type { Question } from "@question/domain/types/question.entities";
 
+import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**

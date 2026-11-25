@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 
-import { ADMIN_QUESTION_THEME_DTO } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
-
 import { HEX_COLOR_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
+
+import { ADMIN_QUESTION_THEME_DTO } from "@question-theme/contracts/dto/admin-question-theme/admin-question-theme.dto.shape";
 
 describe("Admin Question Theme DTO Shape", () => {
   let validAdminQuestionThemeDto: {

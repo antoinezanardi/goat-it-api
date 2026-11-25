@@ -2,10 +2,11 @@ import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domai
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
 import { QuestionMaximumThemesError } from "@question/domain/errors/question-maximum-themes/question-maximum-themes.error";
 import { computeQuestionStatusFromAuthorRole, ensureQuestionThemeAssignmentIsModifiable, ensureQuestionThemeAssignmentIsRemovable, ensureQuestionThemeAssignmentsLimit, findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
-import type { QuestionCreationAuthorRole, QuestionCreationStatus } from "@question/domain/types/question.value-objects";
 
 import { createFakeQuestion, createFakeQuestionThemeAssignment } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
+
+import type { QuestionCreationAuthorRole, QuestionCreationStatus } from "@question/domain/types/question.value-objects";
 
 describe(computeQuestionStatusFromAuthorRole, () => {
   it.each<{
@@ -14,12 +15,12 @@ describe(computeQuestionStatusFromAuthorRole, () => {
     expected: QuestionCreationStatus;
   }>([
     {
-      test: "should return active when author role is admin",
+      test: "should return active when author role is admin.",
       input: "admin",
       expected: "active",
     },
     {
-      test: "should return pending when author role is ai",
+      test: "should return pending when author role is ai.",
       input: "ai",
       expected: "pending",
     },

@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 
-import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
-
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+
+import type { AdminQuestionContentDto } from "@question/application/dto/admin-question/admin-question-content/admin-question-content.dto.shape";
 
 function createFakeAdminQuestionContentDto(adminQuestionContentDto: Partial<AdminQuestionContentDto> = {}): AdminQuestionContentDto {
   return {

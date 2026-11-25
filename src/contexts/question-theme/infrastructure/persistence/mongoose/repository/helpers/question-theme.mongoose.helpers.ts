@@ -1,6 +1,6 @@
-import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-
 import { MONGO_DUPLICATE_KEY_ERROR_CODE } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
+
+import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
 
 import type { MongoDuplicateKeyError } from "@question-theme/infrastructure/persistence/mongoose/repository/helpers/question-theme.mongoose.helpers.types";
 

@@ -15,11 +15,6 @@ import {
 } from "@nestjs/common";
 import { ZodError } from "zod";
 
-import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
-import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
-import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
-import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-
 import { captureServerError } from "@src/infrastructure/api/observability/sentry/helpers/sentry.helpers";
 
 import { GENERIC_INTERNAL_SERVER_ERROR_BODY, NON_ERROR_THROWN, SENTRY_CAPTURE_FAILED_LOG_MESSAGE, UNKNOWN_SENTRY_CONTEXT_VALUE } from "@app/filters/global-exception/constants/global-exception.constants";
@@ -38,9 +33,13 @@ import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/ques
 import { QuestionThemeAssignmentAlreadyExistsError } from "@question/domain/errors/question-theme-assignment-already-exists/question-theme-assignment-already-exists.error";
 import { ReferencedQuestionThemeArchivedError } from "@question/domain/errors/referenced-question-theme-archived/referenced-question-theme-archived.error";
 
+import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
+import { QuestionThemeReferencedByLiveQuestionsError } from "@question-theme/domain/errors/question-theme-referenced-by-live-questions/question-theme-referenced-by-live-questions.error";
+import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
+import { QuestionThemeAlreadyArchivedError } from "@question-theme/domain/errors/question-theme-already-archived/question-theme-already-archived.error";
+
 import type { ArgumentsHost, ExceptionFilter, LoggerService } from "@nestjs/common";
 import type { FastifyReply } from "fastify";
-
 import type { SentryReportableRequest } from "@app/filters/global-exception/global-exception.filter.types";
 
 /**

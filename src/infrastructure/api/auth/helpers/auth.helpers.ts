@@ -4,12 +4,11 @@ import { UnauthorizedException } from "@nestjs/common";
 
 import { API_KEY_HEADER } from "@src/infrastructure/api/auth/constants/auth.constants";
 import { InvalidApiKeyError, MissingApiKeyError } from "@src/infrastructure/api/auth/errors/auth.errors";
-import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
 import { getSecurityEventRoute, logAuthFailedEvent } from "@shared/infrastructure/helpers/security-events/security-events.helpers";
 
+import type { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import type { ExecutionContext, LoggerService } from "@nestjs/common";
-
 import type { AuthFailureReason } from "@shared/infrastructure/helpers/security-events/security-events.helpers.types";
 import type { AugmentedFastifyRequest } from "@shared/infrastructure/http/types/fastify/fastify.types";
 

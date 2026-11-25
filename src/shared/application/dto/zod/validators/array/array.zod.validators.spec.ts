@@ -9,17 +9,17 @@ describe(zCreateFilterArray, () => {
     expected: boolean;
   }>([
     {
-      test: "should pass validation when valid array items are provided without min/max bounds",
+      test: "should pass validation when valid array items are provided without min/max bounds.",
       value: ["a", "b"],
       expected: true,
     },
     {
-      test: "should pass validation when undefined is provided",
+      test: "should pass validation when undefined is provided.",
       value: undefined,
       expected: true,
     },
     {
-      test: "should fail validation when duplicate values are provided",
+      test: "should fail validation when duplicate values are provided.",
       value: ["a", "a"],
       expected: false,
     },
@@ -57,22 +57,22 @@ describe(zCreateFilterArray, () => {
     expected: boolean;
   }>([
     {
-      test: "should fail validation when array is below the minItems bound",
+      test: "should fail validation when array is below the minItems bound.",
       value: ["a"],
       expected: false,
     },
     {
-      test: "should pass validation when array meets the minItems bound",
+      test: "should pass validation when array meets the minItems bound.",
       value: ["a", "b"],
       expected: true,
     },
     {
-      test: "should pass validation when array meets the maxItems bound",
+      test: "should pass validation when array meets the maxItems bound.",
       value: ["a", "b"],
       expected: true,
     },
     {
-      test: "should fail validation when array exceeds the maxItems bound",
+      test: "should fail validation when array exceeds the maxItems bound.",
       value: ["a", "b", "c"],
       expected: false,
     },
@@ -89,17 +89,17 @@ describe(zCreateFilterArray, () => {
     expected: boolean;
   }>([
     {
-      test: "should fail validation when array is below the minItems bound with both min and max",
+      test: "should fail validation when array is below the minItems bound with both min and max.",
       value: ["a"],
       expected: false,
     },
     {
-      test: "should pass validation when array is within both minItems and maxItems bounds",
+      test: "should pass validation when array is within both minItems and maxItems bounds.",
       value: ["a", "b"],
       expected: true,
     },
     {
-      test: "should fail validation when array exceeds the maxItems bound with both min and max",
+      test: "should fail validation when array exceeds the maxItems bound with both min and max.",
       value: ["a", "b", "c", "d"],
       expected: false,
     },

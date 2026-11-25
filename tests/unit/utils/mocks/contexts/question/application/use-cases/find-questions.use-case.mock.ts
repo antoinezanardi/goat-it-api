@@ -1,7 +1,6 @@
-import type { Question } from "@question/domain/types/question.entities";
-
 import { createFakeQuestion } from "@faketories/contexts/question/entity/question.entity.faketory";
 
+import type { Question } from "@question/domain/types/question.entities";
 import type { Mock } from "vitest";
 
 type FindQuestionsUseCaseStub = {

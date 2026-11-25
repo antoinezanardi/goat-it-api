@@ -6,9 +6,10 @@ import { ZodResponse } from "nestjs-zod";
 import { SWAGGER_TAGS } from "@src/infrastructure/api/server/swagger/constants/swagger.constants";
 import { THROTTLER_SKIPPED_TIERS } from "@src/infrastructure/api/server/throttler/constants/throttler.constants";
 
-import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 import { AppMetadataNestZodDto } from "@app/dto/app-metadata/app-metadata.dto";
 import { AppService } from "@app/providers/services/app.service";
+
+import type { AppMetadataDto } from "@app/dto/app-metadata/app-metadata.dto.shape";
 
 @Controller()
 export class AppController {

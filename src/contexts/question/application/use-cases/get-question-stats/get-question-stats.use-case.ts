@@ -1,6 +1,6 @@
 import { createQuestionStatsDtoFromStats } from "@question/application/mappers/question-stats/question-stats.mappers";
-import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 
+import type { QuestionStatsDto } from "@question/application/dto/question-stats/question-stats.dto.shape";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 
 /**
