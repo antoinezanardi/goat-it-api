@@ -97,7 +97,7 @@ Never bypass the hooks with `--no-verify`.
 | `build`                 | `install`    | Typecheck, build the NestJS application and verify `dist/main.js`.                                     |
 | `build-schemas-package` | `install`    | Typecheck `@goat-it/schemas`, build it with tsdown, run a `pnpm pack` sanity check and upload `dist/`. |
 | `lint-codebase`         | `install`    | Run Oxlint and ESLint, plus the Oxlint rule inventory and linter option-parity checks, the workflow run-body expression check and the tracked-env-file guard. |
-| `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=high` and the production license allowlist check.                 |
+| `audit-dependencies`    | `install`    | Run `pnpm audit --prod --audit-level=low`, the full-tree `pnpm audit --audit-level=high` and the production license allowlist check. |
 | `unit-tests`            | `install`    | Run `pnpm run test:unit:cov` and export test/coverage counts.                                          |
 | `mutation-tests`        | `install`    | Run `pnpm run test:mutation:ci`, publish to the Stryker Dashboard and upload reports.                  |
 | `acceptance-tests`      | `build`      | Run the Cucumber suite through the `acceptance-tests` composite action.                                |
@@ -125,8 +125,8 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 - **Tracked env files.** `scripts/check-tracked-env-files.sh` (exposed as `pnpm run check:tracked-env-files`) fails when the index contains any `.env*` path other than `env/.env.example` and `env/.env.test`; it runs in the `lint-codebase` composite action and in the pre-commit hook.
 - **Least-privilege permissions and tokens.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`. Tokens are never exported at workflow or job scope: `GITHUB_TOKEN` and `SEMANTIC_RELEASE_TOKEN` are bound to the individual steps that call `gh`, semantic-release or the changelog script, so third-party actions in the same job never inherit them.
 - **No expressions in shell bodies.** `pnpm run check:workflows:expressions` (part of `pnpm run lint`, run by the `lint-codebase` job) fails when a `${{ … }}` expression appears inside a `run:` body in `.github/workflows/**` or `.github/actions/**`. Workflow values reach the shell through `env:` and quoted variables instead, which removes the template-injection path from the deploy, Docker and publication jobs.
-- **Dependency audit.** `.github/actions/audit-dependencies` installs the project, runs `pnpm audit --prod --audit-level=high` and then the license check. The `audit-dependencies` job fails the build on high or critical production advisories. Development-only advisories do not block the pipeline.
-- **Scheduled audit.** `scheduled-dependency-audit.yml` runs every Monday at 05:00 UTC (and on `workflow_dispatch`) from the default branch. It repeats the blocking production audit and writes the full dependency tree advisory counts to the job summary as a non-blocking report through `scripts/report-dependency-audit.sh`, which prints the same Markdown to standard output when `GITHUB_STEP_SUMMARY` is empty.
+- **Dependency audit.** `.github/actions/audit-dependencies` installs the project, runs `pnpm audit --prod --audit-level=low` (any production advisory blocks), then `pnpm audit --audit-level=high` (high or critical development advisories block) and finally the license check. The `audit-dependencies` job fails the build on either result. The scoped overrides and the accepted development findings are recorded in [dependencies.md](dependencies.md).
+- **Scheduled audit.** `scheduled-dependency-audit.yml` runs every Monday at 05:00 UTC (and on `workflow_dispatch`) from the default branch. It repeats both blocking audits and writes the full dependency tree advisory counts to the job summary as a non-blocking report through `scripts/report-dependency-audit.sh`, which prints the same Markdown to standard output when `GITHUB_STEP_SUMMARY` is empty.
 - **License allowlist.** `scripts/check-licenses.ts` builds the production SBOM with `pnpm sbom --sbom-format cyclonedx --prod` and compares each component's SPDX expression with `configs/licenses/allowed-licenses.json`. The closure is derived from the root `package.json` (`dependencies` and `optionalDependencies`) and the SBOM dependency graph, because the `--prod` SBOM lists dev-only packages too. Permissive licenses are allowed globally; `sentry` (`FSL-1.1-Apache-2.0`) and `caniuse-lite` (`CC-BY-4.0`) are package-scoped exceptions. A new copyleft, source-available or unknown expression fails the job.
 - **Built-output secret scan.** `scripts/check-secrets-in-built-output.sh` (exposed as `pnpm run check:secrets-in-built-output`) scans `dist/` for the values of environment variables whose names contain `SECRET`, `TOKEN`, `PASSWORD`, `PRIVATE_KEY` or `API_KEY`. It runs in the `build` composite action and in the Docker build stage before `pnpm prune --prod`. It fails closed when the scan itself errors, and it never prints the secret value. Multiline values are only scanned through their first line; that limitation is documented in the script.
 - **Mutation testing is retained.** The `mutation-tests` action and job, including the Stryker Dashboard integration, are retained. Its artifact upload steps follow the same SHA-pinning rule as every other third-party action.
@@ -177,10 +177,13 @@ Creating the GitHub release triggers the production deployment workflow.
 | Commit type                                                       | Release    |
 |-------------------------------------------------------------------|------------|
 | `feat`                                                            | minor      |
+| `feat!`, `fix!`, any type with `!` or a `BREAKING CHANGE:` footer | major      |
 | `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `ci`, `chore` | patch      |
 | `build`, `revert`                                                 | no release |
 
 The changelog is grouped by commit type (features, bug fixes, docs, styles, refactor, performance, tests, CI, chore) and enriched with a dependency table.
+
+A commit with `!` after its type, or with a `BREAKING CHANGE:` footer, analyzes to `major`. The rule is the first entry in `RELEASE_RULES` (`configs/semantic-release/release.config.ts`).
 
 ## Deployment
 
