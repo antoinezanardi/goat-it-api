@@ -20,21 +20,21 @@ fi
 
 cd "$repository_root"
 
-if printf '%s\n' "$(git ls-files | grep -E '(^|/)\.env' || true)" |
-  grep -vxF -e "env/.env.example" -e "env/.env.test" |
-  grep -q .
-then
-  echo "Unexpected tracked env file(s):"
-  git ls-files | grep -E '(^|/)\.env' | grep -vxF -e "env/.env.example" -e "env/.env.test"
+tracked_env_files=$(git ls-files -z | tr '\000' '\n' | grep -E '(^|/)\.env' || true)
+unexpected_tracked_env_files=$(printf '%s\n' "$tracked_env_files" | grep -vxF -e "env/.env.example" -e "env/.env.test" || true)
+
+if [ -n "$unexpected_tracked_env_files" ]; then
+  echo "❌ Unexpected tracked env file(s):"
+  printf '%s\n' "$unexpected_tracked_env_files"
   echo "Only env/.env.example and env/.env.test may be tracked."
   exit 1
 fi
 
 for allowed_tracked_env_file in "env/.env.example" "env/.env.test"; do
-  if ! git ls-files | grep -E '(^|/)\.env' | grep -qxF "$allowed_tracked_env_file"; then
-    echo "$allowed_tracked_env_file is expected to be tracked but is not."
+  if ! printf '%s\n' "$tracked_env_files" | grep -qxF "$allowed_tracked_env_file"; then
+    echo "❌ $allowed_tracked_env_file is expected to be tracked but is not."
     exit 1
   fi
 done
 
-echo "Only env/.env.example and env/.env.test are tracked."
+echo "✅ Only env/.env.example and env/.env.test are tracked."

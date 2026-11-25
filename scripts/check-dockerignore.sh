@@ -65,6 +65,8 @@ configs/bruno
 **/*.pem
 *.key
 **/*.key
+*.p12
+**/*.p12
 docker-compose*.yml
 Dockerfile*
 REQUIRED
@@ -93,7 +95,7 @@ tsconfig*
 *.sh
 FORBIDDEN
 
-if grep -q '^!' "$dockerignore_file"; then
+if grep -qE '^[[:space:]]*!' "$dockerignore_file"; then
   report_failure "Negation lines (starting with '!') are not allowed in $dockerignore_file."
 fi
 

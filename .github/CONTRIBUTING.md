@@ -313,12 +313,16 @@ This repository uses Husky hooks stored in the `.husky/` directory to enforce so
 
   This ensures commit messages follow the Conventional Commits rules configured in `configs/commitlint/.commitlintrc.json`.
 
-- `.husky/pre-commit` — validates branch names and runs linting/tests on staged files:
+- `.husky/pre-commit` — validates branch names, runs linting/tests on staged files and runs the repository guards whose inputs changed:
 
   ```bash
   <package-manager> run typecheck
   <package-manager> run validate:branch-name
   <package-manager> run lint:staged:fix
+  <package-manager> run check:workflows:expressions   # only when workflows, actions or its script changed
+  <package-manager> run check:tracked-env-files
+  <package-manager> run check:dockerfile-pins         # only when Dockerfile, .dockerignore or a guard script changed
+  <package-manager> run check:dockerignore            # only when Dockerfile, .dockerignore or a guard script changed
   <package-manager> run test:unit:staged
   ```
 

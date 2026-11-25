@@ -5,13 +5,13 @@ author: Antoine ZANARDI
 runs:
   using: composite
   steps:
-    - name: Install project 📦
-      uses: ./.github/actions/install-project
-
     - name: Check tracked env files 🔐
       id: check-tracked-env-files
       shell: bash
-      run: pnpm run check:tracked-env-files
+      run: sh scripts/check-tracked-env-files.sh
+
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
 
     - name: Check and lint code 🔍
       id: lint

@@ -45,4 +45,4 @@ env | while IFS="=" read -r variable_name variable_value; do
   esac
 done
 
-echo "No secret values found in $output_directory."
+echo "✅ No secret values found in $output_directory."

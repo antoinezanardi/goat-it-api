@@ -21,6 +21,12 @@ known_stages=""
 line_number=0
 violation_count=0
 
+remember_stage() {
+  if [ -n "$1" ]; then
+    known_stages="$known_stages $1"
+  fi
+}
+
 while IFS= read -r line || [ -n "$line" ]; do
   line_number=$((line_number + 1))
 
@@ -45,16 +51,16 @@ while IFS= read -r line || [ -n "$line" ]; do
   image="${parsed_from%% *}"
   stage="${parsed_from#* }"
 
-  if [ -n "$stage" ]; then
-    known_stages="$known_stages $stage"
-  fi
-
   if [ -z "$image" ] || [ "$image" = "scratch" ]; then
+    remember_stage "$stage"
     continue
   fi
 
   case " $known_stages " in
-    *" $image "*) continue ;;
+    *" $image "*)
+      remember_stage "$stage"
+      continue
+      ;;
   esac
 
   digest="${image##*@}"
@@ -73,6 +79,8 @@ while IFS= read -r line || [ -n "$line" ]; do
       violation_count=$((violation_count + 1))
       ;;
   esac
+
+  remember_stage "$stage"
 done < "$dockerfile_path"
 
 final_stage_line=$(grep -n -iE '^[[:space:]]*FROM[[:space:]]' "$dockerfile_path" | tail -n 1 | cut -d: -f1 || true)
@@ -84,23 +92,29 @@ fi
 
 apk_violation_count=$(awk -v file="$dockerfile_path" -v final_stage_line="$final_stage_line" '
   NR > final_stage_line && /^[[:space:]]*RUN[[:space:]].*apk[[:space:]]+add([[:space:]]|$)/ {
-    line = $0
-    sub(/^.*apk[[:space:]]+add[[:space:]]*/, "", line)
-    count = split(line, tokens, /[[:space:]]+/)
-    skip_next = 0
-    for (i = 1; i <= count; i++) {
-      token = tokens[i]
-      if (skip_next) { skip_next = 0; continue }
-      if (token == "--virtual") { skip_next = 1; continue }
-      if (token == "\\") { continue }
-      if (token == "#") { break }
-      if (token ~ /^[;&|<>]+$/) { break }
-      if (token ~ /^-/) { continue }
-      if (token == "") { continue }
-      if (token !~ /=/) {
-        printf "%s:%d: apk package %s is not version-pinned.\n", file, NR, token > "/dev/stderr"
-        violations++
+    remainder = $0
+    while (match(remainder, /apk[[:space:]]+add[[:space:]]+/)) {
+      remainder = substr(remainder, RSTART + RLENGTH)
+      segment = remainder
+      if (match(segment, /[&;|<>]/)) {
+        segment = substr(segment, 1, RSTART - 1)
       }
+      count = split(segment, tokens, /[[:space:]]+/)
+      skip_next = 0
+      for (i = 1; i <= count; i++) {
+        token = tokens[i]
+        if (skip_next) { skip_next = 0; continue }
+        if (token == "--virtual") { skip_next = 1; continue }
+        if (token == "\\") { continue }
+        if (token == "#") { break }
+        if (token ~ /^-/) { continue }
+        if (token == "") { continue }
+        if (token !~ /=/) {
+          printf "%s:%d: apk package %s is not version-pinned.\n", file, NR, token > "/dev/stderr"
+          violations++
+        }
+      }
+      remainder = substr(remainder, length(segment) + 1)
     }
   }
   END { print violations + 0 }
@@ -109,8 +123,8 @@ apk_violation_count=$(awk -v file="$dockerfile_path" -v final_stage_line="$final
 violation_count=$((violation_count + apk_violation_count))
 
 if [ "$violation_count" -ne 0 ]; then
-  echo "$violation_count pin violation(s) found in $dockerfile_path." >&2
+  echo "❌ $violation_count pin violation(s) found in $dockerfile_path." >&2
   exit 1
 fi
 
-echo "Every registry image is tagged and digest-pinned, and every apk package is version-pinned in $dockerfile_path."
+echo "✅ Every registry image is tagged and digest-pinned, and every apk package is version-pinned in $dockerfile_path."
