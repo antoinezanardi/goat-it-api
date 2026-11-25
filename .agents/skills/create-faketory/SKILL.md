@@ -1,6 +1,6 @@
 ---
 name: create-faketory
-description: Scaffold a new faketory (test data factory) for a domain entity, DTO, command, repository contract, or Mongoose document following Goat It API conventions, including correct placement, typing, faker usage and export style.
+description: "Use when a new entity, DTO, command, repository contract or Mongoose document needs test data, to scaffold a typed faketory under tests/shared/utils/faketories/."
 disable-model-invocation: true
 ---
 

@@ -19,6 +19,10 @@ permission:
     "pnpm test:mutation*": "allow"
     "pnpm lint*": "allow"
     "pnpm typecheck*": "allow"
+    "* .env.*": "ask"
+    "*/.env.*": "ask"
+    "*.env": "ask"
+    "cat env/.env.example": "allow"
   read: allow
   grep: allow
   glob: allow

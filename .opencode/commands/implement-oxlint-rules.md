@@ -1,3 +1,8 @@
+---
+description: Implement every missing oxlint rule into oxlint.config.jsonc, fetching each rule's documentation and inserting it after user validation.
+agent: build
+---
+
 # Implement missing oxlint rules
 
 ## Task
@@ -133,3 +138,4 @@ After all rules have been processed:
 - The proposed value defaults to `"error"` when no ESLint match is found
 - When an ESLint match is `"off"`, propose `"off"` for the oxlint rule too (user may still override)
 - **NEVER** batch rules, always process one by one, even if it takes time
+- **DO NOT COMMIT.** The user is the only one who commits. Never run `git add`, `git commit` or `git push`; propose a ready-to-copy conventional commit message instead

@@ -75,6 +75,8 @@ body:
       label: Version or commit
       description: Which version or commit are you using?
       placeholder: e.g. v1.25.0 or a commit SHA
+    validations:
+      required: true
 
   - type: textarea
     id: logs

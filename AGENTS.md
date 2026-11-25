@@ -122,7 +122,7 @@ Evaluate all items at the end of implementation. Each applies only if its condit
 ### Formatting
 
 - Indent: 2 spaces; Quotes: double; Semicolons: always; Trailing commas: multiline
-- Max line length: 180; Max lines per function: 30 (except tests)
+- Max line length: 180 (except `*.md` and `*.json`, where `.editorconfig` sets `max_line_length = unset`); Max lines per function: 30 (except tests)
 - No final newline (except `.yml`, `.sh`, `.env*`, `.json`, `.md`); EOL: LF
 
 ### Naming
