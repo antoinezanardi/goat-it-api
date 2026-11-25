@@ -120,7 +120,7 @@
     "@stylistic/eslint-plugin": "^5.10.0",
     "@swc/cli": "^0.8.2",
     "@swc/core": "^1.16.22",
-    "@types/node": "^26.6.6",
+    "@types/node": "^26.6.10",
     "@typescript-eslint/eslint-plugin": "^8.74.0",
     "@typescript-eslint/parser": "^8.74.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
