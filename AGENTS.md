@@ -246,6 +246,7 @@ The GOAT audit ("Greatest Of All Time" × Goat It) is the repository-wide, evide
 - `docs/superpowers/`        – Agent workflow artifacts: `specs/` (design specs from brainstormer), `plans/` (implementation plans from writing-plans).
 - `docs/architecture.md`     – **Canonical** file placement, naming, dependency direction and companion rules. Read before any file change.
 - `docs/ci-cd.md`            – Branching, commits, hooks, pull requests, CI and deployment.
+- `docs/scripts.md`          – Every `pnpm run` script, grouped by purpose, with internal entries marked.
 - `docs/operations.md`       – Health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - `docs/security.md`         – Security posture: authentication, validation, CORS, secrets, disclosure and known limitations.
 - `docs/dependencies.md`     – Scoped overrides, duplicate-major inventory and dependency-audit policy.

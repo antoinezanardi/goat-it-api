@@ -18,7 +18,7 @@
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/goat-it-api.svg)](https://GitHub.com/antoinezanardi/goat-it-api/releases/)
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
-[![GitHub license](https://img.shields.io/github/license/antoinezanardi/goat-it-api.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/goat-it-api.svg/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/antoinezanardi/goat-it-api.svg)](https://github.com/antoinezanardi/goat-it-api/blob/main/LICENSE)
 ![Dependencies](https://img.shields.io/badge/-dependencies-black?style=flat-square&logoColor=white&logo=pnpm&color=B76507)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/goat-it-api/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/goat-it-api?targetFile=package.json)
 
 [![Tests count](https://byob.yarr.is/antoinezanardi/goat-it-api/unit-tests-count)](https://byob.yarr.is/antoinezanardi/goat-it-api/tests-count)
@@ -45,7 +45,7 @@
 
 ## <a name="what-is-this-api">🐐 What is this API ?</a>
 
-Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.
+Goat It API is the headless backend that stores and serves the quiz content — questions and question themes — for the Goat It game.
 
 ## <a name="installation">🔨 Installation</a>
 
@@ -57,21 +57,49 @@ To install this project, you will need to have on your machine :
 
 👆 _Click on the badges above to go to the corresponding website._
 
-We recommend using the node version specified in the **[.node-version](configs/node/.node-version)** file or in the **[Dockerfile](Dockerfile)**.
+- **Node.js** — the required floor is declared in **[package.json](package.json)** (`engines.node`) and the version used by CI and tooling is pinned in **[configs/node/.node-version](configs/node/.node-version)**.
+- **pnpm** — the exact version is declared in **[package.json](package.json)** (`packageManager`).
+- **MongoDB** — a reachable instance; a local server on port `27017` is enough, and the optional Docker command below starts one.
+- **Docker** — optional for development (the MongoDB command below) and required for the acceptance-test MongoDB and the Docker image builds.
 
-**If you don't have `pnpm` installed, you can still use `npm` for all commands below, but we recommend to use `pnpm` for faster and more reliable installations.**
-
-Then, run the following commands :
+Then, install the dependencies and Husky hooks :
 
 ```bash
 # Install dependencies and Husky hooks
 pnpm install
+```
 
+### ⚙️ Environment
+
+```bash
+# Create your local environment file
+cp env/.env.example env/.env
+```
+
+`env/.env` is git-ignored and is loaded when `NODE_ENV` is unset. Replace the three authentication placeholders with your own values:
+
+- `API_KEY_HMAC_SECRET` — at least 32 characters
+- `ADMIN_API_KEY` and `GAME_API_KEY` — at least 24 characters each
+
+Start a MongoDB instance and keep `MONGODB_HOST`/`MONGODB_PORT` pointed at it. For example:
+
+```bash
+# Start a local MongoDB for development (port 27017)
+docker run -d --name goat-it-mongodb -p 27017:27017 mongo:9
+```
+
+The example file uses `MONGODB_HOST=0.0.0.0`, a bind-style address; if your MongoDB only listens on loopback, set `MONGODB_HOST=127.0.0.1`. Do not point the dev server at the disposable acceptance-test container.
+
+### ▶️ Run
+
+```bash
 # Run the app in dev mode
 pnpm run start:dev
 ```
 
-The above command will start the app in development mode and watch for changes on local. The dev server compiles with `SWC` and executes the output through the `tsx/esm` loader, so the path aliases and extensionless imports resolve on Node ESM.
+The API listens on `http://localhost:3000` (`SERVER_PORT`) and serves the Swagger UI at `http://localhost:3000/docs`.
+
+The dev server compiles with `SWC` and executes the output through the `tsx/esm` loader, so the path aliases and extensionless imports resolve on Node ESM.
 
 ## <a name="build">🚀 Build</a>
 
@@ -108,6 +136,20 @@ pnpm run docker:build:linux/amd64
 ```
 
 ## <a name="tests">💯 Tests</a>
+
+### ✅ Quality gates
+
+Run these five commands in this order before opening a PR. CI runs the same gates, with `lint` in check mode and the CI mutation profile.
+
+```bash
+pnpm run lint:fix
+pnpm run typecheck
+pnpm run test:unit:cov
+pnpm run test:mutation
+pnpm run test:acceptance
+```
+
+The acceptance gate needs the disposable MongoDB: run `pnpm run docker:acceptance-tests:start` before the sequence (see Acceptance tests below).
 
 ### 🧪 Unit tests
 
@@ -146,10 +188,17 @@ This project uses `Cucumber` for acceptance tests.
 
 All related files scenarios and features are located in the **[tests/acceptance](tests/acceptance)** directory.
 
+The suite needs the disposable MongoDB container:
+
 ```bash
+# Start the acceptance-test MongoDB
+pnpm run docker:acceptance-tests:start
+
 # Run acceptance tests
 pnpm run test:acceptance
 ```
+
+`pnpm run docker:acceptance-tests:stop` stops the container and keeps its volume; `pnpm run docker:acceptance-tests:reset` discards the volume and starts a fresh MongoDB.
 
 ### 👽 Mutant testing
 
@@ -253,12 +302,6 @@ pnpm run script:clean-pr-description <pr-number>
 
 This script removes numbered diffhunk links (e.g., `[[1]](diffhunk://...)`) from a PR description. These links are automatically generated by GitHub Copilot but can clutter the summary. A GitHub Actions workflow automatically runs this script when PRs targeting `develop` are opened or edited.
 
-### 📣 To all IntelliJ IDEs users (IntelliJ, Webstorm, PHPStorm, etc.)
-
-All the above commands are available in the **[.run/](.run/)** directory as run configurations.
-
-You can add them as **run configurations** in your IDE.
-
 ## <a name="documentation">📚 Documentation</a>
 
 - **[Architecture and file-placement conventions](docs/architecture.md)** — where every file belongs, how it is named and what may depend on it.
@@ -273,6 +316,7 @@ You can add them as **run configurations** in your IDE.
 - **[Privacy](docs/privacy.md)** — data inventory, logging and telemetry PII policy, retention and legal posture.
 - **[Operations](docs/operations.md)** — health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
+- **[Package scripts](docs/scripts.md)** — every `pnpm run` script, grouped by purpose, with internal hook/CI-only entries marked.
 - **[Bruno collection](docs/bruno.md)** — API collection setup and usage.
 - **[Unit tests](docs/unit-tests.md)** — Vitest conventions per file type.
 - **[Acceptance tests](docs/acceptance-tests.md)** — Cucumber, fixtures, payloads and steps.

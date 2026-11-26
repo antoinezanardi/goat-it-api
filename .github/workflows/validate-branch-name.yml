@@ -1,0 +1,37 @@
+name: 🌿 Validate Branch Name Workflow
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-branch-name:
+    name: Validate Branch Name 🌿
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+      - name: Validate branch name 🌿
+        working-directory: configs/validate-branch-name
+        shell: bash
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: pnpm exec validate-branch-name --test "$BRANCH_NAME"

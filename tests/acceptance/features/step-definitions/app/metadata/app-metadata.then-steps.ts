@@ -8,7 +8,7 @@ import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the application metadata should be returned$/u, function(this: GoatItWorld): void {
   const appMetadata = this.expectLastResponseJson<AppMetadataDto>(APP_METADATA_DTO);
-  const expectedDescription = "🐐 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.";
+  const expectedDescription = "🐐 Headless backend that stores and serves the Goat It quiz content (questions and question themes).";
 
   expect(appMetadata.name).toBe("Goat It API");
   expect(appMetadata.version).toMatch(/^\d+\.\d+\.\d+(?:-.+)?$/u);

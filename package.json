@@ -1,7 +1,7 @@
 {
   "name": "goat-it-api",
   "version": "1.25.0",
-  "description": "🐐 Goat It API is a fast and efficient API built with NestJS and Fastify, designed to provide seamless backend services for Goat It applications.",
+  "description": "🐐 Headless backend that stores and serves the Goat It quiz content (questions and question themes).",
   "private": true,
   "keywords": [
     "goat-it",
