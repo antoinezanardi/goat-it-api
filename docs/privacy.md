@@ -31,7 +31,7 @@ The only author-related data is the `author` sub-document (`file:src/contexts/qu
 
 - `role`: one of `admin`, `game`, `ai` — `file:src/contexts/question/domain/constants/question.constants.ts`;
 - `name` (optional): a free-text display string bounded to 3–30 characters (same constants file), not a verified identity — nothing excludes a real person's name, so it may contain personal data; it links to no user record;
-- `gameId` (optional): an identifier the consuming game may attach; the API does not interpret or resolve it.
+- `gameId` (required when `role` is `game`, absent on other roles): an identifier the consuming game may attach; the API does not interpret or resolve it.
 
 What the API never persists in MongoDB: IP addresses, user agents, device identifiers, emails, player profiles, scores, answer histories, or any session/consent record. Request logs are the only request-derived output: a normal request line carries a random request ID, the method, the path without its query string, the status code and the response time, and the structured security events carry only the fields listed under Logs and error tracking. Categories and statuses are content metadata (`file:src/contexts/question/domain/constants/question.constants.ts`); the adult-content flag marks content, not its consumers. The API keys described in `docs/security.md` are shared service credentials held by the server-side consumer, not personal data: they are HMAC-hashed at boot, deleted from `process.env`, and never enter MongoDB (`file:src/infrastructure/api/config/providers/services/app-config.service.ts`). Test environments only ever hold generated content: `env/.env.test` keys are test-only values and fixtures come from `tests/shared/utils/faketories/`.
 

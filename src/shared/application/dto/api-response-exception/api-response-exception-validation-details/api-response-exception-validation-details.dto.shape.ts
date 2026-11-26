@@ -29,6 +29,10 @@ const API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO = z.strictObject({
     .optional()
     .describe("Expected high-level value format (e.g. 'uuid', 'email') when applicable")
     .meta({ example: "email" }),
+  note: z.string()
+    .optional()
+    .describe("Additional detail about the validation issue when applicable")
+    .meta({ example: "Invalid URL format" }),
   pattern: z.string()
     .optional()
     .describe("Expected regex pattern when applicable")

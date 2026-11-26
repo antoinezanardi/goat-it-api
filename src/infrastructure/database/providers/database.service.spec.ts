@@ -66,6 +66,7 @@ describe(DatabaseService, () => {
         serverSelectionTimeoutMS: 5000,
         connectTimeoutMS: 5000,
         socketTimeoutMS: 10_000,
+        bufferCommands: false,
         retryDelay: 3000,
         retryAttempts: 5,
         dbName: "goat-it-test",
@@ -73,6 +74,12 @@ describe(DatabaseService, () => {
       };
 
       expect(options).toStrictEqual(expectedOptions);
+    });
+
+    it("should disable mongoose command buffering when called.", () => {
+      const options = services.database.createMongooseOptions();
+
+      expect(options.bufferCommands).toBe(false);
     });
 
     it("should set up connection event listeners when onConnectionCreate option is called.", () => {

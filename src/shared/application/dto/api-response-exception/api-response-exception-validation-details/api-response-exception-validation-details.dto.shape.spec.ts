@@ -11,6 +11,7 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     received?: string;
     origin?: string;
     format?: string;
+    note?: string;
     pattern?: string;
     minimum?: number;
     maximum?: number;
@@ -199,6 +200,27 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
       };
 
       expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.format.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
+    });
+  });
+
+  describe("note", () => {
+    it("should throw a zod error when assigned a non-string value (when present).", () => {
+      const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, note: 123 };
+
+      expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+    });
+
+    it("should have correct description when accessing the description.", () => {
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.note.description).toBe("Additional detail about the validation issue when applicable");
+    });
+
+    it("should have correct metadata when accessing the meta.", () => {
+      const expectedMetadata = {
+        description: "Additional detail about the validation issue when applicable",
+        example: "Invalid URL format",
+      };
+
+      expect(API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.shape.note.meta()).toStrictEqual<Record<string, unknown>>(expectedMetadata);
     });
   });
 

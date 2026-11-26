@@ -118,6 +118,7 @@ function mapDataTableRowToValidationDetails(row: ValidationDetailsRow): ApiRespo
     received: row.received,
     origin: row.origin,
     format: row.format,
+    note: row.note,
     pattern: row.pattern,
     minimum: row.minimum,
     maximum: row.maximum,
