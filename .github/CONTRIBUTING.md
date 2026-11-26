@@ -99,6 +99,8 @@ pnpm run test:mutation
 pnpm run test:acceptance
 ```
 
+The acceptance gate needs the disposable MongoDB: run `pnpm run docker:acceptance-tests:start` before the sequence (see [Acceptance tests](#acceptance-tests-docker-required) below).
+
 Every `package.json` script, including internal hook/CI-only ones, is listed in [docs/scripts.md](../docs/scripts.md).
 
 ### Lint
@@ -173,7 +175,7 @@ The canonical branching, commit, hook, PR and deployment reference is [docs/ci-c
 - Branch names must follow the validation config at `configs/validate-branch-name/.validate-branch-namerc.json`.
 
 > [!CAUTION]
-> Branch names that do not match the configured pattern are rejected by the pre-commit hook — no CI job validates branch names. Validate locally with `pnpm run validate:branch-name` before pushing.
+> Branch names that do not match the configured pattern are rejected by the pre-commit hook and re-validated by the `validate-branch-name` CI job on pull requests targeting `develop`. Validate locally with `pnpm run validate:branch-name` before pushing.
 
 ### Pattern (regex)
 

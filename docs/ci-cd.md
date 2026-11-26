@@ -38,6 +38,9 @@ File placement, naming and dependency rules belong to [architecture.md](architec
 - The validator (`configs/validate-branch-name/.validate-branch-namerc.json`, run through
   `pnpm run validate:branch-name`) only enforces `<type>/<non-empty suffix>`; the optional
   `<scope>-<short-desc>` part is a convention, not enforced.
+- Pull requests targeting `develop` re-validate the head branch name in CI through
+  `validate-branch-name.yml`; once the `Validate Branch Name 🌿` job is a required check on
+  `develop`, a bypassed hook cannot merge a malformed branch name.
 - Create a correctly named branch interactively with `pnpm run script:create-branch`.
 
 ## Commits
@@ -83,7 +86,7 @@ Never bypass the hooks with `--no-verify`.
 ### Trigger and concurrency
 
 - `build.yml` runs on every `pull_request` targeting `main` or `develop`.
-- Every PR-triggered workflow declares the same concurrency group (`${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}` with `cancel-in-progress: true`). A new push cancels the superseded `build.yml`, PR-title lint and main-protection runs; a new edit cancels the superseded PR-description run.
+- Every PR-triggered workflow declares the same concurrency group (`${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}` with `cancel-in-progress: true`). A new push cancels the superseded `build.yml`, PR-title lint, branch-name validation and main-protection runs; a new edit cancels the superseded PR-title lint, branch-name validation and PR-description runs.
 - `install` installs pnpm, Node (version from `configs/node/.node-version`) and cached dependencies with `pnpm install --frozen-lockfile`. Most jobs depend on it.
 
 ### Job graph
@@ -241,6 +244,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 
 - `clean-pr-description.yml`: on opened/edited PRs targeting `develop`, removes numbered diffhunk links from the description.
 - `lint-pr-name-into-develop.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates the PR title against Conventional Commits.
+- `validate-branch-name.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates `github.head_ref` with the same `validate-branch-name` package and `configs/validate-branch-name/.validate-branch-namerc.json` pattern as the pre-commit hook. The `Validate Branch Name 🌿` job must be added to the `develop` ruleset's required status checks.
 - `protect-main-branch.yml`: on PRs targeting `main`, comments and fails unless the head branch is `develop`.
 - `renovate.json` configures dependency updates; Renovate PRs go through the standard CI pipeline. It extends `config:best-practices`, so lockfile maintenance runs weekly, devDependencies are pinned, action digests are maintained and abandoned packages are flagged. It also enables `osvVulnerabilityAlerts`, which opens fix PRs for known-vulnerable **direct** dependencies. `pinDigests: true`, `minimumReleaseAge: "3 days"` and `baseBranchPatterns: ["develop"]` configure the update policy.
 - `scheduled-dependency-audit.yml` re-audits the production tree weekly; see [Supply-chain security](#supply-chain-security).
