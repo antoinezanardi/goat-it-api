@@ -2,22 +2,31 @@ import { faker } from "@faker-js/faker";
 
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
-import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
+import { QUESTION_AUTHOR_ROLE_GAME, QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
 
 import { createFakeQuestionThemeDocument } from "@faketories/contexts/question-theme/mongoose/mongoose-document/question-theme.mongoose-document.faketory";
-import { createFakeQuestionAuthor, createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
+import { createFakeQuestionRejection } from "@faketories/contexts/question/entity/question.entity.faketory";
 import { createFakeObjectId } from "@faketories/infrastructure/database/database.faketory";
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
 
 import type { QuestionAggregate, QuestionThemeAssignmentAggregate } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
 function createFakeQuestionAuthorAggregate(questionAuthorAggregate: Partial<QuestionAggregate["author"]> = {}): QuestionAggregate["author"] {
-  const fakeQuestionAuthor = createFakeQuestionAuthor();
+  const role = questionAuthorAggregate.role ?? faker.helpers.arrayElement(QUESTION_AUTHOR_ROLES);
+  const name = Object.hasOwn(questionAuthorAggregate, "name") ? questionAuthorAggregate.name : faker.helpers.maybe(faker.person.fullName);
 
+  if (role === QUESTION_AUTHOR_ROLE_GAME) {
+    const gameId = Object.hasOwn(questionAuthorAggregate, "gameId") ? questionAuthorAggregate.gameId : createFakeObjectId();
+
+    return {
+      role,
+      gameId,
+      name,
+    };
+  }
   return {
-    ...fakeQuestionAuthor,
-    gameId: "gameId" in fakeQuestionAuthor && fakeQuestionAuthor.gameId ? createFakeObjectId(fakeQuestionAuthor.gameId) : undefined,
-    ...questionAuthorAggregate,
+    role,
+    name,
   };
 }
 

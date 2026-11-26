@@ -204,6 +204,38 @@ describe("Question DTO Zod Validators", () => {
         expected: false,
       },
       {
+        test: "should return false when array contains a source URL with the javascript scheme.",
+        // Acceptable as the test intentionally exercises a rejected JavaScript: source URL
+        // oxlint-disable-next-line eslint/no-script-url
+        value: ["javascript:alert(1)"],
+        expected: false,
+      },
+      {
+        test: "should return false when array contains a source URL with the data scheme.",
+        value: ["data:text/html,<script>alert(1)</script>"],
+        expected: false,
+      },
+      {
+        test: "should return false when array contains a source URL with the file scheme.",
+        value: ["file:///tmp/source.txt"],
+        expected: false,
+      },
+      {
+        test: "should return true when array contains an http URL on localhost.",
+        value: ["http://localhost:3000/source"],
+        expected: true,
+      },
+      {
+        test: "should return false when array contains a source URL whose scheme only ends with https.",
+        value: ["xhttps://example.com/source"],
+        expected: false,
+      },
+      {
+        test: "should return false when array contains a source URL whose scheme only starts with https.",
+        value: ["httpsx://example.com/source"],
+        expected: false,
+      },
+      {
         test: "should return false when array contains duplicate URLs.",
         value: ["https://example.com/source1", "https://example.com/source1"],
         expected: false,

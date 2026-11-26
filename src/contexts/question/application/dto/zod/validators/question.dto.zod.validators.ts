@@ -46,7 +46,7 @@ function zQuestionApplicableLocales(minItems = 1): ZodOptional<ZodArray<ZodEnum<
 }
 
 function zQuestionSourceUrls(): ZodArray<ZodURL> {
-  return z.array(z.url())
+  return z.array(z.url({ protocol: /^https?$/u }))
     .min(QUESTION_SOURCE_URLS_MIN_ITEMS)
     .max(QUESTION_SOURCE_URLS_MAX_ITEMS)
     .refine(areValuesUniqueFromStrings, { error: "Source URLs must be unique" })

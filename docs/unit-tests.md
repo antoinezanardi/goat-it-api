@@ -340,7 +340,7 @@ describe(GetQuestionThemesByIdsOrThrowUseCase, () => {
 
 ### Mongoose schema declaration tests
 
-- Purpose: lock the indexes a collection owner declares, the `autoIndex` policy and the paths a schema derives from a constant, without opening a database.
+- Purpose: lock the indexes a collection owner declares, the `autoIndex` policy, the paths a schema derives from a constant, and a conditional `required` or custom validator declaration, without opening a database.
 - Describe label: the exported schema class, for example `describe(QuestionMongooseSchema, ...)`.
 - Assert `SCHEMA.indexes()`: map `[fields]` to compare the declared key, and read `options.unique` for a unique index.
 - Assert `SCHEMA.options.autoIndex` when the schema relies on startup builds.

@@ -36,6 +36,7 @@ Every request DTO is validated by the global `ZodValidationPipe` (`file:src/app/
 - response shapes are `z.strictObject`, so emitted fields are explicit, and `ZodSerializerInterceptor` parses every declared response at runtime — a drift becomes a generic 500 instead of a leaked or malformed body;
 - shared Zod building blocks live in `src/shared/application/dto/zod/` (`validators/`, `refinements/`, `preprocessors/`); context-specific ones live under `src/contexts/<context>/application/dto/zod/`;
 - sizes and counts are bounded by domain constants — author name 3–30 characters, 1–5 source URLs, 1–3 theme assignments (`file:src/contexts/question/domain/constants/question.constants.ts`) — and the env schema bounds ports and validates its own inputs at boot;
+- `sourceUrls` must use `http` or `https`; `javascript:`, `data:` and `file:` schemes are rejected at the request and response boundary (`file:src/contexts/question/application/dto/zod/validators/question.dto.zod.validators.ts`), so a persisted URL cannot become a stored-XSS gadget in the web game;
 - a validation failure becomes a 400 carrying the Zod issues as `validationDetails` (`file:src/app/filters/global-exception/global-exception.filter.ts`).
 
 ## Error handling and information leakage
