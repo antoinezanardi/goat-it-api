@@ -25,8 +25,10 @@ export class DatabaseService implements MongooseOptionsFactory {
    *
    * Timeouts, retry count and retry delay are bounded and configurable only through the constants, and the call logs once per app start.
    * `socketTimeoutMS` bounds inactivity on an established socket; it is not a total query deadline, since the driver may retry
-   * an operation and a command with ongoing socket activity can outlast it. `bufferCommands` is disabled, so a model operation
-   * issued while MongoDB is unavailable fails within the 5-second `serverSelectionTimeoutMS` instead of buffering for the Mongoose default window.
+   * a read and a command with ongoing socket activity can outlast it. `bufferCommands` is disabled, so a model operation
+   * issued while MongoDB is unavailable fails within the 5-second `serverSelectionTimeoutMS` when the driver cannot select a server,
+   * instead of buffering for the Mongoose default window; an operation sent on a socket the driver still considers usable waits up to
+   * `socketTimeoutMS`, and a retryable read may start another server-selection window.
    */
   public createMongooseOptions(): MongooseModuleOptions {
     this.logger.log("🍃 Connecting to the database...");
