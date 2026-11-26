@@ -23,7 +23,7 @@ body:
     attributes:
       label: Endpoint
       description: Which HTTP method and path are affected?
-      placeholder: e.g. GET /api/v1/questions
+      placeholder: e.g. GET /questions
     validations:
       required: true
 

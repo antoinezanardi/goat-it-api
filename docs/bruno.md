@@ -16,7 +16,7 @@ Quick guide to the Bruno collection shipped in `configs/bruno/Goat It` and how d
 
 - `configs/bruno/Goat It/bruno.json` — collection metadata.
 - `configs/bruno/Goat It/collection.bru` — global headers and shared settings.
-- `configs/bruno/Goat It/environments/` — environment variable sets (`local.bru`, `preproduction.bru`, `production.bru`).
+- `configs/bruno/Goat It/environments/` — environment variable sets (`local.bru`, `sandbox.bru`, `preproduction.bru`, `production.bru`).
 - `configs/bruno/Goat It/admin/`, `play/`, `public/` — request folders for admin and public APIs (questions, question-themes, health, metadata). Public endpoints refer to unauthenticated requests.
 
 ## Goals
@@ -27,7 +27,7 @@ Quick guide to the Bruno collection shipped in `configs/bruno/Goat It` and how d
 
 ## Important environment variables
 
-- `baseUrl` — API base URL. Set in `environments/*` (for local it's `http://localhost:3000`).
+- `baseUrl` — API base URL. `local.bru` sets `http://localhost:3000` and `sandbox.bru` sets `http://localhost:9090`; in `preproduction.bru` and `production.bru` it is a `vars:secret` entry you fill in Bruno.
 - `adminApiKey`, `gameApiKey` — secret API keys used by requests requiring auth. Declared as `vars:secret`.
 - `questionThemeId`, `questionId` — optional secrets that hold resource ids used by example requests.
 
@@ -37,7 +37,7 @@ Quick guide to the Bruno collection shipped in `configs/bruno/Goat It` and how d
 2. In Bruno, import the folder `configs/bruno/Goat It` (or open from disk depending on Bruno UI).
 3. Switch environment to `local`:
    - `baseUrl` defaults to `http://localhost:3000` in `environments/local.bru`.
-   - Set `adminApiKey` and `gameApiKey` as secrets in Bruno (copy from your `.env` or local config).
+   - Set `adminApiKey` and `gameApiKey` as secrets in Bruno (copy from your `env/.env` or local config).
 4. (Optional but recommended) Create a theme with `POST /admin/question-themes` then copy the `id` returned and paste into the `questionThemeId` secret (so subsequent requests like create-question work without editing requests).
 
 ## Best practices used in this repo

@@ -5,6 +5,7 @@ This guide is the canonical reference for **where a repository file belongs, how
 It answers placement questions for every first-party file class in `goat-it-api` (NestJS 12 + Fastify 5 + Mongoose + Zod, ESM, hexagonal architecture). Detailed mechanics live in their own guides:
 
 - [ci-cd.md](ci-cd.md) — branching, commits, hooks, pull requests, CI, deployment.
+- [scripts.md](scripts.md) — every `pnpm run` script, grouped by purpose, with internal entries marked.
 - [jsdoc.md](jsdoc.md) — JSDoc scope and concise-TSDoc style.
 - [unit-tests.md](unit-tests.md) — Vitest unit-test conventions per file type.
 - [acceptance-tests.md](acceptance-tests.md) — Cucumber, fixtures, payloads and step definitions.

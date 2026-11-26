@@ -92,12 +92,14 @@ pnpm run script:create-branch
 Run these locally to speed up iteration — CI will run them again. The five local quality gates are:
 
 ```bash
-pnpm run lint
+pnpm run lint:fix
 pnpm run typecheck
 pnpm run test:unit:cov
 pnpm run test:mutation
 pnpm run test:acceptance
 ```
+
+Every `package.json` script, including internal hook/CI-only ones, is listed in [docs/scripts.md](../docs/scripts.md).
 
 ### Lint
 
@@ -154,7 +156,7 @@ pnpm run test:acceptance
 pnpm run build
 ```
 
-### Branch name validation (same validation as CI)
+### Branch name validation
 
 ```bash
 pnpm run validate:branch-name
@@ -171,7 +173,7 @@ The canonical branching, commit, hook, PR and deployment reference is [docs/ci-c
 - Branch names must follow the validation config at `configs/validate-branch-name/.validate-branch-namerc.json`.
 
 > [!CAUTION]
-> Branch names that do not match the configured pattern will be rejected by CI and/or hooks. Validate locally with `pnpm run validate:branch-name` before pushing.
+> Branch names that do not match the configured pattern are rejected by the pre-commit hook — no CI job validates branch names. Validate locally with `pnpm run validate:branch-name` before pushing.
 
 ### Pattern (regex)
 
@@ -204,7 +206,7 @@ pnpm run validate:branch-name
 
 ## ✍️ Commit messages & PR titles (Conventional Commits)
 
-We use Conventional Commits. Commit messages and PR titles should follow the Conventional Commits header format. The repo's commitlint config is in `configs/commitlint/.commitlintrc.json` (it extends `@commitlint/config-conventional`). CI enforces these rules.
+We use Conventional Commits. Commit messages and PR titles should follow the Conventional Commits header format. The repo's commitlint config is in `configs/commitlint/.commitlintrc.json` (it extends `@commitlint/config-conventional`). CI validates PR titles against the commitlint type list; commit messages are validated by the local `commit-msg` hook.
 
 ### Header format
 
@@ -251,7 +253,7 @@ This removes the v1 endpoints. Consumers must migrate to /v2.
 - The PR title should be a valid Conventional Commit header (the same format as the first line of a commit). When possible, use the same string as the main commit or the eventual squashed commit message. Maintainers may reword/squash on merge but will keep the final commit Conventional.
 
 > [!IMPORTANT]
-> Commit messages and PR titles are enforced by `commitlint`. Non-conforming messages will cause CI failures. Use interactive rebase to correct message history before pushing if needed.
+> PR titles are validated in CI; commit messages are validated by the local `commit-msg` hook. A non-conforming commit message is rejected when you commit — use interactive rebase to correct the history before pushing if one slips through.
 
 ### Validate commit messages locally (optional)
 
@@ -262,7 +264,7 @@ pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit .git/
 
 ### Notes
 
-- If CI rejects commit messages, use interactive rebase to edit them locally before pushing.
+- If the `commit-msg` hook rejects a message, fix it and commit again; if a non-conforming message was already committed (for example with `--no-verify`), use interactive rebase to correct it before pushing.
 - Keep commits focused; maintainers may request squashing before merge.
 
 ---
