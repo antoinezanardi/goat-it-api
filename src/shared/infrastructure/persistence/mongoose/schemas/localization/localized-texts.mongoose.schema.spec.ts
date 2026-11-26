@@ -26,6 +26,10 @@ describe(LocalizedTextsMongooseSchema, () => {
     test: `should keep an explicit undefined default on the "${locale}" path when the schema is built.`,
     locale,
   })))("$test", ({ locale }) => {
-    expect(Object.hasOwn(LOCALIZED_TEXTS_MONGOOSE_SCHEMA.path(locale).options, "default")).toBe(true);
+    expect({ ...LOCALIZED_TEXTS_MONGOOSE_SCHEMA.path(locale).options }).toStrictEqual({
+      required: false,
+      type: [String],
+      default: undefined,
+    });
   });
 });
