@@ -18,6 +18,12 @@ describe("Question Content Modification DTO Shape", () => {
     expect(() => QUESTION_CONTENT_MODIFICATION_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(QUESTION_CONTENT_MODIFICATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   it("should pass validation when assigned empty object.", () => {
     expect(() => QUESTION_CONTENT_MODIFICATION_DTO.parse({})).not.toThrow();
   });

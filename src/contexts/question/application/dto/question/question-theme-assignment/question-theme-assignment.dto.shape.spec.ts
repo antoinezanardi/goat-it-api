@@ -30,6 +30,12 @@ describe("Question Theme Assignment DTO Shape", () => {
     expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(validQuestionThemeAssignmentDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionThemeAssignmentDto, extra: 1 };
+
+    expect(() => QUESTION_THEME_ASSIGNMENT_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   it("should have correct metadata when accessing the metadata.", () => {
     const expectedMetadata = {
       description: "Question's theme assignment",

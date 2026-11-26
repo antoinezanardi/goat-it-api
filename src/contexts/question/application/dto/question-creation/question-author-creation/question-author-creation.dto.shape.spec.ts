@@ -14,6 +14,12 @@ describe("Question Author Creation DTO Shape", () => {
     expect(() => QUESTION_AUTHOR_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(QUESTION_AUTHOR_CREATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("role", () => {
     it("should throw zod error when role is invalid.", () => {
       const invalid = { ...validDto, role: "invalid" };

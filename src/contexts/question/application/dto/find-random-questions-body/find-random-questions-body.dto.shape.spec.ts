@@ -25,6 +25,12 @@ describe("Find Random Questions Body DTO Shape", () => {
     expect(() => FIND_RANDOM_QUESTIONS_BODY_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(FIND_RANDOM_QUESTIONS_BODY_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("limit", () => {
     it("should pass validation when limit is a valid integer at the minimum.", () => {
       const dto = { ...validDto, limit: FIND_RANDOM_QUESTIONS_BODY_LIMIT_MINIMUM };

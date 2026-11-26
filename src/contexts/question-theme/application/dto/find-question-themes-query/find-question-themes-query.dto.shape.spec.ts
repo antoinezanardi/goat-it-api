@@ -25,6 +25,12 @@ describe("Find Question-Themes Query DTO Shape", () => {
     expect(() => FIND_QUESTION_THEMES_QUERY_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("sort-by", () => {
     it.each<(typeof QUESTION_THEME_SORTABLE_FIELDS)[number]>(QUESTION_THEME_SORTABLE_FIELDS)("should pass validation when sort-by is '%s'.", sortBy => {
       const dto = { ...validDto, "sort-by": sortBy };

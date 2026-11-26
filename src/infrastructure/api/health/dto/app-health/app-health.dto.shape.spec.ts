@@ -25,6 +25,12 @@ describe("App Health DTO Shape", () => {
     expect(() => APP_HEALTH_DTO.parse(validAppHealthDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validAppHealthDto, extra: 1 };
+
+    expect(() => APP_HEALTH_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("status", () => {
     it("should pass validation when status is valid.", () => {
       const dto = { ...validAppHealthDto, status: "ok" };

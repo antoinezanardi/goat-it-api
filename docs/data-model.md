@@ -29,7 +29,7 @@ Schema: `src/contexts/question/infrastructure/persistence/mongoose/schemas/quest
 |---|---|---|
 | `_id` | ObjectId | primary key from schema options (base type `MongooseCollectionSchemaBase`, `src/shared/infrastructure/persistence/mongoose/types/mongoose.types.ts`) |
 | `themes` | array of `QuestionThemeAssignmentMongooseSchema` | required; `minItems: 1`, `maxItems: 3` (`QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS`/`_MAX_ITEMS`) |
-| `themes[].themeId` | `Types.ObjectId` | required; `ref: "question_themes"` |
+| `themes[].themeId` | `Types.ObjectId` | required; no `ref` (nothing calls `populate()`; the pipeline resolves themes with `$lookup`) (`question-theme-assignment.mongoose.schema.ts`) |
 | `themes[].isPrimary` | Boolean | required, default `false` |
 | `themes[].isHint` | Boolean | required, default `false` |
 | `content` | `QuestionContentMongooseSchema` | required (`question-content.mongoose.schema.ts`) |
@@ -51,7 +51,7 @@ Schema: `src/contexts/question/infrastructure/persistence/mongoose/schemas/quest
 | `rejection.comment` | String | optional |
 | `createdAt`, `updatedAt` | Date / Date | from schema options (base type `MongooseCollectionSchemaBase`, `src/shared/infrastructure/persistence/mongoose/types/mongoose.types.ts`) |
 
-The shared localization sub-schemas are `LocalizedTextMongooseSchema` and `LocalizedTextsMongooseSchema` in `src/shared/infrastructure/persistence/mongoose/schemas/localization/` (per-locale optional `String` / `String[]` props for `en`, `fr`, `es`, `de`, `it`, `pt`).
+The shared localization sub-schemas are `LocalizedTextMongooseSchema` and `LocalizedTextsMongooseSchema` in `src/shared/infrastructure/persistence/mongoose/schemas/localization/` (one optional `String` / `String[]` path per entry of `LOCALES`, `src/shared/domain/value-objects/locale/locale.constants.ts`), so adding a locale adds its storage path automatically.
 
 ## `question_themes` collection
 
@@ -83,7 +83,7 @@ The previous standalone `questions.themes.themeId` index is no longer declared: 
 
 ## References and integrity
 
-- A question references its themes by `themes[].themeId` (`ObjectId`; the current `ref` is the collection name `"question_themes"`, which should name the registered model if `populate()` is ever used), not by slug. There is no back-reference: theme documents know nothing about questions; question usage is derived at query time.
+- A question references its themes by `themes[].themeId` (`ObjectId`, indexed through the parent compound `{ themes.themeId: 1, status: 1 }` index), not by slug. The path declares **no** Mongoose `ref`: it is resolved by the `$lookup` on `question_themes` in `QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE`, and the repository never calls `populate()`; a future `populate()` must add a `ref` naming the registered model (`QuestionThemeMongooseSchema`), never the collection. There is no back-reference: theme documents know nothing about questions; question usage is derived at query time.
 - MongoDB has no foreign-key enforcement here, so integrity is application-enforced:
   - Theme existence on assignment is validated through the published `FindQuestionThemeByIdUseCase` / `GetQuestionThemesByIdsOrThrowUseCase` (published surface register, `docs/architecture.md` §5.2).
   - Archive protection: `QuestionThemeReferencedByLiveQuestionsError` (409 via `GlobalExceptionFilter`) when the theme still has live questions; `CountLiveQuestionsByThemeIdUseCase` counts `pending + active` (`src/contexts/question/infrastructure/persistence/mongoose/repository/question.mongoose.repository.ts` `countLiveByThemeId`).

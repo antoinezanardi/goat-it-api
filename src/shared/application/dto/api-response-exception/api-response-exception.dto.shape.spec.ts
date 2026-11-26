@@ -25,6 +25,12 @@ describe("Api Response Exception DTO Shape", () => {
     expect(() => API_RESPONSE_EXCEPTION_DTO.parse(validApiResponseExceptionDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validApiResponseExceptionDto, extra: 1 };
+
+    expect(() => API_RESPONSE_EXCEPTION_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("statusCode", () => {
     it("should throw a zod error when assigned a non-number value.", () => {
       const invalidDto = { ...validApiResponseExceptionDto, statusCode: "invalid" };

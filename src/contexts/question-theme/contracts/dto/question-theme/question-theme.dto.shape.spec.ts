@@ -36,6 +36,12 @@ describe("Question Theme DTO Shape", () => {
     expect(() => QUESTION_THEME_DTO.parse(validQuestionThemeDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionThemeDto, extra: 1 };
+
+    expect(() => QUESTION_THEME_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("id", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = { ...validQuestionThemeDto, id: 123 };

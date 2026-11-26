@@ -4,6 +4,7 @@ import { shake } from "radashi";
 import { addArrayFilterIfNonEmpty } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import type { PipelineStage } from "mongoose";
@@ -39,7 +40,7 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
     "isAdultContent": filters.isAdultContent,
   });
 
-  addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+  addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId, ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
   addArrayFilterIfNonEmpty(filters.ids, matchConditions, "_id", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
 
   if (filters.isFullyTranslated !== undefined) {

@@ -1,3 +1,5 @@
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
+
 import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/contracts/persistence/question-theme.persistence.contracts.constants";
 
 import type { QuestionAggregatePipeline } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
@@ -15,7 +17,7 @@ const QUESTION_THEME_ASSIGNMENT_MONGOOSE_REPOSITORY_PIPELINE = [
   {
     $lookup: {
       from: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
-      localField: "themes.themeId",
+      localField: QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId,
       foreignField: "_id",
       as: "themes.theme",
     },

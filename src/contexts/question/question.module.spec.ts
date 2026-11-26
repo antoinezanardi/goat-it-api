@@ -1,6 +1,9 @@
 import { getModelToken } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 
+import { AdminApiKeyGuard } from "@src/infrastructure/api/auth/providers/guards/admin-api-key/admin-api-key.guard";
+import { GameApiKeyGuard } from "@src/infrastructure/api/auth/providers/guards/game-api-key/game-api-key.guard";
+
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
@@ -94,5 +97,12 @@ describe(QuestionModule, () => {
     const removeThemeFromQuestionUseCase = module.get<RemoveThemeFromQuestionUseCase>(RemoveThemeFromQuestionUseCase);
 
     expect(removeThemeFromQuestionUseCase["findQuestionByIdUseCase"]).toBe(module.get(FindQuestionByIdUseCase));
+  });
+
+  it.each<{ guard: Type<unknown> }>([
+    { guard: GameApiKeyGuard },
+    { guard: AdminApiKeyGuard },
+  ])("should resolve $guard inside the module hosting the guarded controller when the module graph is compiled.", ({ guard }) => {
+    expect(module.select(QuestionModule).get(guard, { strict: true })).toBeInstanceOf(guard);
   });
 });

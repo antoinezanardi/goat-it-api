@@ -30,6 +30,12 @@ describe("Question Creation DTO Shape", () => {
     expect(() => QUESTION_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(QUESTION_CREATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("themes", () => {
     it("should throw zod error when themes is empty.", () => {
       const invalid = { ...validDto, themes: [] };

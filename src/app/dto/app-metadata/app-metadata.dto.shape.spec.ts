@@ -18,6 +18,12 @@ describe("AppMetadata DTO Shape", () => {
     expect(() => APP_METADATA_DTO.parse(validAppMetadataDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validAppMetadataDto, extra: 1 };
+
+    expect(() => APP_METADATA_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("name", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = { ...validAppMetadataDto, name: 123 };

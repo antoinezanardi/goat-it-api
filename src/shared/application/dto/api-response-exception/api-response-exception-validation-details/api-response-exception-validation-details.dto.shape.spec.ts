@@ -33,6 +33,12 @@ describe("Api Response Exception Validation Details DTO Shape", () => {
     expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(validApiResponseExceptionValidationDetailsDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, extra: 1 };
+
+    expect(() => API_RESPONSE_EXCEPTION_VALIDATION_DETAILS_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("code", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = { ...validApiResponseExceptionValidationDetailsDto, code: 123 };

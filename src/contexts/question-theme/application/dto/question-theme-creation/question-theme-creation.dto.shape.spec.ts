@@ -21,6 +21,12 @@ describe("Question Theme Creation DTO Shape", () => {
     expect(() => QUESTION_THEME_CREATION_DTO.parse(validQuestionThemeCreationDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validQuestionThemeCreationDto, extra: 1 };
+
+    expect(QUESTION_THEME_CREATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("slug", () => {
     it("should throw a zod error when assigned a non-string value.", () => {
       const invalidDto = { ...validQuestionThemeCreationDto, slug: 123 };
