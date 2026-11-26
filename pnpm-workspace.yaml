@@ -19,7 +19,7 @@ overrides:
   'cosmiconfig@8>js-yaml': ^5.5.0
   'cosmiconfig@9>js-yaml': ^5.5.0
   'magicast>source-map-js': ^1.2.4
-  'vitest>vite': ^8.3.8
+  'vitest>vite': ^8.4.0
   esbuild: ^0.28.2
 
 allowBuilds:
