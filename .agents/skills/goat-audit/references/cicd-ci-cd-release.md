@@ -52,7 +52,7 @@ Covers how code reaches production for this NestJS 12 + Fastify 5 API: GitHub Ac
   Evidence: `command` · Diff: ✗ · Core: ✓ · Severity: high · Src: [2], [5]
 - **[CICD-13] Required status checks match real jobs** — The rulesets require every blocking job of the pull-request workflow (including CodeQL, workflow lint, codebase lint, dependency audit, build, Docker builds per platform, unit and acceptance tests), the PR-title lint and, for `main`, the main-branch protection job, with `strict_required_status_checks_policy: true`; no required context names a renamed or deleted job.
   Evidence: `command` · Diff: ✗ · Severity: high · Src: [2], [5]
-- **[CICD-14] Required review enforced** — The rulesets require at least one approving review, dismissal of stale approvals on push and approval of the last push; a single-maintainer exception is recorded as a decision.
+- **[CICD-14] Required review enforced or solo-maintainer exception recorded** — The rulesets either require at least one approving review with stale-approval dismissal and last-push approval, or the decision doc records a solo-maintainer exception with a revisit trigger; stale-approval dismissal and last-push approval stay enabled under the exception.
   Evidence: `command` · Diff: ✗ · Severity: high · Src: [2], [5]
 - **[CICD-15] No ruleset bypass actors** — The bypass list of every branch ruleset is empty, since a bypass actor makes protections unenforced for administrators.
   Evidence: `command` · Diff: ✗ · Severity: high · Src: [2], [5]
@@ -71,11 +71,11 @@ Covers how code reaches production for this NestJS 12 + Fastify 5 API: GitHub Ac
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `.github/workflows/release-creation.yml` · Src: [1], [8]
 - **[CICD-21] Commit types map to SemVer** — `releaseRules` keep `feat` → minor, `fix` → patch and breaking changes (`!` or a `BREAKING CHANGE:` footer) → major; any extra patch-releasing type (`docs`, `style`, `refactor`, `perf`, `test`, `ci`, `chore`) is a documented choice.
   Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/semantic-release/**` · Src: [9], [10], [13], project: docs/ci-cd.md
-- **[CICD-22] Release commit carries the changelog** — The release commit includes the generated changelog and the bumped manifest (changelog and git plugins with the changelog file and manifest assets), so the tag, the commit and the changelog heading stay aligned.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/semantic-release/**`, `CHANGELOG.md` · Src: [10], [13]
-- **[CICD-23] Main merged back into develop after release** — After a published release, the release workflow merges `main` into `develop` with a Conventional `chore:` message, and a merge conflict fails the job instead of force-pushing.
-  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/workflows/release-creation.yml` · Src: [1], [10], project: docs/ci-cd.md
-- **[CICD-24] Release process documented end to end** — A repository document describes the chain Conventional commit → release PR → merge to `main` → semantic-release tag and changelog → image build → production deploy, and states the branch rules and who may release.
+- **[CICD-22] Release commit carries the changelog** — The generated changelog and the bumped manifest are committed on `develop` before the release PR is merged, so the release PR, the release tag and the changelog heading describe the same version; the `main` release run creates the tag and GitHub release without pushing a release commit.
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `configs/semantic-release/**`, `.github/workflows/upsert-pr-release.yml`, `scripts/prepare-release-commit.sh`, `CHANGELOG.md` · Src: [10], [13]
+- **[CICD-23] Release commit originates on develop** — The release changelog/version commit is prepared on `develop` and carried into `main` by the release PR; no post-release `main → develop` push or sync is required.
+  Evidence: `static` · Diff: ✓ · Severity: medium · Look: `.github/workflows/upsert-pr-release.yml`, `.github/workflows/release-creation.yml` · Src: [1], [10], project: docs/ci-cd.md
+- **[CICD-24] Release process documented end to end** — A repository document describes the chain Conventional commit → release commit on `develop` → release PR → merge to `main` → semantic-release tag and GitHub release → image build → production deploy, and states the branch rules and who may release.
   Evidence: `static` · Diff: ✓ · Severity: high · Look: `docs/ci-cd.md`, `.github/CONTRIBUTING.md` · Src: [8], [12], project: docs/ci-cd.md
 
 ## 5. Hooks and commit, branch and PR-title enforcement

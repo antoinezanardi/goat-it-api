@@ -277,8 +277,10 @@ The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
 
 - All PRs must pass every required CI job before merge, including lint, typecheck, unit tests with coverage, mutation tests and acceptance tests.
 - If CI fails, fix locally, push, and wait for re-run. Your PR won't be merged until CI is green.
-- Maintainers will merge into `develop` once reviews pass and CI is green. Release automation handles promotion to `main`.
-- Please avoid force-pushing to shared branches after reviews start, as it can disrupt the review process.
+- `develop` and `main` require pull requests; the repository administrator's `RepositoryRole 5` bypass is the only standing exception.
+- The repository is maintained by a single maintainer. The recorded solo-maintainer exception means a second human approval is not required today; the maintainer still reviews changes they did not author. When a second maintainer or code owner is added, the exception is revisited and one approval becomes mandatory. See [docs/ci-cd.md](../docs/ci-cd.md#repository-rulesets) and the `CICD-14` decision.
+- Maintainers merge into `develop` once CI is green; release automation keeps the release pull request current, and the maintainer merges it into `main`.
+- Do not force-push shared branches; the administrator bypass must not be used for manual pushes or force-pushes. Automation-owned branches such as `chore/release` are rewritten by the release workflow and must not be used for development.
 
 ---
 

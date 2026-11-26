@@ -138,27 +138,6 @@ export default {
         },
       },
     ],
-    [
-      "@semantic-release/changelog",
-      {
-        changelogFile: "CHANGELOG.md",
-        changelogTitle: "# 🐐 Goat It API Versioning Changelog",
-      },
-    ],
-    [
-      "@semantic-release/npm",
-      { npmPublish: false },
-    ],
-    [
-      "@semantic-release/git",
-      {
-        assets: [
-          "CHANGELOG.md",
-          "package.json",
-          "pnpm-lock.yaml",
-        ],
-      },
-    ],
     "@semantic-release/github",
     "semantic-release-export-data",
   ],

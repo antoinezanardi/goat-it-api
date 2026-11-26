@@ -10,6 +10,7 @@ File placement, naming and dependency rules belong to [architecture.md](architec
 - [Commits](#commits)
 - [Pre-commit and commit-msg hooks](#pre-commit-and-commit-msg-hooks)
 - [Pull requests](#pull-requests)
+- [Repository rulesets](#repository-rulesets)
 - [Continuous integration](#continuous-integration)
   - [Trigger and concurrency](#trigger-and-concurrency)
   - [Job graph](#job-graph)
@@ -28,6 +29,7 @@ File placement, naming and dependency rules belong to [architecture.md](architec
 - [Repository hygiene workflows](#repository-hygiene-workflows)
 - [Local CI reproduction](#local-ci-reproduction)
 - [Secrets and environments](#secrets-and-environments)
+- [GOAT audit decisions](#goat-audit-decisions)
 
 ## Branching
 
@@ -39,8 +41,8 @@ File placement, naming and dependency rules belong to [architecture.md](architec
   `pnpm run validate:branch-name`) only enforces `<type>/<non-empty suffix>`; the optional
   `<scope>-<short-desc>` part is a convention, not enforced.
 - Pull requests targeting `develop` re-validate the head branch name in CI through
-  `validate-branch-name.yml`; once the `Validate Branch Name 🌿` job is a required check on
-  `develop`, a bypassed hook cannot merge a malformed branch name.
+  `validate-branch-name.yml`; `Validate Branch Name 🌿` is a required check on `develop`, so a
+  bypassed hook cannot merge a malformed branch name.
 - Create a correctly named branch interactively with `pnpm run script:create-branch`.
 
 ## Commits
@@ -80,6 +82,47 @@ Never bypass the hooks with `--no-verify`.
 - The release PR targeting `main` uses the title `Release v<version>` and is not validated by this workflow.
 - `pnpm run script:create-pull-request` and `pnpm run script:clean-pr-description` automate the common PR workflow.
 - `clean-pr-description.yml` strips numbered diffhunk links from PR descriptions automatically.
+- `develop` and `main` require merges through pull requests; the repository administrator's `RepositoryRole 5`
+  bypass is the only standing exception.
+- Human approval is waived by the recorded solo-maintainer exception ([CICD-14](#goat-audit-decisions)): the
+  required approving review count is 0, while stale-approval dismissal, last-push approval and review-thread
+  resolution are enabled so the gate is ready when a second reviewer exists. CODEOWNERS review stays off
+  until a second owner exists.
+- A standing `RepositoryRole 5` bypass exists on `main`, `develop` and `protected`; the only supported
+  break-glass path is the time-limited procedure in [Repository rulesets](#repository-rulesets).
+
+## Repository rulesets
+
+Branch protection is enforced exclusively by repository rulesets; the legacy branch-protection API returns
+`404 Branch not protected` for `main` and `develop`. Rulesets are cumulative: a push or merge must satisfy
+every applicable ruleset, and a bypass actor on one ruleset does not bypass the others.
+
+| Ruleset | Refs | Enforced rules | Bypass actors |
+|---|---|---|---|
+| `main` | `~DEFAULT_BRANCH` | deletion, non-fast-forward, pull request (merge only, thread resolution), 6 required checks | `RepositoryRole 5` |
+| `develop` | `refs/heads/develop` | deletion, non-fast-forward, pull request (squash only, thread resolution), 2 required checks | `RepositoryRole 5` |
+| `protected` | `~DEFAULT_BRANCH`, `refs/heads/develop` | the 14 strict CI checks, pull request, thread resolution | `RepositoryRole 5` |
+| `branch-deletion` | `~DEFAULT_BRANCH`, `refs/heads/develop` | deletion, non-fast-forward | none |
+| `shields` | `refs/heads/shields` | creation, deletion, non-fast-forward | none |
+
+The `main`, `develop` and `protected` rulesets carry a `RepositoryRole 5` bypass; `branch-deletion` and
+`shields` carry none. `shields` is BYOB's badge store; its rules allow normal fast-forward pushes while
+deletion and force pushes stay blocked.
+
+**Break-glass.** A blocked merge is the only supported emergency: add a single `User` actor (the maintainer)
+with `bypass_mode: "pull_request"` to every applicable ruleset (`main` + `protected`, or `develop` +
+`protected`), record the reason and the removal deadline in the pull request or issue, merge, and remove the
+actor within 24 hours. `pull_request` mode bypasses pull-request rules only; it does not allow direct pushes,
+deletion or force-push, and it is not applicable to deploy keys. The `RepositoryRole 5` entry on `main`,
+`develop` and `protected` is the only standing bypass; do not add a `DeployKey` bypass or a new
+`always`/`RepositoryRole` actor.
+
+Repository administrators can still edit the rulesets themselves; the bypass list is a guardrail against
+accidental direct and force pushes, not a boundary against an administrator.
+
+Verify a ruleset with `gh api repos/{owner}/{repo}/rulesets/{id}` (the list endpoint omits `bypass_actors`)
+and the effective rules with `gh api repos/{owner}/{repo}/rules/branches/{branch}`. The repository has no
+audit log, so the pull request or issue carrying the break-glass record is the audit trail.
 
 ## Continuous integration
 
@@ -126,7 +169,7 @@ The `acceptance-tests` composite action (`.github/actions/acceptance-tests/actio
 - **Base image and package pinning.** Both `FROM` lines carry the Node manifest-list `sha256` digest, and the production stage installs `tini=0.19.0-r3`. Renovate's `pinDigests: true` keeps the digests current, and its `apk` datasource rule in `.github/renovate.json` updates the Alpine package pin; the rule reads the Alpine `v3.24` branch, which must move with the Node base image. `scripts/check-dockerfile-pins.sh` (exposed as `pnpm run check:dockerfile-pins`) fails when a registry `FROM` lacks a digest or a final-stage `RUN apk add` package lacks a version; it runs in the `docker-build` composite action, so the required `Docker Build 🐳` jobs fail on a regression, and in the pre-commit hook when a guard input is staged. An upstream Alpine `-r` republish can make the required build red until the Renovate PR clears the 3-day release-age gate; bump the pin manually if the build must proceed sooner.
 - **Build-context hygiene.** `scripts/check-dockerignore.sh` (exposed as `pnpm run check:dockerignore`) asserts the mandatory `.dockerignore` exclusions and rejects the known exact, trailing-slash and `**` patterns that would exclude a Dockerfile input; it runs before the build in the `docker-build` composite action and in the pre-commit hook when a guard input is staged. The Docker build remains the final check.
 - **Tracked env files.** `scripts/check-tracked-env-files.sh` (exposed as `pnpm run check:tracked-env-files`) fails when the index contains any `.env*` path other than `env/.env.example` and `env/.env.test`; it runs in the `lint-codebase` composite action and in the pre-commit hook.
-- **Least-privilege permissions and tokens.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; release-PR management adds `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`. Tokens are never exported at workflow or job scope: `GITHUB_TOKEN` and `SEMANTIC_RELEASE_TOKEN` are bound to the individual steps that call `gh`, semantic-release or the changelog script, so third-party actions in the same job never inherit them.
+- **Least-privilege permissions and tokens.** Every workflow declares a top-level `permissions: contents: read` block. Jobs add only the scopes they need: CodeQL adds `actions: read` and `security-events: write`; SonarCloud adds `pull-requests: write`; PR hygiene jobs add `issues: write` and `pull-requests: write`; the schemas publication adds `id-token: write`. The release-PR and release-commit PR automation uses `SEMANTIC_RELEASE_TOKEN` (PAT) because a `GITHUB_TOKEN`-authored pull request does not trigger `pull_request` workflows; the job keeps only `contents: read`. The PAT needs `contents: write` for the tag push and GitHub release, `pull-requests: write` for PR create/edit/close and `issues: write` for labels and assignees (also recorded in [Secrets and environments](#secrets-and-environments)). The repository-level `can_approve_pull_request_reviews` setting is `false` and the default workflow-token permission is `read`, so a workflow cannot create or approve pull requests with `GITHUB_TOKEN`. Tokens are never exported at workflow or job scope: `GITHUB_TOKEN` and `SEMANTIC_RELEASE_TOKEN` are bound to the individual steps that call `gh`, semantic-release, the changelog script or the release-commit push, so third-party actions in the same job never inherit them.
 - **No expressions in shell bodies.** `pnpm run check:workflows:expressions` (part of `pnpm run lint`, run by the `lint-codebase` job) fails when a `${{ … }}` expression appears inside a `run:` body in `.github/workflows/**` or `.github/actions/**`. Workflow values reach the shell through `env:` and quoted variables instead, which removes the template-injection path from the deploy, Docker and publication jobs.
 - **Dependency audit.** `.github/actions/audit-dependencies` installs the project, runs `pnpm audit --prod --audit-level=low` (any production advisory blocks), then `pnpm audit --audit-level=high` (high or critical development advisories block) and finally the license check. The `audit-dependencies` job fails the build on either result. The scoped overrides and the accepted development findings are recorded in [dependencies.md](dependencies.md).
 - **Scheduled audit.** `scheduled-dependency-audit.yml` runs every Monday at 05:00 UTC (and on `workflow_dispatch`) from the default branch. It repeats both blocking audits and writes the full dependency tree advisory counts to the job summary as a non-blocking report through `scripts/report-dependency-audit.sh`, which prints the same Markdown to standard output when `GITHUB_STEP_SUMMARY` is empty.
@@ -141,15 +184,35 @@ Health semantics and the post-deploy probe are documented in [operations.md](ope
 
 ### Release PR (develop → main)
 
-`upsert-pr-release.yml` runs on every push to `develop`:
+`upsert-pr-release.yml` runs on every push to `develop` and on `workflow_dispatch`:
 
 1. Install dependencies.
-2. Merge `main` into `develop` locally and compute the next version/changelog with `pnpm run script:create-release-changelog`.
-3. Find an open PR to `main` whose title contains `Release` (the workflow takes the first search result;
-   it does not require a `Release` prefix).
-4. Create the PR titled `Release v<version>` with the generated changelog, the `🏷️ release` label and the
-   maintainer as assignee. When the PR already exists, only its title and body are updated; the label and
-   assignee are not reapplied.
+2. On every push and dispatch, merge `main` into `develop` locally and compute the next version/changelog with `pnpm run script:create-release-changelog`.
+3. On every push and dispatch, find an open PR to `main` whose title contains `Release` (the workflow takes
+   the first search result; it does not require a `Release` prefix) and create or update the PR titled
+   `Release v<version>` with the latest changelog, the `🏷️ release` label and the maintainer as assignee. The
+   PR stays open between releases so its body always reflects the current `develop`; the label and assignee are
+   not reapplied when it already exists. The PR is created and edited with the PAT so the required
+   `pull_request` workflows run.
+4. On `workflow_dispatch` only ("Prepare release"), run the workflow from `develop` (Actions →
+   `🔃️ Upsert PR Release Workflow` → Run workflow, or `gh workflow run upsert-pr-release.yml --ref develop`);
+   every release job checks out `develop` regardless of the dispatch ref. The job creates or updates a single
+   `chore(release): v<version>` pull request (`chore/release` → `develop`) containing the generated
+   `CHANGELOG.md` section and the `package.json` version bump, then arms it for squash auto-merge.
+   `chore/release` is automation-owned: it is force-pushed on each dispatch and must not be used for
+   development. The version PR is short-lived; the release PR is not auto-merged. The generated notes filter
+   the release commit itself, so it never appears as a change in `CHANGELOG.md`, the release PR body or the
+   GitHub release.
+5. The `Upsert Pull Request Release 🔃` job runs `scripts/check-release-changelog.sh`: it compares `package.json`
+   on `develop`, the top `CHANGELOG.md` heading and the **full top section content** with the generated
+   section. A new commit that keeps the same version but changes the changelog (a later fix, for example)
+   keeps the guard red, so a stale release commit cannot be merged. Its required check on `main` stays red
+   until the version PR auto-merges; the release PR body still updates while the guard is red.
+6. If the version does not change but the changelog content does, run **Prepare release** again; the version PR
+   is recreated for the same version with the updated content. When the version PR auto-merges, the resulting
+   `develop` push updates the release PR and turns the guard green; the maintainer then merges the release PR
+   manually. The merge creates the tag and GitHub release, and no `main → develop` sync is needed because the
+   version commit was already on `develop`.
 
 ### Release creation (main)
 
@@ -159,9 +222,11 @@ Health semantics and the post-deploy probe are documented in [operations.md](ope
 2. Install dependencies (`install`).
 3. Run `semantic-release` with the repository config (`release.config.ts` at the repository root exposes
    `configs/semantic-release/release.config.ts`, which semantic-release discovers on its own) using
-   `SEMANTIC_RELEASE_TOKEN` (`release`, needs `install`).
-4. When a new release is published, merge `origin/main` back into `develop` with a
-   `chore: sync release v<version> from main` merge commit and push `develop` (`sync-develop`, needs `release`).
+   `SEMANTIC_RELEASE_TOKEN` (`release`, needs `install`). The release run analyzes commits, generates the
+   release notes and creates the Git tag and GitHub release; it does not push a release commit or update a
+   branch.
+4. The release tag points at the merged release PR, which already contains the changelog and version commit
+   prepared on `develop`; there is no post-release commit and no `main → develop` sync.
 
 The root entry point exists because semantic-release 26 merges its built-in default plugin list over the
 `plugins` of a config passed through `--extends`; letting semantic-release discover the config from the
@@ -185,6 +250,8 @@ Creating the GitHub release triggers the production deployment workflow.
 | `build`, `revert`                                                 | no release |
 
 The changelog is grouped by commit type (features, bug fixes, docs, styles, refactor, performance, tests, CI, chore) and enriched with a dependency table.
+
+The release commit is prepared on `develop` before the release PR: `CHANGELOG.md` and the bumped `package.json` are committed there, so the release tag and the in-repo changelog describe the same version.
 
 A commit with `!` after its type, or with a `BREAKING CHANGE:` footer, analyzes to `major`. The rule is the first entry in `RELEASE_RULES` (`configs/semantic-release/release.config.ts`).
 
@@ -244,7 +311,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 
 - `clean-pr-description.yml`: on opened/edited PRs targeting `develop`, removes numbered diffhunk links from the description.
 - `lint-pr-name-into-develop.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates the PR title against Conventional Commits.
-- `validate-branch-name.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates `github.head_ref` with the same `validate-branch-name` package and `configs/validate-branch-name/.validate-branch-namerc.json` pattern as the pre-commit hook. The `Validate Branch Name 🌿` job must be added to the `develop` ruleset's required status checks.
+- `validate-branch-name.yml`: on opened/edited/reopened/synchronize PRs targeting `develop`, validates `github.head_ref` with the same `validate-branch-name` package and `configs/validate-branch-name/.validate-branch-namerc.json` pattern as the pre-commit hook. `Validate Branch Name 🌿` is a required check on the `develop` ruleset.
 - `protect-main-branch.yml`: on PRs targeting `main`, comments and fails unless the head branch is `develop`.
 - `renovate.json` configures dependency updates; Renovate PRs go through the standard CI pipeline. It extends `config:best-practices`, so lockfile maintenance runs weekly, devDependencies are pinned, action digests are maintained and abandoned packages are flagged. It also enables `osvVulnerabilityAlerts`, which opens fix PRs for known-vulnerable **direct** dependencies. `pinDigests: true`, `minimumReleaseAge: "3 days"` and `baseBranchPatterns: ["develop"]` configure the update policy.
 - `scheduled-dependency-audit.yml` re-audits the production tree weekly; see [Supply-chain security](#supply-chain-security).
@@ -268,7 +335,7 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 
 | Name                                                                                                                                                 | Type      | Used by                             |
 |------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|-------------------------------------|
-| `SEMANTIC_RELEASE_TOKEN`                                                                                                                             | secret    | Release creation and `develop` sync |
+| `SEMANTIC_RELEASE_TOKEN`                                                                                                                             | secret    | Release creation, release PR and release-commit PR automation (`contents: write`, `pull-requests: write`, `issues: write`) |
 | `STRYKER_DASHBOARD_API_KEY`                                                                                                                          | secret    | Mutation tests dashboard            |
 | `SONARCLOUD_TOKEN`                                                                                                                                   | secret    | SonarCloud analysis                 |
 | `BYOB_TOKEN`                                                                                                                                         | secret    | Badge generation (`badges` action)  |
@@ -280,3 +347,16 @@ Bump the patch version in `packages/schemas/package.json` when an existing expor
 | `PREPRODUCTION_API_URL`, `PRODUCTION_API_URL`                                                                                                         | variables | Post-deploy liveness probe base URLs |
 
 GitHub environments: `Stryker Dashboard` (mutation dashboard), `Docker Image Staging` (staging image publication and preproduction deploy) and `Docker Image Production` (production image publication and deploy). The deploy jobs declare their environment, so the `*_SERVER_*` secrets and the `PREPRODUCTION_API_URL`/`PRODUCTION_API_URL` variables can be scoped to it and take precedence over repository-level values. Environment protection rules (a `develop`-only staging deployment, and a reviewer plus a `main`/tag restriction on production) are repository settings, not workflow configuration.
+
+## GOAT audit decisions
+
+Recorded GOAT audit decisions. /goat-audit, final-reviewer and plan-writer honor these entries until their revisit condition is met.
+
+### [CICD-14] Solo-maintainer review exception — Accepted risk (2026-11-26)
+
+- **Finding:** `main`, `develop` and `protected` require zero approving reviews; `.github/CODEOWNERS` is inert for merging, and the repository has a single maintainer after the dormant write collaborators are removed.
+- **Decision:** Keep `required_approving_review_count: 0` and record the solo-maintainer exception. Stale-approval dismissal, last-push approval and review-thread resolution stay enabled so the gate is ready when a second reviewer exists; `require_code_owner_review` stays off.
+- **Rationale:** GitHub forbids a pull-request author from approving their own pull request; requiring one approval would block every maintainer-authored PR, and a bot approval is not a human review. The rulesets still require a pull request, green required checks and a resolved review thread.
+- **Revisit when:** a second human with write or admin access is added, or `.github/CODEOWNERS` gains a second owner. Then set `required_approving_review_count: 1` on `main`, `develop` and `protected`, keep the other flags and enable `require_code_owner_review`.
+- **Checklist change:** original criterion: `[CICD-14] Required review enforced — The rulesets require at least one approving review, dismissal of stale approvals on push and approval of the last push; a single-maintainer exception is recorded as a decision.` Rewritten: `[CICD-14] Required review enforced or solo-maintainer exception recorded — The rulesets either require at least one approving review with stale-approval dismissal and last-push approval, or the decision doc records a solo-maintainer exception with a revisit trigger; stale-approval dismissal and last-push approval stay enabled under the exception.`
+- **Recorded by:** orchestrator final review (fix/ci-ruleset-governance)
