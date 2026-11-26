@@ -168,7 +168,7 @@
     "@nestjs/mongoose": "^12.0.1",
     "@nestjs/platform-fastify": "^12.6.2",
     "@nestjs/serve-static": "^12.1.1",
-    "@nestjs/swagger": "^12.1.2",
+    "@nestjs/swagger": "^12.1.3",
     "@nestjs/terminus": "^12.2.0",
     "@nestjs/throttler": "^6.8.0",
     "@sentry/nestjs": "^11.18.0",
