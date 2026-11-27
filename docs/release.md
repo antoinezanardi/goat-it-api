@@ -40,12 +40,19 @@ Run the preparation from `develop`:
 - Actions → `🔃️ Upsert PR Release Workflow` → **Run workflow** → branch `develop` → mode `prepare-release`;
 - or `gh workflow run upsert-pr-release.yml --ref develop -f mode=prepare-release`.
 
-The workflow computes the version, creates or updates the `chore(release): v<version>` pull request
-(`chore/release` → `develop`) containing the generated `CHANGELOG.md` section and the `package.json` version
-bump, and arms it for squash auto-merge.
+Until the workflow reaches `main`, the **Run workflow** button may not be available; the `gh` command works
+because the workflow file is already registered on the default branch.
+
+The dispatch forwards to `prepare-release.yml`, which computes the version, creates or updates the
+`chore(release): v<version>` pull request (`chore/release` → `develop`) containing the generated
+`CHANGELOG.md` section and the `package.json` version bump, and arms it for squash auto-merge. Once
+`prepare-release.yml` is on `main` after the next release, it is dispatched directly and the `mode` input
+disappears ([#1496](https://github.com/antoinezanardi/goat-it-api/issues/1496)).
 
 Wait for that pull request to merge. The resulting push to `develop` runs `check-release-changelog.yml`, and
-the release pull request's `Verify release commit is merged 🛡️` check turns **green**.
+the release pull request's `Verify release commit is merged 🛡️` check turns **green**. If `develop` moves
+while its checks run, choose **Update branch**; auto-merge does not update the head branch. Re-running step 2
+also refreshes it whenever the generated notes changed.
 
 ### 3. Merge the release pull request
 
@@ -66,7 +73,8 @@ The push to `main` runs `release-creation.yml`; semantic-release creates the tag
 - the production deployment and its liveness health check are green;
 - the root endpoint reports the released version in its metadata;
 - the `chore: sync release v<version> from main` pull request into `develop` was created and merged
-  automatically. Wait for it before starting the next release.
+  automatically. If it is behind `develop`, choose **Update branch**; it then auto-merges. Wait for it before
+  starting the next release.
 
 ### 5. If `develop` moves before the release pull request is merged
 
@@ -83,16 +91,23 @@ before the release commit exists.
 A **red** guard means the workflow ran and failed: `CHANGELOG.md` changed, but its top section does not match
 the notes regenerated from semantic-release. Re-run step 2.
 
+A `build` or `revert` commit is the only kind that changes neither the version nor the generated notes. If
+one lands after the release commit, the guard does not run on that tip and re-running step 2 is a no-op: run
+Actions → `🛡️ Check Release Changelog Workflow` → **Run workflow** on `develop` to report the check on the
+current tip, then merge the release pull request.
+
 ## Troubleshooting
 
-- **The guard is yellow.** The current `develop` tip does not carry a release commit. Run step 2.
+- **The guard is yellow.** The current `develop` tip does not carry a release commit. Run step 2. If a `build`
+  or `revert` commit landed after preparation, run the guard manually as described above.
 - **The guard is red.** The committed changelog does not match the generated notes. Run step 2.
 - **The version workflow fails with `EGITNOPERMISSION` right after a release.** The sync pull request has not
   merged yet. Wait for `chore: sync release v<version> from main` to land, then re-run the workflow.
-- **The sync pull request is blocked.** Check its required checks and its title and branch name. Do not
-  force-push `develop`; use the break-glass procedure only when the merge is truly blocked.
+- **The sync pull request is blocked.** Check its required checks and its title and branch name, and choose
+  **Update branch** when it is behind `develop`; a stale branch is not a break-glass case. Do not force-push
+  `develop`; use the break-glass procedure only when the merge is truly blocked.
 - **The version pull request does not auto-merge.** Check `Lint Pull Request Name 🔃` and
-  `Validate Branch Name 🌿` on it.
+  `Validate Branch Name 🌿`, and choose **Update branch** when it is behind `develop`.
 
 ## Emergency merge (break-glass)
 

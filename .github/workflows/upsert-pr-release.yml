@@ -14,6 +14,10 @@ on:
           - prepare-release
         default: refresh
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
 
@@ -47,124 +51,14 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Merge main branch into develop branch 🤝
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git fetch --all
-          git checkout main
-          git pull origin main
-          git checkout develop
-          git merge main
-
-      - name: Install project 📦
-        uses: ./.github/actions/install-project
-
-      - name: Get next release version and create release changelog 🏷️
+      - name: Compute release changelog 🏷️
         id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-        run: pnpm run script:create-release-changelog
-
-      - name: Cache release changelog 🥡
-        if: hashFiles('RELEASE.md') != ''
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        id: cache-release-changelog
+        uses: ./.github/actions/compute-release-changelog
         with:
-          path: |
-            RELEASE.md
-            CHANGELOG_SECTION.md
-          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
+          semantic-release-token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 
     outputs:
       new-release-version: ${{ steps.release.outputs.new-release-version }}
-
-  prepare-release-commit:
-    name: Prepare release commit 🧾
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    needs:
-      - get-next-release-version
-    if: needs.get-next-release-version.outputs.new-release-version != '' && github.event_name == 'workflow_dispatch' && inputs.mode == 'prepare-release'
-    steps:
-      - name: Checkout GitHub repository 📡
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-          ref: develop
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Install project 📦
-        uses: ./.github/actions/install-project
-
-      - name: Restore release changelog from cache 🥡
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        id: cache-release-changelog
-        with:
-          path: |
-            RELEASE.md
-            CHANGELOG_SECTION.md
-          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
-
-      - name: Check release manifest and changelog 🏷️
-        id: release-manifest
-        env:
-          RELEASE_VERSION: ${{ needs.get-next-release-version.outputs.new-release-version }}
-        run: |
-          if bash scripts/check-release-changelog.sh --quiet; then
-            echo "prepare=false" >> "$GITHUB_OUTPUT"
-            echo "release commit already matches v${RELEASE_VERSION}."
-          else
-            echo "prepare=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Prepare release commit 🧾
-        id: prepare-release-commit
-        if: steps.release-manifest.outputs.prepare == 'true'
-        env:
-          RELEASE_VERSION: ${{ needs.get-next-release-version.outputs.new-release-version }}
-        run: |
-          branch="chore/release"
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git checkout -B "$branch" origin/develop
-          pnpm run script:prepare-release-commit
-          if [[ "$(git rev-list --count origin/develop..HEAD)" == "0" ]]; then
-            echo "prepared=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "prepared=true" >> "$GITHUB_OUTPUT"
-
-      - name: Push release commit 🚀
-        if: steps.prepare-release-commit.outputs.prepared == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          branch="chore/release"
-          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:refs/heads/${branch}"
-
-      - name: Open or update release commit pull request and arm auto-merge 🔃
-        if: steps.prepare-release-commit.outputs.prepared == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-          RELEASE_VERSION: ${{ needs.get-next-release-version.outputs.new-release-version }}
-        run: |
-          branch="chore/release"
-          existing=$(gh pr list --repo "$REPOSITORY" --base develop --head "$branch" --state open --json number --jq '.[0].number // empty')
-          if [[ -z "$existing" ]]; then
-            gh pr create --repo "$REPOSITORY" --base develop --head "$branch" --title "chore(release): v${RELEASE_VERSION}" --body "$(cat RELEASE.md)" --assignee "antoinezanardi" --label "🏷️ release"
-          else
-            gh pr edit "$existing" --repo "$REPOSITORY" --title "chore(release): v${RELEASE_VERSION}" --body "$(cat RELEASE.md)"
-          fi
-          number=$(gh pr list --repo "$REPOSITORY" --base develop --head "$branch" --state open --json number --jq '.[0].number')
-          if [[ "$(gh pr view "$number" --repo "$REPOSITORY" --json autoMergeRequest --jq '.autoMergeRequest != null')" != "true" ]]; then
-            gh pr merge "$number" --repo "$REPOSITORY" --auto --squash
-          fi
 
   upsert-pr-release:
     name: Upsert Pull Request Release 🔃
@@ -230,3 +124,10 @@ jobs:
           GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: gh pr edit "$PR_NUMBER" --repo "$REPOSITORY" --title "$PR_TITLE" --body "$(cat RELEASE.md)"
+
+  prepare-release:
+    name: Prepare release 🧾
+    if: github.event_name == 'workflow_dispatch' && inputs.mode == 'prepare-release'
+    uses: ./.github/workflows/prepare-release.yml
+    secrets:
+      SEMANTIC_RELEASE_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}

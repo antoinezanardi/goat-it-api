@@ -3,7 +3,9 @@
 # check-release-changelog.sh
 #
 # Verifies that the current branch carries the package version and the
-# generated changelog section for RELEASE_VERSION.
+# generated changelog section for RELEASE_VERSION. The generated date in the
+# version heading is ignored, so a release prepared on one day validates on
+# another.
 #
 # Usage:
 #   RELEASE_VERSION=1.26.0 ./check-release-changelog.sh [--quiet]
@@ -46,6 +48,10 @@ normalize_section() {
   '
 }
 
+normalize_date_heading() {
+  awk 'NR == 1 { sub(/ \([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\)$/, "") } { print }'
+}
+
 MANIFEST_VERSION=$(jq -r .version "$MANIFEST_PATH")
 if [[ "$MANIFEST_VERSION" != "$RELEASE_VERSION" ]]; then
   fail "package.json is $MANIFEST_VERSION but the release version is $RELEASE_VERSION. Run the Prepare release workflow and merge the chore(release): v$RELEASE_VERSION pull request first."
@@ -59,8 +65,8 @@ TOP_SECTION=$(mktemp)
 GENERATED_SECTION=$(mktemp)
 trap 'rm -f "$TOP_SECTION" "$GENERATED_SECTION"' EXIT
 
-awk '/^## /{if (count++) exit} count' "$CHANGELOG_PATH" | normalize_section > "$TOP_SECTION"
-normalize_section < "$CHANGELOG_SECTION_PATH" > "$GENERATED_SECTION"
+awk '/^## /{if (count++) exit} count' "$CHANGELOG_PATH" | normalize_section | normalize_date_heading > "$TOP_SECTION"
+normalize_section < "$CHANGELOG_SECTION_PATH" | normalize_date_heading > "$GENERATED_SECTION"
 
 if [[ ! -s "$TOP_SECTION" ]]; then
   fail "the CHANGELOG.md section for $RELEASE_VERSION is empty. Run the Prepare release workflow again."

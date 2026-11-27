@@ -117,6 +117,10 @@ of the applicable rulesets, including required status checks; it does not allow 
 force-push, and it is not applicable to deploy keys. Never add a standing `User`, `RepositoryRole` or
 `DeployKey` bypass.
 
+`protected` also requires branches to be up to date before merging. Auto-merge does not update a head
+branch, so an automation-owned pull request (`chore/release`, `chore/sync-release-v<version>`) that falls
+behind `develop` waits until **Update branch** is used.
+
 Repository administrators can still edit the rulesets themselves; the bypass list is a guardrail against
 accidental direct and force pushes, not a boundary against an administrator.
 
@@ -130,6 +134,7 @@ audit log, so the pull request or issue carrying the break-glass record is the a
 
 - `build.yml` runs on every `pull_request` targeting `main` or `develop`.
 - Every PR-triggered workflow declares the same concurrency group (`${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}` with `cancel-in-progress: true`). A new push cancels the superseded `build.yml`, PR-title lint, branch-name validation and main-protection runs; a new edit cancels the superseded PR-title lint, branch-name validation and PR-description runs.
+- The release workflows (`upsert-pr-release.yml`, `prepare-release.yml`) declare `concurrency` with `cancel-in-progress: false`, so their branch pushes and release-PR edits never interleave. `prepare-release.yml` uses the static `prepare-release` group: a called workflow resolves `${{ github.workflow }}` to the caller's name, so the caller and the called workflow must not share a group.
 - `install` installs pnpm, Node (version from `configs/node/.node-version`) and cached dependencies with `pnpm install --frozen-lockfile`. Most jobs depend on it.
 
 ### Job graph
@@ -185,7 +190,12 @@ Health semantics and the post-deploy probe are documented in [operations.md](ope
 ### Release PR (develop → main)
 
 The maintainer checklist for publishing a version is in [release.md](release.md). `upsert-pr-release.yml`
-runs on every push to `develop` and on `workflow_dispatch`:
+runs on every push to `develop` and on `workflow_dispatch`; its `mode` input refreshes the release PR
+(`refresh`, the default) or also prepares the release commit (`prepare-release`). The preparation jobs live
+in `prepare-release.yml`, which the dispatch calls and which becomes the direct entry point once it is on
+`main` after the next release (tracked in
+[#1496](https://github.com/antoinezanardi/goat-it-api/issues/1496)). Both workflows declare `concurrency`
+with `cancel-in-progress: false`, so two runs cannot interleave their branch pushes or release-PR edits:
 
 1. Install dependencies.
 2. On every push and dispatch, merge `main` into `develop` locally and compute the next version/changelog with `pnpm run script:create-release-changelog`.
@@ -198,8 +208,11 @@ runs on every push to `develop` and on `workflow_dispatch`:
 4. On `workflow_dispatch` with `mode: prepare-release` ("Prepare release"), run the workflow from `develop`
    (Actions → `🔃️ Upsert PR Release Workflow` → Run workflow → mode `prepare-release`, or
    `gh workflow run upsert-pr-release.yml --ref develop -f mode=prepare-release`); a dispatch with the
-   default `refresh` mode only updates the release PR body. Every release job checks out `develop` regardless
-   of the dispatch ref. The job creates or updates a single
+   default `refresh` mode only updates the release PR body. The dispatch forwards to `prepare-release.yml`,
+   which holds the preparation jobs; once that workflow is on `main` after the next release, it is dispatched
+   directly and the `mode` input is removed
+   ([#1496](https://github.com/antoinezanardi/goat-it-api/issues/1496)). Every release job checks out
+   `develop` regardless of the dispatch ref. The workflow creates or updates a single
    `chore(release): v<version>` pull request (`chore/release` → `develop`) containing the generated
    `CHANGELOG.md` section and the `package.json` version bump, then arms it for squash auto-merge.
    `chore/release` is automation-owned: it is force-pushed on each dispatch and must not be used for
@@ -213,7 +226,11 @@ runs on every push to `develop` and on `workflow_dispatch`:
    `develop` tip that does not carry the release commit: the release PR is blocked without showing a failure.
    The prepared release commit changes `CHANGELOG.md`, so its push runs the guard and turns the check green.
    A new commit that keeps the same version but changes the generated notes (a later fix, for example) makes
-   the next `develop` tip pending again, so a stale release commit cannot be merged.
+   the next `develop` tip pending again, so a stale release commit cannot be merged. A `build` or `revert`
+   commit changes neither the version nor the generated notes: if one lands after the release commit, the
+   guard does not run on that tip and re-running **Prepare release** is a no-op, so dispatch
+   `check-release-changelog.yml` from `develop` (Actions → `🛡️ Check Release Changelog Workflow` → Run
+   workflow) to report the check on the current tip and turn it green.
 6. If the version does not change but the generated notes do, run **Prepare release** again; the version PR is
    recreated for the same version with the updated content. When the version PR auto-merges, the resulting
    `develop` push updates the release PR and turns the guard green; the maintainer then merges the release PR
@@ -236,7 +253,8 @@ runs on every push to `develop` and on `workflow_dispatch`:
    prepared on `develop`. When a new release is published, `sync-develop` opens a
    `chore: sync release v<version> from main` pull request (`chore/sync-release-v<version>` → `develop`) and
    arms it for merge-commit auto-merge; the merge commit keeps `develop` up to date with `main` and the
-   release tag reachable from `develop` without any direct push.
+   release tag reachable from `develop` without any direct push. If that pull request falls behind `develop`,
+   choose **Update branch**; auto-merge does not update the head branch.
 
 The root entry point exists because semantic-release 26 merges its built-in default plugin list over the
 `plugins` of a config passed through `--extends`; letting semantic-release discover the config from the
@@ -367,6 +385,6 @@ Recorded GOAT audit decisions. /goat-audit, final-reviewer and plan-writer honor
 - **Finding:** `main`, `develop` and `protected` require zero approving reviews; `.github/CODEOWNERS` is inert for merging, and the repository has a single maintainer after the dormant write collaborators are removed.
 - **Decision:** Keep `required_approving_review_count: 0` and record the solo-maintainer exception. Stale-approval dismissal and review-thread resolution stay enabled. `require_last_push_approval` stays off while the required count is 0: GitHub enforces it independently of the count, so with no other eligible approver it blocks every maintainer-authored PR (observed on release PR #1216). It turns on together with a positive required count; `require_code_owner_review` stays off.
 - **Rationale:** GitHub forbids a pull-request author from approving their own pull request; requiring one approval would block every maintainer-authored PR, and a bot approval is not a human review. The rulesets still require a pull request, green required checks and a resolved review thread. With no standing bypass, every PR must be mergeable with zero approvals and no last-push approver.
-- **Revisit when:** a second human with write or admin access is added, or `.github/CODEOWNERS` gains a second owner. Then set `required_approving_review_count: 1` on `main`, `develop` and `protected`, enable `require_last_push_approval`, keep the other flags and enable `require_code_owner_review`.
+- **Revisit when:** a second human with write or admin access is added, or `.github/CODEOWNERS` gains a second owner. Then set `required_approving_review_count: 1` on `main`, `develop` and `protected`, enable `require_last_push_approval`, keep the other flags and enable `require_code_owner_review`. At that point the default `require_extra_approval_for_unattributed_changes` setting — currently on and inert at zero approvals — makes an unattributed Copilot pull request need one more approval; keep or clear it deliberately.
 - **Checklist change:** original criterion: `[CICD-14] Required review enforced — The rulesets require at least one approving review, dismissal of stale approvals on push and approval of the last push; a single-maintainer exception is recorded as a decision.` Rewritten: `[CICD-14] Required review enforced or solo-maintainer exception recorded — The rulesets either require at least one approving review with stale-approval dismissal and last-push approval, or the decision doc records a solo-maintainer exception with a revisit trigger; stale-approval dismissal and review-thread resolution stay enabled under the exception, and last-push approval is enabled only alongside a positive required approval count.`
 - **Recorded by:** orchestrator final review (fix/ci-ruleset-governance)

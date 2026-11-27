@@ -6,6 +6,7 @@ on:
       - develop
     paths:
       - CHANGELOG.md
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -25,34 +26,11 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Merge main branch into develop branch 🤝
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git fetch --all
-          git checkout main
-          git pull origin main
-          git checkout develop
-          git merge main
-
-      - name: Install project 📦
-        uses: ./.github/actions/install-project
-
-      - name: Get next release version and create release changelog 🏷️
+      - name: Compute release changelog 🏷️
         id: release
-        env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
-        run: pnpm run script:create-release-changelog
-
-      - name: Cache release changelog 🥡
-        if: hashFiles('CHANGELOG_SECTION.md') != ''
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
-        id: cache-release-changelog
+        uses: ./.github/actions/compute-release-changelog
         with:
-          path: |
-            RELEASE.md
-            CHANGELOG_SECTION.md
-          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
+          semantic-release-token: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 
     outputs:
       new-release-version: ${{ steps.release.outputs.new-release-version }}
