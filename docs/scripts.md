@@ -67,9 +67,9 @@ Related guides: [CI/CD, branching and release workflow](ci-cd.md) for the hook a
 | `validate:branch-name` | Validate the current branch name against `configs/validate-branch-name/.validate-branch-namerc.json`. |
 | `script:create-branch` | Create a branch interactively with a conventional type and a kebab-case name. |
 | `script:create-pull-request` | Open a pull request against `develop` from the current branch. |
-| `script:create-release-changelog` | Generate the release notes with semantic-release, write the pull-request body to `RELEASE.md` and the raw changelog section to `CHANGELOG_SECTION.md`. |
-| `script:check-release-changelog` | **Internal.** Verify the release commit's package version, top `CHANGELOG.md` heading and full top section match the computed version and the generated release notes. The release workflow invokes it directly with `bash`; the prepare predicate passes `--quiet`. |
-| `script:prepare-release-commit` | **Internal.** Write the release changelog section and the `package.json` version bump on the current branch and commit them; run by `upsert-pr-release.yml` before the release PR is merged. |
+| `script:create-release-changelog` | **Internal.** Generate the release notes with semantic-release into `RELEASE.md` and `CHANGELOG_SECTION.md` (release workflows). |
+| `script:check-release-changelog` | **Internal.** Verify `package.json` and the top `CHANGELOG.md` section match the computed release version and generated notes (release workflows). |
+| `script:prepare-release-commit` | **Internal.** Write the changelog section and version bump, then commit them (release workflow). |
 | `script:clean-pr-description` | Remove numbered diffhunk links from a pull request description. |
 
 ## Docker

@@ -5,6 +5,14 @@ on:
     branches:
       - develop
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "refresh updates the release pull request only; prepare-release also creates or refreshes the version commit pull request"
+        type: choice
+        options:
+          - refresh
+          - prepare-release
+        default: refresh
 
 permissions:
   contents: read
@@ -55,7 +63,7 @@ jobs:
       - name: Get next release version and create release changelog 🏷️
         id: release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
         run: pnpm run script:create-release-changelog
 
       - name: Cache release changelog 🥡
@@ -79,7 +87,7 @@ jobs:
       contents: read
     needs:
       - get-next-release-version
-    if: needs.get-next-release-version.outputs.new-release-version != '' && github.event_name == 'workflow_dispatch'
+    if: needs.get-next-release-version.outputs.new-release-version != '' && github.event_name == 'workflow_dispatch' && inputs.mode == 'prepare-release'
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -222,13 +230,3 @@ jobs:
           GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           REPOSITORY: ${{ github.repository }}
         run: gh pr edit "$PR_NUMBER" --repo "$REPOSITORY" --title "$PR_TITLE" --body "$(cat RELEASE.md)"
-
-      - name: Verify release commit is merged 🛡️
-        env:
-          RELEASE_VERSION: ${{ needs.get-next-release-version.outputs.new-release-version }}
-        run: |
-          if [[ -z "$RELEASE_VERSION" ]]; then
-            echo "No release to verify."
-            exit 0
-          fi
-          bash scripts/check-release-changelog.sh

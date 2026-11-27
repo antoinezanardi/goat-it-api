@@ -57,6 +57,42 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
         run: npx semantic-release
 
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
+
+  sync-develop:
+    name: Sync Develop 🔄
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    needs:
+      - release
+    if: needs.release.outputs.new-release-published == 'true'
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Merge main into develop through a pull request 🔄
+        env:
+          GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_VERSION: ${{ needs.release.outputs.new-release-version }}
+        run: |
+          branch="chore/sync-release-v${RELEASE_VERSION}"
+          git fetch origin main
+          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "refs/remotes/origin/main:refs/heads/${branch}"
+          existing=$(gh pr list --repo "$REPOSITORY" --base develop --head "$branch" --state open --json number --jq '.[0].number // empty')
+          if [[ -z "$existing" ]]; then
+            gh pr create --repo "$REPOSITORY" --base develop --head "$branch" --title "chore: sync release v${RELEASE_VERSION} from main" --body "Automated post-release merge of main into develop so the next release pull request stays up to date and the release tag stays reachable from develop. See docs/release.md."
+          fi
+          number=$(gh pr list --repo "$REPOSITORY" --base develop --head "$branch" --state open --json number --jq '.[0].number')
+          gh pr merge "$number" --repo "$REPOSITORY" --merge --auto
+
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest

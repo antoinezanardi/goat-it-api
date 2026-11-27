@@ -1,0 +1,95 @@
+name: 🛡️ Check Release Changelog Workflow
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - CHANGELOG.md
+
+permissions:
+  contents: read
+
+jobs:
+  compute-release-version:
+    name: Compute release version 🏷️
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: develop
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Merge main branch into develop branch 🤝
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git fetch --all
+          git checkout main
+          git pull origin main
+          git checkout develop
+          git merge main
+
+      - name: Install project 📦
+        uses: ./.github/actions/install-project
+
+      - name: Get next release version and create release changelog 🏷️
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+        run: pnpm run script:create-release-changelog
+
+      - name: Cache release changelog 🥡
+        if: hashFiles('CHANGELOG_SECTION.md') != ''
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        id: cache-release-changelog
+        with:
+          path: |
+            RELEASE.md
+            CHANGELOG_SECTION.md
+          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
+
+    outputs:
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
+
+  verify-release-commit:
+    name: Verify release commit is merged 🛡️
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    needs:
+      - compute-release-version
+    if: always()
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Restore release changelog from cache 🥡
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        id: cache-release-changelog
+        with:
+          path: |
+            RELEASE.md
+            CHANGELOG_SECTION.md
+          key: ${{ runner.os }}-release-changelog-${{ github.run_id }}
+
+      - name: Verify release commit is merged 🛡️
+        env:
+          RELEASE_VERSION: ${{ needs.compute-release-version.outputs.new-release-version }}
+          COMPUTE_RESULT: ${{ needs.compute-release-version.result }}
+        run: |
+          if [[ "$COMPUTE_RESULT" != "success" ]]; then
+            echo "::error::the release version computation failed; see the Compute release version job."
+            exit 1
+          fi
+          if [[ -z "$RELEASE_VERSION" ]]; then
+            echo "No release to verify."
+            exit 0
+          fi
+          bash scripts/check-release-changelog.sh

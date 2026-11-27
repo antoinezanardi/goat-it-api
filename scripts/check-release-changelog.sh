@@ -2,8 +2,8 @@
 # -----------------------------------------------------------------------------
 # check-release-changelog.sh
 #
-# Verifies that the current branch carries the package version, the expected
-# CHANGELOG.md heading and the generated changelog content for RELEASE_VERSION.
+# Verifies that the current branch carries the package version and the
+# generated changelog section for RELEASE_VERSION.
 #
 # Usage:
 #   RELEASE_VERSION=1.26.0 ./check-release-changelog.sh [--quiet]
@@ -55,28 +55,17 @@ if [[ ! -f "$CHANGELOG_SECTION_PATH" ]]; then
   fail "the generated changelog section is missing. Run the Prepare release workflow again."
 fi
 
-CHANGELOG_HEADING=$(grep -m 1 '^## ' "$CHANGELOG_PATH")
-SECTION_HEADING=$(grep -m 1 '^## ' "$CHANGELOG_SECTION_PATH")
+TOP_SECTION=$(mktemp)
+GENERATED_SECTION=$(mktemp)
+trap 'rm -f "$TOP_SECTION" "$GENERATED_SECTION"' EXIT
 
-if [[ "$CHANGELOG_HEADING" != "## [${RELEASE_VERSION}]"* ]]; then
-  fail "the top CHANGELOG.md heading is '$CHANGELOG_HEADING', not the release version $RELEASE_VERSION. Run the Prepare release workflow again."
-fi
+awk '/^## /{if (count++) exit} count' "$CHANGELOG_PATH" | normalize_section > "$TOP_SECTION"
+normalize_section < "$CHANGELOG_SECTION_PATH" > "$GENERATED_SECTION"
 
-if [[ "$SECTION_HEADING" != "## [${RELEASE_VERSION}]"* ]]; then
-  fail "the generated changelog section heading is '$SECTION_HEADING', not the release version $RELEASE_VERSION. Run the Prepare release workflow again."
-fi
-
-TOP_CONTENT=$(mktemp)
-GENERATED_CONTENT=$(mktemp)
-trap 'rm -f "$TOP_CONTENT" "$GENERATED_CONTENT"' EXIT
-
-awk '/^## /{if (count++) exit} count' "$CHANGELOG_PATH" | tail -n +2 | normalize_section > "$TOP_CONTENT"
-tail -n +2 "$CHANGELOG_SECTION_PATH" | normalize_section > "$GENERATED_CONTENT"
-
-if [[ ! -s "$TOP_CONTENT" ]]; then
+if [[ ! -s "$TOP_SECTION" ]]; then
   fail "the CHANGELOG.md section for $RELEASE_VERSION is empty. Run the Prepare release workflow again."
 fi
 
-if ! diff -u "$GENERATED_CONTENT" "$TOP_CONTENT"; then
-  fail "the CHANGELOG.md section for $RELEASE_VERSION does not match the generated release notes. Run the Prepare release workflow again and merge the updated release commit."
+if ! diff -u "$GENERATED_SECTION" "$TOP_SECTION"; then
+  fail "the top CHANGELOG.md section does not match the generated release notes for $RELEASE_VERSION. Run the Prepare release workflow again and merge the updated release commit."
 fi
