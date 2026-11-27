@@ -41,8 +41,8 @@ Thumbs.db
 .playwright-mcp/
 
 # Semantic release files
-RELEASE.md
-CHANGELOG_SECTION.md
+/RELEASE.md
+/CHANGELOG_SECTION.md
 
 # TypeScript cache
 *.tsbuildinfo
