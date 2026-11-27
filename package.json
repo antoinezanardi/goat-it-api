@@ -143,7 +143,7 @@
     "lint-staged": "^17.6.2",
     "ofetch": "^1.5.1",
     "oxlint": "^1.95.0",
-    "oxlint-tsgolint": "^7.0.2008",
+    "oxlint-tsgolint": "^7.0.2009",
     "pino-pretty": "^13.2.0",
     "rimraf": "^6.1.4",
     "semantic-release": "^26.0.1",
