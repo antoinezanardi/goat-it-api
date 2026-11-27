@@ -5,6 +5,7 @@ This guide is the canonical reference for **where a repository file belongs, how
 It answers placement questions for every first-party file class in `goat-it-api` (NestJS 12 + Fastify 5 + Mongoose + Zod, ESM, hexagonal architecture). Detailed mechanics live in their own guides:
 
 - [ci-cd.md](ci-cd.md) — branching, commits, hooks, pull requests, CI, deployment.
+- [release.md](release.md) — maintainer release checklist.
 - [scripts.md](scripts.md) — every `pnpm run` script, grouped by purpose, with internal entries marked.
 - [jsdoc.md](jsdoc.md) — JSDoc scope and concise-TSDoc style.
 - [unit-tests.md](unit-tests.md) — Vitest unit-test conventions per file type.
@@ -780,7 +781,7 @@ Every accepted exception MUST name a removal condition. Do not add a silent exce
 - [Cucumber.js](https://github.com/cucumber/cucumber-js).
 - [eslint-plugin-import-x `no-restricted-paths`](https://github.com/un-ts/eslint-plugin-import-x/blob/master/docs/rules/no-restricted-paths.md).
 
-This guide owns placement, naming, dependency and boundary rules. Test mechanics live in `unit-tests.md`, `mocks.md`, `faketories.md` and `acceptance-tests.md`; CI in `ci-cd.md`; operations in `operations.md`; package usage in `packages/schemas/README.md`. Do not duplicate them here.
+This guide owns placement, naming, dependency and boundary rules. Test mechanics live in `unit-tests.md`, `mocks.md`, `faketories.md` and `acceptance-tests.md`; CI in `ci-cd.md`; the release checklist in `release.md`; operations in `operations.md`; package usage in `packages/schemas/README.md`. Do not duplicate them here.
 
 ## 15. Agent and workflow compliance
 

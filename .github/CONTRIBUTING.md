@@ -273,12 +273,14 @@ pnpm exec commitlint --config configs/commitlint/.commitlintrc.json --edit .git/
 
 ## 🚦 CI & merging
 
-The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md).
+The workflow reference lives in [docs/ci-cd.md](../docs/ci-cd.md); the maintainer release procedure lives in [docs/release.md](../docs/release.md).
 
 - All PRs must pass every required CI job before merge, including lint, typecheck, unit tests with coverage, mutation tests and acceptance tests.
 - If CI fails, fix locally, push, and wait for re-run. Your PR won't be merged until CI is green.
-- Maintainers will merge into `develop` once reviews pass and CI is green. Release automation handles promotion to `main`.
-- Please avoid force-pushing to shared branches after reviews start, as it can disrupt the review process.
+- `develop` and `main` require pull requests; no standing bypass actor exists on any ruleset that protects them.
+- The repository is maintained by a single maintainer. The recorded solo-maintainer exception means a second human approval is not required today; the maintainer still reviews changes they did not author. When a second maintainer or code owner is added, the exception is revisited and one approval becomes mandatory. See [docs/ci-cd.md](../docs/ci-cd.md#repository-rulesets) and the `CICD-14` decision.
+- Maintainers merge into `develop` once CI is green; release automation keeps the release pull request current, and the maintainer merges it into `main`. The full procedure is in [docs/release.md](../docs/release.md).
+- Do not force-push shared branches. Automation-owned branches such as `chore/release` and `chore/sync-release-v<version>` are rewritten or created by the release workflow and must not be used for development. The only emergency bypass is the time-limited break-glass procedure in [docs/ci-cd.md](../docs/ci-cd.md#repository-rulesets).
 
 ---
 

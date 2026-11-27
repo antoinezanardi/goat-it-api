@@ -316,6 +316,7 @@ This script removes numbered diffhunk links (e.g., `[[1]](diffhunk://...)`) from
 - **[Privacy](docs/privacy.md)** — data inventory, logging and telemetry PII policy, retention and legal posture.
 - **[Operations](docs/operations.md)** — health/readiness contract, container health check, graceful shutdown and post-deploy verification.
 - **[CI/CD, branching and release workflow](docs/ci-cd.md)** — branches, commits, hooks, pull requests, CI and deployment.
+- **[Release procedure](docs/release.md)** — step-by-step maintainer checklist for publishing a version.
 - **[Package scripts](docs/scripts.md)** — every `pnpm run` script, grouped by purpose, with internal hook/CI-only entries marked.
 - **[Bruno collection](docs/bruno.md)** — API collection setup and usage.
 - **[Unit tests](docs/unit-tests.md)** — Vitest conventions per file type.

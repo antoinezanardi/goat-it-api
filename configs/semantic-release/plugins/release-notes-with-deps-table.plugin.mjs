@@ -13,7 +13,7 @@ function loadBasePlugin() {
 async function generateNotes(pluginConfig, context) {
   const basePlugin = await loadBasePlugin();
   const notes = await basePlugin.generateNotes(pluginConfig, context);
-  const transformedNotes = transformReleaseNotes(notes);
+  const transformedNotes = transformReleaseNotes(notes, context.nextRelease?.version);
 
   await writeFile(RELEASE_NOTES_OUTPUT_PATH, transformedNotes, "utf8");
 
