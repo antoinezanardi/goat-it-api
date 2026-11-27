@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { ISO_DATE_TIME_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { ISO_DATE_TIME_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
 import { QUESTION_DTO } from "@question/application/dto/question/question.dto.shape";
 
@@ -54,6 +54,12 @@ describe("Question DTO Shape", () => {
 
   it("should pass validation when a valid QuestionDto is provided.", () => {
     expect(() => QUESTION_DTO.parse(validQuestionDto)).not.toThrow();
+  });
+
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionDto, extra: 1 };
+
+    expect(() => QUESTION_DTO.parse(invalidDto)).toThrow(ZodError);
   });
 
   describe("id", () => {

@@ -1,10 +1,13 @@
-import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
-
 import { pickDefinedValues } from "@shared/domain/rules/object/object.rules";
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
+import { QUESTION_THEME_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
+
 import type { AdminQuestionThemeFilterOptions } from "@question-theme/domain/types/question-theme.types";
 
+/**
+ * Builds the query filter for the admin theme list from the defined filters, returning an empty query when nothing is set.
+ */
 function buildQuestionThemeFilterQuery(filters?: Partial<AdminQuestionThemeFilterOptions>): Record<string, unknown> {
   if (!filters) {
     return {};

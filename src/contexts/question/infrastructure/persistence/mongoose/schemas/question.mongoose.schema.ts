@@ -3,18 +3,18 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { DEFAULT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
+import { QUESTION_MONGOOSE_COLLECTION_NAME, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { QUESTION_CATEGORIES, QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS, QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS, QUESTION_SOURCE_URLS_MAX_ITEMS, QUESTION_SOURCE_URLS_MIN_ITEMS, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_STATUSES } from "@question/domain/constants/question.constants";
-import type { QuestionRejectionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
 import { QUESTION_REJECTION_MONGOOSE_SCHEMA } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
-import type { QuestionThemeAssignmentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
 import { QUESTION_THEME_ASSIGNMENT_MONGOOSE_SCHEMA } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
-import type { QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
 import { QUESTION_AUTHOR_MONGOOSE_SCHEMA } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
-import type { QuestionContentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-content/question-content.mongoose.schema";
 import { QUESTION_CONTENT_MONGOOSE_SCHEMA } from "@question/infrastructure/persistence/mongoose/schemas/question-content/question-content.mongoose.schema";
-import { QUESTION_MONGOOSE_COLLECTION_NAME } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import type { QuestionCategory, QuestionCognitiveDifficulty, QuestionStatus } from "@question/domain/types/question.value-objects";
 
+import type { QuestionRejectionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-rejection/question-rejection.mongoose.schema";
+import type { QuestionThemeAssignmentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-theme-assignment/question-theme-assignment.mongoose.schema";
+import type { QuestionAuthorMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-author/question-author.mongoose.schema";
+import type { QuestionContentMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question-content/question-content.mongoose.schema";
+import type { QuestionCategory, QuestionCognitiveDifficulty, QuestionStatus } from "@question/domain/types/question.value-objects";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 
 @Schema({
@@ -97,6 +97,11 @@ class QuestionMongooseSchema {
 }
 
 const QUESTION_MONGOOSE_SCHEMA = SchemaFactory.createForClass(QuestionMongooseSchema);
+
+QUESTION_MONGOOSE_SCHEMA.index({
+  [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId]: 1,
+  [QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.status]: 1,
+});
 
 export {
   QuestionMongooseSchema,

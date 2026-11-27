@@ -1,14 +1,11 @@
-import { Test } from "@nestjs/testing";
-
 import { ModifyQuestionThemeUseCase } from "@question-theme/application/use-cases/modify-question-theme/modify-question-theme.use-case";
 import { QuestionThemeNotFoundError } from "@question-theme/domain/errors/question-theme-not-found/question-theme-not-found.error";
 import { QuestionThemeSlugAlreadyExistsError } from "@question-theme/domain/errors/question-theme-slug-already-exists/question-theme-slug-already-exists.error";
-import { QUESTION_THEME_REPOSITORY_TOKEN } from "@question-theme/domain/repositories/question-theme.repository.constants";
 
-import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/infrastructure/persistence/mongoose/question-theme.mongoose.repository.mock";
+import { createMockedQuestionThemeRepository } from "@mocks/contexts/question-theme/domain/repositories/question-theme.repository.mock";
 
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
-import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/contracts/question-theme.contracts.faketory";
+import { createFakeQuestionThemeModificationContract } from "@faketories/contexts/question-theme/repository-contracts/question-theme.repository-contracts.faketory";
 import { createFakeQuestionThemeModificationCommand } from "@faketories/contexts/question-theme/commands/question-theme.commands.faketory";
 
 describe(ModifyQuestionThemeUseCase, () => {
@@ -19,23 +16,14 @@ describe(ModifyQuestionThemeUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         questionTheme: createMockedQuestionThemeRepository(),
       },
     };
-    const testingModule = await Test.createTestingModule({
-      providers: [
-        ModifyQuestionThemeUseCase,
-        {
-          provide: QUESTION_THEME_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.questionTheme,
-        },
-      ],
-    }).compile();
 
-    modifyQuestionThemeUseCase = testingModule.get<ModifyQuestionThemeUseCase>(ModifyQuestionThemeUseCase);
+    modifyQuestionThemeUseCase = new ModifyQuestionThemeUseCase(mocks.repositories.questionTheme);
   });
 
   describe(ModifyQuestionThemeUseCase.prototype.modify, () => {
@@ -80,6 +68,21 @@ describe(ModifyQuestionThemeUseCase, () => {
       const result = await modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand);
 
       expect(result).toStrictEqual(expectedUpdatedQuestionTheme);
+    });
+
+    it("should modify an archived question theme when called.", async() => {
+      const id = "question-theme-id-archived";
+      const payload = createFakeQuestionThemeModificationContract({ slug: undefined });
+      const archivedQuestionTheme = createFakeQuestionTheme({ id, status: "archived" });
+      mocks.repositories.questionTheme.modify.mockResolvedValueOnce(archivedQuestionTheme);
+      const modifyQuestionThemeCommand = createFakeQuestionThemeModificationCommand({
+        questionThemeId: id,
+        payload,
+      });
+
+      const result = await modifyQuestionThemeUseCase.modify(modifyQuestionThemeCommand);
+
+      expect(result).toStrictEqual(archivedQuestionTheme);
     });
   });
 

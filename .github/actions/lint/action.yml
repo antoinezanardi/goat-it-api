@@ -5,8 +5,17 @@ author: Antoine ZANARDI
 runs:
   using: composite
   steps:
+    - name: Check tracked env files 🔐
+      id: check-tracked-env-files
+      shell: bash
+      run: sh scripts/check-tracked-env-files.sh
+
     - name: Install project 📦
       uses: ./.github/actions/install-project
+
+    - name: Check Oxlint rules inventory and linter option parity 🔗
+      shell: bash
+      run: pnpm run lint:oxlint:check-rules
 
     - name: Check and lint code 🔍
       id: lint

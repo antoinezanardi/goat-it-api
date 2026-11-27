@@ -4,10 +4,17 @@ const VERSION_HEADER_PATTERN = /^## .+/u;
 const TRAILING_REFS_PATTERN = /\s+\(\[.*$/u;
 const UPDATE_DESCRIPTION_PATTERN = /^update\s+(?:dependency\s+)?(?<packageName>.+?)(?:\s+to\s+(?<packageVersion>\S+))?$/u;
 
+const CHORE_SECTION_TITLE = "### 🧹 Chore";
 const UPGRADED_DEPS_SECTION_TITLE = "### 📦 Upgraded Dependencies";
 
 function isDepsLine(line) {
   return DEPS_LINE_PATTERN.test(line);
+}
+
+function isReleaseCommitLine(line, releaseVersion, sectionTitle) {
+  return sectionTitle === CHORE_SECTION_TITLE &&
+    Boolean(releaseVersion) &&
+    line.startsWith(`* **release:** v${releaseVersion}`);
 }
 
 function isSectionHeader(line) {
@@ -79,18 +86,20 @@ function cleanPreviousEmptySection(filtered, sectionStartIndex, hasContent) {
   }
 }
 
-function removeDepsLinesAndCleanSections(lines) {
+function removeFilteredLinesAndCleanSections(lines, releaseVersion) {
   const filtered = [];
   let hasContent = false;
   let sectionStartIndex = -1;
+  let currentSection = "";
 
   for (const line of lines) {
     if (isNonDepsSectionHeader(line)) {
       cleanPreviousEmptySection(filtered, sectionStartIndex, hasContent);
       sectionStartIndex = filtered.length;
       hasContent = false;
+      currentSection = line;
       filtered.push(line);
-    } else if (!isDepsLine(line)) {
+    } else if (!isDepsLine(line) && !isReleaseCommitLine(line, releaseVersion, currentSection)) {
       if (sectionStartIndex !== -1 && line.startsWith("* ")) {
         hasContent = true;
       }
@@ -123,21 +132,21 @@ function normalizeTrailingBlankLines(lines) {
   return lines;
 }
 
-function transformReleaseNotes(notes) {
+function transformReleaseNotes(notes, releaseVersion) {
   if (typeof notes !== "string") {
     return "";
   }
 
   const lines = notes.split("\n");
   const dependencies = lines.filter(isDepsLine).map(extractDependencyInfo);
+  const cleanedLines = removeFilteredLinesAndCleanSections(lines, releaseVersion);
+  const normalizedLines = normalizeTrailingBlankLines(cleanedLines);
 
   if (dependencies.length === 0) {
-    return notes;
+    return normalizedLines.join("\n");
   }
 
   const deduplicated = deduplicateDependencies(dependencies);
-  const cleanedLines = removeDepsLinesAndCleanSections(lines);
-  const normalizedLines = normalizeTrailingBlankLines(cleanedLines);
   const table = buildDependencyTable(deduplicated);
 
   return `${normalizedLines.join("\n")}${table}\n`;
@@ -148,6 +157,6 @@ export {
   deduplicateDependencies,
   extractDependencyInfo,
   isDepsLine,
-  removeDepsLinesAndCleanSections,
+  removeFilteredLinesAndCleanSections,
   transformReleaseNotes,
 };

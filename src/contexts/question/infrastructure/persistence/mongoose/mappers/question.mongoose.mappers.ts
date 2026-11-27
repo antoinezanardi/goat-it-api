@@ -1,17 +1,31 @@
 import { Types } from "mongoose";
 
-import { createQuestionThemeFromDocument } from "@question-theme/infrastructure/persistence/mongoose/mappers/question-theme.mongoose.mappers";
-
-import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/types/question.contracts";
+import { QUESTION_AUTHOR_ROLE_GAME } from "@question/domain/constants/question.constants";
 import { QuestionPersistenceMappingError } from "@question/infrastructure/persistence/mongoose/errors/question.mongoose.errors";
+
+import { createQuestionThemeFromPersistenceShape } from "@question-theme/contracts/persistence/question-theme.persistence.mappers";
+
 import type { Question } from "@question/domain/types/question.entities";
 import type { QuestionAuthor, QuestionThemeAssignment } from "@question/domain/types/question.value-objects";
+import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
+import type { QuestionCreationContract, QuestionThemeAssignmentCreationContract } from "@question/domain/repositories/question.repository-contracts.types";
+import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAggregate, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 
-import type { QuestionAggregate, QuestionMongooseInsertPayload, QuestionThemeAssignmentAggregate, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+/**
+ * Maps a theme aggregate embedded in a question pipeline result to the published theme entity.
+ */
+function createQuestionThemeFromAggregate(questionThemeAggregate: QuestionThemeAggregate): QuestionTheme {
+  return createQuestionThemeFromPersistenceShape(questionThemeAggregate);
+}
 
+/**
+ * Maps the stored question author to the domain value object, normalizing a game author's `gameId` to a string.
+ *
+ * @throws `QuestionPersistenceMappingError` when a `game`-authored question has no `gameId`, which would otherwise produce an invalid domain author.
+ */
 function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate): QuestionAuthor {
   const { _id, author: questionAuthor } = questionAggregate;
-  if (questionAuthor.role !== "game") {
+  if (questionAuthor.role !== QUESTION_AUTHOR_ROLE_GAME) {
     return {
       role: questionAuthor.role,
       name: questionAuthor.name,
@@ -27,18 +41,31 @@ function createQuestionAuthorFromAggregate(questionAggregate: QuestionAggregate)
   };
 }
 
-function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate: QuestionThemeAssignmentAggregate): QuestionThemeAssignment {
+/**
+ * Maps a theme-assignment aggregate to the domain value object, delegating the nested theme to `createQuestionThemeFromAggregate`.
+ *
+ * @throws `QuestionPersistenceMappingError` when the referenced theme is missing from the aggregate, which can only happen after a manual hard delete.
+ */
+function createQuestionThemeAssignmentFromQuestionThemeAggregate(questionThemeAssignmentAggregate: QuestionThemeAssignmentAggregate, questionId: string): QuestionThemeAssignment {
+  if (!questionThemeAssignmentAggregate.theme) {
+    throw new QuestionPersistenceMappingError(questionId, "Missing referenced question theme in assigned theme");
+  }
   return {
-    theme: createQuestionThemeFromDocument(questionThemeAssignmentAggregate.theme),
+    theme: createQuestionThemeFromAggregate(questionThemeAssignmentAggregate.theme),
     isPrimary: questionThemeAssignmentAggregate.isPrimary,
     isHint: questionThemeAssignmentAggregate.isHint,
   };
 }
 
+/**
+ * Maps a question aggregation result to the domain entity, converting `_id` to a string `id` and the stored source URLs to a `Set`.
+ */
 function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregate): Question {
+  const questionId = questionMongooseAggregate._id.toString();
+
   return {
-    id: questionMongooseAggregate._id.toString(),
-    themes: questionMongooseAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate)),
+    id: questionId,
+    themes: questionMongooseAggregate.themes.map(themeAssignmentAggregate => createQuestionThemeAssignmentFromQuestionThemeAggregate(themeAssignmentAggregate, questionId)),
     content: questionMongooseAggregate.content,
     category: questionMongooseAggregate.category,
     cognitiveDifficulty: questionMongooseAggregate.cognitiveDifficulty,
@@ -53,8 +80,15 @@ function createQuestionFromAggregate(questionMongooseAggregate: QuestionAggregat
   };
 }
 
+/**
+ * Maps a theme-assignment creation contract to the Mongoose insert payload, converting `themeId` to an `ObjectId`.
+ *
+ * @throws `BSONError` when `themeId` is not a valid ObjectId; the HTTP layer rejects such ids before this mapper runs.
+ */
 function createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreateContract: QuestionThemeAssignmentCreationContract):
 QuestionThemeAssignmentMongooseInsertPayload {
+  // Acceptable as Mongoose insert payloads are structural document shapes, not constructed schema instances
+  // oxlint-disable-next-line typescript/no-unsafe-class-instance-assignment
   return {
     themeId: new Types.ObjectId(questionThemeAssignmentCreateContract.themeId),
     isPrimary: questionThemeAssignmentCreateContract.isPrimary,
@@ -62,6 +96,9 @@ QuestionThemeAssignmentMongooseInsertPayload {
   };
 }
 
+/**
+ * Maps a question-creation contract to the Mongoose insert payload, converting each theme id to an `ObjectId` and the source URLs to a plain array.
+ */
 function createQuestionMongooseInsertPayloadFromContract(questionCreateContract: QuestionCreationContract): QuestionMongooseInsertPayload {
   return {
     ...questionCreateContract,
@@ -71,6 +108,7 @@ function createQuestionMongooseInsertPayloadFromContract(questionCreateContract:
 }
 
 export {
+  createQuestionThemeFromAggregate,
   createQuestionAuthorFromAggregate,
   createQuestionThemeAssignmentFromQuestionThemeAggregate,
   createQuestionFromAggregate,

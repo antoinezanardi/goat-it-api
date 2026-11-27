@@ -3,6 +3,11 @@ import { Types } from "mongoose";
 
 import type { PipeTransform } from "@nestjs/common";
 
+/**
+ * Validates that a route parameter is a MongoDB ObjectId and returns it unchanged as a string, without converting it.
+ *
+ * @throws `BadRequestException` when the value is missing, is not a string, or is not a valid ObjectId.
+ */
 @Injectable()
 export class MongoIdPipe implements PipeTransform<unknown, string> {
   public transform(value: unknown): string {

@@ -3,7 +3,10 @@
   "model": "opencode-go/deepseek-v4.1-flash",
   "small_model": "opencode-go/deepseek-v4.1-flash",
   "default_agent": "orchestrator",
-  "subagent_depth": 2,
+  "experimental": {
+    "subagent_depth": 2,
+    "todo": true
+  },
   "agent": {
     "explore": {
       "model": "opencode-go/deepseek-v4.1-flash"
@@ -16,27 +19,61 @@
       }
     }
   },
-  "plugin": [
-    ["opencode-mempalace", {
-      "mcpCommand": ["mempalace-mcp"],
-      "palacePath": ".mempalace",
-      "threshold": 20
-    }]
+  "permissions": [
+    { "action": "skill", "resource": "*", "effect": "allow" },
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "/tmp/*", "effect": "allow" },
+    { "action": "external_directory", "resource": "/private/tmp/*", "effect": "allow" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "git checkout -b *", "effect": "allow" },
+    { "action": "shell", "resource": "git add*", "effect": "deny" },
+    { "action": "shell", "resource": "git commit*", "effect": "deny" },
+    { "action": "shell", "resource": "git push*", "effect": "deny" },
+    { "action": "shell", "resource": "gh pr merge*", "effect": "deny" },
+    { "action": "shell", "resource": "gh release create*", "effect": "deny" },
+    { "action": "shell", "resource": "gh release delete*", "effect": "deny" },
+    { "action": "shell", "resource": "gh release edit*", "effect": "deny" },
+    { "action": "shell", "resource": "gh release upload*", "effect": "deny" },
+    { "action": "shell", "resource": "gh repo delete*", "effect": "deny" },
+    { "action": "shell", "resource": "gh repo archive*", "effect": "deny" },
+    { "action": "shell", "resource": "gh secret set*", "effect": "deny" },
+    { "action": "shell", "resource": "gh secret delete*", "effect": "deny" },
+    { "action": "shell", "resource": "* .env", "effect": "ask" },
+    { "action": "shell", "resource": "* .env.*", "effect": "ask" },
+    { "action": "shell", "resource": "*/.env", "effect": "ask" },
+    { "action": "shell", "resource": "*/.env.*", "effect": "ask" },
+    { "action": "shell", "resource": "cat env/.env.example", "effect": "allow" }
   ],
-  "permission": {
-    "skill": { "*": "allow" },
-    "bash": {
-      "git checkout -b *": "allow",
-      "git add *": "deny",
-      "git commit *": "deny",
-      "git push *": "deny"
-    }
-  },
-  "lsp": {
-    "oxlint": {
-      "command": ["oxlint", "--lsp"]
-    }
-  },
+  "policies": [
+    { "action": "tool.use", "resource": "shell:git add*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git commit*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:git push*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh pr merge*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh release create*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh release delete*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh release edit*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh release upload*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh repo delete*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh repo archive*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh secret set*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh secret delete*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *-X*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *--method*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *repos/* -f*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *repos/* -F*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *repos/* --field*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *repos/* --raw-field*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api *repos/* --input*", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:gh api -X POST repos/*/security-advisories*", "effect": "allow" },
+    { "action": "tool.use", "resource": "shell:gh api --method POST repos/*/security-advisories*", "effect": "allow" },
+    { "action": "tool.use", "resource": "read:*.env", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.env.*", "effect": "deny" },
+    { "action": "tool.use", "resource": "read:*.env.example", "effect": "allow" },
+    { "action": "tool.use", "resource": "shell:* .env", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:*/.env", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:* .env *", "effect": "deny" },
+    { "action": "tool.use", "resource": "shell:*/.env *", "effect": "deny" }
+  ],
   "compaction": {
     "auto": true,
     "prune": true,

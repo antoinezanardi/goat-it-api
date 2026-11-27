@@ -8,7 +8,6 @@ import { killAppProcess } from "@acceptance-support/helpers/setup/process.helper
 
 import type { ChildProcessWithoutNullStreams } from "node:child_process";
 import type { ITestCaseHookParameter as TestCaseHookParameter } from "@cucumber/cucumber";
-
 import type { AppLogsManager } from "@acceptance-support/types/hooks.types";
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 

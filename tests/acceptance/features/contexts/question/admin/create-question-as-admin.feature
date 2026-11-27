@@ -488,6 +488,20 @@ Feature: Create Question as Admin
       | code    | message                                   | path       | origin | maximum | inclusive |
       | too_big | Too big: expected array to have <=5 items | sourceUrls | array  | 5       | true      |
 
+  Scenario: Trying to create a question with a non-HTTP source URL
+    Given the database is populated with question themes fixture set with name "five-question-themes"
+    And the request payload is set from scope "question", type "creation" and name "complete"
+    When the request payload is overridden with the following values:
+      | path          | type   | value               |
+      | sourceUrls[0] | string | javascript:alert(1) |
+    And the admin creates a new question with the request payload
+    Then the request should have failed with status code 400 and the response should contain the following error:
+      | error       | statusCode | message                 | validationDetails |
+      | Bad Request | 400        | Invalid request payload | <SET>             |
+    And the failed request's response should contain the following validation details:
+      | code           | message     | path         | format | note               |
+      | invalid_format | Invalid URL | sourceUrls.0 | url    | Invalid URL format |
+
   Scenario: Trying to create a question with duplicate source URLs
     Given the database is populated with question themes fixture set with name "five-question-themes"
     And the request payload is set from scope "question", type "creation" and name "complete"

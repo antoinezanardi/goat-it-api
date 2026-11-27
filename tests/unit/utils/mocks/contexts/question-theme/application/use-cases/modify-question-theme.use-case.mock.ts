@@ -1,6 +1,6 @@
 import { createFakeQuestionTheme } from "@faketories/contexts/question-theme/entity/question-theme.entity.faketory";
 
-import type { QuestionThemeModificationCommand } from "@question-theme/domain/types/question-theme.commands";
+import type { QuestionThemeModificationCommand } from "@question-theme/application/commands/question-theme.commands";
 import type { QuestionTheme } from "@question-theme/domain/types/question-theme.entities";
 import type { Mock } from "vitest";
 

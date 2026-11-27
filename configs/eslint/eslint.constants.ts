@@ -32,17 +32,20 @@ const BOOLEAN_PREFIXES = [
   "do",
   "did",
   "must",
-  "IS",
-  "WAS",
-  "ARE",
-  "WERE",
-  "SHOULD",
-  "HAS",
-  "CAN",
-  "DOES",
-  "DO",
-  "DID",
-  "MUST",
+];
+
+const UPPER_CASE_BOOLEAN_PREFIXES = [
+  "IS_",
+  "WAS_",
+  "ARE_",
+  "WERE_",
+  "SHOULD_",
+  "HAS_",
+  "CAN_",
+  "DOES_",
+  "DO_",
+  "DID_",
+  "MUST_",
 ];
 
 const NAMING_CONVENTION_DEFAULT_CONFIG = [
@@ -60,7 +63,24 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
     leadingUnderscore: "allow",
   },
   {
-    selector: ["variable", "classProperty"],
+    selector: ["variable"],
+    modifiers: ["exported"],
+    types: ["boolean"],
+    format: ["UPPER_CASE"],
+    prefix: UPPER_CASE_BOOLEAN_PREFIXES,
+  },
+  {
+    selector: ["variable"],
+    types: ["boolean"],
+    format: ["PascalCase"],
+    prefix: BOOLEAN_PREFIXES,
+    filter: {
+      regex: "^[A-Z][A-Z0-9_]*$",
+      match: false,
+    },
+  },
+  {
+    selector: ["classProperty"],
     types: ["boolean"],
     format: ["PascalCase"],
     prefix: BOOLEAN_PREFIXES,

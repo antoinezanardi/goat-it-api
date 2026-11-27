@@ -5,7 +5,7 @@ import {
   zQuestionLocalizedAnswer,
   zQuestionLocalizedContext,
   zQuestionLocalizedTrivia,
-} from "@question/application/dto/shared/zod/validators/question-content/question-content.dto.zod.validators";
+} from "@question/application/dto/zod/validators/question-content/question-content.dto.zod.validators";
 
 const QUESTION_CONTENT_MODIFICATION_DTO = z.object({
   statement: zQuestionLocalizedStatement()

@@ -1,13 +1,12 @@
 import { EventEmitter } from "node:events";
 
-import { Logger } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 import { DatabaseService } from "@src/infrastructure/database/providers/database.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
-import { getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
+import { getMockedLoggerConstructor, getMockedLoggerInstance } from "@mocks/shared/nest/nest.mock";
 
 import { createFakeMongoDatabaseConfigFromEnv } from "@faketories/infrastructure/api/config/config.faketory";
 
@@ -49,7 +48,7 @@ describe(DatabaseService, () => {
   });
 
   it("should log database connection message when instantiated.", () => {
-    expect(Logger).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);
+    expect(getMockedLoggerConstructor()).toHaveBeenCalledExactlyOnceWith(DatabaseService.name);
   });
 
   describe(DatabaseService.prototype.createMongooseOptions, () => {
@@ -66,6 +65,8 @@ describe(DatabaseService, () => {
         uri: "mongodb://127.0.0.1:27018",
         serverSelectionTimeoutMS: 5000,
         connectTimeoutMS: 5000,
+        socketTimeoutMS: 10_000,
+        bufferCommands: false,
         retryDelay: 3000,
         retryAttempts: 5,
         dbName: "goat-it-test",
@@ -73,6 +74,12 @@ describe(DatabaseService, () => {
       };
 
       expect(options).toStrictEqual(expectedOptions);
+    });
+
+    it("should disable mongoose command buffering when called.", () => {
+      const options = services.database.createMongooseOptions();
+
+      expect(options.bufferCommands).toBe(false);
     });
 
     it("should set up connection event listeners when onConnectionCreate option is called.", () => {

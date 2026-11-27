@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zSlug } from "@shared/infrastructure/http/zod/validators/string/string.zod.validators";
+import { zSlug } from "@shared/application/dto/zod/validators/string/string.zod.validators";
 
 const APP_METADATA_DTO = z.strictObject({
   name: z.string()

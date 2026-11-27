@@ -21,9 +21,9 @@ lerna-debug.log*
 Thumbs.db
 
 # dotenv environment variable files
-.env
-.env.development
-.env.production
+.env*
+!env/.env.example
+!env/.env.test
 
 # temp directory
 .temp
@@ -41,7 +41,8 @@ Thumbs.db
 .playwright-mcp/
 
 # Semantic release files
-RELEASE.md
+/RELEASE.md
+/CHANGELOG_SECTION.md
 
 # TypeScript cache
 *.tsbuildinfo
@@ -67,6 +68,9 @@ opencode.json.tui-migration.bak
 # Agents
 .agents/plans
 docs/superpowers
+
+# GOAT audit reports (list unfixed weaknesses; the repository is public)
+docs/audits
 
 # MemPalace files
 mempalace.yaml

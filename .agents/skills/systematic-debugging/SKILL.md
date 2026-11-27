@@ -21,6 +21,8 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 
 If you haven't completed Phase 1, you cannot propose fixes.
 
+**Before editing files to apply a fix, read `docs/architecture.md`.** The fix must respect file placement, layer boundaries and companion rules.
+
 ## When to Use
 
 Use for ANY technical issue:
@@ -285,7 +287,7 @@ These techniques are part of systematic debugging and available in this director
 
 **Related skills:**
 
-- **superpowers:verification-before-completion** - Verify fix worked before claiming success
+- **Verification before completion** - Run the `AGENTS.md` quality gates before claiming success
 
 ## Real-World Impact
 

@@ -6,16 +6,16 @@ runs:
   using: composite
   steps:
     - name: Install pnpm 🏗️
-      uses: pnpm/action-setup@v6
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6
 
     - name: Setup NodeJS ✨
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
       with:
         node-version-file: configs/node/.node-version
         cache: pnpm
 
     - name: Cache pnpm dependencies 🥡
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       id: cache-node-modules
       with:
         path: |

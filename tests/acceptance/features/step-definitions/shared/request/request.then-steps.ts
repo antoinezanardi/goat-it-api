@@ -3,8 +3,7 @@ import { expect } from "expect";
 import { shake } from "radashi";
 import { z } from "zod";
 
-import { API_RESPONSE_EXCEPTION_DTO } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
-import type { ApiResponseExceptionDto } from "@shared/infrastructure/http/dto/api-response-exception/api-response-exception.dto.shape";
+import { API_RESPONSE_EXCEPTION_DTO } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 
 import { REQUEST_ERROR_ROW_SCHEMA, REQUEST_VALIDATION_DETAILS_ROW_SCHEMA } from "@acceptance-features/step-definitions/shared/request/datatables/request.datatables";
 import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-definitions/shared/request/helpers/request.steps.helpers";
@@ -12,8 +11,8 @@ import { mapDataTableRowToValidationDetails } from "@acceptance-features/step-de
 import { validateDataTableAndGetFirstRow, validateDataTableAndGetRows } from "@acceptance-support/helpers/datatable.helpers";
 import { SUCCESS_HTTP_STATUSES } from "@acceptance-support/constants/http.constants";
 
+import type { ApiResponseExceptionDto } from "@shared/application/dto/api-response-exception/api-response-exception.dto.shape";
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 
 Then(/^the request should have succeeded with status code (?<statusCode>\d{3})$/u, function(this: GoatItWorld, statusCode: string): void {
@@ -69,4 +68,12 @@ Then(/^the failed request's response should contain the following validation det
       expect(actualValues?.map(String)).toStrictEqual(expectedValues.map(String));
     }
   }
+});
+
+Then(/^the response should not be cacheable$/u, function(this: GoatItWorld): void {
+  this.expectLastResponseHeaderToBe("cache-control", "no-store");
+});
+
+Then(/^the response should vary on the "Accept-Language" header$/u, function(this: GoatItWorld): void {
+  this.expectLastResponseHeaderToBe("vary", "Accept-Language");
 });

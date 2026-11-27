@@ -1,7 +1,5 @@
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { TupleToUnion } from "type-fest";
-
 import type { ExhaustiveTuple } from "@shared/types/tuple.types";
 
 const QUESTION_AUTHOR_ROLE_ADMIN = "admin";
@@ -60,17 +58,13 @@ const QUESTION_STATUSES = [
   QUESTION_STATUS_REJECTED,
 ] as const satisfies readonly string[];
 
-const QUESTION_COGNITIVE_DIFFICULTY_SORT_ORDER: ExhaustiveTuple<TupleToUnion<typeof QUESTION_COGNITIVE_DIFFICULTIES>> = [
-  "easy",
-  "medium",
-  "hard",
-];
+const QUESTION_COGNITIVE_DIFFICULTY_SORT_ORDER: ExhaustiveTuple<TupleToUnion<typeof QUESTION_COGNITIVE_DIFFICULTIES>> = [...QUESTION_COGNITIVE_DIFFICULTIES];
 
 const QUESTION_STATUS_SORT_ORDER: ExhaustiveTuple<TupleToUnion<typeof QUESTION_STATUSES>> = [
-  "pending",
-  "active",
-  "rejected",
-  "archived",
+  QUESTION_STATUS_PENDING,
+  QUESTION_STATUS_ACTIVE,
+  QUESTION_STATUS_REJECTED,
+  QUESTION_STATUS_ARCHIVED,
 ];
 
 const QUESTION_CREATION_STATUSES = [

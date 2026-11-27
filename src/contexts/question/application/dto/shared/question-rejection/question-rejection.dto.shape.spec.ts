@@ -16,6 +16,12 @@ describe("Question Rejection DTO Shape", () => {
     expect(() => QUESTION_REJECTION_DTO.parse(validQuestionRejectionDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionRejectionDto, extra: 1 };
+
+    expect(() => QUESTION_REJECTION_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   it("should have correct metadata when accessing the metadata.", () => {
     const expectedMetadata = {
       description: "Question rejection details",

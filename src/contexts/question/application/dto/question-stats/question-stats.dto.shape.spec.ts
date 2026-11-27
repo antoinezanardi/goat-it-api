@@ -29,6 +29,12 @@ describe("Question Stats DTO Shape", () => {
     expect(() => QUESTION_STATS_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validDto, extra: 1 };
+
+    expect(() => QUESTION_STATS_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("total", () => {
     it("should throw a zod error when missing.", () => {
       const invalidDto = { ...validDto, total: undefined };

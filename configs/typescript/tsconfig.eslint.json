@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "types": [
       "vitest/globals"
     ],
@@ -9,6 +11,7 @@
   "include": [
     "../../package.json",
     "../../eslint.config.ts",
+    "../../release.config.ts",
     "../../src/",
     "../../tests/shared/",
     "../../tests/unit/",

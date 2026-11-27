@@ -11,4 +11,12 @@ fi
 $PKG_CMD run typecheck
 $PKG_CMD run validate:branch-name
 $PKG_CMD run lint:staged:fix
+if git diff --cached --name-only | grep -qE '^(\.github/(workflows|actions)/|scripts/check-workflow-run-expressions\.ts$)'; then
+  $PKG_CMD run check:workflows:expressions
+fi
+$PKG_CMD run check:tracked-env-files
+if git diff --cached --name-only | grep -qE '^(Dockerfile|\.dockerignore|scripts/check-docker(file-pins|ignore)\.sh)$'; then
+  $PKG_CMD run check:dockerfile-pins
+  $PKG_CMD run check:dockerignore
+fi
 $PKG_CMD run test:unit:staged

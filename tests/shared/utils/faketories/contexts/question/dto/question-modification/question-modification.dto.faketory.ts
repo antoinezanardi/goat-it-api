@@ -3,10 +3,11 @@ import { faker } from "@faker-js/faker";
 import { LOCALES } from "@shared/domain/value-objects/locale/locale.constants";
 
 import { QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES } from "@question/domain/constants/question.constants";
-import type { QuestionContentModificationDto } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
-import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 
 import { createFakeLocalizedText, createFakeLocalizedTexts } from "@faketories/shared/locale/locale.faketory";
+
+import type { QuestionContentModificationDto } from "@question/application/dto/question-modification/question-content-modification/question-content-modification.dto.shape";
+import type { QuestionModificationDto } from "@question/application/dto/question-modification/question-modification.dto.shape";
 
 function createFakeQuestionContentModificationDto(overrides: Partial<QuestionContentModificationDto> = {}): QuestionContentModificationDto {
   return {

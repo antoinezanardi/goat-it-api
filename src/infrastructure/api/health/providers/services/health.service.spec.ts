@@ -1,12 +1,15 @@
-import { HealthCheckService, HttpHealthIndicator, MongooseHealthIndicator } from "@nestjs/terminus";
+import { ServiceUnavailableException } from "@nestjs/common";
+import { FetchHealthIndicator, HealthCheckService, MongooseHealthIndicator } from "@nestjs/terminus";
 import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
+import { DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS, HEALTH_CHECK_UNAVAILABLE_MESSAGE } from "@src/infrastructure/api/health/constants/health.constants";
 import { HealthService } from "@src/infrastructure/api/health/providers/services/health.service";
 
 import { createMockedAppConfigService } from "@mocks/infrastructure/api/config/providers/services/app-config.service.mock";
-import { createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
+import { createMockedTerminusFetchHealthIndicatorService, createMockedTerminusHealthCheckService, createMockedTerminusHealthIndicatorService } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
 
+import type { FetchHealthIndicatorAttemptStub } from "@mocks/infrastructure/api/health/providers/services/terminus.service.mock";
 import type { TestingModule } from "@nestjs/testing";
 
 describe(HealthService, () => {
@@ -15,7 +18,7 @@ describe(HealthService, () => {
     services: {
       health: ReturnType<typeof createMockedTerminusHealthCheckService>;
       mongooseHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;
-      docsHealth: ReturnType<typeof createMockedTerminusHealthIndicatorService>;
+      docsHealth: ReturnType<typeof createMockedTerminusFetchHealthIndicatorService>;
       appConfig: ReturnType<typeof createMockedAppConfigService>;
     };
   };
@@ -25,7 +28,7 @@ describe(HealthService, () => {
       services: {
         health: createMockedTerminusHealthCheckService(),
         mongooseHealth: createMockedTerminusHealthIndicatorService(),
-        docsHealth: createMockedTerminusHealthIndicatorService(),
+        docsHealth: createMockedTerminusFetchHealthIndicatorService(),
         appConfig: createMockedAppConfigService({
           serverBaseUrl: "http://0.0.0.0:3000",
         }),
@@ -42,7 +45,7 @@ describe(HealthService, () => {
           useValue: mocks.services.mongooseHealth,
         },
         {
-          provide: HttpHealthIndicator,
+          provide: FetchHealthIndicator,
           useValue: mocks.services.docsHealth,
         },
         {
@@ -78,6 +81,41 @@ describe(HealthService, () => {
 
       expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledOnce();
     });
+
+    it("should throw a sanitized service unavailable exception when health check service throws a service unavailable exception.", async() => {
+      mocks.services.health.check.mockRejectedValueOnce(new ServiceUnavailableException({
+        status: "error",
+        details: {
+          "mongoose": { status: "down", message: "MongoDB connection refused" },
+          "goat-it-docs": { status: "down", message: "Documentation endpoint unreachable" },
+        },
+      }));
+
+      await expect(services.health.checkAppHealth()).rejects.toThrow(new ServiceUnavailableException(HEALTH_CHECK_UNAVAILABLE_MESSAGE));
+    });
+
+    it("should not expose health check details when health check service throws a service unavailable exception.", async() => {
+      mocks.services.health.check.mockRejectedValueOnce(new ServiceUnavailableException({
+        status: "error",
+        details: {
+          mongoose: { status: "down", message: "MongoDB connection refused" },
+        },
+      }));
+      const expectedResponse = {
+        statusCode: 503,
+        message: HEALTH_CHECK_UNAVAILABLE_MESSAGE,
+        error: "Service Unavailable",
+      };
+
+      await expect(services.health.checkAppHealth()).rejects.toHaveProperty("response", expectedResponse);
+    });
+
+    it("should rethrow error when health check service throws a non service unavailable exception.", async() => {
+      const expectedError = new Error("Unexpected health check failure");
+      mocks.services.health.check.mockRejectedValueOnce(expectedError);
+
+      await expect(services.health.checkAppHealth()).rejects.toThrow(expectedError);
+    });
   });
 
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
@@ -93,10 +131,20 @@ describe(HealthService, () => {
   // Acceptable as private method is accessed via bracket notation for symbol-based describe (U3/HP2).
   // oxlint-disable-next-line typescript/dot-notation
   describe(HealthService.prototype["checkGoatItDocs"], () => {
-    it("should call ping check from http health indicator when called.", async() => {
+    it("should call ping check from fetch health indicator with the documentation url when called.", async() => {
       await services.health["checkGoatItDocs"]();
 
-      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith("goat-it-docs", "http://0.0.0.0:3000/docs");
+      expect(mocks.services.docsHealth.pingCheck).toHaveBeenCalledExactlyOnceWith(
+        "goat-it-docs",
+        "http://0.0.0.0:3000/docs",
+      );
+    });
+
+    it("should set the documentation probe timeout when called.", async() => {
+      await services.health["checkGoatItDocs"]();
+      const healthCheckAttempt = mocks.services.docsHealth.pingCheck.mock.results[0].value as FetchHealthIndicatorAttemptStub;
+
+      expect(healthCheckAttempt.withTimeout).toHaveBeenCalledExactlyOnceWith(DOCS_ENDPOINT_HEALTH_CHECK_TIMEOUT_MS);
     });
   });
 });

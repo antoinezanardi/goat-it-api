@@ -11,21 +11,35 @@ runs:
     using: composite
     steps:
       - name: Set up QEMU 🏗️
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4
 
       - name: Set up Docker Buildx 🏗️
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4
 
       - name: Validate platform input 🚢
         id: validate-platform
         shell: bash
+        env:
+          PLATFORM: ${{ inputs.platform }}
         run: |
-          if [[ "${{ inputs.platform }}" != "linux/amd64" && "${{ inputs.platform }}" != "linux/arm64" ]]; then
-            echo "Error: Invalid platform '${{ inputs.platform }}'. Supported platforms are 'linux/amd64' and 'linux/arm64'."
+          if [[ "$PLATFORM" != "linux/amd64" && "$PLATFORM" != "linux/arm64" ]]; then
+            echo "Error: Invalid platform '$PLATFORM'. Supported platforms are 'linux/amd64' and 'linux/arm64'."
             exit 1
           fi
+
+      - name: Check .dockerignore completeness 🐳
+        id: check-dockerignore
+        shell: bash
+        run: sh scripts/check-dockerignore.sh
+
+      - name: Check Dockerfile pins 🔒
+        id: check-dockerfile-pins
+        shell: bash
+        run: sh scripts/check-dockerfile-pins.sh
 
       - name: Docker Build 🐳
         id: docker-build
         shell: bash
-        run: docker buildx build --platform ${{ inputs.platform }} -t goat-it-api .
+        env:
+          PLATFORM: ${{ inputs.platform }}
+        run: docker buildx build --platform "$PLATFORM" -t goat-it-api .

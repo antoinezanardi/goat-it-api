@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { isGameIdSetOnGameRole } from "@question/application/dto/shared/zod/refinements/question-author/question-author.dto.zod.refinement";
+import { isGameIdSetOnGameRole } from "@question/application/dto/zod/refinements/question-author/question-author.dto.zod.refinements";
 import { QUESTION_AUTHOR_DTO } from "@question/application/dto/shared/question-author/question-author.dto.shape";
 
 describe("Question Author DTO Shape", () => {
@@ -15,6 +15,12 @@ describe("Question Author DTO Shape", () => {
 
   it("should pass validation when a valid QuestionAuthorDto is provided.", () => {
     expect(() => QUESTION_AUTHOR_DTO.parse(validQuestionAuthorDto)).not.toThrow();
+  });
+
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validQuestionAuthorDto, extra: 1 };
+
+    expect(() => QUESTION_AUTHOR_DTO.parse(invalidDto)).toThrow(ZodError);
   });
 
   describe("role", () => {

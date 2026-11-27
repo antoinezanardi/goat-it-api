@@ -58,26 +58,26 @@ runs:
       run: |
         set -o pipefail
         pnpm run test:unit:cov 2>&1 | tee vitest-output.log
-        cat vitest-output.log | "${{ github.workspace }}/scripts/transform-vitest-results-as-env-variables.sh" >> "$GITHUB_ENV"
+        cat vitest-output.log | "$GITHUB_WORKSPACE/scripts/transform-vitest-results-as-env-variables.sh" >> "$GITHUB_ENV"
 
     - name: Set Vitest Results As Outputs 📝
       id: vitest-results
       shell: bash
       run: |
         {
-          echo "vitest-tests-count=${{ env.VITEST_TESTS_COUNT }}"
-          echo "vitest-statements-count=${{ env.VITEST_STATEMENTS_COUNT }}"
-          echo "vitest-branches-count=${{ env.VITEST_BRANCHES_COUNT }}"
-          echo "vitest-functions-count=${{ env.VITEST_FUNCTIONS_COUNT }}"
-          echo "vitest-lines-count=${{ env.VITEST_LINES_COUNT }}"
-          echo "vitest-statements-percent=${{ env.VITEST_STATEMENTS_PERCENT }}"
-          echo "vitest-branches-percent=${{ env.VITEST_BRANCHES_PERCENT }}"
-          echo "vitest-functions-percent=${{ env.VITEST_FUNCTIONS_PERCENT }}"
-          echo "vitest-lines-percent=${{ env.VITEST_LINES_PERCENT }}"
+          echo "vitest-tests-count=$VITEST_TESTS_COUNT"
+          echo "vitest-statements-count=$VITEST_STATEMENTS_COUNT"
+          echo "vitest-branches-count=$VITEST_BRANCHES_COUNT"
+          echo "vitest-functions-count=$VITEST_FUNCTIONS_COUNT"
+          echo "vitest-lines-count=$VITEST_LINES_COUNT"
+          echo "vitest-statements-percent=$VITEST_STATEMENTS_PERCENT"
+          echo "vitest-branches-percent=$VITEST_BRANCHES_PERCENT"
+          echo "vitest-functions-percent=$VITEST_FUNCTIONS_PERCENT"
+          echo "vitest-lines-percent=$VITEST_LINES_PERCENT"
         } >> "$GITHUB_OUTPUT"
 
     - name: Save unit tests coverage in cache 🥡
-      uses: actions/cache/save@v6
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
       id: cache-unit-tests-coverage
       if: ${{ hashFiles(format('{0}/lcov.info', inputs.unit-tests-coverage-reports-path)) != '' }}
       with:
@@ -85,7 +85,7 @@ runs:
         key: ${{ inputs.unit-tests-coverage-base-cache-key }}-${{ steps.safe-branch-name.outputs.safe-branch-name }}-${{ hashFiles(format('{0}/lcov.info', inputs.unit-tests-coverage-reports-path)) }}
 
     - name: Save unit tests coverage report as artifact 💎
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       with:
         name: unit-tests-coverage-report
         path: ${{ inputs.unit-tests-coverage-reports-path }}

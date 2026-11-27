@@ -14,6 +14,7 @@
   "plugins": [
     "eslint",
     "import",
+    "jsdoc",
     "node",
     "oxc",
     "promise",
@@ -39,7 +40,9 @@
     "setTimeout": "readonly",
     "clearTimeout": "readonly",
     "console": "readonly",
-    "URL": "readonly"
+    "AbortSignal": "readonly",
+    "URL": "readonly",
+    "structuredClone": "readonly"
   },
   "rules": {
     // ---- ESLint Rules -----
@@ -52,7 +55,12 @@
     "eslint/block-scoped-var": "error",
     "eslint/capitalized-comments": [
       "error",
-      "always"
+      "always",
+      {
+        "ignorePattern": "oxlint|eslint",
+        "ignoreInlineComments": true,
+        "ignoreConsecutiveComments": true
+      }
     ],
     "eslint/class-methods-use-this": "error",
     "eslint/complexity": "error",
@@ -81,12 +89,15 @@
       "error",
       {
         "exceptions": [
-          "T",
           "K",
+          "T",
+          "_",
           "i",
+          "j",
+          "k",
+          "t",
           "x",
-          "y",
-          "_"
+          "y"
         ]
       }
     ],
@@ -363,6 +374,25 @@
     "import/no-webpack-loader-syntax": "error",
     "import/prefer-default-export": "off",
     "import/unambiguous": "error",
+    // ---- JSDoc Rules -----
+    "jsdoc/check-access": "error",
+    "jsdoc/check-property-names": "error",
+    "jsdoc/check-tag-names": [
+      "error",
+      {
+        "definedTags": [
+          "remarks"
+        ]
+      }
+    ],
+    "jsdoc/empty-tags": "error",
+    "jsdoc/no-blank-blocks": "error",
+    "jsdoc/no-defaults": "error",
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-param-name": "error",
+    "jsdoc/require-returns-description": "error",
+    "jsdoc/require-throws-description": "error",
+    "jsdoc/require-yields-description": "error",
     // ---- Node Rules -----
     "node/callback-return": "error",
     "node/global-require": "error",
@@ -675,6 +705,7 @@
             ]
           }
         ],
+        "typescript/no-generated-empty-object-type": "error",
         "typescript/no-meaningless-void-operator": "error",
         "typescript/no-misused-new": "error",
         "typescript/no-misused-promises": [
@@ -692,25 +723,6 @@
         "typescript/no-redeclare": "error",
         "typescript/no-redundant-type-constituents": "error",
         "typescript/no-require-imports": "error",
-        "typescript/no-restricted-imports": [
-          "error",
-          {
-            "patterns": [
-              {
-                "group": [
-                  "./"
-                ],
-                "message": "Relative imports to children directories are not allowed."
-              },
-              {
-                "group": [
-                  "../"
-                ],
-                "message": "Relative imports from parent directories are not allowed."
-              }
-            ]
-          }
-        ],
         "typescript/no-restricted-types": "error",
         "typescript/no-shadow": [
           "error",
@@ -733,7 +745,9 @@
         "typescript/no-unsafe-argument": "error",
         "typescript/no-unsafe-assignment": "error",
         "typescript/no-unsafe-call": "error",
+        "typescript/no-unsafe-class-instance-assignment": "error",
         "typescript/no-unsafe-declaration-merging": "error",
+        "typescript/no-unsafe-enum-assignment": "error",
         "typescript/no-unsafe-enum-comparison": "error",
         "typescript/no-unsafe-function-type": "error",
         "typescript/no-unsafe-member-access": "error",
@@ -795,7 +809,8 @@
     // ---- Override for modules -----
     {
       "files": [
-        "**/src/**/*.module.ts"
+        "**/src/**/*.module.ts",
+        "**/tests/**/*.module.ts"
       ],
       "rules": {
         "eslint/class-methods-use-this": "off",
@@ -831,10 +846,12 @@
               "ApiResponse",
               "ZodResponse",
               "HealthCheck",
+              "Header",
               "Localization",
               "Param",
               "Body",
-              "Query"
+              "Query",
+              "SkipThrottle"
             ]
           }
         ],
@@ -874,7 +891,7 @@
     // ---- Override for domain and infrastructure errors -----
     {
       "files": [
-        "**/src/**/domain/**/*.errors.ts",
+        "**/src/**/domain/**/*.error.ts",
         "**/src/**/infrastructure/**/*.errors.ts"
       ],
       "rules": {
@@ -1164,6 +1181,7 @@
     {
       "files": [
         "eslint.config.ts",
+        "release.config.ts",
         "**/configs/**/*.{js,mjs,ts}",
         "**/packages/schemas/tsdown.config.ts"
       ],
@@ -1192,6 +1210,16 @@
         "eslint/no-param-reassign": "off",
         "typescript/no-magic-numbers": "off",
         "typescript/unbound-method": "off"
+      }
+    },
+    // ---- Override for test surfaces -----
+    {
+      "files": [
+        "**/*.spec.ts",
+        "**/tests/**/*.ts"
+      ],
+      "rules": {
+        "typescript/no-unsafe-class-instance-assignment": "off"
       }
     },
     // ---- Override for declaration files -----
@@ -1243,6 +1271,31 @@
           "never"
         ],
         "node/no-sync": "off"
+      }
+    },
+    // ---- Override for first-party source and test relative-import ban -----
+    {
+      "files": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "packages/schemas/src/**/*.ts"
+      ],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "regex": "^\\./",
+                "message": "Relative imports to children directories are not allowed."
+              },
+              {
+                "regex": "^\\.\\./",
+                "message": "Relative imports from parent directories are not allowed."
+              }
+            ]
+          }
+        ]
       }
     },
     // ---- Override for scripts files -----

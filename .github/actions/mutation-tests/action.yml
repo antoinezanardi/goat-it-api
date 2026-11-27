@@ -35,16 +35,16 @@ runs:
       run: |
         set -o pipefail
         pnpm run test:mutation:ci 2>&1 | tee stryker-output.log
-        cat stryker-output.log | "${{ github.workspace }}/scripts/transform-stryker-results-as-env-variables.sh" >> "$GITHUB_ENV"
+        cat stryker-output.log | "$GITHUB_WORKSPACE/scripts/transform-stryker-results-as-env-variables.sh" >> "$GITHUB_ENV"
 
     - name: Set Stryker Dashboard URL output 📝
       id: stryker-dashboard-url
       if: always()
       shell: bash
-      run: echo "STRYKER_DASHBOARD_URL=${{ env.STRYKER_DASHBOARD_URL }}" >> "$GITHUB_OUTPUT"
+      run: echo "STRYKER_DASHBOARD_URL=$STRYKER_DASHBOARD_URL" >> "$GITHUB_OUTPUT"
 
     - name: Save stryker report as artifact 💎
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       if: always()
       with:
         name: stryker-html-report
@@ -53,7 +53,7 @@ runs:
         retention-days: 2
 
     - name: Save stryker incremental as artifact 💎
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
       if: always()
       with:
         name: stryker-incremental-report

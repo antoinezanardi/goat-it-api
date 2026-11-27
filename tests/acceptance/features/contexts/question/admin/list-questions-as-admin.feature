@@ -277,6 +277,8 @@ Feature: List Questions as Admin
       | es     | Ciencia      |
       | de     | Wissenschaft |
       | pt     | Ciência      |
+    And the response should not be cacheable
+    And the response should vary on the "Accept-Language" header
 
   Scenario: Listing all admin questions when none exist
     When the admin retrieves all questions

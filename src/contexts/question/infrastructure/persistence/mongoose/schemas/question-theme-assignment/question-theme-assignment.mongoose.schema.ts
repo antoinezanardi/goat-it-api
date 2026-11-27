@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types } from "mongoose";
 
-import { QUESTION_THEME_MONGOOSE_COLLECTION_NAME } from "@question-theme/infrastructure/persistence/mongoose/constants/question-theme.mongoose.constants";
-
 import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
 @Schema({
@@ -12,8 +10,6 @@ class QuestionThemeAssignmentMongooseSchema {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: QUESTION_THEME_MONGOOSE_COLLECTION_NAME,
-    index: true,
   })
   public themeId!: Types.ObjectId;
 

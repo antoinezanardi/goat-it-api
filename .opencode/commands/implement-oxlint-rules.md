@@ -1,6 +1,13 @@
+---
+description: Implement every missing oxlint rule into oxlint.config.jsonc, fetching each rule's documentation and inserting it after user validation.
+agent: build
+---
+
 # Implement missing oxlint rules
 
 ## Task
+
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
 
 Interactively implement all missing oxlint rules into `oxlint.config.jsonc` by running the checker script, fetching documentation for each rule, cross-referencing with ESLint configs, and inserting after user validation.
 
@@ -28,8 +35,8 @@ Use the prefix mapping below to find whether the rule already exists in the ESLi
 | `typescript` | `@typescript-eslint/` | `configs/eslint/flat-configs/eslint-typescript.flat-config.ts` |
 | `import` | `import/` | `configs/eslint/flat-configs/eslint-import.flat-config.ts` |
 | `unicorn` | `unicorn/` | `configs/eslint/flat-configs/eslint-unicorn.flat-config.ts` |
-| `vue` | `vue/` | `configs/eslint/flat-configs/eslint-vue.flat-config.ts` |
-| `vitest` | `vitest/` | `configs/eslint/flat-configs/eslint-unit-tests.config.ts` |
+| `vue` | *(no ESLint equivalent in this repository)* | — |
+| `vitest` | `vitest/` | `configs/eslint/flat-configs/eslint-unit-tests.flat-config.ts` |
 | `promise` | *(no ESLint equivalent)* | — |
 | `oxc` | *(no ESLint equivalent)* | — |
 | `node` | *(no ESLint equivalent)* | — |
@@ -37,6 +44,7 @@ Use the prefix mapping below to find whether the rule already exists in the ESLi
 For example:
 - `eslint/eqeqeq` → grep for `"eqeqeq"` in `eslint-global.flat-config.ts`
 - `typescript/dot-notation` → grep for `"@typescript-eslint/dot-notation"` in `eslint-typescript.flat-config.ts`
+- `vitest/prefer-to-be` → grep for `"vitest/prefer-to-be"` in `eslint-unit-tests.flat-config.ts`
 
 If found, extract the full value (e.g. `"error"`, `"off"`, or `["error", { ... }]`).
 
@@ -130,3 +138,4 @@ After all rules have been processed:
 - The proposed value defaults to `"error"` when no ESLint match is found
 - When an ESLint match is `"off"`, propose `"off"` for the oxlint rule too (user may still override)
 - **NEVER** batch rules, always process one by one, even if it takes time
+- **DO NOT COMMIT.** The user is the only one who commits. Never run `git add`, `git commit` or `git push`; propose a ready-to-copy conventional commit message instead

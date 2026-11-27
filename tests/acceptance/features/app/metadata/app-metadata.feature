@@ -1,4 +1,4 @@
-@app @app-metadata
+@app @app-metadata @public
 Feature: App Metadata
 
   Scenario: Retrieving app metadata

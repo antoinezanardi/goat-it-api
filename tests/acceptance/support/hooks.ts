@@ -2,6 +2,7 @@ import { After, AfterAll, Before, BeforeAll, setWorldConstructor, Status } from 
 
 import { loadEnvTestConfig } from "@acceptance-support/helpers/setup/env.helpers";
 import { DEFAULT_SERVER_PORT } from "@acceptance-support/constants/app.constants";
+import { assertPayloadsAreDeterministic } from "@acceptance-support/payloads/helpers/payload-determinism.helpers";
 import { HOOKS_AFTER_ALL_TIMEOUT_MS, HOOKS_BEFORE_ALL_TIMEOUT_MS } from "@acceptance-support/constants/hooks.constants";
 import { killAppProcess } from "@acceptance-support/helpers/setup/process.helpers";
 import { flushAndPrintLogTail } from "@acceptance-support/helpers/setup/logging.helpers";
@@ -9,6 +10,7 @@ import { printDebugOnScenarioFailure, serveAppForAcceptanceTests } from "@accept
 import { closeTestDatabaseConnection, connectToTestDatabase, resetTestDatabase } from "@acceptance-support/helpers/test-database.helpers";
 
 import type { AcceptanceHooksProcesses } from "@acceptance-support/types/hooks.types";
+
 import { GoatItWorld } from "@acceptance-support/types/world.types";
 
 setWorldConstructor(GoatItWorld);
@@ -16,6 +18,7 @@ setWorldConstructor(GoatItWorld);
 const processes: AcceptanceHooksProcesses = {};
 
 BeforeAll({ timeout: HOOKS_BEFORE_ALL_TIMEOUT_MS }, async() => {
+  assertPayloadsAreDeterministic();
   loadEnvTestConfig();
 
   const workerId = process.env.CUCUMBER_WORKER_ID ?? "0";

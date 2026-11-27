@@ -2,10 +2,19 @@ import { createFakeQuestionThemeAssignmentCreationDto } from "@faketories/contex
 
 import { FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY } from "@acceptance-support/fixtures/question-theme/sets/five-question-themes.fixture-set";
 
-const PRIMARY_HISTORY_QUESTION_THEME_ASSIGNMENT_CREATE_PAYLOAD = Object.freeze(createFakeQuestionThemeAssignmentCreationDto({
-  themeId: FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id.toString(),
-  isPrimary: true,
-  isHint: false,
-}));
+import type { QuestionThemeAssignmentCreationDto } from "@question/application/dto/question-creation/question-theme-assignment-creation/question-theme-assignment-creation.dto.shape";
 
-export { PRIMARY_HISTORY_QUESTION_THEME_ASSIGNMENT_CREATE_PAYLOAD };
+function buildPrimaryHistoryQuestionThemeAssignmentCreatePayload(): QuestionThemeAssignmentCreationDto {
+  return createFakeQuestionThemeAssignmentCreationDto({
+    themeId: FIVE_QUESTION_THEMES_FIXTURE_HISTORY_ENTRY._id.toString(),
+    isPrimary: true,
+    isHint: false,
+  });
+}
+
+const PRIMARY_HISTORY_QUESTION_THEME_ASSIGNMENT_CREATE_PAYLOAD = Object.freeze(buildPrimaryHistoryQuestionThemeAssignmentCreatePayload());
+
+export {
+  PRIMARY_HISTORY_QUESTION_THEME_ASSIGNMENT_CREATE_PAYLOAD,
+  buildPrimaryHistoryQuestionThemeAssignmentCreatePayload,
+};

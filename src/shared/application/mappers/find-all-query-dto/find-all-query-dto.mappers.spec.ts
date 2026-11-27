@@ -1,5 +1,5 @@
 import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
-import { LIMIT_DEFAULT } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { LIMIT_DEFAULT } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
 
 import { createFakeFindAllOptions } from "@faketories/shared/domain/find-all-options.faketory";
 

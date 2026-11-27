@@ -1,0 +1,47 @@
+name: Compute Release Changelog 🏷️
+description: Merges main into develop, computes the next release version and caches the generated changelog.
+author: Antoine ZANARDI
+
+inputs:
+  semantic-release-token:
+    description: Token used by semantic-release to verify push access in dry-run mode
+    required: true
+
+outputs:
+  new-release-version:
+    description: Next release version, empty when no release is pending
+    value: ${{ steps.release.outputs.new-release-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Merge main branch into develop branch 🤝
+      shell: bash
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+        git fetch --all
+        git checkout main
+        git pull origin main
+        git checkout develop
+        git merge main
+
+    - name: Install project 📦
+      uses: ./.github/actions/install-project
+
+    - name: Get next release version and create release changelog 🏷️
+      id: release
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.semantic-release-token }}
+      run: pnpm run script:create-release-changelog
+
+    - name: Cache release changelog 🥡
+      if: hashFiles('CHANGELOG_SECTION.md') != ''
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      id: cache-release-changelog
+      with:
+        path: |
+          RELEASE.md
+          CHANGELOG_SECTION.md
+        key: ${{ runner.os }}-release-changelog-${{ github.run_id }}

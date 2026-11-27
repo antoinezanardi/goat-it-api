@@ -17,6 +17,12 @@ describe("Question Theme Assignment Creation DTO Shape", () => {
     expect(() => QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(validDto)).not.toThrow();
   });
 
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(QUESTION_THEME_ASSIGNMENT_CREATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
+  });
+
   describe("themeId", () => {
     it("should throw zod error when themeId is invalid.", () => {
       const invalid = { ...validDto, themeId: "not-an-id" };

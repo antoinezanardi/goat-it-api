@@ -1,14 +1,11 @@
-import { Test } from "@nestjs/testing";
-
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
-import { QUESTION_REPOSITORY_TOKEN } from "@question/domain/repositories/question.repository.constants";
 import { QuestionPrimaryThemeAssignmentNotRemovableError } from "@question/domain/errors/question-primary-theme-assignment-not-removable/question-primary-theme-assignment-not-removable.error";
 import { QuestionThemeAssignmentAbsentError } from "@question/domain/errors/question-theme-assignment-absent/question-theme-assignment-absent.error";
 import { QuestionThemeAssignmentRemovalError } from "@question/domain/errors/question-theme-assignment-removal/question-theme-assignment-removal.error";
 import { QuestionMinimumThemesError } from "@question/domain/errors/question-minimum-themes/question-minimum-themes.error";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 
-import { createMockedQuestionRepository } from "@mocks/contexts/question/infrastructure/persistence/mongoose/question.mongoose.repository.mock";
+import { createMockedQuestionRepository } from "@mocks/contexts/question/domain/repositories/question.repository.mock";
 import { createMockedFindQuestionByIdUseCase } from "@mocks/contexts/question/application/use-cases/find-question-by-id.use-case.mock";
 
 import { createFakeQuestionThemeAssignmentRemovalCommand } from "@faketories/contexts/question/commands/question-theme-assignment/commands/question-theme-assignment.commands.faketory";
@@ -26,7 +23,7 @@ describe(RemoveThemeFromQuestionUseCase, () => {
     };
   };
 
-  beforeEach(async() => {
+  beforeEach(() => {
     mocks = {
       repositories: {
         question: createMockedQuestionRepository(),
@@ -36,25 +33,14 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       },
     };
 
-    const module = await Test.createTestingModule({
-      providers: [
-        RemoveThemeFromQuestionUseCase,
-        {
-          provide: QUESTION_REPOSITORY_TOKEN,
-          useValue: mocks.repositories.question,
-        },
-        {
-          provide: FindQuestionByIdUseCase,
-          useValue: mocks.useCases.findQuestionById,
-        },
-      ],
-    }).compile();
-
-    useCase = module.get(RemoveThemeFromQuestionUseCase);
+    useCase = new RemoveThemeFromQuestionUseCase(
+      mocks.repositories.question,
+      mocks.useCases.findQuestionById as unknown as FindQuestionByIdUseCase,
+    );
   });
 
   describe(RemoveThemeFromQuestionUseCase.prototype.remove, () => {
-    it("should throw QuestionThemeAssignmentRemovalError when repository returns undefined.", async() => {
+    it("should throw QuestionThemeAssignmentRemovalError when repository returns undefined and the re-check still allows the removal.", async() => {
       const command = createFakeQuestionThemeAssignmentRemovalCommand({
         questionId: "q3",
         themeId: "theme-1",
@@ -72,11 +58,123 @@ describe(RemoveThemeFromQuestionUseCase, () => {
           }),
         ],
       });
-      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question);
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(question).mockResolvedValueOnce(question);
       vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(undefined);
       const expectedError = new QuestionThemeAssignmentRemovalError(command.themeId, command.questionId);
 
       await expect(useCase.remove(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionMinimumThemesError when the conditional write matches no document and the question is at the floor.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q3",
+        themeId: "theme-1",
+      });
+      const questionBefore = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+        ],
+      });
+      const questionAtFloor = createFakeQuestion({
+        id: "q3",
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true })],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(questionBefore).mockResolvedValueOnce(questionAtFloor);
+      vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(undefined);
+      const expectedError = new QuestionMinimumThemesError(command.questionId);
+
+      await expect(useCase.remove(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionThemeAssignmentAbsentError when the conditional write matches no document and the assignment is gone.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q3",
+        themeId: "theme-1",
+      });
+      const questionBefore = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+        ],
+      });
+      const questionWithoutTarget = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-3" }), isPrimary: false }),
+        ],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(questionBefore).mockResolvedValueOnce(questionWithoutTarget);
+      vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(undefined);
+      const expectedError = new QuestionThemeAssignmentAbsentError(command.themeId, command.questionId);
+
+      await expect(useCase.remove(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should throw QuestionPrimaryThemeAssignmentNotRemovableError when the conditional write matches no document and the assignment became primary.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q3",
+        themeId: "theme-1",
+      });
+      const questionBefore = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+        ],
+      });
+      const questionWithPrimaryTarget = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: true }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: false }),
+        ],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(questionBefore).mockResolvedValueOnce(questionWithPrimaryTarget);
+      vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(undefined);
+      const expectedError = new QuestionPrimaryThemeAssignmentNotRemovableError(command.themeId, command.questionId);
+
+      await expect(useCase.remove(command)).rejects.toThrow(expectedError);
+    });
+
+    it("should map a concurrent removal that lost the floor race to QuestionMinimumThemesError when the conditional write matches no document.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q3",
+        themeId: "theme-1",
+      });
+      const twoThemesQuestion = createFakeQuestion({
+        id: "q3",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+        ],
+      });
+      const oneThemeQuestion = createFakeQuestion({
+        id: "q3",
+        themes: [createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true })],
+      });
+      const firstWrite = Promise.withResolvers<ReturnType<typeof createFakeQuestion> | undefined>();
+      const secondWrite = Promise.withResolvers<ReturnType<typeof createFakeQuestion> | undefined>();
+      vi.mocked(mocks.useCases.findQuestionById.getById)
+        .mockResolvedValueOnce(twoThemesQuestion)
+        .mockResolvedValueOnce(twoThemesQuestion)
+        .mockResolvedValueOnce(oneThemeQuestion);
+      vi.mocked(mocks.repositories.question.removeTheme)
+        .mockReturnValueOnce(firstWrite.promise)
+        .mockReturnValueOnce(secondWrite.promise);
+      const firstRemoval = useCase.remove(command);
+      const secondRemoval = useCase.remove(command);
+      await vi.waitUntil(() => mocks.repositories.question.removeTheme.mock.calls.length === 2);
+      firstWrite.resolve(oneThemeQuestion);
+      secondWrite.resolve(undefined);
+      const expectedError = new QuestionMinimumThemesError(command.questionId);
+
+      await expect(secondRemoval).rejects.toThrow(expectedError);
+
+      await firstRemoval;
     });
 
     it("should call repository remove method when called.", async() => {
@@ -131,6 +229,27 @@ describe(RemoveThemeFromQuestionUseCase, () => {
       const result = await useCase.remove(command);
 
       expect(result).toStrictEqual(updated);
+    });
+
+    it("should remove a theme from an archived question when called.", async() => {
+      const command = createFakeQuestionThemeAssignmentRemovalCommand({
+        questionId: "q-archived",
+        themeId: "theme-1",
+      });
+      const archivedQuestion = createFakeQuestion({
+        id: "q-archived",
+        status: "archived",
+        themes: [
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-1" }), isPrimary: false }),
+          createFakeQuestionThemeAssignment({ theme: createFakeQuestionTheme({ id: "theme-2" }), isPrimary: true }),
+        ],
+      });
+      vi.mocked(mocks.useCases.findQuestionById.getById).mockResolvedValueOnce(archivedQuestion);
+      vi.mocked(mocks.repositories.question.removeTheme).mockResolvedValueOnce(archivedQuestion);
+
+      await useCase.remove(command);
+
+      expect(mocks.repositories.question.removeTheme).toHaveBeenCalledExactlyOnceWith(command.questionId, command.themeId);
     });
   });
 

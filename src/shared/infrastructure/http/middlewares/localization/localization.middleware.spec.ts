@@ -117,6 +117,27 @@ describe(LocalizationMiddleware, () => {
       expect(requestRaw).toStrictEqual(expectedRequestRaw);
     });
 
+    it("should set localization options with fallback locale when header locale is a weighted wildcard.", () => {
+      const requestRaw = {
+        headers: {
+          "accept-language": "*;q=0.5",
+        },
+      };
+      const next = vi.fn<() => void>();
+      const expectedRequestRaw = {
+        headers: {
+          "accept-language": "*;q=0.5",
+        },
+        localizationOptions: createFakeLocalizationOptions({
+          locale: "en",
+          fallbackLocale: "en",
+        }),
+      } as { headers: Record<string, string>; localizationOptions: ReturnType<typeof createFakeLocalizationOptions> };
+      localizationMiddleware.use(requestRaw as AugmentedFastifyRequestRaw, {} as never, next);
+
+      expect(requestRaw).toStrictEqual(expectedRequestRaw);
+    });
+
     it("should call next function when header locale is valid.", () => {
       const requestRaw = {
         headers: {
@@ -159,6 +180,26 @@ describe(LocalizationMiddleware, () => {
         test: "should return fallback locale when header locale is '*'.",
         headerLocale: "*",
         expectedLocale: "en",
+      },
+      {
+        test: "should return fallback locale when header locale is a weighted wildcard.",
+        headerLocale: "*;q=0.5",
+        expectedLocale: "en",
+      },
+      {
+        test: "should return fallback locale when header locale is a weighted wildcard padded with optional whitespace.",
+        headerLocale: "* ; q=0.5",
+        expectedLocale: "en",
+      },
+      {
+        test: "should return fallback locale when the first of several language ranges is a weighted wildcard.",
+        headerLocale: "*;q=0.5, en;q=0.9",
+        expectedLocale: "en",
+      },
+      {
+        test: "should return the first locale when the only language range carries a quality factor.",
+        headerLocale: "fr-FR;q=0.9",
+        expectedLocale: "fr",
       },
       {
         test: "should return the first locale from the header when multiple locales are provided.",

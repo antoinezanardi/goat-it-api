@@ -3,7 +3,8 @@ import { Types } from "mongoose";
 
 import { DEFAULT_SUBDOCUMENT_MONGOOSE_SCHEMA_OPTIONS } from "@shared/infrastructure/persistence/mongoose/constants/mongoose.constants";
 
-import { QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
+import { QUESTION_AUTHOR_ROLE_GAME, QUESTION_AUTHOR_ROLES } from "@question/domain/constants/question.constants";
+
 import type { QuestionAuthorRole } from "@question/domain/types/question.value-objects";
 
 @Schema({
@@ -18,7 +19,15 @@ class QuestionAuthorMongooseSchema {
   public role!: QuestionAuthorRole;
 
   @Prop({
-    required: false,
+    required(this: QuestionAuthorMongooseSchema): boolean {
+      return this.role === QUESTION_AUTHOR_ROLE_GAME;
+    },
+    validate: {
+      validator(this: QuestionAuthorMongooseSchema, gameId: Types.ObjectId | undefined): boolean {
+        return this.role === QUESTION_AUTHOR_ROLE_GAME || gameId === undefined;
+      },
+      message: "gameId is only allowed when the author role is 'game'",
+    },
     type: Types.ObjectId,
   })
   public gameId?: Types.ObjectId;

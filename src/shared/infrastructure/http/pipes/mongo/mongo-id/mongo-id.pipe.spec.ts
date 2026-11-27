@@ -43,7 +43,7 @@ describe(MongoIdPipe, () => {
         value: "12345",
       },
       {
-        test: "should throw BadRequestException when value is toptoptoptop",
+        test: "should throw BadRequestException when value is toptoptoptop.",
         errorMessage: "Invalid Mongo ID: toptoptoptop",
         value: "toptoptoptop",
       },

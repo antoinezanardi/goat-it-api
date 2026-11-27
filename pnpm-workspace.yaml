@@ -3,7 +3,24 @@ packages:
   - 'packages/schemas'
 
 overrides:
+  # Release notes: release-notes-generator 14 declares writer ^8, but the
+  # conventionalcommits@10 preset needs writer 9. Exit when the direct
+  # release-notes-generator reaches 15, which declares ^9.
   conventional-changelog-writer: ^9.3.0
+
+  # Security pins. Advisory IDs, owning ranges and exit conditions are in docs/dependencies.md.
+  '@actions/http-client>undici': ^8.13.1
+  '@devframes/agentic>@modelcontextprotocol/client': ^2.4.0
+  '@devframes/agentic>@modelcontextprotocol/server': ^2.4.0
+  '@eslint/css-tree>source-map-js': ^1.2.4
+  '@semantic-release/github>undici': ^8.13.1
+  '@swc/cli>piscina': ^5.3.2
+  '@xhmikosr/downloader>@xhmikosr/decompress': ^11.1.4
+  'cosmiconfig@8>js-yaml': ^5.5.0
+  'cosmiconfig@9>js-yaml': ^5.5.0
+  'magicast>source-map-js': ^1.2.4
+  'vitest>vite': ^8.4.0
+  esbuild: ^0.28.2
 
 allowBuilds:
   '@nestjs/core': true

@@ -1,6 +1,13 @@
+---
+description: Reconcile the ESLint flat configs with ESLint core and plugin rules, turning off deprecated rules and adding every unset rule one at a time with user validation.
+agent: build
+---
+
 # Implement missing ESLint rules
 
 ## Task
+
+**Architecture first:** read `docs/architecture.md` before creating, editing, moving or deleting any file.
 
 Interactively reconcile the ESLint flat configs with the rules available from ESLint core and its installed plugins, by running the checker script and handling two distinct categories:
 
@@ -167,3 +174,4 @@ After all rules have been processed:
 - If the WebFetch for a doc URL fails, still present the rule with "Doc unavailable" and continue.
 - The proposed value defaults to `"error"` for Section B and `"off"` for Section A.
 - **NEVER** batch rules, always process one by one, even if it takes time.
+- **DO NOT COMMIT.** The user is the only one who commits. Never run `git add`, `git commit` or `git push`; propose a ready-to-copy conventional commit message instead.

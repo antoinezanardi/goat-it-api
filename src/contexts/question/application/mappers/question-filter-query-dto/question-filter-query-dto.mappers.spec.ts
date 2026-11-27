@@ -1,9 +1,9 @@
 import { createPublicQuestionFilterOptionsFromQueryDto, createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
-import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 
 import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 import { createFakeFindQuestionsQueryDto } from "@faketories/contexts/question/dto/find-questions-query/find-questions-query.dto.faketory";
 
+import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 import type { PublicQuestionFilterOptions, QuestionFilterOptions } from "@question/domain/types/question.types";
 
 describe(createQuestionFilterOptionsFromQueryDto, () => {

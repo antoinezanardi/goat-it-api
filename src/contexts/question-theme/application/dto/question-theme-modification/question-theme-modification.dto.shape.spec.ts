@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 
-import { QUESTION_THEME_MODIFICATION_DTO } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
+import { HEX_COLOR_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
-import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { QUESTION_THEME_MODIFICATION_DTO } from "@question-theme/application/dto/question-theme-modification/question-theme-modification.dto.shape";
 
 describe("Question Theme Modification DTO Shape", () => {
   let validQuestionThemeModificationDto: {
@@ -25,6 +25,12 @@ describe("Question Theme Modification DTO Shape", () => {
 
   it("should pass validation when assigned valid values.", () => {
     expect(() => QUESTION_THEME_MODIFICATION_DTO.parse(validQuestionThemeModificationDto)).not.toThrow();
+  });
+
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validQuestionThemeModificationDto, extra: 1 };
+
+    expect(QUESTION_THEME_MODIFICATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
   });
 
   it("should pass validation when assigned empty object.", () => {

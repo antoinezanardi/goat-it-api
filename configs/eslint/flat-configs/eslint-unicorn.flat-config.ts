@@ -264,7 +264,7 @@ const ESLINT_UNICORN_FLAT_CONFIG: Linter.Config = {
     "unicorn/prefer-export-from": "error",
     "unicorn/prefer-flat-math-min-max": "error",
     "unicorn/prefer-get-or-insert-computed": "error",
-    "unicorn/prefer-global-number-constants": "error",
+    "unicorn/prefer-global-number-constants": "off",
     "unicorn/prefer-global-this": "error",
     "unicorn/prefer-group-by": "error",
     "unicorn/prefer-has-check": "error",

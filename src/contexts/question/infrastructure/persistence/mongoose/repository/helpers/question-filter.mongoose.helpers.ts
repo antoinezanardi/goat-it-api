@@ -4,13 +4,16 @@ import { shake } from "radashi";
 import { addArrayFilterIfNonEmpty } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
 import { QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
 
 import type { PipelineStage } from "mongoose";
-
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 import type { QuestionFilterOptions } from "@question/domain/types/question.types";
 
+/**
+ * Matches documents with no locale restriction, an empty restriction, or the given locale, so locale-agnostic questions stay visible.
+ */
 function buildIsApplicableForLocaleMatchCondition(locale: Locale): Record<string, unknown> {
   return {
     $or: [
@@ -21,6 +24,9 @@ function buildIsApplicableForLocaleMatchCondition(locale: Locale): Record<string
   };
 }
 
+/**
+ * Translates the optional question filters into a single `$match` stage, returning no stage when no filter is set so the aggregation is not narrowed by an empty match.
+ */
 function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOptions>): PipelineStage[] {
   if (!filters) {
     return [];
@@ -34,7 +40,7 @@ function buildQuestionAggregationFilterStages(filters?: Partial<QuestionFilterOp
     "isAdultContent": filters.isAdultContent,
   });
 
-  addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+  addArrayFilterIfNonEmpty(filters.themeIds, matchConditions, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId, ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
   addArrayFilterIfNonEmpty(filters.ids, matchConditions, "_id", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
 
   if (filters.isFullyTranslated !== undefined) {

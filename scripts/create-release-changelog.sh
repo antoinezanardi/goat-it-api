@@ -2,8 +2,8 @@
 # -----------------------------------------------------------------------------
 # create-release-changelog.sh
 #
-# Generates a release changelog using semantic-release, reformats output,
-# and saves it to RELEASE.md for review or publishing.
+# Generates a release changelog using semantic-release, saves the raw section
+# to CHANGELOG_SECTION.md and the reformatted pull-request body to RELEASE.md.
 #
 # The custom plugin (release-notes-with-deps-table.plugin.mjs) writes the raw
 # Markdown notes directly to RELEASE.md, bypassing the terminal renderer that
@@ -20,13 +20,15 @@ if ! command -v gawk &>/dev/null; then
   exit 1
 fi
 
-npx semantic-release --dry-run --no-ci --extends ./configs/semantic-release/release.config.mjs
+npx semantic-release --dry-run --no-ci
 
 if [ ! -s RELEASE.md ]; then
-  echo "No new release notes generated. Removing empty RELEASE.md."
-  rm -f RELEASE.md
+  echo "No new release notes generated. Removing empty release files."
+  rm -f RELEASE.md CHANGELOG_SECTION.md
   exit 0
 fi
+
+cp RELEASE.md CHANGELOG_SECTION.md
 
 gawk '
   {

@@ -14,6 +14,7 @@ const ESLINT_CONTROLLERS_FLAT_CONFIG: Linter.Config = {
           "Controller",
           "Get",
           "HealthCheck",
+          "Header",
         ],
       },
     ],

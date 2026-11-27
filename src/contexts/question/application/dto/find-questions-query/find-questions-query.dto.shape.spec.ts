@@ -2,17 +2,16 @@ import { ZodError } from "zod";
 import { faker } from "@faker-js/faker";
 
 import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
-import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/infrastructure/http/zod/validators/sort/constants/sort.zod.validators.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
+import { SORT_ORDER_DEFAULT, SORT_ORDER_DESCRIPTION } from "@shared/application/dto/zod/validators/sort/constants/sort.zod.validators.constants";
 
 import { FIND_QUESTIONS_QUERY_DTO } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import { QUESTION_AUTHOR_ROLES, QUESTION_CATEGORIES, QUESTION_COGNITIVE_DIFFICULTIES, QUESTION_SORTABLE_FIELDS } from "@question/domain/constants/question.constants";
-import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/zod/validators/constants/question-sort.dto.zod.validators.constants";
+import { QUESTION_SORT_BY_DEFAULT, QUESTION_SORT_BY_DESCRIPTION } from "@question/application/dto/shared/constants/question-sort.dto.constants";
+
 import type { FindQuestionsQueryDto } from "@question/application/dto/find-questions-query/find-questions-query.dto.shape";
 import type { QuestionAuthorRole, QuestionCategory, QuestionCognitiveDifficulty } from "@question/domain/types/question.value-objects";
-
 import type { z } from "zod";
-
 import type { SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe("Find Questions Query DTO Shape", () => {
@@ -39,6 +38,12 @@ describe("Find Questions Query DTO Shape", () => {
 
   it("should pass validation when a valid dto is provided.", () => {
     expect(() => FIND_QUESTIONS_QUERY_DTO.parse(validDto)).not.toThrow();
+  });
+
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(FIND_QUESTIONS_QUERY_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
   });
 
   describe("sort-by", () => {
@@ -120,7 +125,7 @@ describe("Find Questions Query DTO Shape", () => {
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string", "", " ".repeat(3)])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => FIND_QUESTIONS_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);

@@ -1,6 +1,6 @@
 import { buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate, getMongoSortDirectionFromSortOrder } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
-import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 
+import type { MongoSortDirection } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers.types";
 import type { SortOptions, SortOrder } from "@shared/domain/types/sort/sort.types";
 
 describe(getCrushedDataForMongoPatchUpdate, () => {

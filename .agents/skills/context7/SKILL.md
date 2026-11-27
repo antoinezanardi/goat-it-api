@@ -1,6 +1,6 @@
 ---
 name: context7
-description: Internal skill for the docs-fetcher agent. Fetches version-aware library documentation via Context7 MCP and synthesizes problem-contextual structured summaries. Never rely on training data — always fetch current docs.
+description: "Use when a docs-fetcher dispatch needs one library's current documentation, to fetch it through the Context7 MCP instead of relying on training data."
 ---
 
 This skill is used by the `docs-fetcher` subagent to fetch up-to-date, version-aware documentation for libraries via Context7 MCP. Each `docs-fetcher` dispatch handles **exactly one library** — the caller dispatches it once per library (parallel dispatches OK). It receives a problem description + one library and returns a structured summary explaining how that library serves the use case.
@@ -78,6 +78,14 @@ Only fetch categories that are relevant to the problem. If the caller only needs
 **If the problem needs more than 3 concepts for this library:** pick the 3 most relevant and add the rest to the summary under a "Not fetched — re-dispatch" note. Never exceed the budget.
 
 **Split multi-topic queries** — make separate `query-docs` calls per concept (within budget). Combined queries dilute ranking and return shallow results.
+
+## Fallback when Context7 is unavailable
+
+Context7 is the first source, never the only one. Fall back whenever `resolve-library-id` exhausts its three attempts, `query-docs` returns nothing usable, or either call is unavailable or rate-limited:
+
+1. Locate the library's official documentation site (project docs first, then the official repository docs) and fetch the relevant pages with `webfetch`.
+2. Cite every fetched URL in the summary and flag the source as `webfetch fallback`.
+3. Never answer from training data. Report anything the fallback could not verify as "not fetched — re-dispatch".
 
 ## Synthesizing the Structured Summary
 

@@ -1,11 +1,11 @@
 import { ZodError } from "zod";
 
+import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
+import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/application/dto/zod/validators/limit/constants/limit.zod.validators.constants";
+
 import { ADMIN_FIND_QUESTION_THEMES_QUERY_DTO } from "@question-theme/application/dto/admin-find-question-themes-query/admin-find-question-themes-query.dto.shape";
 import { ADMIN_QUESTION_THEME_SORTABLE_FIELDS, QUESTION_THEME_STATUSES } from "@question-theme/domain/constants/question-theme.constants";
-import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/zod/validators/constants/question-theme-sort.dto.zod.validators.constants";
-
-import { SORT_ORDERS } from "@shared/domain/constants/sort/sort.constants";
-import { LIMIT_DESCRIPTION, LIMIT_DEFAULT, LIMIT_MINIMUM } from "@shared/infrastructure/http/zod/validators/limit/constants/limit.zod.validators.constants";
+import { QUESTION_THEME_SORT_BY_DEFAULT, QUESTION_THEME_SORT_BY_DESCRIPTION, QUESTION_THEME_SORT_ORDER_DEFAULT, QUESTION_THEME_SORT_ORDER_DESCRIPTION } from "@question-theme/application/dto/shared/constants/question-theme-sort.dto.constants";
 
 describe("Admin Find Question-Themes Query DTO Shape", () => {
   let validDto: {
@@ -25,6 +25,12 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
 
   it("should pass validation when a valid dto is provided.", () => {
     expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(validDto)).not.toThrow();
+  });
+
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validDto, extra: 1 };
+
+    expect(ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
   });
 
   describe("sort-by", () => {
@@ -98,7 +104,7 @@ describe("Admin Find Question-Themes Query DTO Shape", () => {
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dto)).not.toThrow();
     });
 
-    it.each<unknown>([-1, 1.5, "string"])("should throw zod error when limit is '%s'.", limit => {
+    it.each<unknown>([-1, 1.5, "string", "", " ".repeat(3)])("should throw zod error when limit is '%s'.", limit => {
       const dtoWithInvalidLimit = { ...validDto, limit };
 
       expect(() => ADMIN_FIND_QUESTION_THEMES_QUERY_DTO.parse(dtoWithInvalidLimit)).toThrow(ZodError);

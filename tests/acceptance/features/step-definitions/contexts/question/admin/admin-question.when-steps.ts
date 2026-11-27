@@ -7,7 +7,6 @@ import { APP_ADMIN_API_KEY } from "@acceptance-support/constants/app.constants";
 import { createFetchOptions } from "@acceptance-support/helpers/request.helpers";
 
 import type { DataTable } from "@cucumber/cucumber";
-
 import type { GoatItWorld } from "@acceptance-support/types/world.types";
 import type { Locale } from "@shared/domain/value-objects/locale/locale.types";
 

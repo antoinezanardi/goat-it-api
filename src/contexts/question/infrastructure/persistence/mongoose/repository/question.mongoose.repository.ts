@@ -6,25 +6,40 @@ import { shake } from "radashi";
 import { addArrayFilterIfNonEmpty, buildMongooseAggregationSortStages, getCrushedDataForMongoPatchUpdate, getDefinedFieldsForMongoArrayElementUpdate } from "@shared/infrastructure/persistence/mongoose/helpers/mongoose.helpers";
 import { buildIsFullyTranslatedForLocaleMatchCondition } from "@shared/infrastructure/persistence/mongoose/helpers/translation-completeness.mongoose.helpers";
 import { hasLimit } from "@shared/domain/rules/limit/limit.rules";
-import { shuffleArray } from "@shared/domain/helpers/array/array.helpers";
 
+import { QUESTION_THEME_USAGE_PERSISTENCE_FIELDS } from "@question/contracts/persistence/question.persistence.contracts.constants";
+import { shuffleArray } from "@question/infrastructure/persistence/mongoose/repository/helpers/array.helpers";
 import { buildIsApplicableForLocaleMatchCondition, buildQuestionAggregationFilterStages } from "@question/infrastructure/persistence/mongoose/repository/helpers/question-filter.mongoose.helpers";
+import {
+  composeQuestionThemeAssignmentModificationFilter,
+  composeQuestionThemeAssignmentPrimaryPromotionPipeline,
+  composeQuestionThemeAssignmentPrimaryPushPipeline,
+  composeQuestionThemeAssignmentPushFilter,
+  composeQuestionThemeAssignmentRemovalFilter,
+} from "@question/infrastructure/persistence/mongoose/repository/helpers/question-theme-assignment.mongoose.helpers";
 import { QUESTION_SEMANTIC_SORT_ORDERS, QUESTION_TRANSLATION_COMPLETENESS_FIELD_SPECS } from "@question/infrastructure/persistence/mongoose/constants/question.mongoose.constants";
-import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/types/question.contracts";
 import { QUESTION_STATUS_ACTIVE, QUESTION_STATUS_ARCHIVED, QUESTION_STATUS_PENDING } from "@question/domain/constants/question.constants";
+import { findQuestionThemeAssignmentInQuestionByThemeId } from "@question/domain/rules/question.rules";
 import { createQuestionFromAggregate, createQuestionMongooseInsertPayloadFromContract, createQuestionThemeAssignmentMongooseInsertPayloadFromContract } from "@question/infrastructure/persistence/mongoose/mappers/question.mongoose.mappers";
 import { QUESTION_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question.mongoose.repository.pipeline";
-import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats-pipeline/question-stats.mongoose.repository.pipeline";
+import { QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE } from "@question/infrastructure/persistence/mongoose/repository/pipelines/question-stats/question-stats.mongoose.repository.pipeline";
 import { QuestionMongooseSchema } from "@question/infrastructure/persistence/mongoose/schemas/question.mongoose.schema";
+
 import type { Question } from "@question/domain/types/question.entities";
-
 import type { Model, UpdateQuery } from "mongoose";
-
+import type { QuestionCreationContract, QuestionModificationContract, QuestionThemeAssignmentCreationContract, QuestionThemeAssignmentModificationContract } from "@question/domain/repositories/question.repository-contracts.types";
 import type { QuestionRepository } from "@question/domain/repositories/question.repository.types";
 import type { QuestionFilterOptions, QuestionSortableField, FindRandomQuestionsOptions, QuestionStats } from "@question/domain/types/question.types";
-import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult, QuestionThemeAssignmentMongooseInsertPayload } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
+import type { QuestionAggregate, QuestionMongooseDocument, QuestionStatsAggregationResult } from "@question/infrastructure/persistence/mongoose/types/question.mongoose.types";
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 
+/**
+ * Mongoose adapter for `QuestionRepository`.
+ *
+ * Every read aggregates the question together with its theme assignments, resolved through a `$lookup` and ordered primary first.
+ *
+ * Theme assignment writes are conditional updates: the filter enforces the duplicate, count and primary guards, so a lost race cannot persist an invalid assignment.
+ */
 @Injectable()
 export class QuestionMongooseRepository implements QuestionRepository {
   public constructor(@InjectModel(QuestionMongooseSchema.name) private readonly questionModel: Model<QuestionMongooseDocument>) {}
@@ -35,7 +50,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
     addArrayFilterIfNonEmpty(options.excludedIds, matchStage, "_id", ids => ({ $nin: ids.map(id => new Types.ObjectId(id)) }));
     addArrayFilterIfNonEmpty(options.categories, matchStage, "category", categories => ({ $in: categories }));
     addArrayFilterIfNonEmpty(options.cognitiveDifficulties, matchStage, "cognitiveDifficulty", difficulties => ({ $in: difficulties }));
-    addArrayFilterIfNonEmpty(options.themeIds, matchStage, "themes.themeId", ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
+    addArrayFilterIfNonEmpty(options.themeIds, matchStage, QUESTION_THEME_USAGE_PERSISTENCE_FIELDS.themeId, ids => ({ $in: ids.map(id => new Types.ObjectId(id)) }));
     Object.assign(matchStage, shake({ isAdultContent: options.isAdultContent }));
     Object.assign(
       matchStage,
@@ -46,6 +61,11 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return matchStage;
   }
 
+  /**
+   * Applies the filters, joins the theme assignments, then sorts and limits in one aggregation, so theme data is read in the same round trip.
+   *
+   * `limit` is applied last: a missing or `0` limit returns the full filtered set.
+   */
   public async findAll(options: FindAllOptions<QuestionSortableField, QuestionFilterOptions>): Promise<Question[]> {
     const filterStages = buildQuestionAggregationFilterStages(options.filters);
     const sortStages = buildMongooseAggregationSortStages(options.sort, QUESTION_SEMANTIC_SORT_ORDERS);
@@ -60,6 +80,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return questionWithThemes.map(createQuestionFromAggregate);
   }
 
+  /**
+   * Returns `undefined` when no document matches the id; unlike `FindQuestionByIdUseCase`, it does not throw.
+   */
   public async findById(id: string): Promise<Question | undefined> {
     const questions = await this.questionModel.aggregate<QuestionAggregate>([
       { $match: { _id: new Types.ObjectId(id) } },
@@ -72,6 +95,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return createQuestionFromAggregate(questions[0]);
   }
 
+  /**
+   * Inserts the document, then re-reads it through the aggregation, so the result carries the theme assignments or is `undefined` when the read-back fails.
+   */
   public async create(questionCreationContract: QuestionCreationContract): Promise<Question | undefined> {
     const questionCreationDocument = createQuestionMongooseInsertPayloadFromContract(questionCreationContract);
     const createdQuestionDocument = await this.questionModel.create(questionCreationDocument);
@@ -79,6 +105,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(createdQuestionDocument._id.toString());
   }
 
+  /**
+   * Sets the archived status and returns the re-read question, or `undefined` when the question does not exist.
+   */
   public async archive(id: string): Promise<Question | undefined> {
     const update: UpdateQuery<QuestionMongooseDocument> = {
       status: QUESTION_STATUS_ARCHIVED,
@@ -88,36 +117,58 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(id);
   }
 
+  /**
+   * Appends the assignment only when the question exists, the theme is not already assigned and the question holds fewer than
+   * `QUESTION_THEME_ASSIGNMENTS_MAX_ITEMS` assignments. A primary assignment demotes the current primary theme in the same atomic
+   * update pipeline, so a reader never observes zero or two primary themes.
+   *
+   * Returns `undefined` when the conditional write matches no document.
+   */
   public async assignTheme(questionId: string, questionThemeAssignmentCreationContract: QuestionThemeAssignmentCreationContract): Promise<Question | undefined> {
     const insertPayload = createQuestionThemeAssignmentMongooseInsertPayloadFromContract(questionThemeAssignmentCreationContract);
+    const pushFilter = composeQuestionThemeAssignmentPushFilter(questionId, insertPayload.themeId);
+    const { isPrimary } = questionThemeAssignmentCreationContract;
+    const update = isPrimary ? composeQuestionThemeAssignmentPrimaryPushPipeline(insertPayload) : { $push: { themes: insertPayload } };
+    const { matchedCount } = await this.questionModel.updateOne(pushFilter, update, { updatePipeline: isPrimary });
 
-    if (questionThemeAssignmentCreationContract.isPrimary) {
-      await this.assignNewPrimaryTheme(questionId, insertPayload);
-
-      return this.findById(questionId);
-    }
-    const update: UpdateQuery<QuestionMongooseDocument> = {
-      $push: { themes: insertPayload },
-    };
-    await this.questionModel.findByIdAndUpdate(questionId, update);
-
-    return this.findById(questionId);
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
+  /**
+   * Updates an existing assignment. A primary promotion demotes every other assignment in the same atomic pipeline, and a non-primary update writes only the defined fields.
+   *
+   * Returns `undefined` when the conditional write matches no document, and an empty modification also returns `undefined` when the re-read question no longer holds the assignment.
+   */
   public async modifyThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<Question | undefined> {
     if (contract.isPrimary) {
-      await this.promoteToPrimaryThemeAssignment(questionId, themeId, contract);
+      const { matchedCount } = await this.questionModel.updateOne(
+        composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+        composeQuestionThemeAssignmentPrimaryPromotionPipeline(themeId, contract),
+        { updatePipeline: true },
+      );
 
-      return this.findById(questionId);
+      return this.readAfterConditionalWrite(questionId, matchedCount);
     }
     const fieldsToSet = getDefinedFieldsForMongoArrayElementUpdate(contract, "themes.$[elem]");
-    if (Object.keys(fieldsToSet).length > 0) {
-      const themeObjectId = new Types.ObjectId(themeId);
-      await this.questionModel.findByIdAndUpdate(questionId, { $set: fieldsToSet }, { arrayFilters: [{ "elem.themeId": themeObjectId }] });
+    if (Object.keys(fieldsToSet).length === 0) {
+      const question = await this.findById(questionId);
+      const hasAssignment = question !== undefined && findQuestionThemeAssignmentInQuestionByThemeId(question, themeId) !== undefined;
+
+      return hasAssignment ? question : undefined;
     }
-    return this.findById(questionId);
+    const themeObjectId = new Types.ObjectId(themeId);
+    const { matchedCount } = await this.questionModel.updateOne(
+      composeQuestionThemeAssignmentModificationFilter(questionId, themeId),
+      { $set: fieldsToSet },
+      { arrayFilters: [{ "elem.themeId": themeObjectId }] },
+    );
+
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
+  /**
+   * Applies only the fields present in the contract as a `$set` patch, then returns the re-read question.
+   */
   public async modify(id: string, contract: QuestionModificationContract): Promise<Question | undefined> {
     const questionUpdateData = getCrushedDataForMongoPatchUpdate(contract);
     const updateQuery: UpdateQuery<QuestionMongooseDocument> = { $set: questionUpdateData };
@@ -126,15 +177,20 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return this.findById(id);
   }
 
+  /**
+   * Pulls the assignment only when the question exists, still holds more than `QUESTION_THEME_ASSIGNMENTS_MIN_ITEMS` assignments
+   * and the target assignment exists and is not primary.
+   *
+   * Returns `undefined` when the conditional write matches no document.
+   */
   public async removeTheme(questionId: string, themeId: string): Promise<Question | undefined> {
-    const update: UpdateQuery<QuestionMongooseDocument> = {
-      $pull: {
-        themes: { themeId: new Types.ObjectId(themeId) },
-      },
-    };
-    await this.questionModel.findByIdAndUpdate(questionId, update);
+    const themeObjectId = new Types.ObjectId(themeId);
+    const { matchedCount } = await this.questionModel.updateOne(
+      composeQuestionThemeAssignmentRemovalFilter(questionId, themeObjectId),
+      { $pull: { themes: { themeId: themeObjectId } } },
+    );
 
-    return this.findById(questionId);
+    return this.readAfterConditionalWrite(questionId, matchedCount);
   }
 
   public async countLiveByThemeId(themeId: string): Promise<number> {
@@ -153,6 +209,10 @@ export class QuestionMongooseRepository implements QuestionRepository {
     });
   }
 
+  /**
+   * Samples up to `options.limit` active questions with `$sample`, then shuffles them again in memory, so the returned order is
+   * not the database order and is not stable between calls.
+   */
   public async findRandom(options: FindRandomQuestionsOptions): Promise<Question[]> {
     const matchStage = QuestionMongooseRepository.composeFindRandomMatchStage(options);
 
@@ -165,6 +225,9 @@ export class QuestionMongooseRepository implements QuestionRepository {
     return shuffleArray(questionWithThemes.map(createQuestionFromAggregate));
   }
 
+  /**
+   * Returns the aggregation counts with zero fallbacks, so a missing row yields `0` or an empty breakdown instead of `undefined`.
+   */
   public async getStats(): Promise<QuestionStats> {
     const [result] = await this.questionModel.aggregate<QuestionStatsAggregationResult>(QUESTION_STATS_MONGOOSE_REPOSITORY_PIPELINE);
 
@@ -182,41 +245,7 @@ export class QuestionMongooseRepository implements QuestionRepository {
     };
   }
 
-  private async assignNewPrimaryTheme(questionId: string, insertPayload: QuestionThemeAssignmentMongooseInsertPayload): Promise<void> {
-    await this.questionModel.bulkWrite([
-      {
-        updateOne: {
-          filter: { _id: new Types.ObjectId(questionId) },
-          update: { $set: { "themes.$[].isPrimary": false } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { _id: new Types.ObjectId(questionId) },
-          update: { $push: { themes: insertPayload } },
-        },
-      },
-    ]);
-  }
-
-  private async promoteToPrimaryThemeAssignment(questionId: string, themeId: string, contract: QuestionThemeAssignmentModificationContract): Promise<void> {
-    const themeObjectId = new Types.ObjectId(themeId);
-    const questionObjectId = new Types.ObjectId(questionId);
-    const targetSetFields = getDefinedFieldsForMongoArrayElementUpdate({ ...contract, isPrimary: true }, "themes.$[elem]");
-    await this.questionModel.bulkWrite([
-      {
-        updateOne: {
-          filter: { _id: questionObjectId },
-          update: { $set: { "themes.$[].isPrimary": false } },
-        },
-      },
-      {
-        updateOne: {
-          filter: { _id: questionObjectId },
-          update: { $set: targetSetFields },
-          arrayFilters: [{ "elem.themeId": themeObjectId }],
-        },
-      },
-    ]);
+  private async readAfterConditionalWrite(questionId: string, matchedCount: number): Promise<Question | undefined> {
+    return matchedCount === 0 ? undefined : this.findById(questionId);
   }
 }

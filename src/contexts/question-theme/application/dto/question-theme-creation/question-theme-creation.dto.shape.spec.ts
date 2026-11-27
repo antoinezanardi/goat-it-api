@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 
-import { QUESTION_THEME_CREATION_DTO } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
+import { HEX_COLOR_EXAMPLE } from "@shared/application/dto/zod/validators/string/constants/string.zod.validators.constants";
 
-import { HEX_COLOR_EXAMPLE } from "@shared/infrastructure/http/zod/validators/string/constants/string.zod.validators.constants";
+import { QUESTION_THEME_CREATION_DTO } from "@question-theme/application/dto/question-theme-creation/question-theme-creation.dto.shape";
 
 describe("Question Theme Creation DTO Shape", () => {
   let validQuestionThemeCreationDto: { slug: string; label: Record<string, string>; aliases: Record<string, string[]>; description: Record<string, string>; color?: string };
@@ -19,6 +19,12 @@ describe("Question Theme Creation DTO Shape", () => {
 
   it("should pass validation when assigned valid values.", () => {
     expect(() => QUESTION_THEME_CREATION_DTO.parse(validQuestionThemeCreationDto)).not.toThrow();
+  });
+
+  it("should strip an unknown key when present.", () => {
+    const dtoWithExtraKey = { ...validQuestionThemeCreationDto, extra: 1 };
+
+    expect(QUESTION_THEME_CREATION_DTO.parse(dtoWithExtraKey)).not.toHaveProperty("extra");
   });
 
   describe("slug", () => {

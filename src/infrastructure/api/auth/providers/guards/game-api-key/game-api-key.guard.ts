@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
 } from "@nestjs/common";
 
 import { canActivateApiKeyGuardHandler } from "@src/infrastructure/api/auth/helpers/auth.helpers";
@@ -10,11 +11,18 @@ import type {
   ExecutionContext,
 } from "@nestjs/common";
 
+/**
+ * Rejects requests that do not carry the game `goat-it-api-key` header with a 401 Unauthorized.
+ *
+ * The game key is audience-specific: it cannot call admin routes, and a rejection emits `auth.failed`.
+ */
 @Injectable()
 export class GameApiKeyGuard implements CanActivate {
+  private readonly logger = new Logger(GameApiKeyGuard.name);
+
   public constructor(private readonly configService: AppConfigService) {}
 
   public canActivate(context: ExecutionContext): boolean {
-    return canActivateApiKeyGuardHandler(context, this.configService, "game");
+    return canActivateApiKeyGuardHandler(context, this.configService, "game", this.logger);
   }
 }

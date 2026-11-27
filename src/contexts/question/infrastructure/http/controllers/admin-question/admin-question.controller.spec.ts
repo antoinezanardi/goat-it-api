@@ -2,22 +2,21 @@ import { Test } from "@nestjs/testing";
 
 import { AppConfigService } from "@src/infrastructure/api/config/providers/services/app-config.service";
 
-import { createFindAllOptionsFromQueryDto } from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
+import * as findAllQueryDtoMappers from "@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers";
 
 import { ArchiveQuestionUseCase } from "@question/application/use-cases/archive-question/archive-question.use-case";
 import { ModifyQuestionUseCase } from "@question/application/use-cases/modify-question/modify-question.use-case";
 import { AssignThemeToQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/assign-theme-to-question/assign-theme-to-question.use-case";
 import { RemoveThemeFromQuestionUseCase } from "@question/application/use-cases/question-theme-assignment/remove-theme-from-question/remove-theme-from-question.use-case";
 import { ModifyQuestionThemeAssignmentUseCase } from "@question/application/use-cases/question-theme-assignment/modify-question-theme-assignment/modify-question-theme-assignment.use-case";
-import { createQuestionCreationCommandFromDto, createQuestionModificationCommandFromDto, createAdminQuestionDtoFromEntity } from "@question/application/mappers/question.mappers";
-import { createQuestionThemeAssignmentCreationCommandFromDto, createQuestionThemeAssignmentModificationCommandFromDto } from "@question/application/mappers/question-theme-assignment.mappers";
+import * as questionMappers from "@question/application/mappers/question.mappers";
+import * as questionThemeAssignmentMappers from "@question/application/mappers/question-theme-assignment/question-theme-assignment.mappers";
 import { createQuestionFilterOptionsFromQueryDto } from "@question/application/mappers/question-filter-query-dto/question-filter-query-dto.mappers";
 import { FindQuestionsUseCase } from "@question/application/use-cases/find-questions/find-questions.use-case";
 import { FindQuestionByIdUseCase } from "@question/application/use-cases/find-question-by-id/find-question-by-id.use-case";
 import { GetQuestionStatsUseCase } from "@question/application/use-cases/get-question-stats/get-question-stats.use-case";
 import { CreateQuestionUseCase } from "@question/application/use-cases/create-question/create-question.use-case";
 import { AdminQuestionController } from "@question/infrastructure/http/controllers/admin-question/admin-question.controller";
-import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 
 import { createMockedArchiveQuestionUseCase } from "@mocks/contexts/question/application/use-cases/archive-question.use-case.mock";
 import { createMockedModifyQuestionUseCase } from "@mocks/contexts/question/application/use-cases/modify-question.use-case.mock";
@@ -43,14 +42,10 @@ import { createFakeQuestionThemeAssignmentModificationCommand } from "@faketorie
 import { createFakeAdminFindQuestionsQueryDto } from "@faketories/contexts/question/dto/admin-find-questions-query/admin-find-questions-query.dto.faketory";
 import { createFakeQuestionStatsDto } from "@faketories/contexts/question/dto/question-stats/question-stats.dto.faketory";
 
+import type { AdminFindQuestionsQueryDto } from "@question/application/dto/admin-find-questions-query/admin-find-questions-query.dto.shape";
 import type { Mock } from "vitest";
-
 import type { FindAllOptions } from "@shared/domain/types/find/find.types";
 import type { QuestionFilterOptions, QuestionSortableField } from "@question/domain/types/question.types";
-
-vi.mock(import("@question/application/mappers/question.mappers"));
-vi.mock(import("@question/application/mappers/question-theme-assignment.mappers"));
-vi.mock(import("@shared/application/mappers/find-all-query-dto/find-all-query-dto.mappers"));
 
 describe(AdminQuestionController, () => {
   let adminQuestionController: AdminQuestionController;
@@ -96,12 +91,18 @@ describe(AdminQuestionController, () => {
         modifyQuestionThemeAssignment: createMockedModifyQuestionThemeAssignmentUseCase(),
       },
       mappers: {
-        createAdminQuestionDtoFromEntity: vi.mocked(createAdminQuestionDtoFromEntity),
-        createQuestionCreationCommandFromDto: vi.mocked(createQuestionCreationCommandFromDto),
-        createQuestionModificationCommandFromDto: vi.mocked(createQuestionModificationCommandFromDto),
-        createQuestionThemeAssignmentCreationCommandFromDto: vi.mocked(createQuestionThemeAssignmentCreationCommandFromDto),
-        createQuestionThemeAssignmentModificationCommandFromDto: vi.mocked(createQuestionThemeAssignmentModificationCommandFromDto),
-        createFindAllOptionsFromQueryDto: vi.mocked(createFindAllOptionsFromQueryDto),
+        createAdminQuestionDtoFromEntity: vi.spyOn(questionMappers, "createAdminQuestionDtoFromEntity").mockImplementation(vi.fn()),
+        createQuestionCreationCommandFromDto: vi.spyOn(questionMappers, "createQuestionCreationCommandFromDto").mockImplementation(vi.fn()),
+        createQuestionModificationCommandFromDto: vi.spyOn(questionMappers, "createQuestionModificationCommandFromDto").mockImplementation(vi.fn()),
+        createQuestionThemeAssignmentCreationCommandFromDto: vi.spyOn(
+          questionThemeAssignmentMappers,
+          "createQuestionThemeAssignmentCreationCommandFromDto",
+        ).mockImplementation(vi.fn()),
+        createQuestionThemeAssignmentModificationCommandFromDto: vi.spyOn(
+          questionThemeAssignmentMappers,
+          "createQuestionThemeAssignmentModificationCommandFromDto",
+        ).mockImplementation(vi.fn()),
+        createFindAllOptionsFromQueryDto: vi.spyOn(findAllQueryDtoMappers, "createFindAllOptionsFromQueryDto").mockImplementation(vi.fn()),
       },
     };
 

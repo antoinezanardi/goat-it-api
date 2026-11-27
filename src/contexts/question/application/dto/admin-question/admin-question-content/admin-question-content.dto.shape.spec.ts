@@ -13,6 +13,12 @@ describe("Admin Question Content DTO Shape", () => {
     expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(validAdminQuestionContentDto)).not.toThrow();
   });
 
+  it("should throw a zod error when an unknown key is present.", () => {
+    const invalidDto = { ...validAdminQuestionContentDto, extra: 1 };
+
+    expect(() => ADMIN_QUESTION_CONTENT_DTO.parse(invalidDto)).toThrow(ZodError);
+  });
+
   describe("statement", () => {
     it("should throw zod error when statement is missing.", () => {
       const dtoWithoutStatement = { ...validAdminQuestionContentDto, statement: undefined };
