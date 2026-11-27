@@ -74,7 +74,8 @@ The push to `main` runs `release-creation.yml`; semantic-release creates the tag
 - the root endpoint reports the released version in its metadata;
 - the `chore: sync release v<version> from main` pull request into `develop` was created and merged
   automatically. If it is behind `develop`, choose **Update branch**; it then auto-merges. Wait for it before
-  starting the next release.
+  starting the next release. If you merge it manually, use **Create a merge commit**, never squash: the merge
+  commit is what keeps the release tag reachable from `develop`.
 
 ### 5. If `develop` moves before the release pull request is merged
 
@@ -104,8 +105,9 @@ current tip, then merge the release pull request.
 - **The version workflow fails with `EGITNOPERMISSION` right after a release.** The sync pull request has not
   merged yet. Wait for `chore: sync release v<version> from main` to land, then re-run the workflow.
 - **The sync pull request is blocked.** Check its required checks and its title and branch name, and choose
-  **Update branch** when it is behind `develop`; a stale branch is not a break-glass case. Do not force-push
-  `develop`; use the break-glass procedure only when the merge is truly blocked.
+  **Update branch** when it is behind `develop`; a stale branch is not a break-glass case. Merge it with
+  **Create a merge commit**, never squash — a squash leaves `main` outside `develop`'s history. Do not
+  force-push `develop`; use the break-glass procedure only when the merge is truly blocked.
 - **The version pull request does not auto-merge.** Check `Lint Pull Request Name 🔃` and
   `Validate Branch Name 🌿`, and choose **Update branch** when it is behind `develop`.
 

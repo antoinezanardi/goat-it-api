@@ -254,7 +254,8 @@ with `cancel-in-progress: false`, so two runs cannot interleave their branch pus
    `chore: sync release v<version> from main` pull request (`chore/sync-release-v<version>` → `develop`) and
    arms it for merge-commit auto-merge; the merge commit keeps `develop` up to date with `main` and the
    release tag reachable from `develop` without any direct push. If that pull request falls behind `develop`,
-   choose **Update branch**; auto-merge does not update the head branch.
+   choose **Update branch**; auto-merge does not update the head branch. A manual merge must use a merge
+   commit, never a squash, or `main` stops being an ancestor of `develop`.
 
 The root entry point exists because semantic-release 26 merges its built-in default plugin list over the
 `plugins` of a config passed through `--extends`; letting semantic-release discover the config from the
