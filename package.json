@@ -1,6 +1,6 @@
 {
   "name": "goat-it-api",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "description": "🐐 Headless backend that stores and serves the Goat It quiz content (questions and question themes).",
   "private": true,
   "keywords": [

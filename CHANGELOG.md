@@ -1,5 +1,113 @@
 # 🐐 Goat It API Versioning Changelog
 
+## [1.26.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.25.0...v1.26.0) (2026-11-27)
+
+### 🚀 Features
+
+* **agents:** sync the OpenCode agent definitions with goat-it-web-game ([#1310](https://github.com/antoinezanardi/goat-it-api/issues/1310)) ([fec76f6](https://github.com/antoinezanardi/goat-it-api/commit/fec76f6866a4359f7de6951b5fe1d3f31008f49b))
+* **goat-audit:** port the GOAT audit skill, agent and command ([#1282](https://github.com/antoinezanardi/goat-it-api/issues/1282)) ([4f0b13a](https://github.com/antoinezanardi/goat-it-api/commit/4f0b13a19b51fcd891e083748ff37b63ea24f9bb))
+* harden CI supply chain and health probes ([#1274](https://github.com/antoinezanardi/goat-it-api/issues/1274)) ([51db95c](https://github.com/antoinezanardi/goat-it-api/commit/51db95c921c2d96170a0c6cf1b4cec27b8be1c29))
+* **logging:** harden request logs and emit structured security events ([#1462](https://github.com/antoinezanardi/goat-it-api/issues/1462)) ([848372f](https://github.com/antoinezanardi/goat-it-api/commit/848372f29f86ab3a1856afc91d3d0b41f780e47f)), closes [#1326](https://github.com/antoinezanardi/goat-it-api/issues/1326) [#1332](https://github.com/antoinezanardi/goat-it-api/issues/1332) [#1333](https://github.com/antoinezanardi/goat-it-api/issues/1333) [#1343](https://github.com/antoinezanardi/goat-it-api/issues/1343) [#1344](https://github.com/antoinezanardi/goat-it-api/issues/1344)
+* **observability:** add Sentry error tracking for 500s and crashes ([#1447](https://github.com/antoinezanardi/goat-it-api/issues/1447)) ([4549439](https://github.com/antoinezanardi/goat-it-api/commit/454943951734a0dc2e011acfd6b311962a7c39ca))
+* **security:** apply security headers and a no-store cache policy ([#1430](https://github.com/antoinezanardi/goat-it-api/issues/1430)) ([7035018](https://github.com/antoinezanardi/goat-it-api/commit/70350184f51a0b6bfebae89ce2103facb3b9d23a))
+* **security:** bound request body and lifecycle durations ([#1425](https://github.com/antoinezanardi/goat-it-api/issues/1425)) ([44cdf36](https://github.com/antoinezanardi/goat-it-api/commit/44cdf36840c5a8a14857b42a52e40ab6fb5953ae))
+* **security:** rate-limit every business route per client ([#1437](https://github.com/antoinezanardi/goat-it-api/issues/1437)) ([2355a42](https://github.com/antoinezanardi/goat-it-api/commit/2355a427b08c3e44156bf289cb30ac29777f6435))
+* **server:** trust the configured proxy peer and expose a per-request ID ([#1442](https://github.com/antoinezanardi/goat-it-api/issues/1442)) ([a105d9b](https://github.com/antoinezanardi/goat-it-api/commit/a105d9b945122cd4fcb39c3374c67ea214d0aad5))
+
+### 🐛 Bug Fixes
+
+* **api:** enforce the response contract and harden request parsing ([#1461](https://github.com/antoinezanardi/goat-it-api/issues/1461)) ([5683eba](https://github.com/antoinezanardi/goat-it-api/commit/5683eba05bbaa3c3ef71d162b39b8adaad74d9be)), closes [#1352](https://github.com/antoinezanardi/goat-it-api/issues/1352) [#1381](https://github.com/antoinezanardi/goat-it-api/issues/1381) [#1360](https://github.com/antoinezanardi/goat-it-api/issues/1360) [#1350](https://github.com/antoinezanardi/goat-it-api/issues/1350)
+* **ci:** enforce ruleset governance and prepare releases on develop ([#1495](https://github.com/antoinezanardi/goat-it-api/issues/1495)) ([159bc2f](https://github.com/antoinezanardi/goat-it-api/commit/159bc2f700fc526b39bad0886bdec32d2cf0fd7b)), closes [#1319](https://github.com/antoinezanardi/goat-it-api/issues/1319) [#1320](https://github.com/antoinezanardi/goat-it-api/issues/1320)
+* harden api keys, bound docs health check and reset acceptance volume ([#1313](https://github.com/antoinezanardi/goat-it-api/issues/1313)) ([e098ca3](https://github.com/antoinezanardi/goat-it-api/commit/e098ca38906d277e6762e1f279d9adf12e4a3179))
+* **question:** enforce author gameId and http(s) source URLs, fail fast on DB outage ([#1487](https://github.com/antoinezanardi/goat-it-api/issues/1487)) ([9f76902](https://github.com/antoinezanardi/goat-it-api/commit/9f76902dab847edbe459c7979cd07d2ad04f9696)), closes [#1356](https://github.com/antoinezanardi/goat-it-api/issues/1356) [#1331](https://github.com/antoinezanardi/goat-it-api/issues/1331) [#1325](https://github.com/antoinezanardi/goat-it-api/issues/1325), references [#1358](https://github.com/antoinezanardi/goat-it-api/issues/1358) [#1412](https://github.com/antoinezanardi/goat-it-api/issues/1412)
+* **release:** load semantic-release config from the repository root ([#1440](https://github.com/antoinezanardi/goat-it-api/issues/1440)) ([b116c16](https://github.com/antoinezanardi/goat-it-api/commit/b116c1696c362559ef18edb3d91257b06a9c0994))
+* **security:** harden container build and env-file handling ([#1466](https://github.com/antoinezanardi/goat-it-api/issues/1466)) ([0982c8f](https://github.com/antoinezanardi/goat-it-api/commit/0982c8f79f8cc2652969d00ed6365aa1056a2176)), closes [#1444](https://github.com/antoinezanardi/goat-it-api/issues/1444) [#1322](https://github.com/antoinezanardi/goat-it-api/issues/1322) [#1341](https://github.com/antoinezanardi/goat-it-api/issues/1341) [#1386](https://github.com/antoinezanardi/goat-it-api/issues/1386) [#1317](https://github.com/antoinezanardi/goat-it-api/issues/1317) [#1388](https://github.com/antoinezanardi/goat-it-api/issues/1388)
+
+### 📖 Docs
+
+* **architecture:** record decisions and enforce boundaries ([#1269](https://github.com/antoinezanardi/goat-it-api/issues/1269)) ([3a17a94](https://github.com/antoinezanardi/goat-it-api/commit/3a17a9470f2038091d211154734bddcfa7bfa149))
+* canonical architecture guide ([#1266](https://github.com/antoinezanardi/goat-it-api/issues/1266)) ([6fe6676](https://github.com/antoinezanardi/goat-it-api/commit/6fe6676c4ce8a33368a62e6c6c4358c67e99b6a4))
+* **goat-audit:** harden the audit command and skill from the first full run ([#1414](https://github.com/antoinezanardi/goat-it-api/issues/1414)) ([eac409e](https://github.com/antoinezanardi/goat-it-api/commit/eac409e4e07b13c9a229359bb84045bf1e1461f3))
+* **jsdoc:** add the JSDoc guide and align agent instructions ([#1311](https://github.com/antoinezanardi/goat-it-api/issues/1311)) ([9a1d1a2](https://github.com/antoinezanardi/goat-it-api/commit/9a1d1a29f2fb9cee8e3ce901bb393a91b5a2298b))
+* **onboarding:** align contributor guides with the repository ([#1482](https://github.com/antoinezanardi/goat-it-api/issues/1482)) ([711496d](https://github.com/antoinezanardi/goat-it-api/commit/711496d0741f9a8a68b4f26c5926a8f16d0fb110)), closes [#1329](https://github.com/antoinezanardi/goat-it-api/issues/1329) [#1369](https://github.com/antoinezanardi/goat-it-api/issues/1369) [#1370](https://github.com/antoinezanardi/goat-it-api/issues/1370) [#1371](https://github.com/antoinezanardi/goat-it-api/issues/1371) [#1373](https://github.com/antoinezanardi/goat-it-api/issues/1373) [#1374](https://github.com/antoinezanardi/goat-it-api/issues/1374) [#1375](https://github.com/antoinezanardi/goat-it-api/issues/1375) [#1397](https://github.com/antoinezanardi/goat-it-api/issues/1397)
+
+### 🔩 Refactor
+
+* **architecture:** tighten contracts, providers and folder conventions ([#1278](https://github.com/antoinezanardi/goat-it-api/issues/1278)) ([804a717](https://github.com/antoinezanardi/goat-it-api/commit/804a717d54b6703239a265dbc18612bee4159136))
+* **contracts:** harden persistence contracts, DTO shape probes and auth wiring ([#1478](https://github.com/antoinezanardi/goat-it-api/issues/1478)) ([4a431c2](https://github.com/antoinezanardi/goat-it-api/commit/4a431c2db817908af50cded41974c84f60daea48)), closes [#1327](https://github.com/antoinezanardi/goat-it-api/issues/1327) [#1351](https://github.com/antoinezanardi/goat-it-api/issues/1351) [#1355](https://github.com/antoinezanardi/goat-it-api/issues/1355) [#1357](https://github.com/antoinezanardi/goat-it-api/issues/1357) [#1359](https://github.com/antoinezanardi/goat-it-api/issues/1359) [#1366](https://github.com/antoinezanardi/goat-it-api/issues/1366)
+* **persistence:** make theme assignment writes atomic conditional updates ([#1453](https://github.com/antoinezanardi/goat-it-api/issues/1453)) ([adf8c6e](https://github.com/antoinezanardi/goat-it-api/commit/adf8c6e7bf675a30d563413690655e0a8076ecf5))
+
+### ⚡️ Performance
+
+* **lint:** stop running import-x rules oxlint already covers ([#1422](https://github.com/antoinezanardi/goat-it-api/issues/1422)) ([6bf8c98](https://github.com/antoinezanardi/goat-it-api/commit/6bf8c989f6111ddc8a2c777ae33c46e52bf994e3))
+
+### 🔁 CI
+
+* **workflows:** harden workflows and dependency monitoring ([#1455](https://github.com/antoinezanardi/goat-it-api/issues/1455)) ([efbccf3](https://github.com/antoinezanardi/goat-it-api/commit/efbccf3b38bca8923dfaef2cd10fd27cc474ac61)), closes [#1384](https://github.com/antoinezanardi/goat-it-api/issues/1384) [#1385](https://github.com/antoinezanardi/goat-it-api/issues/1385) [#1340](https://github.com/antoinezanardi/goat-it-api/issues/1340) [#1318](https://github.com/antoinezanardi/goat-it-api/issues/1318) [#1339](https://github.com/antoinezanardi/goat-it-api/issues/1339) [#1387](https://github.com/antoinezanardi/goat-it-api/issues/1387) [#1337](https://github.com/antoinezanardi/goat-it-api/issues/1337) [#1316](https://github.com/antoinezanardi/goat-it-api/issues/1316) [#1315](https://github.com/antoinezanardi/goat-it-api/issues/1315) [#1336](https://github.com/antoinezanardi/goat-it-api/issues/1336) [#1334](https://github.com/antoinezanardi/goat-it-api/issues/1334)
+
+### 🧹 Chore
+
+* **lint:** close the lint and test-hygiene findings ([#1471](https://github.com/antoinezanardi/goat-it-api/issues/1471)) ([c508433](https://github.com/antoinezanardi/goat-it-api/commit/c508433c1fee2a5f073ecd0594cdf6f0036642a8)), closes [#1328](https://github.com/antoinezanardi/goat-it-api/issues/1328) [#1361](https://github.com/antoinezanardi/goat-it-api/issues/1361) [#1363](https://github.com/antoinezanardi/goat-it-api/issues/1363) [#1364](https://github.com/antoinezanardi/goat-it-api/issues/1364) [#1365](https://github.com/antoinezanardi/goat-it-api/issues/1365) [#1390](https://github.com/antoinezanardi/goat-it-api/issues/1390) [#1391](https://github.com/antoinezanardi/goat-it-api/issues/1391) [#1392](https://github.com/antoinezanardi/goat-it-api/issues/1392) [#1393](https://github.com/antoinezanardi/goat-it-api/issues/1393) [#1394](https://github.com/antoinezanardi/goat-it-api/issues/1394)
+* **repo:** adopt repository hygiene and include module coverage ([#1272](https://github.com/antoinezanardi/goat-it-api/issues/1272)) ([77c430e](https://github.com/antoinezanardi/goat-it-api/commit/77c430e8dff88631ab6031c46864b2ec1803bcfa))
+* sync release v1.25.0 from main ([0456e35](https://github.com/antoinezanardi/goat-it-api/commit/0456e35f339738e0f38d5feb727e1a50f2ea4422))
+* **tooling:** harden agent permissions and repository configuration ([#1469](https://github.com/antoinezanardi/goat-it-api/issues/1469)) ([2258e9f](https://github.com/antoinezanardi/goat-it-api/commit/2258e9f07a58990aca07555eeae4d8b594ac0080)), closes [#1330](https://github.com/antoinezanardi/goat-it-api/issues/1330) [#1377](https://github.com/antoinezanardi/goat-it-api/issues/1377) [#1378](https://github.com/antoinezanardi/goat-it-api/issues/1378) [#1379](https://github.com/antoinezanardi/goat-it-api/issues/1379) [#1398](https://github.com/antoinezanardi/goat-it-api/issues/1398) [#1399](https://github.com/antoinezanardi/goat-it-api/issues/1399) [#1400](https://github.com/antoinezanardi/goat-it-api/issues/1400) [#1401](https://github.com/antoinezanardi/goat-it-api/issues/1401) [#1402](https://github.com/antoinezanardi/goat-it-api/issues/1402)
+
+### 📦 Upgraded Dependencies
+
+| Package | Version |
+| :--- | :---: |
+| `@fastify/static` | `v11` |
+| `@nestjs/axios` | `^12.0.2` |
+| `@nestjs/mongoose` | `^12.0.2` |
+| `@nestjs/serve-static` | `^12.1.1` |
+| `@nestjs/swagger` | `^12.1.3` |
+| `@sentry/nestjs` | `^11.19.0` |
+| `axios` | `^1.21.1` |
+| `fastify` | `^5.12.8` |
+| `mongoose` | `^9.13.1` |
+| `nestjs-pino` | `^5.3.2` |
+| `nestjs-zod` | `^5.6.0` |
+| `radashi` | `v13` |
+| `type-fest` | `v6` |
+| `nest monorepo` | `^12.6.2` |
+| `pin vulnerable transitives and gate the full dependency tree` |  |
+| `commitlint monorepo` | `^21.2.4` |
+| `@actions/http-client>undici to v8 [security]` |  |
+| `@nestjs/cli` | `^12.0.13` |
+| `@semantic-release/github>undici` | `v8` |
+| `@semantic-release/npm` | `^13.2.0` |
+| `@swc/cli` | `^0.8.2` |
+| `@swc/cli>piscina` | `v5` |
+| `@swc/core` | `^1.16.22` |
+| `@types/node` | `^26.6.11` |
+| `@vitest/eslint-plugin` | `^1.6.28` |
+| `cosmiconfig@8>js-yaml` | `v5` |
+| `cosmiconfig@9>js-yaml` | `v5` |
+| `dotenv` | `^18.0.9` |
+| `eslint` | `^10.15.0` |
+| `eslint-plugin-import-x` | `^4.18.1` |
+| `eslint-plugin-unicorn` | `v80` |
+| `lint-staged` | `^17.6.2` |
+| `oxlint` | `^1.91.0` |
+| `oxlint-tsgolint` | `^7.0.2008` |
+| `rimraf` | `^6.1.4` |
+| `semantic-release` | `v26` |
+| `tsc-alias` | `^1.9.9` |
+| `tsdown` | `^0.23.7` |
+| `vitest>vite` | `^8.4.0` |
+| `docker/login-action digest` | `8aa5831` |
+| `github/codeql-action digest` | `915412f` |
+| `mongo docker tag` | `v9.0.8` |
+| `node.js` | `>=26.13.0` |
+| `oxlint monorepo` | `v1.95.0` |
+| `pnpm` | `v12.23.0` |
+| `pnpm/action-setup digest` | `73e4699` |
+| `sonarsource/sonarqube-scan-action action` | `v8.5` |
+| `sonarsource/sonarqube-scan-action digest` | `70bad23` |
+| `stryker-js monorepo` | `^10.1.1` |
+| `typescript-eslint monorepo` | `^8.74.0` |
+| `vitest monorepo` | `v5` |
+
 ## [1.25.0](https://github.com/antoinezanardi/goat-it-api/compare/v1.24.1...v1.25.0) (2026-10-16)
 
 ### 🚀 Features
